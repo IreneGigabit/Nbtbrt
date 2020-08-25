@@ -1,0 +1,136 @@
+﻿<?xml version="1.0"?>
+<configuration>
+  <connectionStrings>
+    <!--案件開發環境-->
+    <add connectionString="Server=web08;Database=sindbs;User ID=web_usr;Password=web1823" name="dev_btbrtdb"/>
+    <!--案件使用者測試環境N-->
+    <add connectionString="Server=web10;Database=sindbs;User ID=web_usr;Password=web1823" name="test_N_btbrtdb"/>
+    <!--案件使用者測試環境C-->
+    <add connectionString="Server=web10;Database=sicdbs;User ID=web_usr;Password=web1823" name="test_C_btbrtdb"/>
+    <!--案件使用者測試環境S-->
+    <add connectionString="Server=web10;Database=sisdbs;User ID=web_usr;Password=web1823" name="test_S_btbrtdb"/>
+    <!--案件使用者測試環境K-->
+    <add connectionString="Server=web10;Database=sikdbs;User ID=web_usr;Password=web1823" name="test_K_btbrtdb"/>
+    <!--案件正式環境N-->
+    <add connectionString="Server=sinn05;Database=sindbs;User ID=web_usr;Password=web1823" name="prod_N_btbrtdb"/>
+    <!--案件正式環境C-->
+    <add connectionString="Server=sic10;Database=sicdbs;User ID=web_usr;Password=web1823" name="prod_C_btbrtdb"/>
+    <!--案件正式環境S-->
+    <add connectionString="Server=sis08;Database=sisdbs;User ID=web_usr;Password=web1823" name="prod_S_btbrtdb"/>
+    <!--案件正式環境K-->
+    <add connectionString="Server=sik08;Database=sikdbs;User ID=web_usr;Password=web1823" name="prod_K_btbrtdb"/>
+  </connectionStrings>
+  <appSettings>
+	  <add key="ITScode" value="m1583;m802;"/>
+  </appSettings>
+  <system.web>
+    <compilation defaultLanguage="c#" debug="true" batch="true" maxBatchGeneratedFileSize="10000" maxBatchSize="10000">
+      <assemblies>
+        <add assembly="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+        <add assembly="Microsoft.Office.Interop.Word, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71E9BCE111E9429C"/>
+        <add assembly="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+        <add assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+        <add assembly="System.Xml.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+        <add assembly="System.Data.DataSetExtensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+      </assemblies>
+    </compilation>
+    <!--<compilation defaultLanguage="c#" debug="true">
+      <assemblies>
+        <add assembly="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
+        <add assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+        <add assembly="System.Web.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+      </assemblies>
+    </compilation>-->
+    <!--<customErrors mode="On" defaultRedirect="~/inc/uAccess.htm" redirectMode="ResponseRewrite">
+      <error statusCode="500" redirect="~/500-error.aspx" />
+    </customErrors>-->
+    <customErrors mode="Off"/>
+    <sessionState mode="StateServer" stateConnectionString="tcpip=127.0.0.1:42424" timeout="120" stateNetworkTimeout="40"/>
+    <httpRuntime maxRequestLength="204800"/>
+    <pages validateRequest="false" >
+      <controls>
+        <!--<add tagPrefix="asp" namespace="System.Web.UI.DataVisualization.Charting" assembly="System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />-->
+        <add tagPrefix="asp" namespace="System.Web.UI" assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+        <add tagPrefix="asp" namespace="System.Web.UI.WebControls" assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+      </controls>
+    </pages>
+    <!--<httpHandlers>
+      <add path="ChartImg.axd" verb="GET,HEAD,POST" type="System.Web.UI.DataVisualization.Charting.ChartHttpHandler, System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" validate="false"/>
+    </httpHandlers>-->
+    <httpHandlers>
+      <remove verb="*" path="*.asmx"/>
+      <add verb="*" path="*.asmx" validate="false" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+      <add verb="*" path="*_AppService.axd" validate="false" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+      <add verb="GET,HEAD" path="ScriptResource.axd" validate="false" type="System.Web.Handlers.ScriptResourceHandler, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+    </httpHandlers>
+    <httpModules>
+      <add name="ScriptModule" type="System.Web.Handlers.ScriptModule, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+    </httpModules>
+  </system.web>
+  <system.webServer>
+    <handlers>
+      <remove name="WebServiceHandlerFactory-Integrated"/>
+      <remove name="ScriptHandlerFactory"/>
+      <remove name="ScriptHandlerFactoryAppServices"/>
+      <remove name="ScriptResource"/>
+      <remove name="ChartImageHandler"/>
+      <add name="ChartImageHandler" preCondition="integratedMode" verb="GET,HEAD,POST" path="ChartImg.axd" type="System.Web.UI.DataVisualization.Charting.ChartHttpHandler, System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"/>
+      <add name="ScriptHandlerFactory" verb="*" path="*.asmx" preCondition="integratedMode" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+      <add name="ScriptHandlerFactoryAppServices" verb="*" path="*_AppService.axd" preCondition="integratedMode" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+      <add name="ScriptResource" verb="GET,HEAD" path="ScriptResource.axd" preCondition="integratedMode" type="System.Web.Handlers.ScriptResourceHandler, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+    </handlers>
+    <httpProtocol>
+      <customHeaders>
+        <clear/>
+        <add name="Access-Control-Allow-Origin" value="*"/>
+        <add name="X-UA-Compatible" value="IE=8, 9, 10, 11"/>
+      </customHeaders>
+    </httpProtocol>
+    <httpErrors>
+      <error statusCode="500" subStatusCode="100" path="/500-error.asp" responseMode="ExecuteURL"/>
+    </httpErrors>
+      <validation validateIntegratedModeConfiguration="false"/>
+    <modules>
+      <remove name="ScriptModule"/>
+      <add name="ScriptModule" preCondition="managedHandler" type="System.Web.Handlers.ScriptModule, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+    </modules>
+  </system.webServer>
+  <system.serviceModel>
+    <bindings>
+      <wsHttpBinding>
+        <binding name="svr" openTimeout="00:10:00" closeTimeout="00:10:00" sendTimeout="00:10:00" receiveTimeout="00:10:00" maxReceivedMessageSize="20240000"/>
+      </wsHttpBinding>
+    </bindings>
+  </system.serviceModel>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <!--<assemblyIdentity name="System.Net.Http.Primitives" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.2.29.0" newVersion="4.2.29.0" />-->
+      </dependentAssembly>
+    </assemblyBinding>
+    <assemblyBinding appliesTo="v2.0.50727" xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Extensions" publicKeyToken="31bf3856ad364e35"/>
+        <bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="3.5.0.0"/>
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Extensions.Design" publicKeyToken="31bf3856ad364e35"/>
+        <bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="3.5.0.0"/>
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+  <system.codedom>
+      <compilers>
+        <compiler language="c#;cs;csharp" extension=".cs" type="Microsoft.CSharp.CSharpCodeProvider, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" warningLevel="4">
+          <providerOption name="CompilerVersion" value="v3.5"/>
+          <providerOption name="WarnAsError" value="false"/>
+      </compiler>
+        <compiler language="vb;vbs;visualbasic;vbscript" extension=".vb" type="Microsoft.VisualBasic.VBCodeProvider, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" warningLevel="4">
+          <providerOption name="CompilerVersion" value="v3.5"/>
+          <providerOption name="OptionInfer" value="true"/>
+          <providerOption name="WarnAsError" value="false"/>
+      </compiler>
+    </compilers>
+  </system.codedom>
+</configuration>

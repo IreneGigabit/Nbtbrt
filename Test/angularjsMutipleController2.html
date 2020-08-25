@@ -1,0 +1,127 @@
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="crossorigin="anonymous"></script>
+<script language="javascript">
+	var app = angular.module("app", []);
+	
+	app.controller('RegController', function ($scope, $http) {
+	    $scope.reg = { seq: "123" };
+	    $scope.casedmt = {};
+	    $scope.apcust = {};
+	    $scope.attach = {};
+        
+        /*方法1
+	    $scope.aa = function () {
+	        alert("11");
+	        alert($scope.casedmt.get());
+	    };*/
+	    //init();
+
+	    $scope.onloadFun = function () {
+	        alert("onloadFun");
+	        $scope.$broadcast('getCase');
+	        //alert($scope.casedmt.get());
+	    }
+
+	    //$scope.aa = function () {
+	    //    $scope.$broadcast('getCase');
+	    //    alert($scope.casedmt.get());
+	    //}
+
+        //送出
+	    $scope.saveRoom = function () {
+	        $scope.form = {
+	            reg: $scope.reg,
+	            casedmt: $scope.casedmt,
+	            apcust: $scope.apcust,
+	            attach: $scope.attach
+	        };
+	        //console.log(angular.toJson($scope.form));
+	        $http.post('postJson.aspx', $scope.form)
+	        $http.post('postJson.aspx'
+                , $.param($scope.form)
+                , { headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;' } }
+            )
+			.then(function successCallback(response) {
+			    $scope.Message = "OK!";
+			});
+	    };
+	});
+	
+	app.controller('CaseController', function($scope){
+	    //$scope.$parent.casedmt = this;
+
+	    /*方法1
+	    $scope.$parent.casedmt.get = function () {
+	        alert("22");
+	        return "LOL";
+	    };*/
+
+	    $scope.$on('getCase', function (e) {
+	        alert("getCase");
+	        //$scope.$parent.casedmt.get = $scope.get;
+	    });
+
+	    $scope.get = function () {
+	        alert("22");
+	        return "LOL";
+	    }
+	});
+	
+	app.controller('CustController', function($scope){
+		//$scope.$parent.apcust=this;
+	});
+	
+	app.controller('AttachController', function($scope){
+		//$scope.$parent.attach=this;
+	});
+</script>
+<style>
+.current{
+	border-color:blue;
+}
+.main{
+	border-color:red;
+}
+</style>
+<div ng-app="app">
+    <div ng-controller="RegController" ng-init="onloadFun()">
+        <input type="button" ng-click="onloadFun()" />
+        <form novalidate name="f2" ng-submit="saveRoom()">
+            <table width=100% border=1>
+                <tr>
+                    <td>main</td>
+                    <td><input ng-model="reg.seq" class="reg">{{reg.seq}}</td>
+                </tr>
+                <tr ng-controller="CaseController">
+                    <td>casedmt</td>
+                    <td><input ng-model="reg.seq" class="reg">{{reg.seq}}</td>
+                    <td><input ng-model="casedmt.seq" class="current">{{casedmt.seq}}</td>
+                    <td><input ng-model="apcust.seq">{{apcust.seq}}</td>
+                    <td><input ng-model="attach.seq">{{attach.seq}}</td>
+                </tr>
+                <tr ng-controller="CustController">
+                    <td>apcust</td>
+                    <td><input ng-model="reg.seq" class="reg">{{reg.seq}}</td>
+                    <td><input ng-model="casedmt.seq">{{casedmt.seq}}</td>
+                    <td><input ng-model="apcust.seq" class="current">{{apcust.seq}}</td>
+                    <td><input ng-model="attach.seq">{{attach.seq}}</td>
+                </tr>
+                <tr ng-controller="AttachController">
+                    <td>attach</td>
+                    <td><input ng-model="reg.seq" class="reg">{{reg.seq}}</td>
+                    <td><input ng-model="casedmt.seq">{{casedmt.seq}}</td>
+                    <td><input ng-model="apcust.seq">{{apcust.seq}}</td>
+                    <td><input ng-model="attach.seq" class="current">{{attach.seq}}</td>
+                    <td><input ng-model="attach.sourcename" class="current">{{attach.sourcename}}</td>
+                </tr>
+            </table>
+            reg.seq={{reg.seq}}<br>
+            casedmt.seq={{casedmt.seq}}<br>
+            apcust.seq={{apcust.seq}}<br>
+            attach.seq={{attach.seq}}<br>
+            <input type="submit" value="Save Room" required /><br>
+            {{Message}}
+        </form>
+    </div>
+</div>
+

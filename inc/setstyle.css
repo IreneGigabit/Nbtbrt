@@ -1,0 +1,960 @@
+body
+{
+	background-image: url('../images/bg.jpg');
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+}
+form
+{
+	margin:0;
+}
+.tabon
+{
+    FONT-SIZE: 10pt;
+    COLOR: #ffffff;
+    TEXT-DECORATION: none;   
+    
+}
+.tab
+{
+    FONT-SIZE: 10pt;
+    COLOR: #000066;
+    TEXT-DECORATION: none
+}
+.bg
+{
+	background-color: #ddd;
+}
+.gSEdit
+{
+    BORDER-TOP-STYLE: none;
+    BORDER-RIGHT-STYLE: none;
+    BORDER-LEFT-STYLE: none;
+    BACKGROUND-COLOR: #eaf9f5;
+    BORDER-BOTTOM-STYLE: none
+}
+A:hover
+{
+    FONT-SIZE: 10pt;
+    COLOR: red;
+    TEXT-DECORATION: none;
+}
+A
+{
+    font-size: 10pt;
+    color: #000088;
+    text-decoration: none
+}
+a img { border: none; }
+hr
+{
+	height: 1px;
+	color: #000088;
+	background-color: #000088;
+}
+.tdbg1
+{
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+	color: white;
+	background-color: #aa0000;
+}
+.tdbg0
+{
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+	color: white;
+	background-color: #336699;
+}
+.tdbgA
+{
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+	color: white;
+	background-color: #aa0000;
+}
+.tdbgI
+{
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+	color: white;
+	background-color: #000088;
+}
+.tdbgB
+{
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+	color: white;
+	background-color: #336699;
+}
+.tdbg
+{
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+	background-color: #ffffcc;
+}
+.text9-white
+{
+    FONT-SIZE: 10pt;
+    COLOR: #ffffff;
+    TEXT-DECORATION: none
+}
+.text9
+{
+    font-size: 10pt;
+    color: #000000;
+    text-decoration: none
+}
+.bluetable
+{
+	border-right: mediumblue;
+	border-top: mediumblue;
+	font-size: 10pt;
+	border-left: mediumblue;
+	color: #000000;
+	border-bottom: mediumblue;
+	background-color: #06d;
+}
+.lightbluetable
+{
+    font-size: 10pt;
+    color: #000000;
+    background-color: #8bf;
+    white-space:nowrap
+}
+.lightbluetableA
+{
+    FONT-SIZE: 12pt;
+    COLOR: #000000;
+    BACKGROUND-COLOR: #88ddff
+}
+.lightbluetables
+{
+    FONT-SIZE: 10pt;
+    COLOR: #000000;
+    BACKGROUND-COLOR: #88ddff
+}
+.lightbluetables2
+{
+    FONT-SIZE: 10pt;
+    COLOR: #000000;
+    BACKGROUND-COLOR: #ccffff
+}
+.lightbluetable1
+{
+    FONT-SIZE: 10pt;
+    COLOR: black;
+    BORDER-TOP-STYLE: none;
+    BORDER-RIGHT-STYLE: none;
+    BORDER-LEFT-STYLE: none;
+    BACKGROUND-COLOR: #336699;
+    BORDER-BOTTOM-STYLE: none
+}
+.lightgreentable
+{
+    FONT-SIZE: 10pt;
+    COLOR: #000000;
+    BACKGROUND-COLOR: #88ffaa
+}
+.query
+{
+    FONT-SIZE: 10pt;
+    COLOR: #000000;
+    BACKGROUND-COLOR: #eeff00
+}
+.whitetablebg
+{
+    font-size: 10pt;
+    background-color: #ffffff;
+}
+.whitetablebgA
+{
+    font-size: 12pt;
+    background-color: #ffffff
+}
+.whitetablebg1
+{
+    font-size: 10pt;
+    background-color: #dddddd
+}
+.whitetablebg2
+{
+    font-size: 10pt;
+    color: black;
+    background-color: #bbffff;
+}
+.yellowtablebg1
+{
+    font-size: 10pt;
+    background-color: #fffacd
+}
+.yellowtablebg
+{
+    font-size: 10pt;
+    background-color: #ffff00
+}
+.redtablebg
+{
+	font-size: 10pt;
+	background-color: #ff0000;
+	color: white;
+}
+.SEdit6
+{
+    BORDER-BOTTOM-STYLE: none;
+    BORDER-RIGHT-STYLE: none;
+    BACKGROUND-COLOR: white;
+    BORDER-TOP-STYLE: none;
+    BORDER-LEFT-STYLE: none
+}
+.SEdit
+{
+	border-style: none;
+	border-width: 0px;
+}
+.FormName
+{
+    font-size: 10pt;
+    color: #000000;
+}
+.Formtext
+{
+    font-size: 10pt;
+    color: #000000;
+}
+.FormLink
+{
+    font-weight: normal;
+    font-size: 10pt;
+    color: #0000cc;
+}
+.MenuName
+{
+    font-weight: bold;
+    font-size: 10pt;
+    color: #ffcc00;
+}
+.Formbody
+{
+    font-size: 10pt;
+    color: #000000;
+}
+.FormRtext
+{
+    font-size: 10pt;
+    color: #000080;
+}
+.English
+{
+    font-size: 10pt;
+    color: #808080;
+}
+.xSunDay
+{
+    font-size: 10pt;
+    color: #000080;
+    background-color: #ffddbb
+}
+.xSatDay
+{
+    font-size: 10pt;
+    color: #000080;
+    background-color: #ffe8e8
+}
+.HeadText
+{
+    FONT-SIZE: 10pt;
+    COLOR: #000080;
+}
+.tab-title
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-IMAGE: url(../images/tab.gif);
+    COLOR: #ffff99;
+}
+.tab-titleon
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-IMAGE: url(../images/tabon.gif);
+    CURSOR: pointer;
+    COLOR: #222200;
+}
+.CliMod
+{
+    BACKGROUND-COLOR: pink
+}
+.CliOrg
+{
+    BACKGROUND-COLOR: white
+}
+.conts
+{
+    DISPLAY: none
+}
+td.tab
+{
+    cursor: pointer;
+    PADDING-TOP: 3px;
+    PADDING-BOTTOM: 0pt;
+    padding-right:10px;
+    padding-left:10px;
+    border-right:3px solid #777;
+    font-weight: bolder;
+    font-size: 10pt;
+    text-align: center;
+}
+td.notab
+{
+    BORDER-LEFT: #faebb6 thin solid;
+    COLOR: navy;
+    /*BACKGROUND-COLOR: gold;*/
+    BACKGROUND-COLOR:#ECE2D9;
+}
+td.seltab
+{
+    BORDER-LEFT: white thin solid;
+    COLOR: #ddd;
+    /*BACKGROUND-COLOR: lightsteelblue;*/
+    BACKGROUND-COLOR:#698DAF;
+}
+td.btab
+{
+    border-right: gray thin solid;
+    border-top: #ffcc00 thin solid;
+    font-weight: normal;
+    font-size: 10pt;
+    border-left: #f2faed thin solid;
+    cursor: default;
+    color: #185590;
+    border-bottom: gray thin solid;
+    background-color: #ffcc00;
+}
+td.btab2
+{
+    border-right: gray thin solid;
+    border-top: #ece2d9 thin solid;
+    font-weight: normal;
+    font-size: 10pt;
+    border-left: #f2faed thin solid;
+    cursor: default;
+    color: #185590;
+    border-bottom: gray thin solid;
+    background-color: #ece2d9;
+}
+div.tabCont
+{
+    font-size: 10pt;
+    color: #000;
+    text-decoration: none;
+    overflow: auto;
+    
+}
+.Exm0
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: #ffe0e0
+}
+.Exm1
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: #e0e0ff
+}
+.Exm2
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: #ffffff
+}
+.bttab
+{
+    FONT-SIZE: 10pt;
+    COLOR: #185590;
+    BACKGROUND-COLOR: transparent
+}
+INPUT
+{
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+}
+select
+{
+	/*font-size: 10pt;*/
+	/*font-family: Consolas, 細明體, Arial;*/
+}
+td
+{
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+}
+.BottomFrame
+{
+    MARGIN-TOP: 0px;
+    BACKGROUND-COLOR: lightyellow
+}
+.rowtablebg
+{
+    BACKGROUND-COLOR: beige
+}
+.sfont9,.sfont9>td
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: white
+}
+.FormText1
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: white
+}
+.c1button
+{
+	color:white;
+    cursor: pointer;
+	/*font: small 84% Arial;*/
+    padding: 3px 4px 1px 6px;
+	background-color:#9966cc;
+	border: solid 1px;
+	border-color: #8df #009 #009 #8df;
+}
+.delbutton
+{
+	color:#fff;
+    cursor: pointer;
+	/*font: small 84% Arial;*/
+    padding: 3px 4px 1px 6px;
+	background-color:#9966cc;
+	border: solid 1px;
+	border-color: #8df #009 #009 #8df;
+}
+input.cbutton {
+	color:#fff;
+    cursor: pointer;
+	/*font: small 84% Arial;*/
+    padding: 3px 4px 1px 6px;
+	background-color:#005599;
+	border: solid 1px;
+	border-color: #8df #009 #009 #8df;
+}
+
+input.c3button {
+	color:#fff;
+    cursor: pointer;
+	/*font: small 84% Arial;*/
+    padding: 3px 4px 1px 6px;
+	background-color:#08d;
+	border: solid 1px;
+	border-color: #8df #009 #009 #8df;
+	filter:progid:DXImageTransform.Microsoft.Gradient (GradientType=0,StartColorStr='#ff0088dd',EndColorStr='#ff002266');
+}
+
+input.ybutton {
+	color:#fff;
+    cursor: pointer;
+	/*font: small 84% Arial;*/
+    padding: 3px 4px 1px 6px;
+	background-color:#d80;
+	border: solid 1px;
+	border-color: #8df #009 #009 #8df;
+	filter:progid:DXImageTransform.Microsoft.Gradient (GradientType=0,StartColorStr='#ffdd8800',EndColorStr='#ff444400');
+}
+
+input.rbutton {
+	color:#fff;
+    cursor: pointer;
+	/*font: small 84% Arial;*/
+    padding: 3px 4px 1px 6px;
+	background-color:#d20;
+	border: solid 1px;
+	border-color: #8df #009 #009 #8df;
+	filter:progid:DXImageTransform.Microsoft.Gradient (GradientType=0,StartColorStr='#ffdd2200',EndColorStr='#ff662200');
+}
+input.greenbutton {
+	color:#eaf9f5;
+    cursor: pointer;
+	/*font: small 84% Arial;*/
+    padding: 3px 4px 1px 6px;
+	background-color:#006666;
+	border: solid 1px;
+	border-color: #8df #009 #009 #8df;
+}
+input.redbutton {
+	color:white;
+    cursor: pointer;
+	/*font: small 84% Arial;*/
+    padding: 3px 4px 1px 6px;
+	background-color:#d00;
+	border: solid 1px;
+	border-color: #8df #009 #009 #8df;
+}
+input.bluebutton {
+    color:yellow;
+    cursor: pointer;
+	/*font: small 84% Arial;*/
+    padding: 3px 4px 1px 6px;
+	background-color:#000099;
+	border: solid 1px;
+	border-color: #8df #009 #009 #8df;
+}
+.lightbluetable3,.lightbluetable3>td
+{
+    FONT-SIZE: 10pt;
+    COLOR: black;
+    BACKGROUND-COLOR: lightcyan
+}
+.Yellowtable,.Yellowtable>td
+{
+    FONT-SIZE: 10pt;
+    COLOR: black;
+    BACKGROUND-COLOR: #ffffcc
+}
+.whitetablebg3,.whitetablebg3>td
+{
+    FONT-SIZE: 10pt;
+    COLOR: black;
+    BACKGROUND-COLOR: lavender;
+}
+.sedit1
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    BORDER-LEFT: medium none;
+    BORDER-BOTTOM: medium none;
+    BACKGROUND-COLOR: #88ddff
+}
+td.notab1
+{
+    cursor: pointer;
+	background: url(../images/notab.gif) no-repeat top left;
+    font-size: 10pt;
+    color: #005;
+    padding-bottom: 0pt;
+    padding-top: 3px;
+    text-align: center;
+    width:132px;
+}
+td.seltab1
+{
+    cursor: pointer;
+	background: url(../images/seltab.gif) no-repeat top left;
+    font-size: 10pt;
+    color: white;
+    padding-bottom: 0pt;
+    padding-top: 3px;
+    text-align: center;
+    width:132px;
+}
+
+.data1
+{
+    FONT-SIZE: 10pt;
+    COLOR: darkslateblue;
+    TEXT-INDENT: 8pt;
+    BACKGROUND-COLOR: aliceblue;
+    TEXT-ALIGN: left
+}
+.data2
+{
+    FONT-SIZE: 10pt;
+    COLOR: darkslateblue;
+    BACKGROUND-COLOR: #ffff99
+}
+.data3
+{
+    FONT-SIZE: 10pt;
+    COLOR: darkblue;
+    BACKGROUND-COLOR: #ccff66
+}
+.data11
+{
+    FONT-SIZE: 7pt;
+    COLOR: #6666cc;
+    BACKGROUND-COLOR: aliceblue;
+    TEXT-ALIGN: right
+}
+.data22
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: #ffff99
+}
+.data33
+{
+}
+.data20
+{
+    BACKGROUND-COLOR: lightgrey
+}
+.data10
+{
+    FONT-SIZE: 10pt;
+    COLOR: dodgerblue;
+    TEXT-INDENT: 8pt;
+    BACKGROUND-COLOR: aliceblue;
+    TEXT-ALIGN: left
+}
+.data14
+{
+    BORDER-RIGHT: lightgrey;
+    BORDER-TOP: lightgrey;
+    FONT-SIZE: 11pt;
+    BORDER-LEFT: lightgrey;
+    COLOR: indigo;
+    TEXT-INDENT: 20pt;
+    BORDER-BOTTOM: lightgrey;
+    BACKGROUND-COLOR: lightcyan;
+    TEXT-ALIGN: left
+}
+.data34
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    FONT-SIZE: 11pt;
+    BORDER-LEFT: medium none;
+    COLOR: darkblue;
+    BORDER-BOTTOM: medium none;
+    BACKGROUND-COLOR: #ccff66
+}
+.data24
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    FONT-SIZE: 11pt;
+    BORDER-LEFT: medium none;
+    COLOR: darkslateblue;
+    BORDER-BOTTOM: medium none;
+    BACKGROUND-COLOR: #ffff99
+}
+.bluetable1
+{
+    BORDER-RIGHT: lightsteelblue double;
+    BORDER-TOP: lightsteelblue double;
+    FONT-SIZE: 10pt;
+    PADDING-BOTTOM: 5px;
+    BORDER-LEFT: lightsteelblue double;
+    PADDING-TOP: 5px;
+    BORDER-BOTTOM: lightsteelblue double;
+}
+.data15
+{
+    FONT-SIZE: 11pt;
+    COLOR: orangered;
+    TEXT-INDENT: 20pt;
+    BACKGROUND-COLOR: lightcyan;
+    TEXT-ALIGN: left
+}
+.lightbluetable2
+{
+    FONT-SIZE: 10pt;
+    COLOR: white;
+    BACKGROUND-COLOR: #006699
+}
+.greentablebg
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: #dbf9ff
+}
+.sedit2
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    BORDER-LEFT: medium none;
+    BORDER-BOTTOM: medium none;
+    BACKGROUND-COLOR: #dbf9ff
+}
+.bluetext
+{
+    FONT-SIZE: 10pt;
+    COLOR: #000000;
+    BACKGROUND-COLOR: #88ddff
+}
+.bluedata
+{
+    FONT-SIZE: 10pt;
+    COLOR: darkslateblue;
+    BACKGROUND-COLOR: aliceblue
+}
+.bluetext11
+{
+    FONT-SIZE: 10pt;
+    COLOR: navy;
+    BACKGROUND-COLOR: darkslateblue
+}
+.bluetext2
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: #88ddff
+}
+.bluedata2
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: white
+}
+.bluedata21
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: lightcyan
+}
+.bluetext3
+{
+    FONT-SIZE: 10pt;
+    COLOR: navy;
+    BACKGROUND-COLOR: lightgoldenrodyellow;
+    TEXT-ALIGN: center
+}
+.bluedata3
+{
+    FONT-WEIGHT: bolder;
+    FONT-SIZE: 10pt;
+    COLOR: mediumblue;
+    BACKGROUND-COLOR: lemonchiffon
+}
+.yellowtext
+{
+    FONT-SIZE: 10pt;
+    COLOR: navy;
+    BACKGROUND-COLOR: #ffffcc
+}
+.darkbluetext
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: darkslateblue
+}
+.whitetext
+{
+    FONT-SIZE: 10pt;
+    COLOR: navy
+}
+.bluetext1
+{
+    FONT-SIZE: 10pt;
+    COLOR: navy;
+    BACKGROUND-COLOR: #ffffcc
+}
+.data4
+{
+    FONT-SIZE: 10pt;
+    COLOR: darkblue;
+    BACKGROUND-COLOR: lavender
+}
+.remark
+{
+    FONT-SIZE: 10pt;
+    COLOR: slategray
+}
+.title1
+{
+    FONT-SIZE: 10pt;
+    COLOR: navy;
+    HEIGHT: 16pt;
+    BACKGROUND-COLOR: lightblue;
+    TEXT-ALIGN: center
+}
+.title2
+{
+    FONT-SIZE: 10pt;
+    COLOR: slateblue;
+    BACKGROUND-COLOR: lavender
+}
+.data31
+{
+    FONT-SIZE: 10pt;
+    COLOR: darkblue;
+    BACKGROUND-COLOR: #ccff99
+}
+.sedit3
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    BORDER-LEFT: medium none;
+    COLOR: red;
+    BORDER-BOTTOM: medium none
+}
+.bluetext4
+{
+    FONT-SIZE: 10pt;
+    BACKGROUND-COLOR: lightgoldenrodyellow;
+    TEXT-ALIGN: left
+}
+.graytablebg
+{
+    color: black;
+    background-color: #dee;
+}
+.lightbluetable4
+{
+    COLOR: black;
+    BACKGROUND-COLOR: #cccccc
+}
+LEGEND
+{
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+	color: white;
+	background-color: #000066;
+}
+TEXTAREA
+{
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
+    white-space: pre-wrap;
+}
+.numeric
+{
+	TEXT-ALIGN: right
+}
+.numericRead
+{
+	TEXT-ALIGN: right;
+    BORDER-BOTTOM-STYLE: none;
+    BORDER-RIGHT-STYLE: none;
+    BACKGROUND-COLOR: white;
+    BORDER-TOP-STYLE: none;
+    BORDER-LEFT-STYLE: none
+}
+.numeric1
+{
+	TEXT-ALIGN: center
+}
+fieldset
+{
+	margin: 2px 5px 0px 5px;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+fieldset.fld2
+{
+	margin: 2px 5px 0px 5px;
+	padding:10px 5px 10px 5px;
+	border-color:#fff;
+}
+legend
+{
+	padding:2px 5px 2px 5px;
+	margin:2px 5px 2px 5px;
+}
+td.hrline
+{
+	height:2px;
+	padding:0px 0px 0px 0px;
+}
+hr.style-one {
+    border: 0;
+    height: 1px;
+    background: #000080;
+	margin:5px 0px 5px 0px;
+}
+input.dateField {}
+input.dateField1 {}
+span.gl {}
+span.xl 
+{
+	color:red;
+	font-weight: bold;
+}
+.apcat-bg { background-color: #48a }
+.apcat-fw { background-color: #7af }
+.ap-bg { background-color: #aa8 }
+.aphead { background-color: #ffa }
+.apname { background-color: #9d0 }
+.aprights { background-color: #fff }
+tbody.apct {}
+img.imgAPcat {}
+u.setOdr { cursor:pointer; color: blue }
+u.AllSelect { cursor:pointer; color: blue }
+u.setOdr:hover { color: red; font-weight: bold }
+u.pgGo { cursor:pointer; color: blue }
+u.pgGo:hover { color: red; font-weight: bold }
+u.GoEdit { cursor:pointer; color: blue; font-weight: bold; white-space:nowrap }
+u.GoEdit:hover { color: red; font-weight: bold; white-space:nowrap }
+u.GoEdit_list { cursor:pointer; color: blue; font-weight: bold; white-space:nowrap }
+u.GoEdit_list:hover { color: red; font-weight: bold; white-space:nowrap }
+u.GoView { cursor:pointer; color: blue; font-weight: bold; white-space:nowrap }
+u.GoView:hover { color: red; font-weight: bold; white-space:nowrap }
+u.GoEditG { cursor:pointer; color: blue; font-weight: bold }
+u.GoEditG:hover { color: red; font-weight: bold }
+u.GoEditA { cursor:pointer; color: blue; font-weight: bold }
+u.GoEditA:hover { color: red; font-weight: bold }
+span.GoList { cursor:pointer; color: blue; font-weight: bold }
+span.GoList:hover { color: red; font-weight: bold }
+span.Click { cursor:pointer; color: blue }
+span.Click:hover { color: red;}
+span.Click1 { cursor:pointer; color: blue }
+span.Click1:hover { color: red;}
+span.Click2 { cursor:pointer; color: blue }
+span.Click2:hover { color: red;}
+span.Click3 { cursor:pointer; color: blue }
+span.Click3:hover { color: red;}
+span.Click4 { cursor:pointer; color: blue }
+span.Click4:hover { color: red;}
+span.Click5 { cursor:pointer; color: blue }
+span.Click5:hover { color: red;}
+tr.defc {}
+input.arwl {}
+input.arwr {}
+input.arwu {}
+input.arwd {}
+input.invchk {}
+input.chk {}
+input.btn1 {}
+input.btn2 {}
+input.btn3 {}
+input.btn4 {}
+input.btn5 {}
+.Grp0 { cursor:pointer; color: blue; font-weight: bold }
+.Grp0:hover { color: red; font-weight: bold }
+.Grp1 { cursor:pointer; color: blue; font-weight: bold }
+.Grp1:hover { color: red; font-weight: bold }
+.Grp2 { cursor:pointer; color: blue; font-weight: bold }
+.Grp2:hover { color: red; font-weight: bold }
+.Grp3 { cursor:pointer; color: blue; font-weight: bold }
+.Grp3:hover { color: red; font-weight: bold }
+.Grp4 { cursor:pointer; color: blue; font-weight: bold }
+.Grp4:hover { color: red; font-weight: bold }
+.Grp5 { cursor:pointer; color: blue; font-weight: bold }
+.Grp5:hover { color: red; font-weight: bold }
+.Grp6 { cursor:pointer; color: blue; font-weight: bold }
+.Grp6:hover { color: red; font-weight: bold }
+.Grp7 { cursor:pointer; color: blue; font-weight: bold }
+.Grp7:hover { color: red; font-weight: bold }
+.Grp8 { cursor:pointer; color: blue; font-weight: bold }
+.Grp8:hover { color: red; font-weight: bold }
+.Grp9 { cursor:pointer; color: blue; font-weight: bold }
+.Grp9:hover { color: red; font-weight: bold }
+.vGrp0 {}
+.vGrp1 {}
+.vGrp2 {}
+.vGrp3 {}
+.vGrp4 {}
+.vGrp5 {}
+.vGrp6 {}
+.vGrp7 {}
+.vGrp8 {}
+.vGrp9 {}
+
+input[type=button]:disabled,input[type=button][disabled] {
+    /*color: #707070 !important;
+    background: #e7e7e7 !important;
+    border:1px solid #bababa;*/
+    color: #a0a0a0;
+    text-shadow: 1px 1px #ffffff;
+}
+
+.errlog {
+	/*color:#ff0000;*/
+	color:MEDIUMVIOLETRED;
+	font-size: 10pt;
+}
+
+.enter
+{
+    background-color: #ffff99;
+}
+
+.chkError {
+	border:1px solid #707070;
+	background-color: #FC7E7E;
+}
+
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-group { padding: 2px 5px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }

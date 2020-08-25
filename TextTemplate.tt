@@ -1,0 +1,97 @@
+﻿<#@ template language="C#" debug="True" hostspecific="True" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Data.DataSetExtensions" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.xml" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Linq" #>
+
+using System;
+
+
+namespace Saint.Btbrt//*******請修改對應的namespace
+{
+<#
+	//修改connection string
+	string connectionString = "Server=web08;Database=sindbs;User ID=web_usr;Password=web1823";//*******改這裡
+	SqlConnection conn = new SqlConnection(connectionString); 
+	conn.Open(); 
+			
+	//如果需要database中全部table，則使用conn.GetSchema("Tables")即可
+	string[] restrictions = new string[4];
+	restrictions[1] = "dbo";
+	//修改table名稱
+	restrictions[2] = "dmp";//*******改這裡
+	DataTable schema = conn.GetSchema("Tables", restrictions);
+			
+	string selectQuery = @"
+	SELECT top 1 * from  @tableName WITH(nolock);
+
+	SELECT  	c.name AS [column],    		
+    			cd.value AS [column_desc],    		
+    			c.isnullable AS [isNullable]   		    		
+	FROM    	sysobjects t WITH(nolock)
+	INNER JOIN  syscolumns c WITH(nolock)
+		ON		c.id = t.id
+	LEFT OUTER JOIN sys.extended_properties cd WITH(nolock)
+		ON		cd.major_id = c.id
+		AND		cd.minor_id = c.colid
+		AND		cd.name = 'MS_Description'
+	WHERE t.type = 'u'
+	and t.name='@tableName'
+	ORDER BY    t.name, c.colorder;
+
+	SELECT	top 1 
+			t.name AS [table_name],
+			td.value AS [table_desc]
+	FROM    	sysobjects t WITH(nolock)
+	INNER JOIN sys.extended_properties td WITH(nolock)
+		ON		td.major_id = t.id
+		AND 	td.minor_id = 0
+		AND		td.name = 'MS_Description'
+	WHERE t.type = 'u'
+	and t.name='@tableName';"; 
+	SqlCommand command = new SqlCommand(selectQuery,conn); 
+	SqlDataAdapter ad = new SqlDataAdapter(command); 
+	System.Data.DataSet ds = new DataSet(); 
+			
+	foreach(System.Data.DataRow row in schema.Rows) 
+	{
+#>
+	//mapping table name: <#= row["TABLE_NAME"].ToString().Trim('s') #>
+	public class <#= row["TABLE_NAME"].ToString().Trim('s') #>
+	{
+<#
+		command.CommandText = selectQuery.Replace("@tableName",row["TABLE_NAME"].ToString()); 
+		ad.FillSchema(ds, SchemaType.Mapped, row["TABLE_NAME"].ToString());
+
+		foreach (DataColumn dc in ds.Tables[0].Columns)
+		{
+			var columnDefinition = ds.Tables[1].AsEnumerable().Where(x => x["column"].ToString() == dc.ColumnName).FirstOrDefault();
+			var columnDescription = (columnDefinition == null ? "" : columnDefinition["column_desc"]).ToString();
+			var isAllowNull = (columnDefinition == null ? false : columnDefinition["isNullable"].ToString() == "1");
+#>
+		/// <summary>
+		/// <#= columnDescription #>
+		/// </summary>
+		<# if(isAllowNull && dc.DataType.Name != "String"){ #>
+public Nullable<<#= dc.DataType.Name #>> <#= dc.ColumnName #>  { get; set; }
+
+<#}
+				else
+				{#>
+public <#= dc.DataType.Name #> <#= dc.ColumnName #>  { get; set; }
+
+<#}
+				#>
+<#
+		}
+#>
+	}
+<#
+	}
+#>
+}
