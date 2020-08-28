@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="apcust_form" %>
+<%@ Control Language="C#" ClassName="apcust_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -10,8 +10,8 @@
     protected string apclass = "", ap_country = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
-        apclass = Funcs.getcust_code_mul("apclass","","sortfld").Option("{cust_code}", "{code_name}");
-        ap_country=Funcs.getcountry().Option("{coun_code}", "{coun_c}");
+        apclass = Funcs.getCustCode("apclass","","sortfld").Option("{cust_code}", "{code_name}");
+        ap_country=Funcs.getCountry().Option("{coun_code}", "{coun_c}");
         
         this.DataBind();
     }
