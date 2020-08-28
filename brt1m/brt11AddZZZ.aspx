@@ -1,9 +1,11 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Register Src="~/commonForm/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
 <%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
 <%@ Register Src="~/commonForm/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
 <%@ Register Src="~/commonForm/dmt/FA1_form_remark1.ascx" TagPrefix="uc1" TagName="FA1_form_remark1" %>
+<%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
+
 
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
@@ -25,7 +27,7 @@
         Response.Expires = -1;
 
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
-
+        
         Token myToken = new Token(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
@@ -110,12 +112,12 @@
 				    <%#tfy_Arcase%>
 				</SELECT>
             </div>
-            <div class="tabCont" id="#dmt">
-            </div>
             <div class="tabCont" id="#tran">
                 <uc1:FA1_form_remark1 runat="server" ID="FA1_form_remark1" />
             </div>
             <div class="tabCont" id="#upload">
+                <uc1:dmt_upload_Form runat="server" id="dmt_upload_Form" />
+                <!--include file="../commonForm/dmt_upload_Form.ascx"--><!--文件上傳-->
             </div>
         </td>
     </tr>
