@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
@@ -90,11 +90,11 @@ public class Funcs {
     }
     #endregion
 
-    #region getcountry - 國籍
+    #region getCountry - 國籍
     /// <summary>  
     /// 抓取國籍
     /// </summary>  
-    public static DataTable getcountry() {
+    public static DataTable getCountry() {
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
             string SQL = "select coun_code,coun_c from country where markb<>'X' or markb is null order by coun_code";
             DataTable dt = new DataTable();
@@ -105,12 +105,12 @@ public class Funcs {
     }
     #endregion
 
-    #region getcust_code_mul - 抓取cust_code
+    #region getCustCode - 抓取cust_code
     /// <summary>  
-    /// 抓取抓取區所cust_code
+    /// 抓取cust_code
     /// </summary>  
-    public static DataTable getcust_code_mul(string code_type, string pwh2, string sortField) {
-        using (DBHelper connB = new DBHelper(Conn.btbrt, false)) {
+    public static DataTable getCustCode(string code_type, string pwh2, string sortField) {
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
             string SQL = "select cust_code,code_name from cust_code ";
             SQL += " where code_type='" + code_type + "' " + pwh2;
             if (sortField == "")
@@ -118,7 +118,7 @@ public class Funcs {
             else
                 SQL += " order by " + sortField;
             DataTable dt = new DataTable();
-            connB.DataTable(SQL, dt);
+            conn.DataTable(SQL, dt);
 
             return dt;
         }
