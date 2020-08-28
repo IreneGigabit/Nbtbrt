@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="cust_form" %>
+<%@ Control Language="C#" ClassName="cust_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -15,10 +15,10 @@
         cust_area = Request["cust_area"] ?? "";
         cust_seq = Request["cust_seq"] ?? "";
         
-        F_ap_country = Funcs.getcountry().Option("{coun_code}", "{coun_code}-{coun_c}");
-        F_con_code = Funcs.getcust_code_mul("H","","cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
-        F_dis_type = Funcs.getcust_code_mul("Discount","","cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
-        F_pay_type = Funcs.getcust_code_mul("Payment","","cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
+        F_ap_country = Funcs.getCountry().Option("{coun_code}", "{coun_code}-{coun_c}");
+        F_con_code = Funcs.getCustCode("H","","cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
+        F_dis_type = Funcs.getCustCode("Discount","","cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
+        F_pay_type = Funcs.getCustCode("Payment","","cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
         
         this.DataBind();
     }
