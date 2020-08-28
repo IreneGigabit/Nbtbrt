@@ -177,7 +177,7 @@ Number.prototype.format = function (n, x) {
 };
 
 String.prototype.ReplaceAll = function (s1, s2) {
-    return this.replace(new RegExp(s1, "gm"), s2);
+    return this.replace(new RegExp(s1, "gmi"), s2);
 }
 
 String.prototype.Right = function (n) {
