@@ -54,27 +54,27 @@
 </script>
 
 <%=Sys.GetAscxPath(this)%>
+<input type="text" id="<%#uploadfield%>_maxAttach_no" name="<%#uploadfield%>_maxAttach_no" value=""><!--目前table裡最大值-->
+<input type="text" id="<%#uploadfield%>_attach_cnt" name="<%#uploadfield%>_attach_cnt" value=""><!--目前table裡有效筆數-->
+<input type="text" id="<%#uploadfield%>_filenum" name="<%#uploadfield%>_filenum" value="0">
+<input type="text" id="<%#uploadfield%>_path" name="<%#uploadfield%>_path" value="<%=epath%>">
+<input type="text" id="uploadfield" name="uploadfield" value="<%#uploadfield%>">
+<input type="text" id="maxattach_no" name="maxattach_no" value="0">
+<input type="text" id="attach_seq" name="attach_seq" value="<%#seq%>">
+<input type="text" id="attach_seq1" name="attach_seq1" value="<%#seq1%>">
+<input type="text" id="attach_step_grade" name="attach_step_grade" value="<%#step_grade%>">
+<input type="text" id="attach_in_no" name="attach_in_no" value="<%#in_no%>">
+<input type="text" id="attach_case_no" name="attach_case_no" value="<%#case_no%>">
+<input type="text" id="uploadsource" name="uploadsource" value="<%=uploadsource%>"><!--為了入dmt_attach.source的欄位-->
 <TABLE id='tabfile<%#uploadfield%>' border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
     <thead>
 	    <TR>
 		    <TD align=center colspan=5 class=lightbluetable1>
                 <span id="uploadTitle" style="color:white">區&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;傳&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件</span>
-                <input type="hidden" id="<%#uploadfield%>_maxAttach_no" name="<%#uploadfield%>_maxAttach_no" value=""><!--目前table裡最大值-->
-                <input type="hidden" id="<%#uploadfield%>_attach_cnt" name="<%#uploadfield%>_attach_cnt" value=""><!--目前table裡有效筆數-->
-                <input type="hidden" id="<%#uploadfield%>_filenum" name="<%#uploadfield%>_filenum" value="0">
-                <input type="hidden" id="<%#uploadfield%>_path" name="<%#uploadfield%>_path" value="<%=epath%>">
-                <input type="hidden" id="uploadfield" name="uploadfield" value="<%#uploadfield%>">
-                <input type="hidden" id="maxattach_no" name="maxattach_no" value="0">
-                <input type="hidden" id="attach_seq" name="attach_seq" value="<%#seq%>">
-                <input type="hidden" id="attach_seq1" name="attach_seq1" value="<%#seq1%>">
-                <input type="hidden" id="attach_step_grade" name="attach_step_grade" value="<%#step_grade%>">
-                <input type="hidden" id="attach_in_no" name="attach_in_no" value="<%#in_no%>">
-                <input type="hidden" id="attach_case_no" name="attach_case_no" value="<%#case_no%>">
-                <input type="hidden" id="uploadsource" name="uploadsource" value="<%=uploadsource%>"><!--為了入dmt_attach.source的欄位-->
             </TD>
         </TR>
         <TR>
-			<TD id="tr_upload_btn" class=whitetablebg2 align=center colspan=5>
+			<TD id="tr_upload_btn" class=whitetablebg align=center colspan=5>
 				<input type=button value ="增加一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Add_button name=file_Add_button onclick="upload_form.appendFile()">
 				<input type=button value ="減少一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Del_button name=file_Del_button onclick="upload_form.deleteFile()">
 			</TD>
@@ -119,6 +119,10 @@
     upload_form.prgid = "<%#prgid%>";
     upload_form.submittask = "<%#submitTask%>";
     upload_form.init = function () {
+        if (upload_form.prgid != "brt81") {
+            $("#uploadTitle").html("交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;相&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;關&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件");
+        }
+
         $("#tabfile>tbody").empty();
 
         $.each(main.brdmt_attach, function (i, item) {
@@ -167,9 +171,9 @@
         var nRow = parseInt($("#" + fld + "_filenum").val(), 10) + 1;//畫面顯示NO
         $("#maxattach_no").val(parseInt($("#maxattach_no").val(), 10) + 1);//table+畫面顯示 NO
         //複製樣板
-        $("#tabfile>tfoot").each(function (i) {
+        $("#tabfile" + fld + ">tfoot").each(function (i) {
             var strLine1 = $(this).html().replace(/##/g, nRow);
-            $("#tabfile>tbody").append(strLine1);
+            $("#tabfile" + fld + ">tbody").append(strLine1);
         });
         $("#" + fld + "_filenum").val(nRow);
         $("#attach_no_" + nRow).val($("#maxattach_no").val());//dmt_attach.attach_no
