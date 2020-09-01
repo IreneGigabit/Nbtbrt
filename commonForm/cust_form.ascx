@@ -29,8 +29,8 @@
 <TR>
 	<TD class=lightbluetable align="right">客戶編號：</TD>
 	<TD class=whitetablebg>
-	    <input TYPE="text" id="F_cust_area" name="F_cust_area" size="1" readonly class="SEdit" value="<%=cust_area%>">-
-	    <input TYPE="text" id="F_cust_seq" name="F_cust_seq" size="6" value="<%=cust_seq%>" class="<%#Lock.TryGet("Qclass")%>">
+	    <input TYPE="text" id="F_cust_area" name="F_cust_area" size="1" readonly class="SEdit">-
+	    <input TYPE="text" id="F_cust_seq" name="F_cust_seq" size="6" class="<%#Lock.TryGet("Qclass")%>">
         <input type=button class="greenbutton" name="btncust_seq" id="btncust_seq" value ="確定">
 	</TD>
 	<TD class=lightbluetable  align="right">客戶國籍：</TD>
@@ -206,6 +206,9 @@
 <script language="javascript" type="text/javascript">
     var cust_form={};
     cust_form.init = function () {
+        $("#F_cust_area").val(main.cust_area);
+        $("#F_cust_seq").val(main.cust_seq);
+
         $("#btncust_seq").click();
     }
 
