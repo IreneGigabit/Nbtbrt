@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Data;
@@ -147,6 +147,53 @@ public class DBHelper : IDisposable
             //DataSet ds = new DataSet();
             adapter.Fill(ds);
         }
+    }
+    #endregion
+
+    #region 執行StoreProcedure，並傳回DataTable +void Procedure(string commandText, Dictionary<string, string> param, DataTable dt)
+    /// <summary>
+    /// 執行StoreProcedure，並傳回DataTable。
+    /// </summary>
+    public void Procedure(string commandText, Dictionary<string, string> param, DataTable dt) {
+        if (this._debug) {
+            HttpContext.Current.Response.Write(commandText + "<HR>\n");
+        }
+        this.exeSQL.Add(commandText);
+
+        using (SqlDataAdapter adapter = new SqlDataAdapter(this._cmd)) {
+            this._cmd.CommandType = CommandType.StoredProcedure;
+            this._cmd.CommandText = commandText;
+
+            if (this._isTran) {
+                adapter.SelectCommand.Transaction = this._tran;
+            }
+
+            foreach (KeyValuePair<string, string> pair in param) {
+                this._cmd.Parameters.AddWithValue("@" + pair.Key, pair.Value);
+            }
+            adapter.Fill(dt);
+        }
+    }
+    #endregion
+
+    #region 執行StoreProcedure，並傳回SqlDataReader +void Procedure(string commandText, Dictionary<string, string> param)
+    /// <summary>
+    /// 執行StoreProcedure，並傳回SqlDataReader。
+    /// </summary>
+    public SqlDataReader Procedure(string commandText, Dictionary<string, string> param) {
+        if (this._debug) {
+            HttpContext.Current.Response.Write(commandText + "<HR>\n");
+        }
+        this.exeSQL.Add(commandText);
+
+        this._cmd.CommandType = CommandType.StoredProcedure;
+        this._cmd.CommandText = commandText;
+        foreach (KeyValuePair<string, string> pair in param) {
+            this._cmd.Parameters.AddWithValue("@" + pair.Key, pair.Value);
+        }
+
+        SqlDataReader dr = this._cmd.ExecuteReader();
+        return dr;
     }
     #endregion
 }
