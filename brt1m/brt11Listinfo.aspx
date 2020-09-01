@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
@@ -238,7 +238,6 @@
         reg.Ar_Form.value = oThis.val();
         reg.prt_code.value = $('option:selected', oThis).attr('v1');
         reg.action = "Brt11Add" + reg.prt_code.value + ".aspx";
-        reg.action = "Brt11AddZZZ.aspx";
         reg.submit();
     }
 </script>
