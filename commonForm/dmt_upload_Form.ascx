@@ -70,15 +70,9 @@
     <thead>
 	    <TR>
 		    <TD align=center colspan=5 class=lightbluetable1>
-                <span id="uploadTitle" style="color:white">區&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;傳&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件</span>
+                <span id="uploadTitle" style="color:white">相&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;關&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;傳</span>
             </TD>
         </TR>
-        <TR>
-			<TD id="tr_upload_btn" class=whitetablebg align=center colspan=5>
-				<input type=button value ="增加一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Add_button name=file_Add_button onclick="upload_form.appendFile()">
-				<input type=button value ="減少一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Del_button name=file_Del_button onclick="upload_form.deleteFile()">
-			</TD>
-		</TR>
     </thead>
     <tfoot style="display:none">
 		<TR>
@@ -114,44 +108,92 @@
     <tbody></tbody>
 </table>
 
+<script type="text/html" id="upload_btn">
+    <TR>
+		<TD class=whitetablebg align=center colspan=5>
+			<input type=button value ="增加一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Add_button name=file_Add_button onclick="upload_form.appendFile()">
+			<input type=button value ="減少一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Del_button name=file_Del_button onclick="upload_form.deleteFile()">
+		</TD>
+	</TR>
+</script>
+
 <script language="javascript" type="text/javascript">
     var upload_form = {};
     upload_form.prgid = "<%#prgid%>";
     upload_form.submittask = "<%#submitTask%>";
+    upload_form.uploadtype = "<%#uploadtype%>";
     upload_form.init = function () {
-        if (upload_form.prgid != "brt81") {
+        var fld = $("#uploadfield").val();
+
+        if (upload_form.prgid == "brt81") {
             $("#uploadTitle").html("交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;相&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;關&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件");
+        } else {
+            if (upload_form.prgid != "brt62" || (upload_form.prgid == "brt62" && upload_form.submittask == "A")) {
+                $("#tabfile" + fld + ">thead").append($("#upload_btn").text());//增加按鈕
+            }
         }
 
-        $("#tabfile>tbody").empty();
+        $("#tabfile" + fld + ">tbody").empty();
 
-        $.each(main.brdmt_attach, function (i, item) {
-            //增加一筆
-            upload_form.appendFile();
-            //填資料
-            var nRow = $("#brdmt_filenum").val();
-            $("#brdmt_name_" + nRow).val(item.attach_name);
-            $("#old_brdmt_name_" + nRow).val(item.attach_name);
-            $("#brdmt_" + nRow).val(item.attach_path);
-            $("#doc_type_" + nRow).val(item.doc_type);
-            $("#brdmt_desc_" + nRow).val(item.attach_desc);
-            $("#brdmt_size_" + nRow).val(item.attach_size);
-            $("#attach_sqlno_" + nRow).val(item.attach_sqlno);
-            $("#source_name_" + nRow).val(item.source_name);
-            $("#attach_no_" + nRow).val(item.attach_no);
-            $("#attach_flag_" + nRow).val("U");//維護時判斷是否要更名，即A表示新上傳的文件
-            $("input[name='brdmt_branch_" + nRow + "'][value='" + item.attach_branch + "']").prop("checked", true);
-            $("#bropen_path_" + nRow).val(item.preview_path);
+        //從接洽記錄上傳
+        if (upload_form.uploadtype == "case") {
+            //非異動上傳作業
+            $.each(main.brdmt_attach, function (i, item) {
+                //增加一筆
+                upload_form.appendFile();
+                //填資料
+                var nRow = $("#brdmt_filenum").val();
+                $("#" + fld + "_name_" + nRow).val(item.attach_name);
+                $("#old_" + fld + "_name_" + nRow).val(item.attach_name);
+                $("#" + fld + "_" + nRow).val(item.attach_path);
+                $("#doc_type_" + nRow).val(item.doc_type);
+                $("#" + fld + "_desc_" + nRow).val(item.attach_desc);
+                $("#" + fld + "_size_" + nRow).val(item.attach_size);
+                $("#attach_sqlno_" + nRow).val(item.attach_sqlno);
+                $("#source_name_" + nRow).val(item.source_name);
+                $("#attach_no_" + nRow).val(item.attach_no);
+                $("#attach_flag_" + nRow).val("U");//維護時判斷是否要更名，即A表示新上傳的文件
+                $("#attach_flagtran_" + nRow).val(item.attach_flagtran);//異動作業上傳註記Y
+                $("#tran_sqlno_" + nRow).val(item.tran_sqlno);//異動作業流水號
+                $("#" + fld + "_apattach_sqlno_" + nRow).val(item.apattach_sqlno);//總契約書/委任書流水號
+                $("#btn" + fld + "_" + nRow).prop("disabled",true);
+                $("input[name='" + fld + "_branch_" + nRow + "'][value='" + item.attach_branch + "']").prop("checked", true);//交辦專案室
+                $("#bropen_path_" + nRow).val(item.preview_path);
+                if (upload_form.prgid == "brt81") {
+                    if (item.attach_flagtran == "Y") {//判斷異動作業上傳，非異動作業上傳不能修改
+                        if (maine.aspname == "brt81tran") {//異動作業
+                            upload_form.readonly(nRow);
+                        } else if (maine.aspname == "brt81show") {//異動維護作業
+                            if ($("#tran_sqlno_" + nRow).val() != $("#sqlno1").val()) {//異動流水序號不同，不能修改
+                                upload_form.readonly(nRow);
+                            }
+                        }
+                    } else {
+                        upload_form.readonly(nRow);
+                    }
+                }
 
-            if (i == 0) {
-                $("#attach_seq").val(item.seq);
-                $("#attach_seq1").val(item.seq1);
-                $("#attach_step_grade").val(item.step_grade);
-                $("#attach_in_no").val(item.in_no);
-                $("#attach_case_no").val(item.case_no);
+                if (i == 0) {
+                    $("#attach_seq").val(item.seq);
+                    $("#attach_seq1").val(item.seq1);
+                    $("#attach_step_grade").val(item.step_grade);
+                    $("#attach_in_no").val(item.in_no);
+                    $("#attach_case_no").val(item.case_no);
+                }
+                $("#maxattach_no").val(item.attach_no);
+            });
+
+
+            if (upload_form.prgid == "brt81") {
+                //異動上傳作業
+                $("#tabfile" + fld + ">tbody").append(
+                "<TR><TD align=center colspan=5 class=lightbluetable1>"+
+                "   <span style=\"color:white\">異&nbsp;&nbsp;&nbsp;動&nbsp;&nbsp;&nbsp;相&nbsp;&nbsp;&nbsp;關&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;件</span>" +
+                "</TD></TR>");
             }
-            $("#maxattach_no").val(item.attach_no);
-        });
+        } else {
+            //案件附件
+        }
     }
 
     //增加一筆
@@ -194,6 +236,14 @@
         }
     }
 
+    //欄位鎖定
+    upload_form.readonly = function (nRow) {
+        $("#" + fld + "_desc_" + nRow).lock();
+        $("#btn" + fld + "_" + nRow).hide();
+        $("#btn" + fld + "_D_" + nRow).hide();
+        $("#doc_type_" + nRow).lock();
+        $("#"+fld+"_branch_" + nRow).lock();
+    }
 
     //檢視
     upload_form.PreviewAttach = function (nRow) {
