@@ -377,8 +377,8 @@ INPUT
 }
 select
 {
-	/*font-size: 10pt;*/
-	/*font-family: Consolas, 細明體, Arial;*/
+	font-size: 10pt;
+	font-family: Consolas, 細明體, Arial;
 }
 td
 {
