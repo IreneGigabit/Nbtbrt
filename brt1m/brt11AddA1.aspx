@@ -5,6 +5,8 @@
 <%@ Register Src="~/commonForm/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
 <%@ Register Src="~/commonForm/dmt/FA1_form_remark1.ascx" TagPrefix="uc1" TagName="FA1_form_remark1" %>
 <%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
+<%@ Register Src="~/commonForm/dmt/case_form.ascx" TagPrefix="uc1" TagName="case_form" %>
+
 
 
 <script runat="server">
@@ -16,10 +18,14 @@
     protected string DebugStr = "";
     protected string StrFormBtnTop = "";
     protected string StrFormBtn = "";
+    protected string formFunction = "";
     
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
-    public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    protected string tfy_Arcase = "";
+    protected Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    protected string submitTask = "";
+    protected string ar_form = "";
+    protected string prt_code = "";
+    protected string case_stat = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -27,6 +33,10 @@
         Response.Expires = -1;
 
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
+        submitTask = (Request["submittask"] ?? "").Trim();
+        ar_form = (Request["ar_form"] ?? "").Trim();
+        prt_code = (Request["prt_code"] ?? "").Trim();
+        case_stat = (Request["case_stat"] ?? "").Trim();
         
         Token myToken = new Token(HTProgCode);
         HTProgRight = myToken.CheckMe();
@@ -34,12 +44,20 @@
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
             PageLayout();
+            FormBind();
             this.DataBind();
         }
     }
 
+    private void FormBind() {
+    }
+
     private void PageLayout() {
-        tfy_Arcase = Funcs.getCodeBr(Funcs.getRsType(), Request["Ar_form"], "A").Option("{rs_code}", "{rs_code}---{rs_detail}", "v1='{prt_code}' v2='{remark}'", false);
+        if (submitTask == "AddNext") {
+            formFunction = "add";
+        } else {
+            formFunction = "add";
+        }
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -74,8 +92,13 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-	<input type="hidden" id="submittask" name="submittask">
+	<input type="hidden" id="submittask" name="submittask" value="<%=submitTask%>">
 	<input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <INPUT TYPE="hidden" name=Ar_Form value="<%=ar_form%>">
+    <INPUT TYPE="hidden" name=prt_code value="<%=prt_code%>">
+    <INPUT TYPE="hidden" name=add_arcase value="">
+    <INPUT TYPE="hidden" name=tfy_case_stat value="<%=case_stat%>">
+    <input type="hidden" name="draw_attach_file" id="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
@@ -107,10 +130,8 @@
                 <!--include file="../commonForm/apcust_form.ascx"--><!--案件申請人-->
             </div>
             <div class="tabCont" id="#case">
-                <select NAME=tfy_Arcase id=tfy_Arcase onchange ="javascript:ToArcase('T',this.value ,'Z1')">
-				    <option value="" class="blueopt">請選擇</option>
-				    <%#tfy_Arcase%>
-				</SELECT>
+                <uc1:case_form runat="server" id="case_form" />
+                <!--include file="../commonForm/dmt/case_form.ascx"--><!--收費與接洽事項-->
             </div>
             <div class="tabCont" id="#tran">
                 <uc1:FA1_form_remark1 runat="server" ID="FA1_form_remark1" />
@@ -125,30 +146,6 @@
     <br />
     <%#DebugStr%>
 </form>
-<script type="text/html" id="tran_DE1">
-    <li><strong>DE1</strong></li>
-    <script>
-        function init() {
-            alert('DE1');
-        }
-    </script>
-</script>
-<script type="text/html" id="tran_DE2">
-    <li><strong>DE2</strong></li>
-    <script>
-        function init() {
-            alert('DE2');
-        }
-    </script>
-</script>
-<script type="text/html" id="tran_DI1">
-    <li><strong>DI1</strong></li>
-    <script>
-        function init() {
-            alert('DI1');
-        }
-    </script>
-</script>
 
 <table border="0" width="98%" cellspacing="0" cellpadding="0">
 <tr id="tr_button1">
@@ -178,11 +175,15 @@
     });
 
     var main = {};
+    main.prgid = "<%#prgid%>";
+    main.right = <%#HTProgRight%>;
+    main.formFunction = "<%#formFunction%>";
+    main.ar_form = "<%#ar_form%>";
     main.cust_area = "<%#ReqVal.TryGet("cust_area")%>";
     main.cust_seq = "<%#ReqVal.TryGet("cust_seq")%>";
     main.in_no = "<%#ReqVal.TryGet("in_no")%>";
-    main.data = {};
     //main.in_no = "20191230001";
+    var jMain = {};
     //初始化
     function this_init() {
         settab("#case");
@@ -191,20 +192,22 @@
         //取得交辦資料
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/_case_dmt.aspx?submittask=" + $("#submittask").val() + "&cust_area=" + main.cust_area + "&cust_seq=" + main.cust_seq + "&in_no=" + main.in_no,
+            url: getRootPath() + "/ajax/_case_dmt.aspx?prgid="+main.prgid+"&right="+main.right+"&formfunction="+main.formFunction+"&submittask=" + $("#submittask").val() + "&cust_area=" + main.cust_area + "&cust_seq=" + main.cust_seq + "&in_no=" + main.in_no,
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var JSONdata = $.parseJSON(json);
                 if (JSONdata.length == 0) {
                     toastr.warning("無交辦資料可載入！");
                     return false;
                 }
-                main.data = JSONdata;
+                jMain = JSONdata;
             },
             error: function () { toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
         });
+        case_form.init();
+        upload_form.init();
 
         if ($("#submittask").val() == "AddNext") {//複製
         } else {
@@ -216,9 +219,8 @@
             //聯絡人
             attent_form.getatt($("#tfy_cust_area").val(), $("#tfy_cust_seq").val(), $("#tfy_att_sql").val());
             //申請人//04322046
-            apcust_form.getapp(main.data.apcust[0].apcust_no, "");
+            apcust_form.getapp(jMain.apcust[0].apcust_no, "");
         }
-        upload_form.init();
 
         $(".Lock").lock();
     }
@@ -242,11 +244,4 @@
             window.close();
         }
     })
-
-    function ToArcase(a, b, c) {
-        var template = $('#tran_'+b).text();
-        $("div.tabCont[id='#tran'").empty();
-        $("div.tabCont[id='#tran'").append(template);
-        init();
-    }
 </script>
