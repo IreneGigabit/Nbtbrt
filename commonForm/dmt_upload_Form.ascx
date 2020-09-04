@@ -2,6 +2,7 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
+    //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public string uploadfield = "attach";
     public string seq = "";
