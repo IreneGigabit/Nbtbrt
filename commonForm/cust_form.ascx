@@ -225,7 +225,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_vcustlist)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var JSONdata = $.parseJSON(json);
                 if (JSONdata.length == 0) {
                     toastr.warning("無該客戶，請重新輸入或至[客戶新增]新增該客戶!!!");
