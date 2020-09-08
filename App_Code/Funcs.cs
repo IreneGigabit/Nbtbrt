@@ -52,15 +52,28 @@ public class Funcs {
     }
     #endregion
 
-    #region getExtRsType - 出口案目前交辦案性的版本
+    #region getRsTypeExt - 出口案目前交辦案性的版本
     /// <summary>  
     /// 出口案目前交辦案性的版本
     /// </summary>  
-    public static string getExtRsType() {
+    public static string getRsTypeExt() {
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
             string SQL = "select cust_code from cust_code where code_type='ters_type'";
             object objResult = conn.ExecuteScalar(SQL);
             return (objResult == DBNull.Value || objResult == null) ? "TE95" : objResult.ToString();
+        }
+    }
+    #endregion
+
+    #region getDefaultTitle - 目前官發收據抬頭預設值
+    /// <summary>  
+    /// 目前官發收據抬頭預設值
+    /// </summary>  
+    public static string getDefaultTitle() {
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            string SQL = "select cust_code from cust_code where code_type like '%rec_titleT%' and mark='Y' ";
+            object objResult = conn.ExecuteScalar(SQL);
+            return (objResult == DBNull.Value || objResult == null) ? "A" : objResult.ToString();//a:案件申請人
         }
     }
     #endregion
