@@ -12,6 +12,7 @@
     protected string SQL = "";
 
     protected int MaxTaCount = 5;//附屬案性筆數上限
+    protected string recTitle = Funcs.getDefaultTitle();//收據種類預設抬頭
     protected string ar_form = "", code_type = "";
 
     protected string tfy_Arcase = "", nfyi_item_Arcase = "", tfy_oth_arcase="";
@@ -21,7 +22,7 @@
     private void Page_Load(System.Object sender, System.EventArgs e) {
         ar_form = Request["ar_form"] ?? "";
         code_type = Request["code_type"] ?? "";
-
+            
         Token myToken = new Token(HTProgCode);
         HTProgRight = myToken.CheckMe();
 
@@ -60,7 +61,7 @@
                 SQL += "and (end_date is null or end_date = '' or end_date > getdate()) ";
             }
             SQL += "ORDER BY rs_code ";
-            nfyi_item_Arcase = SHtml.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}");
+            //nfyi_item_Arcase = SHtml.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}");
             
             //轉帳費用
             SQL = "SELECT  rs_code,prt_code,rs_detail FROM  code_br WHERE  cr= 'Y' and dept='T' And rs_type='" + code_type + "' AND no_code='N' and mark='M' ";
@@ -71,7 +72,6 @@
             tfy_oth_code = SHtml.Option(conn, "SELECT branch,branchname FROM sysctrl.dbo.branch_code WHERE class='branch'", "{branch}", "{branch}_{branchname}");
             
             //請款註記
-            //tfy_Ar_mark = SHtml.Option(conn, "select cust_code,code_name from cust_code where code_type='ar_mark' and (mark1 like '%" + Session["SeBranch"] + Session["Dept"] + "%' or mark1 is null)", "{cust_code}", "{code_name}");
             tfy_Ar_mark = Funcs.getCustCode("ar_mark", "and (mark1 like '%" + Session["SeBranch"] + Session["Dept"] + "%' or mark1 is null)", "").Option("{cust_code}", "{code_name}");
 
             //案源代碼
@@ -97,8 +97,8 @@
 <tr id="tr_grconf">
 	<TD class=lightbluetable align=right>對應後續交辦作業序號：</TD>
 	<TD class=whitetablebg colspan=5><input type=hidden name=hgrconf_sqlno id=hgrconf_sqlno><!--判斷有值表從後續查詢來-->
-		<input type=text name=grconf_sqlno id=grconf_sqlno size=10 readonly><input type=button class="cbutton" value="查詢" onclick="get_attcase('Q')">
-		<input type=button class="cbutton" value="詳細" onclick="get_attcase('S')">
+		<input type=text name=grconf_sqlno id=grconf_sqlno size=10 readonly><input type=button class="cbutton" value="查詢" onclick="case_form.get_attcase('Q')">
+		<input type=button class="cbutton" value="詳細" id=grconf_dtl onclick="case_form.get_attcase('S')">
 	</td>
 </tr>
 <TR id="tr_fees">
@@ -112,18 +112,37 @@
 	    <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2>
 		    <TR>
 		        <TD class=lightbluetable align=right width="4%">案&nbsp;&nbsp;&nbsp;&nbsp;性：</TD>
-		        <TD class=whitetablebg width=10%><select id=tfy_Arcase NAME=tfy_Arcase class="<%=Lock["brt51"]%>" onchange="ToArcase('T',this.value ,'Z1')"><%#tfy_Arcase%></SELECT>
+		        <TD class=whitetablebg width=10%><select id=tfy_Arcase NAME=tfy_Arcase class="<%=Lock["brt51"]%>" onchange="case_form.toArcase('T',this.value ,'Z1')"><%#tfy_Arcase%></SELECT>
 		        </TD>
 		        <TD class=lightbluetable align=right width=3%>服務費：</TD>
 		        <TD class=whitetablebg  align="left">
-                    <INPUT TYPE=text id=nfyi_Service name=nfyi_Service value=0 SIZE=8 maxlength=8 style="text-align:right;" onblur="summary()">
-                    <INPUT TYPE=hidden id=Service name=Service>
+                    <INPUT TYPE=text id=nfyi_Service name=nfyi_Service value=0 SIZE=8 maxlength=8 style="text-align:right;">
+                    <INPUT TYPE=text id=Service name=Service>
 		        </TD>
 		        <TD class=lightbluetable align=right width=3%>規費：</TD>
-		        <TD class=whitetablebg align="left"><INPUT TYPE=text id=nfyi_Fees name=nfyi_Fees value=0 SIZE=8 maxlength=8 style="text-align:right;" onblur="summary()">
-                    <INPUT TYPE=hidden id=Fees name=Fees></TD>
+		        <TD class=whitetablebg align="left"><INPUT TYPE=text id=nfyi_Fees name=nfyi_Fees value=0 SIZE=8 maxlength=8 style="text-align:right;" onblur="case_form.summary()">
+                    <INPUT TYPE=text id=Fees name=Fees></TD>
 		    </TR>
-		    <tr id="tr_ta" style="display:none"></tr><!--其他費用-->
+            <script type="text/html" id="ta_template"><!--其他費用樣板-->
+	            <tr id=tr_ta_##>
+		            <td class=lightbluetable align=right width="4%">##.其他費用：</td>
+		            <td class=whitetablebg align=left width="10%">
+		                <select id="nfyi_item_Arcase_##" name="nfyi_item_Arcase_##" onchange="case_form.ToFee('T',this.value ,reg.Ar_Form.value,'##')" class="<%=Lock["brt51"]%>">
+                        <%#nfyi_item_Arcase%>
+		                </select> x <input type=text id="nfyi_item_count_##" name="nfyi_item_count_##" size=3 maxlength=3 value="1" onblur="case_form.item_count('##')" class="<%=Lock["brt51"]%>">項
+		            </td>
+		            <td class=lightbluetable align=right width=4%>服務費：</td>
+		            <td class=whitetablebg align=left width=5%>
+		                <INPUT TYPE=text id=nfyi_Service_## name=nfyi_Service_## SIZE=8 maxlength=8 style="text-align:right;" value="0" onblur="case_form.summary()" class="<%=Lock["brt51"]%>">
+		                <input type=text id=nfzi_Service_## name=nfzi_Service_##>
+		            </td>
+		            <td class=lightbluetable align=right width=4%>規費：</td>
+		            <td class=whitetablebg align=left width=5%>
+		                <INPUT TYPE=text id=nfyi_fees_## name=nfyi_fees_## SIZE=8 maxlength=8 style="text-align:right;" value="0" onblur="case_form.item_nfyi_fees('##')" class="<%=Lock["brt51"]%>">
+		                <input type=text id=nfzi_fees_## name=nfzi_fees_##>
+		            </td>
+	            </tr>
+            </script>
 		    <TR>
 			    <td class=lightbluetable align=right colspan=2>小計：</td>
 			    <td class=lightbluetable align=right>服務費：</td>
@@ -134,10 +153,10 @@
 		    <TR>
 			    <TD class=lightbluetable align=right width="4%">轉帳費用：</TD>
 			    <TD class=whitetablebg width="11%">
-                    <select id=tfy_oth_arcase NAME=tfy_oth_arcase onchange="ToFee('T',reg.tfy_oth_arcase.value ,reg.ar_form.value,'10')" class="<%=Lock["brt51"]%>"><%#tfy_oth_arcase%></SELECT>
+                    <select id=tfy_oth_arcase NAME=tfy_oth_arcase onchange="case_form.ToFee('T',this.value ,reg.Ar_Form.value,'10')" class="<%=Lock["brt51"]%>"><%#tfy_oth_arcase%></SELECT>
 			    </TD>
 			    <TD class=lightbluetable align=right width=4%>轉帳金額：</TD>
-			    <TD class=whitetablebg width=5%><input type="text" id="nfy_oth_money" name="nfy_oth_money" size="8" style="text-align:right;" onblur="summary()" class="<%=Lock["brt51"]%>"></TD>
+			    <TD class=whitetablebg width=5%><input type="text" id="nfy_oth_money" name="nfy_oth_money" size="8" style="text-align:right;" onblur="case_form.summary()" class="<%=Lock["brt51"]%>"></TD>
 			    <TD class=lightbluetable align=right width=4%>轉帳單位：</TD>
 			    <TD class=whitetablebg width=5%>
 			    <select id=tfy_oth_code NAME=tfy_oth_code class="<%=Lock["brt51"]%>">
@@ -149,10 +168,16 @@
 			    <TD class=lightbluetable align=right colspan=2>合計：</TD>
 			    <TD class=whitetablebg colspan=4>
                     <INPUT TYPE=text id=OthSum NAME=OthSum SIZE=7 class="SEdit" readonly>
-            	    <input type="hidden" id="tot_zservice" name="tot_zservice" value=0>
-				    <input type="hidden" id="tot_yservice" name="tot_yservice" value=0>
-				    <input type="hidden" id="oth_money" name="oth_money" value=0>
-				    <input type=hidden id="tot_count" name="tot_count" value="">
+            	    <input type="text" id="tot_zservice" name="tot_zservice" value=0>
+				    <input type="text" id="tot_yservice" name="tot_yservice" value=0>
+				    <input type="text" id="oth_money" name="oth_money" value=0>
+				    <input type="hidden" id="tot_count" name="tot_count" value="">
+			    </TD>
+		    </TR>
+		    <TR>
+			    <TD class=lightbluetable align=right width="4%">注意事項：</TD>
+			    <TD class=whitetablebg colspan="5">
+                    <TEXTAREA id=fee_remark name=fee_remark ROWS=6 COLS=70 class="SEdit" readonly></TEXTAREA>
 			    </TD>
 		    </TR>
 		    <TR style="display:none">
@@ -183,17 +208,17 @@
 <TR>
 	<TD class=lightbluetable align=right>請款註記：</TD>
 	<TD class=whitetablebg>
-        <Select id=tfy_Ar_mark name=tfy_Ar_mark onchange="special()" class="<%=Lock["brt51"]%>"><%#tfy_Ar_mark%></Select>
+        <Select id=tfy_Ar_mark name=tfy_Ar_mark onchange="case_form.special()" class="<%=Lock["brt51"]%>"><%#tfy_Ar_mark%></Select>
 	</TD>
 	<TD class=lightbluetable align=right>折扣率：</TD>
 	<TD class="whitetablebg" colspan="3">
-        <input TYPE="hidden" id="nfy_Discount" name="nfy_Discount">
+        <input TYPE="text" id="nfy_Discount" name="nfy_Discount">
         <input TYPE=text id="Discount" name="Discount" class="SEdit" readonly>
         <span style="display:none">
 	        <INPUT TYPE=checkbox id=tfy_discount_chk name=tfy_discount_chk value="Y" class="<%=Lock["brt51"]%>">折扣請核單
         </span>
 		<span id="span_discount_remark" style="display:none">
-			折扣理由：<INPUT TYPE=text NAME="tfy_discount_remark" id="tfy_dicount_remark" SIZE=100 MAXLENGTH=200 alt="『折扣理由』" onblur="fDataLen(this.value,me.MAXLENGTH,this.alt)">
+			折扣理由：<INPUT TYPE=text NAME="tfy_discount_remark" id="tfy_dicount_remark" SIZE=100 MAXLENGTH=200 alt="『折扣理由』" onblur="fDataLen(this.value,this.MAXLENGTH,this.alt)">
 		</span>
 	</td>
 </TR>
@@ -204,23 +229,23 @@
 	</TD>
 	<TD class=lightbluetable align=right>契約號碼：</TD>
 	<TD class=whitetablebg colspan="3">
-		<input type="hidden" id="tfy_contract_type" name="tfy_contract_type">
-        <input type="radio" id="Contract_no_Type_N" name="Contract_no_Type" value="N" onclick="contract_type_ctrl()">
-        <INPUT TYPE=text id=tfy_Contract_no name=tfy_Contract_no SIZE=10 MAXLENGTH=10 onchange="reg.Contract_no_Type(0).checked=true">
+		<input type="text" id="tfy_contract_type" name="tfy_contract_type">
+        <input type="radio" id="Contract_no_Type_N" name="Contract_no_Type" value="N">
+            <INPUT TYPE=text id=tfy_Contract_no name=tfy_Contract_no SIZE=10 MAXLENGTH=10 onchange="$('#Contract_no_Type_N').prop('checked',true).trigger('click');">
         <span id="contract_type">
-		    <input type="radio" id="Contract_no_Type_A" name="Contract_no_Type" value="A" onclick="contract_type_ctrl()">後續案無契約書
+		<input type="radio" id="Contract_no_Type_A" name="Contract_no_Type" value="A">後續案無契約書
 		</span>
 		<input type="radio" id="Contract_no_Type_S" name="Contract_no_Type" style="display:none">特案簽報<!--2015/12/29修改，併入C不顯示-->
-	    <input type="radio" id="Contract_no_Type_C" name="Contract_no_Type" value="C" onclick="contract_type_ctrl()">其他契約書無編號/特案簽報
-	    <input type="radio" id="Contract_no_Type_M" name="Contract_no_Type" value="M" onclick="contract_type_ctrl()">總契約書
+	    <input type="radio" id="Contract_no_Type_C" name="Contract_no_Type" value="C">其他契約書無編號/特案簽報
+	    <input type="radio" id="Contract_no_Type_M" name="Contract_no_Type" value="M">總契約書
 	    <span id="span_btn_contract" style="display:none">
-		    <INPUT TYPE=text id=Mcontract_no name=Mcontract_no SIZE=10 MAXLENGTH=10 readonly class="gSEdit">
+		    <INPUT TYPE=text id=Mcontract_no name=Mcontract_no SIZE=10 MAXLENGTH=10 readonly class="SEdit">
 		    <input type=button class="greenbutton" id="btn_contract" name="btn_contract" value="查詢總契約書">
 		    +客戶案件委辦書
 	    </span>
 	    <br>
 		<INPUT TYPE=checkbox id=tfy_contract_flag NAME=tfy_contract_flag value="Y" class="<%=Lock["brt51"]%>">契約書相關文件後補，尚缺文件說明：
-        <input type="text" id="tfy_contract_remark" name="tfy_contract_remark" size=50 maxlength=100 readonly class="gSEdit">    
+        <input type="text" id="tfy_contract_remark" name="tfy_contract_remark" size=50 maxlength=100 readonly class="SEdit">    
 		<span id="ar_chk" style="display:none">
             <INPUT TYPE=checkbox id=tfy_ar_chk NAME=tfy_ar_chk  value="Y">請款單／收據與附本寄發
 		    <INPUT TYPE=checkbox id=tfy_ar_chk1 NAME=tfy_ar_chk1 value="Y">即發請款單／收據
@@ -239,12 +264,12 @@
 <TR id=tr_send_way>
 	<TD class=lightbluetable align=right>發文方式：</TD>
 	<TD class=whitetablebg>
-        <SELECT id="tfy_send_way" name="tfy_send_way" onchange="setReceiptType()"><%#tfy_send_way%></select>
-        <input type="hidden" id="spe_ctrl" name="spe_ctrl">
+        <SELECT id="tfy_send_way" name="tfy_send_way" onchange="case_form.setReceiptType()"><%#tfy_send_way%></select>
+        <input type="text" id="spe_ctrl" name="spe_ctrl">
 	</TD>
 	<TD class=lightbluetable align=right>官發收據種類：</TD>
 	<TD class=whitetablebg>
-		<select id="tfy_receipt_type" name="tfy_receipt_type" onchange="setReceiptTitle()">
+		<select id="tfy_receipt_type" name="tfy_receipt_type" onchange="case_form.setReceiptTitle()">
 			<option value='' style='color:blue'>請選擇</option>
 			<option value="P">紙本收據</option>
 			<option value="E">電子收據</option>
@@ -253,7 +278,7 @@
 	<TD class=lightbluetable align=right>收據抬頭：</TD>
 	<TD class=whitetablebg>
 		<select id="tfy_receipt_title" name="tfy_receipt_title" class="QLock"><%#tfy_receipt_title%></select>
-		<input type="hidden" id="tfy_rectitle_name" name="tfy_rectitle_name">
+		<input type="text" id="tfy_rectitle_name" name="tfy_rectitle_name">
 	</TD>
 </tr>
 <TR>
@@ -262,34 +287,12 @@
 	</TD>
 </TR>
 </TABLE>
-<input type=hidden id="anfees" name="anfees" value="">	
-<input type=hidden id="code_type" name="code_type" value="<%#code_type%>">	
-<input type=hidden id="TaMax" name="TaMax" value="<%=MaxTaCount%>"><!--最他費用最多可5筆-->
-<input type=hidden id="TaCount" name="TaCount" value="0">
-<input type=hidden id="nfy_tot_case" name="nfy_tot_case" value="">
-<input type=hidden id="tfy_ar_code" name="tfy_ar_code" value="N">	
-
-<!--其他費用樣板-->
-<script type="text/html" id="ta_template">
-	<tr id=tr_ta_##>
-		<td class=lightbluetable align=right width="4%">##.其他費用：</td>
-		<td class=whitetablebg align=left width="10%">
-		    <select id="nfyi_item_Arcase_##" name="nfyi_item_Arcase_##" onchange="ToFee('T',me.value ,reg.Ar_Form.value,'##')" class="<%=Lock["brt51"]%>">
-            <%#nfyi_item_Arcase%>
-		    </select> x <input type=text id="nfyi_item_count_##" name="nfyi_item_count_##" size=3 maxlength=3 value="1" onblur="item_count('##')" class="<%=Lock["brt51"]%>">項
-		</td>
-		<td class=lightbluetable align=right width=4%>服務費：</td>
-		<td class=whitetablebg align=left width=5%>
-		    <INPUT TYPE=text id=nfyi_Service_## name=nfyi_Service_## SIZE=8 maxlength=8 style="text-align:right;" value="0" onblur="summary()" class="<%=Lock["brt51"]%>">
-		    <input type=hidden id=nfzi_Service_## name=nfzi_Service_##>
-		</td>
-		<td class=lightbluetable align=right width=4%>規費：</td>
-		<td class=whitetablebg align=left width=5%>
-		    <INPUT TYPE=text id=nfyi_fees_## name=nfyi_fees_## SIZE=8 maxlength=8 style="text-align:right;" value="0" onblur="item_nfyi_fees('##')" class="<%=Lock["brt51"]%>">
-		    <input type=hidden id=nfzi_fees_## name=nfzi_fees_##>
-		</td>
-	</tr>
-</script>
+<input type=text id="anfees" name="anfees" value="">	
+<input type=text id="code_type" name="code_type" value="<%#code_type%>">	
+<input type=text id="TaMax" name="TaMax" value="<%=MaxTaCount%>"><!--最他費用最多可用筆數-->
+<input type=text id="TaCount" name="TaCount" value="0">
+<input type=text id="nfy_tot_case" name="nfy_tot_case" value="">
+<input type=text id="tfy_ar_code" name="tfy_ar_code" value="N">	
 
 
 <script language="javascript" type="text/javascript">
@@ -319,7 +322,7 @@
         //    $("#nfyi_Fees").lock();//規費
         //}
         
-        if (main.ar_form == "A0" || main.ar_form == "A1") {
+        if ($("#Ar_Form").val() == "A0" || $("#Ar_Form").val() == "A1") {
             //對應後續交辦作業序號(新申請案不用顯示)
             $("#tr_grconf").hide();
         }
@@ -407,7 +410,7 @@
         */
     }
 
-    //增加/減少其他費用
+    //增加/減少其他費用(附屬案性)
     case_form.ta_display = function (act) {
         if ($("#tfy_Arcase").val() == "") {
             alert("請選擇案性!!");
@@ -416,8 +419,8 @@
         }
 
         if (act == "Add") {
-            var nRow = parseInt($("#TaCount").val(), 10) + 1;
-            var nMax = parseInt($("#TaMax").val(), 10);
+            var nRow = CInt($("#TaCount").val()) + 1;
+            var nMax = CInt($("#TaMax").val());
             if (nRow > nMax) {
                 alert("附屬案性超過" + nMax + "筆!");
                 return false;
@@ -426,42 +429,395 @@
             //複製樣板
             var copyStr = $("#ta_template").text() || "";
             copyStr = copyStr.replace(/##/g, nRow);
-            $(copyStr).insertBefore("#tr_ta");
+            $(copyStr).insertBefore("#ta_template");
+            $("#nfyi_item_Arcase_" + nRow).getOption({
+                url: getRootPath() + "/ajax/json_Fee.aspx",
+                data: { type: "Arcase", country: "T", arcase: $("#tfy_Arcase").val(), ar_form: "Z1", prgid: "<%#prgid%>" },
+                valueFormat: "{rs_code}",
+                textFormat: "{rs_code}---{rs_detail}"
+            });
             $("#TaCount").val(nRow);
         } else {
-            var nRow = parseInt($("#TaCount").val(), 10);
+            var nRow = CInt($("#TaCount").val());
             $('#tr_ta_' + nRow).remove();
             $("#TaCount").val(Math.max(0, nRow - 1));
 
             if ((nRow - 1) < 0) {
                 alert("已沒有任何附屬案性!");
             }
-            Summary();
+            case_form.summary();
         }
+    }
+
+    //承辦期限控制
+    //Sub pr_date_control(T1)
+    //window.open "pr_date.asp?Arcase=" & T1 , "myWindowOne", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no"	
+    //End Sub
+
+    //顯示附屬案性
+    case_form.toArcase = function (x1, x2, x3) {
+
+    }
+    /*
+    function ToArcase(a, b, c) {
+        var template = $('#tran_' + b).text();
+        $("div.tabCont[id='#tran'").empty();
+        $("div.tabCont[id='#tran'").append(template);
+        init();
+    }*/
+
+    //抓取案性特殊控制
+    case_form.display_caseform = function (x1, x2) {
+        $("#spe_ctrl3").val("");
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/json_Fee.aspx?type=spectrl&country=" + x1 + "&Arcase=" + x2 + "&Ar_Form=" + $("#Ar_Form").val() + "&prgid=<%#prgid%>",
+            async: false,
+            cache: false,
+            success: function (json) {
+                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_vcustlist)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                var jFee = $.parseJSON(json);
+                $.each(jFee, function (i, item) {
+                    if (item.rs_code != "") {
+                        $("#spe_ctrl3").val(item.spe_ctrl3);
+                    }
+                });
+            },
+            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+        });
+        //程序客收確認不能修改法定期限
+        if ($("prgid").val() == "brt51") {
+            if ($("spe_ctrl3").val() == "Y") {
+                $("#dfy_last_date").lock();
+            } else {
+                $("#dfy_last_date").unlock();
+            }
+        }
+    }
+
+    //依案性帶其他案性.轉帳費用
+    case_form.Display_Arcase = function (x1, x2, x3) {
+        $("select[id^='nfyi_item_Arcase_']").getOption({//其他費用
+            url: getRootPath() + "/ajax/json_Fee.aspx",
+            data: { type: "Arcase", country: x1, arcase: x2, ar_form: x3, prgid:"<%#prgid%>" },
+            valueFormat: "{rs_code}",
+            textFormat: "{rs_code}---{rs_detail}"
+        });
+
+        //轉帳費用
+        $("#tfy_oth_arcase").val("");
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/json_Fee.aspx?type=Arcase&country=" + x1 + "&Arcase=" + x2 + "&Ar_Form=" + x3 + "&mark=M&prgid=<%#prgid%>",
+            async: false,
+            cache: false,
+            success: function (json) {
+                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_vcustlist)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                var jFee = $.parseJSON(json);
+                $.each(jFee, function (i, item) {
+                    if (item.rs_code != "") {
+                        $("#tfy_oth_arcase").val(item.rs_code);
+                    }
+                });
+                case_form.ToFee("T", $("#tfy_oth_arcase").val(), $("#Ar_Form").val(), "10");
+            },
+            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+        });
+    }
+
+    //費用(x1:國別:T為國內案,x2:案性代碼,x3:ar_form,x4為第n個案性),收費標準
+    case_form.ToFee = function (x1, x2, x3, x4) {
+        var taCC = CInt($("#TaCount").val());
+        //檢查其他費用有無重覆
+        if (x4 > 0 && x4 <= taCC) {
+            var objTa = {};
+            for (var r = 1; r <= taCC; r++) {
+                var lineTa = $("#nfyi_item_Arcase_" + r).val();
+                if (lineTa != "" && objTa[lineTa]) {
+                    alert(r + ".其他費用重覆，請重新輸入！");
+                    $("#nfyi_item_Arcase_" + r + " option").eq(0).prop('selected', true);
+                    $("#nfyi_item_count_" + r).val("1");
+                    $("#nfyi_Service_" + r).val("0");
+                    $("#nfyi_fees_" + r).val("0");
+                    $("#nfzi_Service_" + r).val("0");
+                    $("#nfzi_fees_" + r).val("0");
+                    $("#nfzi_fees_" + r).val("0");
+                    $("#nfyi_item_Arcase_" + r).focus();
+                    case_form.summary();
+                    return false;
+                } else {
+                    objTa[lineTa] = { flag: true, idx: r };
+                }
+            }
+        }
+
+        //取得案性費用
+        if (x4 == 10) {//轉帳費用
+            $("#nfy_oth_money").val("0");
+            $("#oth_money").val("0");
+        } else if (x4 >= 1) {//其他費用
+            $("#nfyi_Service_" + x4).val("0");
+            $("#nfzi_Service_" + x4).val("0");
+            $("#nfyi_fees_" + x4).val("0");
+            $("#nfzi_fees_" + x4).val("0");
+        } else {
+            $("#nfyi_Service").val("0");
+            $("#Service").val("0");
+            $("#nfyi_Fees").val("0");
+            $("#Fees").val("0");
+        }
+
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/json_Fee.aspx?type=Fee&country=" + x1 + "&Arcase=" + x2 + "&Ar_Form=" + x3 + "&Service=" + x4+"&prgid=<%#prgid%>",
+            async: false,
+            cache: false,
+            success: function (json) {
+                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_vcustlist)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                var jFee = $.parseJSON(json);
+                if (jFee.length != 0) {
+                    if (x4 == 10) {//轉帳費用
+                        if (jFee.length == 0) {
+                            $("#nfy_oth_money").val("0");
+                            $("#oth_money").val("0");
+                        } else {
+                            $.each(jFee, function (i, item) {
+                                $("#nfy_oth_money").val(item.service);
+                                $("#oth_money").val(item.service);
+                            });
+                        }
+
+                        if ($("#tfy_oth_arcase").val() == "")
+                            $("#tfy_oth_code").val("");
+                        else
+                            $("#tfy_oth_code").val("L");
+                    } else if (x4 >= 1) {//其他費用
+                        $.each(jFee, function (i, item) {
+                            $("#nfyi_Service_" + x4).val(item.service * CInt($("#nfyi_item_count_" + x4).val()));
+                            $("#nfzi_Service_" + x4).val(item.service);
+                            $("#nfyi_fees_" + x4).val(item.fees * CInt($("#nfyi_item_count_" + x4).val()));
+                            $("#nfzi_fees_" + x4).val(item.fees);
+                        });
+                    } else {//主案性
+                        $("#nfyi_Service").val(item.service);
+                        $("#Service").val(item.service);
+                        $("#nfyi_Fees").val(item.fees);
+                        $("#Fees").val(item.fees);
+                        $("#fee_remark").val(item.remark);//注意事項
+                    }
+                }
+            },
+            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>取得案性費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+        });
+
+        case_form.summary();
     }
 
     //小計服務費及規費
     case_form.summary = function () {
-        var nfy_service=0;
-        var nfy_fees=0;
-        nfy_service+=parseInt($("#nfyi_Service").val(), 10);
-        nfy_fees+=parseInt($("#nfyi_Fees").val(), 10);
+        var nfy_service = 0;
+        var nfy_fees = 0;
+        nfy_service += CInt($("#nfyi_Service").val());
+        nfy_fees += CInt($("#nfyi_Fees").val());
 
-        for(var i=1;i<=parseInt($("#TaCount").val(), 10);i++){
-            nfy_service+=parseInt($("#nfyi_Service_"+i).val(), 10);
-            nfy_fees+=parseInt($("#nfyi_fees_"+i).val(), 10);
+        for (var i = 1; i <= CInt($("#TaCount").val()) ; i++) {
+            nfy_service += CInt($("#nfyi_Service_" + i).val());
+            nfy_fees += CInt($("#nfyi_fees_" + i).val());
         }
 
-        if trim(reg.nfy_oth_money.value)<>empty or reg.nfy_oth_money.value<>0 then
-            reg.OthSum.value =clng(reg.nfy_service.value)+clng(reg.nfy_fees.value)+clng(reg.nfy_oth_money.value)
-        else
-		    reg.OthSum.value =clng(reg.nfy_service.value)+clng(reg.nfy_fees.value)
-        end if
-	    call special
+        $("#OthSum").val(nfy_service + nfy_fees + CInt($("#nfy_oth_money").val()));
+        case_form.special();
 
-        $("#fr_fees").val(nfy_fees);//註冊費繳費金額=規費
+        if ($("#Ar_Form").val() == "A3") {//註冊費
+            $("#fr_fees").val(nfy_fees);//繳費金額=規費
+        }
 
         $("#nfy_service").val(nfy_service);
         $("#nfy_fees").val(nfy_fees);
     }
+
+    //其他費用與項目小計
+    case_form.item_count = function (nRow) {
+        $("#nfyi_Service_" + nRow).val(CInt($("#nfyi_item_count_" + nRow).val()) * CInt($("#nfzi_Service_" + nRow).val()));
+        $("#nfyi_Service_" + nRow).val(CInt($("#nfyi_item_count_" + nRow).val()) * CInt($("#nfzi_fees_" + nRow).val()));
+        case_form.summary();
+    }
+
+    //計算折扣率?
+    case_form.special = function () {
+        if ($("#tfy_Ar_mark").val()=="") return false;
+        $("#span_discount_remark").hide();
+	
+        if($("#tfy_Ar_mark").val()== "X"){
+            $("#nfy_Discount").val(0);
+            $("#Discount").val(0);
+        }else if($("#tfy_Ar_mark").val()== "B"||$("#tfy_Ar_mark").val()== "N"){
+            if (CInt($("#nfyi_item_count_" + nRow).val()) == 0) {
+                $("#tot_zservice").val(0);
+                $("#tot_yservice").val(0);
+            }else{
+                $("#tot_zservice").val($("#Service").val());
+                $("#tot_yservice").val($("#nfyi_Service").val());
+            }
+
+            var tot_zservice = 0;
+            var tot_yservice = 0;
+            for (var i = 1; i <= CInt($("#TaCount").val()) ; i++) {
+                tot_zservice += CInt($("#nfzi_Service_" + i).val()) * CInt($("#nfyi_item_count_" + x4).val());
+                tot_yservice += CInt($("#nfyi_Service_" + i).val());
+            }
+            tot_zservice += CInt($("#oth_money").val());
+            tot_yservice += CInt($("#nfy_oth_money").val());
+            $("#tot_zservice").val(tot_zservice);
+            $("#tot_yservice").val(tot_yservice);
+
+            if (CInt($("#tot_zservice").val()) > CInt($("#tot_yservice").val())) {
+                var dis = (1 - (CLng(tot_yservice) / CLng(tot_zservice))) * 100;
+                $("#nfy_Discount").val(dis.format(2, 0));
+                $("#Discount").val(dis.format(2, 0) + "%");
+            } else {
+                $("#nfy_Discount").val(0);
+                if ($("#anfees").val() == "N") {
+                    $("#Discount").val("無收費標準");
+                } else {
+                    $("#Discount").val("");
+                }
+            }
+
+            //2016/5/30增加判斷，當折扣低於8折，顯示折扣理由
+            if($("#nfy_Discount").val()>20){
+                $("#span_discount_remark").show();
+            }
+        }else{
+            $("#nfy_Discount").val("");
+            if($("#anfees").val()=="N"){
+                $("#Discount").val("無收費標準");
+            }else{
+                $("#Discount").val("");
+            }
+        }
+    }
+    
+    //服務費檢查
+    $("#nfyi_Service").blur(function () {
+        if (isEmpty(reg.nfyi_Service.value) || !isNumeric(reg.nfyi_Service.value)) {
+            alert("服務費填寫錯誤,請重新輸入");
+            $("#nfyi_Service").val(0);
+            return false;
+        }
+        case_form.summary();
+        case_form.special();
+    });
+
+    //規費檢查
+    $("#nfyi_Fees").blur(function () {
+        if (isEmpty(reg.nfyi_Fees.value) || !isNumeric(reg.nfyi_Fees.value)) {
+            $("#nfyi_Fees").val(0);
+        }
+
+        if ($("#tfy_Ar_mark").val() == "N" || $("#tfy_Ar_mark").val() == "A" || $("#tfy_Ar_mark").val() == "D") {//一般.實報實銷.扣收入
+            if (CLng($("#nfyi_Fees").val()) < CLng($("#Fees").val()) && CLng($("#Fees").val()) > 0) {
+                alert("規費小於收費標準");
+                $("#nfyi_Fees").focus();
+                return false;
+            }
+        }
+        $("#nfyi_Service").blur();
+    });
+
+    //檢查附屬案性規費
+    case_form.item_nfyi_fees = function (nRow) {
+        if (isEmpty($("#nfyi_fees_"+nRow).val()) || !isNumeric($("#nfyi_fees_"+nRow).val())) {
+            $("#nfyi_fees_"+nRow).val(0);
+        }
+
+        if ($("#tfy_Ar_mark").val() == "N" || $("#tfy_Ar_mark").val() == "A" || $("#tfy_Ar_mark").val() == "D") {
+            if (CLng($("#nfyi_fees_"+nRow).val()) < CLng($("#nfzi_fees_"+nRow).val()) && CLng($("#nfzi_fees_"+nRow).val()) > 0) {
+                alert("規費小於收費標準");
+                $("#nfyi_fees_"+nRow).focus();
+            }
+        }
+        case_form.summary();
+    }
+
+    //對應後續交辦[查詢/詳細]
+    case_form.get_attcase = function (act) {
+        if (act == "S") {
+            if ($("#grconf_sqlno").val() == "") {
+                alert("無對應後續交辦作業序號，無法查詢詳細資料！");
+                return false;
+            }
+        }
+
+        var url = getRootPath() + "/brt11/brt11Qlist.aspx?prgid=<%=prgid%>&qrytype=" + act;
+        url += "&cust_seq=" + $("#F_cust_seq").val() + "&scode=" + $("#F_tscode") + "&grconf_sqlno=" + $("#grconf_sqlno").val();
+        //todo
+        window.open(url, "myWindowOne", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+    }
+
+    //查詢總契約書
+    $("#btn_contract").click(function () {
+        var url = getRootPath() + "/brt1m/POA_attachlist.aspx?prgid=<%=prgid%>&dept=T&source=contract&cust_seq=" + $("#F_cust_seq").val() + "&upload_tabnum=upload";
+        window.open(url, "myWindowapN", "width=900 height=680 top=20 left=20 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+
+    });
+
+    //☑契約書相關文件後補
+    $("#tfy_contract_flag").click(function () {
+        $("#tfy_contract_remark").unlock($(this).prop("checked"));
+    });
+
+    //契約書點選控制2015/12/25for總契約書增加
+    $("input[name='Contract_no_Type']").click(function () {
+        if ($(this).val() == "N") {
+            alert("N");
+            $("#span_btn_contract").hide();
+        } else if ($(this).val() == "M") {//總契約書
+            $("#tfy_Contract_no").val("");
+            $("#span_btn_contract").show();
+        } else{
+            $("#tfy_Contract_no").val("");
+            $("#span_btn_contract").hide();
+        }
+    });
+
+    //20200701 增加顯示發文方式
+    case_form.setSendWay = function () {
+        $("#tfy_send_way").getOption({//發文方式
+            url: getRootPath() + "/ajax/json_sendway.aspx",
+            data: { rs_type: $("#code_type").val(), rs_code: $("#Arcase").val() },
+            valueFormat: "{cust_code}",
+            textFormat: "{code_name}"
+        });
+        $("#tfy_send_way option[value!='']").eq(0).prop("selected", true);
+
+        case_form.setReceiptType();
+    };
+
+    //發文方式修改時調整收據種類選項
+    case_form.setReceiptType = function () {
+        //alert("setReceiptType");
+        var send_way = $("#tfy_send_way").val();
+        var receipt_type = $("#tfy_receipt_type");
+        receipt_type.empty();
+        receipt_type.append("<option value='' style='COLOR:blue'>請選擇</option>");
+
+        if (send_way == "E" || send_way == "EA") {
+            receipt_type.append(new Option("紙本收據", "P"));
+            receipt_type.append(new Option("電子收據", "E", true, true));
+        } else {
+            receipt_type.append(new Option("紙本收據", "P", true, true));
+        }
+        case_form.setReceiptTitle();
+    };
+
+    //收據種類時調整收據抬頭預設
+    case_form.setReceiptTitle = function () {
+        //若是紙本收據抬頭預設空白
+        if ($("#tfy_receipt_type").val() == "P") {
+            $("#tfy_receipt_title").val("B");
+        } else {
+            $("#tfy_receipt_title").val("<%#recTitle%>");
+        }
+    };
 </script>
