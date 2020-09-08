@@ -114,6 +114,45 @@ function dateReviver(value, pstr) {
 }
 //end region
 
+
+//#region CInt
+//vbscript CInt Convertion
+function CInt(n) {
+    return parseInt(n || 0, 10);
+}
+//end region
+
+//#region CDbl
+//vbscript CDbl Convertion
+function CDbl(n) {
+    return parseFloat(n || 0, 10);
+}
+//end region
+
+//#region CLng
+//vbscript CLng Convertion
+function CLng(n) {
+    return parseInt(n || 0, 10);
+}
+//end region
+
+//#region isNumeric
+//vbscript isNumeric Convertion
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+//end region
+
+//#region isEmpty
+//vbscript isEmpty Convertion
+function isEmpty(n) {
+    if (n === undefined) {
+        return true;
+    }
+    return false;
+}
+//end region
+
 //#region Date.prototype.format
 //js日期格式fotmat轉換
 //("yyyy-MM-dd")
@@ -322,8 +361,8 @@ function showBlockUI(param) {
     }
     //#endregion
 })(jQuery);
-$(document).ajaxStart(function () { $.maskStart("資料載入中"); });
-$(document).ajaxStop(function () { $.maskStop(); });
+//$(document).ajaxStart(function () { $.maskStart("資料載入中"); });
+//$(document).ajaxStop(function () { $.maskStop(); });
 $(function () {
     //若有 ☑測試 預設打勾
     $("#chkTest").click(function (e) {
