@@ -1,4 +1,4 @@
-﻿<%@Page Language="C#" CodePage="65001"%>
+<%@Page Language="C#" CodePage="65001"%>
 <%@Import Namespace = "System.Text"%>
 <%@Import Namespace = "System.Data.SqlClient"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -14,9 +14,13 @@
 
         StringBuilder sb = new StringBuilder();
         string strChk = CheckUser();
-        //sb.Append("alert(\"" + Session["Password"] + " !\");\n");
-        if (strChk.Length > 0) sb = sb.Append("alert(\"" + strChk + "\");\n");
-        if (exMsg.Length == 0) sb = sb.Append("top.location.href = \"Default.aspx\";\n");
+        //sb.AppendLine("alert(\"" + Session["Password"] + " !\");");
+        if (strChk.Length > 0) {
+            sb = sb.AppendLine("alert(\"" + strChk + "\");");
+            sb = sb.AppendLine("top.location.href = \"login.aspx\";");
+        } else if (exMsg.Length == 0) {
+            sb = sb.AppendLine("top.location.href = \"Default.aspx\";");
+        }
 
         ScriptString = sb.ToString();
         this.DataBind();
