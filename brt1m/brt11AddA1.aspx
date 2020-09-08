@@ -13,7 +13,7 @@
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt11";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//程式代碼
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
     protected string StrFormBtnTop = "";
@@ -94,7 +94,7 @@
 <form id="reg" name="reg" method="post">
 	<input type="hidden" id="submittask" name="submittask" value="<%=submitTask%>">
 	<input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="hidden" name=Ar_Form value="<%=ar_form%>">
+    <INPUT TYPE="hidden" id="Ar_Form" name="Ar_Form" value="<%=ar_form%>">
     <INPUT TYPE="hidden" name=prt_code value="<%=prt_code%>">
     <INPUT TYPE="hidden" name=add_arcase value="">
     <INPUT TYPE="hidden" name=tfy_case_stat value="<%=case_stat%>">
