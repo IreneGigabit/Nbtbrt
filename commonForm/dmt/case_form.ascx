@@ -450,9 +450,16 @@
     }
 
     //承辦期限控制
-    //Sub pr_date_control(T1)
-    //window.open "pr_date.asp?Arcase=" & T1 , "myWindowOne", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no"	
-    //End Sub
+    case_form.pr_date_control = function (T1) {
+        $.ajax({
+            url: getRootPath() + "/brt1m/pr_date.aspx?Arcase=" + T1,//todo
+            type: 'GET',
+            dataType: "script",
+            async: false,
+            cache: false,
+            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>取得承辦期限控制失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+        });
+    }
 
     //顯示附屬案性
     case_form.toArcase = function (x1, x2, x3) {
