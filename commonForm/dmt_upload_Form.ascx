@@ -48,7 +48,7 @@
         string pwhere = "";
         if (submitTask != "Q") pwhere += "and (mark is null or mark<>'B')";//維護時只顯示區所文件種類
         if (erpt_code != "") pwhere += "and (remark is null or remark like '%" + erpt_code + "%'";
-        html_doc = Funcs.getCustCode("TDOC", pwhere, "sortfld").Option("{cust_code}", "{cust_code}---{code_name}");
+        html_doc = Sys.getCustCode("TDOC", pwhere, "sortfld").Option("{cust_code}", "{cust_code}---{code_name}");
 
         this.DataBind();
     }
