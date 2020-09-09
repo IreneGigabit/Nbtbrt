@@ -477,7 +477,7 @@
         }
         var Arcase = x2;
         var prt_code = $("#tfy_Arcase option:selected").attr("v1");
-        //ChangeTag(x2)//轉換要SHOW的交辦書面,todo
+        main.changeTag(x2);//轉換要SHOW的交辦書面,todo
         reg.tfy_Arcase.value = x2;
         //2011/9/26抓取案性特殊控制
         if (x2 != "") {
