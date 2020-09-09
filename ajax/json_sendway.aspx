@@ -17,7 +17,7 @@
     protected string rs_code = "";
 
     protected void Page_Load(object sender, EventArgs e) {
-        rs_type = Request["rs_type"] ?? Funcs.getRsType();
+        rs_type = Request["rs_type"] ?? Sys.getRsType();
         rs_code = Request["rs_code"] ?? "";
 
         DataTable dt = new DataTable();
