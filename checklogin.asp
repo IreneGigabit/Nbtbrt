@@ -1,4 +1,4 @@
-<%@ Language=VBScript CodePage=65001 %>
+﻿<%@ Language=VBScript CodePage=65001 %>
 <%
 Response.CacheControl = "Private"
 Response.AddHeader "Pragma", "no-cache"

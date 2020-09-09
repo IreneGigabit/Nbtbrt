@@ -1,4 +1,4 @@
-<%@ Control Language="C#" ClassName="tran_A1_remark1" %>
+﻿<%@ Control Language="C#" ClassName="tran_A1_remark1" %>
 
 <script runat="server">
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
