@@ -174,6 +174,26 @@
         this_init();
     });
 
+    // 切換頁籤
+    $("#CTab td.tab").click(function (e) {
+        settab($(this).attr('href'));
+    });
+    function settab(k) {
+        $("#CTab td.tab").removeClass("seltab").addClass("notab");
+        $("#CTab td.tab[href='" + k + "']").addClass("seltab").removeClass("notab");
+        $("div.tabCont").hide();
+        $("div.tabCont[id='" + k + "']").show();
+    }
+
+    //關閉視窗
+    $(".imgCls").click(function (e) {
+        if (window.parent.tt !== undefined) {
+            window.parent.tt.rows = "100%,0%";
+        } else {
+            window.close();
+        }
+    })
+
     var main = {};
     main.prgid = "<%#prgid%>";
     main.right = <%#HTProgRight%>;
@@ -225,23 +245,6 @@
         $(".Lock").lock();
     }
 
-    // 切換頁籤
-    $("#CTab td.tab").click(function (e) {
-        settab($(this).attr('href'));
-    });
-    function settab(k) {
-        $("#CTab td.tab").removeClass("seltab").addClass("notab");
-        $("#CTab td.tab[href='" + k + "']").addClass("seltab").removeClass("notab");
-        $("div.tabCont").hide();
-        $("div.tabCont[id='" + k + "']").show();
+    main.changeTab = function (T1) {
     }
-
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
 </script>
