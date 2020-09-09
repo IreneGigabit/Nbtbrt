@@ -14,11 +14,11 @@
     private void Page_Load(System.Object sender, System.EventArgs e) {
         cust_area = Request["cust_area"] ?? "";
         cust_seq = Request["cust_seq"] ?? "";
-        
-        F_ap_country = Funcs.getCountry().Option("{coun_code}", "{coun_code}-{coun_c}");
-        F_con_code = Funcs.getCustCode("H","","cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
-        F_dis_type = Funcs.getCustCode("Discount","","cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
-        F_pay_type = Funcs.getCustCode("Payment","","cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
+
+        F_ap_country = Sys.getCountry().Option("{coun_code}", "{coun_code}-{coun_c}");
+        F_con_code = Sys.getCustCode("H", "", "cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
+        F_dis_type = Sys.getCustCode("Discount", "", "cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
+        F_pay_type = Sys.getCustCode("Payment", "", "cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
         
         this.DataBind();
     }
