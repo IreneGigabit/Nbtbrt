@@ -12,7 +12,7 @@
     protected string SQL = "";
 
     protected int MaxTaCount = 5;//附屬案性筆數上限
-    protected string recTitle = Funcs.getDefaultTitle();//收據種類預設抬頭
+    protected string recTitle = Sys.getDefaultTitle();//收據種類預設抬頭
     protected string ar_form = "", code_type = "";
 
     protected string tfy_Arcase = "", nfyi_item_Arcase = "", tfy_oth_arcase="";
@@ -39,10 +39,11 @@
         
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             //案性
+            SQL = "SELECT rs_code,prt_code,rs_detail,remark FROM  code_br WHERE cr= 'Y' and dept='T' And rs_type='" + code_type + "' AND no_code='N' ";
             if (ar_form.Left(1) != "B") {
-                SQL = "SELECT rs_code,prt_code,rs_detail,remark FROM  code_br WHERE rs_class like '" + ar_form + "%' And  cr= 'Y' and dept='T' And rs_type='" + code_type + "' AND no_code='N' ";
+                SQL += "and rs_class like '" + ar_form + "%' ";
             } else {
-                SQL = "SELECT rs_code,prt_code,rs_detail,remark FROM  code_br WHERE rs_class like '" + ar_form.Left(1) + "%' And  cr= 'Y' and dept='T' And rs_type='" + code_type + "' AND no_code='N' ";
+                SQL += "and rs_class like '" + ar_form.Left(1) + "%' ";
             }
             SQL += "and getdate() >= beg_date ";
             if (prgid.ToLower() != "brt51") {
@@ -52,15 +53,15 @@
             tfy_Arcase = SHtml.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}", "v1='{prt_code}' v2='{remark}'", true);
 
             //其他費用
-            SQL = "SELECT  rs_code, rs_detail FROM  code_br WHERE rs_class = 'Z1' And  cr= 'Y' and dept='T' AND no_code='N' and getdate() >= beg_date ";
-            SQL += " and mark is null ";
-            if ((Request["add_arcase"] ?? "") != "") {
-                SQL += " and substring(rs_code,1,3)='" + (Request["add_arcase"] ?? "").Left(3) + "' ";
-            }
-            if (prgid.ToLower() != "brt51") {
-                SQL += "and (end_date is null or end_date = '' or end_date > getdate()) ";
-            }
-            SQL += "ORDER BY rs_code ";
+            //SQL = "SELECT  rs_code, rs_detail FROM  code_br WHERE rs_class = 'Z1' And  cr= 'Y' and dept='T' AND no_code='N' and getdate() >= beg_date ";
+            //SQL += " and mark is null ";
+            //if ((Request["add_arcase"] ?? "") != "") {
+            //    SQL += " and substring(rs_code,1,3)='" + (Request["add_arcase"] ?? "").Left(3) + "' ";
+            //}
+            //if (prgid.ToLower() != "brt51") {
+            //    SQL += "and (end_date is null or end_date = '' or end_date > getdate()) ";
+            //}
+            //SQL += "ORDER BY rs_code ";
             //nfyi_item_Arcase = SHtml.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}");
             
             //轉帳費用
@@ -72,22 +73,22 @@
             tfy_oth_code = SHtml.Option(conn, "SELECT branch,branchname FROM sysctrl.dbo.branch_code WHERE class='branch'", "{branch}", "{branch}_{branchname}");
             
             //請款註記
-            tfy_Ar_mark = Funcs.getCustCode("ar_mark", "and (mark1 like '%" + Session["SeBranch"] + Session["Dept"] + "%' or mark1 is null)", "").Option("{cust_code}", "{code_name}");
+            tfy_Ar_mark = Sys.getCustCode("ar_mark", "and (mark1 like '%" + Session["SeBranch"] + Session["Dept"] + "%' or mark1 is null)", "").Option("{cust_code}", "{code_name}", false);
 
             //案源代碼
-            tfy_source = Funcs.getCustCode("Source", "AND cust_code<> '__' AND End_date is null", "cust_code").Option("{cust_code}", "({cust_code})---{code_name}");
+            tfy_source = Sys.getCustCode("Source", "AND cust_code<> '__' AND End_date is null", "cust_code").Option("{cust_code}", "({cust_code})---{code_name}");
             
             //發文方式
-            tfy_send_way = Funcs.getCustCode("GSEND_WAY", "", "sortfld").Option("{cust_code}", "{code_name}");
+            tfy_send_way = Sys.getCustCode("GSEND_WAY", "", "sortfld").Option("{cust_code}", "{code_name}");
 
             //收據抬頭
-            tfy_receipt_title = Funcs.getCustCode("rec_titleT", "", "sortfld").Option("{cust_code}", "{code_name}");
+            tfy_receipt_title = Sys.getCustCode("rec_titleT", "", "sortfld").Option("{cust_code}", "{code_name}");
         }
     }
 </script>
 
 <%=Sys.GetAscxPath(this)%>
-<input type=hidden id="spe_ctrl3" name="spe_ctrl3"><!--判斷是否需管制法定期限-->
+<input type=text id="spe_ctrl3" name="spe_ctrl3"><!--判斷是否需管制法定期限-->
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 <TR>
 	<td class="lightbluetable" align=right>洽案營洽 :</td>
@@ -96,7 +97,7 @@
 </TR>
 <tr id="tr_grconf">
 	<TD class=lightbluetable align=right>對應後續交辦作業序號：</TD>
-	<TD class=whitetablebg colspan=5><input type=hidden name=hgrconf_sqlno id=hgrconf_sqlno><!--判斷有值表從後續查詢來-->
+	<TD class=whitetablebg colspan=5><input type=text name=hgrconf_sqlno id=hgrconf_sqlno><!--判斷有值表從後續查詢來-->
 		<input type=text name=grconf_sqlno id=grconf_sqlno size=10 readonly><input type=button class="cbutton" value="查詢" onclick="case_form.get_attcase('Q')">
 		<input type=button class="cbutton" value="詳細" id=grconf_dtl onclick="case_form.get_attcase('S')">
 	</td>
@@ -171,7 +172,7 @@
             	    <input type="text" id="tot_zservice" name="tot_zservice" value=0>
 				    <input type="text" id="tot_yservice" name="tot_yservice" value=0>
 				    <input type="text" id="oth_money" name="oth_money" value=0>
-				    <input type="hidden" id="tot_count" name="tot_count" value="">
+				    <input type="text" id="tot_count" name="tot_count" value="">
 			    </TD>
 		    </TR>
 		    <TR>
@@ -233,9 +234,11 @@
         <input type="radio" id="Contract_no_Type_N" name="Contract_no_Type" value="N">
             <INPUT TYPE=text id=tfy_Contract_no name=tfy_Contract_no SIZE=10 MAXLENGTH=10 onchange="$('#Contract_no_Type_N').prop('checked',true).trigger('click');">
         <span id="contract_type">
-		<input type="radio" id="Contract_no_Type_A" name="Contract_no_Type" value="A">後續案無契約書
+		    <input type="radio" id="Contract_no_Type_A" name="Contract_no_Type" value="A">後續案無契約書
 		</span>
-		<input type="radio" id="Contract_no_Type_S" name="Contract_no_Type" style="display:none">特案簽報<!--2015/12/29修改，併入C不顯示-->
+		<span style="display:none"><!--2015/12/29修改，併入C不顯示-->
+		    <input type="radio" id="Contract_no_Type_S" name="Contract_no_Type">特案簽報
+		</span>
 	    <input type="radio" id="Contract_no_Type_C" name="Contract_no_Type" value="C">其他契約書無編號/特案簽報
 	    <input type="radio" id="Contract_no_Type_M" name="Contract_no_Type" value="M">總契約書
 	    <span id="span_btn_contract" style="display:none">
@@ -277,7 +280,7 @@
 	</TD>
 	<TD class=lightbluetable align=right>收據抬頭：</TD>
 	<TD class=whitetablebg>
-		<select id="tfy_receipt_title" name="tfy_receipt_title" class="QLock"><%#tfy_receipt_title%></select>
+		<select id="tfy_receipt_title" name="tfy_receipt_title"><%#tfy_receipt_title%></select>
 		<input type="text" id="tfy_rectitle_name" name="tfy_rectitle_name">
 	</TD>
 </tr>
@@ -297,8 +300,8 @@
 
 <script language="javascript" type="text/javascript">
     var case_form = {};
+    //晝面準備
     case_form.init = function () {
-        //晝面準備==============================
         //洽案營洽
         $("#td_tscode").empty();
         if (jMain.salesList[0].input_type == "text") {
@@ -452,7 +455,7 @@
     //承辦期限控制
     case_form.pr_date_control = function (T1) {
         $.ajax({
-            url: getRootPath() + "/brt1m/pr_date.aspx?Arcase=" + T1,//todo
+            url: getRootPath() + "/brt1m/pr_date.aspx?Arcase=" + T1,
             type: 'GET',
             dataType: "script",
             async: false,
@@ -461,19 +464,59 @@
         });
     }
 
-    //顯示附屬案性
+    //顯示附屬案性(x1:國別:T為國內案,x2:案性代碼,x3:Z1=>附屬案性)
     case_form.toArcase = function (x1, x2, x3) {
+        if (x2 == "") {
+            reg.nfyi_Service.value = 0;//服務費
+            reg.nfyi_Fees.value = 0;//規費
+            reg.nfy_service.value = 0;//小計服務費
+            reg.nfy_fees.value = 0;//小計規費
+            case_form.summary();//計算合計
+            case_form.setSendWay(x2)//20160909 增加發文方式
+            return false;
+        }
+        var Arcase = x2;
+        var prt_code = $("#tfy_Arcase option:selected").attr("v1");
+        //ChangeTag(x2)//轉換要SHOW的交辦書面,todo
+        reg.tfy_Arcase.value = x2;
+        //2011/9/26抓取案性特殊控制
+        if (x2 != "") {
+            case_form.display_caseform(x1, x2);//抓案性特殊控制
+        }
+        case_form.ToFee(x1, x2, x3, "0");//***抓收費標準,0=主案性
+        case_form.Display_Arcase(x1, x2, x3);//***抓附屬案性.轉帳費用
+        //***附屬案性清空
+        for (var r = 1; r <= CInt($("#TaCount").val()) ; r++) {
+            $("#nfyi_item_Arcase_" + r).val("");
+            $("#nfyi_item_count_" + r).val("1");
+            $("#nfyi_Service_" + r).val("0");
+            $("#nfzi_Service_" + r).val("0");
+            $("#nfyi_fees_" + r).val("0");
+            $("#nfzi_fees_" + r).val("0");
+        }
+        case_form.summary();
+        //****顯示無收費標準
+        if (reg.anfees.value = "N") reg.Discount.value = "無收費標準";
 
+        //***2010/6/7因應結案流程修改，交辦結案代碼XX1~XX4且為舊案,顯示結案原因
+        //***2010/10/12因增加結案選項，提醒交辦結案案性是否結案
+        //***2011/1/10因交辦其他案性也可勾選結案註記，所以每個畫面加結案註記，因此結案案性畫面欄位名稱修改
+        if (prt_code == "ZZ" && $("#Ar_Form").val().Left(1) != "B") {
+            if ($("#tfy_Arcase").val().Left(2) == "XX") {
+                $("#ZZ1tr_endtype").show();
+                if (confirm("交辦結案案性，請問是否結案？※確認結案則系統將續行結案流程並管制結案期限。")) {
+                    $("#ZZ1_end_flag").prop("chedked", true);//zz_form
+                    $("#tfy_end_flag").val("Y");//dmt_form
+                } else {
+                    $("#ZZ1_end_flag").prop("chedked", false);//zz_form
+                    $("#tfy_end_flag").val("N");//dmt_form
+                }
+            }
+            case_form.setSendWay(x2)//20160909 增加發文方式
+        }
     }
-    /*
-    function ToArcase(a, b, c) {
-        var template = $('#tran_' + b).text();
-        $("div.tabCont[id='#tran'").empty();
-        $("div.tabCont[id='#tran'").append(template);
-        init();
-    }*/
 
-    //抓取案性特殊控制
+    //抓取案性特殊控制(x1:國別:T為國內案,x2:案性代碼)
     case_form.display_caseform = function (x1, x2) {
         $("#spe_ctrl3").val("");
         $.ajax({
@@ -502,7 +545,7 @@
         }
     }
 
-    //依案性帶其他案性.轉帳費用
+    //依案性帶其他案性.轉帳費用(x1:國別:T為國內案,x2:案性代碼,x3:ar_form)
     case_form.Display_Arcase = function (x1, x2, x3) {
         $("select[id^='nfyi_item_Arcase_']").getOption({//其他費用
             url: getRootPath() + "/ajax/json_Fee.aspx",
@@ -547,7 +590,6 @@
                     $("#nfyi_Service_" + r).val("0");
                     $("#nfyi_fees_" + r).val("0");
                     $("#nfzi_Service_" + r).val("0");
-                    $("#nfzi_fees_" + r).val("0");
                     $("#nfzi_fees_" + r).val("0");
                     $("#nfyi_item_Arcase_" + r).focus();
                     case_form.summary();
@@ -598,19 +640,21 @@
                             $("#tfy_oth_code").val("");
                         else
                             $("#tfy_oth_code").val("L");
-                    } else if (x4 >= 1) {//其他費用
+                    } else {
                         $.each(jFee, function (i, item) {
-                            $("#nfyi_Service_" + x4).val(item.service * CInt($("#nfyi_item_count_" + x4).val()));
-                            $("#nfzi_Service_" + x4).val(item.service);
-                            $("#nfyi_fees_" + x4).val(item.fees * CInt($("#nfyi_item_count_" + x4).val()));
-                            $("#nfzi_fees_" + x4).val(item.fees);
+                            if (x4 >= 1) {//其他費用
+                                $("#nfyi_Service_" + x4).val(item.service * CInt($("#nfyi_item_count_" + x4).val()));
+                                $("#nfzi_Service_" + x4).val(item.service);
+                                $("#nfyi_fees_" + x4).val(item.fees * CInt($("#nfyi_item_count_" + x4).val()));
+                                $("#nfzi_fees_" + x4).val(item.fees);
+                            } else {//主案性
+                                $("#nfyi_Service").val(item.service);
+                                $("#Service").val(item.service);
+                                $("#nfyi_Fees").val(item.fees);
+                                $("#Fees").val(item.fees);
+                                $("#fee_remark").val(item.remark);//注意事項
+                            }
                         });
-                    } else {//主案性
-                        $("#nfyi_Service").val(item.service);
-                        $("#Service").val(item.service);
-                        $("#nfyi_Fees").val(item.fees);
-                        $("#Fees").val(item.fees);
-                        $("#fee_remark").val(item.remark);//注意事項
                     }
                 }
             },
@@ -659,16 +703,8 @@
             $("#nfy_Discount").val(0);
             $("#Discount").val(0);
         }else if($("#tfy_Ar_mark").val()== "B"||$("#tfy_Ar_mark").val()== "N"){
-            if (CInt($("#nfyi_item_count_" + nRow).val()) == 0) {
-                $("#tot_zservice").val(0);
-                $("#tot_yservice").val(0);
-            }else{
-                $("#tot_zservice").val($("#Service").val());
-                $("#tot_yservice").val($("#nfyi_Service").val());
-            }
-
-            var tot_zservice = 0;
-            var tot_yservice = 0;
+            var tot_zservice = CInt($("#Service").val());
+            var tot_yservice = CInt($("#nfyi_Service").val());
             for (var i = 1; i <= CInt($("#TaCount").val()) ; i++) {
                 tot_zservice += CInt($("#nfzi_Service_" + i).val()) * CInt($("#nfyi_item_count_" + x4).val());
                 tot_yservice += CInt($("#nfyi_Service_" + i).val());
