@@ -48,7 +48,7 @@
         //抓取組主管所屬營洽
         sales_scode = Sys.getScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
 
-        if (Sys.Host.Left(3) != "web") {
+        if (Sys.Host.Left(3) != "web" && Sys.Host != "localhost") {
             feesctrlMail();//規費提列不足管制過期未銷管Email通知主管,正式環境才執行
         }
         
