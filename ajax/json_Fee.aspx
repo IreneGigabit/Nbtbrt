@@ -51,16 +51,16 @@
     }
 
     protected DataTable GetFee_T() {
-        string code_type = Funcs.getRsType();
+        string code_type = Sys.getRsType();
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
             if (ttype == "arcase") {
                 SQL = "select * from code_br ";
                 SQL += "where rs_class='" + ar_form + "' ";
-                if (ar_form == "Z1" && arcase.Left(2) == "FE") {
-                    SQL += " and left(rs_code,3)='" + arcase.Left(3) + "'";
+                if (ar_form == "Z1") {//附屬案性
+                    SQL += " and rs_code like '" + arcase.Left(3) + "%' ";
                 } else {
-                    SQL += " and rs_code like '" + arcase + "%'";
+                    SQL += " and rs_code like '" + arcase + "%' ";
                 }
                 SQL += "and getdate() >= beg_date AND no_code='N' ";
                 if (prgid != "brt51") {
@@ -92,7 +92,7 @@
     }
 
     protected DataTable GetFee_TE() {
-        string code_type = Funcs.getRsTypeExt();
+        string code_type = Sys.getRsTypeExt();
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
             if (ttype == "arcase") {
