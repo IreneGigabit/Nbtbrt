@@ -10,8 +10,8 @@
     protected string apclass = "", ap_country = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
-        apclass = Funcs.getCustCode("apclass","","sortfld").Option("{cust_code}", "{code_name}");
-        ap_country=Funcs.getCountry().Option("{coun_code}", "{coun_c}");
+        apclass = Sys.getCustCode("apclass", "", "sortfld").Option("{cust_code}", "{code_name}");
+        ap_country = Sys.getCountry().Option("{coun_code}", "{coun_c}");
         
         this.DataBind();
     }
