@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "System.Data"  %>
 <%@ Import Namespace = "System.Collections.Generic"%>
@@ -46,7 +46,7 @@
         tradeUrl = "http://" + Sys.SIServer + "/Tparea/checklogin.asp?tfx_scode=" + Session["se_scode"] + "&sys_pwd=" + Session["SeSysPwd"] + "&toppage=0&syscode=Tparea&stat=Y";
 
         //抓取組主管所屬營洽
-        sales_scode = Funcs.getScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
+        sales_scode = Sys.getScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
 
         if (Sys.Host.Left(3) != "web") {
             feesctrlMail();//規費提列不足管制過期未銷管Email通知主管,正式環境才執行
@@ -411,8 +411,8 @@
                         body += "<td nowrap>收文內容</td><td nowrap>管制期限</td><td nowrap>代理人請款金額(NTD)</td>";
                         body += "</tr>";
                     }
-                    string fseq = Funcs.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), dr.SafeRead("country", ""), dr.SafeRead("branch", ""), Sys.GetSession("dept") + "E");
-                    string fextseq = Funcs.formatSeq(dr.SafeRead("ext_seq", ""), dr.SafeRead("ext_seq1", ""), "", "", Sys.GetSession("dept") + "E");
+                    string fseq = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), dr.SafeRead("country", ""), dr.SafeRead("branch", ""), Sys.GetSession("dept") + "E");
+                    string fextseq = Sys.formatSeq(dr.SafeRead("ext_seq", ""), dr.SafeRead("ext_seq1", ""), "", "", Sys.GetSession("dept") + "E");
                     body += "<tr align='center'>";
                     body += "<td nowrap>" + dr.SafeRead("sc_name", "") + "</td>";
                     body += "<td nowrap>" + fseq + "</td>";
