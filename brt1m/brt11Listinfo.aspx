@@ -19,7 +19,7 @@
     protected string StrFormBtn = "";
 
     protected string submitTask = "";
-    protected string code_type = Funcs.getRsType();
+    protected string code_type = Sys.getRsType();
     
     DataSet ds = new DataSet();
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
