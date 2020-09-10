@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
@@ -114,6 +114,33 @@ public partial class Sys
             DataTable dt = new DataTable();
             cnn.DataTable(SQL, dt);
 
+            return dt;
+        }
+    }
+    #endregion
+
+    #region getAgent - 抓取代理人清單
+    /// <summary>  
+    /// 抓取代理人清單
+    /// </summary>  
+    public static DataTable getAgent() {
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            //現行案件預設出名代理人
+            string SQL="select cust_code from cust_code where code_type='Tagt_no' and mark='N'";
+            object objResult = conn.ExecuteScalar(SQL);
+            string d_agt_no1= (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString().Trim();
+
+            SQL = "SELECT agt_no,agt_name1,agt_name2,agt_name3,agt_namefull,''selected ";
+            SQL += "FROM agt ";
+            SQL += "ORDER BY agt_no";
+
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
+            for (int i = 0; i < dt.Rows.Count; i++) {
+                if(dt.Rows[i].SafeRead("agt_no", "")==d_agt_no1){
+                    dt.Rows[i]["selected"] ="selected";
+                }
+            }
             return dt;
         }
     }
