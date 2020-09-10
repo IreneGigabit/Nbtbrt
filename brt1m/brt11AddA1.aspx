@@ -1,11 +1,12 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Register Src="~/commonForm/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
 <%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
 <%@ Register Src="~/commonForm/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
 <%@ Register Src="~/commonForm/dmt/case_form.ascx" TagPrefix="uc1" TagName="case_form" %>
-<%@ Register Src="~/commonForm/dmt/tran_A1_remark1.ascx" TagPrefix="uc1" TagName="tran_A1_remark1" %>
 <%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
+<%@ Register Src="~/commonForm/dmt/br_A1_form.ascx" TagPrefix="uc1" TagName="br_A1_form" %>
+
 
 
 <script runat="server">
@@ -133,8 +134,8 @@
                 <!--include file="../commonForm/dmt/case_form.ascx"--><!--收費與接洽事項-->
             </div>
             <div class="tabCont" id="#tran">
+                <uc1:br_A1_form runat="server" ID="br_A1_form" />
                 <div id="case_tran"></div>
-                <uc1:tran_A1_remark1 runat="server" ID="tran_A1_remark1" />
             </div>
             <div class="tabCont" id="#upload">
                 <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" />
@@ -245,10 +246,10 @@
     }
 
     main.changeTag = function (T1) {
-        $("#tran_remark1").empty();
 
         //附件(以案性第3碼判斷要show哪個附件)
-        var copyStr = $("#tran_remark1_"+T1.substring(2,1).toLowerCase()).text() || "";
-        $("#tran_remark1").append(copyStr);
+        $("#br_remark1").empty();
+        var copyStr = $("#br_remark1_"+T1.substr(2,1).toUpperCase()).text() || "";
+        $("#br_remark1").append(copyStr);
     }
 </script>
