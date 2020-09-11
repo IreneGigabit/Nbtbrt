@@ -29,7 +29,10 @@
 		weekText: '周', weekStatus: '年內周次',
 		dayStatus: '選擇 m月 d日, DD', defaultStatus: '請選擇日期',
 		isRTL: false, todayClick: true,
-		showTrigger: '<img src="' + postPath + '/js/img/calendar-green.gif" alt="Popup">', yearRange: '-80:+5'
+	    showOnFocus:false,
+	    //showTrigger: '<img src="' + postPath + '/js/img/calendar-green.gif" alt="Popup">',
+	    showTrigger: '<IMG src="' + postPath + '/images/p.gif" width=21 align=absMiddle height=22 alt="Popup">',
+	    yearRange: '-80:+5'
 	};
 	$.datepick.setDefaults($.datepick.regional['zh-TW']);
 })(jQuery);
