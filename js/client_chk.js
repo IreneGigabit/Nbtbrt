@@ -71,7 +71,8 @@ function chkNull2(pFieldName,pObj)
 
 //check field integer:檢查物件值不可為小數
 function chkInt(pFieldName,pObj){
-    if (Math.floor(pObj.value) === pObj.value){
+    if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
+    if (Math.floor(pObj.value) === pObj.value) {
         return false;
     }else{
         alert(pFieldName+"必須為整數，請重新輸入!!!");
@@ -82,6 +83,7 @@ function chkInt(pFieldName,pObj){
 
 //檢查日期格式
 function ChkDate(pObj) {//=chkdateformat
+    if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
     if (pObj.value=="")return false;
     if ($.isDate(pObj.value)==false){
         alert("日期格式錯誤，請重新輸入!!! 日期格式:YYYY/MM/DD");
