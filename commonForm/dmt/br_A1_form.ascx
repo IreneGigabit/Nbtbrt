@@ -1,6 +1,10 @@
 <%@ Control Language="C#" ClassName="br_A1_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
+<%@ Register Src="~/commonForm/dmt/prior_form.ascx" TagPrefix="uc1" TagName="prior_form" %>
+<%@ Register Src="~/commonForm/dmt/show_form.ascx" TagPrefix="uc1" TagName="show_form" %>
 <%@ Register Src="~/commonForm/dmt/br_A1_remark1.ascx" TagPrefix="uc1" TagName="br_A1_remark1" %>
+<%@ Register Src="~/commonForm/dmt/class_form.ascx" TagPrefix="uc1" TagName="class_form" %>
+
 
 
 <script runat="server">
@@ -123,42 +127,10 @@
 		<td class="lightbluetable" align="right" >記號：</td>
 		<td class="whitetablebg" colspan="7"><input TYPE="text" NAME="tfz1_Symbol" SIZE="30" MAXLENGTH="50"></td>
 	</tr>
-	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(ztextp)"><strong>貳、<u>優先權聲明</td>
-	</tr>
-	<tr>
-		<td class="lightbluetable" align="right">申請日：</td>
-		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="pfz1_prior_date" SIZE="10" class="dateField">
-		</TD>
-		<td class="lightbluetable" align="right">首次申請國家：</td>
-		<td class="whitetablebg">
-            <select NAME="tfz1_prior_country" SIZE="1"><%#tfz_country%></select>
-		    申請案號：<input type="text" name=tfz1_prior_no size=20 maxlength="20">
-	    </td>
-	</tr>
-	<!--FA1的展覽會優先權畫面-->
-	<tr>
-		<td colspan=8 class="whitetablebg">
-			<input type=hidden name=shownum_FA1 value="0">
-			<TABLE id=tabshow_FA1 name=tabshow_FA1 style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
-			<tr>
-				<td class="lightbluetable" colspan="3" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ><strong>參、<u>展覽會優先權聲明</td>
-			</tr>
-			<TR class=whitetablebg align=center>
-				<TD colspan=3 >
-					<input type=button value ="增加一筆展覽會優先權" class="cbutton"   id=show_Add_button_FA1 name=show_Add_button_FA1 onclick="show_Add_button('FA1')">			
-					<input type=button value ="減少一筆展覽會優先權" class="cbutton"   id=show_Del_button_FA1 name=show_Del_button_FA1 onclick="delete_show('FA1','btn')">
-				</TD>
-			</TR>
-			<tr>
-				<td class="lightbluetable" align="center" ></td>	
-				<td class="lightbluetable" align="center" >展覽會優先權日</td>
-				<td class="lightbluetable" align="center" >展覽會名稱</td>	
-			</tr>
-			</table>
-		</td>	
-	</tr>
-	<tr>
+    <uc1:prior_form runat="server" ID="prior_form" /><!--貳、優先權聲明-->
+    <uc1:show_form runat="server" ID="show_form" /><!--參、展覽會優先權聲明-->
+    <uc1:class_form runat="server" ID="class_form" /><!--陸、指定使用商品類別及名稱-->
+    <tr>
 		<td colspan=8 class="whitetablebg"><!--伍、陸-->
 	    </td>
     </tr>
