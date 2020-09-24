@@ -665,7 +665,7 @@ public class IPOReport : OpenXmlHelper {
 			this.RectitleName = "";
 		}
 		ReplaceBookmark("fees", Dmt.Rows[0]["fees"].ToString().Trim(), "0");
-		ReplaceBookmark("receipt_name", this.RectitleName, true);
+        ReplaceBookmark("receipt_name", this.RectitleName.ToXmlUnicode(), true);
 	}
 	#endregion
 

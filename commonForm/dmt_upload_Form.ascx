@@ -4,6 +4,8 @@
 <script runat="server">
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, string> Parent = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
     public string uploadfield = "attach";
     public string seq = "";
     public string seq1 = "";
@@ -57,7 +59,7 @@
 <%=Sys.GetAscxPath(this)%>
 <input type="text" id="<%#uploadfield%>_maxAttach_no" name="<%#uploadfield%>_maxAttach_no" value=""><!--目前table裡最大值-->
 <input type="text" id="<%#uploadfield%>_attach_cnt" name="<%#uploadfield%>_attach_cnt" value=""><!--目前table裡有效筆數-->
-<input type="text" id="<%#uploadfield%>_filenum" name="<%#uploadfield%>_filenum" value="0">
+<input type="text" id="<%#uploadfield%>_filenum" name="<%#uploadfield%>_filenum" value="0"><!--/畫面顯示NO-->
 <input type="text" id="<%#uploadfield%>_path" name="<%#uploadfield%>_path" value="<%=epath%>">
 <input type="text" id="uploadfield" name="uploadfield" value="<%#uploadfield%>">
 <input type="text" id="maxattach_no" name="maxattach_no" value="0">
@@ -78,31 +80,30 @@
     <tfoot style="display:none">
 		<TR>
 			<TD class=lightbluetable align=center>
-		        文件檔案<input type=text name='<%#uploadfield%>_filenum##' class="Lock" size=2 value='##'>.
+		        文件檔案<input type=text id='<%#uploadfield%>_filenum##' name='<%#uploadfield%>_filenum##' class="Lock" size=2 value='##'>.
 			</TD>
 			<TD class=sfont9 colspan="2" align="left">
                 檔案名稱：<input type=text id='<%#uploadfield%>_name_##' name='<%#uploadfield%>_name_##' class="Lock" size=50 maxlength=50>
-                <input type=button name='btn<%#uploadfield%>_##' class='cbutton <%=Lock.TryGet("Qup")%>' value='上傳' onclick="upload_form.UploadAttach('##')">
-                <input type=button name='btn<%#uploadfield%>_D_##' class='cbutton <%=Lock.TryGet("Qup")%>' value='刪除' onclick="upload_form.DelAttach('##')">
-                <input type=button name='btn<%#uploadfield%>_S_##' class='cbutton' value='檢視' onclick="upload_form.PreviewAttach('##')">
-                <input type='hidden' id='<%#uploadfield%>_size_##' name='<%#uploadfield%>_size_##'>
-                <input type='hidden' id='<%#uploadfield%>_##' name='<%#uploadfield%>_##'>
-                <input type='hidden' id='tstep_grade_##' name='tstep_grade_##'>
-                <input type='hidden' id='attach_sqlno_##' name='attach_sqlno_##'>
-                <input type='hidden' id='attach_flag_##' name='attach_flag_##'>
+                <input type=button id='btn<%#uploadfield%>_##' name='btn<%#uploadfield%>_##' class='cbutton <%=Lock.TryGet("Qup")%>' value='上傳' onclick="upload_form.UploadAttach('##')">
+                <input type=button id='btn<%#uploadfield%>_D_##' name='btn<%#uploadfield%>_D_##' class='cbutton <%=Lock.TryGet("Qup")%>' value='刪除' onclick="upload_form.DelAttach('##')">
+                <input type=button id='btn<%#uploadfield%>_S_##' name='btn<%#uploadfield%>_S_##' class='cbutton' value='檢視' onclick="upload_form.PreviewAttach('##')">
+                <input type='text' id='<%#uploadfield%>_size_##' name='<%#uploadfield%>_size_##'>
+                <input type='text' id='<%#uploadfield%>_##' name='<%#uploadfield%>_##'>
+                <input type='text' id='tstep_grade_##' name='tstep_grade_##'>
+                <input type='text' id='attach_sqlno_##' name='attach_sqlno_##'>
+                <input type='text' id='attach_flag_##' name='attach_flag_##'>
                 <BR>原始檔名：<input type='text' id='source_name_##' name='source_name_##' class="Lock" size=50>
-                <input type='hidden' id='attach_no_##' name='attach_no_##' value='##'>
-                <input type='hidden' id='old_<%#uploadfield%>_name_##' name='old_<%#uploadfield%>_name_##'>
-                <input type='hidden' id='doc_type_mark_##' name='doc_type_mark_##'>
-                <input type='hidden' id='attach_flagtran_##' name='attach_flagtran_##'><!--2014/12/13柳月for異動作業增加-->
-                <input type='hidden' id='tran_sqlno_##' name='tran_sqlno_##'><!--2014/12/13柳月for異動作業增加-->
-                <input type='hidden' id='<%#uploadfield%>_apattach_sqlno_##' name='<%#uploadfield%>_apattach_sqlno_##'><!--2015/12/25柳月for總契約書/委任書作業增加-->
-                <input type='hidden' id='attach_old_branch_##' name='attach_old_branch_##'>
+                <input type='text' id='attach_no_##' name='attach_no_##' value='##'>
+                <input type='text' id='old_<%#uploadfield%>_name_##' name='old_<%#uploadfield%>_name_##'>
+                <input type='text' id='doc_type_mark_##' name='doc_type_mark_##'>
+                <input type='text' id='attach_flagtran_##' name='attach_flagtran_##'><!--2014/12/13柳月for異動作業增加-->
+                <input type='text' id='tran_sqlno_##' name='tran_sqlno_##' value='0'><!--2014/12/13柳月for異動作業增加-->
+                <input type='text' id='<%#uploadfield%>_apattach_sqlno_##' name='<%#uploadfield%>_apattach_sqlno_##'><!--2015/12/25柳月for總契約書/委任書作業增加-->
+                <input type='text' id='attach_old_branch_##' name='attach_old_branch_##'>
                 <br>檔案說明：<select id='doc_type_##' name='doc_type_##' class="<%=Lock.TryGet("Qup")%>" onchange="getfiledoc_code('##')"><%#html_doc%></select>
                 <input type=text id='<%#uploadfield%>_desc_##' name='<%#uploadfield%>_desc_##' class="<%=Lock.TryGet("Qup")%>" size=50 maxlength=60 onblur="fChkDataLen(this,'檔案說明')" >
                 <input type=checkbox id='<%#uploadfield%>_branch_##' name='<%#uploadfield%>_branch_##' class="<%=Lock.TryGet("Qup")%>" value='B'><font color='blue'>交辦專案室</font>
                 <input type=checkbox id='doc_flag_##' name='doc_flag_##' class="<%=Lock.TryGet("Qup")%>" value='E'><font color='blue'>電子送件文件檔(pdf)</font>
-                <input type='hidden' id='bropen_path_##' name='bropen_path_##'>
 			</TD>
 		</TR>
     </tfoot>
@@ -112,8 +113,9 @@
 <script type="text/html" id="upload_btn">
     <TR>
 		<TD class=whitetablebg align=center colspan=5>
-			<input type=button value ="增加一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Add_button name=file_Add_button onclick="upload_form.appendFile()">
-			<input type=button value ="減少一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Del_button name=file_Del_button onclick="upload_form.deleteFile()">
+            <input type="button" value="多檔上傳" class="greenbutton" id="multi_upload_button" name="multi_upload_button" onclick="upload_form.mAppendFile()">
+			<input type="button" value ="增加一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Add_button name=file_Add_button onclick="upload_form.appendFile()">
+			<input type="button" value ="減少一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Del_button name=file_Del_button onclick="upload_form.deleteFile()">
 		</TD>
 	</TR>
 </script>
@@ -135,7 +137,6 @@
         }
 
         $("#tabfile" + fld + ">tbody").empty();
-
         //從接洽記錄上傳
         if (upload_form.uploadtype == "case") {
             //非異動上傳作業
@@ -197,7 +198,57 @@
         }
     }
 
-    //增加一筆
+
+    //[多檔上傳]
+    upload_form.mAppendFile = function (nRow) {
+        var fld = $("#uploadfield").val();
+        var tfolder = $("#" + fld + "_path").val();//存檔路徑
+        var nfilename = "";//"KT-" + $("#opt_no").val() + "-{{attach_no}}m";//新檔名格式
+
+
+        var urlasp = getRootPath() + "/sub/multi_upload_file.aspx?type=doc";
+        urlasp += "&attach_tablename=dmt_attach&filename_flag=source_name";
+        urlasp += "&folder_name=" + tfolder + "&nfilename=" + nfilename;
+        urlasp += "&syscode=&branch=&dept=&seq=&seq1=&step_grade=";//attachtemp的key值
+        urlasp += "&apcode=&prgid=<%=prgid%>";//remark用
+        var mm = window.open(urlasp, "mupload", "width=700 height=600 top=50 left=150 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=yes scrollbars=yes");
+        mm.focus();
+        //$("#dialog").dialog({
+        //    autoOpen: false, width: 700, height: 700,
+        //    modal: true,
+        //    open: function (ev, ui) {
+        //        $('#myIframe').attr('src', urlasp);
+        //    }
+        //});
+        //$('#dialog').dialog('open');
+    }
+    //多檔上傳後回傳資料顯示於畫面上
+    function uploadSuccess(rvalue) {
+        var fld = $("#uploadfield").val();
+        if (rvalue.msg == "") {//沒有錯誤或警告
+            upload_form.appendFile();
+            //傳回:檔案名稱，虛擬完整路徑，原始檔名，檔案大小，attach_no
+            var listno = $("#" + fld + "_filenum").val();
+            var attach_no = rvalue.attach_no;
+            if ((attach_no || "") == "") attach_no = CInt($("#maxattach_no").val()) + 1;
+            $("#" + fld + "_maxAttach_no").val(attach_no);
+            $("#" + fld + "_name_" + listno).val(rvalue.name);
+            $("#" + fld + "_size_" + listno).val(rvalue.size);
+            $("#" + fld + "_" + listno).val(rvalue.dir);
+            $("#source_name_" + listno).val(rvalue.source);
+            $("#" + fld + "_attach_no_" + listno).val(attach_no);
+            $("#btn" + fld + "_" + listno).prop("disabled", true);
+
+            //先判斷原本資料是否有attach_sqlno,若有表示修改,若沒有表示新增
+            if ($("#attach_sqlno_" + listno).val() != "") {
+                $("#attach_flag_" + listno).val("U");//修改
+            } else {
+                $("#attach_flag_" + listno).val("A");//新增
+            }
+        }
+    }
+
+    //[增加一筆]
     upload_form.appendFile = function () {
         var fld = $("#uploadfield").val();
 
@@ -211,8 +262,8 @@
             }
         }
 
-        var nRow = parseInt($("#" + fld + "_filenum").val(), 10) + 1;//畫面顯示NO
-        $("#maxattach_no").val(parseInt($("#maxattach_no").val(), 10) + 1);//table+畫面顯示 NO
+        var nRow = CInt($("#" + fld + "_filenum").val()) + 1;//畫面顯示NO
+        $("#maxattach_no").val(CInt($("#maxattach_no").val()) + 1);//table+畫面顯示 NO
         //複製樣板
         $("#tabfile" + fld + ">tfoot").each(function (i) {
             var strLine1 = $(this).html().replace(/##/g, nRow);
@@ -222,6 +273,7 @@
         $("#attach_no_" + nRow).val($("#maxattach_no").val());//dmt_attach.attach_no
     }
 
+    //[減少一筆]
     upload_form.deleteFile = function () {
         var fld = $("#uploadfield").val();
         var tfilenum = parseInt($("#" + fld + "_filenum").val(), 10);//attach_no
@@ -246,6 +298,73 @@
         $("#"+fld+"_branch_" + nRow).lock();
     }
 
+    //[上傳]
+    upload_form.UploadAttach = function (nRow) {
+        var tfolder = $("#" + $("#uploadfield").val() + "_path").val();
+        var url = getRootPath() + "/sub/upload_win_file_new.aspx?type=doc" +
+            "&folder_name=" + tfolder +
+            "&file_name=" + $("#uploadfield").val() + "_name_" + nRow +
+            "&size_name=" + $("#uploadfield").val() + "_size_" + nRow +
+            "&dir_name=" + $("#uploadfield").val() + "_" + nRow +
+            "&attach_flag_name=attach_flag_" + nRow +
+            "&prgid=<%=prgid%>" +
+            "&btnname=btn" + $("#uploadfield").val() + "_" + nRow +
+            "&filename_flag=source_name";
+        window.open(url, "", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+    }
+
+    //[刪除]
+    upload_form.DelAttach = function (nRow) {
+        var fld = $("#uploadfield").val();
+
+        if (document.getElementById(fld + "_" + nRow).value == "") {
+            alert("無檔案可刪除!!");
+            return false;
+        }
+        var file = document.getElementById(fld + "_" + nRow).value;
+        var tname = document.getElementById(fld + "_name_" + nRow).value;
+        if (file.indexOf(".") > -1) {	//路徑包含檔案
+            if (file.indexOf("/") > -1) {	//當檔名前的符號為/，將檔名前/改為\
+                file = file.substr(0, file.lastIndexOf("/")) + "\\" + tname;
+            }
+        } else {
+            file += "\\" + tname;
+        }
+
+        //2015/12/25for總契約書/委任書增加檢查(只取消連結不刪實體檔)
+        if (document.getElementById(fld + "_apattach_sqlno_" + nRow).value != "") {
+            if (confirm("確定取消" + document.getElementById(fld + "_desc_" + nRow).value + "連結？")) {
+                document.getElementById(fld + "_apattach_sqlno_" + nRow).value = "";
+                document.getElementById(fld + "_name_" + nRow).value = "";
+                document.getElementById("source_name_" + nRow).value = "";
+                document.getElementById(fld + "_desc_" + nRow).value = "";
+                document.getElementById(fld + "_" + nRow).value = "";
+                document.getElementById(fld + "_size_" + nRow).value = "";
+                document.getElementById("doc_type_" + nRow).value = "";
+                document.getElementById("btn" + fld + "_" + nRow).disabled = false;
+                document.getElementById("attach_flag_" + nRow).value = "D";
+            }
+            return false;
+        }
+
+        if (confirm("確定刪除上傳檔案？")) {
+            //var tfolder = "\\btbrt\\<%=Session["SeBranch"]%>t\\<%=epath%>";
+            //window.open("/btbrt/sub/del_draw_file.asp?type=doc&folder_name=" + tfolder + "&draw_file=" + file + "&btnname=btn<%=uploadfield%>D_" + nRow + "&form_name=<%=uploadfield%>" + nRow, "myWindowOne1", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            window.open(getRootPath() + "/sub/del_draw_file_new.aspx?type=doc&draw_file=" + file, "myWindowOne1", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            document.getElementById(fld + "_name_" + nRow).value = "";
+            document.getElementById("source_name_" + nRow).value = "";
+            document.getElementById(fld + "_desc_" + nRow).value = "";
+            document.getElementById(fld + "_" + nRow).value = "";
+            document.getElementById(fld + "_size_" + nRow).value = "";
+            document.getElementById("doc_type_" + nRow).value = "";
+            document.getElementById("btn" + fld + "_" + nRow).disabled = false;
+            document.getElementById("attach_flag_" + nRow).value = "D";
+        } else {
+            document.getElementById(fld + "_desc_" + nRow).focus();
+            return false;
+        }
+    }
+
     //檢視
     upload_form.PreviewAttach = function (nRow) {
         var fld = $("#uploadfield").val();
@@ -254,6 +373,16 @@
             return false;
         }
 
-        window.open($("#bropen_path_" + nRow).val());
+        var file = document.getElementById(fld + "_" + nRow).value;
+        var tname = document.getElementById(fld + "_name_" + nRow).value;
+        if (file.indexOf(".") > -1) {	//路徑包含檔案
+            if (file.indexOf("/") > -1) {	//當檔名前的符號為/，將檔名前/改為\
+                file = file.substr(0, file.lastIndexOf("/")) + "\\" + tname;
+            }
+        } else {
+            file += "\\" + tname;
+        }
+
+        window.open(file);
     }
 </script>

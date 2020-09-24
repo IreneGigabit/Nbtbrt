@@ -136,17 +136,17 @@ function CLng(n) {
 }
 //end region
 
-//#region isNumeric
-//vbscript isNumeric Convertion
-function isNumeric(n) {
+//#region IsNumeric
+//vbscript IsNumeric Convertion
+function IsNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 //end region
 
-//#region isEmpty
-//vbscript isEmpty Convertion
-function isEmpty(n) {
-    if (n === undefined) {
+//#region IsEmpty
+//vbscript IsEmpty + IsNull + "" Convertion
+function IsEmpty(n) {
+    if (n === undefined || n == null || n == "") {
         return true;
     }
     return false;

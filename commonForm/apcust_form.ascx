@@ -2,11 +2,12 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
+    //父控制項傳入的參數
+    public Dictionary<string, string> Lock = new Dictionary<string, string>();
+    
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
-
-    public Dictionary<string, string> Lock = new Dictionary<string, string>();
-
+    
     protected string apclass = "", ap_country = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -158,7 +159,7 @@
     //增加一筆申請人
     $("#AP_Add_button").click(function () { apcust_form.appendAP(); });
     apcust_form.appendAP = function () {
-        var nRow = parseInt($("#apnum").val(), 10) + 1;
+        var nRow = CInt($("#apnum").val()) + 1;
         //複製樣板
         var copyStr = $("#apcust_template").text()||"";
         copyStr = copyStr.replace(/##/g, nRow);
@@ -171,7 +172,7 @@
     //減少一筆申請人
     $("#AP_Del_button").click(function () { apcust_form.deleteAP(); });
     apcust_form.deleteAP = function () {
-        var nRow = parseInt($("#apnum").val(), 10);
+        var nRow = CInt($("#apnum").val());
         $('#tr_ap_'+nRow).remove();
         $("#apnum").val(Math.max(0, nRow - 1));
     }
@@ -324,7 +325,7 @@
     //檢查申請人重覆
     apcust_form.chkapcust_no=function(papnum){
         var objAp = {};
-	    for (var r=1;r<=parseInt($("#apnum").val(), 10);r++){
+        for (var r = 1; r <= CInt($("#apnum").val()) ; r++) {
 			var lineAp=$("#apcust_no_"+r).val();
 			if(lineAp!=""&&objAp[lineAp]) {
 				alert("("+r+")申請人重覆，請重新輸入！！");

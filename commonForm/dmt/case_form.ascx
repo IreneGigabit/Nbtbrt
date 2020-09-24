@@ -1,20 +1,22 @@
 ﻿<%@ Control Language="C#" ClassName="case_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
+<%@ Import Namespace = "System.Data" %>
 
 <script runat="server">
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public string formFunction = "";
+    public int HTProgRight = 0;
 
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//程式代碼
-    protected int HTProgRight = 0;
     protected string SQL = "";
 
     protected int MaxTaCount = 5;//附屬案性筆數上限
     protected string recTitle = Sys.getDefaultTitle();//收據種類預設抬頭
     protected string ar_form = "", code_type = "";
 
+    protected string td_tscode = "";
     protected string tfy_Arcase = "", nfyi_item_Arcase = "", tfy_oth_arcase="";
     protected string tfy_oth_code = "", F_tscode = "", tfy_Ar_mark = "", tfy_source = "";
     protected string tfy_send_way = "", tfy_receipt_title = "";
@@ -22,10 +24,7 @@
     private void Page_Load(System.Object sender, System.EventArgs e) {
         ar_form = Request["ar_form"] ?? "";
         code_type = Request["code_type"] ?? "";
-            
-        Token myToken = new Token(HTProgCode);
-        HTProgRight = myToken.CheckMe();
-
+        
         PageLayout();
         this.DataBind();
     }
@@ -38,6 +37,27 @@
         }
         
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            //洽案營洽清單
+            using (DBHelper cnn = new DBHelper(Conn.Sysctrl).Debug(false)) {
+                DataTable dt = new DataTable();
+                if ((HTProgRight & 64) != 0) {
+                    SQL = "select distinct 'select'input_type,scode,sc_name,scode1  ";
+                    SQL += "from vscode_roles ";
+                    SQL += "where branch='" + Session["SeBranch"] + "' ";
+                    SQL += "and dept='" + Session["Dept"] + "' ";
+                    SQL += "and syscode='" + Session["Syscode"] + "' ";
+                    SQL += "and roles='sales' ";
+                    if (formFunction != "edit") {
+                        SQL += "and (end_date is null or end_date>convert(date,getDate())) ";
+                    }
+                    SQL += "order by scode1 ";
+                    cnn.DataTable(SQL, dt);
+                    td_tscode = "<select id='F_tscode' name='F_tscode' class='" + Lock["brt51"] + "'>" + dt.Option("{scode}", "{sc_name}") + "</select>";
+                } else {
+                    td_tscode = "<input type='text' id='F_tscode' name='F_tscode' readonly class='SEdit' size=5 value='" + Session["se_scode"] + "'>" + Session["sc_name"];
+                }
+            }
+            
             //案性
             SQL = "SELECT rs_code,prt_code,rs_detail,remark FROM  code_br WHERE cr= 'Y' and dept='T' And rs_type='" + code_type + "' AND no_code='N' ";
             if (ar_form.Left(1) != "B") {
@@ -92,7 +112,7 @@
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 <TR>
 	<td class="lightbluetable" align=right>洽案營洽 :</td>
-	<td class="whitetablebg" align="left" colspan=5 id="td_tscode">
+	<td class="whitetablebg" align="left" colspan=5 id="td_tscode"><%=td_tscode%>
 	</td>
 </TR>
 <tr id="tr_grconf">
@@ -110,7 +130,7 @@
 </TR>
 <TR>
     <TD class=whitetablebg align=center colspan=6>
-	    <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2>
+	    <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 		    <TR>
 		        <TD class=lightbluetable align=right width="4%">案&nbsp;&nbsp;&nbsp;&nbsp;性：</TD>
 		        <TD class=whitetablebg width=10%><select id=tfy_Arcase NAME=tfy_Arcase class="<%=Lock["brt51"]%>" onchange="case_form.toArcase('T',this.value ,'Z1')"><%#tfy_Arcase%></SELECT>
@@ -294,7 +314,7 @@
 <input type=text id="code_type" name="code_type" value="<%#code_type%>">	
 <input type=text id="TaMax" name="TaMax" value="<%=MaxTaCount%>"><!--最他費用最多可用筆數-->
 <input type=text id="TaCount" name="TaCount" value="0">
-<input type=text id="nfy_tot_case" name="nfy_tot_case" value="">
+<input type=text id="nfy_tot_case" name="nfy_tot_case" value="0">
 <input type=text id="tfy_ar_code" name="tfy_ar_code" value="N">	
 
 
@@ -303,31 +323,30 @@
     //晝面準備
     case_form.init = function () {
         //洽案營洽
-        $("#td_tscode").empty();
-        if (jMain.salesList[0].input_type == "text") {
-            $('#td_tscode').append('<input type="text" id="F_tscode" name="F_tscode" readonly class="SEdit" size=5 value="' + jMain.salesList[0].scode + '">' + jMain.salesList[0].sc_name);
-        } else {
-            $('#td_tscode').append("<select id='F_tscode' name='F_tscode' class='<%=Lock["brt51"]%>'></select>");
-            $("#F_tscode").getOption({
-                dataList: jMain.salesList,
-                valueFormat: "{scode}",
-                textFormat: "{sc_name}",
-                showEmpty:false
-            });
-        }
-
-        //晝面控制==============================
-        //if (main.prgid == "brt51") {//客收確認
-        //    $("#F_tscode").lock();//洽案營洽
-        //    $("#tr_fees").lock();//案性及費用
-        //    $("#tfy_Arcase").lock();//案性
-        //    $("#nfyi_Service").lock();//服務費
-        //    $("#nfyi_Fees").lock();//規費
+        //$("#td_tscode").empty();
+        //if (jMain.salesList[0].input_type == "text") {
+        //    $('#td_tscode').append('<input type="text" id="F_tscode" name="F_tscode" readonly class="SEdit" size=5 value="' + jMain.salesList[0].scode + '">' + jMain.salesList[0].sc_name);
+        //} else {
+        //    $('#td_tscode').append("<select id='F_tscode' name='F_tscode' class='<%=Lock["brt51"]%>'></select>");
+        //    $("#F_tscode").getOption({
+        //        dataList: jMain.salesList,
+        //        valueFormat: "{scode}",
+        //        textFormat: "{sc_name}",
+        //        showEmpty:false
+        //    });
         //}
+
+        br_form.changeTag("000");//交辦內容顯示預設項目
         
         if ($("#Ar_Form").val() == "A0" || $("#Ar_Form").val() == "A1") {
             //對應後續交辦作業序號(新申請案不用顯示)
             $("#tr_grconf").hide();
+            //後續案無契約書(新申請案不用顯示)
+            $("#contract_type").hide();
+        }
+        if (main.formFunction != "edit") {
+            //不是編輯模式隱藏對應後續交辦作業序號[詳細]
+            $("#grconf_dtl").hide();
         }
 
         /*
@@ -477,7 +496,7 @@
         }
         var Arcase = x2;
         var prt_code = $("#tfy_Arcase option:selected").attr("v1");
-        main.changeTag(x2);//轉換要SHOW的交辦書面,todo
+        br_form.changeTag(x2);//轉換要SHOW的交辦書面
         reg.tfy_Arcase.value = x2;
         //2011/9/26抓取案性特殊控制
         if (x2 != "") {
@@ -525,7 +544,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_vcustlist)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(抓取案性特殊控制)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jFee = $.parseJSON(json);
                 $.each(jFee, function (i, item) {
                     if (item.rs_code != "") {
@@ -562,7 +581,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_vcustlist)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(轉帳費用)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jFee = $.parseJSON(json);
                 $.each(jFee, function (i, item) {
                     if (item.rs_code != "") {
@@ -622,7 +641,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_vcustlist)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(收費標準)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jFee = $.parseJSON(json);
                 if (jFee.length != 0) {
                     if (x4 == 10) {//轉帳費用
@@ -690,7 +709,7 @@
     //其他費用與項目小計
     case_form.item_count = function (nRow) {
         $("#nfyi_Service_" + nRow).val(CInt($("#nfyi_item_count_" + nRow).val()) * CInt($("#nfzi_Service_" + nRow).val()));
-        $("#nfyi_Service_" + nRow).val(CInt($("#nfyi_item_count_" + nRow).val()) * CInt($("#nfzi_fees_" + nRow).val()));
+        $("#nfyi_fees_" + nRow).val(CInt($("#nfyi_item_count_" + nRow).val()) * CInt($("#nfzi_fees_" + nRow).val()));
         case_form.summary();
     }
 
@@ -706,7 +725,7 @@
             var tot_zservice = CInt($("#Service").val());
             var tot_yservice = CInt($("#nfyi_Service").val());
             for (var i = 1; i <= CInt($("#TaCount").val()) ; i++) {
-                tot_zservice += CInt($("#nfzi_Service_" + i).val()) * CInt($("#nfyi_item_count_" + x4).val());
+                tot_zservice += CInt($("#nfzi_Service_" + i).val()) * CInt($("#nfyi_item_count_" + i).val());
                 tot_yservice += CInt($("#nfyi_Service_" + i).val());
             }
             tot_zservice += CInt($("#oth_money").val());
@@ -743,7 +762,7 @@
     
     //服務費檢查
     $("#nfyi_Service").blur(function () {
-        if (isEmpty(reg.nfyi_Service.value) || !isNumeric(reg.nfyi_Service.value)) {
+        if (IsEmpty(reg.nfyi_Service.value) || !IsNumeric(reg.nfyi_Service.value)) {
             alert("服務費填寫錯誤,請重新輸入");
             $("#nfyi_Service").val(0);
             return false;
@@ -754,7 +773,7 @@
 
     //規費檢查
     $("#nfyi_Fees").blur(function () {
-        if (isEmpty(reg.nfyi_Fees.value) || !isNumeric(reg.nfyi_Fees.value)) {
+        if (IsEmpty(reg.nfyi_Fees.value) || !IsNumeric(reg.nfyi_Fees.value)) {
             $("#nfyi_Fees").val(0);
         }
 
@@ -770,7 +789,7 @@
 
     //檢查附屬案性規費
     case_form.item_nfyi_fees = function (nRow) {
-        if (isEmpty($("#nfyi_fees_"+nRow).val()) || !isNumeric($("#nfyi_fees_"+nRow).val())) {
+        if (IsEmpty($("#nfyi_fees_" + nRow).val()) || !IsNumeric($("#nfyi_fees_" + nRow).val())) {
             $("#nfyi_fees_"+nRow).val(0);
         }
 
@@ -792,9 +811,8 @@
             }
         }
 
-        var url = getRootPath() + "/brt11/brt11Qlist.aspx?prgid=<%=prgid%>&qrytype=" + act;
+        var url = getRootPath() + "/brt1m/brt11Qlist.aspx?prgid=<%=prgid%>&qrytype=" + act;
         url += "&cust_seq=" + $("#F_cust_seq").val() + "&scode=" + $("#F_tscode") + "&grconf_sqlno=" + $("#grconf_sqlno").val();
-        //todo
         window.open(url, "myWindowOne", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 

@@ -81,39 +81,6 @@ public partial class Sys
     }
 
     /// <summary>
-    /// 上傳檔案實體主機(fileServer)
-    /// </summary>
-    public static string uploadservername(string pBranch) {
-        string rtnStr = "";
-        switch (Host) {
-            case "web08":
-                rtnStr = "web02";//開發環境
-                break;
-            case "web10":
-                rtnStr = "web01";//測試環境
-                break;
-            default: //正式環境
-                if (pBranch.ToUpper() == "N") rtnStr = "sinn11";
-                if (pBranch.ToUpper() == "C") rtnStr = "sic11";
-                if (pBranch.ToUpper() == "S") rtnStr = "sis11";
-                if (pBranch.ToUpper() == "K") rtnStr = "sik11";
-                break;
-        }
-        return rtnStr;
-    }
-
-    /// <summary>
-    /// 國外所上傳檔案實體主機(fileServer)
-    /// </summary>
-    public static string uploadservernameF() {
-        switch (Host) {
-            case "web08": return "web02";//開發環境
-            case "web10": return "web01";//測試環境
-            default: return "sin31";//正式環境
-        }
-    }
-
-    /// <summary>
     /// 電子送件總管處檔案目錄
     /// </summary>
     public static string IPODir {
@@ -124,16 +91,6 @@ public partial class Sys
                 return "/nbtbrt/IPOSend/_商標電子送件區";
             }
         }
-    }
-
-    /// <summary>
-    /// 文件上傳目錄
-    /// </summary>
-    public static string FileDir(string pType) {
-        if (pType.ToLower() == "law_opt")
-            return "/nbtbrt/law_opt";
-        else
-            return "/nbtbrt/opt_file";
     }
 
     /// <summary>

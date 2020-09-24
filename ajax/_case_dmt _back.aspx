@@ -21,7 +21,6 @@
     protected string cust_seq = "";
 
     protected string br_in_scode = "";//交辦單營洽
-    protected string br_in_scname = "";//交辦單營洽
     
     protected void Page_Load(object sender, EventArgs e) {
         prgid = (Request["prgid"] ?? "").Trim().ToLower();
@@ -31,9 +30,7 @@
         in_no = (Request["in_no"] ?? "").Trim();
         cust_area = (Request["cust_area"] ?? "").Trim();
         cust_seq = (Request["cust_seq"] ?? "").Trim();
-        br_in_scode = Sys.GetSession("scode");
-        br_in_scname = Sys.GetSession("sc_name");
-        
+
         var settings = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented,
@@ -42,65 +39,40 @@
         };
         
         Response.Write("{");
-        Response.Write("\"br_in_scode\":" + JsonConvert.SerializeObject(br_in_scode, settings).ToUnicode() + "\n");
-        Response.Write(",\"br_in_scname\":" + JsonConvert.SerializeObject(br_in_scname, settings).ToUnicode() + "\n");
-        Response.Write(",\"case_main\":" + JsonConvert.SerializeObject(GetCase(), settings).ToUnicode() + "\n");
-        Response.Write(",\"cust\":" + JsonConvert.SerializeObject(GetCust(), settings).ToUnicode() + "\n");
-        //Response.Write(",\"salesList\":" + JsonConvert.SerializeObject(GetSales(), settings).ToUnicode() + "\n");
+        Response.Write("\"case_data\":" + JsonConvert.SerializeObject(GetCase(), settings).ToUnicode() + "\n");
+        Response.Write(",\"apcust\":" + JsonConvert.SerializeObject(GetAPCust(), settings).ToUnicode() + "\n");
+        Response.Write(",\"salesList\":" + JsonConvert.SerializeObject(GetSales(), settings).ToUnicode() + "\n");
         Response.Write("}");
 
         //Response.Write(JsonConvert.SerializeObject(dt, settings).ToUnicode());
     }
 
     #region GetCase 交辦資料
-    //private JObject GetCase() {
-    //    JObject obj = new JObject();
-    //    obj.Add("cust_area", JToken.FromObject(cust_area));
-    //    obj.Add("cust_seq", JToken.FromObject(cust_seq));
-    //    obj.Add("cust_seq", JToken.FromObject(cust_seq));
-    //    return obj;
-    //}
-
     private DataTable GetCase() {
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             //Dictionary<string, string> paras = new Dictionary<string, string>();
             //paras.Add("nIn_no", in_no);
             //conn.Procedure("Pro_case2", paras, dt);
-            //if (formfunction == "add" && submitTask != "AddNext") {//新增模式
-            //    SQL = "SELECT A.*, B.*,''in_no ";
-            //    SQL += ",(select min(att_sql) from custz_att c where B.cust_area = C.cust_area AND B.cust_seq = C.cust_seq and (dept='T' or dept is null) )att_sql ";
-            //    SQL += " FROM apcust A ";
-            //    SQL += "INNER JOIN custz B ON A.cust_area = B.cust_area AND A.cust_seq = B.cust_seq ";
-            //    //SQL += " LEFT OUTER JOIN custz_att C ON B.cust_area = C.cust_area AND B.cust_seq = C.cust_seq ";
-            //    SQL += "where b.cust_area='" + cust_area + "' and b.cust_seq='" + cust_seq + "'";
-            //    conn.DataTable(SQL, dt);
-            //} else {//編輯/複製 模式
-            //    SQL = "Pro_case2 '" + in_no + "'";
-            //    conn.DataTable(SQL, dt);
-            //}
+
             SQL = "Pro_case2 '" + in_no + "'";
             conn.DataTable(SQL, dt);
 
             if (dt.Rows.Count > 0) {
                 br_in_scode = dt.Rows[0].SafeRead("in_scode", "");
-                SQL = "select sc_name from sysctrl.dbo.scode where scode='" + br_in_scode + "'";
-                object objResult = conn.ExecuteScalar(SQL);
-                br_in_scname = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
             }
-
+            
             return dt;
         }
     }
     #endregion
 
-    #region GetCust 客戶主檔資料
-    private DataTable GetCust() {
+    #region GetAPCust 申請人資料
+    private DataTable GetAPCust() {
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             SQL = "SELECT * ";
-            SQL += ",(select min(att_sql) from custz_att c where B.cust_area = C.cust_area AND B.cust_seq = C.cust_seq and (dept='T' or dept is null) )att_sql ";
-            SQL += " FROM vcustlist b ";
+            SQL += " FROM vcustlist ";
             SQL += "where cust_area='" + cust_area + "' ";
             SQL += "and cust_seq='" + cust_seq + "'";
             conn.DataTable(SQL, dt);

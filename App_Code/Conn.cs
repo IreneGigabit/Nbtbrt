@@ -60,4 +60,18 @@ public static class Conn
             }
         }
     }
+
+    /// <summary>
+    /// 雙邊代理查照
+    /// </summary>
+    public static string sidbs {
+        get {
+            switch (Host) {
+                case "WEB08": return Sys.getConnString("dev_sidbs");//開發環境
+                case "WEB10": return Sys.getConnString("test_sidbs");//使用者測試環境
+                default: return Sys.getConnString("prod_sidbs");//正式環境
+            }
+        }
+    }
+
 }

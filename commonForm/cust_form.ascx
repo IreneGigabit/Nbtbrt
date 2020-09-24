@@ -2,10 +2,12 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
+    //父控制項傳入的參數
+    public Dictionary<string, string> Lock = new Dictionary<string, string>();
+    
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
     
-    public Dictionary<string, string> Lock = new Dictionary<string, string>();
     protected string cust_area = "";
     protected string cust_seq = "";
     
@@ -206,10 +208,6 @@
 <script language="javascript" type="text/javascript">
     var cust_form={};
     cust_form.init = function () {
-        $("#F_cust_area").val(main.cust_area);
-        $("#F_cust_seq").val(main.cust_seq);
-
-        $("#btncust_seq").click();
     }
 
     //修改客戶編號，重新帶出客戶資料

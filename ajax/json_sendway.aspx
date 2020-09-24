@@ -11,7 +11,6 @@
 
 <script runat="server">
     protected string SQL = "";
-    protected string strConnB = "";
 
     protected string rs_type = "";
     protected string rs_code = "";

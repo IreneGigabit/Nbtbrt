@@ -85,5 +85,8 @@ from sysctrl where syscode='ntbrt'
 select 'nntbrt',loginGrp,apcode,rights,beg_date,end_date,tran_date,'m1583'
 from loginap where syscode='ntbrt'
 
+insert into loginap
+select syscode,loginGrp,'brt11',rights,beg_date,end_date,tran_date,'m1583'
+from loginap where syscode='nntbrt' and apcode='Si04W01'
 
 

@@ -7,7 +7,6 @@
     protected string file_name = "";
     protected string folder_name = "";
     protected string cust_area = "";
-    protected string file_path = "";
     protected string btnname = "";
     
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -15,32 +14,38 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
-        string gdept = "T";
         type = Request["type"] ?? "";
         draw_file = Request["draw_file"] ?? "";
-        draw_file = draw_file.Replace("\\", "/");
-        draw_file = draw_file.Replace("/opt/", "/nopt/");
-        file_name = draw_file.Substring((draw_file.LastIndexOf("/") + 1));
-        folder_name = Request["folder_name"] ?? "";
-        cust_area = (Request["cust_area"] ?? "").Left(1)+gdept;
+        //draw_file = draw_file.Replace("\\", "/");
+        //draw_file = draw_file.Replace("/btbrt/", "/nbtbrt/");
+        draw_file=Sys.Path2Nbtbrt(draw_file);
+        file_name = draw_file;//完整路徑+檔案
+        folder_name = draw_file.Substring(0,(draw_file.LastIndexOf(@"\")));
         btnname = Request["btnname"] ?? "";
-
-        //file_path = "/nopt/opt_file/";
-        //if (type == "law_opt") file_path = "/nopt/law_opt/";
-        file_path = Sys.FileDir(type);
-
+        
+        if (type=="brdb_file"){
+            file_name = Request["folder_name"] ?? "";
+        }
+        
         //Response.Write("draw_file=" + draw_file + "<BR>");
         //Response.Write("file_name=" + file_name + "<BR>");
         //Response.Write("folder_name=" + folder_name + "<BR>");
         //Response.Write("file_name_w=" + System.IO.Path.GetFileNameWithoutExtension(file_name) + "<BR>");
         //Response.End();
         
-        //刪除檔案是將原檔改名,改名規則：檔名_年月日時分秒
-        System.IO.FileInfo fi = new System.IO.FileInfo(Server.MapPath(draw_file));
+        System.IO.FileInfo fi = new System.IO.FileInfo(Server.MapPath(file_name));
         if (fi.Exists) {
-            string File_name_new = String.Format("{0}_{1}{2}", System.IO.Path.GetFileNameWithoutExtension(file_name), DateTime.Now.ToString("yyyyMMddHHmmss"), fi.Extension);
-            //Response.Write("backup_name=" + file_path + "/" + folder_name + "/" + File_name_new + "<BR>");
-            fi.MoveTo(Server.MapPath(file_path + "/" + folder_name + "/" + File_name_new));
+            if (type == "ext_photo" || type == "dmt_photo" || type == "doc_candel") {
+                //商標圖檔或可刪除文件直接刪除
+                fi.Delete();
+            } else {
+                //刪除檔案是將原檔改名,改名規則：檔名_年月日時分秒
+                string File_name_new = String.Format("{0}_{1}{2}", System.IO.Path.GetFileNameWithoutExtension(file_name), DateTime.Now.ToString("yyyyMMddHHmmss"), fi.Extension);
+                //Response.Write("backup_to1=" + folder_name + "/" + File_name_new + "<BR>");
+                //Response.Write("backup_to2=" + Server.MapPath(folder_name + "/" + File_name_new) + "<BR>");
+                //Response.End();
+                fi.MoveTo(Server.MapPath(folder_name + "/" + File_name_new));
+            }
         }
 
         this.DataBind();

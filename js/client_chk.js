@@ -107,13 +107,9 @@ function chkSEDate(pSdate, pEdate, pmsg){
     return true;
 }
 
-function isNumeric(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
 function chkNum(pValue, pmsg) {
     if (pValue != "") {
-        if (!isNumeric(pValue)) {
+        if (!IsNumeric(pValue)) {
             alert(pmsg + "必須為數值!!!");
             return true;
         }
@@ -124,7 +120,7 @@ function chkNum(pValue, pmsg) {
 
 function chkNum1(pObj, pmsg) {
     if (pObj.value != "") {
-        if (!isNumeric(pObj.value)) {
+        if (!IsNumeric(pObj.value)) {
             alert(pmsg + "必須為數值!!!");
             pObj.focus();
             return true;
