@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Register Src="~/commonForm/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
 <%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
@@ -101,8 +101,9 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_agtno.js")%>"></script><!--檢查輸入出名代理人是否與預設出名代理人相同-->
-<!--include virtual="~\js\client_custwatch.js" --><!--檢查是否為雙邊代理查照對象-->
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_agtno.js")%>"></script><!--檢查輸入出名代理人是否與預設出名代理人相同-->
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_doctype.js")%>"></script><!--檢查契約書種類與上傳文件-->
+<!--#include virtual="~\js\client_chk_custwatch.js" --><!--檢查是否為雙邊代理查照對象-->
 </head>
 
 <body>
@@ -453,10 +454,178 @@
                 alert("請選擇總契約書！");
                 settab("#case");
                 return false;
-
             }
         }
-    }
 
-    alert(df_tagt.get_gagtno('C').name);
+        var code3 = $("#tfy_Arcase").val().substr(2, 1).toUpperCase();//案性第3碼
+        var prt_code = $("#tfy_Arcase option:selected").attr("v1");
+        var pagt_no = $("#tfy_Arcase option:selected").attr("v2");//預設出名代理人
+        if(pagt_no==""){
+            pagt_no=get_tagtno("N").no;//2015/10/21因應104年度出名代理人修改並改抓取cust_code.code_type=Tagt_no and mark=N預設出名代理人
+        }
+        
+        //***其他商標
+        if (code3=="K"){
+            var mark2=$("input[name='tfz1_s_mark2']:checked").val();
+            if (mark2!="H"&&mark2!="I"&&mark2!="J") {
+                alert("案性為『其他』時，商標種類只能選『位置、氣味、觸覺』其一");
+                return false;
+            }
+        }
+
+        //***證明標章之證明標的
+        if (code3=="D"||code3=="E"||code3=="F"||code3=="G"){
+            var pul=$("input[name='pul']:checked").val();
+            if( pul == null){
+                alert("請輸入標章證明標的及內容");
+                settab("#tran");
+                return false;
+            }else{
+                $("#tfz1_pul").val(pul);
+            }
+        }
+
+        //****團體標章表彰之內容	
+        if (code3=="9"||code3=="A"||code3=="B"||code3=="C"){
+            if(IsEmpty($("#tfd1_good_name").val())){
+                alert("請輸入團體標章表彰之內容");
+                settab("#tran");
+                return false;
+                $("#tfd1_good_name").focus();
+            }
+        }
+        //折扣請核單檢查2005/10/11雄商平淑提出與李經理確認修改如下
+        //折扣率>=30檢查需附折扣請核單，為因應折扣率21~29仍需附折扣請款單，不控制>=30勾選材存檔，營洽勾選即存檔	
+        //2005/11/22李經理指示折扣率>30需簽折扣請核單，服務費等於七折不用簽折扣請核單
+        //2016/5/30修改，因折扣請核改為線上，所以不需檢復折扣請核單，判斷>20需填寫折扣理由
+        if($("#nfy_Discount").val()!=""&&CInt($("#nfy_Discount").val())>20){
+            if($("#tfy_discount_remark").val()==""){
+                alert("折扣低於8折，應填寫折扣理由，請輸入！");
+                settab("#case");
+                $("#tfy_discount_remark").focus();
+                return false;
+            }
+        }
+        //轉帳費用檢查
+        if($("#tfy_oth_arcase").val()!=""){
+            if($("#nfy_oth_money").val()=="0"){
+                alert("有轉帳費用，請輸入轉帳金額，如無轉帳金額，請將轉帳費用修改為”請選擇”!!");
+                settab("#case");
+                $("#nfy_oth_money").focus();
+                return false;
+            }
+            if($("#tfy_oth_code").val()==""){
+                alert("有轉帳費用，請輸入轉帳單位，如無轉帳單位，請將轉帳費用修改為”請選擇”!!");
+                settab("#case");
+                $("#tfy_oth_code").focus();
+                return false;
+            }
+        }
+        if(IsNumeric($("#nfy_oth_money").val())){
+            if(CInt($("#nfy_oth_money").val())>0){
+                if($("#tfy_oth_code").val()==""){
+                    alert("有轉帳金額，請輸入轉帳單位!!");
+                    settab("#case");
+                    $("#tfy_oth_code").focus();
+                    return false;
+                }
+            }else if(CInt($("#nfy_oth_money").val())<0){
+                alert("轉帳費用不可為負數，請重新輸入!!");
+                settab("#case");
+                $("#nfy_oth_money").focus();
+                return false;
+            }
+        }else{
+            alert("轉帳費用不為數值，請重新輸入!!");
+            settab("#case");
+            $("#nfy_oth_money").focus();
+            return false;
+        }
+
+        if($("#tfy_oth_code").val()!=""){
+            if($("#nfy_oth_money").val()=="0"){
+                alert("有轉帳單位，無轉帳金額，請檢查!!");
+                settab("#case");
+                $("#nfy_oth_money").focus();
+                return false;
+            }
+        }
+
+        //*******客戶期限與承辦期限控制
+        if($("#dfy_cust_date").val()!=""){
+            if ($.isDate($("#dfy_cust_date").val())&&$.isDate($("#dfy_pr_date").val())){
+                if(Date.parse($("#dfy_cust_date").val())<Date.parse($("#dfy_pr_date").val())){
+                    $("#dfy_pr_date").val(("#dfy_cust_date").val());
+                }
+            }else{
+                if ($("#dfy_cust_date").val()!=""&&!$.isDate($("#dfy_cust_date").val())){
+                    alert("客戶期限日期格式錯誤，請重新輸入!!");
+                    settab("#case");
+                    $("#dfy_cust_date").focus();
+                    return false;
+                }
+                if ($("#dfy_pr_date").val()!=""&&!$.isDate($("#dfy_pr_date").val())){
+                    alert("承辦期限日期格式錯誤，請重新輸入!!");
+                    settab("#case");
+                    $("#dfy_pr_date").focus();
+                    return false;
+                }
+            }
+        }
+
+        //*****法定期限控制2011/9/26新增
+        if($("#dfy_last_date").val()!=""){
+            if (!$.isDate($("#dfy_last_date").val())){
+                alert("法定期限日期格式錯誤，請重新輸入!!");
+                settab("#case");
+                $("#dfy_last_date").focus();
+                return false;
+            }
+            if($("#tfy_case_stat").val()=="OO"||$("#spe_ctrl3").val()=="N"){
+                var msg="提醒您！在此輸入法定期限，系統不會自動管制或檢核程序管制法定期限是否一致，是否確定輸入？";
+                if(confirm(msg)){
+                    alert("請自行通知程序於客收時加管此法定期限！");
+                }else{
+                    $("#dfy_last_date").val("");
+                }
+            }
+        }
+
+        //*****契約號碼控制
+        var cont_type=$("input[name='Contract_no_Type']:checked").val();
+        $("#tfy_contract_type").val(cont_type);
+        if(cont_type=="A"||cont_type=="B"||cont_type=="C")//後續案無契約書/特案簽報/其他契約書無編號/特案簽報
+            $("#tfy_Contract_no").val(cont_type);
+        else if(cont_type=="M")//總契約書
+            $("#tfy_Contract_no").val($("#Mcontract_no").val());
+        else if(cont_type=="N"){//一般契約書
+            if($("#tfy_Contract_no").val()!=""){
+                if(!IsNumeric($("#tfy_Contract_no").val())){
+                    alert("契約號碼請輸入數值!!");
+                    settab("#case");
+                    $("#tfy_Contract_no").focus();
+                    return false;
+                }
+            }
+        }
+
+        //***契約書種類與對應文件種類檢查
+        if($("#tfy_contract_flag").prop("checked")==false){
+
+        }else{
+            if($("#tfy_contract_remark").val()==""){
+                alert("契約書相關文件後補，需填寫尚缺文件說明！");
+                settab("#case");
+                $("#tfy_contract_remark").focus();
+                return false;
+            }
+        }
+        if reg.tfy_contract_flag.checked=false then
+            if check_doctype("T",reg.tfy_contract_type.value,"B")=true then
+                settab 3
+                exit function
+            end if
+        else
+         end if	
+    }
 </script>
