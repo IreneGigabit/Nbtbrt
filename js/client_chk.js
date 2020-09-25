@@ -100,7 +100,7 @@ function chkSEDate(pSdate, pEdate, pmsg){
     if (pSdate == "" || pEdate == "") {
         return true;
     }
-    if (new Date(pSdate) > new Date(pEdate)) {
+    if (Date.parse(new Date(pSdate)) > Date.parse(new Date(pEdate))) {
         alert(pmsg + "起始日不可大於迄止日");
         return false;
     }
