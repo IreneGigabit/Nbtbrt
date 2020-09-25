@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="case_form" %>
+<%@ Control Language="C#" ClassName="case_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Import Namespace = "System.Data" %>
 
@@ -257,7 +257,7 @@
 		    <input type="radio" id="Contract_no_Type_A" name="Contract_no_Type" value="A">後續案無契約書
 		</span>
 		<span style="display:none"><!--2015/12/29修改，併入C不顯示-->
-		    <input type="radio" id="Contract_no_Type_S" name="Contract_no_Type">特案簽報
+		    <input type="radio" id="Contract_no_Type_S" name="Contract_no_Type" value="B">特案簽報
 		</span>
 	    <input type="radio" id="Contract_no_Type_C" name="Contract_no_Type" value="C">其他契約書無編號/特案簽報
 	    <input type="radio" id="Contract_no_Type_M" name="Contract_no_Type" value="M">總契約書
