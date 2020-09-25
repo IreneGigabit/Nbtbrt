@@ -153,6 +153,18 @@ function IsEmpty(n) {
 }
 //end region
 
+function Today() {
+    var td = new Date();
+    td.setHours(0, 0, 0, 0);
+    return td;
+}
+//#region CDate
+//vbscript CDate Convertion
+function CDate(Str) {
+    return new Date(Str.replace(/-/g, "/"));
+}
+//end region
+
 //#region Date.prototype.format
 //js日期格式fotmat轉換
 //("yyyy-MM-dd")
