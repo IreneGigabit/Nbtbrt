@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
@@ -25,6 +25,7 @@
     protected string dept = "";
     protected string upload_tabname = "";
 
+    
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
@@ -33,8 +34,8 @@
         allapsqlno = Request["allapsqlno"] ?? "";
         kind = Request["kind"] ?? "";
         cust_seq = Request["cust_seq"] ?? "";
-        source = Request["source"] ?? "";
-        dept = Request["dept"] ?? "";
+        source = (Request["source"] ?? "").ToString().ToLower();
+        dept = (Request["dept"] ?? "").ToString().ToUpper();
         upload_tabname = Request["upload_tabname"] ?? "";
         
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
@@ -51,7 +52,7 @@
 
         if (source == "contract")
             Title = "客戶契約書清單";
-        else if (source == "POA")
+        else if (source == "poa")
             Title = "申請人委任書清單";
 
         if (HTProgRight >= 0) {
@@ -74,8 +75,12 @@
             SQL += " From apcust_attach a inner join apcust_attach_ref b on a.apattach_sqlno=b.apattach_sqlno";
             SQL += " inner join apcust c on c.apsqlno=b.apsqlno";
             if (source == "contract") {
+                string SQL1 = "select apsqlno from apcust where cust_area='" + Session["SeBranch"] + "' and cust_seq=" + cust_seq;
+                object objResult1 = conn.ExecuteScalar(SQL1);
+                allapsqlno = (objResult1 == DBNull.Value || objResult1 == null) ? allapsqlno : objResult1.ToString();
+
                 SQL += " where b.apsqlno in (" + allapsqlno + ")";
-            } else if (source == "POA") {
+            } else if (source == "poa") {
                 if (allapsqlno.IndexOf(",") == -1) {
                     SQL += " where b.apsqlno=" + allapsqlno;
                     SQL += " and sign_flag='S'";
@@ -89,7 +94,6 @@
             } else {
                 SQL += " order by a.apattach_sqlno";
             }
-
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
 
@@ -277,15 +281,15 @@
                         <%}%>
 		                <td nowrap title="<%#Eval("ref_cust_seqtitle")%>"><%#Eval("ref_cust_seq")%></td>
 		                <td nowrap>
-		                    <INPUT TYPE="hidden" id="attach_apattach_sqlno<%#(Container.ItemIndex+1)%>" name="attach_apattach_sqlno<%#(Container.ItemIndex+1)%>" value="<%#Eval("apattach_sqlno")%>">
-		                    <INPUT TYPE="hidden" id="attach<%#(Container.ItemIndex+1)%>" name="attach<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_path")%>">
-		                    <INPUT TYPE="hidden" id="attach_attach_no<%#(Container.ItemIndex+1)%>" name="attach_attach_no<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_no")%>">
-		                    <INPUT TYPE="hidden" id="attach_path<%#(Container.ItemIndex+1)%>" name="attach_path<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_path")%>">
-		                    <INPUT TYPE="hidden" id="attach_doc_type<%#(Container.ItemIndex+1)%>" name="attach_doc_type<%#(Container.ItemIndex+1)%>" value="<%#Eval("doc_type")%>">
-		                    <INPUT TYPE="hidden" id="attach_desc<%#(Container.ItemIndex+1)%>" name="attach_desc<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_desc")%>">
-		                    <INPUT TYPE="hidden" id="attach_name<%#(Container.ItemIndex+1)%>" name="attach_name<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_name")%>">
-		                    <INPUT TYPE="hidden" id="attach_source_name<%#(Container.ItemIndex+1)%>" name="attach_source_name<%#(Container.ItemIndex+1)%>" value="<%#Eval("source_name")%>">
-		                    <INPUT TYPE="hidden" id="attach_size<%#(Container.ItemIndex+1)%>" name="attach_size<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_size")%>">
+		                    <INPUT TYPE="hidden" id="<%=uploadfield%>_apattach_sqlno<%#(Container.ItemIndex+1)%>" name="<%=uploadfield%>_apattach_sqlno<%#(Container.ItemIndex+1)%>" value="<%#Eval("apattach_sqlno")%>">
+		                    <INPUT TYPE="hidden" id="<%=uploadfield%><%#(Container.ItemIndex+1)%>" name="<%=uploadfield%><%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_path")%>">
+		                    <INPUT TYPE="hidden" id="<%=uploadfield%>_attach_no<%#(Container.ItemIndex+1)%>" name="<%=uploadfield%>_attach_no<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_no")%>">
+		                    <INPUT TYPE="hidden" id="<%=uploadfield%>_path<%#(Container.ItemIndex+1)%>" name="<%=uploadfield%>_path<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_path")%>">
+		                    <INPUT TYPE="hidden" id="<%=uploadfield%>_doc_type<%#(Container.ItemIndex+1)%>" name="<%=uploadfield%>_doc_type<%#(Container.ItemIndex+1)%>" value="<%#Eval("doc_type")%>">
+		                    <INPUT TYPE="hidden" id="<%=uploadfield%>_desc<%#(Container.ItemIndex+1)%>" name="<%=uploadfield%>_desc<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_desc")%>">
+		                    <INPUT TYPE="hidden" id="<%=uploadfield%>_name<%#(Container.ItemIndex+1)%>" name="<%=uploadfield%>_name<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_name")%>">
+		                    <INPUT TYPE="hidden" id="<%=uploadfield%>_source_name<%#(Container.ItemIndex+1)%>" name="<%=uploadfield%>_source_name<%#(Container.ItemIndex+1)%>" value="<%#Eval("source_name")%>">
+		                    <INPUT TYPE="hidden" id="<%=uploadfield%>_size<%#(Container.ItemIndex+1)%>" name="<%=uploadfield%>_size<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_size")%>">
 		                    <img src="../images/annex.gif" onclick="PreviewAttach(<%#(Container.ItemIndex+1)%>)" style="cursor:pointer;">
 		                </td>
 		                <td nowrap title="有效期限：<%#Eval("use_dates", "{0:d}")%>～<%#Eval("use_datee", "{0:d}")%>"><%#Eval("attach_flagnm")%></td>
@@ -309,8 +313,8 @@
     <!--請勾選此案使用之委任書(可複選)，點選[複製至個案使用]，系統存檔時即會在該筆交辦附件寫入一筆連結申請人委任書檔之記錄，
     若有異動可至案件附件檔刪除此筆連結，但此處刪除只會刪除該筆交辦連結申請人委任書之記錄，不會刪除實際在申請人檔作業上傳之委任書。-->
     </font></div>
-    <INPUT TYPE="text" id="kind" name="kind" value="<%#kind%>">
-    <INPUT TYPE="text" id="cnt" name="cnt" value="<%#page.totRow%>">
+    <INPUT TYPE="hidden" id="kind" name="kind" value="<%#kind%>">
+    <INPUT TYPE="hidden" id="cnt" name="cnt" value="<%#page.totRow%>">
 </FooterTemplate>
 </asp:Repeater>
 
@@ -325,10 +329,11 @@
         theadOdr();//設定表頭排序圖示
 
         //若交辦畫面已有連結要勾選
-        var mcnt = $("#attachfilenum", window.opener.document).val() || 0;
+        var fld = "<%=uploadfield%>";
+        var mcnt = CInt($("#" + fld + "_filenum", window.opener.document).val());
         for (var m = 1; m <= mcnt; m++) {
             for (var k = 1; k <= $("#cnt").val() ; k++) {
-                if ($("#attach_apattach_sqlno" + m, window.opener.document).val() == $("#attach_apattach_sqlno" + k).val()) {
+                if ($("#" + fld + "_apattach_sqlno_" + m, window.opener.document).val() == $("#" + fld + "_apattach_sqlno" + k).val()) {
                     $("#chk_flag" + k).prop("checked", true);
                 }
             }
@@ -391,40 +396,73 @@
 
     //複製至個案使用
     $("#btn_attachcopy").click(function (e) {
+        var fld = "<%=uploadfield%>";
+        var source = "<%=source%>";
+        var dept = "<%=dept%>";
+
         if ($("#kind").val() == "S") {//單筆
             $("input[id^='chk_flag']").each(function (i) {
                 if ($(this).prop("checked")) {
                     var k = $(this).val();
-                    $("#attach", window.opener.document).val($("#attach" + k).val());
-                    $("#attach_path", window.opener.document).val($("#attach_path" + k).val());
-                    $("#attach_desc", window.opener.document).val($("#attach_desc" + k).val());
-                    $("#attach_name", window.opener.document).val($("#attach_name" + k).val());
-                    $("#attach_source_name", window.opener.document).val($("#attach_source_name" + k).val());
-                    $("#attach_size", window.opener.document).val($("#attach_size" + k).val());
-                    $("#attach_doc_type", window.opener.document).val("081");
-                    $("#attach_apattach_sqlno", window.opener.document).val($("#attach_apattach_sqlno" + k).val());
-                    $("#mcontract_no", window.opener.document).val($("#attach_apattach_sqlno" + k).val());
-                    $("#mcontract_path", window.opener.document).val($("#attach_path" + k).val());
+                    $("#" + fld, window.opener.document).val($("#" + fld + k).val());
+                    $("#" + fld + "_path", window.opener.document).val($("#" + fld + "_path" + k).val());
+                    $("#" + fld + "_desc", window.opener.document).val($("#" + fld + "_desc" + k).val());
+                    $("#" + fld + "_name", window.opener.document).val($("#" + fld + "_name" + k).val());
+                    $("#" + fld + "_source_name", window.opener.document).val($("#" + fld + "_source_name" + k).val());
+                    $("#" + fld + "_size", window.opener.document).val($("#" + fld + "_size" + k).val());
+                    $("#" + fld + "_doc_type", window.opener.document).val("081");//另設總契約書，由08改為081
+                    $("#" + fld + "_apattach_sqlno", window.opener.document).val($("#" + fld + "_apattach_sqlno" + k).val());
+                    $("#mcontract_no", window.opener.document).val($("#" + fld + "_apattach_sqlno" + k).val());
+                    $("#mcontract_path", window.opener.document).val($("#" + fld + "_path" + k).val());
                 }
             });
         } else {
-            settab("#<%#upload_tabname%>");
+            window.opener.settab("#<%#upload_tabname%>");
 
-            //檢查，若附件畫面已有，則不再加入
-            var chkadd = true;
-            var mcnt = $("#attachfilenum", window.opener.document).val() || 0;
-            for (var k = 1; k <= $("#cnt").val() ; k++) {
-                for (var m = 1; m <= mcnt; m++) {
-                    if ($("#attach_apattach_sqlno" + m, window.opener.document).val() == $("#attach_apattach_sqlno" + k).val()) {
-                        chkadd = false;
-                        break;
+            var mcnt = CInt($("#" + fld + "_filenum", window.opener.document).val());
+            for (var k = 1; k <= CInt($("#cnt").val()) ; k++) {
+                if ($("#chk_flag" + k).prop("checked")) {
+                    //檢查，若附件畫面已有，則不再加入
+                    var chkadd = true;
+                    for (var m = 1; m <= mcnt; m++) {
+                        if ($("#" + fld + "_apattach_sqlno_" + m, window.opener.document).val() == $("#" + fld + "_apattach_sqlno" + k).val()) {
+                            chkadd = false;
+                            break;
+                        }
                     }
-                }
 
-                if (chkadd) {
+                    if (chkadd) {
+                        window.opener.upload_form.appendFile();
+                        var pno = $("#" + fld + "_filenum", window.opener.document).val();
+                        $("#" + fld + "_" + pno, window.opener.document).val($("#" + fld + k).val());
 
+                        if (source == "contract") {
+                            if (dept == "T") {
+                                $("#doc_type_" + pno, window.opener.document).val("081");//內外商皆相同契約書doc_type=08，另設總契約書，由08改為081
+                            } else if (dept == "TE") {
+                                $("#doc_code_" + pno, window.opener.document).val("081");//內外商皆相同契約書doc_type=08，外商欄位為doc_code，另設總契約書，由08改為081
+                            }
+                            $("#Mcontract_no", window.opener.document).val($("#" + fld + "_apattach_sqlno" + k).val());//帶回總契約號碼
+                        } else {
+                            if (dept == "T") {
+                                $("#doc_type_" + pno, window.opener.document).val("02");//內外商皆相同契約書doc_type=02
+                            } else if (dept == "TE") {
+                                $("#doc_code_" + pno, window.opener.document).val("02");//內外商皆相同契約書doc_type=02，外商欄位為doc_code
+                            }
+                        }
+
+                        $("#" + fld + "_desc_" + pno, window.opener.document).val($("#" + fld + "_desc" + k).val());
+                        $("#" + fld + "_name_" + pno, window.opener.document).val($("#" + fld + "_name" + k).val());
+                        $("#source_name_" + pno, window.opener.document).val($("#" + fld + "_source_name" + k).val());
+                        $("#" + fld + "_size_" + pno, window.opener.document).val($("#" + fld + "_size" + k).val());
+                        $("#" + fld + "_apattach_sqlno_" + pno, window.opener.document).val($("#" + fld + "_apattach_sqlno" + k).val());
+                        $("#btn" + fld + "_" + pno, window.opener.document).prop("disabled", true);
+                        $("#attach_flag_" + pno, window.opener.document).val("A");
+                    }
                 }
             }
         }
+
+        $(".imgCls").click();
     });
 </script>
