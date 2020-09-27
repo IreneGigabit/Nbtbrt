@@ -252,7 +252,7 @@
 	<TD class=whitetablebg colspan="3">
 		<input type="text" id="tfy_contract_type" name="tfy_contract_type">
         <input type="radio" id="Contract_no_Type_N" name="Contract_no_Type" value="N">
-            <INPUT TYPE=text id=tfy_Contract_no name=tfy_Contract_no SIZE=10 MAXLENGTH=10 onchange="$('#Contract_no_Type_N').prop('checked',true).trigger('click');">
+        <INPUT TYPE=text id=tfy_Contract_no name=tfy_Contract_no SIZE=10 MAXLENGTH=10 onchange="$('#Contract_no_Type_N').prop('checked',true).trigger('click');">
         <span id="contract_type">
 		    <input type="radio" id="Contract_no_Type_A" name="Contract_no_Type" value="A">後續案無契約書
 		</span>
@@ -268,7 +268,7 @@
 	    </span>
 	    <br>
 		<INPUT TYPE=checkbox id=tfy_contract_flag NAME=tfy_contract_flag value="Y" class="<%=Lock["brt51"]%>">契約書相關文件後補，尚缺文件說明：
-        <input type="text" id="tfy_contract_remark" name="tfy_contract_remark" size=50 maxlength=100 readonly class="SEdit">    
+        <input type="text" id="tfy_contract_remark" name="tfy_contract_remark" size=50 maxlength=100 readonly class="SEdit">
 		<span id="ar_chk" style="display:none">
             <INPUT TYPE=checkbox id=tfy_ar_chk NAME=tfy_ar_chk  value="Y">請款單／收據與附本寄發
 		    <INPUT TYPE=checkbox id=tfy_ar_chk1 NAME=tfy_ar_chk1 value="Y">即發請款單／收據
@@ -314,7 +314,7 @@
 <input type=text id="code_type" name="code_type" value="<%#code_type%>">	
 <input type=text id="TaMax" name="TaMax" value="<%=MaxTaCount%>"><!--最他費用最多可用筆數-->
 <input type=text id="TaCount" name="TaCount" value="0">
-<input type=text id="nfy_tot_case" name="nfy_tot_case" value="0">
+<input type=text id="nfy_tot_case" name="nfy_tot_case" value="0"><!--案性數=主案性+請款案性數-->
 <input type=text id="tfy_ar_code" name="tfy_ar_code" value="N">	
 
 
@@ -531,8 +531,8 @@
                     $("#tfy_end_flag").val("N");//dmt_form
                 }
             }
-            case_form.setSendWay(x2)//20160909 增加發文方式
         }
+        case_form.setSendWay(x2)//20160909 增加發文方式
     }
 
     //抓取案性特殊控制(x1:國別:T為國內案,x2:案性代碼)
@@ -818,7 +818,7 @@
 
     //查詢總契約書
     $("#btn_contract").click(function () {
-        var url = getRootPath() + "/brt1m/POA_attachlist.aspx?prgid=<%=prgid%>&dept=T&source=contract&cust_seq=" + $("#F_cust_seq").val() + "&upload_tabnum=upload";
+        var url = getRootPath() + "/brt1m/POA_attachlist.aspx?prgid=<%=prgid%>&dept=T&source=contract&cust_seq=" + $("#F_cust_seq").val() + "&upload_tabname=upload";
         window.open(url, "myWindowapN", "width=900 height=680 top=20 left=20 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
 
     });
@@ -830,15 +830,12 @@
 
     //契約書點選控制2015/12/25for總契約書增加
     $("input[name='Contract_no_Type']").click(function () {
-        if ($(this).val() == "N") {
-            alert("N");
-            $("#span_btn_contract").hide();
-        } else if ($(this).val() == "M") {//總契約書
+        $("#span_btn_contract").hide();
+        if ($(this).val() == "M") {//總契約書
             $("#tfy_Contract_no").val("");
             $("#span_btn_contract").show();
-        } else{
+        } else if ($(this).val() != "N") {//不是一般契約書
             $("#tfy_Contract_no").val("");
-            $("#span_btn_contract").hide();
         }
     });
 
@@ -846,7 +843,7 @@
     case_form.setSendWay = function () {
         $("#tfy_send_way").getOption({//發文方式
             url: getRootPath() + "/ajax/json_sendway.aspx",
-            data: { rs_type: $("#code_type").val(), rs_code: $("#Arcase").val() },
+            data: { rs_type: $("#code_type").val(), rs_code: $("#tfy_Arcase").val() },
             valueFormat: "{cust_code}",
             textFormat: "{code_name}"
         });
