@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="br_A1_form" %>
+<%@ Control Language="C#" ClassName="br_A1_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -119,6 +119,7 @@
 	    </td>	
     <tr-->
     <tr class='sfont9'>
+		<input type="text" name="tfz1_good_name" ID="tfz1_good_name">
         <td colspan=8 id="td_br_good">
         </td>
     </tr>
@@ -377,7 +378,6 @@
 			<td class="lightbluetable" align="right" STYLE="cursor:pointer;COLOR:BLUE">表彰：</td>
 			<td class="whitetablebg" colspan="7">
 			    <input type="text" name="tf91_good_name" ID="tf91_good_name" size=60 value="">會員之會籍。（填寫申請人名稱）
-			    <input type="text" name="tfz1_good_name" ID="tfz1_good_name">
 			</td>
 		</tr>	
 	</table>
@@ -421,10 +421,10 @@
 		    <tr>	
 			    <td class="lightbluetable" align="right" title="請輸入類別，並以逗號分開(例如：1,5,32)。">類別項目：</td>
 			    <td class="whitetablebg" colspan="7" >共<input type="text" id=tfz1_class_count name=tfz1_class_count size=2 onchange="br_form.Add_class(this.value)">類
-				    <input type=hidden id=num1 name=num1 value="0"><!--畫面上有幾筆-->
-				    <input type=hidden id=ctrlnum1 name=ctrlnum1 value="0">
-				    <input type=hidden id=ctrlcount1 name=ctrlcount1 value="0">
-				    <input type="text" id=tfz1_class name=tfz1_class style="width:70%" readonly>
+				    <input type=text id=num1 name=num1 value="0"><!--畫面上有幾筆-->
+				    <input type=text id=ctrlnum1 name=ctrlnum1 value="0">
+				    <input type=text id=ctrlcount1 name=ctrlcount1 value="0">
+				    ;<input type="text" id=tfz1_class name=tfz1_class style="width:70%" readonly>
 			    </td>
 		    </tr>
         </thead>
@@ -532,7 +532,7 @@
     //檢查類別範圍0~45
     br_form.checkclass = function (xclass) {
         if (CInt(xclass) < 0 || CInt(xclass) > 45) {
-            alert("使用類別不符。");
+            alert("商品類別需介於1~45之間,請重新輸入。");
             return false;
         }
     }
