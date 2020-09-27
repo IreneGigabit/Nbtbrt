@@ -9,7 +9,7 @@
 
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
-    protected string HTProgPrefix = "brt11";//程式檔名前綴
+    protected string HTProgPrefix = "brt11AddA1";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
@@ -53,17 +53,17 @@
         if (formFunction == "edit") {
             if ((HTProgRight & 8) > 0) {
                 if (prgid == "brt51") {//客收確認
-                    StrFormBtn += "<input type=button value ='資料確認無誤' class='cbutton' onclick='formModSubmit()'>\n";
-                    StrFormBtn += "<input type=button value ='資料有誤退回營洽' class='cbutton' onclick='formModSubmit2()'>\n";
+                    StrFormBtn += "<input type=button value ='資料確認無誤' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
+                    StrFormBtn += "<input type=button value ='資料有誤退回營洽' class='cbutton bsubmit' onclick='formModSubmit2()'>\n";
                 } else {
-                    StrFormBtn += "<input type=button value ='編修存檔' class='cbutton' onclick='formModSubmit()'>\n";
+                    StrFormBtn += "<input type=button value ='編修存檔' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
                 }
             }
 
             StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
         } else if (formFunction == "add") {
             if ((HTProgRight & 4) > 0) {
-                StrFormBtn += "<input type=button value ='新增存檔' class='cbutton' onclick='formAddSubmit()'>\n";
+                StrFormBtn += "<input type=button value ='新增存檔' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
                 StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
             }
         }
@@ -126,7 +126,7 @@
     <INPUT TYPE="text" id="Ar_Form" name="Ar_Form" value="<%=ar_form%>">
     <INPUT TYPE="text" id=prt_code name=prt_code value="<%=prt_code%>">
     <INPUT TYPE="text" id=add_arcase name=add_arcase value="">
-    <INPUT TYPE="text" id=tfy_case_stat name=tfy_case_stat value="<%=case_stat%>">
+    <INPUT TYPE="text" id=tfy_case_stat name=tfy_case_stat value="<%=case_stat%>"><!--案件狀態-->
     <input type="text" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
@@ -459,10 +459,6 @@
 
         var code3 = $("#tfy_Arcase").val().substr(2, 1).toUpperCase();//案性第3碼
         var prt_code = $("#tfy_Arcase option:selected").attr("v1");
-        var pagt_no = $("#tfy_Arcase option:selected").attr("v2");//預設出名代理人
-        if(pagt_no==""){
-            pagt_no=get_tagtno("N").no;//2015/10/21因應104年度出名代理人修改並改抓取cust_code.code_type=Tagt_no and mark=N預設出名代理人
-        }
         
         //***其他商標
         if (code3=="K"){
@@ -611,7 +607,10 @@
 
         //***契約書種類與對應文件種類檢查
         if($("#tfy_contract_flag").prop("checked")==false){
-
+            if (check_doctype("T",$("#tfy_contract_type").val(),"B")==true){
+                settab("#case");
+                return false;
+            }
         }else{
             if($("#tfy_contract_remark").val()==""){
                 alert("契約書相關文件後補，需填寫尚缺文件說明！");
@@ -620,12 +619,192 @@
                 return false;
             }
         }
-        if reg.tfy_contract_flag.checked=false then
-            if check_doctype("T",reg.tfy_contract_type.value,"B")=true then
-                settab 3
-                exit function
-            end if
-        else
-         end if	
+        //***交辦內容
+        //大陸案請款註記檢查.請款註記:大陸進口案
+        if($("#tfz1_seq1").val()=="M"&&$("#tfy_Ar_mark").val()!="X"){
+            alert("本案件為大陸案, 請款註記請設定為大陸進口案!!");
+            settab("#case");
+            $("#tfy_Ar_mark").focus(); 
+            return false;
+        }else if($("#tfz1_seq1").val()!="M"&&$("#tfy_Ar_mark").val()=="X"){
+            alert("請款註記設定為大陸進口案，案件編號副碼請設定為M_大陸案 !!");
+            settab("#tran");
+            $("#tfz1_seq1").focus();
+            return false;
+        }
+        //商標名稱檢查
+        if($("#tfz1_Appl_name").val()==""){
+            alert("需填寫商標名稱！");
+            settab("#tran");
+            $("#tfz1_Appl_name").focus();
+            return false;
+        }
+        //2014/4/22增加檢查是否為雙邊代理查照對象,案件名稱
+        if (check_CustWatch("appl_name",$("#tfz1_Appl_name").val())==true){
+            settab("#tran");
+            $("#tfz1_Appl_name").focus();
+            return false;
+        }
+        //檢查備註,有選擇radio則須輸入內容
+        var z = $('input[name=ttz1_RCode]:checked').val();
+        if(z!== undefined&&$("#ttz1_"+z).val()==""){
+            alert("請確認備註是否錯誤!");
+            settab("#tran");
+            return false;
+        }
+        //出名代理人檢查
+        var apclass_flag="N";
+        for (var capnum=1;capnum<=CInt($("#apnum").val());capnum++ ){
+            if($("#apclass_" + capnum).val().Left()=="C"){
+                //申請人為外國人則為涉外案
+                apclass_flag="C";
+            }
+        }
+
+        if(apclass_flag=="C"){
+            //2015/10/21修改抓取cust_code.code_type=Tagt_no and mark=C及用function放置於sub/client_chk_agtno.vbs
+            if (check_agtno("C",$("#tfz1_agt_no").val())==true){
+                settab("#tran");
+                $("#tfz1_agt_no").focus();
+                return false;
+            }
+        }else{
+            var pagt_no = $("#tfy_Arcase option:selected").attr("v2");//案性預設出名代理人
+            if(pagt_no==""){
+                //2015/10/21因應104年度出名代理人修改並改抓取cust_code.code_type=Tagt_no and mark=N預設出名代理人
+                pagt_no=get_tagtno("N").no;
+            }
+
+            if($("#tfz1_agt_no").val().trim()!=pagt_no.trim()){
+                if(!confirm("出名代理人與案性預設出名代理人不同，是否確定交辦？")){
+                    settab("#tran");
+                    $("#tfz1_agt_no").focus();
+                    return false;
+                }
+            }
+        }
+
+
+        //*****商品類別檢查
+        if($("#tabbr1").length>0){//有載入才要檢查
+            for(var j=1;j<=CInt($("num1").val());j++){
+                if($("#good_name1_"+j).val()!=""&&$("#class1_"+j).val()==""){
+                    //有輸入商品名稱,但沒輸入類別
+                    alert("請輸入類別!");
+                    settab("#tran");
+                    $("#class1_"+j).focus();
+                    return false;
+                }
+
+                if(br_form.checkclass(j)==false){//檢查類別範圍0~45
+                    $("#class1_"+j).focus();
+                    return false;
+                }
+            }
+            if(CInt($("#tfz1_class_count").val())!=CInt($("#num1").val())){
+                var answer="指定使用商品類別項目(共 "+CInt($("#tfz1_class_count").val())+" 類)與輸入指定使用商品(共 "+CInt($("#num1").val())+" 類)不符，\n是否確定指定使用商品共 "+CInt($("#num1").val())+" 類？";
+                if(answer){
+                    $("#tfz1_class_count").val($("#num1").val());
+                }else{
+                    settab("#tran");
+                    $("#tfz1_class_count").focus();
+                    return false;
+                }
+            }
+        }
+
+        if (code3=="9"||code3=="A"||code3=="B"||code3=="C"||code3=="D"||code3=="E"||code3=="F"||code3=="G"){
+            $("#tfz1_class").val("");
+            $("#tfz1_class_count").val("");
+            $("input[name='tfz1_class_type']").prop("checked",false);
+        }
+
+        //檢查指定類別有無重覆
+        var objClass = {};
+        for (var r = 1; r <= CInt($("#num1").val()); r++) {
+            var lineTa = $("#class1_" + r).val();
+            if (lineTa != "" && objClass[lineTa]) {
+                alert("商品類別重覆,請重新輸入!!!");
+                $("#class1_" + r).focus();
+                return false;
+            } else {
+                objClass[lineTa] = { flag: true, idx: r };
+            }
+        }
+
+        //***表彰內容
+        if($("#tf91_good_name").length>0) 
+            $("#tfz1_good_name").val($("#tf91_good_name").val());
+        //***證明內容
+        if($("#tfd1_good_name").length>0) 
+            $("#tfz1_good_name").val($("#tfd1_good_name").val());
+
+        //****請款註記	
+        if($("#tfz1_seq1").val()=="M"){
+            $("#tfy_ar_code").val("M");
+        }else if($("#nfy_service").val()==0&&$("#nfy_fees").val()==0&&$("#nfy_oth_money").val()==0&&$("#tfy_Ar_mark").val()=="N"){
+            $("#tfy_ar_code").val("X");
+        }else{
+            $("#tfy_ar_code").val("N");
+        }
+
+        //****總計案性數
+        var nfy_tot_case=0;
+        if(!IsEmpty($("#tfy_Arcase").val())){
+            nfy_tot_case+=1;
+        }
+        for (var r = 1; r <= CInt($("#TaCount").val()); r++) {
+            if(!IsEmpty($("#nfyi_item_Arcase_"+r).val())){
+                nfy_tot_case+=1;
+            }
+        }
+        $("#nfy_tot_case").val(nfy_tot_case);
+
+        //****當無收費標準時，把值清空
+        if (reg.anfees.value = "N"){
+            $("#nfy_Discount").val("");
+            $("#tfy_dicount_remark").val("");//2016/5/30增加折扣理由
+        }
+        $("#tfy_case_stat").val("NN");//新案
+        $("#submittask").val("ADD");
+
+        $("select,textarea,input,span").unlock();
+        $(".bsubmit").lock(!$("#chkTest").prop("checked"));
+
+        var formData = new FormData($('#reg')[0]);
+        $.ajax({
+            url:'<%=HTProgPrefix%>_Update.aspx',
+            type : "POST",
+            data : formData,
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) { main.onSuccess(data); },
+            error: function (xhr, status, errMsg) { main.onError(xhr, status, errMsg); },
+            complete: function (xhr,status) { main.onComplete(xhr,status); }
+        });
+
+        //reg.action = "<%=HTProgPrefix%>_Update.aspx";
+        //if($("#chkTest").prop("checked"))
+        //    reg.target = "ActFrame";
+        //else
+        //    reg.target = "_self";
+        //reg.submit();
     }
+
+    main.onSuccess=function(data){
+        $("#dialog").html(data);
+        $("#dialog").dialog({ width: 600,overflow:"auto" });
+    }
+
+    main.onError=function(xhr, status, errMsg){
+        $("#dialog").html(xhr.responseText);
+        $("#dialog").dialog({ width: 600,overflow:"auto" });
+    }
+
+    main.onComplete=function(xhr, status, errMsg){
+        $("#dialog").html(xhr.responseText);
+        $("#dialog").dialog({ width: 600,overflow:"auto" });
+    }
+
 </script>
