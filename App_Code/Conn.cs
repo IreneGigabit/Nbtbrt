@@ -67,6 +67,7 @@ public static class Conn
     public static string sidbs {
         get {
             switch (Host) {
+                case "LOCALHOST": return Sys.getConnString("dev_sidbs");//開發環境
                 case "WEB08": return Sys.getConnString("dev_sidbs");//開發環境
                 case "WEB10": return Sys.getConnString("test_sidbs");//使用者測試環境
                 default: return Sys.getConnString("prod_sidbs");//正式環境

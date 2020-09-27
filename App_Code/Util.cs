@@ -6,7 +6,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Collections.Specialized;
 
-public static class Util
+public  static partial class Util
 {
     #region GetTimeString - 轉成時間字串格式(yyyy/m/d hh:mm:ss)
     /// <summary>

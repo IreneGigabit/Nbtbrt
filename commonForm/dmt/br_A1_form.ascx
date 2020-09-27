@@ -1,4 +1,4 @@
-<%@ Control Language="C#" ClassName="br_A1_form" %>
+﻿<%@ Control Language="C#" ClassName="br_A1_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -447,7 +447,7 @@
         </script>
 	</table>
 </script>
-<!--#include virtual="~\commonForm\dmt\brForm\br_A1_remark1.inc" --><!--附件様版 依案性第3碼切換顯示-->
+<!--#include virtual="~\commonForm\dmt\br_A1_remark1.inc" --><!--附件様版 依案性第3碼切換顯示-->
 
 <script language="javascript" type="text/javascript">
     var br_form = {};
@@ -711,13 +711,13 @@
             case '2': case '6': case 'A': case 'E':
                 $("input[name=tfz1_s_mark2][value='D']").prop("checked", true);//顏色
                 if (code3 == "6") {
-                    $("#span_FA151").html("<INPUT TYPE=radio NAME=tfz2_remark3 value=商品>商品、<INPUT TYPE=radio NAME=tfz2_remark3 value=包裝>包裝、<INPUT TYPE=radio NAME=tfz2_remark3 value=容器>容器之形狀、或<INPUT TYPE=radio NAME=tfz2_remark3 value=營業物>營業相關物品之形狀，不屬於團體商標");
+                    $("#span_FA151").html("<INPUT TYPE=radio NAME=tfz1_remark3 value=商品>商品、<INPUT TYPE=radio NAME=tfz1_remark3 value=包裝>包裝、<INPUT TYPE=radio NAME=tfz1_remark3 value=容器>容器之形狀、或<INPUT TYPE=radio NAME=tfz1_remark3 value=營業物>營業相關物品之形狀，不屬於團體商標");
                 } else if (code3 == "A") {
-                    $("#span_FA151").html("<INPUT TYPE=radio NAME=tfz2_remark3 value=相關物品>相關物品或<INPUT TYPE=radio NAME=tfz2_remark3 value=文書>文書之形狀，不屬於團體標章");
+                    $("#span_FA151").html("<INPUT TYPE=radio NAME=tfz1_remark3 value=相關物品>相關物品或<INPUT TYPE=radio NAME=tfz1_remark3 value=文書>文書之形狀，不屬於團體標章");
                 } else if (code3 == "E") {
-                    $("#span_FA151").html("<INPUT TYPE=radio NAME=tfz2_remark3 value=商品>商品、<INPUT TYPE=radio NAME=tfz2_remark3 value=包裝>包裝、<INPUT TYPE=radio NAME=tfz2_remark3 value=容器>容器之形狀、或<INPUT TYPE=radio NAME=tfz2_remark3 value=營業物>營業相關物品之形狀，不屬於顏色標章");
+                    $("#span_FA151").html("<INPUT TYPE=radio NAME=tfz1_remark3 value=商品>商品、<INPUT TYPE=radio NAME=tfz1_remark3 value=包裝>包裝、<INPUT TYPE=radio NAME=tfz1_remark3 value=容器>容器之形狀、或<INPUT TYPE=radio NAME=tfz1_remark3 value=營業物>營業相關物品之形狀，不屬於顏色標章");
                 } else {
-                    $("#span_FA151").html("<INPUT TYPE=radio NAME=tfz2_remark3 value=商品>商品、<INPUT TYPE=radio NAME=tfz2_remark3 value=包裝>包裝、<INPUT TYPE=radio NAME=tfz2_remark3 value=容器>容器之形狀、或<INPUT TYPE=radio NAME=tfz2_remark3 value=營業物>營業相關物品之形狀，不屬於顏色商標");
+                    $("#span_FA151").html("<INPUT TYPE=radio NAME=tfz1_remark3 value=商品>商品、<INPUT TYPE=radio NAME=tfz1_remark3 value=包裝>包裝、<INPUT TYPE=radio NAME=tfz1_remark3 value=容器>容器之形狀、或<INPUT TYPE=radio NAME=tfz1_remark3 value=營業物>營業相關物品之形狀，不屬於顏色商標");
                 }
                 break;
             case 'I':

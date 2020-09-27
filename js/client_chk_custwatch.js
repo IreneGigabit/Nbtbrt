@@ -1,5 +1,4 @@
-<script language="javascript" type="text/javascript">
-//檢查輸入資料及存檔前是否可立案收文
+﻿//檢查輸入資料及存檔前是否可立案收文
 //pjob_branch: 系統區所別
 //pkeytype: cappl_name:案件名稱(中)、eappl_name: 案件名稱(英)、ap_cname:公司/行號/人名稱(中)、ap_ename:公司/行號/人名稱(英)、
 //          ap_crep:代表人(中)、ap_erep:代表人(英)
@@ -37,7 +36,8 @@ function aprep_name_chk(pvalue,pevalue){
 }
 
 function check_CustWatch(pchk,pvalue){
-    var pjob_branch="<%=Session["SeBranch"]%>";
+    //var pjob_branch="<=Session["SeBranch"]%>";
+    var pjob_branch=main.branch;
     //檢查是否為雙邊代理查照對象
     if (pchk=="cappl_name" || pchk=="appl_name"){
         if (pvalue!=""){
@@ -93,8 +93,14 @@ function check_ctrl_keydata(pjob_branch,pkeytype,pkeydata){
                 }
             }
         },
-        error: function () { toastr.error("<a href='" + this.url + "' target='_new'>檢查是否為雙邊代理查照對象失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+        error: function (xhr, status, errMsg) { 
+            if($("#dialog").length>0){
+                $("#dialog").html(xhr.responseText);
+                $("#dialog").dialog({ title: '檢查雙邊代理查照對象失敗！', modal: true,maxHeight: 500,width: 700 });
+            }else{
+                toastr.error("<a href='" + this.url + "' target='_new'>檢查是否為雙邊代理查照對象失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); 
+            }
+        }
     });
     return rtn;
 }
-</script>

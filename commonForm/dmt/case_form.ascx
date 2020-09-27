@@ -1,4 +1,4 @@
-<%@ Control Language="C#" ClassName="case_form" %>
+﻿<%@ Control Language="C#" ClassName="case_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Import Namespace = "System.Data" %>
 
@@ -515,7 +515,7 @@
         }
         case_form.summary();
         //****顯示無收費標準
-        if (reg.anfees.value = "N") reg.Discount.value = "無收費標準";
+        if (reg.anfees.value == "N") reg.Discount.value = "無收費標準";
 
         //***2010/6/7因應結案流程修改，交辦結案代碼XX1~XX4且為舊案,顯示結案原因
         //***2010/10/12因增加結案選項，提醒交辦結案案性是否結案
@@ -747,7 +747,7 @@
             }
 
             //2016/5/30增加判斷，當折扣低於8折，顯示折扣理由
-            if($("#nfy_Discount").val()>20){
+            if(CInt($("#nfy_Discount").val())>20){
                 $("#span_discount_remark").show();
             }
         }else{

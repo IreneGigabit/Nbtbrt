@@ -1,4 +1,4 @@
-//檢查輸入出名代理人是否與預設出名代理人相同
+﻿//檢查輸入出名代理人是否與預設出名代理人相同
 //pchk:N一般案、C涉外案
 //pvalue:輸入的出名代理人
 function check_agtno(pchk, pvalue) {

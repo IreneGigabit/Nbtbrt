@@ -1,4 +1,4 @@
-//獲取web ap根路徑 ex:http://web02/nOpt
+﻿//獲取web ap根路徑 ex:http://web02/nOpt
 function getRootPath() {
     var strFullPath = window.document.location.href;
     var strPath = window.document.location.pathname;
@@ -377,8 +377,9 @@ function showBlockUI(param) {
 //$(document).ajaxStop(function () { $.maskStop(); });
 $(function () {
     //若有 ☑測試 預設打勾
-    $("#chkTest").click(function (e) {
-        $("#ActFrame").showFor($(this).prop("checked"));
-    });
+    $("#ActFrame").hide();//取消使用ActFrame
+    //$("#chkTest").click(function (e) {
+    //    $("#ActFrame").showFor($(this).prop("checked"));
+    //});
     $("#chkTest").prop("checked", true).triggerHandler("click");
 });

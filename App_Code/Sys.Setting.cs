@@ -172,7 +172,7 @@ public partial class Sys
     }
 
     public static string getConnString(string parameter) {
-        return ConfigurationManager.ConnectionStrings[parameter].ConnectionString ?? "";
+        return ConfigurationManager.ConnectionStrings[parameter] == null ? "" : ConfigurationManager.ConnectionStrings[parameter].ConnectionString;
     }
 
     public static string getAppSetting(string parameter) {

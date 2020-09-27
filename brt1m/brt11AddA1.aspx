@@ -1,10 +1,10 @@
-<%@ Page Language="C#" CodePage="65001"%>
+﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Register Src="~/commonForm/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
 <%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
 <%@ Register Src="~/commonForm/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
 <%@ Register Src="~/commonForm/dmt/case_form.ascx" TagPrefix="uc1" TagName="case_form" %>
-<%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
+<%@ Register Src="~/commonForm/dmt/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
 <%@ Register Src="~/commonForm/dmt/br_A1_form.ascx" TagPrefix="uc1" TagName="br_A1_form" %>
 
 <script runat="server">
@@ -103,7 +103,7 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_agtno.js")%>"></script><!--檢查輸入出名代理人是否與預設出名代理人相同-->
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_doctype.js")%>"></script><!--檢查契約書種類與上傳文件-->
-<!--#include virtual="~\js\client_chk_custwatch.js" --><!--檢查是否為雙邊代理查照對象-->
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_custwatch.js")%>"></script><!--檢查是否為雙邊代理查照對象-->
 </head>
 
 <body>
@@ -221,6 +221,7 @@
     })
 
     var main = {};
+    main.branch = "<%#Session["SeBranch"]%>";
     main.prgid = "<%#prgid%>";
     main.right = <%#HTProgRight%>;
     main.formFunction = "<%#formFunction%>";
@@ -761,7 +762,7 @@
         $("#nfy_tot_case").val(nfy_tot_case);
 
         //****當無收費標準時，把值清空
-        if (reg.anfees.value = "N"){
+        if (reg.anfees.value == "N"){
             $("#nfy_Discount").val("");
             $("#tfy_dicount_remark").val("");//2016/5/30增加折扣理由
         }
@@ -779,8 +780,8 @@
             contentType: false,
             cache: false,
             processData: false,
-            success: function (data) { main.onSuccess(data); },
-            error: function (xhr, status, errMsg) { main.onError(xhr, status, errMsg); },
+            //success: function (data) { main.onSuccess(data); },
+            //error: function (xhr, status, errMsg) { main.onError(xhr, status, errMsg); },
             complete: function (xhr,status) { main.onComplete(xhr,status); }
         });
 
@@ -792,19 +793,19 @@
         //reg.submit();
     }
 
-    main.onSuccess=function(data){
-        $("#dialog").html(data);
-        $("#dialog").dialog({ width: 600,overflow:"auto" });
-    }
-
-    main.onError=function(xhr, status, errMsg){
-        $("#dialog").html(xhr.responseText);
-        $("#dialog").dialog({ width: 600,overflow:"auto" });
-    }
+    //main.onSuccess=function(data){
+    //    $("#dialog").html(data);
+    //    $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 700 });
+    //}
+    //
+    //main.onError=function(xhr, status, errMsg){
+    //    $("#dialog").html(xhr.responseText);
+    //    $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 700 });
+    //}
 
     main.onComplete=function(xhr, status, errMsg){
         $("#dialog").html(xhr.responseText);
-        $("#dialog").dialog({ width: 600,overflow:"auto" });
+        $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 700 });
     }
 
 </script>

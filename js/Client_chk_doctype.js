@@ -1,4 +1,4 @@
-//檢查契約書種類是否有上傳相對應文件種類
+﻿//檢查契約書種類是否有上傳相對應文件種類
 //目前只針對總契約書
 //pdept:T國內案TE出口案、pvalue:輸入的契約書種類、pchktype:A不可交辦,B提醒
 function check_doctype(pdept, pvalue, pchktype) {
