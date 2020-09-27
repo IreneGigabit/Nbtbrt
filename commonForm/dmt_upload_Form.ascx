@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="dmt_upload_form" %>
+<%@ Control Language="C#" ClassName="dmt_upload_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -59,10 +59,10 @@
 <%=Sys.GetAscxPath(this)%>
 <input type="text" id="<%#uploadfield%>_maxAttach_no" name="<%#uploadfield%>_maxAttach_no" value=""><!--目前table裡最大值-->
 <input type="text" id="<%#uploadfield%>_attach_cnt" name="<%#uploadfield%>_attach_cnt" value=""><!--目前table裡有效筆數-->
-<input type="text" id="<%#uploadfield%>_filenum" name="<%#uploadfield%>_filenum" value="0"><!--/畫面顯示NO-->
+<input type="text" id="<%#uploadfield%>_filenum" name="<%#uploadfield%>_filenum" value="0"><!--畫面顯示NO-->
 <input type="text" id="<%#uploadfield%>_path" name="<%#uploadfield%>_path" value="<%=epath%>">
 <input type="text" id="uploadfield" name="uploadfield" value="<%#uploadfield%>">
-<input type="text" id="maxattach_no" name="maxattach_no" value="0">
+<input type="text" id="maxattach_no" name="maxattach_no" value="0"><!--table+畫面顯示NO-->
 <input type="text" id="attach_seq" name="attach_seq" value="<%#seq%>">
 <input type="text" id="attach_seq1" name="attach_seq1" value="<%#seq1%>">
 <input type="text" id="attach_step_grade" name="attach_step_grade" value="<%#step_grade%>">
@@ -77,8 +77,8 @@
             </TD>
         </TR>
     </thead>
-    <tfoot style="display:none">
-		<TR>
+    <script type="text/html" id="upload_template"><!--文件上傳樣板-->
+		<TR class="tr_brattach_##">
 			<TD class=lightbluetable align=center>
 		        文件檔案<input type=text id='<%#uploadfield%>_filenum##' name='<%#uploadfield%>_filenum##' class="Lock" size=2 value='##'>.
 			</TD>
@@ -106,7 +106,7 @@
                 <input type=checkbox id='doc_flag_##' name='doc_flag_##' class="<%=Lock.TryGet("Qup")%>" value='E'><font color='blue'>電子送件文件檔(pdf)</font>
 			</TD>
 		</TR>
-    </tfoot>
+    </script>
     <tbody></tbody>
 </table>
 
@@ -265,10 +265,13 @@
         var nRow = CInt($("#" + fld + "_filenum").val()) + 1;//畫面顯示NO
         $("#maxattach_no").val(CInt($("#maxattach_no").val()) + 1);//table+畫面顯示 NO
         //複製樣板
-        $("#tabfile" + fld + ">tfoot").each(function (i) {
-            var strLine1 = $(this).html().replace(/##/g, nRow);
-            $("#tabfile" + fld + ">tbody").append(strLine1);
-        });
+        //$("#tabfile" + fld + ">tfoot").each(function (i) {
+        //    var strLine1 = $(this).html().replace(/##/g, nRow);
+        //    $("#tabfile" + fld + ">tbody").append(strLine1);
+        //});
+        var copyStr = $("#tabfile" + fld + ">#upload_template").text() || "";
+        copyStr = copyStr.replace(/##/g, nRow);
+        $("#tabfile" + fld + ">tbody").append(copyStr);
         $("#" + fld + "_filenum").val(nRow);
         $("#attach_no_" + nRow).val($("#maxattach_no").val());//dmt_attach.attach_no
     }
@@ -276,16 +279,18 @@
     //[減少一筆]
     upload_form.deleteFile = function () {
         var fld = $("#uploadfield").val();
-        var tfilenum = parseInt($("#" + fld + "_filenum").val(), 10);//attach_no
-        var tsqlnum = parseInt($("#" + fld + "_sqlnum").val(), 10);//畫面顯示NO
-
-        if ($("#" + fld + "_name_" + tfilenum).val() == "") {
-            $("#tr_opt_attach_" + tfilenum).remove();
-            $("#" + fld + "_filenum").val(Math.max(0, tfilenum - 1));
-            $("#" + fld + "_sqlnum").val(Math.max(0, tsqlnum - 1));
-        } else {
-            //檔案已存在要刪除
-            //upload_form.DelOptAttach(tfilenum);
+        var tfilenum = CInt($("#" + fld + "_filenum").val());//畫面顯示NO
+        if (tfilenum > 0) {
+            if ($("#" + fld + "_name_" + tfilenum).val() == "") {
+                $(".tr_brattach_" + tfilenum).remove();
+                $("#" + fld + "_filenum").val(Math.max(0, tfilenum - 1));
+            } else {
+                //檔案已存在要刪除
+                if (upload_form.DelAttach(tfilenum) == true) {
+                    //先不刪除,而是使用隱藏方式
+                    $(".tr_brattach_" + tfilenum).hide();
+                }
+            }
         }
     }
 
@@ -330,7 +335,7 @@
         } else {
             file += "\\" + tname;
         }
-
+        
         //2015/12/25for總契約書/委任書增加檢查(只取消連結不刪實體檔)
         if (document.getElementById(fld + "_apattach_sqlno_" + nRow).value != "") {
             if (confirm("確定取消" + document.getElementById(fld + "_desc_" + nRow).value + "連結？")) {
