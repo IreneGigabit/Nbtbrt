@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="case_form" %>
+<%@ Control Language="C#" ClassName="case_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Import Namespace = "System.Data" %>
 
@@ -54,7 +54,8 @@
                     cnn.DataTable(SQL, dt);
                     td_tscode = "<select id='F_tscode' name='F_tscode' class='" + Lock["brt51"] + "'>" + dt.Option("{scode}", "{sc_name}") + "</select>";
                 } else {
-                    td_tscode = "<input type='text' id='F_tscode' name='F_tscode' readonly class='SEdit' size=5 value='" + Session["se_scode"] + "'>" + Session["sc_name"];
+                    td_tscode = "<input type='text' id='F_tscode' name='F_tscode' readonly class='SEdit' size=5 value='" + Session["se_scode"] + "'>";
+                    td_tscode = "<span='span_tscode'>" + Session["sc_name"] + "</span>";
                 }
             }
             
@@ -180,9 +181,9 @@
 			    <TD class=whitetablebg width=5%><input type="text" id="nfy_oth_money" name="nfy_oth_money" size="8" style="text-align:right;" onblur="case_form.summary()" class="<%=Lock["brt51"]%>"></TD>
 			    <TD class=lightbluetable align=right width=4%>轉帳單位：</TD>
 			    <TD class=whitetablebg width=5%>
-			    <select id=tfy_oth_code NAME=tfy_oth_code class="<%=Lock["brt51"]%>">
-                    <%#tfy_oth_code%><option value="Z">Z_轉其他人</option>
-			    </SELECT>
+			        <select id=tfy_oth_code NAME=tfy_oth_code class="<%=Lock["brt51"]%>">
+                        <%#tfy_oth_code%><option value="Z">Z_轉其他人</option>
+			        </SELECT>
 			    </TD>
 		    </TR>
 		    <TR>
@@ -211,6 +212,9 @@
 					      <td class=lightbluetable2 align=center width=16%>已請款規費</td>
 					      <td class=lightbluetable2 align=center width=16%>已請款次數</td>
 					      <td class=lightbluetable2 align=center width=16%>已支出規費</td>
+					      <td class="lightbluetable2 td_chkar_code" align=center width=16% style="display:none">
+                              是否請款完畢
+					      </td>
 					    </TR>
 					    <TR>
 					      <td class=whitetablebg><INPUT TYPE=text id=xadd_service NAME=xadd_service SIZE=8 maxlength=8 style="text-align:right;" readonly class="SEdit"></td>
@@ -219,6 +223,13 @@
 					      <td class=whitetablebg><INPUT TYPE=text id=xar_fees NAME=xar_fees SIZE=8 maxlength=8 style="text-align:right;" readonly class="SEdit"></td>
 					      <td class=whitetablebg><INPUT TYPE=text id=xar_curr NAME=xar_curr SIZE=8 maxlength=8 style="text-align:right;" readonly class="SEdit"></td>
 					      <TD class=whitetablebg><INPUT TYPE=text id=xgs_fees NAME=xgs_fees SIZE=8 style="text-align:right;" readonly class="SEdit"></TD>
+					      <TD class="whitetablebg td_chkar_code" style="display:none">
+                              <span id="span_ar_code_O" style="display:none">舊款</span>
+                              <span id="span_ar_code_X" style="display:none">
+                                    <input type=checkbox id=chkar_code name=chkar_code value="X">不需請款
+								    <input type="hidden" id="ochkar_code" name="ochkar_code">
+                              </span>
+					      </TD>
 					    </TR>
 				    </TABLE>		  
 			    </TD>
@@ -239,23 +250,25 @@
 	        <INPUT TYPE=checkbox id=tfy_discount_chk name=tfy_discount_chk value="Y" class="<%=Lock["brt51"]%>">折扣請核單
         </span>
 		<span id="span_discount_remark" style="display:none">
-			折扣理由：<INPUT TYPE=text NAME="tfy_discount_remark" id="tfy_dicount_remark" SIZE=100 MAXLENGTH=200 alt="『折扣理由』" onblur="fDataLen(this.value,this.MAXLENGTH,this.alt)">
+			折扣理由：<INPUT TYPE=text NAME="tfy_discount_remark" id="tfy_dicount_remark" SIZE=100 MAXLENGTH=200 alt="『折扣理由』" onblur="fDataLen(this)">
 		</span>
 	</td>
 </TR>
 <TR>
 	<TD class=lightbluetable align=right>案源代碼：</TD>
 	<TD class=whitetablebg>
+        <input type="hidden" id="osource" name="osource">
         <Select id=tfy_source name=tfy_source><%#tfy_source%></Select>
 	</TD>
 	<TD class=lightbluetable align=right>契約號碼：</TD>
 	<TD class=whitetablebg colspan="3">
+        <input type="text" id="ocontract_no" name="ocontract_no">
 		<input type="text" id="tfy_contract_type" name="tfy_contract_type">
         <input type="radio" id="Contract_no_Type_N" name="Contract_no_Type" value="N">
         <INPUT TYPE=text id=tfy_Contract_no name=tfy_Contract_no SIZE=10 MAXLENGTH=10 onchange="$('#Contract_no_Type_N').prop('checked',true).trigger('click');">
         <span id="contract_type">
 		    <input type="radio" id="Contract_no_Type_A" name="Contract_no_Type" value="A">後續案無契約書
-		</span>
+		</span>Display_caseform
 		<span style="display:none"><!--2015/12/29修改，併入C不顯示-->
 		    <input type="radio" id="Contract_no_Type_S" name="Contract_no_Type" value="B">特案簽報
 		</span>
@@ -299,23 +312,22 @@
 		</select>
 	</TD>
 	<TD class=lightbluetable align=right>收據抬頭：</TD>
-	<TD class=whitetablebg>
 		<select id="tfy_receipt_title" name="tfy_receipt_title"><%#tfy_receipt_title%></select>
 		<input type="text" id="tfy_rectitle_name" name="tfy_rectitle_name">
 	</TD>
 </tr>
 <TR>
-	<TD class=lightbluetable align=right>其他接洽：<BR>事項記錄：</TD>
+	<TD class=lightbluetable align=right>其他接洽　<BR>事項記錄：</TD>
 	<TD class=whitetablebg colspan=5><TEXTAREA id=tfy_Remark name=tfy_Remark ROWS=6 COLS=70></TEXTAREA>
 	</TD>
 </TR>
 </TABLE>
-<input type=text id="anfees" name="anfees" value="">	
+<input type=text id="anfees" name="anfees" value=""><!--有無收費標準-->
 <input type=text id="code_type" name="code_type" value="<%#code_type%>">	
 <input type=text id="TaMax" name="TaMax" value="<%=MaxTaCount%>"><!--最他費用最多可用筆數-->
 <input type=text id="TaCount" name="TaCount" value="0">
 <input type=text id="nfy_tot_case" name="nfy_tot_case" value="0"><!--案性數=主案性+請款案性數-->
-<input type=text id="tfy_ar_code" name="tfy_ar_code" value="N">	
+<input type=text id="tfy_ar_code" name="tfy_ar_code" value="N">	<!--請款是否開立完畢-->
 
 
 <script language="javascript" type="text/javascript">
@@ -491,7 +503,7 @@
             reg.nfy_service.value = 0;//小計服務費
             reg.nfy_fees.value = 0;//小計規費
             case_form.summary();//計算合計
-            case_form.setSendWay(x2)//20160909 增加發文方式
+            case_form.setSendWay(x2);//20160909 增加發文方式
             return false;
         }
         var Arcase = x2;
