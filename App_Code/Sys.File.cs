@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Configuration;
 using System.Web;
 using System.Data.SqlClient;
@@ -48,7 +48,7 @@ public partial class Sys
     public string gbrDbDir = "";
 
     /// <summary>
-    /// 區所對催帳客函的虛擬路徑ex./nbtbrt/custdb_file
+    /// 區所對催帳客函的虛擬路徑 ex./nbtbrt/custdb_file
     /// </summary>
     public string gcustDbDir = "";
 
@@ -110,11 +110,38 @@ public partial class Sys
     }
 
     /// <summary>
-    /// 取得備份檔案名稱
+    /// 檔案重新命名
+    /// </summary>
+    /// <param name="srcFile">原始路徑(虛擬路徑)</param>
+    /// <param name="dstFile">目的路徑(虛擬路徑)</param>
+    /// <param name="backupFlag">檔案衝突時是否備份舊檔</param>
+    /// <returns></returns>
+    public static void RenameFile(string srcFile, string dstFile, bool backupFlag) {
+        System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(srcFile));
+        System.IO.FileInfo dFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(dstFile));
+        string backup_name = String.Format("{0}_{1}-{2}{3}"
+                                            , Path.GetFileNameWithoutExtension(dFi.Name)
+                                            , DateTime.Now.ToString("yyyyMMddHHmmss")
+                                            , Sys.GetSession("scode")
+                                            , dFi.Extension);
+        if (HttpContext.Current.Request["chkTest"] != "TEST") {
+            if (dFi.Exists && backupFlag) {
+                dFi.MoveTo(dFi.DirectoryName + "\\" + backup_name);
+            }
+            sFi.CopyTo(dFi.FullName, true);
+        } else {
+            HttpContext.Current.Response.Write("來源=" + sFi.FullName + "<BR>");
+            HttpContext.Current.Response.Write("目的=" + dFi.FullName + "<BR>");
+            HttpContext.Current.Response.Write("衝突備份=" +dFi.DirectoryName + "\\" + backup_name + "<HR>");
+        }
+    }
+
+    /// <summary>
+    /// 取得備份檔案名稱xx
     /// </summary>
     /// <param name="strFile">原始檔名</param>
     /// <returns></returns>
-    public static string getBackupFile(string strFile) {
+    private static string getBackupFile(string strFile) {
         string tfile_back = "";
         int n = strFile.LastIndexOf(".");   //副檔名的起始位置
         tfile_back = strFile.Substring(0, n) + "_" + DateTime.Now.ToString("yyyyMMddhhmmss") + "-" + HttpContext.Current.Session["scode"] + strFile.Substring(n);
