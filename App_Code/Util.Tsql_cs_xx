@@ -1,0 +1,113 @@
+using System;
+using System.Collections.Generic;
+using System.Web;
+
+public static partial class Util
+{
+    #region 串接insert語法
+    /// <summary>
+    /// 串接insert語法
+    /// </summary>
+    public static string GetInsertSQL(string TableName, List<DBColumn> DBColumn) {
+        string strCol = "", strValue = "";
+        foreach (DBColumn col in DBColumn) {
+            string value = HttpContext.Current.Request[col.RequestName];
+            //有資料,或有給值
+            if ((value != null && value != "") || (col.EmptyValue != null && col.EmptyValue != "") || col.ColType == ColType.Value) {
+                //HttpContext.Current.Response.Write("**" + col.RequestName + "<BR>");
+                if (strCol != "") {
+                    strCol += ", ";//欄位
+                    strValue += ", ";//資料
+                }
+
+                //串接欄位
+                strCol += col.DBColName;
+
+                //串接資料
+                strValue += ParseValue(col);
+            }
+        }
+
+        return string.Format("insert into {0}({1})values({2})", TableName, strCol, strValue);
+    }
+    #endregion
+
+    #region 串接update語法
+    /// <summary>
+    /// 串接update語法
+    /// </summary>
+    public static string GetUpdateSQL(string TableName, List<DBColumn> DBColumn) {
+        string strSet = "";
+        foreach (DBColumn col in DBColumn) {
+            string value = col.InputValue;
+            //有資料,或有給值
+            if ((value != null && value != "") || (col.EmptyValue != null && col.EmptyValue != "") || col.ColType == ColType.Value) {
+                //HttpContext.Current.Response.Write("**" + col.RequestName + "<BR>");
+                if (strSet != "") {
+                    strSet += ", ";
+                }
+
+                //串接欄位
+                strSet += col.DBColName;
+
+                //串接資料
+                strSet += "=" + ParseValue(col);
+            }
+        }
+
+        return string.Format("update {0} set {1}", TableName, strSet);
+    }
+    #endregion
+
+    /// <summary>
+    /// 無值時寫入''
+    /// </summary>
+    private static string Str(string value) {
+        return "'" + value.Replace("'", "''").ToBig5().Trim() + "'";
+    }
+
+    /// <summary>
+    /// 無值時寫入null
+    /// </summary>
+    private static string pStr(string value) {
+        if (value == null || value == "")
+            return "null";
+        else
+            return "'" + value.Replace("'", "''").ToBig5().Trim() + "'";
+    }
+
+    /// <summary>
+    /// 無值時寫入0
+    /// </summary>
+    private static string Zero(string value) {
+        if (value == null || value == "")
+            return "0";
+        else
+            return "" + value.Replace("'", "''").Trim() + "";
+    }
+}
+
+
+public class DBColumn
+{
+    public string DBColName { get; set; }
+    public string InputValue { get; set; }
+    public bool EmptySave { get; set; }
+
+    /// <param name="dbColumnName">資料庫欄位名稱</param>
+    /// <param name="inputValue">寫入值</param>
+    public DBColumn(string dbColumnName, string inputValue) {
+        this.DBColName = dbColumnName;
+        this.InputValue = inputValue;
+        this.EmptySave = false;
+    }
+
+    /// <param name="dbColumnName">資料庫欄位名稱</param>
+    /// <param name="inputValue">寫入值</param>
+    /// <param name="emptySave">未submit欄位時要寫入資料嗎</param>
+    public DBColumn(string dbColumnName, string inputValue, bool emptySave) {
+        this.DBColName = dbColumnName;
+        this.InputValue = inputValue;
+        this.EmptySave = emptySave;
+    }
+}
