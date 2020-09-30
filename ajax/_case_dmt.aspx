@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Text"%>
 <%@ Import Namespace = "System.Data.SqlClient"%>
@@ -19,6 +19,7 @@
     protected string in_no = "";
     protected string cust_area = "";
     protected string cust_seq = "";
+    protected string code_type = "";
 
     protected string br_in_scode = "";//交辦單營洽
     protected string br_in_scname = "";//交辦單營洽
@@ -31,6 +32,8 @@
         in_no = (Request["in_no"] ?? "").Trim();
         cust_area = (Request["cust_area"] ?? "").Trim();
         cust_seq = (Request["cust_seq"] ?? "").Trim();
+        code_type = (Request["code_type"] ?? "").Trim();
+        
         br_in_scode = Sys.GetSession("scode");
         br_in_scname = Sys.GetSession("sc_name");
         
@@ -45,6 +48,7 @@
         Response.Write("\"br_in_scode\":" + JsonConvert.SerializeObject(br_in_scode, settings).ToUnicode() + "\n");
         Response.Write(",\"br_in_scname\":" + JsonConvert.SerializeObject(br_in_scname, settings).ToUnicode() + "\n");
         Response.Write(",\"case_main\":" + JsonConvert.SerializeObject(GetCase(), settings).ToUnicode() + "\n");
+        Response.Write(",\"case_item\":" + JsonConvert.SerializeObject(GetCaseItem(), settings).ToUnicode() + "\n");
         Response.Write(",\"cust\":" + JsonConvert.SerializeObject(GetCust(), settings).ToUnicode() + "\n");
         //Response.Write(",\"salesList\":" + JsonConvert.SerializeObject(GetSales(), settings).ToUnicode() + "\n");
         Response.Write("}");
@@ -83,7 +87,9 @@
             conn.DataTable(SQL, dt);
 
             if (dt.Rows.Count > 0) {
+                code_type = dt.Rows[0].SafeRead("arcase_type", "");
                 br_in_scode = dt.Rows[0].SafeRead("in_scode", "");
+                
                 SQL = "select sc_name from sysctrl.dbo.scode where scode='" + br_in_scode + "'";
                 object objResult = conn.ExecuteScalar(SQL);
                 br_in_scname = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
@@ -91,6 +97,22 @@
 
             return dt;
         }
+    }
+    #endregion
+
+    #region GetCaseItem 交辦費用
+    private DataTable GetCaseItem() {
+        DataTable dt = new DataTable();
+        using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            SQL = "select a.item_sql,a.item_arcase,a.item_count,a.item_service,a.item_fees,b.prt_code,b.remark,c.service,c.fees,c.others,c.oth_code,c.oth_code1 ";
+            SQL += "from caseitem_dmt a ";
+            SQL += "inner join code_br b on  a.item_arcase=b.rs_code AND b.no_code='N' and b.rs_type='" + code_type + "' ";
+            SQL += "left outer join case_fee c on c.dept='T' and c.country='T' and c.rs_code=a.item_arcase and getdate() between c.beg_date and c.end_date ";
+            SQL += "where a.in_no= '" + in_no + "' and a.in_scode='" + br_in_scode + "' ";
+            SQL += "order by a.item_sql";
+            conn.DataTable(SQL, dt);
+        }
+        return dt;
     }
     #endregion
 
