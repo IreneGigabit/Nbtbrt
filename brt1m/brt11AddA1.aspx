@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Register Src="~/commonForm/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
 <%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
@@ -24,6 +24,7 @@
     protected string ar_form = "";
     protected string prt_code = "";
     protected string case_stat = "";
+    protected string code_type = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -35,6 +36,12 @@
         ar_form = (Request["ar_form"] ?? "").Trim();
         prt_code = (Request["prt_code"] ?? "").Trim();
         case_stat = (Request["case_stat"] ?? "").Trim();
+        code_type = (Request["code_type"] ?? "").Trim();
+
+        formFunction = (Request["formFunction"] ?? "").Trim().ToLower();
+        if (formFunction == "") {
+            formFunction = "add";
+        }
         
         Token myToken = new Token(HTProgCode);
         HTProgRight = myToken.CheckMe();
@@ -48,8 +55,6 @@
     }
 
     private void PageLayout() {
-        formFunction = "add";
-
         if (formFunction == "edit") {
             if ((HTProgRight & 8) > 0) {
                 if (prgid == "brt51") {//客收確認
@@ -233,23 +238,6 @@
     jMain = {};
 
     function this_init() {
-        //取得交辦資料
-        $.ajax({
-            type: "get",
-            url: getRootPath() + "/ajax/_case_dmt.aspx?prgid="+main.prgid+"&right="+main.right+"&formfunction="+main.formFunction+"&submittask=" + $("#submittask").val() + 
-                "&cust_area=<%#ReqVal.TryGet("cust_area")%>&cust_seq=<%#ReqVal.TryGet("cust_seq")%>&in_no=<%#ReqVal.TryGet("in_no")%>",
-            async: false,
-            cache: false,
-            success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-                jMain = $.parseJSON(json);
-            },
-            error: function (xhr) { 
-                //$("#dialog").html(xhr.responseText);
-                //$("#dialog").dialog({ width: 600 });
-                toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
-        });
-
         //畫面準備
         cust_form.init();//案件客戶
         attent_form.init();//案件聯絡人
@@ -265,6 +253,23 @@
     }
 
     function this_bind(){
+        //取得交辦資料
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/_case_dmt.aspx?prgid="+main.prgid+"&right="+main.right+"&formfunction="+main.formFunction+"&submittask=" + $("#submittask").val() + 
+                "&cust_area=<%#ReqVal.TryGet("cust_area")%>&cust_seq=<%#ReqVal.TryGet("cust_seq")%>&in_no=<%#ReqVal.TryGet("in_no")%>&code_type=<%#ReqVal.TryGet("code_type")%>",
+            async: false,
+            cache: false,
+            success: function (json) {
+                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                jMain = $.parseJSON(json);
+            },
+            error: function (xhr) { 
+                //$("#dialog").html(xhr.responseText);
+                //$("#dialog").dialog({ width: 600 });
+                toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+        });
+
         if(jMain.case_main.length==0){
             //無交辦資料則帶基本設定
             //客戶
@@ -282,7 +287,7 @@
             //收費與接洽事項
             //　洽案營洽
             $("#F_tscode").val(jMain.br_in_scode);
-            $("#F_tscode").val(jMain.br_in_scname);
+            $("#span_tscode").html(jMain.br_in_scname);
             //　案件主檔請款註記
             $("#tfy_Ar_mark").val("N");
             $("#dfy_cust_date").val("");
@@ -295,7 +300,187 @@
             //　類別種類
             $("#tfz1_class_typeI").prop("checked",true);
         }else{
+            //$("#code_type").val(jMain.case_main[0].arcase_type);
+            //***聯絡人與客戶資料	
+            $("#F_cust_area").val(jMain.case_main[0].cust_area);
+            $("#F_cust_seq").val(jMain.case_main[0].cust_seq);
+            $("#btncust_seq").click();
+            $("#O_cust_area").val(jMain.case_main[0].cust_area);
+            $("#O_cust_seq").val(jMain.case_main[0].cust_seq);
+            $("#tfy_att_sql").val(jMain.case_main[0].tfy_att_sql);
+            $("#oatt_sql").val(jMain.case_main[0].tfy_att_sql);
+            attent_form.getatt(jMain.case_main[0].cust_area, jMain.case_main[0].cust_seq, jMain.case_main[0].att_sql);
+            //****申請人
+            apcust_form.getapp("",jMain.case_main[0].in_no);
+            for (var r = 1; r <= CInt($("#apnum").val()) ; r++) {
+                $("#queryap_"+r).val("重新取得申請人資料");
+            }
+            //Table(case_dmt)案件主檔
+            $("#tfz1_seq").val(jMain.case_main[0].seq);
+            $("#tfz1_seq1").val(jMain.case_main[0].seq1);
+            //案性
+            $("#code_type").val(jMain.case_main[0].arcase_type);
+            $("#nfy_tot_case").val(jMain.case_main[0].nfy_tot_case);
+            //接洽費用
+            $.each(jMain.case_item, function (i, item) {
+                if (item.item_sql == "0") {
+                    $("#tfy_Arcase").val(item.item_arcase);
+                    $("#nfyi_Service").val(item.item_service);
+                    $("#nfyi_Fees").val(item.item_fees);
+                    $("#Service").val(item.service == "" ? "0" : item.service);//收費標準
+                    $("#Fees").val(item.fees == "" ? "0" : item.fees);//收費標準
+                } else {
+                    case_form.ta_display('Add');
+                    $("#nfyi_item_Arcase_" + item.item_sql).val(item.item_arcase);
+                    $("#nfyi_item_count_" + item.item_sql).val(item.item_count);//項目
+                    $("#nfyi_Service_" + item.item_sql).val(item.item_service);
+                    $("#nfyi_fees_" + item.item_sql).val(item.item_fees);
+                    $("#nfzi_Service_" + item.item_sql).val(item.service == "" ? "0" : item.service);;//收費標準
+                    $("#nfzi_fees_" + item.item_sql).val(item.fees == "" ? "0" : item.fees);//收費標準
+                }
+                $("#TaCount").val(item.item_sql);//請款案性數
+            });
+            //費用小計
+            $("#nfy_service").val(jMain.case_main[0].service);
+            $("#nfy_fees").val(jMain.case_main[0].fees);
+            //收費標準
+            $("#Service").val(jMain.case_main[0].p_service);
+            $("#Fees").val(jMain.case_main[0].p_fees);
+            //折扣率
+            $("#nfy_Discount").val(jMain.case_main[0].discount);
+            $("#Discount").val(jMain.case_main[0].discount);
+            $("#tfy_dicount_remark").val(jMain.case_main[0].discount_remark);//***折扣理由
 
+            //***折扣低於8折顯示折扣理由
+            if (CInt($("#nfy_Discount").val())>20){
+                $("#span_discount_remark").show();
+            }
+            //***判斷收費標準
+            if(jMain.case_main[0].p_service=="0"&&jMain.case_main[0].p_fees=="0"){
+                $("#anfees").val("N");
+            }else{
+                $("#anfees").val("Y");
+            }
+            //合計
+            $("#OthSum").val(jMain.case_main[0].othsum);
+            //案源代碼
+            $("#tfy_source").val(jMain.case_main[0].source);
+            $("#osource").val(jMain.case_main[0].source);
+            //請款註記
+            $("#tfy_Ar_mark").val(jMain.case_main[0].ar_mark);
+            $("#tfy_ar_code").val(jMain.case_main[0].ar_code);
+            br_form.seq1_conctrl();
+
+            //*****契約號碼,2015/12/29修改，增加契約書種類，契約書後補註記及說明
+            $("#contract_type").hide();//***後續案無契約書
+            if(jMain.case_main[0].contract_flag=="Y"){
+                $("#tfy_contract_flag").prop('checked', true).triggerHandler("click");
+                $("#tfy_contract_remark").val(jMain.case_main[0].contract_remark);
+            }
+            $("#tfy_contract_type").val(jMain.case_main[0].contract_type);
+            $("input[name='Contract_no_Type'][value='"+jMain.case_main[0].contract_type+"']").prop('checked', true).triggerHandler("click");
+            if(jMain.case_main[0].contract_type=="M"){
+                $("#Mcontract_no").val(jMain.case_main[0].contract_no);
+            }else if(jMain.case_main[0].contract_type=="N"){
+                $("#tfy_Contract_no").val(jMain.case_main[0].contract_no);
+            }
+            $("#ocontract_no").val(jMain.case_main[0].contract_no);
+            if(main.prgid!="brt52"){//不是交辦維護
+                case_form.display_caseform("T",$("#tfy_Arcase").val());//抓案性特殊控制
+            }
+            //期限
+            if(main.prgid=="brt12"){//洽案編修
+                $("#dfy_cust_date").val("");
+                $("#dfy_pr_date").val(new Date().addDays(15).format("yyyy/M/d"));
+                $("#dfy_last_date").val("");
+            }else{
+                $("#dfy_cust_date").val(dateReviver(jMain.case_main[0].cust_date,"yyyy/M/d"));
+                $("#dfy_pr_date").val(dateReviver(jMain.case_main[0].pr_date,"yyyy/M/d"));
+                $("#dfy_last_date").val(dateReviver(jMain.case_main[0].last_date,"yyyy/M/d"));
+            }
+            //其他接洽事項記錄
+            $("#tfy_Remark").val(jMain.case_main[0].remark);
+            //20160910增加發文方式欄位
+            case_form.setSendWay(x2)
+            setSendWay($("#tfy_Arcase").val());
+            $("#tfy_send_way").val(jMain.case_main[0].send_way)
+            //20180221增加電子收據欄位
+            $("#tfy_receipt_type").val(jMain.case_main[0].receipt_type);
+            $("#tfy_receipt_title").val(jMain.case_main[0].receipt_title);
+            $("#tfy_rectitle_name").val(jMain.case_main[0].rectitle_name);
+            //20200207若規費為0則收據抬頭預設為空白
+            if(jMain.case_main[0].fees==0){
+                $("#tfy_receipt_title").val("B");
+            }
+
+            $("#xadd_service").val(jMain.case_main[0].add_service); //追加服務費
+            $("#xadd_fees").val(jMain.case_main[0].add_fees);       //追加規費
+            $("#xar_service").val(jMain.case_main[0].ar_service);   //已請款服務費
+            $("#xar_fees").val(jMain.case_main[0].ar_fees);         //已請款規費
+            $("#xar_curr").val(jMain.case_main[0].ar_curr);         //已請款次數
+            $("#xgs_fees").val(jMain.case_main[0].gs_fees);         //已支出規費
+            if(jMain.case_main[0].ar_code=="X"){
+                $("#chkar_code").prop("checked",true);
+            }else{
+                $("#chkar_code").prop("checked",false);
+            }
+            $("#ochkar_code").val(jMain.case_main[0].ar_code);
+            //****轉帳費用
+            $("#tfy_oth_arcase").val(jMain.case_main[0].oth_arcase);//轉帳費用
+            $("#tfy_oth_code").val(jMain.case_main[0].oth_code);//轉帳單位
+            $("#nfy_oth_money").val(jMain.case_main[0].oth_money);//轉帳金額
+            //轉帳金額合計抓收費標準
+            $.ajax({
+                type: "get",
+                url: getRootPath() + "/ajax/json_Fee.aspx?type=Fee&country=T&Arcase=" + jMain.case_main[0].oth_arcase,
+                async: false,
+                cache: false,
+                success: function (json) {
+                    var jFee = $.parseJSON(json);
+                    if (jFee.length != 0) {
+                        $("#oth_money").val(jFee[0].service);
+                    }else{
+                        $("#oth_money").val("0");//轉帳金額
+                    }
+                },
+                error: function () { toastr.error("<a href='" + this.url + "' target='_new'>轉帳金額合計抓收費標準失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+            });
+            //****折扣請核單
+            $("#tfy_discount_chk[value='"+jMain.case_main[0].discount_chk+"']").prop('checked', true).triggerHandler("click");
+           //*****請款單	
+            $("#tfy_ar_chk[value='"+jMain.case_main[0].discount_chk+"']").prop('checked', true).triggerHandler("click");
+            $("#tfy_ar_chk1[value='"+jMain.case_main[0].discount_chk+"']").prop('checked', true).triggerHandler("click");
+
+            //****Table(dmt_temp)案件內容
+            $("#tfz1_Appl_name").val(jMain.case_main[0].appl_name);//*商標名稱
+            $("#tfz1_cust_prod").val(jMain.case_main[0].cust_prod);//20180301增加客戶卷號
+            $("#tfz1_Oappl_name").val(jMain.case_main[0].oappl_name);//不單獨主張專用權
+            $("#tfz1_Cappl_name").val(jMain.case_main[0].cappl_name);//商標圖樣中文
+            $("#tfz1_Eappl_name").val(jMain.case_main[0].eappl_name);//商標圖樣外文
+            $("#tfz1_Eappl_name1").val(jMain.case_main[0].eappl_name);//圖樣分析中文字義
+            $("#tfz1_Eappl_name2").val(jMain.case_main[0].eappl_name);//圖樣分析讀音
+            $("#tfz1_Zname_type").val(jMain.case_main[0].zname_type);//語文別
+            $("#tfz1_Draw").val(jMain.case_main[0].draw);//圖形說明
+            $("#tfz1_Symbol").val(jMain.case_main[0].symbol);//記號說明
+            if(main.formFunction=="edit"){
+                $("#Draw_file1").val(jMain.case_main[0].draw_file);//*圖檔實際路徑
+                $("#file1").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+                $("#draw_attach_file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+                if($("#Draw_file1").val()!=""){
+                    $("#butUpload1").prop("disabled",true);
+                }
+            }
+            if(jMain.case_main[0].color=="B"){
+                $("#tfz1_colorB").prop("checked",true);
+            }else if(jMain.case_main[0].color=="C"||jMain.case_main[0].color=="M"){
+                $("#tfz1_colorC").prop("checked",true);
+            }
+            $("#tfz1_agt_no").val(jMain.case_main[0].agt_no);//*出名代理人代碼
+            $("#pfz1_prior_date").val(jMain.case_main[0].prior_date);//*優先權申請日期
+            $("#tfz1_prior_country").val(jMain.case_main[0].prior_country);//*優先權國家
+            $("#tfz1_prior_no").val(jMain.case_main[0].prior_no);//*優先權申請案號
+            //類別種類
+            $("input[name='tfz1_class_type'][value='"+jMain.case_main[0].class_type+"']").prop('checked', true).triggerHandler("click");
         }
     }
     
@@ -338,28 +523,28 @@
             $("#ap_cname_"+tapnum).val($("#ap_cname1_"+tapnum).val()+$("#ap_cname2_"+tapnum).val());
             $("#ap_ename_"+tapnum).val($("#ap_ename1_"+tapnum).val()+" "+$("#ap_ename2_"+tapnum).val());
             if($("#ap_cname1_"+tapnum).val()!=""){
-                if(fDataLen($("#ap_cname1_"+tapnum).val(),44,"申請人名稱(中)")==""){
+                if(fDataLen($("#ap_cname1_"+tapnum))){
                     settab("#apcust");
                     $("#ap_cname1_"+tapnum).focus();
                     return false;
                 }
             }
             if($("#ap_cname2_"+tapnum).val()!=""){
-                if(fDataLen($("#ap_cname2_"+tapnum).val(),44,"申請人名稱(中)")==""){
+                if(fDataLen($("#ap_cname2_"+tapnum))){
                     settab("#apcust");
                     $("#ap_cname2_"+tapnum).focus();
                     return false;
                 }
             }
             if($("#ap_ename1_"+tapnum).val()!=""){
-                if(fDataLen($("#ap_ename1_"+tapnum).val(),100,"申請人名稱(英)")==""){
+                if(fDataLen($("#ap_ename1_"+tapnum))){
                     settab("#apcust");
                     $("#ap_ename1_"+tapnum).focus();
                     return false;
                 }
             }
             if($("#ap_ename2_"+tapnum).val()!=""){
-                if(fDataLen($("#ap_ename2_"+tapnum).val(),100,"申請人名稱(英)")==""){
+                if(fDataLen($("#ap_ename2_"+tapnum))){
                     settab("#apcust");
                     $("#ap_ename2_"+tapnum).focus();
                     return false;
@@ -484,11 +669,11 @@
 
         //****團體標章表彰之內容	
         if (code3=="9"||code3=="A"||code3=="B"||code3=="C"){
-            if(IsEmpty($("#tfd1_good_name").val())){
+            if(IsEmpty($("#tf91_good_name").val())){
                 alert("請輸入團體標章表彰之內容");
                 settab("#tran");
                 return false;
-                $("#tfd1_good_name").focus();
+                $("#tf91_good_name").focus();
             }
         }
         //折扣請核單檢查2005/10/11雄商平淑提出與李經理確認修改如下
@@ -552,7 +737,7 @@
         if($("#dfy_cust_date").val()!=""){
             if ($.isDate($("#dfy_cust_date").val())&&$.isDate($("#dfy_pr_date").val())){
                 if(Date.parse($("#dfy_cust_date").val())<Date.parse($("#dfy_pr_date").val())){
-                    $("#dfy_pr_date").val(("#dfy_cust_date").val());
+                    $("#dfy_pr_date").val($("#dfy_cust_date").val());
                 }
             }else{
                 if ($("#dfy_cust_date").val()!=""&&!$.isDate($("#dfy_cust_date").val())){
@@ -656,12 +841,11 @@
         //出名代理人檢查
         var apclass_flag="N";
         for (var capnum=1;capnum<=CInt($("#apnum").val());capnum++ ){
-            if($("#apclass_" + capnum).val().Left()=="C"){
+            if($("#apclass_" + capnum).val().Left(1)=="C"){
                 //申請人為外國人則為涉外案
                 apclass_flag="C";
             }
         }
-
         if(apclass_flag=="C"){
             //2015/10/21修改抓取cust_code.code_type=Tagt_no and mark=C及用function放置於sub/client_chk_agtno.vbs
             if (check_agtno("C",$("#tfz1_agt_no").val())==true){
@@ -688,7 +872,8 @@
 
         //*****商品類別檢查
         if($("#tabbr1").length>0){//有載入才要檢查
-            for(var j=1;j<=CInt($("num1").val());j++){
+            var inputCount=0;
+            for(var j=1;j<=CInt($("#num1").val());j++){
                 if($("#good_name1_"+j).val()!=""&&$("#class1_"+j).val()==""){
                     //有輸入商品名稱,但沒輸入類別
                     alert("請輸入類別!");
@@ -701,7 +886,12 @@
                     $("#class1_"+j).focus();
                     return false;
                 }
+                if($("#class1_"+j).val()!=""){
+                    inputCount++;//實際有輸入才要+
+                }
             }
+            $("#ctrlcount1").val(inputCount==0?"":inputCount);
+
             if(CInt($("#tfz1_class_count").val())!=CInt($("#num1").val())){
                 var answer="指定使用商品類別項目(共 "+CInt($("#tfz1_class_count").val())+" 類)與輸入指定使用商品(共 "+CInt($("#num1").val())+" 類)不符，\n是否確定指定使用商品共 "+CInt($("#num1").val())+" 類？";
                 if(answer){
@@ -780,6 +970,10 @@
             contentType: false,
             cache: false,
             processData: false,
+            beforeSend:function(xhr){
+                $("#dialog").html("<div align='center'>存檔中...</div>");
+                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 700 });
+            },
             //success: function (data) { main.onSuccess(data); },
             //error: function (xhr, status, errMsg) { main.onError(xhr, status, errMsg); },
             complete: function (xhr,status) { main.onComplete(xhr,status); }
