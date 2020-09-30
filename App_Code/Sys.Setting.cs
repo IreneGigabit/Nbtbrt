@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Configuration;
 using System.Web;
 using System.Data.SqlClient;
@@ -106,8 +106,8 @@ public partial class Sys
     /// 檔案路徑轉換(寫入DB用)，nbtbrt→brbrt
     /// </summary>
     public static string Path2Btbrt(string path) {
-        path = path.Replace(@"\nbtbrt\", @"\btbrt\");
-        path = path.Replace(@"/nbtbrt/", @"\btbrt\");
+        path = path.Replace(@"\nbtbrt\", @"/btbrt/");
+        path = path.Replace(@"/nbtbrt/", @"/btbrt/");
         return path;
     }
 
