@@ -1,4 +1,4 @@
-﻿//判斷字串是否為JSON格式
+//判斷字串是否為JSON格式
 function isJSON(str) {
     if (typeof str == 'string') {
         try {
@@ -18,7 +18,23 @@ function isJSON(str) {
 //pStr:字串
 //pLen:資料最大長度,若傳入0則傳回資料長度
 //pmsg:欄位名稱,若Error則回傳 ""
-function fDataLen(pStr, pLen, pmsg) {
+function fDataLen(pObj) {
+    if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
+    var tLen = pObj.value.CodeLength();
+    var pLen = pObj.maxLength;
+    var pmsg = pObj.alt;
+    if(pLen==0 || tLen<=pLen) {
+        return false;
+    }else{
+        alert(pmsg+"長度過長，請檢查!!!");
+        return true;
+    }
+}
+
+//pStr:字串
+//pLen:資料最大長度,若傳入0則傳回資料長度
+//pmsg:欄位名稱,若Error則回傳 ""
+function fDataLenX(pStr, pLen, pmsg) {
     var tLen=pStr.CodeLength();
     if(pLen==0 || tLen<=pLen) {
         return tLen;
