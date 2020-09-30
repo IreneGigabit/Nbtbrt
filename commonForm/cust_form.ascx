@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="cust_form" %>
+<%@ Control Language="C#" ClassName="cust_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -34,6 +34,8 @@
 	    <input TYPE="text" id="F_cust_area" name="F_cust_area" size="1" readonly class="SEdit">-
 	    <input TYPE="text" id="F_cust_seq" name="F_cust_seq" size="6" class="<%#Lock.TryGet("Qclass")%>">
         <input type=button class="greenbutton" name="btncust_seq" id="btncust_seq" value ="確定">
+		<input type=hidden id="O_cust_area" name="O_cust_area">
+		<input type=hidden id="O_cust_seq" name="O_cust_seq">
 	</TD>
 	<TD class=lightbluetable  align="right">客戶國籍：</TD>
 	<TD class=whitetablebg>
