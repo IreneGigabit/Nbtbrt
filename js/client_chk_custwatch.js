@@ -1,15 +1,17 @@
-﻿//檢查輸入資料及存檔前是否可立案收文
+//檢查輸入資料及存檔前是否可立案收文
 //pjob_branch: 系統區所別
 //pkeytype: cappl_name:案件名稱(中)、eappl_name: 案件名稱(英)、ap_cname:公司/行號/人名稱(中)、ap_ename:公司/行號/人名稱(英)、
 //          ap_crep:代表人(中)、ap_erep:代表人(英)
 //pkeydata: 關鍵字
 
 //案件名稱檢查
-function appl_name_watch(pvalue,pmaxlength,palt){
+function appl_name_watch(pObj) {
+    if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
     //檢查長度
-    fDataLen(pvalue,pmaxlength,palt);
+    fDataLen(pObj);
     
     //檢查是否為雙邊代理查照對象
+    var pvalue = pObj.value;
     if (check_CustWatch("appl_name",pvalue)) {
         return false;
     }
