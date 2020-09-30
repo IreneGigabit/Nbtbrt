@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" Classname="attent_form" %>
+<%@ Control Language="C#" Classname="attent_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -30,6 +30,7 @@
 	<TR>
 		<td class="lightbluetable" align="right">聯絡人：</td>
 		<td class="whitetablebg">
+            <input type="hidden" id="oatt_sql" name="oatt_sql">
             <select id=tfy_att_sql name=tfy_att_sql></select>
             <input type="button" value="重新整理" id="toclick">
         </td>
