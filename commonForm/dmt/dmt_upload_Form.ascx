@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="dmt_upload_form" %>
+<%@ Control Language="C#" ClassName="dmt_upload_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -21,6 +21,7 @@
     protected string source = "";
     protected string epath = "";
     protected string uploadsource = "";
+    protected string StrFormRemark = "";
     
     protected string html_doc = "";
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -29,8 +30,9 @@
         Response.Expires = -1;
 
         submitTask = (Request["submittask"] ?? "").Trim();
-        uploadtype = Request["uploadtype"] ?? "";
+        uploadtype = (Request["uploadtype"] ?? "").ToLower();
         source = Request["source"] ?? "";
+        prgid = prgid.ToLower();
         
         if (uploadtype == "case") {//表示從接洽記錄上傳
             epath = "doc/case";
@@ -50,9 +52,32 @@
         string pwhere = "";
         if (submitTask != "Q") pwhere += "and (mark is null or mark<>'B')";//維護時只顯示區所文件種類
         if (erpt_code != "") pwhere += "and (remark is null or remark like '%" + erpt_code + "%'";
-        html_doc = Sys.getCustCode("TDOC", pwhere, "sortfld").Option("{cust_code}", "{cust_code}---{code_name}");
+        html_doc = Sys.getCustCode("TDOC", pwhere, "sortfld").Option("{cust_code}", "{code_name}", " v1='{mark1}'", true);
 
+        PageLayout();
         this.DataBind();
+    }
+
+    private void PageLayout() {
+        //2010/7/26承辦交辦發文不需顯示 
+        if (submitTask == "A" && prgid != "brt63") {
+            StrFormRemark += "<div style='color:blue;'>\n";
+            StrFormRemark += "<br>備註：\n";
+            StrFormRemark += "　　※檔案上傳之後，最後記得按下「新增存檔」！\n";
+            if (uploadsource == "CASE") {
+                StrFormRemark += "<br>　　※若文件檔案要交辦專案室，請勾選「交辦專案室」；若不需，請取消勾選，則專案室即不會看到本項文件檔案\n";
+            }
+            StrFormRemark += "<br>　　※僅有以<font color=red>電子送件</font>之[<font color=red>官發</font>]且勾選「電子送件文件檔」會將文件檔更新至商標電子送件區\n";
+            StrFormRemark += "<br>　　※若文件檔案為電子送件所需文件，請勾選「電子送件文件檔」；若不需，請取消勾選\n";
+            StrFormRemark += "</div>\n";
+        } else {
+            if (uploadsource == "CASE" && prgid != "brt81") {
+                StrFormRemark += "<div style='color:blue;'>\n";
+                StrFormRemark += "<br>備註：<br>\n";
+                StrFormRemark += "　　※若文件檔案要交辦專案室，請勾選「交辦專案室」；若不需，請取消勾選，則專案室即不會看到本項文件檔案\n";
+                StrFormRemark += "</div>\n";
+            }
+        }
     }
 </script>
 
@@ -100,7 +125,7 @@
                 <input type='text' id='tran_sqlno_##' name='tran_sqlno_##' value='0'><!--2014/12/13柳月for異動作業增加-->
                 <input type='text' id='<%#uploadfield%>_apattach_sqlno_##' name='<%#uploadfield%>_apattach_sqlno_##'><!--2015/12/25柳月for總契約書/委任書作業增加-->
                 <input type='text' id='attach_old_branch_##' name='attach_old_branch_##'>
-                <br>檔案說明：<select id='doc_type_##' name='doc_type_##' class="<%=Lock.TryGet("Qup")%>" onchange="getfiledoc_code('##')"><%#html_doc%></select>
+                <br>檔案說明：<select id='doc_type_##' name='doc_type_##' class="<%=Lock.TryGet("Qup")%>" onchange="upload_form.getfiledoc('##')"><%#html_doc%></select>
                 <input type=text id='<%#uploadfield%>_desc_##' name='<%#uploadfield%>_desc_##' class="<%=Lock.TryGet("Qup")%>" size=50 maxlength=60 onblur="fChkDataLen(this,'檔案說明')" >
                 <input type=checkbox id='<%#uploadfield%>_branch_##' name='<%#uploadfield%>_branch_##' class="<%=Lock.TryGet("Qup")%>" value='B'><font color='blue'>交辦專案室</font>
                 <input type=checkbox id='doc_flag_##' name='doc_flag_##' class="<%=Lock.TryGet("Qup")%>" value='E'><font color='blue'>電子送件文件檔(pdf)</font>
@@ -110,11 +135,13 @@
     <tbody></tbody>
 </table>
 
+<%#StrFormRemark%>
+
 <script type="text/html" id="upload_btn">
     <TR>
 		<TD class=whitetablebg align=center colspan=5>
-            <input type="button" value="多檔上傳" class="greenbutton" id="multi_upload_button" name="multi_upload_button" onclick="upload_form.mAppendFile()">
-			<input type="button" value ="增加一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Add_button name=file_Add_button onclick="upload_form.appendFile()">
+            <input type="button" value="多檔上傳" class="greenbutton <%=Lock.TryGet("Qup")%>" id="multi_upload_button" name="multi_upload_button" onclick="upload_form.mAppendFile()">
+			<!--input type="button" value ="增加一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Add_button name=file_Add_button onclick="upload_form.appendFile()"-->
 			<input type="button" value ="減少一筆" class="cbutton <%=Lock.TryGet("Qup")%>" id=file_Del_button name=file_Del_button onclick="upload_form.deleteFile()">
 		</TD>
 	</TR>
@@ -204,7 +231,6 @@
         var fld = $("#uploadfield").val();
         var tfolder = $("#" + fld + "_path").val();//存檔路徑
         var nfilename = "";//"KT-" + $("#opt_no").val() + "-{{attach_no}}m";//新檔名格式
-
 
         var urlasp = getRootPath() + "/sub/multi_upload_file.aspx?type=doc";
         urlasp += "&attach_tablename=dmt_attach&filename_flag=source_name";
@@ -389,5 +415,22 @@
         }
 
         window.open(file);
+    }
+
+    //檔案說明
+    upload_form.getfiledoc = function (nRow) {
+        var fld = $("#uploadfield").val();
+        if ($("#doc_type_" + nRow).val() == "") {
+            $("#doc_type_mark_" + nRow).val("");
+            return false;
+        }
+
+        var dname = $("#" + fld + "_desc_" + nRow).val().trim();
+        if (dname != "") dname += "、";
+        dname += $("#doc_type_" + nRow + " :selected").text();
+        $("#" + fld + "_desc_" + nRow).val(dname);
+
+        //抓取文件種類之mark1說明，for電子送件copy時用原始檔名或更名
+        $("#doc_type_mark_" + nRow).val($("#doc_type_" + nRow + " :selected").attr("v1"));
     }
 </script>
