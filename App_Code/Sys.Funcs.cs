@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
@@ -152,7 +152,8 @@ public partial class Sys
     /// </summary>  
     public static DataTable getCustCode(string code_type, string pwh2, string sortField) {
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
-            string SQL = "select cust_code,code_name from cust_code ";
+            string SQL = "select cust_code,code_name,form_name,ref_code,remark,mark,mark1 ";
+            SQL += " from cust_code ";
             SQL += " where code_type='" + code_type + "' " + pwh2;
             if (sortField == "")
                 SQL += " order by cust_code";
