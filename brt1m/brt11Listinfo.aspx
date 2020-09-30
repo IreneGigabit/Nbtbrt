@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
@@ -233,7 +233,7 @@
         if (oThis.val() == "") return false;
         reg.cust_area.value = x;
         reg.cust_seq.value = y;
-        reg.submitTask.value = "A";
+        reg.submitTask.value = "Add";
         
         reg.Ar_Form.value = oThis.val();
         reg.prt_code.value = $('option:selected', oThis).attr('v1');
