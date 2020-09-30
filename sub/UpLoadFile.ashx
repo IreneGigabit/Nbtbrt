@@ -1,4 +1,4 @@
-﻿<%@ WebHandler Language="C#" Class="UpLoaded" %>
+<%@ WebHandler Language="C#" Class="UpLoaded" %>
 
 using System;
 using System.Web;
@@ -170,8 +170,8 @@ public class UpLoaded : IHttpHandler, IRequiresSessionState
             msg += "sExt=" + sExt + "\n";
             msg += "attach_size=" + attach_size + "\n";
             msg += "saveAs=" + context.Server.MapPath(file_path + "/" + ee + sExt) + "\n";
-            context.Response.Write(msg);
-            context.Response.End();
+            //context.Response.Write(msg);
+            //context.Response.End();
         }
 
         if (saveFlag && context.Request["chkTest"] != "TEST") {
