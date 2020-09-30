@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="br_A1_form" %>
+<%@ Control Language="C#" ClassName="br_A1_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -119,7 +119,6 @@
 	    </td>	
     <tr-->
     <tr class='sfont9'>
-		<input type="text" name="tfz1_good_name" ID="tfz1_good_name">
         <td colspan=8 id="td_br_good">
         </td>
     </tr>
@@ -144,10 +143,10 @@
 	    <td class="lightbluetable" colspan="8" valign="top" >備註：本案另涉有他案時，請於備註欄內填明。</td>
     </tr>			
     <tr>
-	    <td class="lightbluetable" colspan="8" valign="top"><INPUT type="radio" id="ttz1_RCodeR1" name="ttz1_RCode" value="R1" onclick="br_form.CopyStr1(reg.tfz1_remark2,'1',this.value)">本案需俟註冊第<input TYPE="text" id="ttz1_R1" NAME="ttz1_R1" SIZE="10" MAXLENGTH="50" onchange="br_form.CopyStr1(reg.tfz1_remark2,'0',this.value)">號商標爭議案確定後，再行審理。</td>
+	    <td class="lightbluetable" colspan="8" valign="top"><INPUT type="radio" id="ttz1_R1Code" name="ttz1_RCode" value="R1" onclick="br_form.CopyStr1(reg.tfz1_remark2,'1',this)">本案需俟註冊第<input TYPE="text" id="ttz1_R1" NAME="ttz1_R1" SIZE="10" MAXLENGTH="50" onchange="br_form.CopyStr1(reg.tfz1_remark2,'0',this)">號商標爭議案確定後，再行審理。</td>
     </tr>	
     <tr>
-	    <td class="lightbluetable" colspan="8" valign="top"><INPUT type="radio" id="ttz1_RCodeR9" name="ttz1_RCode" value="R9" onclick="br_form.CopyStr1(reg.tfz1_remark2,'1',this.value)">其他<input TYPE="text" id="ttz1_R9" NAME="ttz1_R9" SIZE="50" onchange="br_form.CopyStr1(reg.tfz1_remark2,'0',this.value)">
+	    <td class="lightbluetable" colspan="8" valign="top"><INPUT type="radio" id="ttz1_R9Code" name="ttz1_RCode" value="R9" onclick="br_form.CopyStr1(reg.tfz1_remark2,'1',this)">其他<input TYPE="text" id="ttz1_R9" NAME="ttz1_R9" SIZE="50" onchange="br_form.CopyStr1(reg.tfz1_remark2,'0',this)">
 	    <input TYPE="text" id="tfz1_remark2" NAME="tfz1_remark2" value="">
 	    </td>
     </tr>
@@ -163,14 +162,14 @@
 
 <!--壹、商標圖樣 様版 依案性第3碼切換顯示-->
 <script type="text/html" class="tabbr_appl_0 tabbr_appl_1 tabbr_appl_5 tabbr_appl_9 tabbr_appl_D">
-	<TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+	<TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%"><!--1-->
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" width="10%"><strong>壹、<span class="txtMark0"></span>圖樣</strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" STYLE="cursor:pointer;COLOR:BLUE" align=right ID="nAppend" onclick="PMARK(p1Appl_name)">一、<u><span class="txtMark1"></span>名稱：</u></td>
 		<td class="whitetablebg" colspan=7>
-            <input TYPE="text" id="tfz1_Appl_name" NAME="tfz1_Appl_name" alt="『商標(標章)名稱』" SIZE="60" MAXLENGTH="100" onblur="appl_name_watch(this.value,this.maxLength,this.alt)">
+            <input TYPE="text" id="tfz1_Appl_name" NAME="tfz1_Appl_name" alt="『商標(標章)名稱』" SIZE="60" MAXLENGTH="100" onblur="appl_name_watch(this)">
 			<input TYPE="text" id="file1" name="file1" value="">
 	        <input TYPE="text" id="Draw_file1" name="Draw_file1" SIZE="50" maxlength="50" readonly>	    
 			<input type="button" class="cbutton" id="butUpload1" name="butUpload1"  value="商標圖檔上傳" onclick="br_form.UploadAttach_photo()" >
@@ -187,22 +186,22 @@
 	</tr>
 	<tr>
 		<td class="lightbluetable" align="right" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(p1Oappl_name)"><u>三、聲明不專用：</u></td>
-		<td class="whitetablebg" colspan=7><input TYPE="text" id="tfz1_Oappl_name" NAME="tfz1_Oappl_name" SIZE="60" alt="『不主張專用』" MAXLENGTH="100" onblur="fDataLen(this.value,this.maxLength,this.alt)"></td>
+		<td class="whitetablebg" colspan=7><input TYPE="text" id="tfz1_Oappl_name" NAME="tfz1_Oappl_name" SIZE="60" alt="『不主張專用』" MAXLENGTH="100" onblur="fDataLen(this)"></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a1Eappl_name)">四、<u><span class="txtMark1"></span>圖樣分析</u></td>
 	</tr>			
 	<tr>
 		<td class="lightbluetable" align="right" >中文：</td>
-		<td class="whitetablebg" colspan="7"><input TYPE="text" id="tfz1_Cappl_name" NAME="tfz1_Cappl_name" SIZE="50" alt="『商標圖樣分析中文』" MAXLENGTH="100" onblur="fDataLen(this.value,this.maxLength,this.alt)"></td>
+		<td class="whitetablebg" colspan="7"><input TYPE="text" id="tfz1_Cappl_name" NAME="tfz1_Cappl_name" SIZE="50" alt="『商標圖樣分析中文』" MAXLENGTH="100" onblur="fDataLen(this)"></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" align="right" >外文：</td>
 		<td class="whitetablebg" colspan="7">
-		<input TYPE="text" id="tfz1_Eappl_name" NAME="tfz1_Eappl_name" SIZE="30" alt="『商標圖樣分析外文』" MAXLENGTH="100" onblur="fDataLen(this.value,this.maxLength,this.alt)">　語文別：
+		<input TYPE="text" id="tfz1_Eappl_name" NAME="tfz1_Eappl_name" SIZE="30" alt="『商標圖樣分析外文』" MAXLENGTH="100" onblur="fDataLen(this)">　語文別：
         <select id="tfz1_Zname_type" NAME="tfz1_Zname_type"><%#tfz_country%></select><br>
-		中文字義：<input TYPE="text" id="tfz1_Eappl_name1" NAME="tfz1_Eappl_name1" SIZE="30" MAXLENGTH="100" alt="『圖樣分析英文~中文字義』"  onblur="fDataLen(this.value,this.maxLength,this.alt)">
-		<span style="display:none">　讀音：<input TYPE="text" id="tfz1_Eappl_name2" NAME="tfz1_Eappl_name2" SIZE="30" MAXLENGTH="100" alt="『圖樣分析英文~讀音』"  onblur="fDataLen(this.value,this.maxLength,this.alt)"></span>
+		中文字義：<input TYPE="text" id="tfz1_Eappl_name1" NAME="tfz1_Eappl_name1" SIZE="30" MAXLENGTH="100" alt="『圖樣分析英文~中文字義』"  onblur="fDataLen(this)">
+		<span style="display:none">　讀音：<input TYPE="text" id="tfz1_Eappl_name2" NAME="tfz1_Eappl_name2" SIZE="30" MAXLENGTH="100" alt="『圖樣分析英文~讀音』"  onblur="fDataLen(this)"></span>
 		</td>
 	</tr>
 	<tr>
@@ -217,14 +216,14 @@
 </script>
 
 <script type="text/html" class="tabbr_appl_2 tabbr_appl_6 tabbr_appl_A tabbr_appl_E">
-	<TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+	<TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%"><!--2-->
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" width="10%"><strong>壹、<span class="txtMark1"></span>圖樣</strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" STYLE="cursor:pointer;COLOR:BLUE" align=right ID="nAppend" onclick="PMARK(p1Appl_name)">一、<u><span class="txtMark1"></span>名稱：</u></td>
 		<td class="whitetablebg" colspan=7>
-            <input TYPE="text" id="tfz1_Appl_name" NAME="tfz1_Appl_name" alt="『商標(標章)名稱』" SIZE="60" MAXLENGTH="100" onblur="appl_name_watch(this.value,this.maxLength,this.alt)">
+            <input TYPE="text" id="tfz1_Appl_name" NAME="tfz1_Appl_name" alt="『商標(標章)名稱』" SIZE="60" MAXLENGTH="100" onblur="appl_name_watch(this)">
 			<input TYPE="text" id="file1" name="file1" value="">
 	        <input TYPE="text" id="Draw_file1" name="Draw_file1" SIZE="50" maxlength="50" readonly>	    
 			<input type="button" class="cbutton" id="butUpload1" name="butUpload1"  value="商標圖檔上傳" onclick="br_form.UploadAttach_photo()" >
@@ -238,7 +237,7 @@
 	</tr>		
 	<tr>
 		<td class="lightbluetable" align="right" >三、聲明不專用：</td>
-		<td class="whitetablebg" colspan=7><input TYPE="text" id="tfz1_Oappl_name" NAME="tfz1_Oappl_name" SIZE="60" alt="『不主張專用』" MAXLENGTH="100" onblur="fDataLen(this.value,this.maxLength,this.alt)"></td>
+		<td class="whitetablebg" colspan=7><input TYPE="text" id="tfz1_Oappl_name" NAME="tfz1_Oappl_name" SIZE="60" alt="『不主張專用』" MAXLENGTH="100" onblur="fDataLen(this)"></td>
 	</tr>
 	<tr>
 		<td class=lightbluetable colspan=8 STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(p5Remark1)">五、<U><span class="txtMark1"></span>描述：</u>（色彩種類、明度、漸層及顏色實際使用於商品、包裝、容器、營業相關物品之特殊方式、位置、內容等請詳細說明）</td>
@@ -258,14 +257,14 @@
 </script>
 
 <script type="text/html" class="tabbr_appl_3 tabbr_appl_7 tabbr_appl_B tabbr_appl_F">
-	<TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+	<TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%"><!--3-->
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" width="10%"><strong>壹、<span class="txtMark1"></span>圖樣(本<span class="txtMark1"></span>以五線譜、簡譜或表現該聲音之說明齊備之日為申請日)</strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" STYLE="cursor:pointer;COLOR:BLUE" align=right ID="nAppend" onclick="PMARK(a3Appl_name)">一、<u><span class="txtMark1"></span>名稱：</u></td>
 		<td class=whitetablebg colspan=7>
-		<INPUT TYPE=text id=tfz1_Appl_name NAME=tfz1_Appl_name SIZE=60 MAXLENGTH=100 alt="『商標(標章)名稱』" onblur="appl_name_watch(this.value,this.maxlength,this.alt)">
+		<INPUT TYPE=text id=tfz1_Appl_name NAME=tfz1_Appl_name SIZE=60 MAXLENGTH=100 alt="『商標(標章)名稱』" onblur="appl_name_watch(this)">
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a3Draw)">二、<u><span class="txtMark1"></span>圖樣：</u></td>
@@ -294,14 +293,14 @@
 </script>
 
 <script type="text/html" class="tabbr_appl_4 tabbr_appl_8 tabbr_appl_C tabbr_appl_G tabbr_appl_I tabbr_appl_J tabbr_appl_K">
-	<TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+	<TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%"><!--4-->
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" width="10%"><strong>壹、<span class="txtMark0"></span>圖樣</strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" STYLE="cursor:pointer;COLOR:BLUE" align=right ID="nAppend" onclick="PMARK(p1Appl_name)">一、<u><span class="txtMark1"></span>名稱：</u></td>
 		<td class="whitetablebg" colspan=7>
-            <input TYPE="text" id="tfz1_Appl_name" NAME="tfz1_Appl_name" alt="『商標(標章)名稱』" SIZE="60" MAXLENGTH="100" onblur="appl_name_watch(this.value,this.maxLength,this.alt)">
+            <input TYPE="text" id="tfz1_Appl_name" NAME="tfz1_Appl_name" alt="『商標(標章)名稱』" SIZE="60" MAXLENGTH="100" onblur="appl_name_watch(this)">
 			<input TYPE="text" id="file1" name="file1" value="">
 	        <input TYPE="text" id="Draw_file1" name="Draw_file1" SIZE="50" maxlength="50" readonly>	    
 			<input type="button" class="cbutton" id="butUpload1" name="butUpload1"  value="商標圖檔上傳" onclick="br_form.UploadAttach_photo()" >
@@ -318,7 +317,7 @@
 	</tr>		
 	<tr>
 		<td class="lightbluetable" align="right">三、聲明不專用：</td>
-		<td class="whitetablebg" colspan=7><input TYPE="text" id="tfz1_Oappl_name" NAME="tfz1_Oappl_name" SIZE="60" alt="『不主張專用』" MAXLENGTH="100" onblur="fDataLen(this.value,this.maxLength,this.alt)"></td>
+		<td class="whitetablebg" colspan=7><input TYPE="text" id="tfz1_Oappl_name" NAME="tfz1_Oappl_name" SIZE="60" alt="『不主張專用』" MAXLENGTH="100" onblur="fDataLen(this)"></td>
 	</tr>
 	<tr>
 		<td class=lightbluetable colspan=8 STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a4Remark1)">五、<U><span class="txtMark1"></span>描述<span id=span_FA150></span>：</u>(<span id=span_FA151></span>)</td>
@@ -369,7 +368,7 @@
 	</table>
 </script>
 <!--伍、團體標章表彰之內容 依案性第3碼切換顯示-->
-<script type="text/html" class="tabbrgood_0 tabbrgood_9 tabbrgood_A tabbrgood_B tabbrgood_C">
+<script type="text/html" class="tabbrgood_9 tabbrgood_A tabbrgood_B tabbrgood_C">
 	<TABLE border=0 cellspacing=1 cellpadding=2 width="100%" class="bluetable tabbrgood_9 tabbrgood_A tabbrgood_B tabbrgood_C">
 		<tr>
 			<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(p3Good)"><strong>伍、<u>團體標章表彰之內容</u></strong></td>
@@ -383,7 +382,7 @@
 	</table>
 </script>
 <!--陸、標章證明標的及內容 依案性第3碼切換顯示-->
-<script type="text/html" class="tabbrgood_0 tabbrgood_D tabbrgood_E tabbrgood_F tabbrgood_G">
+<script type="text/html" class="tabbrgood_D tabbrgood_E tabbrgood_F tabbrgood_G">
     <TABLE border=0 cellspacing=1 cellpadding=2 width="100%" class="bluetable tabbrgood_D tabbrgood_E tabbrgood_F tabbrgood_G">
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(p4Good)"><strong>陸、<u>標章證明標的及內容</u></strong></td>
@@ -423,7 +422,7 @@
 			    <td class="whitetablebg" colspan="7" >共<input type="text" id=tfz1_class_count name=tfz1_class_count size=2 onchange="br_form.Add_class(this.value)">類
 				    <input type=text id=num1 name=num1 value="0"><!--畫面上有幾筆-->
 				    <input type=text id=ctrlnum1 name=ctrlnum1 value="0">
-				    <input type=text id=ctrlcount1 name=ctrlcount1 value="0">
+				    <input type=text id=ctrlcount1 name=ctrlcount1 value="">
 				    ;<input type="text" id=tfz1_class name=tfz1_class style="width:70%" readonly>
 			    </td>
 		    </tr>
@@ -496,6 +495,7 @@
             MyString = MyString.substring(0, MyString.length - 1);
         }
 
+        $("#good_count1_" + nRow).val("");
         if (MyString != "") {
             var myarray = MyString.split(/[；，、]/);
             $("#good_name1_" + nRow).val(MyString);
@@ -557,15 +557,18 @@
 
 
     //**簽章及具結
-    br_form.CopyStr1 = function (x, y, z) {
-        //x=要丟值的欄位reg.tfz1_remark2,y=1=radio 0=text,z=勾選欄位值
+    br_form.CopyStr1 = function (x, y, o) {
+        //x=要丟值的欄位reg.tfz1_remark2,y=1=radio 0=text,z=觸發的欄位
+        x.value = "";
         if (y == "1") {//選radio時清空文字內容
             $("#ttz1_R1,#ttz1_R9").val("");
         }
         if (y == "0") {
-            if ($("#ttz1_R1").val() != "" || $("#ttz1_R9").val() != "") {
-                var z = $('input[name=ttz1_RCode]:checked').val();
-                x.value = z + "|" + $("#ttz1_" + z).val() + "|";
+            var id=$(o).attr("id");
+            if (o.value != "") {
+                //$("#" + id + "Code").prop("checked", true);
+                var j = $("#" + id + "Code").val() || "";
+                x.value = j + "|" + o.value + "|";
             }
         }
     }
@@ -690,6 +693,7 @@
         }
         $(".txtMark0").html(txtType0);
         $(".txtMark1").html(txtType1);
+        $("#tfz1_S_Mark").val($("input[name='span_mark1']:checked").val());
 
         //***商標種類2
         switch (code3) {
