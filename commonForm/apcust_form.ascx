@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="apcust_form" %>
+<%@ Control Language="C#" ClassName="apcust_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -65,8 +65,8 @@
 		<TD class=sfont9 colspan=3>
             <input type=hidden id="ap_cname_##" name="ap_cname_##">
 		    <input type=hidden id="apsqlno_##" name="apsqlno_##">
-		    <INPUT TYPE=text id="ap_cname1_##" name="ap_cname1_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this.value,this.maxLength,this.alt)"><br>
-		    <INPUT TYPE=text id="ap_cname2_##" name="ap_cname2_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this.value,this.maxLength,this.alt)">
+		    <INPUT TYPE=text id="ap_cname1_##" name="ap_cname1_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)"><br>
+		    <INPUT TYPE=text id="ap_cname2_##" name="ap_cname2_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)">
 		    <INPUT type='button' value='申請人查詢' onclick="apcust_form.cust13query('##')"  style='cursor:pointer;' title='輸入關鍵字並點選申請人查詢，即顯示申請人資料清單。'>
 		</TD>
 	</TR>
@@ -89,8 +89,8 @@
 		</TD>
 		<TD class=sfont9 colspan=3>
             <input type=hidden id="ap_ename_##" name="ap_ename_##">
-		    <INPUT TYPE=text id="ap_ename1_##" name="ap_ename1_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this.value,this.maxLength,this.alt)"><br>
-		    <INPUT TYPE=text id="ap_ename2_##" name="ap_ename2_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this.value,this.maxLength,this.alt)">
+		    <INPUT TYPE=text id="ap_ename1_##" name="ap_ename1_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)"><br>
+		    <INPUT TYPE=text id="ap_ename2_##" name="ap_ename2_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)">
 	    </TD>
 	</TR>
 	<TR>
