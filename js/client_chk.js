@@ -1,4 +1,4 @@
-//判斷字串是否為JSON格式
+﻿//判斷字串是否為JSON格式
 function isJSON(str) {
     if (typeof str == 'string') {
         try {

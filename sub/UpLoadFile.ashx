@@ -1,4 +1,4 @@
-<%@ WebHandler Language="C#" Class="UpLoaded" %>
+﻿<%@ WebHandler Language="C#" Class="UpLoaded" %>
 
 using System;
 using System.Web;

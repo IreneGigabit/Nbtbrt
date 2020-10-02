@@ -85,7 +85,7 @@
     private DataTable GetSales() {
         DataTable dt = new DataTable();
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl).Debug(false)) {
-            if (formfunction == "edit") {
+            if (formfunction == "Edit") {
                 if ((right & 64) != 0) {
                     SQL = "select distinct 'select'input_type,scode,sc_name,scode1  ";
                     SQL += "from vscode_roles ";

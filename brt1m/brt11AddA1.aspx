@@ -1,4 +1,4 @@
-<%@ Page Language="C#" CodePage="65001"%>
+﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Register Src="~/commonForm/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
 <%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
@@ -10,7 +10,7 @@
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt11AddA1";//程式檔名前綴
-    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode = "brt11";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
@@ -38,9 +38,9 @@
         case_stat = (Request["case_stat"] ?? "").Trim();
         code_type = (Request["code_type"] ?? "").Trim();
 
-        formFunction = (Request["formFunction"] ?? "").Trim().ToLower();
+        formFunction = (Request["formFunction"] ?? "").Trim();
         if (formFunction == "") {
-            formFunction = "add";
+            formFunction = "Add";
         }
         
         Token myToken = new Token(HTProgCode);
@@ -66,7 +66,7 @@
             }
 
             StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
-        } else if (formFunction == "add") {
+        } else if (formFunction == "Add") {
             if ((HTProgRight & 4) > 0) {
                 StrFormBtn += "<input type=button value ='新增存檔' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
                 StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
@@ -324,7 +324,7 @@
             //接洽費用
             $.each(jMain.case_item, function (i, item) {
                 if (item.item_sql == "0") {
-                    $("#tfy_Arcase").val(item.item_arcase);
+                    $("#tfy_Arcase").val(item.item_arcase).triggerHandler("change");
                     $("#nfyi_Service").val(item.item_service);
                     $("#nfyi_Fees").val(item.item_fees);
                     $("#Service").val(item.service == "" ? "0" : item.service);//收費標準
@@ -401,9 +401,8 @@
             //其他接洽事項記錄
             $("#tfy_Remark").val(jMain.case_main[0].remark);
             //20160910增加發文方式欄位
-            case_form.setSendWay(x2)
-            setSendWay($("#tfy_Arcase").val());
-            $("#tfy_send_way").val(jMain.case_main[0].send_way)
+            case_form.setSendWay($("#tfy_Arcase").val());
+            $("#tfy_send_way").val(jMain.case_main[0].send_way);
             //20180221增加電子收據欄位
             $("#tfy_receipt_type").val(jMain.case_main[0].receipt_type);
             $("#tfy_receipt_title").val(jMain.case_main[0].receipt_title);
@@ -447,11 +446,12 @@
             });
             //****折扣請核單
             $("#tfy_discount_chk[value='"+jMain.case_main[0].discount_chk+"']").prop('checked', true).triggerHandler("click");
-           //*****請款單	
+            //*****請款單	
             $("#tfy_ar_chk[value='"+jMain.case_main[0].discount_chk+"']").prop('checked', true).triggerHandler("click");
             $("#tfy_ar_chk1[value='"+jMain.case_main[0].discount_chk+"']").prop('checked', true).triggerHandler("click");
 
             //****Table(dmt_temp)案件內容
+            br_form.changeTag($("#tfy_Arcase").val());//依案性切換要顯示的欄位
             $("#tfz1_Appl_name").val(jMain.case_main[0].appl_name);//*商標名稱
             $("#tfz1_cust_prod").val(jMain.case_main[0].cust_prod);//20180301增加客戶卷號
             $("#tfz1_Oappl_name").val(jMain.case_main[0].oappl_name);//不單獨主張專用權
@@ -462,25 +462,131 @@
             $("#tfz1_Zname_type").val(jMain.case_main[0].zname_type);//語文別
             $("#tfz1_Draw").val(jMain.case_main[0].draw);//圖形說明
             $("#tfz1_Symbol").val(jMain.case_main[0].symbol);//記號說明
-            if(main.formFunction=="edit"){
-                $("#Draw_file1").val(jMain.case_main[0].draw_file);//*圖檔實際路徑
-                $("#file1").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
-                $("#draw_attach_file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
-                if($("#Draw_file1").val()!=""){
-                    $("#butUpload1").prop("disabled",true);
-                }
+            //if(main.formFunction=="Edit"){
+            $("#Draw_file1").val(jMain.case_main[0].draw_file);//*圖檔實際路徑
+            $("#file1").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+            $("#draw_attach_file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+            if($("#Draw_file1").val()!=""){
+                $("#butUpload1").prop("disabled",true);
             }
+            //}
             if(jMain.case_main[0].color=="B"){
                 $("#tfz1_colorB").prop("checked",true);
             }else if(jMain.case_main[0].color=="C"||jMain.case_main[0].color=="M"){
                 $("#tfz1_colorC").prop("checked",true);
             }
+
+            //聲音/立體商標圖樣
+            switch (jMain.case_main[0].s_mark2) {
+                case '4': case '8': case 'C': case 'G'://立體
+                    if(jMain.case_main[0].remark3!=""){
+                        var arr_remark3=jMain.case_main[0].remark3.split("|");
+                        for(var i=0;i<arr_remark3.length;i++){
+                            $("#tt44_"+arr_remark3[i]).prop("checked",true);
+                        }
+                    }
+                    break;
+                case '3': case '7': case 'B': case 'F'://聲音
+                    if(jMain.case_main[0].remark3=="Y"){
+                        $("input[name=tfz1_remark3][value='Y']").prop("checked",true);
+                    }else{
+                        $("input[name=tfz1_remark3][value='N']").prop("checked",true);
+                    }
+                    break;
+            }
             $("#tfz1_agt_no").val(jMain.case_main[0].agt_no);//*出名代理人代碼
-            $("#pfz1_prior_date").val(jMain.case_main[0].prior_date);//*優先權申請日期
-            $("#tfz1_prior_country").val(jMain.case_main[0].prior_country);//*優先權國家
-            $("#tfz1_prior_no").val(jMain.case_main[0].prior_no);//*優先權申請案號
-            //類別種類
+            //**優先權聲明
+            $("#pfz1_prior_date").val(dateReviver(jMain.case_main[0].prior_date,"yyyy/M/d"));
+            $("#tfz1_prior_country").val(jMain.case_main[0].prior_country);
+            $("#tfz1_prior_no").val(jMain.case_main[0].prior_no);
+            //**類別種類
             $("input[name='tfz1_class_type'][value='"+jMain.case_main[0].class_type+"']").prop('checked', true).triggerHandler("click");
+            //指定使用商品／服務類別
+            if(jMain.case_good.length>0){
+                $("#tfz1_class").val(jMain.case_main[0].class);//*類別
+                $("#tfz1_class_count").val(jMain.case_good.length);//共N類
+                br_form.Add_class(jMain.case_good.length);//產生筆數
+                $.each(jMain.case_good, function (i, item) {
+                    $("#class1_" + (i+1)).val(item.class);//第X類
+                    $("#good_count1_" + (i+1)).val(item.class);//共N項
+                    $("#grp_code1_" + (i+1)).val(item.dmt_grp_code);//商品群組代碼
+                    $("#good_name1_" + (i+1)).val(item.dmt_goodname);//商品名稱
+                });
+            }else{
+                br_form.count_kind(1);////類別串接
+            }
+            //**表彰之內容
+            $("#tf91_good_name").val(jMain.case_main[0].good_name);
+            //**證明標的
+            $("input[name='pul'][value='"+jMain.case_main[0].pul+"']").prop('checked', true).triggerHandler("click");
+            $("#tfz1_pul").val(jMain.case_main[0].pul);
+            //**證明內容
+            $("#tfd1_good_name").val(jMain.case_main[0].good_name);
+            //**描述實際使用說明
+            $("#tfz1_Remark4").val(jMain.case_main[0].remark4);
+            //**展覽優先權資料
+            $.each(jMain.case_show, function (i, item) {
+                br_form.add_show();//展覽優先權增加一筆
+                $("#show_sqlno_" + (i+1)).val(item.show_sqlno);//流水號
+                $("#show_date_" + (i+1)).val(dateReviver(item.show_date,"yyyy/M/d"));//展覽會優先權日
+                $("#show_name_" + (i+1)).val(item.show_name);//展覽會名稱
+            });
+            //**簽章及具結
+            $("#tfz1_remark2").val(jMain.case_main[0].remark2);
+            if(jMain.case_main[0].remark2!=""){
+                var arr_remark2=jMain.case_main[0].remark2.split("|");
+                $("#ttz1_"+arr_remark2[0]+"Code").prop('checked', true);
+                if(arr_remark2.length>1){
+                    $("#ttz1_"+arr_remark2[0]).val(arr_remark2[1]);
+                }
+            }
+            //**附件
+            $("#tfz_remark1").val(jMain.case_main[0].remark1);
+            if(jMain.case_main[0].remark1!=""){
+                var arr_remark1=jMain.case_main[0].remark1.split("|");
+                for(var i=0;i<arr_remark1.length;i++){
+                    //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
+                    var str="Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    if(substr!=null){
+                        $("#tt11_Z9t").val(substr[1]);
+                    }else{
+                        $("#tt11_"+arr_remark1[i]).prop("checked",true);
+                    }
+                }
+            }
+
+            //**商標種類2
+            if(jMain.case_main[0].s_mark2=="H"){
+                $("input[name=tfz1_s_mark2][value='H']").prop("checked", true);//位置
+            }else if(jMain.case_main[0].s_mark2=="I"){
+                $("input[name=tfz1_s_mark2][value='I']").prop("checked", true);//氣味
+            }else if(jMain.case_main[0].s_mark2=="J"){
+                $("input[name=tfz1_s_mark2][value='J']").prop("checked", true);//觸覺
+            }
+
+            //文件上傳
+            $.each(jMain.case_attach, function (i, item) {
+                var fld = $("#uploadfield").val();
+                upload_form.appendFile();//增加一筆
+                var nRow = $("#" + fld + "_filenum").val();
+                $("#" + fld + "_name_" + nRow).val(item.attach_name);
+                $("#old_" + fld + "_name_" + nRow).val(item.attach_name);
+                $("#" + fld + "_" + nRow).val(item.attach_path);
+                $("#doc_type_" + nRow).val(item.doc_type);
+                $("#" + fld + "_desc_" + nRow).val(item.attach_desc);
+                $("#" + fld + "_size_" + nRow).val(item.attach_size);
+                $("#attach_sqlno_" + nRow).val(item.attach_sqlno);
+                $("#" + fld + "_apattach_sqlno_" + nRow).val(item.apattach_sqlno);//總契約書/委任書流水號
+                $("#attach_flag_" + nRow).val("U");//維護時判斷是否要更名，即A表示新上傳的文件
+                $("#btn" + fld + "_" + nRow).prop("disabled",true);
+                $("input[name='" + fld + "_branch_" + nRow + "'][value='" + item.attach_branch + "']").prop("checked", true);//交辦專案室
+                $("#source_name_" + nRow).val(item.source_name);
+                $("#attach_no_" + nRow).val(item.attach_no);
+                $("#attach_flagtran_" + nRow).val(item.attach_flagtran);//異動作業上傳註記Y
+                $("#tran_sqlno_" + nRow).val(item.tran_sqlno);//異動作業流水號
+                $("#maxattach_no").val(Math.max(CInt(item.attach_no), CInt($("#maxattach_no").val()))+1);
+            });
         }
     }
     
@@ -957,7 +1063,7 @@
             $("#tfy_dicount_remark").val("");//2016/5/30增加折扣理由
         }
         $("#tfy_case_stat").val("NN");//新案
-        $("#submittask").val("ADD");
+        $("#submittask").val("Add");
 
         $("select,textarea,input,span").unlock();
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));

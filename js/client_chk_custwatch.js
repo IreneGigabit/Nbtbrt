@@ -1,4 +1,4 @@
-//檢查輸入資料及存檔前是否可立案收文
+﻿//檢查輸入資料及存檔前是否可立案收文
 //pjob_branch: 系統區所別
 //pkeytype: cappl_name:案件名稱(中)、eappl_name: 案件名稱(英)、ap_cname:公司/行號/人名稱(中)、ap_ename:公司/行號/人名稱(英)、
 //          ap_crep:代表人(中)、ap_erep:代表人(英)

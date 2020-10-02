@@ -1,4 +1,4 @@
-<%@ Control Language="C#" ClassName="case_form" %>
+﻿<%@ Control Language="C#" ClassName="case_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Import Namespace = "System.Data" %>
 
@@ -47,7 +47,7 @@
                     SQL += "and dept='" + Session["Dept"] + "' ";
                     SQL += "and syscode='" + Session["Syscode"] + "' ";
                     SQL += "and roles='sales' ";
-                    if (formFunction != "edit") {
+                    if (formFunction != "Edit") {
                         SQL += "and (end_date is null or end_date>convert(date,getDate())) ";
                     }
                     SQL += "order by scode1 ";
@@ -268,7 +268,7 @@
         <INPUT TYPE=text id=tfy_Contract_no name=tfy_Contract_no SIZE=10 MAXLENGTH=10 onchange="$('#Contract_no_Type_N').prop('checked',true).trigger('click');">
         <span id="contract_type">
 		    <input type="radio" id="Contract_no_Type_A" name="Contract_no_Type" value="A">後續案無契約書
-		</span>Display_caseform
+		</span>
 		<span style="display:none"><!--2015/12/29修改，併入C不顯示-->
 		    <input type="radio" id="Contract_no_Type_S" name="Contract_no_Type" value="B">特案簽報
 		</span>
@@ -312,12 +312,13 @@
 		</select>
 	</TD>
 	<TD class=lightbluetable align=right>收據抬頭：</TD>
+	<TD class=whitetablebg>
 		<select id="tfy_receipt_title" name="tfy_receipt_title"><%#tfy_receipt_title%></select>
 		<input type="text" id="tfy_rectitle_name" name="tfy_rectitle_name">
 	</TD>
 </tr>
 <TR>
-	<TD class=lightbluetable align=right>其他接洽　<BR>事項記錄：</TD>
+	<TD class=lightbluetable align=right>其他接洽：<BR>事項記錄：</TD>
 	<TD class=whitetablebg colspan=5><TEXTAREA id=tfy_Remark name=tfy_Remark ROWS=6 COLS=70></TEXTAREA>
 	</TD>
 </TR>
@@ -356,92 +357,10 @@
             //後續案無契約書(新申請案不用顯示)
             $("#contract_type").hide();
         }
-        if (main.formFunction != "edit") {
+        if (main.formFunction != "Edit") {
             //不是編輯模式隱藏對應後續交辦作業序號[詳細]
             $("#grconf_dtl").hide();
         }
-
-        /*
-        $("#tfy_Arcase").getOption({//案性
-            dataList: jMain.arcase,
-            valueFormat: "{rs_code}",
-            textFormat: "{rs_code}---{rs_detail}"
-        });
-        $("select[id='nfyi_item_Arcase_##']").getOption({//其他費用
-            dataList: jMain.arcase_item,
-            valueFormat: "{rs_code}",
-            textFormat: "{rs_code}---{rs_detail}"
-        });
-        $("#tfy_oth_arcase").getOption({//轉帳費用
-            dataList: jMain.arcase_other,
-            valueFormat: "{rs_code}",
-            textFormat: "{rs_code}---{rs_detail}"
-        });
-
-        //案性/案源
-        var jCase = jMain.opt[0];
-        $("#F_tscode").val(jCase.in_scode);
-        $("#tfy_Arcase").val(jCase.arcase);
-        $("#tfy_oth_code").val(jCase.oth_code);
-        $("#tfy_oth_arcase").val(jCase.oth_arcase);
-        $("#tfy_Ar_mark").val(jCase.ar_mark);
-        $("#tfy_discount_chk").prop("checked", jCase.discount_chk == "Y");
-        $("#tfy_source").val(jCase.source);
-        if (jCase.contract_type != "") {
-            $("input[name='Contract_no_Type'][value='" + jCase.contract_type + "']").prop("checked", true);
-            if (jCase.contract_type == "M") {
-                $("#span_btn_contract").show();
-                $("#Mcontract_no").val(jCase.contract_no);
-            }
-            if (jCase.contract_type == "N") {
-                $("#tfy_Contract_no").val(jCase.contract_no);
-            }
-        }
-
-        $("#dfy_last_date").val(dateReviver(jCase.last_date, "yyyy/M/d"));
-        $("#tfy_Remark").val(jCase.remark);
-        $("#nfy_service").val(jCase.service);
-        $("#nfy_fees").val(jCase.fees);
-        $("#nfy_oth_money").val(jCase.oth_money);
-        $("#OthSum").val(jCase.othsum);
-        $("#nfy_Discount").val(jCase.discount);
-        $("#Discount").val(jCase.discount + "%");
-
-        //產生其他費用tr
-        for (z = 1; z <= jCase.tot_case; z++) {
-            var copyStr = "<tr id='ta_" + z + "' style='display:none'>" + $("tr[id='ta_##']").html().replace(/##/g, z) + "</tr>";
-            $(copyStr).insertBefore("tr[id='ta_##']");
-        }
-
-        //費用
-        $.each(jMain.casefee, function (i, item) {
-            if (item.item_sql == "0") {
-                $("#tfy_Arcase").val(item.item_arcase);
-                $("#nfyi_Service").val(item.item_service);
-                $("#nfyi_Fees").val(item.item_fees);
-                $("#Service").val(item.service == "" ? "0" : item.service);
-                $("#fees").val(item.fees == "" ? "0" : item.fees);
-                $("#TaCount").val(item.item_sql);
-            } else {
-                $("#nfyi_item_Arcase_" + item.item_sql).val(item.item_arcase);
-                $("#nfyi_item_count_" + item.item_sql).val(item.item_count);
-                $("#nfyi_Service_" + item.item_sql).val(item.item_service);
-                $("#nfzi_Service_" + item.item_sql).val(item.item_service);
-                $("#nfyi_fees_" + item.item_sql).val(item.item_fees);
-                $("#nfzi_fees_" + item.item_sql).val(item.item_fees);
-                $("#nfzi_service_" + item.item_sql).val(item.service == "" ? "0" : item.service);
-                $("#nfzi_fees_" + item.item_sql).val(item.fees == "" ? "0" : item.fees);
-                $("#TaCount").val(item.item_sql);
-                $("#ta_" + item.item_sql).show();
-            }
-        });
-
-        //送件方式
-        $("#tfy_send_way").val(jCase.send_way);
-        $("#tfy_receipt_type").val(jCase.receipt_type);
-        $("#tfy_receipt_title").val(jCase.receipt_title);
-        $("#tfy_rectitle_name").val(jCase.rectitle_name);
-        */
     }
 
     //增加/減少其他費用(附屬案性)

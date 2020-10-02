@@ -1,4 +1,4 @@
-<%@ Control Language="C#" ClassName="br_A1_form" %>
+﻿<%@ Control Language="C#" ClassName="br_A1_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -319,13 +319,33 @@
 		<td class="lightbluetable" align="right">三、聲明不專用：</td>
 		<td class="whitetablebg" colspan=7><input TYPE="text" id="tfz1_Oappl_name" NAME="tfz1_Oappl_name" SIZE="60" alt="『不主張專用』" MAXLENGTH="100" onblur="fDataLen(this)"></td>
 	</tr>
+
+		<tr  style="display:none">
+			<td class=lightbluetable align=right>四、<span class="txtMark0"></span>圖樣：</td>
+			<td class=lightbluetable colspan=7>商標圖樣為表現立體形狀之視圖，得以虛線表現立體形狀使用於指定商品或服務之方式、位置或內容態樣。
+                <input type="hidden" id="tfz1_remark3" name="tfz4_remark3">
+			</td>
+		</tr>
+		<tr  style="display:none">
+			<td class=lightbluetable align=right><input type="checkbox" id=tt44_M  name=tt44 value="M" onclick="br_form.CopyStr('input[name=tt44]',reg.tfz1_remark3)"></td>
+			<td class=lightbluetable colspan=7 STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a4Remark3M)">
+                <u>主要立體圖</u></td>
+		</tr>
+		<tr  style="display:none">
+			<td class=lightbluetable align=right><input type="checkbox" id=tt44_O name=tt44 value="O" onclick="br_form.CopyStr('input[name=tt44]',reg.tfz1_remark3)"></td>
+			<td class=lightbluetable colspan=7 STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a4Remark3O)">
+            <u>其他角度圖：</u>若立體形狀因各角度特徵不同，除第一個視圖外，得另檢附五個以下其他角度之視圖。
+			</td>
+		</tr>
+
+
 	<tr>
 		<td class=lightbluetable colspan=8 STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a4Remark1)">五、<U><span class="txtMark1"></span>描述<span id=span_FA150></span>：</u>(<span id=span_FA151></span>)</td>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right></td>
 		<td class=whitetablebg colspan=7>			
-		<TEXTAREA TYPE=text id=tfz1_Remark4 NAME=tfz1_Remark4 ROWS=1 COLS=60></TEXTAREA></TD>
+		<TEXTAREA id=tfz1_Remark4 NAME=tfz1_Remark4 ROWS=1 COLS=60></TEXTAREA></TD>
 	</TR>	
     </TABLE>
 </script>
@@ -574,7 +594,7 @@
     }
 
     //附件
-    br_form.CopyStr = function () {
+    br_form.AttachStr = function () {
         var strRemark1 = "";
         $("#td_br_remark1 :checkbox").each(function (index) {
             var $this = $(this);
@@ -592,6 +612,17 @@
         reg.tfz_remark1.value = strRemark1;
     }
 
+    br_form.CopyStr = function (selector,tar) {
+        var strRemark1 = "";
+        $(selector).each(function (index) {
+            var $this = $(this);
+            if ($this.prop("checked")) {
+                strRemark1 += $this.val() + "|";
+            }
+        });
+        tar.value = strRemark1;
+    }
+
     br_form.seq1_conctrl = function () {
         if ($("#tfy_Arcase").val() != "") {
             if ("#tfz1_seq1".val == "M") {
@@ -606,7 +637,65 @@
         }
     }
 
-    //案性切換
+    //商標圖檔上傳
+    br_form.UploadAttach_photo = function () {
+        var tfolder = "temp";
+        var nfilename = "";
+        if (main.formFunction == "Edit") {
+            nfilename = reg.in_no.value
+        }
+        var url = getRootPath() + "/sub/upload_win_file_new.aspx?type=dmt_photo" +
+            "&nfilename=" + nfilename +
+            "&draw_file=" + ($("#Draw_file1").val() || "") +
+            "&folder_name=temp" +
+            "&form_name=draw_attach_file" +
+            "&file_name=Draw_file1" +
+            "&prgid=<%=prgid%>" +
+            "&btnname=butUpload1" +
+            "&filename_flag=source_name";
+        window.open(url, "", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+    }
+
+    //商標圖檔刪除
+    br_form.DelAttach_photo = function () {
+        if ($("#Draw_file1").val() == "") {
+            alert("無圖檔可刪除 !!");
+            return false;
+        }
+
+        if ($("#draw_attach_file").val() == "") {
+            alert("無圖檔可刪除 !!");
+            return false;
+        }
+
+        if (confirm("確定刪除上傳圖檔？")) {
+            var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() +
+                "&btnname=butUpload1";
+            window.open(url, "myWindowOne1", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            //window.open(url, "myWindowOne1", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            $("#draw_attach_file").val("");
+            $("#Draw_file1").val("");
+        }
+    }
+
+    //商標圖檔檢視
+    br_form.PreviewAttach_photo = function () {
+        if ($("#Draw_file1").val() == "") {
+            alert("請先上傳圖檔 !!");
+            return false;
+        }
+
+        if ($("#draw_attach_file").val() == "") {
+            alert("請先上傳圖檔 !!");
+            return false;
+        }
+
+        var url = getRootPath() + "/sub/display_draw.aspx?draw_file=" + $("#draw_attach_file").val();
+        //window.open(url, "window", "width=700,height=600,toolbar=yes,menubar=yes,resizable=yes,scrollbars=yes,status=0,top=50,left=80");
+        window.open(url);
+    }
+
+    //依案性切換要顯示的欄位
     br_form.changeTag = function (T1) {
         var code3 = T1.substr(2, 1).toUpperCase();//案性第3碼
         //壹、商標圖樣(依案性第3碼切換顯示)
@@ -697,8 +786,8 @@
 
         //***商標種類2
         switch (code3) {
-            case '4': case '8': case 'C': case 'G':
-                $("input[name=tfz1_s_mark2][value='B']").prop("checked", true);//立體
+            case '4': case '8': case 'C': case 'G'://立體
+                $("input[name=tfz1_s_mark2][value='B']").prop("checked", true);
                 if (code3 == "8") {
                     $("#span_FA151").html("詳細說明所欲註冊之內容，不屬於立體商標之虛線部份應一併說明");
                 } else if (code3 == "C") {
@@ -709,11 +798,11 @@
                     $("#span_FA151").html("詳細說明所欲註冊之內容，不屬於立體商標之虛線部份應一併說明");
                 }
                 break;
-            case '3': case '7': case 'B': case 'F':
-                $("input[name=tfz1_s_mark2][value='C']").prop("checked", true);//聲音
+            case '3': case '7': case 'B': case 'F'://聲音
+                $("input[name=tfz1_s_mark2][value='C']").prop("checked", true);
                 break;
-            case '2': case '6': case 'A': case 'E':
-                $("input[name=tfz1_s_mark2][value='D']").prop("checked", true);//顏色
+            case '2': case '6': case 'A': case 'E'://顏色
+                $("input[name=tfz1_s_mark2][value='D']").prop("checked", true);
                 if (code3 == "6") {
                     $("#span_FA151").html("<INPUT TYPE=radio NAME=tfz1_remark3 value=商品>商品、<INPUT TYPE=radio NAME=tfz1_remark3 value=包裝>包裝、<INPUT TYPE=radio NAME=tfz1_remark3 value=容器>容器之形狀、或<INPUT TYPE=radio NAME=tfz1_remark3 value=營業物>營業相關物品之形狀，不屬於團體商標");
                 } else if (code3 == "A") {
@@ -724,23 +813,23 @@
                     $("#span_FA151").html("<INPUT TYPE=radio NAME=tfz1_remark3 value=商品>商品、<INPUT TYPE=radio NAME=tfz1_remark3 value=包裝>包裝、<INPUT TYPE=radio NAME=tfz1_remark3 value=容器>容器之形狀、或<INPUT TYPE=radio NAME=tfz1_remark3 value=營業物>營業相關物品之形狀，不屬於顏色商標");
                 }
                 break;
-            case 'I':
-                $("input[name=tfz1_s_mark2][value='E']").prop("checked", true);//全像圖
+            case 'I'://全像圖
+                $("input[name=tfz1_s_mark2][value='E']").prop("checked", true);
                 $("#span_FA150").html("及樣本");
                 $("#span_FA151").html("詳細說明全像圖的全像效果，如因視角差異產生圖像變化，應說明各視圖的變化情形，不屬於全像圖商標之虛線部份應一併說明，並得檢送商標樣本");
                 break;
-            case 'J':
-                $("input[name=tfz1_s_mark2][value='F']").prop("checked", true);//動態
+            case 'J'://動態
+                $("input[name=tfz1_s_mark2][value='F']").prop("checked", true);
                 $("#span_FA150").html("及樣本");
                 $("#span_FA151").html("詳細說明個別靜止圖像的排列順序及變化過程，如包含聲音及不屬於動態商標之虛線部分者，應一併說明，並應檢送圖像變化之AVI或MPEG檔光碟片");
                 break;
-            case 'K':
-                $("input[name=tfz1_s_mark2]").prop("checked", false);//其他商標不可預設
+            case 'K'://其他商標不可預設
+                $("input[name=tfz1_s_mark2]").prop("checked", false);
                 $("#span_FA150").html("及樣本");
                 $("#span_FA151").html("對商標本身及其使用於商品或服務情形所為之相關說明，並提供商標樣本供審查參考");
                 break;
-            default:
-                $("input[name=tfz1_s_mark2][value='A']").prop("checked", true);//平面
+            default://平面
+                $("input[name=tfz1_s_mark2][value='A']").prop("checked", true);
                 break;
         }
 
@@ -750,63 +839,5 @@
             tfap_cname += $("#ap_cname1_" + papnum).val() + $("#ap_cname2_" + papnum).val() + "、";
         }
         $("#tf91_good_name").val(tfap_cname.substring(0, tfap_cname.length - 1));
-    }
-
-    //商標圖檔上傳
-    br_form.UploadAttach_photo = function () {
-        var tfolder = "temp";
-        var nfilename = "";
-        if (main.formFunction == "edit") {
-            nfilename = reg.in_no.value
-        }
-        var url = getRootPath() + "/sub/upload_win_file_new.aspx?type=dmt_photo" +
-            "&nfilename=" + nfilename +
-            "&draw_file=" + ($("#Draw_file1").val() || "") +
-            "&folder_name=temp" +
-            "&form_name=draw_attach_file" +
-            "&file_name=Draw_file1" +
-            "&prgid=<%=prgid%>" +
-            "&btnname=butUpload1" +
-            "&filename_flag=source_name";
-        window.open(url, "", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
-    }
-
-    //商標圖檔刪除
-    br_form.DelAttach_photo = function () {
-        if ($("#Draw_file1").val() == "") {
-            alert("無圖檔可刪除 !!");
-            return false;
-        }
-
-        if ($("#draw_attach_file").val() == "") {
-            alert("無圖檔可刪除 !!");
-            return false;
-        }
-
-        if (confirm("確定刪除上傳圖檔？")) {
-            var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() +
-                "&btnname=butUpload1";
-            window.open(url, "myWindowOne1", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            //window.open(url, "myWindowOne1", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            $("#draw_attach_file").val("");
-            $("#Draw_file1").val("");
-        }
-    }
-
-    //商標圖檔檢視
-    br_form.PreviewAttach_photo = function () {
-        if ($("#Draw_file1").val() == "") {
-            alert("請先上傳圖檔 !!");
-            return false;
-        }
-
-        if ($("#draw_attach_file").val() == "") {
-            alert("請先上傳圖檔 !!");
-            return false;
-        }
-
-        var url = getRootPath() + "/sub/display_draw.aspx?draw_file=" + $("#draw_attach_file").val();
-        //window.open(url, "window", "width=700,height=600,toolbar=yes,menubar=yes,resizable=yes,scrollbars=yes,status=0,top=50,left=80");
-        window.open(url);
     }
 </script>

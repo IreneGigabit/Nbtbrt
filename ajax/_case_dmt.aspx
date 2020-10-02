@@ -1,4 +1,4 @@
-<%@ Page Language="C#" CodePage="65001"%>
+﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Text"%>
 <%@ Import Namespace = "System.Data.SqlClient"%>
@@ -49,6 +49,9 @@
         Response.Write(",\"br_in_scname\":" + JsonConvert.SerializeObject(br_in_scname, settings).ToUnicode() + "\n");
         Response.Write(",\"case_main\":" + JsonConvert.SerializeObject(GetCase(), settings).ToUnicode() + "\n");
         Response.Write(",\"case_item\":" + JsonConvert.SerializeObject(GetCaseItem(), settings).ToUnicode() + "\n");
+        Response.Write(",\"case_good\":" + JsonConvert.SerializeObject(GetCaseGood(), settings).ToUnicode() + "\n");
+        Response.Write(",\"case_show\":" + JsonConvert.SerializeObject(GetCaseShow(), settings).ToUnicode() + "\n");
+        Response.Write(",\"case_attach\":" + JsonConvert.SerializeObject(GetCaseAttach(), settings).ToUnicode() + "\n");
         Response.Write(",\"cust\":" + JsonConvert.SerializeObject(GetCust(), settings).ToUnicode() + "\n");
         //Response.Write(",\"salesList\":" + JsonConvert.SerializeObject(GetSales(), settings).ToUnicode() + "\n");
         Response.Write("}");
@@ -71,7 +74,7 @@
             //Dictionary<string, string> paras = new Dictionary<string, string>();
             //paras.Add("nIn_no", in_no);
             //conn.Procedure("Pro_case2", paras, dt);
-            //if (formfunction == "add" && submitTask != "AddNext") {//新增模式
+            //if (formfunction == "Add" && submitTask != "AddNext") {//新增模式
             //    SQL = "SELECT A.*, B.*,''in_no ";
             //    SQL += ",(select min(att_sql) from custz_att c where B.cust_area = C.cust_area AND B.cust_seq = C.cust_seq and (dept='T' or dept is null) )att_sql ";
             //    SQL += " FROM apcust A ";
@@ -83,20 +86,22 @@
             //    SQL = "Pro_case2 '" + in_no + "'";
             //    conn.DataTable(SQL, dt);
             //}
-            SQL = "Pro_case2 '" + in_no + "'";
-            conn.DataTable(SQL, dt);
+            if (submitTask == "Edit" || submitTask == "AddNext") {//編輯/複製 模式
+                SQL = "Pro_case2 '" + in_no + "'";
+                conn.DataTable(SQL, dt);
 
-            if (dt.Rows.Count > 0) {
-                code_type = dt.Rows[0].SafeRead("arcase_type", "");
-                br_in_scode = dt.Rows[0].SafeRead("in_scode", "");
-                
-                SQL = "select sc_name from sysctrl.dbo.scode where scode='" + br_in_scode + "'";
-                object objResult = conn.ExecuteScalar(SQL);
-                br_in_scname = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+                if (dt.Rows.Count > 0) {
+                    code_type = dt.Rows[0].SafeRead("arcase_type", "");
+                    br_in_scode = dt.Rows[0].SafeRead("in_scode", "");
+
+                    SQL = "select sc_name from sysctrl.dbo.scode where scode='" + br_in_scode + "'";
+                    object objResult = conn.ExecuteScalar(SQL);
+                    br_in_scname = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+                }
+
             }
-
-            return dt;
         }
+        return dt;
     }
     #endregion
 
@@ -110,6 +115,39 @@
             SQL += "left outer join case_fee c on c.dept='T' and c.country='T' and c.rs_code=a.item_arcase and getdate() between c.beg_date and c.end_date ";
             SQL += "where a.in_no= '" + in_no + "' and a.in_scode='" + br_in_scode + "' ";
             SQL += "order by a.item_sql";
+            conn.DataTable(SQL, dt);
+        }
+        return dt;
+    }
+    #endregion
+
+    #region GetCaseGood 商品類別
+    private DataTable GetCaseGood() {
+        DataTable dt = new DataTable();
+        using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            SQL = "select * from  casedmt_good where in_no= '"  + in_no + "' and in_scode='" + br_in_scode +"' order by cast(class as int)";
+            conn.DataTable(SQL, dt);
+        }
+        return dt;
+    }
+    #endregion
+
+    #region GetCaseShow 展覽優先權
+    private DataTable GetCaseShow() {
+        DataTable dt = new DataTable();
+        using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            SQL = "select * from casedmt_show where in_no='" + in_no + "' and case_sqlno=0  order by show_sqlno";
+            conn.DataTable(SQL, dt);
+        }
+        return dt;
+    }
+    #endregion
+
+    #region GetCaseAttach 交辦附件
+    private DataTable GetCaseAttach() {
+        DataTable dt = new DataTable();
+        using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            SQL = "select * from dmt_attach where in_no='" + in_no + "' and source='case' and attach_flag<>'D' order by attach_sqlno";
             conn.DataTable(SQL, dt);
         }
         return dt;
@@ -135,7 +173,7 @@
     private DataTable GetSales() {
         DataTable dt = new DataTable();
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl).Debug(false)) {
-            if (formfunction == "edit") {
+            if (formfunction == "Edit") {
                 if ((right & 64) != 0) {
                     SQL = "select distinct 'select'input_type,scode,sc_name,scode1  ";
                     SQL += "from vscode_roles ";

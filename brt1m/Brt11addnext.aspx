@@ -1,4 +1,4 @@
-<%@ Page Language="C#" CodePage="65001"%>
+﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
@@ -8,7 +8,7 @@
 <script runat="server">
     protected string HTProgCap = "洽案登錄完成[下一筆]";// HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt11";//程式檔名前綴
-    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode = "brt11";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected int HTProgRight = 0;
 
@@ -145,7 +145,7 @@
         reg.submit();
     }
 	
-    function nextForm() {
+    function NextForm() {
         reg.action = "Brt11Add" + reg.prt_code.value + ".aspx";
         reg.submitTask.value = "AddNext";
         reg.submit();

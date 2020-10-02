@@ -1,4 +1,4 @@
-<%@ Page Language="C#" CodePage="65001"%>
+﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -327,8 +327,8 @@
                     }
                 }
             }
-            //conn.Commit();
-            conn.RollBack();
+            conn.Commit();
+            //conn.RollBack();
 
             if (Request["chkTest"] != "TEST") {
                 strOut.AppendLine("<script language='javascript' type='text/javascript'>");
