@@ -149,6 +149,24 @@
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             SQL = "select * from dmt_attach where in_no='" + in_no + "' and source='case' and attach_flag<>'D' order by attach_sqlno";
             conn.DataTable(SQL, dt);
+
+            if (submitTask != "AddNext") {//複製模式,改為新檔名
+                Sys sfile = new Sys();
+                sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
+
+                for (int i = 0; i < dt.Rows.Count; i++) {
+                    if (dt.Rows[i].SafeRead("apattach_sqlno", "") == "") {//總契約書/委任書不需複製檔案
+                        System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[i].SafeRead("attach_path", ""))));
+                        string strpath1 =sfile.gbrWebDir + "/doc/case/";
+                        string newName=Sys.GetSession("scode")+"-"+dt.Rows[i].SafeRead("attach_name", "");
+
+                        dt.Rows[i]["attach_name"] = newName;
+                        dt.Rows[i]["attach_path"] = Sys.Path2Nbtbrt(strpath1 + "/" + newName);
+                            
+                        sFi.CopyTo(Server.MapPath(strpath1 + "/" + newName), true);
+                    }
+                }
+            }
         }
         return dt;
     }
