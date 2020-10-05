@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Text"%>
 <%@ Import Namespace = "System.Data.SqlClient"%>
@@ -24,6 +24,8 @@
     protected string br_in_scode = "";//交辦單營洽
     protected string br_in_scname = "";//交辦單營洽
     
+    Sys sfile = new Sys();
+
     protected void Page_Load(object sender, EventArgs e) {
         prgid = (Request["prgid"] ?? "").Trim().ToLower();
         right = Convert.ToInt32(Request["right"] ?? "0");
@@ -36,7 +38,8 @@
         
         br_in_scode = Sys.GetSession("scode");
         br_in_scname = Sys.GetSession("sc_name");
-        
+        sfile.getFileServer(Sys.GetSession("SeBranch"), "brt");//檔案上傳相關設定
+
         var settings = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented,
@@ -45,15 +48,15 @@
         };
         
         Response.Write("{");
-        Response.Write("\"br_in_scode\":" + JsonConvert.SerializeObject(br_in_scode, settings).ToUnicode() + "\n");
-        Response.Write(",\"br_in_scname\":" + JsonConvert.SerializeObject(br_in_scname, settings).ToUnicode() + "\n");
-        Response.Write(",\"case_main\":" + JsonConvert.SerializeObject(GetCase(), settings).ToUnicode() + "\n");
+        Response.Write("\"case_main\":" + JsonConvert.SerializeObject(GetCase(), settings).ToUnicode() + "\n");
         Response.Write(",\"case_item\":" + JsonConvert.SerializeObject(GetCaseItem(), settings).ToUnicode() + "\n");
         Response.Write(",\"case_good\":" + JsonConvert.SerializeObject(GetCaseGood(), settings).ToUnicode() + "\n");
         Response.Write(",\"case_show\":" + JsonConvert.SerializeObject(GetCaseShow(), settings).ToUnicode() + "\n");
         Response.Write(",\"case_attach\":" + JsonConvert.SerializeObject(GetCaseAttach(), settings).ToUnicode() + "\n");
         Response.Write(",\"cust\":" + JsonConvert.SerializeObject(GetCust(), settings).ToUnicode() + "\n");
         //Response.Write(",\"salesList\":" + JsonConvert.SerializeObject(GetSales(), settings).ToUnicode() + "\n");
+        Response.Write(",\"br_in_scode\":" + JsonConvert.SerializeObject(br_in_scode, settings).ToUnicode() + "\n");
+        Response.Write(",\"br_in_scname\":" + JsonConvert.SerializeObject(br_in_scname, settings).ToUnicode() + "\n");
         Response.Write("}");
 
         //Response.Write(JsonConvert.SerializeObject(dt, settings).ToUnicode());
@@ -94,6 +97,16 @@
                     code_type = dt.Rows[0].SafeRead("arcase_type", "");
                     br_in_scode = dt.Rows[0].SafeRead("in_scode", "");
 
+                    if (submitTask == "AddNext") {//複製模式,圖様改為新檔名
+                        if (dt.Rows[0].SafeRead("draw_file", "") != "") {
+                            System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("draw_file", ""))));
+                            string strpath1 = sfile.gbrWebDir + "/temp";
+                            string newName = br_in_scode + "-" + Path.GetFileName(dt.Rows[0].SafeRead("draw_file", ""));
+                            sFi.CopyTo(Server.MapPath(Sys.Path2Nbtbrt(strpath1 + "/" + newName)), true);
+                            dt.Rows[0]["draw_file"] = strpath1 + "/" + newName;
+                        }
+                    }
+                    
                     SQL = "select sc_name from sysctrl.dbo.scode where scode='" + br_in_scode + "'";
                     object objResult = conn.ExecuteScalar(SQL);
                     br_in_scname = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
@@ -147,23 +160,22 @@
     private DataTable GetCaseAttach() {
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
-            SQL = "select * from dmt_attach where in_no='" + in_no + "' and source='case' and attach_flag<>'D' order by attach_sqlno";
-            conn.DataTable(SQL, dt);
+            if (in_no != "") {
+                SQL = "select * from dmt_attach where in_no='" + in_no + "' and source='case' and attach_flag<>'D' order by attach_sqlno";
+                conn.DataTable(SQL, dt);
 
-            if (submitTask != "AddNext") {//複製模式,改為新檔名
-                Sys sfile = new Sys();
-                sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
+                if (submitTask == "AddNext") {//複製模式,改為新檔名
+                    for (int i = 0; i < dt.Rows.Count; i++) {
+                        if (dt.Rows[i].SafeRead("apattach_sqlno", "") == "") {//總契約書/委任書不需複製檔案
+                            System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[i].SafeRead("attach_path", ""))));
+                            string strpath1 = sfile.gbrWebDir + "/doc/case";
+                            string newName = br_in_scode + "-" + dt.Rows[i].SafeRead("attach_name", "");
 
-                for (int i = 0; i < dt.Rows.Count; i++) {
-                    if (dt.Rows[i].SafeRead("apattach_sqlno", "") == "") {//總契約書/委任書不需複製檔案
-                        System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[i].SafeRead("attach_path", ""))));
-                        string strpath1 =sfile.gbrWebDir + "/doc/case/";
-                        string newName=Sys.GetSession("scode")+"-"+dt.Rows[i].SafeRead("attach_name", "");
+                            dt.Rows[i]["attach_name"] = newName;
+                            dt.Rows[i]["attach_path"] = Sys.Path2Nbtbrt(strpath1 + "/" + newName);
 
-                        dt.Rows[i]["attach_name"] = newName;
-                        dt.Rows[i]["attach_path"] = Sys.Path2Nbtbrt(strpath1 + "/" + newName);
-                            
-                        sFi.CopyTo(Server.MapPath(strpath1 + "/" + newName), true);
+                            sFi.CopyTo(Server.MapPath(strpath1 + "/" + newName), true);
+                        }
                     }
                 }
             }
