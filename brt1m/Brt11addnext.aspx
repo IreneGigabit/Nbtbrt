@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
@@ -94,6 +94,7 @@
 
 <form style="margin:0;" id="reg" name="reg" method="post">
 <INPUT TYPE=hidden name=submitTask value="">
+<INPUT TYPE=hidden name=prgid value="<%=prgid%>">
 <INPUT TYPE=hidden name=tscode value="<%=F_tscode%>">
 <INPUT TYPE=hidden name=cust_area value="<%=cust_area%>">
 <INPUT TYPE=hidden name=cust_seq value="<%=cust_seq%>">
