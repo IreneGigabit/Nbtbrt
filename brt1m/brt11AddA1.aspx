@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Register Src="~/commonForm/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
 <%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
@@ -233,7 +233,7 @@
     //main.ar_form = "<%#ar_form%>";
     //main.cust_area = "<%#ReqVal.TryGet("cust_area")%>";
     //main.cust_seq = "<%#ReqVal.TryGet("cust_seq")%>";
-    //main.in_no = "<%#ReqVal.TryGet("in_no")%>";
+    main.in_no = "<%#ReqVal.TryGet("in_no")%>";
     //main.in_no = "20191230001";
     jMain = {};
 
@@ -283,7 +283,7 @@
             $("#tfy_att_sql").val(jMain.cust[0].att_sql);
             attent_form.getatt(jMain.cust[0].cust_area, jMain.cust[0].cust_seq, jMain.cust[0].att_sql);
             //申請人
-            apcust_form.getapp(jMain.cust[0].apcust_no, "");
+            apcust_form.getapp(jMain.cust[0].apcust_no, main.in_no);
             //收費與接洽事項
             //　洽案營洽
             $("#F_tscode").val(jMain.br_in_scode);
@@ -300,6 +300,9 @@
             //　類別種類
             $("#tfz1_class_typeI").prop("checked",true);
         }else{
+            //　洽案營洽
+            $("#F_tscode").val(jMain.br_in_scode);
+            $("#span_tscode").html(jMain.br_in_scname);
             //$("#code_type").val(jMain.case_main[0].arcase_type);
             //***聯絡人與客戶資料	
             $("#F_cust_area").val(jMain.case_main[0].cust_area);
@@ -477,7 +480,7 @@
             }
 
             //聲音/立體商標圖樣
-            switch (jMain.case_main[0].s_mark2) {
+            switch (jMain.case_main[0].arcase.substr(2, 1).toUpperCase()) {//案性第3碼
                 case '4': case '8': case 'C': case 'G'://立體
                     if(jMain.case_main[0].remark3!=""){
                         var arr_remark3=jMain.case_main[0].remark3.split("|");
@@ -502,18 +505,20 @@
             //**類別種類
             $("input[name='tfz1_class_type'][value='"+jMain.case_main[0].class_type+"']").prop('checked', true).triggerHandler("click");
             //指定使用商品／服務類別
-            if(jMain.case_good.length>0){
-                $("#tfz1_class").val(jMain.case_main[0].class);//*類別
-                $("#tfz1_class_count").val(jMain.case_good.length);//共N類
-                br_form.Add_class(jMain.case_good.length);//產生筆數
-                $.each(jMain.case_good, function (i, item) {
-                    $("#class1_" + (i+1)).val(item.class);//第X類
-                    $("#good_count1_" + (i+1)).val(item.class);//共N項
-                    $("#grp_code1_" + (i+1)).val(item.dmt_grp_code);//商品群組代碼
-                    $("#good_name1_" + (i+1)).val(item.dmt_goodname);//商品名稱
-                });
-            }else{
-                br_form.count_kind(1);////類別串接
+            if($("#tabbr1").length>0){//有載入才要檢查
+                if(jMain.case_good.length>0){
+                    $("#tfz1_class").val(jMain.case_main[0].class);//*類別
+                    $("#tfz1_class_count").val(jMain.case_good.length);//共N類
+                    br_form.Add_class(jMain.case_good.length);//產生筆數
+                    $.each(jMain.case_good, function (i, item) {
+                        $("#class1_" + (i+1)).val(item.class);//第X類
+                        $("#good_count1_" + (i+1)).val(item.class);//共N項
+                        $("#grp_code1_" + (i+1)).val(item.dmt_grp_code);//商品群組代碼
+                        $("#good_name1_" + (i+1)).val(item.dmt_goodname);//商品名稱
+                    });
+                }else{
+                    br_form.count_kind(1);////類別串接
+                }
             }
             //**表彰之內容
             $("#tf91_good_name").val(jMain.case_main[0].good_name);
@@ -587,6 +592,7 @@
                 $("#tran_sqlno_" + nRow).val(item.tran_sqlno);//異動作業流水號
                 $("#maxattach_no").val(Math.max(CInt(item.attach_no), CInt($("#maxattach_no").val()))+1);
             });
+            settab("#tran");
         }
     }
     
@@ -696,7 +702,7 @@
         if(IsEmpty($("#tfy_Ar_mark").val())){
             alert("請款註記不得為空白！");
             settab("#case");
-            $("#tfy_Ar_mark"+q).focus();
+            $("#tfy_Ar_mark").focus();
             return false;
         }
 
