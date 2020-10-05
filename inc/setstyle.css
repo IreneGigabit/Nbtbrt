@@ -936,6 +936,10 @@ input[type=button]:disabled,input[type=button][disabled] {
     text-shadow: 1px 1px #ffffff;
 }
 
+select:disabled {
+    color: #222;
+}
+
 .errlog {
 	/*color:#ff0000;*/
 	color:MEDIUMVIOLETRED;
