@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="br_A1_form" %>
+<%@ Control Language="C#" ClassName="br_A1_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -624,11 +624,15 @@
     }
 
     br_form.seq1_conctrl = function () {
+        var old_ar_mark = "";
         if ($("#tfy_Arcase").val() != "") {
             if ("#tfz1_seq1".val == "M") {
                 $("#tfy_Ar_mark").val("X");//請款註記:大陸進口案
             } else {
-                $("#tfy_Ar_mark").val("");
+                if (old_ar_mark == "X") {
+                    $("#tfy_Ar_mark").val("");
+                    old_ar_mark = "";
+                }
             }
         } else {
             alert("請選擇交辦案性!!");
