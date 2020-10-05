@@ -1,4 +1,4 @@
-<%@ Control Language="C#" ClassName="br_A1_form" %>
+﻿<%@ Control Language="C#" ClassName="br_A1_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">

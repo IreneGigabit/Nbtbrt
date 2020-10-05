@@ -940,6 +940,18 @@ select:disabled {
     color: #222;
 }
 
+select option.xxx {
+    color: blue;
+}
+/*
+-webkit-select.xxx {
+    color: blue; 
+}*/
+
+select.xxx::-ms-value {
+    color: blue; 
+}
+
 .errlog {
 	/*color:#ff0000;*/
 	color:MEDIUMVIOLETRED;

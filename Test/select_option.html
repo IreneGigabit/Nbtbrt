@@ -1,0 +1,148 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>國內案接洽暨交辦作業</title>
+    <link rel="stylesheet" type="text/css" href="/nbtbrt/inc/setstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/nbtbrt/js/lib/jquery.datepick.css" />
+    <link rel="stylesheet" type="text/css" href="/nbtbrt/js/lib/toastr.css" />
+    <script type="text/javascript" src="/nbtbrt/js/lib/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/nbtbrt/js/lib/jquery.datepick.min.js"></script>
+    <script type="text/javascript" src="/nbtbrt/js/lib/jquery.datepick-zh-TW.js"></script>
+    <script type="text/javascript" src="/nbtbrt/js/lib/toastr.min.js"></script>
+    <script type="text/javascript" src="/nbtbrt/js/util.js"></script>
+    <script type="text/javascript" src="/nbtbrt/js/jquery.irene.form.js"></script>
+</head>
+
+<body>
+    <table cellspacing="1" cellpadding="0" width="98%" border="0" align="center">
+        <tr>
+            <td class="text9" nowrap="nowrap">&nbsp;【brt11 國內案接洽暨交辦作業】</td>
+            <td class="FormLink" valign="top" align="right" nowrap="nowrap"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><hr class="style-one" /></td>
+        </tr>
+    </table>
+
+    <form style="margin:0;" id="reg" name="reg" method="post">
+        <input type=hidden id=prgid name=prgid value="brt11">
+        <input type=hidden id=cust_area name=cust_area>
+        <input type=hidden id=cust_seq name=cust_seq>
+        <input type=hidden id=Ar_Form name=Ar_Form>
+        <input type=hidden id=prt_code name=prt_code>
+        <input type=hidden id=submitTask name=submitTask>
+        <input type=hidden id=seq name=seq value="">
+        <input type=hidden id=seq1 name=seq1 value="_">
+        <input type=hidden id=country name=country value="">
+        <input type=hidden id= type name= type value="Brt">
+        <input type=hidden id=kind name=kind value="pass">
+        <input type=hidden id=uploadtype name=uploadtype value="case"><!--文件上傳畫面用，表接洽記錄-->
+        <input type=hidden name=code_type value="T92">
+    </form>
+
+    <div align="center" id="noData" style="display:none">
+        <font color="red">=== 目前無資料 ===</font>
+    </div>
+
+
+    <table style="display:" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="98%" align="center" id="dataList">
+        <thead>
+            <tr>
+                <td align="center" class="lightbluetable">客戶編號</td>
+                <td align="center" class="lightbluetable">客戶名稱</td>
+                <td align="center" class="lightbluetable">代表人</td>
+                <td align="center" class="lightbluetable">證照號碼</td>
+                <td align="center" class="lightbluetable">建檔日期</td>
+                <td align="center" class="lightbluetable">內商最後異動日</td>
+                <td align="center" class="lightbluetable">洽案登錄</td>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr class="sfont9">
+                <td align="center">
+                    <a href="../cust/cust11_mod.asp?modify=Q&gs_dept=t&cust_area=N&cust_seq=1624&apsqlno=04322046  &hRight=2&att_sql=1">
+                        N-1624
+                    </a>
+                </td>
+                <td align="center">英業達股份有限公司</td>
+                <td align="center">&#22531;&#23791;</td>
+                <td align="center">04322046  </td>
+                <td align="center">1990/7/25</td>
+                <td align="center">2020/10/1</td>
+                <td align="center">
+
+                    <select name=toadd0 id=toadd0>
+                        <option value="" class="xxx">請選擇案性</option>
+
+                        <option value="A0" v1="A1">電子申請</option>
+
+                        <option value="A1" v1="A1">創設申請</option>
+
+                        <option value="A2" v1="ZZ">申請中間案</option>
+
+                        <option value="A3" v1="A3">註冊費</option>
+
+                        <option value="A4" v1="A4">延展</option>
+
+                        <option value="A5" v1="A5">分割</option>
+
+                        <option value="A6" v1="A6">變更</option>
+
+                        <option value="A7" v1="A7">授權</option>
+
+                        <option value="A8" v1="A8">移轉</option>
+
+                        <option value="A9" v1="A9">質權</option>
+
+                        <option value="AA" v1="AA">各種證明書</option>
+
+                        <option value="AB" v1="AB">補(換)發證</option>
+
+                        <option value="AC" v1="AC">閱案</option>
+
+                        <option value="AD" v1="ZZ">查名</option>
+
+                        <option value="AE" v1="ZZ">撤回</option>
+
+                        <option value="AF" v1="ZZ">其他</option>
+
+                        <option value="B" v1="B">爭議案</option>
+
+                        <option value="C" v1="ZZ">救濟案</option>
+
+                        <option value="D" v1="ZZ">顧問案</option>
+
+                        <option value="Y" v1="ZZ">雜項案</option>
+</select>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <br />
+
+</body>
+</html>
+
+<script language="javascript" type="text/javascript">
+    $(function () {
+        //$("select").on("change",function(){
+        $("select").change(function () {
+            var _thisSelect2 = $(this);
+            //alert(_thisSelect2.val());
+            //alert($("option:selected", _thisSelect2).attr("class"));
+            _thisSelect2.attr('class', $("option:selected", _thisSelect2).attr("class") || '');
+            //alert($("option:selected", _thisSelect2).css("color"));
+            //_thisSelect2.css('color', $("option:selected", _thisSelect2).css("color") || '#000');
+            //if (!_thisSelect2.val()) {
+            //    _thisSelect2.css('color', 'blue');//請選擇
+            //} else {
+            //    _thisSelect2.css('color', 'black');
+            //}
+        }).change();
+        //});
+        //$("select").change();
+
+    });
+</script>
