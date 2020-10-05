@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="case_form" %>
+<%@ Control Language="C#" ClassName="case_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Import Namespace = "System.Data" %>
 
@@ -568,29 +568,14 @@
 
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/json_Fee.aspx?type=Fee&country=" + x1 + "&Arcase=" + x2 + "&Ar_Form=" + x3 + "&Service=" + x4+"&prgid=<%#prgid%>",
+            url: getRootPath() + "/ajax/json_Fee.aspx?type=Fee&country=" + x1 + "&Arcase=" + x2 + "&Ar_Form=" + x3 + "&Service=" + x4 + "&prgid=<%#prgid%>",
             async: false,
             cache: false,
             success: function (json) {
                 if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(收費標準)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jFee = $.parseJSON(json);
-                if (jFee.length != 0) {
-                    if (x4 == 10) {//轉帳費用
-                        if (jFee.length == 0) {
-                            $("#nfy_oth_money").val("0");
-                            $("#oth_money").val("0");
-                        } else {
-                            $.each(jFee, function (i, item) {
-                                $("#nfy_oth_money").val(item.service);
-                                $("#oth_money").val(item.service);
-                            });
-                        }
-
-                        if ($("#tfy_oth_arcase").val() == "")
-                            $("#tfy_oth_code").val("");
-                        else
-                            $("#tfy_oth_code").val("L");
-                    } else {
+                //if (jFee.length != 0) {
+                    if (x4 != 10) {//轉帳費用
                         $.each(jFee, function (i, item) {
                             if (x4 >= 1) {//其他費用
                                 $("#nfyi_Service_" + x4).val(item.service * CInt($("#nfyi_item_count_" + x4).val()));
@@ -605,8 +590,24 @@
                                 $("#fee_remark").val(item.remark);//注意事項
                             }
                         });
+                    } else {
+                        if (jFee.length == 0) {
+                            $("#nfy_oth_money").val("0");
+                            $("#oth_money").val("0");
+                        } else {
+                            $.each(jFee, function (i, item) {
+                                $("#nfy_oth_money").val(item.service);
+                                $("#oth_money").val(item.service);
+                            });
+                        }
+
+                        if ($("#tfy_oth_arcase").val() == "") {
+                            $("#tfy_oth_code").val("");
+                        } else {
+                            $("#tfy_oth_code").val("L");
+                        }
                     }
-                }
+                //}
             },
             error: function () { toastr.error("<a href='" + this.url + "' target='_new'>取得案性費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
         });
