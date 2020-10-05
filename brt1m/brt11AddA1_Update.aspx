@@ -1,10 +1,10 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt11AddA1";//程式檔名前綴
-    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode = "brt11";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
@@ -129,7 +129,7 @@
                 string strpath = sfile.gbrWebDir + "/temp";
                 string attach_name = RSno + System.IO.Path.GetExtension(aa);//重新命名檔名
                 newfilename = strpath + "/" + attach_name;//存在資料庫路徑
-                Sys.RenameFile(strpath + "/" + aa, strpath + "/" + attach_name, true);
+                Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
             }
             SQL = "insert into dmt_temp";
             colList = new List<DBColumn>();
