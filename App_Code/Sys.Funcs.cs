@@ -40,6 +40,25 @@ public partial class Sys
     }
     #endregion
 
+    #region getSignMaster - 抓取特殊處理簽核主管
+    /// <summary>
+    /// 抓取特殊處理簽核主管
+    /// </summary>
+    public static DataTable getSignMaster(string se_branch, string se_grpid, string se_scode, string msc_scode) {
+        using (DBHelper cnn = new DBHelper(Conn.ODBCDSN, false)) {
+            string SQL = "SELECT a.master_scode, '商標主管' AS master_type, b.sc_name AS master_scodenm, b.sscode, '1' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.GrpID IN ('T100', 'TA100', 'TB100') AND a.grpclass='" + se_branch + "' AND a.master_scode NOT IN ('" + msc_scode + "')";
+            SQL += " UNION";
+            SQL += " SELECT a.master_scode, '營洽主管' AS master_type, b.sc_name AS master_scodenm, b.sscode, '2' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.GrpID LIKE '" + se_grpid.Left(2) + "[1-9]%' AND a.grpclass='" + se_branch + "' AND a.master_scode NOT IN ('" + msc_scode + "','" + se_scode + "')";
+            SQL += " UNION";
+            SQL += " SELECT a.master_scode,  '區所主管' AS master_type, b.sc_name AS master_scodenm, b.sscode, '3' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.Grpid = '000' AND a.grpclass = '" + se_branch + "'";
+            SQL += " ORDER BY sort, sscode";
+            DataTable dt = new DataTable();
+            cnn.DataTable(SQL, dt);
+            return dt;
+        }
+    }
+#endregion
+
     #region getRsType - 國內案目前交辦案性的版本
     /// <summary>  
     /// 國內案目前交辦案性的版本
@@ -167,83 +186,6 @@ public partial class Sys
     }
     #endregion
 
-    ///////////////////////////////////////
-    #region getdoc_type - 抓取上傳附件種類
-    /// <summary>  
-    /// 抓取上傳附件種類
-    /// </summary>  
-    public static DataTable getdoc_type(string arcase) {
-        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
-            string SQL = "select cust_code,code_name,remark from cust_code ";
-            SQL += "where code_type='Odoc_type' ";
-            if (arcase != "") {
-                SQL += "and (remark is null or remark like '%" + arcase + "%') ";
-            }
-            SQL += "order by sortfld";
-            DataTable dt = new DataTable();
-            conn.DataTable(SQL, dt);
-
-            return dt;
-        }
-    }
-    #endregion
-
-    #region getdoc_typeE - 抓取上傳附件種類(出口案)
-    /// <summary>  
-    /// 抓取上傳附件種類
-    /// </summary>  
-    public static DataTable getdoc_typeE() {
-        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
-            string SQL = "select cust_code,code_name,remark from cust_code where code_type='Odoc_type' and ref_code is null order by sortfld";
-            DataTable dt = new DataTable();
-            conn.DataTable(SQL, dt);
-
-            return dt;
-        }
-    }
-    #endregion
-
-    #region getcust_code_sys - 抓取sysctrl cust_code
-    /// <summary>  
-    /// 抓取sysctrl cust_code
-    /// </summary>  
-    public static DataTable getcust_code_sys(string code_type, string pwh2, string sortField) {
-        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
-            string SQL = "select cust_code,code_name from cust_code ";
-            SQL += " where code_type='" + code_type + "' " + pwh2;
-            if (sortField == "")
-                SQL += " order by cust_code";
-            else
-                SQL += " order by " + sortField;
-            DataTable dt = new DataTable();
-            cnn.DataTable(SQL, dt);
-
-            return dt;
-        }
-    }
-    #endregion
-
-    #region GetRoleScode - 抓取系統角色人員
-    /// <summary>  
-    /// 抓取系統角色人員，psyscode=系統代碼NTBRT，pdept=部門T，proles=角色mg_pror=程序mg_prorm=主管
-    /// </summary>  
-    public static string GetRoleScode(string pSyscode, string pDept, string pRoles) {
-        string mgprscode = "";
-        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
-            string SQL = "select a.scode from scode_roles a inner join scode b on a.scode=b.scode ";
-            SQL += " where a.syscode='" + pSyscode + "' and a.dept='" + pDept + "' and a.roles='" + pRoles + "' ";
-            SQL += " and (b.end_date is null or b.end_date>='" + DateTime.Today.ToShortDateString() + "')";
-            SQL += " order by a.sort ";
-            using (SqlDataReader dr = cnn.ExecuteReader(SQL)) {
-                while (dr.Read()) {
-                    mgprscode += (mgprscode != "" ? ";" : "") + dr.SafeRead("scode", "");
-                }
-            }
-        }
-        return mgprscode;
-    }
-    #endregion
-
     #region insert_log_table
     /// <summary>
     /// 寫入 Log 檔，適用於 log table 中有 ud_flag、ud_date、ud_scode、prgid 這些欄位者
@@ -253,7 +195,8 @@ public partial class Sys
     /// <param name="table">執行異動的table,ex:要新增至 attach_opt_log 則傳入 attach_opt</param>
     /// <param name="pKey_field">key值欄位名稱,用;分隔</param>
     /// <param name="pKey_value">key值欄位值,用;分隔</param>
-    public static void insert_log_table(DBHelper conn, string ud_flag, string prgid, string table, string key_field, string key_value) {
+    /// <param name="reason">log說明</param>
+    public static void insert_log_table(DBHelper conn, string ud_flag, string prgid, string table, string key_field, string key_value,string reason) {
         Dictionary<string, string> pKey = new Dictionary<string, string>();
 
         if (key_field.IndexOf(";") != 0) {
@@ -264,7 +207,7 @@ public partial class Sys
                 pKey.Add(arr_key_field[i], arr_key_value[i]);
             }
         }
-        insert_log_table(conn, ud_flag, prgid, table, pKey);
+        insert_log_table(conn, ud_flag, prgid, table, pKey, reason);
     }
 
     /// <summary>
@@ -273,8 +216,9 @@ public partial class Sys
     /// <param name="ud_flag">log_flag(U/D)</param>
     /// <param name="prgid">執行異動的prgid</param>
     /// <param name="table">執行異動的table,ex:要新增至 attach_opt_log 則傳入 attach_opt</param>
-    /// <param name="pKey">key 值欄位名稱&值</param>
-    public static void insert_log_table(DBHelper conn, string ud_flag, string prgid, string table, Dictionary<string, string> pKey) {
+    /// <param name="pKey">key 值欄位名稱＆值</param>
+    /// <param name="reason">log說明</param>
+    public static void insert_log_table(DBHelper conn, string ud_flag, string prgid, string table, Dictionary<string, string> pKey, string reason) {
         string SQL = "";
         string usql = "";
         string wsql = "";
@@ -295,22 +239,25 @@ public partial class Sys
 
         //依log檔的prgid欄位名稱判斷(prgid or ud_prgid)
         switch (table.ToLower()) {
-            case "case_opt":
-            case "opt_detail":
-            case "caseitem_opt":
-            case "caseopt_good":
-            case "opt_tran":
-            case "opt_tranlist":
-            case "caseopt_ap":
-                usql = "insert into " + table + "_log(ud_date,ud_scode," + tfield_str + ")";
-                usql += " SELECT GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
+            case "case_dmt":
+                usql = "insert into " + table + "_log(upd_flg,reason,log_date,log_scode," + tfield_str + ")";
+                usql += " SELECT " + Util.dbchar(ud_flag) + ","+Util.dbchar(reason)+",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;
                 usql += " WHERE 1=1 ";
                 usql += wsql;
                 break;
-            case "step_ext":
-                usql = "insert into " + table + "_log(ud_flag,log_date,log_scode,prgid," + tfield_str + ")";
-                usql += " SELECT " + Util.dbnull(ud_flag) + ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + Util.dbnull(prgid) + "," + tfield_str;
+            case "caseitem_dmt":
+                usql = "insert into " + table + "_log(case_dmt_log_sqlno,log_date,log_scode," + tfield_str + ")";
+                usql += " SELECT isnull((select max(sqlno) from case_dmt_log where 1=1 "+wsql+"),0) ";
+                usql += ",GETDATE()," + tfield_str;
+                usql += " FROM " + table;
+                usql += " WHERE 1=1 ";
+                usql += wsql;
+                break;
+            case "dmt_temp":
+                usql = "insert into " + table + "_log(case_dmt_log_sqlno,log_date,log_scode," + tfield_str + ")";
+                usql += " SELECT isnull((select max(sqlno) from case_dmt_log where 1=1 "+wsql+"),0) ";
+                usql += ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;
                 usql += " WHERE 1=1 ";
                 usql += wsql;
@@ -327,7 +274,6 @@ public partial class Sys
     }
 
     #endregion
-
 }
 
 

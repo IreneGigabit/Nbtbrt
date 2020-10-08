@@ -29,15 +29,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta http-equiv="cache-control" content="no-cache"/>
 </head>
-<!--frameset col="30%,70%" id="tt">
-    <frame name="Etop" id="Etop" scrolling="auto" src="homelist.aspx"/>
-    <frame name="Eblank" id="Eblank" scrolling="auto" src="login.aspx"/>
-</frameset-->
-<frameset name="f" id="f" cols="<%#sideWidth%>,*">
+<frameset cols="<%#sideWidth%>,*" frameborder="no" border="0" framespacing="0" name="f" id="f">
+	<frame id="leftFrame" name="leftFrame" src="<%#leftSrc%>" marginwidth="0" marginheight="0" frameborder="NO"/>
+	<frame id="mainFrame" name="mainFrame" src="<%#mainSrc%>" marginwidth="10" marginheight="11"/>
+</frameset>
+<!--frameset name="f" id="f" cols="<%#sideWidth%>,*">
     <frame src="<%#leftSrc%>" frameborder="0" name="leftFrame" id="leftFrame" />
     <frameset rows="100%,*" name="tt" id="tt">
         <frame name="Etop" id="Etop" scrolling="auto" src="<%#mainSrc%>">"/>
         <frame name="Eblank" id="Eblank" scrolling="auto" src="about:blank"/>
 　　 </frameset>
-</frameset>
+</frameset-->
 </html>

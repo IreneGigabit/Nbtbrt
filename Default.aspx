@@ -304,8 +304,9 @@
 
         var ifrm = $("#workfram").contents();
         //$(ifrm).find("[name='mainFrame']").attr("src", lnk);
-        $("#Etop", ifrm).attr("src", lnk);
         //$(ifrm).find("[name='mainFrame']")[0].location.href = lnk;
+        //$("#Etop", ifrm).attr("src", lnk);
+        $("#mainFrame", ifrm).attr("src", lnk);
 
         //workfram.mainFrame.location.href = lnk;
         $("#oPopBody").hide();
@@ -348,11 +349,39 @@
     }
 
     //Eblank frame
-    $("#btnEblank").click(function () {
+    /*$("#btnEblank").click(function () {
         var ifrm = $("#workfram").contents();
 
         if ($(this).attr("v1") != null) {
             if ($("#tt", ifrm).length>0) {
+                if ($("#tt", ifrm).attr("rows") != $(this).attr("v1")) {
+                    $("#tt", ifrm).attr("rows", $(this).attr("v1"))
+                } else {
+                    $("#tt", ifrm).attr("rows", $(this).attr("v2"))
+                }
+            }
+        }
+    });*/
+
+    $("#btnEblank").click(function () {
+        if ($(this).attr("v1") != null) {
+            if (!(document.getElementById('workfram').contentWindow.mainFrame.tt === undefined)) {
+                if (document.getElementById('workfram').contentWindow.mainFrame.tt.rows != $(this).attr("v1")) {
+                    document.getElementById('workfram').contentWindow.mainFrame.tt.rows = $(this).attr("v1");
+                } else {
+                    document.getElementById('workfram').contentWindow.mainFrame.tt.rows = $(this).attr("v2");
+                }
+            }
+        }
+    });
+
+    $("#btnEblankx").click(function () {
+        var $ifrm = $("#workfram").contents();
+        var $mfrm = $ifrm.find("#mainFrame");
+        console.log($("#tt", $mfrm));
+        return;
+        if ($(this).attr("v1") != null) {
+            if ($("#tt", ifrm).length > 0) {
                 if ($("#tt", ifrm).attr("rows") != $(this).attr("v1")) {
                     $("#tt", ifrm).attr("rows", $(this).attr("v1"))
                 } else {

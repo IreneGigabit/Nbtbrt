@@ -287,7 +287,11 @@
                 $("#F_mark").val(jCust.cust_remark);
                 attent_form.getatt($("#F_cust_area").val(), $("#F_cust_seq").val());//重新抓聯諾人
             },
-            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>客戶資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+            error: function (xhr) { 
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>客戶資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
+                $("#dialog").dialog({ title: '客戶資料載入失敗！', modal: true, maxHeight: 500,width: 800 });
+                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            }
         });
     });
 </script>

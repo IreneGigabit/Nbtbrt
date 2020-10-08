@@ -3,8 +3,8 @@
 
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
-    protected string HTProgPrefix = "brt11AddA1";//程式檔名前綴
-    protected string HTProgCode = "brt11";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgPrefix = "brt11";//程式檔名前綴
+    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
@@ -22,7 +22,7 @@
 
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
         
-        Token myToken = new Token(HTProgCode);
+        TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
@@ -90,7 +90,6 @@
             colList.Add(new DBColumn("Contract_no", "tfy_Contract_no", true));
             colList.Add(new DBColumn("contract_flag", "tfy_contract_flag", true));
             colList.Add(new DBColumn("contract_remark", "tfy_contract_remark", true));
-            colList.Add(new DBColumn("ar_chk", "tfy_ar_chk", true));
             colList.Add(new DBColumn("cust_date", "dfy_cust_date", ColType.Null, true));
             colList.Add(new DBColumn("pr_date", "dfy_pr_date", ColType.Null, true));
             colList.Add(new DBColumn("last_date", "dfy_last_date", ColType.Null, true));
@@ -115,6 +114,8 @@
             //****會計檢核2013/9/16增加，不需請款或大陸進口案不在線上請款，不需會計檢核
             if (Request["tfy_ar_code"] == "X" || Request["tfy_ar_code"] == "M") {
                 colList.Add(new DBColumn("acc_chk", "'X'", ColType.Value));
+            } else {
+                colList.Add(new DBColumn("acc_chk", "'N'", ColType.Value));
             }
             SQL += Util.GetInsertSQL(colList);
             //Response.Write(SQL + "<HR>");
@@ -338,7 +339,8 @@
                 "&cust_area=" + Request["tfy_cust_area"] + "&cust_seq=" + Request["tfy_cust_seq"] +
                 "&in_no=" + RSno + "&add_arcase=" + Request["tfy_arcase"] + "&Ar_Form=" + Request["Ar_Form"] +
                 "&code_type=" + Request["code_type"] + "&F_tscode=" + Request["F_tscode"] +
-                "&seq=" + Request["tfzb_seq"] + "&seq1=" + Request["tfzb_seq1"] + "&prt_code=" + Request["prt_code"] + "'");
+                "&seq=" + Request["tfzb_seq"] + "&seq1=" + Request["tfzb_seq1"] +
+                "&prt_code=" + Request["prt_code"] + "&new_form=" + Request["new_form"] + "'");
 
             if (Request["chkTest"] != "TEST") {
                 strOut.AppendLine("<" + "/script>");

@@ -31,7 +31,7 @@
         syscode = Request["syscode"] ?? "";
         LoginGrp = Request["LoginGrp"] ?? "";
 
-        Token myToken = new Token(HTProgCode);
+        TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         Title = myToken.Title;
         DebugStr = myToken.DebugStr;
@@ -125,7 +125,7 @@
         <tr>    
             <td align="center" class="bluetext"><font color=red>※</font>群組種類</td>     
             <td class="bluedata">
-                <Select id="tfx_GrpType" name="tfx_GrpType" size="1">
+                <Select id="tfx_GrpType" name="tfx_GrpType">
                 <option value="" style="color:blue">請選擇</option>
                 <option value="N">正常登錄</option>
                 <option value="X">暫停使用</option>
@@ -137,7 +137,7 @@
         <tr>    
             <td align="center" class="bluetext">人員種類</td>     
             <td class="bluedata" colspan=3>
-                <Select id="tfx_WorkType" name="tfx_WorkType" size="1">
+                <Select id="tfx_WorkType" name="tfx_WorkType">
                 <option value="" style="color:blue">請選擇</option>
                 <option value="sales">營洽</option>
                 <option value="worker">承辦</option>

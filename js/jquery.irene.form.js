@@ -139,10 +139,10 @@
 	                        jqXHR.url = settings.url;
 	                        //toastr.info("<a href='" + jqXHR.url + "' target='_new'>debug！\n" + jqXHR.url + "</a>");
 	                    },
-	                    error: function (jqXHR, textStatus, errorThrown) {
-	                        //window.open(debugurl);
-	                        //alert("載入查詢清單發生錯誤!!");
-	                        toastr.error("<a href='" + jqXHR.url + "' target='_new'>載入查詢清單發生錯誤！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+	                    error: function (xhr) { 
+	                        $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getOption)！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
+	                        $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getOption)！', modal: true, maxHeight: 500,width: 800 });
+	                        //toastr.error("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getOption)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
 	                    }
 	                });
 	            }
@@ -156,24 +156,37 @@
 	            $.each(settings.dataList, function (i, item) {
 	                //處理value
 	                var val = settings.valueFormat;
-	                Object.keys(item).forEach(function (key) {
+	                //Object.keys(item).forEach(function (key) {
+	                //    var re = new RegExp("{" + key + "}", "ig");
+	                //    val = val.replace(re, item[key]);
+	                //});
+	                jQuery.each(Object.keys(item), function (ix, key) {
 	                    var re = new RegExp("{" + key + "}", "ig");
 	                    val = val.replace(re, item[key]);
 	                });
 
 	                //處理text
 	                var txt = settings.textFormat;
-	                Object.keys(item).forEach(function (key) {
+	                //Object.keys(item).forEach(function (key) {
+	                //    var re = new RegExp("{" + key + "}", "ig");
+	                //    txt = txt.replace(re, item[key]);
+	                //});
+	                jQuery.each(Object.keys(item), function (ix, key) {
 	                    var re = new RegExp("{" + key + "}", "ig");
 	                    txt = txt.replace(re, item[key]);
 	                });
 
 	                //處理attribute
 	                var attr = settings.attrFormat;
-	                Object.keys(item).forEach(function (key) {
+	                //Object.keys(item).forEach(function (key) {
+	                //    var re = new RegExp("{" + key + "}", "ig");
+	                //    attr = attr.replace(re, item[key]);
+	                //});
+	                jQuery.each(Object.keys(item), function (ix, key) {
 	                    var re = new RegExp("{" + key + "}", "ig");
 	                    attr = attr.replace(re, item[key]);
 	                });
+
 	                obj.append("<option value='" + val + "' " + attr + ">" + txt + "</option>");
 	            });
 	            if (settings.lastOpt != "") {
@@ -235,10 +248,10 @@
 	                        jqXHR.url = settings.url;
 	                        //toastr.info("<a href='" + jqXHR.url + "' target='_new'>debug！\n" + jqXHR.url + "</a>");
 	                    },
-	                    error: function (jqXHR, textStatus, errorThrown) {
-	                        //window.open(debugurl);
-	                        //alert("載入查詢清單發生錯誤!!");
-	                        toastr.error("<a href='" + jqXHR.url + "' target='_new'>載入查詢清單發生錯誤！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+	                    error: function (xhr) {
+	                        $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getRadio)！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+	                        $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getRadio)！', modal: true, maxHeight: 500, width: 800 });
+	                        //toastr.error("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getRadio)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
 	                    }
 	                });
 	            }
@@ -246,24 +259,37 @@
 	            $.each(settings.dataList, function (i, item) {
 	                //處理value
 	                var val = settings.valueFormat;
-	                Object.keys(item).forEach(function (key) {
+	                //Object.keys(item).forEach(function (key) {
+	                //    var re = new RegExp("{" + key + "}", "ig");
+	                //    val = val.replace(re, item[key]);
+	                //});
+	                jQuery.each(Object.keys(item), function (ix, key) {
 	                    var re = new RegExp("{" + key + "}", "ig");
 	                    val = val.replace(re, item[key]);
 	                });
 
 	                //處理text
 	                var txt = settings.textFormat;
-	                Object.keys(item).forEach(function (key) {
+	                //Object.keys(item).forEach(function (key) {
+	                //    var re = new RegExp("{" + key + "}", "ig");
+	                //    txt = txt.replace(re, item[key]);
+	                //});
+	                jQuery.each(Object.keys(item), function (ix, key) {
 	                    var re = new RegExp("{" + key + "}", "ig");
 	                    txt = txt.replace(re, item[key]);
 	                });
 
 	                //處理attribute
 	                var attr = settings.attrFormat;
-	                Object.keys(item).forEach(function (key) {
+	                //Object.keys(item).forEach(function (key) {
+	                //    var re = new RegExp("{" + key + "}", "ig");
+	                //    attr = attr.replace(re, item[key]);
+	                //});
+	                jQuery.each(Object.keys(item), function (ix, key) {
 	                    var re = new RegExp("{" + key + "}", "ig");
 	                    attr = attr.replace(re, item[key]);
 	                });
+
 	                if (val.toLowerCase() == settings.setValue.toLowerCase())
 	                    obj.append("<label><input type='radio' id='" + settings.objName + val + "' name='" + settings.objName + "' value='" + val + "' " + attr + " checked>" + txt + "</label>");
 	                else
@@ -327,10 +353,10 @@
 	                        jqXHR.url = settings.url;
 	                        //toastr.info("<a href='" + jqXHR.url + "' target='_new'>debug！\n" + jqXHR.url + "</a>");
 	                    },
-	                    error: function (jqXHR, textStatus, errorThrown) {
-	                        //window.open(debugurl);
-	                        //alert("載入查詢清單發生錯誤!!");
-	                        toastr.error("<a href='" + jqXHR.url + "' target='_new'>載入查詢清單發生錯誤！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+	                    error: function (xhr) {
+	                        $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getCheckbox)！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+	                        $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getCheckbox)！', modal: true, maxHeight: 500, width: 800 });
+	                        //toastr.error("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getCheckbox)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
 	                    }
 	                });
 	            }
@@ -338,24 +364,37 @@
 	            $.each(settings.dataList, function (i, item) {
 	                //處理value
 	                var val = settings.valueFormat;
-	                Object.keys(item).forEach(function (key) {
+	                //Object.keys(item).forEach(function (key) {
+	                //    var re = new RegExp("{" + key + "}", "ig");
+	                //    val = val.replace(re, item[key]);
+	                //});
+	                jQuery.each(Object.keys(item), function (ix, key) {
 	                    var re = new RegExp("{" + key + "}", "ig");
 	                    val = val.replace(re, item[key]);
 	                });
 
 	                //處理text
 	                var txt = settings.textFormat;
-	                Object.keys(item).forEach(function (key) {
+	                //Object.keys(item).forEach(function (key) {
+	                //    var re = new RegExp("{" + key + "}", "ig");
+	                //    txt = txt.replace(re, item[key]);
+	                //});
+	                jQuery.each(Object.keys(item), function (ix, key) {
 	                    var re = new RegExp("{" + key + "}", "ig");
 	                    txt = txt.replace(re, item[key]);
 	                });
 
 	                //處理attribute
 	                var attr = settings.attrFormat;
-	                Object.keys(item).forEach(function (key) {
+	                //Object.keys(item).forEach(function (key) {
+	                //    var re = new RegExp("{" + key + "}", "ig");
+	                //    attr = attr.replace(re, item[key]);
+	                //});
+	                jQuery.each(Object.keys(item), function (ix, key) {
 	                    var re = new RegExp("{" + key + "}", "ig");
 	                    attr = attr.replace(re, item[key]);
 	                });
+
 	                if (val.toLowerCase() == settings.setValue.toLowerCase())
 	                    obj.append("<label><input type='checkbox' id='" + settings.objName + val + "' name='" + settings.objName + "' value='" + val + "' " + attr + " checked>" + txt + "</label>");
 	                else

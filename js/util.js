@@ -1,3 +1,45 @@
+﻿//for IE8 不支援JavaScript的Object.keys
+if (!Object.keys) {
+    Object.keys = (function () {
+        'use strict';
+        var hasOwnProperty = Object.prototype.hasOwnProperty,
+            hasDontEnumBug = !({ toString: null }).propertyIsEnumerable('toString'),
+            dontEnums = [
+              'toString',
+              'toLocaleString',
+              'valueOf',
+              'hasOwnProperty',
+              'isPrototypeOf',
+              'propertyIsEnumerable',
+              'constructor'
+            ],
+            dontEnumsLength = dontEnums.length;
+
+        return function (obj) {
+            if (typeof obj !== 'function' && (typeof obj !== 'object' || obj === null)) {
+                throw new TypeError('Object.keys called on non-object');
+            }
+
+            var result = [], prop, i;
+
+            for (prop in obj) {
+                if (hasOwnProperty.call(obj, prop)) {
+                    result.push(prop);
+                }
+            }
+
+            if (hasDontEnumBug) {
+                for (i = 0; i < dontEnumsLength; i++) {
+                    if (hasOwnProperty.call(obj, dontEnums[i])) {
+                        result.push(dontEnums[i]);
+                    }
+                }
+            }
+            return result;
+        };
+    }());
+}
+
 //獲取web ap根路徑 ex:http://web02/nOpt
 function getRootPath() {
     var strFullPath = window.document.location.href;
@@ -382,5 +424,6 @@ $(function () {
         //    $("#ActFrame").showFor($(this).prop("checked"));
         $(".bsubmit").prop("disabled", false);
     });
-    $("#chkTest").prop("checked", true).triggerHandler("click");
+    //$("#chkTest").prop("checked", true).triggerHandler("click");
+    $("#chkTest").prop("checked", false).triggerHandler("click");//預設不勾
 });

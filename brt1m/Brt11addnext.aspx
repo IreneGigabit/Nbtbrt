@@ -25,6 +25,7 @@
     protected string in_no = "";
     protected string ar_Form = "";
     protected string prt_code = "";
+    protected string new_form = "";
     protected string add_arcase = "";
     protected string seq = "";
     protected string seq1 = "";
@@ -46,12 +47,13 @@
         in_no = Request["in_no"] ?? "";
         ar_Form = Request["ar_Form"] ?? "";
         prt_code = Request["prt_code"] ?? "";
+        new_form = Request["new_form"] ?? "";
         add_arcase = Request["add_arcase"] ?? "";
         seq = Request["seq"] ?? "";
         seq1 = Request["seq1"] ?? "";
         code_type = Request["code_type"] ?? "";
     
-        Token myToken = new Token(HTProgCode);
+        TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
         if (HTProgRight >= 0) {
@@ -101,13 +103,13 @@
 <INPUT TYPE=hidden name=in_no value="<%=in_no%>">
 <INPUT TYPE=hidden name=Ar_Form value="<%=ar_Form%>">
 <INPUT TYPE=hidden name=prt_code value="<%=prt_code%>">
+<INPUT TYPE=hidden name=new_form value="<%=new_form%>">
 <INPUT TYPE=hidden name=add_arcase value="<%=add_arcase%>">
 <INPUT TYPE=hidden name=seq value="<%=seq%>">
 <INPUT TYPE=hidden name=seq1 value="<%=seq1%>">
 <INPUT TYPE=hidden name=code_type value="<%=code_type%>">
 <INPUT TYPE=hidden name=uploadtype value="case">
 </form>
-
     <table border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
         <tr>
             <td width="100%" align="center">
@@ -122,6 +124,10 @@
             </td>
         </tr>
     </table>
+
+<div id="dialog">
+    <!--iframe id="myIframe" src="about:blank" width="100%" height="97%" style="border:none""></iframe-->
+</div>
 </body>
 </html>
 
@@ -142,12 +148,12 @@
     })
 
     function AddForm(){
-        reg.action = "Brt11Add" + reg.prt_code.value + ".aspx";
+        reg.action = "Brt11Add" + reg.new_form.value + ".aspx";
         reg.submit();
     }
 	
     function NextForm() {
-        reg.action = "Brt11Add" + reg.prt_code.value + ".aspx";
+        reg.action = "Brt11Add" + reg.new_form.value + ".aspx";
         reg.submitTask.value = "AddNext";
         reg.submit();
     }

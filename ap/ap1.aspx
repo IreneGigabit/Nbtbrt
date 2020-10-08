@@ -21,7 +21,7 @@
         //syscode = Sys.GetSession("Syscode");
         if ((Request["Syscode"] ?? "") != "") syscode = Request["Syscode"];
 
-        Token myToken = new Token(HTProgCode);
+        TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;

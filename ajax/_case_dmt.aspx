@@ -89,7 +89,7 @@
             //    SQL = "Pro_case2 '" + in_no + "'";
             //    conn.DataTable(SQL, dt);
             //}
-            if (submitTask == "Edit" || submitTask == "AddNext") {//編輯/複製 模式
+            if (submitTask == "U" || submitTask == "AddNext") {//編輯/複製下一筆 模式
                 SQL = "Pro_case2 '" + in_no + "'";
                 conn.DataTable(SQL, dt);
 
@@ -97,7 +97,7 @@
                     code_type = dt.Rows[0].SafeRead("arcase_type", "");
                     br_in_scode = dt.Rows[0].SafeRead("in_scode", "");
 
-                    if (submitTask == "AddNext") {//複製模式,圖様改為新檔名
+                    if (submitTask == "AddNext") {//圖様改為新檔名
                         if (dt.Rows[0].SafeRead("draw_file", "") != "") {
                             System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("draw_file", ""))));
                             string strpath1 = sfile.gbrWebDir + "/temp";

@@ -105,7 +105,11 @@
                 $("#tfy_att_sql option[value!='']").eq(0).prop('selected', true);
                 $("#tfy_att_sql").triggerHandler("change");
             },
-            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>客戶資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+            error: function (xhr) { 
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>客戶資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
+                $("#dialog").dialog({ title: '客戶資料載入失敗！', modal: true, maxHeight: 500,width: 800 });
+                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            }
         });
     }
 

@@ -37,12 +37,12 @@
         ReqVal = Util.GetRequestParam(Context,Request["chkTest"] == "TEST");
         submitTask = Request["submitTask"] ?? "";
 
-        Token myToken = new Token(HTProgCode);
+        TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
         if (HTProgRight >= 0) {
             QueryData();
-            //PageLayout();
+            PageLayout();
 
             this.DataBind();
         }
@@ -83,11 +83,11 @@
         }
 
         //案性分類
-        SQL += ";SELECT Cust_code,Code_name,form_name";
+        SQL += ";SELECT Cust_code,Code_name,form_name,remark";
         SQL += " FROM Cust_code";
         SQL += " WHERE Code_type = '" + code_type + "' AND form_name is not null ";
         if (ReqVal.TryGet("kind", "") == "old") {//舊案不可創設申請
-            SQL += "AND form_name<>'E11' ";
+            SQL += "AND remark<>'E11' ";
         }
         SQL += "order by cust_code";
         conn.DataSet(SQL, ds);
@@ -143,6 +143,7 @@
     <input type=hidden id=cust_seq name=cust_seq>
     <input type=hidden id=Ar_Form name=Ar_Form>
     <input type=hidden id=prt_code name=prt_code>
+    <input type=hidden id=new_form name=new_form>
     <input type=hidden id=submitTask name=submitTask>
     <input type=hidden id=seq name=seq value="<%#Request["tfx_seq"]%>">
     <input type=hidden id=seq1 name=seq1 value="<%#Request["tfx_seq1"]%>">
@@ -193,7 +194,7 @@
 			                    <option value="" style="color:blue">請選擇案性</option>
                             </HeaderTemplate>
 			                <ItemTemplate>
-                                <option value="<%#Eval("Cust_code").ToString().Trim()%>" v1="<%#Eval("form_name").ToString().Trim()%>"><%#Eval("Code_name")%></option>
+                                <option value="<%#Eval("Cust_code").ToString().Trim()%>" v1="<%#Eval("form_name").ToString().Trim()%>" v2="<%#Eval("remark").ToString().Trim()%>"><%#Eval("Code_name")%></option>
 			                </ItemTemplate>
                         </asp:Repeater>
 		            </td>
@@ -233,11 +234,12 @@
         if (oThis.val() == "") return false;
         reg.cust_area.value = x;
         reg.cust_seq.value = y;
-        reg.submitTask.value = "Add";
+        reg.submitTask.value = "A";
         
         reg.Ar_Form.value = oThis.val();
         reg.prt_code.value = $('option:selected', oThis).attr('v1');
-        reg.action = "Brt11Add" + reg.prt_code.value + ".aspx";
+        reg.new_form.value = $('option:selected', oThis).attr('v2');//20201006原由form_name判斷案性入口aspx,改為remark
+        reg.action = "Brt11Add" + reg.new_form.value + ".aspx";
         reg.submit();
     }
 </script>

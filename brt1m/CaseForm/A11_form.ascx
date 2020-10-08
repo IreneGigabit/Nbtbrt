@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="br_A1_form" %>
+﻿<%@ Control Language="C#" ClassName="br_A11_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -466,7 +466,7 @@
         </script>
 	</table>
 </script>
-<!--#include virtual="~\commonForm\dmt\br_A1_remark1.inc" --><!--附件様版 依案性第3碼切換顯示-->
+<!--#include virtual="~\brt1m\CaseForm\A11_remark1.inc" --><!--附件様版 依案性第3碼切換顯示-->
 
 <script language="javascript" type="text/javascript">
     var br_form = {};

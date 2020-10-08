@@ -17,7 +17,7 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
-        Token myToken = new Token();
+        TokenN myToken = new TokenN();
         DebugStr = myToken.DebugStr;
 
         QueryString = Request.ServerVariables["QUERY_STRING"];

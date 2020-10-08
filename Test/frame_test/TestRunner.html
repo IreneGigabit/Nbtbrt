@@ -1,0 +1,50 @@
+﻿<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+</head>
+<body>
+<button onclick="run()">Test</button><button onclick="genReport()">Report</button>
+<pre id="rpt">
+</pre>
+<script>
+    function run() {
+        //var list = ["Edge","10","9","8","7","5", ""];
+        var list = ["10","5"];
+        var jobs = [];
+        for (var i = 0; i < list.length; i++) {
+            for (var j = 0; j < list.length; j++) {
+                for (var k = 0; k < list.length; k++) {
+                    jobs.push("./parent.aspx?p=" + list[i] + "&f=" + list[j] + "&s=" + list[k] + 
+                    "&n=" + (i + 1) + "-" + (j + 1) + "-" + (k + 1));
+                }
+            }
+        }
+        localStorage.clear();
+        var hnd = setInterval(function() {
+            if (jobs.length == 0) {
+                clearInterval(hnd);
+                return;
+            }
+            var win = window.open(jobs.pop());
+            setTimeout(function() {
+                //win.close();
+            }, 2000);
+        }, 250);
+    }
+    function genReport() {
+        var keys = Object.keys(localStorage);
+        keys.sort();
+        var rpt = [];
+        for (var i = 0; i < keys.length; i++) {
+            var p = localStorage[keys[i]].split(',');
+            for (var j = 0; j < p.length; j++)
+                p[j] = p[j].split('=')[1];
+            rpt.push([p[0],p[2],p[4],p[1],p[3],p[5]].join(","));
+        }
+        document.getElementById("rpt").innerHTML = rpt.join("\n");
+    }
+</script>
+<div>
+</div>
+</body>
+</html>

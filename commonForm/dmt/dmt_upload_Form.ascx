@@ -33,6 +33,11 @@
         uploadtype = (Request["uploadtype"] ?? "").ToLower();
         source = Request["source"] ?? "";
         prgid = prgid.ToLower();
+        seq = (Request["seq"] ?? "");
+        seq1 = (Request["seq1"] ?? "");
+        step_grade = (Request["step_grade"] ?? "");
+        in_no = (Request["in_no"] ?? "");
+        case_no = (Request["case_no"] ?? "");
         
         if (uploadtype == "case") {//表示從接洽記錄上傳
             epath = "doc/case";
@@ -117,7 +122,7 @@
                 <input type='text' id='tstep_grade_##' name='tstep_grade_##'>
                 <input type='text' id='attach_sqlno_##' name='attach_sqlno_##'>
                 <input type='text' id='attach_flag_##' name='attach_flag_##'>
-                <BR>原始檔名：<input type='text' id='source_name_##' name='source_name_##' class="Lock" size=50>
+                <span id="span_source_##" style="display:none"><BR>原始檔名：<input type='text' id='source_name_##' name='source_name_##' class="Lock" size=50></span>
                 <input type='text' id='attach_no_##' name='attach_no_##' value='##'>
                 <input type='text' id='old_<%#uploadfield%>_name_##' name='old_<%#uploadfield%>_name_##'>
                 <input type='text' id='doc_type_mark_##' name='doc_type_mark_##'>
@@ -127,8 +132,8 @@
                 <input type='text' id='attach_old_branch_##' name='attach_old_branch_##'>
                 <br>檔案說明：<select id='doc_type_##' name='doc_type_##' class="<%=Lock.TryGet("Qup")%>" onchange="upload_form.getfiledoc('##')"><%#html_doc%></select>
                 <input type=text id='<%#uploadfield%>_desc_##' name='<%#uploadfield%>_desc_##' class="<%=Lock.TryGet("Qup")%>" size=50 maxlength=60 onblur="fChkDataLen(this,'檔案說明')" >
-                <input type=checkbox id='<%#uploadfield%>_branch_##' name='<%#uploadfield%>_branch_##' class="<%=Lock.TryGet("Qup")%>" value='B'><font color='blue'>交辦專案室</font>
-                <input type=checkbox id='doc_flag_##' name='doc_flag_##' class="<%=Lock.TryGet("Qup")%>" value='E'><font color='blue'>電子送件文件檔(pdf)</font>
+                <span id="span_branch_##" style="display:none"><input type=checkbox id='<%#uploadfield%>_branch_##' name='<%#uploadfield%>_branch_##' class="<%=Lock.TryGet("Qup")%>" value='B'><font color='blue'>交辦專案室</font></span>
+                <span id="span_edoc_##" style="display:none"><input type=checkbox id='doc_flag_##' name='doc_flag_##' class="<%=Lock.TryGet("Qup")%>" value='E'><font color='blue'>電子送件文件檔(pdf)</font></span>
 			</TD>
 		</TR>
     </script>
@@ -300,6 +305,18 @@
         $("#tabfile" + fld + ">tbody").append(copyStr);
         $("#" + fld + "_filenum").val(nRow);
         $("#attach_no_" + nRow).val($("#maxattach_no").val());//dmt_attach.attach_no
+
+        if ($("#prgid").val() == "brta38") {
+            $("#span_source_" + nRow).show();//原始檔名
+        }
+        if ($("#uploadsource").val() == "CASE") {
+            $("#span_branch_" + nRow).show();//交辦專案室
+        } else {
+            //不是發文畫面會出錯,增加判斷
+            if (document.getElementsByName("cgrs").length > 0 && document.getElementById("cgrs").value == "GS") {
+                $("#span_edoc_" + nRow).show();//電子送件文件檔
+            }
+        }
     }
 
     //[減少一筆]

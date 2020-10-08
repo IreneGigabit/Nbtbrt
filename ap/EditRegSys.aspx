@@ -37,7 +37,7 @@
         n1 = Request["n1"] ?? "";
         n2 = Request["n2"] ?? "";
 
-        Token myToken = new Token(HTProgCode);
+        TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         Title = myToken.Title;
         DebugStr = myToken.DebugStr;

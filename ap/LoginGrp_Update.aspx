@@ -33,7 +33,7 @@
 
         ReqVal = Util.GetRequestParam(Context,Request["chkTest"] == "TEST");
 
-        Token myToken = new Token(HTProgCode);
+        TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         if (HTProgRight >= 0) {
             DBHelper cnn = new DBHelper(Conn.ODBCDSN).Debug(Request["chkTest"] == "TEST");

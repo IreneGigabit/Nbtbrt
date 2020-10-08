@@ -56,7 +56,7 @@
                 hiddenText += string.Format("<input type=\"hidden\" id=\"{0}\" name=\"{0}\" value=\"{1}\">\n", p.Key, p.Value);
         }
 
-        Token myToken = new Token(HTProgCode);
+        TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         Title = myToken.Title;
 
@@ -147,7 +147,7 @@
         <td colspan="2"><hr class="style-one"/></td>
     </tr>
 </table>
-<form id="reg" name="reg" method="post">
+<form id="regPage" name="regPage" method="post">
     <%#hiddenText%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
@@ -218,6 +218,10 @@
 </FooterTemplate>
 </asp:Repeater>
 
+<div id="dialog">
+    <!--iframe id="myIframe" src="about:blank" width="100%" height="97%" style="border:none""></iframe-->
+</div>
+
 </body>
 </html>
 
@@ -231,7 +235,7 @@
 
     //執行查詢
     function goSearch() {
-        $("#reg").submit();
+        $("#regPage").submit();
     };
     //每頁幾筆
     $("#PerPage").change(function (e) {

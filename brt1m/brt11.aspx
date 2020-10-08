@@ -17,7 +17,7 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
-        Token myToken = new Token(HTProgCode);
+        TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
@@ -44,7 +44,9 @@
 <link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/inc/setstyle.css")%>" />
 <link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.css")%>" />
 <link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/toastr.css")%>" />
+<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.css")%>" />
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-1.12.4.min.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
@@ -117,6 +119,10 @@
         </table>
     </div>
 </form>
+
+<div id="dialog">
+    <!--iframe id="myIframe" src="about:blank" width="100%" height="97%" style="border:none""></iframe-->
+</div>
 
 </body>
 </html>
@@ -211,7 +217,11 @@
                     $("#ext_seq1").val(JSONdata[0].ext_seq1);
                 }
             },
-            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>查詢案件編號載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+            error: function (xhr) { 
+                $("#dialog").html(xhr.responseText);
+                $("#dialog").dialog({ title: '查詢案件編號載入失敗！', modal: true, maxHeight: 500,width: 800 });
+                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            }
         });
 
         return rtnFlag;

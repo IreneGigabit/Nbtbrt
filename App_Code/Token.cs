@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Data.SqlClient;
 using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Security.Cryptography;
 
 /// <summary>
 /// Token 的摘要描述
@@ -11,221 +11,231 @@ using Newtonsoft.Json.Linq;
 /// </summary>
 public class Token
 {
-    public string ConnectionString { get; set; }
-    public string SysCode { get; set; }//系統
-    public string APcode { get; set; }//程式
-    public string Title { get; set; }//程式名稱
-    public string Title2 { get; set; }//程式名稱2
-
-    public string UGrpID { get; set; }//群組
-    public int Rights { get; set; }//取得的權限值
-    private bool _Passworded { get; set; }//是否已登入
-    //public int chkRight { get; set; }//要檢查的權限值
-
-    //public bool Debug { get; set; }//有無除錯權限
-    public string DebugStr {//☑測試
-        get {
-            if (this.APcode == "") {//沒有prgid就用Sys.IsDebug判斷
-                if (Sys.IsDebug()) {
-                    return "<label id=\"labTest\"><input type=\"checkbox\" id=\"chkTest\" name=\"chkTest\" value=\"TEST\" />測試</label>";
-                }
-            } else {
-                if ((this.Rights & 256) > 0) {//有prgid就用權限值判斷
-                    return "<label id=\"labTest\"><input type=\"checkbox\" id=\"chkTest\" name=\"chkTest\" value=\"TEST\" />測試</label>";
-                }
-            }
-            return "";
-        }
-    }
+    private string m_CnnStr;
+    private string m_APcode;
+    private string m_UID;
+    private string m_UGrpID;
+    private int m_Rights;
 
     public Token()
-        : this(
-         Sys.Sysmenu//.getAppSetting("Sysmenu")//因menu的syscode不同.所以不能用syscode
-        , ""
-        , Sys.GetSession("LoginGrp")
-        , Conn.ODBCDSN
-        ) { }
-
-    public Token(string APcode)
-        : this(
-         Sys.Sysmenu//.getAppSetting("Sysmenu")
-        , APcode
-        , Sys.GetSession("LoginGrp")
-        , Conn.ODBCDSN
-        ) { }
-
-    public Token(string Syscode, string APcode)
-        : this(
-        Syscode, APcode
-        , Sys.GetSession("LoginGrp")
-        , Conn.ODBCDSN
-        ) { }
-
-    public Token(string Syscode, string APcode, string UGrpID, string ConnectionString) {
-        this.SysCode = Syscode;
-        this.APcode = APcode;
-        this.UGrpID = UGrpID;
-        this.ConnectionString = ConnectionString;
-        this.Rights = 0;
-        bool flag;
-        this._Passworded = Boolean.TryParse(Sys.GetSession("Password"), out flag);
+    {
+        //
+        // TODO: 在此加入建構函式的程式碼
+        //
+        m_CnnStr = "";
+        m_APcode = "";
+        m_UGrpID = "";
+        m_Rights = 0;
     }
 
-    public int CheckMe() {
-        return CheckMe(1, false, false);
+    public Token(string APcode, int Rights, string ConnectionString, string UGrpID)
+    {
+        m_CnnStr = ConnectionString;
+        m_APcode = APcode;
+        m_UGrpID = UGrpID;
+        m_Rights = Rights;
     }
 
-    public int CheckMe(bool chkRef) {
-        return CheckMe(1, chkRef, false);
+    public Token(string APcode, int Rights)
+    {
+        m_CnnStr = HttpContext.Current.Session["ODBCDSN"].ToString();
+        m_APcode = APcode;
+		m_UGrpID = HttpContext.Current.Session["LoginGrp"].ToString();
+        m_Rights = Rights;
     }
 
-    public int CheckMe(int chkRight) {
-        return CheckMe(chkRight, true, false);
+    public string ConnectionString
+    {
+        get { return m_CnnStr; }
+        set { m_CnnStr = value; }
     }
 
-    public int CheckMe(bool chkRef, bool rtnJson) {
-        return CheckMe(1, chkRef, rtnJson);
+    public string APcode
+    {
+        get { return m_APcode; }
+        set { m_APcode = value; }
     }
 
-    public int CheckMe(int chkRight, bool rtnJson) {
-        return CheckMe(chkRight, true, rtnJson);
+    public string UGrpID
+    {
+        get { return m_UGrpID; }
+        set { m_UGrpID = value; }
     }
 
-    public int CheckMe(int chkRight, bool chkRef, bool rtnJson) {
-        try {
-            this.Rights = 0;
+    public int Rights
+    {
+        get { return m_Rights; }
+        set { m_Rights = value; }
+    }
 
+    public int CheckMe()
+    {
+        bool bPasswd = Convert.ToBoolean(HttpContext.Current.Session["pwd"]);
+        return DoCheckIt(bPasswd, true);
+    }
+
+    public int CheckMe2()
+    {
+        bool bPasswd = Convert.ToBoolean(HttpContext.Current.Session["pwd"]);
+        return DoCheckIt(bPasswd, false);
+    }
+
+    public int CheckMe(bool bPasswd)
+    {
+        return DoCheckIt(bPasswd, true);
+    }
+
+    public int CheckMe(string ConnectionString, string APcode, string UGrpID, int Rights, bool bPasswd)
+    {
+        m_CnnStr = ConnectionString;
+        m_APcode = APcode;
+        m_UGrpID = UGrpID;
+        m_Rights = Rights;
+
+        return DoCheckIt(bPasswd, true);
+    }
+
+    public int CheckMe(string ConnectionString, string APcode, string UGrpID, int Rights, bool bPasswd, bool bRef)
+    {
+        m_CnnStr = ConnectionString;
+        m_APcode = APcode;
+        m_UGrpID = UGrpID;
+        m_Rights = Rights;
+
+        return DoCheckIt(bPasswd, bRef);
+    }
+
+    private int DoCheckIt(bool bPasswd, bool bRef)
+    {
+        int AccsRights = -1;
+
+        try
+        {
             //檢查網頁參照
-            Uri webRef = HttpContext.Current.Request.UrlReferrer;//http://localhost/system/sys_main.html
+            string webRef = HttpContext.Current.Request.ServerVariables["HTTP_REFERER"]??"";
             string stmp = "";
-            //HttpContext.Current.Response.Write(this.SysCode + "<BR>");
-            //HttpContext.Current.Response.Write(this.APcode + "<BR>");
-            //HttpContext.Current.Response.Write(this.UGrpID + "<BR>");
-            //HttpContext.Current.Response.Write(this.ConnectionString + "<BR>");
-            //HttpContext.Current.Response.Write(this.Rights + "<BR>");
-            //HttpContext.Current.Response.Write(this._Passworded + "<BR>");
-            //HttpContext.Current.Response.Write(HttpContext.Current.Session["Password"] + "<BR>");
+            int n1 = 0;
+            int n2 = 0;
 
-            if (chkRef) {
-                if (webRef != null) {
-                    stmp = webRef.Authority;
-                    if (stmp.IndexOf(":") > -1) {
-                        if (stmp != string.Format("{0}:{1}", HttpContext.Current.Request.Url.Host, HttpContext.Current.Request.Url.Port)) {//localhost:8011
-                            //HttpContext.Current.Session["Password"] = false;
-                            Sys.SetSession("Password", false);
-                            throw new Exception("頁面參照錯誤！(0)");
-                        }
-                    } else {
-                        if (stmp != HttpContext.Current.Request.Url.Authority) {//localhost
-                            //HttpContext.Current.Session["Password"] = false;
-                            Sys.SetSession("Password", false);
-                            throw new Exception("頁面參照錯誤！(1)");
+            if (bRef)
+            {
+                n1 = webRef.IndexOf("//");
+                if (n1 > 0)
+                {
+                    n1 = n1 + 2;
+                    n2 = webRef.IndexOf("/", n1);
+                    if (n2 > n1)
+                    {
+                        stmp = webRef.Substring(n1, n2 - n1);
+                        if (stmp != HttpContext.Current.Request.ServerVariables["SERVER_NAME"])
+                        {
+                            HttpContext.Current.Session["pwd"] = false;
+                            throw new System.Exception("頁面參照錯誤！");
                         }
                     }
-                } else {
-                    //HttpContext.Current.Session["Password"] = false;
-                    Sys.SetSession("Password", false);
-                    throw new Exception("無頁面參照！");
+                    else
+                    {
+                        HttpContext.Current.Session["pwd"] = false;
+                        throw new System.Exception("頁面參照錯誤！");
+                    }
+                }
+                else
+                {
+                    HttpContext.Current.Session["pwd"] = false;
+                    throw new System.Exception("頁面參照錯誤！");
                 }
             }
-            //HttpContext.Current.Response.Write(this.SysCode + "<BR>");
-            //HttpContext.Current.Response.Write(this.APcode + "<BR>");
-            //HttpContext.Current.Response.Write(this.UGrpID + "<BR>");
-            //HttpContext.Current.Response.Write(this.ConnectionString + "<BR>");
-            //HttpContext.Current.Response.Write(this.Rights + "<BR>");
-            //HttpContext.Current.Response.Write(this._Passworded + "<BR>");
-            //HttpContext.Current.Response.Write(HttpContext.Current.Session["Password"] + "<BR>");
 
-            if (_Passworded) {
-                bool myRights = false;
-                SqlConnection cn = new SqlConnection(this.ConnectionString);
+            if (bPasswd)
+            {
+                if (m_APcode.Length == 0 || m_UGrpID.Length == 0)
+                {
+                    AccsRights = m_Rights;
+                    return AccsRights;
+                }
+
+                SqlConnection cn = new SqlConnection(m_CnnStr);
                 SqlDataReader dr = null;
                 string SQL = "SELECT Rights FROM LoginAP" +
-                    " WHERE LoginGrp = '" + UGrpID + "'" +
-                    " AND APcode = '" + APcode + "'" +
-                    " AND SYScode = '" + SysCode + "'" +
+                    " WHERE LoginGrp = '" + m_UGrpID + "'" +
+                    " AND APcode = '" + m_APcode + "'" +
+					" AND SYScode = '" + HttpContext.Current.Session["Syscode"].ToString() + "'" +
                     " AND GETDATE() BETWEEN beg_date AND end_date";
                 //HttpContext.Current.Response.Write(SQL);
                 //HttpContext.Current.Response.End();
-                try {
+                try
+                {
                     SqlCommand cmd = new SqlCommand(SQL, cn);
                     cn.Open();
                     dr = cmd.ExecuteReader();
-                    if (dr.Read()) {
-                        this.Rights = Convert.ToInt32(dr["Rights"]);
-                        myRights = ((this.Rights & chkRight) == 1) ? true : false;
-                        //HttpContext.Current.Response.Write(this.Rights + "/" + chkRight);
-                        //HttpContext.Current.Response.End();
-                    }
-                    dr.Close();
+                    int myRights = 0;
 
-                    SQL = "SELECT APnameC FROM AP " +
-                        " Where APcode = '" + APcode + "'" +
-                        " AND SYScode = '" + SysCode + "'";
-                    cmd.CommandText = SQL;
-                    dr = cmd.ExecuteReader();
-                    if (dr.Read()) {
-                        this.Title = dr["APnameC"] + "";
-                        this.Title2 = dr["APnameC"] + "&nbsp;管理";
+                    if (dr.HasRows)
+                    {
+                        dr.Read();
+                        AccsRights = Convert.ToInt32(dr["Rights"]);
+                        myRights = ((AccsRights & 1) == 1) ? (AccsRights & m_Rights) : 0;
+                        //HttpContext.Current.Response.Write(AccsRights + "/" + myRights);
+                        //HttpContext.Current.Response.End();
                     }
                     dr.Close();
                     cn.Close();
 
-                    if (!myRights) throw new Exception("該作業未授權 !");
+                    if (myRights == 0) throw new System.Exception("該系統未授權 !");
                 }
-                catch (Exception ex) {
-                    throw;
+                catch (Exception ex)
+                {
+                    throw (ex);
                 }
-                finally {
+                finally
+                {
                     if (dr != null) dr.Close();
                     if (cn != null) cn.Close();
                 }
-            } else {
-                //HttpContext.Current.Response.Write(this.SysCode + "<BR>");
-                //HttpContext.Current.Response.Write(this.APcode + "<BR>");
-                //HttpContext.Current.Response.Write(this.UGrpID + "<BR>");
-                //HttpContext.Current.Response.Write(this.ConnectionString + "<BR>");
-                //HttpContext.Current.Response.Write(this.Rights + "<BR>");
-                //HttpContext.Current.Response.Write(this._Passworded + "<BR>");
-                //HttpContext.Current.Response.Write(HttpContext.Current.Session["Password"] + "<BR>");
-                //HttpContext.Current.Response.End();
-                //HttpContext.Current.Response.Write(PageDirect(Sys.GetSession("Password") + "系統停滯時間逾時，請重新登入 !", false));
-                //HttpContext.Current.Response.End();
-                throw new Exception("系統停滯時間逾時，請重新登入(token)!");
+            }
+            else
+            {
+                throw new System.Exception("系統停滯時間逾時，請重新登入 !");
             }
         }
-        catch (Exception ex) {
-            HttpContext.Current.Response.Write(PageDirect(ex.Message, rtnJson));
+        catch (Exception ex)
+        {
+            HttpContext.Current.Response.Write(PageRsponse(ex.Message));
             HttpContext.Current.Response.End();
         }
 
-        return this.Rights;
+        return AccsRights;
     }
 
-    private string PageDirect(string strMsg, bool rtnJson) {
-        if (rtnJson) {
-            JObject obj = new JObject(
-                             new JProperty("error", 000),
-                             new JProperty("msg", strMsg)
-                            );
-            return JsonConvert.SerializeObject(obj, Formatting.Indented);
-        }
+    private string PageRsponse(string strMsg)
+    {
+        string strOut = "";
+        strOut = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" +
+            "<script type=\"text/javascript\" language=\"javascript\">\nwindow.alert(\"" + strMsg + "\");\n" +
+            "if (typeof (top.opener) == 'object') window.close();\n" +
+			"else top.location.href=\"http://" + HttpContext.Current.Session["uploadserver"].ToString() + "/Fimp/default.asp\";\n</script></head><body></body></html>\n";
+			//"else top.location.href=\"../default.aspx\";\n</script></head><body></body></html>\n";
+		return strOut;
+    }
 
-        string url = "Default.aspx";
-        if (!_Passworded) url = "Login.aspx";
+    public static bool IsAdmin()
+    {
+        bool b = (HttpContext.Current.Session["scode"].ToString() == "admin" || HttpContext.Current.Session["LoginGrp"].ToString() == "AccountAdmin");
+        return b;
+    }
 
-        StringBuilder strOut = new StringBuilder();
-        strOut.AppendLine("<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'>");
-        strOut.AppendLine("<script type='text/javascript'>");
-        strOut.AppendLine("alert('" + strMsg.Replace("'", "\\'") + "'); ");
-        strOut.AppendLine("if (typeof(window.opener)!='undefined'){");
-        strOut.AppendLine(" window.opener.top.location.href = '" + HttpContext.Current.Request.ApplicationPath + "/" + url + "'; ");
-        strOut.AppendLine(" window.close();");
-        strOut.AppendLine("}else{");
-        strOut.AppendLine(" window.top.location.href = '" + HttpContext.Current.Request.ApplicationPath + "/" + url + "'; ");
-        strOut.AppendLine("}");
-        strOut.AppendLine("</script>");
+    public static string MD5Hash(string Str)
+    {
+        ASCIIEncoding AE = new ASCIIEncoding();
+        Byte[] data = AE.GetBytes(Str);
+        // This is one implementation of the abstract class MD5.
+        MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+        Byte[] result = md5.ComputeHash(data);
+        string hashStr = BitConverter.ToString(result);
 
-        return strOut.ToString();
+        hashStr = hashStr.Replace("-", "");
+        hashStr = hashStr.ToLower();
+
+        return hashStr;
     }
 }

@@ -22,7 +22,7 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
-        Token myToken = new Token(HTProgCode);
+        TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
@@ -31,12 +31,12 @@
             this.DataBind();
         }
     }
-    
+
     private void PageLayout() {
-        StrFormBtnTop += "<a href=\""+Page.ResolveUrl("~/Brt4m/Brt13.aspx")+"?prgid="+HTProgPrefix+"\">[交辦查詢]</a>\n";
-        StrFormBtnTop += "<a href=\""+Page.ResolveUrl("~/cust/cust11_1.aspx")+"?gs_dept="+Session["Dept"]+"\">[客戶查詢]</a>\n";
-        StrFormBtnTop += "<a href=\""+Page.ResolveUrl("~/cust/cust11.aspx")+"?gs_dept="+Session["Dept"]+"\">[客戶新增]</a>\n";
-  
+        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/Brt4m/Brt13.aspx") + "?prgid=" + HTProgPrefix + "\">[交辦查詢]</a>\n";
+        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_1.aspx") + "?gs_dept=" + Session["Dept"] + "\">[客戶查詢]</a>\n";
+        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11.aspx") + "?gs_dept=" + Session["Dept"] + "\">[客戶新增]</a>\n";
+
         if ((HTProgRight & 2) > 0) {
             StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"查　詢\" class=\"cbutton bsubmit\" />\n";
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
@@ -44,35 +44,35 @@
 
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             //抓取組主管所屬營洽
-        string sales_scode = Sys.getScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
+            string sales_scode = Sys.getScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
 
             //洽案營洽清單
-                DataTable dt = new DataTable();
-                if ((HTProgRight & 128) != 0) {
-                    //權限B為全部，for程序主管為營助職務代理可看全部營洽
-                    SQL = "select distinct a.in_scode,b.sc_name,b.sscode ";
-                    SQL += "from case_dmt a ";
-                    SQL += "inner join sysctrl.dbo.scode b on a.in_scode=b.scode ";
-                    SQL += "where a.stat_code LIKE 'N%' ";
-                    SQL += "order by sscode ";
-                    conn.DataTable(SQL, dt);
-                    td_tscode = "<select id='scode' name='scode' >" + dt.Option("{in_scode}", "{sc_name}") + "</select>";
-                }else if ((HTProgRight & 64) != 0) {
-                    //權限A為看所屬營洽
-                    SQL = "select distinct a.in_scode,b.sc_name,b.sscode ";
-                    SQL += "from case_dmt a ";
-                    SQL += "inner join sysctrl.dbo.scode b on a.in_scode=b.scode ";
-                    SQL += "where a.stat_code LIKE 'N%' ";
-					if (sales_scode!="" && sales_scode!="''"){
-						SQL += " and a.in_scode in (" + sales_scode + ")";
-					}
-                    SQL += "order by sscode ";
-                    conn.DataTable(SQL, dt);
-                    td_tscode = "<select id='scode' name='scode' >" + dt.Option("{in_scode}", "{sc_name}") + "</select>";
-                } else {
-                    td_tscode = "<input type='text' id='scode' name='scode' readonly class='SEdit' value='" + Session["se_scode"] + "'>";
-                    td_tscode = "<span='span_tscode'>" + Session["sc_name"] + "</span>";
+            DataTable dt = new DataTable();
+            if ((HTProgRight & 128) != 0) {
+                //權限B為全部，for程序主管為營助職務代理可看全部營洽
+                SQL = "select distinct a.in_scode,b.sc_name,b.sscode ";
+                SQL += "from case_dmt a ";
+                SQL += "inner join sysctrl.dbo.scode b on a.in_scode=b.scode ";
+                SQL += "where a.stat_code LIKE 'N%' ";
+                SQL += "order by sscode ";
+                conn.DataTable(SQL, dt);
+                td_tscode = "<select id='scode' name='scode' >" + dt.Option("{in_scode}", "{sc_name}") + "</select>";
+            } else if ((HTProgRight & 64) != 0) {
+                //權限A為看所屬營洽
+                SQL = "select distinct a.in_scode,b.sc_name,b.sscode ";
+                SQL += "from case_dmt a ";
+                SQL += "inner join sysctrl.dbo.scode b on a.in_scode=b.scode ";
+                SQL += "where a.stat_code LIKE 'N%' ";
+                if (sales_scode != "" && sales_scode != "''") {
+                    SQL += " and a.in_scode in (" + sales_scode + ")";
                 }
+                SQL += "order by sscode ";
+                conn.DataTable(SQL, dt);
+                td_tscode = "<select id='scode' name='scode' >" + dt.Option("{in_scode}", "{sc_name}") + "</select>";
+            } else {
+                td_tscode = "<input type='text' id='scode' name='scode' readonly class='SEdit' value='" + Session["se_scode"] + "'>";
+                td_tscode = "<span='span_tscode'>" + Session["sc_name"] + "</span>";
+            }
             //案性
             SQL = "SELECT RS_code, RS_detail FROM code_br WHERE dept = 'T' AND cr = 'Y' AND no_code='N' ";
             SQL += "and (end_date is null or end_date = '' or end_date > getdate()) ";
@@ -124,7 +124,7 @@
 			<TR>
 				<td class="lightbluetable" align="right">承辦案性 :</td>
 				<td class="whitetablebg" align="left">
-                    <select id="pfx_Arcase" name="pfx_Arcase" size="1"><%#pfx_Arcase%></select>
+                    <select id="pfx_Arcase" name="pfx_Arcase"><%#pfx_Arcase%></select>
 				</td> 
 			</TR>
 			<TR>	
@@ -150,6 +150,10 @@
         </table>
     </div>
 </form>
+
+<div id="dialog">
+    <!--iframe id="myIframe" src="about:blank" width="100%" height="97%" style="border:none""></iframe-->
+</div>
 
 </body>
 </html>
@@ -190,6 +194,6 @@
     });
 
     $("#Sfx_in_date,#Efx_in_date").blur(function (e){
-        ChkDate(this[0]);
+        ChkDate(this);
     });
 </script>

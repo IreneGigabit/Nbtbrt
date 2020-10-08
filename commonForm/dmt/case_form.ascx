@@ -410,7 +410,11 @@
             dataType: "script",
             async: false,
             cache: false,
-            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>取得承辦期限控制失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+            error: function (xhr) { 
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>取得承辦期限控制失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
+                $("#dialog").dialog({ title: '取得承辦期限控制失敗！', modal: true, maxHeight: 500,width: 800 });
+                //toastr.error("<a href='" + this.url + "' target='_new'>取得承辦期限控制失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            }
         });
     }
 
@@ -483,10 +487,14 @@
                     }
                 });
             },
-            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+            error: function (xhr) { 
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
+                $("#dialog").dialog({ title: '取得轉帳費用失敗！', modal: true, maxHeight: 500,width: 800 });
+                //toastr.error("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            }
         });
         //程序客收確認不能修改法定期限
-        if ($("prgid").val() == "brt51") {
+        if ($("#prgid").val() == "brt51") {
             if ($("spe_ctrl3").val() == "Y") {
                 $("#dfy_last_date").lock();
             } else {
@@ -521,7 +529,11 @@
                 });
                 case_form.ToFee("T", $("#tfy_oth_arcase").val(), $("#Ar_Form").val(), "10");
             },
-            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+            error: function (xhr) { 
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
+                $("#dialog").dialog({ title: '取得轉帳費用失敗！', modal: true, maxHeight: 500,width: 800 });
+                //toastr.error("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            }
         });
     }
 
@@ -609,7 +621,11 @@
                     }
                 //}
             },
-            error: function () { toastr.error("<a href='" + this.url + "' target='_new'>取得案性費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>"); }
+            error: function (xhr) { 
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>取得案性費用失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
+                $("#dialog").dialog({ title: '取得案性費用失敗！', modal: true, maxHeight: 500,width: 800 });
+                //toastr.error("<a href='" + this.url + "' target='_new'>取得案性費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            }
         });
 
         case_form.summary();
