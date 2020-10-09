@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 
 /// <summary>  
 /// 原Server_code.vbs
@@ -222,7 +223,7 @@ public partial class Sys
         string SQL = "";
         string usql = "";
         string wsql = "";
-        string tfield_str = "";
+        string tfield_str = "";//column
 
         SQL = "SELECT b.name FROM sysobjects AS a, syscolumns AS b ";
         SQL += "WHERE a.id = b.id  AND a.name = " + Util.dbnull(table) + " AND a.xtype='U' ";
@@ -232,6 +233,22 @@ public partial class Sys
                 tfield_str += (tfield_str != "" ? "," : "") + dr["name"].ToString();
             }
         }
+
+        ////table & log table都有的欄位才寫入
+        //SQL = "SELECT b.name FROM sysobjects AS a, syscolumns AS b ";
+        //SQL += "WHERE a.id = b.id  AND a.name = " + Util.dbnull(table) + " AND a.xtype='U' ";
+        //SQL += "ORDER BY b.colid ";
+        //DataTable dt = new DataTable();
+        //conn.DataTable(SQL, dt);
+        //for (int i = 0; i < dt.Rows.Count; i++) {
+        //    SQL = "SELECT b.name FROM sysobjects AS a, syscolumns AS b ";
+        //    SQL += "WHERE a.id = b.id  AND a.name = " + Util.dbnull(table) + " AND a.xtype='U' and b.name=" + Util.dbchar(dt.Rows[i]["name"].ToString()) + " ";
+        //    SQL += "ORDER BY b.colid ";
+        //    object objResult = conn.ExecuteScalar(SQL);
+        //    if (!(objResult == DBNull.Value || objResult == null)) {
+        //        tfield_str += (tfield_str != "" ? "," : "") + dt.Rows[i]["name"].ToString();
+        //    }
+        //}
 
         foreach (KeyValuePair<string, string> item in pKey) {
             wsql += string.Format(" and {0} ='{1}' ", item.Key, item.Value);
@@ -249,7 +266,7 @@ public partial class Sys
             case "caseitem_dmt":
                 usql = "insert into " + table + "_log(case_dmt_log_sqlno,log_date,log_scode," + tfield_str + ")";
                 usql += " SELECT isnull((select max(sqlno) from case_dmt_log where 1=1 "+wsql+"),0) ";
-                usql += ",GETDATE()," + tfield_str;
+                usql += ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;
                 usql += " WHERE 1=1 ";
                 usql += wsql;

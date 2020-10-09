@@ -59,6 +59,7 @@ public partial class Sys
         getFileServer(pbrBranch, "");
     }
 
+    #region getFileServer - 取得server name設定
     /// <summary>
     /// 取得server name設定
     /// </summary>
@@ -95,7 +96,9 @@ public partial class Sys
         gbrDbDir = "/nbtbrt/brdb_file";
         gcustDbDir = "/nbtbrt/custdb_file";
     }
+    #endregion
 
+    #region CreateFolder - 檢查目錄是否存在,若不存在則建立
     /// <summary>
     /// 檢查目錄是否存在,若不存在則建立
     /// </summary>
@@ -108,7 +111,9 @@ public partial class Sys
             System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath(fullFolder));
         }
     }
+    #endregion
 
+    #region RenameFile - 檔案重新命名
     /// <summary>
     /// 檔案重新命名
     /// </summary>
@@ -135,7 +140,9 @@ public partial class Sys
             HttpContext.Current.Response.Write("衝突備份=" +dFi.DirectoryName + "\\" + backup_name + "<HR>");
         }
     }
+    #endregion
 
+    #region getBackupFile - 取得備份檔案名稱xx
     /// <summary>
     /// 取得備份檔案名稱xx
     /// </summary>
@@ -147,4 +154,126 @@ public partial class Sys
         tfile_back = strFile.Substring(0, n) + "_" + DateTime.Now.ToString("yyyyMMddhhmmss") + "-" + HttpContext.Current.Session["scode"] + strFile.Substring(n);
         return tfile_back;
     }
+    #endregion
+
+    #region updmt_attach_forcase - 交辦文件上傳存檔處理
+    /// <summary>  
+    /// 交辦文件上傳存檔處理
+    /// </summary>  
+    public static void updmt_attach_forcase(HttpContext context, DBHelper conn, string pprgid, string pin_no) {
+        Dictionary<string, string> ColMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        string SQL = "";
+        string fld = context.Request["uploadfield"] ?? "";
+        string uploadSource = context.Request["uploadSource"] ?? "";
+        //string strpath1 = sfile.gbrWebDir + "/" + Request["attach_path"];
+
+        //本次上傳筆數
+        for (int k = 1; k <= Convert.ToInt32("0" + context.Request[fld + "_filenum"]); k++) {
+            string attach_flag = (context.Request["attach_flag_" + k] ?? "").Trim().ToUpper();
+            string attach_sqlno = (context.Request["attach_sqlno_" + k] ?? "").Trim();
+            string attach_path = (context.Request[fld + "_" + k] ?? "").Trim();//上傳路徑
+            string apattach_sqlno = (context.Request[fld + "_apattach_sqlno_" + k] ?? "").Trim();//總契約書流水號
+            string attach_no = (context.Request[fld + "attach_no_" + k] ?? "").Trim();//序號
+            string straa = (context.Request[fld + "_name_" + k] ?? "").Trim();//上傳檔名
+
+            if (attach_flag == "A") {
+                //當上傳路徑不為空的 and attach_sqlno為空的,才需要新增
+                if (attach_path != "" && attach_sqlno == "") {
+                    //更換檔名
+                    string source_name = (context.Request[fld + "_name_" + k] ?? "").Trim();//原始檔名
+                    string sExt = System.IO.Path.GetExtension(straa);//副檔名
+                    string attach_name = "";//資料庫檔名
+                    string newattach_path = "";//資料庫路徑
+                    //2015/12/29修改，總契約書或委任書不需更換檔名
+                    if (apattach_sqlno != "") {
+                        attach_name = straa;
+                        newattach_path = attach_path;
+                    } else {
+                        attach_name = pin_no + "-" + attach_no + sExt;//重新命名檔名
+                        newattach_path = attach_path + "/" + attach_name;//存在資料庫路徑
+                        Sys.RenameFile(attach_path + "/" + straa, attach_path + "/" + attach_name, false);
+                    }
+
+                    ColMap.Clear();
+                    ColMap["Seq"] = Util.dbchar(context.Request["attach_seq"]);
+                    ColMap["seq1"] = Util.dbchar(context.Request["attach_seq1"]);
+                    ColMap["step_grade"] = Util.dbchar(context.Request["attach_step_grade"]);
+                    ColMap["case_no"] = Util.dbchar(context.Request["attach_case_no"]);
+                    ColMap["in_no"] = Util.dbchar(pin_no);
+                    ColMap["source"] = Util.dbchar(uploadSource);
+                    ColMap["in_date"] = "getdate()";
+                    ColMap["in_scode"] = "'" + context.Session["scode"] + "'";
+                    ColMap["attach_no"] = "'" + attach_no + "'";
+                    ColMap["attach_path"] = "'" + newattach_path + "'";
+                    ColMap["doc_type"] = Util.dbchar(context.Request["doc_type_" + k]);
+                    ColMap["attach_desc"] = Util.dbchar(context.Request["_desc_" + k]);
+                    ColMap["attach_name"] = Util.dbchar(attach_name);
+                    ColMap["source_name"] = Util.dbchar(source_name);
+                    ColMap["attach_size"] = Util.dbnull(context.Request["_size_" + k]);
+                    ColMap["attach_flag"] = "'A'";
+                    ColMap["Mark"] = "''";
+                    ColMap["tran_date"] = "getdate()";
+                    ColMap["tran_scode"] = "'" + context.Session["scode"] + "'";
+                    ColMap["attach_branch"] = Util.dbnull(context.Request["_branch_" + k]);
+                    ColMap["apattach_sqlno"] = Util.dbnull(context.Request["_apattach_sqlno_" + k]);
+
+                    SQL = "insert into dmt_attach " + ColMap.GetInsertSQL();
+                    conn.ExecuteNonQuery(SQL);
+                }
+            } else if (attach_flag == "U") {
+                //當attach_sqlno <> empty時,表示db有值,必須刪除data(update attach_flag = 'D')
+                if (attach_sqlno != "" && attach_path == "") {
+                    Sys.insert_log_table(conn, "D", pprgid, "dmt_attach", "attach_sqlno;in_no", attach_sqlno + ";" + pin_no, "");
+                    if (attach_sqlno != "") {
+                        SQL = "update dmt_attach set attach_flag='D' ";
+                        SQL += ",tran_date=getdate(),tran_scode='" + Sys.GetSession("scode") + "'";
+                        SQL += " where attach_sqlno='" + attach_sqlno + "' and in_no='" + pin_no + "'";
+                        conn.ExecuteNonQuery(SQL);
+                    }
+                } else {
+                    Sys.insert_log_table(conn, "U", pprgid, "dmt_attach", "attach_sqlno;in_no", attach_sqlno + ";" + pin_no, "");
+                    string source_name = (context.Request["source_name_" + k] ?? "").Trim();//原始檔名
+                    string old_attach_name = (context.Request["old_" + fld + "_name_" + k] ?? "").Trim();//舊檔名
+                    //更換檔名
+                    string sExt = System.IO.Path.GetExtension(straa);//副檔名
+                    string attach_name = straa;//資料庫檔名
+                    string newattach_path = attach_path;//資料庫路徑
+
+                    //2015/12/29修改，總契約書或委任書不需更換檔名
+                    if (apattach_sqlno == "") {
+                        if (straa != old_attach_name) {//畫面上傳檔名與原檔案名稱不一樣，表示上傳新檔案，所以要更名
+                            attach_name = pin_no + "-" + attach_no + sExt;//重新命名檔名
+                            newattach_path = attach_path + "/" + attach_name;//存在資料庫路徑
+                            Sys.RenameFile(attach_path + "/" + straa, attach_path + "/" + attach_name, false);
+                            source_name = straa;
+                        }
+                    }
+                    SQL = "Update dmt_attach set Source=" + Util.dbchar(uploadSource);
+                    SQL += ",attach_path=" + Util.dbchar(newattach_path);
+                    SQL += ",attach_desc=" + Util.dbchar(context.Request["_desc_" + k]);
+                    SQL += ",attach_name=" + Util.dbchar(attach_name);
+                    SQL += ",attach_size=" + Util.dbnull(context.Request["_size_" + k]);
+                    SQL += ",source_name=" + Util.dbchar(source_name); ;
+                    SQL += ",doc_type=" + Util.dbchar(context.Request["doc_type_" + k]);
+                    SQL += ",attach_flag='U'";
+                    SQL += ",attach_branch=" + Util.dbnull(context.Request["_branch_" + k]);
+                    SQL += ",tran_date=getdate()";
+                    SQL += ",tran_scode='" + context.Session["scode"] + "'";
+                    SQL += ",case_no=" + Util.dbchar(context.Request["attach_case_no"]);
+                    SQL += " Where attach_sqlno='" + attach_sqlno + "' and in_no='" + pin_no + "'";
+                }
+            } else if (attach_flag == "D") {
+                Sys.insert_log_table(conn, "D", pprgid, "dmt_attach", "attach_sqlno", attach_sqlno, "");
+                //當attach_sqlno <> empty時,表示db有值,必須刪除data(update attach_flag = 'D')
+                if (attach_sqlno != "") {
+                    SQL = "update dmt_attach set attach_flag='D' ";
+                    SQL += ",tran_date=getdate(),tran_scode='" + Sys.GetSession("scode") + "'";
+                    SQL += " where attach_sqlno='" + attach_sqlno + "' and in_no='" + pin_no + "'";
+                    conn.ExecuteNonQuery(SQL);
+                }
+            }
+        }
+    }
+    #endregion
+
 }

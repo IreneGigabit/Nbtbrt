@@ -419,19 +419,19 @@ public  static partial class Util
     public static string dbnull(string iStr) {
         if (iStr == null || iStr == "") return "null";
 
-        iStr = iStr.Replace("'", "''");
+        iStr = iStr.Replace("'", "''").Trim().ToBig5();
         return "'" + iStr + "'";
     }
     #endregion
 
-    #region dbchar - 寫入db用,若有單引號則改為’
+    #region dbchar - 寫入db用,若是空白則回傳''
     /// <summary>
-    /// 寫入db用,若有單引號則改為’
+    /// 寫入db用,若是空白則回傳''
     /// </summary>
     public static string dbchar(string iStr) {
         if (iStr == null || iStr == "") return "''";
 
-        iStr = iStr.Replace("'", "’").Trim();
+        iStr = iStr.Replace("'", "''").Trim().ToBig5();
         return "'" + iStr + "'";
     }
     #endregion

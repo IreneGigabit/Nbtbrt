@@ -13,6 +13,8 @@
     protected string formFunction = "";
     
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
+    protected Dictionary<string, string> ColMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
     protected StringBuilder strOut = new StringBuilder();
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -56,56 +58,52 @@
             Sys.insert_log_table(conn, "U", prgid, "casedmt_show", "in_no;case_sqlno", Request["in_no"] + ";0", "");
             SQL = "delete from casedmt_show where in_no='" + Request["in_no"] + "' and case_sqlno=0";
             conn.ExecuteNonQuery(SQL);
-
             
             //寫入case_dmt
-            List<DBColumn> colList = new List<DBColumn>();
             SQL = "UPDATE case_dmt set ";
-            colList.Add(new DBColumn("case_stat", "tfy_case_stat", true));
-            colList.Add(new DBColumn("cust_area", "tfy_cust_area", true));
-            colList.Add(new DBColumn("cust_seq", "tfy_cust_seq", true));
-            colList.Add(new DBColumn("att_sql", "tfy_att_sql", true));
-            colList.Add(new DBColumn("Arcase", "tfy_Arcase", ColType.Str, true));
-            colList.Add(new DBColumn("service", "nfy_service", ColType.Zero, true));
-            colList.Add(new DBColumn("fees", "nfy_fees", ColType.Zero, true));
-            colList.Add(new DBColumn("oth_arcase", "tfy_oth_arcase", true));
-            colList.Add(new DBColumn("oth_money", "nfy_oth_money", ColType.Zero, true));
-            colList.Add(new DBColumn("oth_code", "tfy_oth_code", true));
-            colList.Add(new DBColumn("Ar_mark", "tfy_Ar_mark", true));
-            colList.Add(new DBColumn("Discount", "nfy_Discount", ColType.Zero, true));
-            colList.Add(new DBColumn("discount_chk", "tfy_discount_chk", true));
-            colList.Add(new DBColumn("discount_remark", "tfy_discount_remark", true));
-            colList.Add(new DBColumn("source", "tfy_source", true));
-            colList.Add(new DBColumn("contract_type", "tfy_contract_type", true));
-            colList.Add(new DBColumn("Contract_no", "tfy_Contract_no", true));
-            colList.Add(new DBColumn("contract_remark", "tfy_contract_remark", true));
-            colList.Add(new DBColumn("cust_date", "dfy_cust_date", ColType.Null, true));
-            colList.Add(new DBColumn("pr_date", "dfy_pr_date", ColType.Null, true));
-            colList.Add(new DBColumn("last_date", "dfy_last_date", ColType.Null, true));
-            colList.Add(new DBColumn("send_way", "tfy_send_way", true));
-            colList.Add(new DBColumn("receipt_type", "tfy_receipt_type", true));
-            colList.Add(new DBColumn("receipt_title", "tfy_receipt_title", true));
-            colList.Add(new DBColumn("rectitle_name", "tfy_rectitle_name", true));
-            colList.Add(new DBColumn("Remark", "tfy_Remark", true));
-            colList.Add(new DBColumn("tot_case", "nfy_tot_case", ColType.Zero, true));
-            colList.Add(new DBColumn("ar_code", "tfy_ar_code", true));
-            //******折扣請核單
-            colList.Add(new DBColumn("discount_chk", "tfy_discount_chk", ColType.Str, "'N'"));
-            //**********會計檢核2013/9/16增加，不需請款或大陸進口案不在線上請款，不需會計檢核
-            colList.Add(new DBColumn("ar_chk", "tfy_ar_chk", ColType.Str, "'N'"));
-            colList.Add(new DBColumn("ar_chk1", "tfy_ar_chk1", ColType.Str, "'N'"));
+            foreach (var key in Request.Form.Keys) {
+                string colkey = key.ToString().ToLower();
+                string colValue = Request[colkey];
+                
+                //取2~4碼(直接用substr若欄位名稱太短會壞掉)
+                if (colkey.Left(4).Substring(1) == "fy_") {
+                    if (colkey.Left(1) == "d") {
+                        SQL += " " + colkey.Substring(4) + "=" + Util.dbnull(colValue) + ",";
+                    }
+                    else if (colkey.Left(1) == "n") {
+                        SQL += " " + colkey.Substring(4) + "=" + Util.dbzero(colValue) + ",";
+                    }
+                    else {
+                        if (colkey == "tfy_arcase") {
+                            SQL += " " + colkey.Substring(4) + "=" + Util.dbchar(colValue) + ",";
+                        }
+                        else {
+                            SQL += " " + colkey.Substring(4) + "=" + Util.dbnull(colValue) + ",";
+                        }
+                    }
+                }
+            }
+            if (Request["tfy_discount_chk"] == null) {
+                SQL += " discount_chk='N',";
+            }
+            if (Request["tfy_ar_chk"] == null) {
+                SQL += " ar_chk='N',";
+            }
+            if (Request["tfy_ar_chk1"] == null) {
+                SQL += " ar_chk1='N',";
+            }
             //****會計檢核2013/9/16增加，不需請款或大陸進口案不在線上請款，不需會計檢核
             if (Request["tfy_ar_code"] == "X" || Request["tfy_ar_code"] == "M") {
-                colList.Add(new DBColumn("acc_chk", "'X'", ColType.Value));
+                SQL += " acc_chk = 'X',";
             } else {
-                colList.Add(new DBColumn("acc_chk", "'N'", ColType.Value));
+                SQL += " acc_chk = 'N',";
             }
-            //*****契約書後補註記
-            colList.Add(new DBColumn("contract_flag", "tfy_contract_flag", ColType.Str, "'N'"));
-            colList.Add(new DBColumn("in_scode", "F_tscode"));
-            SQL += Util.GetUpdateSQL(colList);
+	        //*****契約書後補註記
+            if (Request["tfy_contract_flag"] == null) {
+                SQL += " contract_flag='N',";
+            }
+            SQL += " in_scode='" + Request["F_tscode"] + "' ";
             SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "'";
-            //Response.Write(SQL + "<HR>");
             conn.ExecuteNonQuery(SQL);
 
             //*****todo依案性新增內商的案件內容
@@ -119,78 +117,70 @@
                 newfilename = strpath + "/" + attach_name;//存在資料庫路徑
                 Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
             }
-            
+
+            //dmt_temp
             Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
-
-            SQL = "UPDATE dmt_temp set ";
-            colList = new List<DBColumn>();
-            colList.Add(new DBColumn("S_Mark", "tfz1_S_Mark", ColType.Str, true));
-            colList.Add(new DBColumn("seq", "tfz1_seq", ColType.Str, true));
-            colList.Add(new DBColumn("seq1", "tfz1_seq1", ColType.Str, true));
-            colList.Add(new DBColumn("s_mark2", "tfz1_s_mark2", ColType.Str, true));
-            colList.Add(new DBColumn("cust_prod", "tfz1_cust_prod", ColType.Str, true));
-            colList.Add(new DBColumn("agt_no", "tfz1_agt_no", ColType.Str, true));
-            colList.Add(new DBColumn("prior_date", "pfz1_prior_date", ColType.Null, true));
-            colList.Add(new DBColumn("prior_country", "tfz1_prior_country", ColType.Str, true));
-            colList.Add(new DBColumn("prior_no", "tfz1_prior_no", ColType.Str, true));
-            colList.Add(new DBColumn("good_name", "tfd1_good_name", ColType.Str, true));//證明內容
-            colList.Add(new DBColumn("good_name", "tf91_good_name", ColType.Str, true));//表彰內容
-            colList.Add(new DBColumn("remark1", "tfz_remark1", ColType.Str, true));
-            colList.Add(new DBColumn("remark2", "tfz1_remark2", ColType.Str, true));
-            colList.Add(new DBColumn("Appl_name", "tfz1_Appl_name", ColType.Str, true));
-            colList.Add(new DBColumn("color", "tfz1_color", ColType.Str, true));
-            colList.Add(new DBColumn("Oappl_name", "tfz1_Oappl_name", ColType.Str, true));
-            colList.Add(new DBColumn("Cappl_name", "tfz1_Cappl_name", ColType.Str, true));
-            colList.Add(new DBColumn("Eappl_name", "tfz1_Eappl_name", ColType.Str, true));
-            colList.Add(new DBColumn("Zname_type", "tfz1_Zname_type", ColType.Str, true));
-            colList.Add(new DBColumn("Eappl_name1", "tfz1_Eappl_name1", ColType.Str, true));
-            colList.Add(new DBColumn("Eappl_name2", "tfz1_Eappl_name2", ColType.Str, true));
-            colList.Add(new DBColumn("Draw", "tfz1_Draw", ColType.Str, true));
-            colList.Add(new DBColumn("Symbol", "tfz1_Symbol", ColType.Str, true));
-            colList.Add(new DBColumn("Remark4", "tfz1_Remark4", ColType.Str, true));
-            colList.Add(new DBColumn("remark3", "tfz1_remark3", ColType.Str, true));
-            colList.Add(new DBColumn("pul", "tfz1_pul", ColType.Str, true));
-            colList.Add(new DBColumn("class_type", "tfz1_class_type", ColType.Str, true));
-            colList.Add(new DBColumn("class_count", "ctrlcount1", ColType.Null, true));
-            colList.Add(new DBColumn("class", "tfz1_class", ColType.Str, true));
-            colList.Add(new DBColumn("draw_file", "'" + Sys.Path2Btbrt(newfilename) + "'", ColType.Value));
-            colList.Add(new DBColumn("in_scode", "F_tscode", ColType.Str));
-            colList.Add(new DBColumn("tr_date", "'" + DateTime.Today.ToShortDateString() + "'", ColType.Value));
-            colList.Add(new DBColumn("tr_scode", "'" + Session["scode"] + "'", ColType.Value));
-            SQL += Util.GetInsertSQL(colList);
+            ColMap.Clear();
+            foreach (var key in Request.Form.Keys) {
+                string colkey = key.ToString().ToLower();
+                string colValue = Request[colkey];
+                
+                //取2~5碼(直接用substr若欄位名稱太短會壞掉)
+                if (colkey.Left(5).Substring(1) == "fz1_") {
+                    if (colkey.Left(1) == "d") {
+                        ColMap[colkey.Substring(5)]= Util.dbnull(colValue);
+                    } else if (colkey.Left(1) == "n") {
+                        ColMap[colkey.Substring(5)] = Util.dbzero(colValue);
+                    } else {
+                        ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+                    }
+                }
+            }
+            
+            if (Request["tfd1_good_name"] != null) {//證明內容
+                ColMap["good_name"] = Util.dbchar(Request["tfd1_good_name"]);
+            }
+            if (Request["tf91_good_name"] != null) {//表彰內容
+                ColMap["good_name"] = Util.dbchar(Request["tf91_good_name"]);
+            }
+            ColMap["draw_file"] = Util.dbchar(Sys.Path2Btbrt(newfilename));
+            ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+            ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+            
+            SQL = "UPDATE dmt_temp set " + ColMap.GetUpdateSQL();
             SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "'";
-            //Response.Write(SQL + "<HR>");
             conn.ExecuteNonQuery(SQL);
-
-            //****主委辦案性	
-            SQL = "insert into caseitem_dmt";
-            colList = new List<DBColumn>();
-            colList.Add(new DBColumn("in_scode", "F_tscode", ColType.Str));
-            colList.Add(new DBColumn("in_no", "in_no", ColType.Str));
-            colList.Add(new DBColumn("item_sql", "'0'", ColType.Value));
-            colList.Add(new DBColumn("seq1", "tfz1_seq1", ColType.Str));
-            colList.Add(new DBColumn("item_arcase", "tfy_arcase", ColType.Str));
-            colList.Add(new DBColumn("item_service", "nfyi_service", ColType.Str));
-            colList.Add(new DBColumn("item_fees", "nfyi_fees", ColType.Str));
-            colList.Add(new DBColumn("item_count", "'1'", ColType.Value));
-            SQL += Util.GetInsertSQL(colList);
+            
+            //****主委辦案性
+            ColMap.Clear();
+            ColMap["in_scode"]=Util.dbchar(Request["F_tscode"]);
+            ColMap["in_no"]=Util.dbchar(Request["in_no"]);
+            ColMap["item_sql"]="'0'";
+            ColMap["seq1"]=Util.dbchar(Request["tfz1_seq1"]);
+            ColMap["item_arcase"]=Util.dbchar(Request["tfy_arcase"]);
+            ColMap["item_service"]=Util.dbchar(Request["nfyi_service"]);
+            ColMap["item_fees"]=Util.dbchar(Request["nfyi_fees"]);
+            ColMap["item_count"]="'1'";
+            
+            SQL = "insert into caseitem_dmt "+ ColMap.GetInsertSQL();
             //Response.Write(SQL + "<HR>");
             conn.ExecuteNonQuery(SQL);
 
             //****次委辦案性
             for (int i = 1; i <= Convert.ToInt32("0" + Request["TaCount"]); i++) {
                 if ((Request["nfyi_item_Arcase_" + i] ?? "") != "") {
-                    SQL = "insert into caseitem_dmt";
-                    colList = new List<DBColumn>();
-                    colList.Add(new DBColumn("in_scode", "F_tscode", ColType.Str));
-                    colList.Add(new DBColumn("in_no", "in_no", ColType.Str));
-                    colList.Add(new DBColumn("item_sql", "'" + i + "'", ColType.Value));
-                    colList.Add(new DBColumn("seq1", "tfz1_seq1", ColType.Str));
-                    colList.Add(new DBColumn("item_arcase", "nfyi_item_Arcase_" + i, ColType.Str));
-                    colList.Add(new DBColumn("item_service", "nfyi_Service_" + i, ColType.Str));
-                    colList.Add(new DBColumn("item_fees", "nfyi_fees_" + i, ColType.Str));
-                    colList.Add(new DBColumn("item_count", "nfyi_item_count_" + i, ColType.Str));
-                    SQL += Util.GetInsertSQL(colList);
+                    ColMap.Clear();
+                    ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+                    ColMap["in_no"] = Util.dbchar(Request["in_no"]);
+                    ColMap["item_sql"] = "'" + i + "'";
+                    ColMap["seq1"] = Util.dbchar(Request["tfz1_seq1"]);
+                    ColMap["item_arcase"] = Util.dbchar(Request["nfyi_item_Arcase_" + i]);
+                    ColMap["item_service"] = Util.dbchar(Request["nfyi_Service_" + i]);
+                    ColMap["item_fees"] = Util.dbchar(Request["nfyi_fees_" + i]);
+                    ColMap["item_count"] = Util.dbchar(Request["nfyi_item_count_" + i]);
+
+                    SQL = "insert into caseitem_dmt " + ColMap.GetInsertSQL();
                     //Response.Write(SQL + "<HR>");
                     conn.ExecuteNonQuery(SQL);
                 }
@@ -199,17 +189,17 @@
             //****商品類別
             for (int i = 1; i <= Convert.ToInt32("0" + Request["num1"]); i++) {
                 if ((Request["class1_" + i] ?? "") != "") {
-                    SQL = "insert into casedmt_good";
-                    colList = new List<DBColumn>();
-                    colList.Add(new DBColumn("in_scode", "F_tscode", ColType.Str));
-                    colList.Add(new DBColumn("in_no", "in_no", ColType.Str));
-                    colList.Add(new DBColumn("class", "class1_" + i, ColType.Str));
-                    colList.Add(new DBColumn("dmt_grp_code", "grp_code1_" + i, ColType.Str));
-                    colList.Add(new DBColumn("dmt_goodname", "good_name1_" + i, ColType.Str));
-                    colList.Add(new DBColumn("dmt_goodcount", "good_count1_" + i, ColType.Str));
-                    colList.Add(new DBColumn("tr_date", "'" + DateTime.Today.ToShortDateString() + "'", ColType.Value));
-                    colList.Add(new DBColumn("tr_scode", "'" + Session["scode"] + "'", ColType.Value));
-                    SQL += Util.GetInsertSQL(colList);
+                    ColMap.Clear();
+                    ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+                    ColMap["in_no"] = Util.dbchar(Request["in_no"]);
+                    ColMap["class"] = Util.dbchar(Request["class1_" + i]);
+                    ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code1_" + i]);
+                    ColMap["dmt_goodname"] = Util.dbchar(Request["good_name1_" + i]);
+                    ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count1_" + i]);
+                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                    ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+
+                    SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
                     //Response.Write(SQL + "<HR>");
                     conn.ExecuteNonQuery(SQL);
                 }
@@ -218,97 +208,60 @@
             //****新增展覽優先權資料
             for (int i = 1; i <= Convert.ToInt32("0" + Request["shownum"]); i++) {
                 if ((Request["show_date_" + i] ?? "") != "" || (Request["show_name_" + i] ?? "") != "") {
-                    SQL = "insert into casedmt_show";
-                    colList = new List<DBColumn>();
-                    colList.Add(new DBColumn("in_no", "in_no", ColType.Str));
-                    colList.Add(new DBColumn("case_sqlno", "0", ColType.Value));
-                    colList.Add(new DBColumn("show_date", "show_date_" + i, ColType.Null));
-                    colList.Add(new DBColumn("show_name", "show_name_" + i, ColType.Null));
-                    colList.Add(new DBColumn("tr_date", "getdate()", ColType.Value));
-                    colList.Add(new DBColumn("tr_scode", "'" + Session["scode"] + "'", ColType.Value));
-                    SQL += Util.GetInsertSQL(colList);
+                    ColMap.Clear();
+                    ColMap["in_no"] = Util.dbchar(Request["in_no"]);
+                    ColMap["case_sqlno"] = "0";
+                    ColMap["show_date"] = Util.dbnull(Request["show_date_" + i]);
+                    ColMap["show_name"] = Util.dbnull(Request["show_name_" + i]);
+                    ColMap["tr_date"] = "getdate()";
+                    ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+
+                    SQL = "insert into casedmt_show " + ColMap.GetInsertSQL();
                     //Response.Write(SQL + "<HR>");
                     conn.ExecuteNonQuery(SQL);
                 }
             }
 
             //交辦申請人
+            Sys.insert_log_table(conn, "U", prgid, "dmt_temp_ap", "in_no;case_sqlno", Request["in_no"] + ";0", "");
+            SQL = "Delete dmt_temp_ap where in_no='" + Request["in_no"] + "' and case_sqlno=0";
+            conn.ExecuteNonQuery(SQL);
             for (int i = 1; i <= Convert.ToInt32("0" + Request["apnum"]); i++) {
-                SQL = "insert into dmt_temp_ap";
-                colList = new List<DBColumn>();
-                colList.Add(new DBColumn("in_no", "in_no", ColType.Str));
-                colList.Add(new DBColumn("case_sqlno", "0", ColType.Value));
-                colList.Add(new DBColumn("apsqlno", "apsqlno_" + i, ColType.Str));
-                colList.Add(new DBColumn("Server_flag", "ap_server_flag_" + i, ColType.Str));
-                colList.Add(new DBColumn("apcust_no", "apcust_no_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_cname", "ap_cname_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_cname1", "ap_cname1_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_cname2", "ap_cname2_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_ename", "ap_ename_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_ename1", "ap_ename1_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_ename2", "ap_ename2_" + i, ColType.Str));
-                colList.Add(new DBColumn("tran_date", "getdate()", ColType.Value));
-                colList.Add(new DBColumn("tran_scode", "'" + Session["scode"] + "'", ColType.Value));
-                colList.Add(new DBColumn("ap_fcname", "ap_fcname_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_lcname", "ap_lcname_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_fename", "ap_fename_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_lename", "ap_lename_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_sql", "ap_sql_" + i, ColType.Zero));
-                colList.Add(new DBColumn("ap_zip", "ap_zip_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_addr1", "ap_addr1_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_addr2", "ap_addr2_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_eaddr1", "ap_eaddr1_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_eaddr2", "ap_eaddr2_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_eaddr3", "ap_eaddr3_" + i, ColType.Str));
-                colList.Add(new DBColumn("ap_eaddr4", "ap_eaddr4_" + i, ColType.Str));
-                SQL += Util.GetInsertSQL(colList);
+                ColMap.Clear();
+                ColMap["in_no"] = Util.dbchar(Request["in_no"]);
+                ColMap["case_sqlno"] = "0";
+                ColMap["apsqlno"] = Util.dbchar(Request["apsqlno_" + i]);
+                ColMap["Server_flag"] = Util.dbchar(Request["ap_server_flag_" + i]);
+                ColMap["apcust_no"] = Util.dbchar(Request["apcust_no_" + i]);
+                ColMap["ap_cname"] = Util.dbchar(Request["ap_cname_" + i]);
+                ColMap["ap_cname1"] = Util.dbchar(Request["ap_cname1_" + i]);
+                ColMap["ap_cname2"] = Util.dbchar(Request["ap_cname2_" + i]);
+                ColMap["ap_ename"] = Util.dbchar(Request["ap_ename_" + i]);
+                ColMap["ap_ename1"] = Util.dbchar(Request["ap_ename1_" + i]);
+                ColMap["ap_ename2"] = Util.dbchar(Request["ap_ename2_" + i]);
+                ColMap["tran_date"] = "getdate()";
+                ColMap["tran_scode"] = "'" + Session["scode"] + "'";
+                ColMap["ap_fcname"] = Util.dbchar(Request["ap_fcname_" + i]);
+                ColMap["ap_lcname"] = Util.dbchar(Request["ap_lcname_" + i]);
+                ColMap["ap_fename"] = Util.dbchar(Request["ap_fename_" + i]);
+                ColMap["ap_lename"] = Util.dbchar(Request["ap_lename_" + i]);
+                ColMap["ap_sql"] = Util.dbzero(Request["ap_sql_" + i]);
+                ColMap["ap_zip"] = Util.dbchar(Request["ap_zip_" + i]);
+                ColMap["ap_addr1"] = Util.dbchar(Request["ap_addr1_" + i]);
+                ColMap["ap_addr2"] = Util.dbchar(Request["ap_addr2_" + i]);
+                ColMap["ap_eaddr1"] = Util.dbchar(Request["ap_eaddr1_" + i]);
+                ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
+                ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
+                ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+
+                SQL = "insert into dmt_temp_ap " + ColMap.GetInsertSQL();
                 //Response.Write(SQL + "<HR>");
                 conn.ExecuteNonQuery(SQL);
             }
 
-            //*****新增文件上傳
-            //string strpath="/btbrt/" + Session["seBranch"] + "T/"  + Request["attach_path"];
-            string strpath1 = sfile.gbrWebDir + "/" + Request["attach_path"];
-            string fld = Request["uploadfield"] ?? "";
-            for (int k = 1; k <= Convert.ToInt32("0" + Request[fld + "_filenum"]); k++) {
-                string straa = (Request[fld + "_name_" + k] ?? "");//原始檔名
-                if (straa != "") {
-                    string sExt = System.IO.Path.GetExtension(straa);//副檔名
-                    string attach_name = "";//資料庫檔名
-                    string newattach_path = "";//資料庫路徑
-                    //2015/12/29修改，總契約書或委任書不需更換檔名
-                    if ((Request[fld + "_apattach_sqlno_" + k] ?? "") != "") {
-                        attach_name = straa;
-                        newattach_path = Request[fld + "_apattach_sqlno_" + k] ?? "";
-                    } else {
-                        attach_name = RSno + "-" + k + sExt;//重新命名檔名
-                        newattach_path = strpath1 + "/" + attach_name;//存在資料庫路徑
-                    }
-                    SQL = "insert into dmt_attach";
-                    colList = new List<DBColumn>();
-                    colList.Add(new DBColumn("in_no", "'" + RSno + "'", ColType.Value));
-                    colList.Add(new DBColumn("source", "'case'", ColType.Value));
-                    colList.Add(new DBColumn("in_date", "getdate()", ColType.Value));
-                    colList.Add(new DBColumn("in_scode", "'" + Session["scode"] + "'", ColType.Value));
-                    colList.Add(new DBColumn("attach_no", "'" + k + "'", ColType.Value));
-                    colList.Add(new DBColumn("attach_path", "'" + Sys.Path2Btbrt(newattach_path) + "'", ColType.Value));
-                    colList.Add(new DBColumn("doc_type", "doc_type_" + k, ColType.Null));
-                    colList.Add(new DBColumn("attach_desc", fld + "_desc_" + k, ColType.Null));
-                    colList.Add(new DBColumn("attach_name", "'" + attach_name + "'", ColType.Value));
-                    colList.Add(new DBColumn("source_name", "'" + straa + "'", ColType.Value));
-                    colList.Add(new DBColumn("attach_size", fld + "_size_" + k, ColType.Null));
-                    colList.Add(new DBColumn("attach_flag", "'A'", ColType.Value));
-                    colList.Add(new DBColumn("attach_branch", fld + "_branch_" + k, ColType.Str));
-                    colList.Add(new DBColumn("apattach_sqlno", fld + "_apattach_sqlno_" + k, ColType.Str));
-                    SQL += Util.GetInsertSQL(colList);
-                    //Response.Write(SQL + "<HR>");
-                    conn.ExecuteNonQuery(SQL);
-                    //有改檔名要重新命名
-                    if (straa != attach_name) {
-                        Sys.RenameFile(strpath1 + "/" + straa, strpath1 + "/" + attach_name, false);
-                    }
-                }
-            }
+            //*****文件上傳
+            Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"]??""));
+
             conn.Commit();
             //conn.RollBack();
 
@@ -316,12 +269,8 @@
                 strOut.AppendLine("<script language='javascript' type='text/javascript'>");
             }
 
-            strOut.AppendLine("document.location.href='Brt11addnext.aspx?prgid=" + prgid +
-                "&cust_area=" + Request["tfy_cust_area"] + "&cust_seq=" + Request["tfy_cust_seq"] +
-                "&in_no=" + RSno + "&add_arcase=" + Request["tfy_arcase"] + "&Ar_Form=" + Request["Ar_Form"] +
-                "&code_type=" + Request["code_type"] + "&F_tscode=" + Request["F_tscode"] +
-                "&seq=" + Request["tfzb_seq"] + "&seq1=" + Request["tfzb_seq1"] +
-                "&prt_code=" + Request["prt_code"] + "&new_form=" + Request["new_form"] + "'");
+            strOut.AppendLine("alert(\"資料更新成功\");");
+            strOut.AppendLine("window.parent.tt.rows=\"100%,0%\";");
 
             if (Request["chkTest"] != "TEST") {
                 strOut.AppendLine("<" + "/script>");

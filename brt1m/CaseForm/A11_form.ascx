@@ -152,7 +152,7 @@
     </tr>
     <tr>
         <td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a5Attech)"><strong><u>附件：</u></strong>
-            <input type="text" id="tfz_remark1" name="tfz_remark1">
+            <input type="text" id="tfz1_remark1" name="tfz1_remark1">
         </td>
     </tr>
     <tr class='sfont9'>
@@ -609,7 +609,7 @@
                 strRemark1 += "Z9-" + $this.val() + "-Z9|";
             }
         });
-        reg.tfz_remark1.value = strRemark1;
+        reg.tfz1_remark1.value = strRemark1;
     }
 
     br_form.CopyStr = function (selector,tar) {
@@ -755,7 +755,7 @@
 
         //附件(以案性第3碼判斷要show哪個附件)
         $("#td_br_remark1").empty();
-        $("#tfz_remark1").val("");
+        $("#tfz1_remark1").val("");
         var copyStr = $("script#tabbr_remark1_" + code3).text() || "";
         $("#td_br_remark1").append(copyStr);
 

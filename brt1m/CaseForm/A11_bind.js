@@ -210,8 +210,8 @@ function this_bind() {
         $("#tfz1_Oappl_name").val(jMain.case_main[0].oappl_name);//不單獨主張專用權
         $("#tfz1_Cappl_name").val(jMain.case_main[0].cappl_name);//商標圖樣中文
         $("#tfz1_Eappl_name").val(jMain.case_main[0].eappl_name);//商標圖樣外文
-        $("#tfz1_Eappl_name1").val(jMain.case_main[0].eappl_name);//圖樣分析中文字義
-        $("#tfz1_Eappl_name2").val(jMain.case_main[0].eappl_name);//圖樣分析讀音
+        $("#tfz1_Eappl_name1").val(jMain.case_main[0].eappl_name1);//圖樣分析中文字義
+        $("#tfz1_Eappl_name2").val(jMain.case_main[0].eappl_name2);//圖樣分析讀音
         $("#tfz1_Zname_type").val(jMain.case_main[0].zname_type);//語文別
         $("#tfz1_Draw").val(jMain.case_main[0].draw);//圖形說明
         $("#tfz1_Symbol").val(jMain.case_main[0].symbol);//記號說明
@@ -264,7 +264,7 @@ function this_bind() {
                 br_form.Add_class(jMain.case_good.length);//產生筆數
                 $.each(jMain.case_good, function (i, item) {
                     $("#class1_" + (i + 1)).val(item.class);//第X類
-                    $("#good_count1_" + (i + 1)).val(item.class);//共N項
+                    $("#good_count1_" + (i + 1)).val(item.dmt_goodcount);//共N項
                     $("#grp_code1_" + (i + 1)).val(item.dmt_grp_code);//商品群組代碼
                     $("#good_name1_" + (i + 1)).val(item.dmt_goodname);//商品名稱
                 });
@@ -298,7 +298,7 @@ function this_bind() {
             }
         }
         //**附件
-        $("#tfz_remark1").val(jMain.case_main[0].remark1);
+        $("#tfz1_remark1").val(jMain.case_main[0].remark1);
         if (jMain.case_main[0].remark1 != "") {
             var arr_remark1 = jMain.case_main[0].remark1.split("|");
             for (var i = 0; i < arr_remark1.length; i++) {

@@ -453,44 +453,44 @@ public static class DataExt
     }
 
     /// <summary>
-	/// 獲取字串
-	/// </summary> 
-	/// <param name="colName"></param>  
-	/// <returns></returns>  
-	public static string GetString(this DataRow dr, string colName) {
-		if (dr[colName] != DBNull.Value && dr[colName] != null)
-			return dr[colName].ToString().Trim();
-		return String.Empty;
-	}
-	/// <summary>
-	/// 獲取DateTime(null時回傳現在時間)
-	/// </summary>
-	/// <param name="colName"></param>
-	/// <returns></returns>
-	public static DateTime GetDateTime(this DataRow dr, string colName) {
-		DateTime result = DateTime.Now;
-		if (dr[colName] != DBNull.Value && dr[colName] != null) {
-			if (!DateTime.TryParse(dr[colName].ToString(), out result))
-				throw new Exception("GetDateTime轉換失敗(" + colName + ")");
-		}
-		return result;
-	}
-	/// <summary>
-	/// 獲取DateTime(可回傳null)
+    /// 獲取字串
+    /// </summary> 
+    /// <param name="colName"></param>  
+    /// <returns></returns>  
+    public static string GetString(this DataRow dr, string colName) {
+        if (dr[colName] != DBNull.Value && dr[colName] != null)
+            return dr[colName].ToString().Trim();
+        return String.Empty;
+    }
+    /// <summary>
+    /// 獲取DateTime(null時回傳現在時間)
     /// </summary>
-	/// <param name="colName"></param>
+    /// <param name="colName"></param>
     /// <returns></returns>
-	public static DateTime? GetNullDateTime(this DataRow dr, string colName) {
+    public static DateTime GetDateTime(this DataRow dr, string colName) {
+        DateTime result = DateTime.Now;
+        if (dr[colName] != DBNull.Value && dr[colName] != null) {
+            if (!DateTime.TryParse(dr[colName].ToString(), out result))
+                throw new Exception("GetDateTime轉換失敗(" + colName + ")");
+        }
+        return result;
+    }
+    /// <summary>
+    /// 獲取DateTime(可回傳null)
+    /// </summary>
+    /// <param name="colName"></param>
+    /// <returns></returns>
+    public static DateTime? GetNullDateTime(this DataRow dr, string colName) {
 
-		DateTime? result = null;
-            DateTime time = DateTime.Now;
-		if (dr[colName] != DBNull.Value && dr[colName] != null) {
-			if (!DateTime.TryParse(dr[colName].ToString(), out time))
-				throw new Exception("GetNullDateTime轉換失敗(" + colName + ")");
-			result = time;
-		}
-		return result;
-	}
+        DateTime? result = null;
+        DateTime time = DateTime.Now;
+        if (dr[colName] != DBNull.Value && dr[colName] != null) {
+            if (!DateTime.TryParse(dr[colName].ToString(), out time))
+                throw new Exception("GetNullDateTime轉換失敗(" + colName + ")");
+            result = time;
+        }
+        return result;
+    }
 
     /// <summary>
     /// 獲取DateTime Format後的字串
@@ -509,107 +509,107 @@ public static class DataExt
         return result;
     }
 
-	/// <summary>
-	/// 獲取Int16
-	/// </summary>
-	/// <param name="colName"></param>
-	/// <returns></returns>
-	public static Int16 GetInt16(this DataRow dr, string colName) {
-		short result = 0;
-		if (dr[colName] != DBNull.Value && dr[colName] != null) {
-			if (!short.TryParse(dr[colName].ToString(), out result))
-				throw new Exception("GetInt16轉換失敗(" + colName + ")");
-		}
-		return result;
-	}
-
-	/// <summary>
-	/// 獲取Int32
-	/// </summary>
-	/// <param name="colName"></param>
-	/// <returns></returns>
-	public static int GetInt32(this DataRow dr, string colName) {
-		int result = 0;
-
-		if (dr[colName] != DBNull.Value && dr[colName] != null) {
-			if (!int.TryParse(dr[colName].ToString(), out result))
-				throw new Exception("GetInt32轉換失敗(" + colName + ")");
-		}
-		return result;
-	}
-
-	/// <summary>
-	/// 獲取Double
-	/// </summary>
-	/// <param name="colName"></param> 
-	/// <returns></returns>
-	public static double GetDouble(this DataRow dr, string colName) {
-		double result = 0.00;
-		if (dr[colName] != DBNull.Value && dr[colName] != null) {
-			if (!double.TryParse(dr[colName].ToString(), out result))
-				throw new Exception("GetDouble轉換失敗(" + colName + ")");
-		}
-		return result;
-	}
-	/// <summary>
-	/// 獲取Single
-	/// </summary>
-	/// <param name="colName"></param>
-	/// <returns></returns>
-	public static float GetSingle(this DataRow dr, string colName) {
-		float result = 0.00f;
-		if (dr[colName] != DBNull.Value && dr[colName] != null) {
-			if (!float.TryParse(dr[colName].ToString(), out result))
-				throw new Exception("GetSingle轉換失敗(" + colName + ")");
-		}
-
-		return result;
-	}
-
-	/// <summary>
-	/// 獲取Decimal
-	/// </summary>
-	/// <param name="colName"></param> 
-	/// <returns></returns>
-	public static decimal GetDecimal(this DataRow dr, string colName) {
-		decimal result = 0.00m;
-		if (dr[colName] != DBNull.Value && dr[colName] != null) {
-			if (!decimal.TryParse(dr[colName].ToString(), out result))
-				throw new Exception("GetDecimal轉換失敗(" + colName + ")");
-		}
-		return result;
-	}
-
-	/// <summary>
-	/// 獲取Byte
-	/// </summary> 
-	/// <param name="colName"></param>
-	/// <returns></returns>
-	public static byte GetByte(this DataRow dr, string colName) {
-		byte result = 0;
-		if (dr[colName] != DBNull.Value && dr[colName] != null) {
-			if (!byte.TryParse(dr[colName].ToString(), out result))
-				throw new Exception("GetByte轉換失敗(" + colName + ")");
+    /// <summary>
+    /// 獲取Int16
+    /// </summary>
+    /// <param name="colName"></param>
+    /// <returns></returns>
+    public static Int16 GetInt16(this DataRow dr, string colName) {
+        short result = 0;
+        if (dr[colName] != DBNull.Value && dr[colName] != null) {
+            if (!short.TryParse(dr[colName].ToString(), out result))
+                throw new Exception("GetInt16轉換失敗(" + colName + ")");
         }
         return result;
     }
 
-	/// <summary>
-	/// 獲取bool(如果是1或Y時回傳true);
-	/// </summary>
-	/// <param name="colName"></param>
-	/// <returns></returns>
-	public static bool GetBool(this DataRow dr, string colName) {
-		if (dr[colName] != DBNull.Value && dr[colName] != null) {
-			return dr[colName].ToString() == "1" || dr[colName].ToString() == "Y" || dr[colName].ToString().ToLower() == "true";
-		}
-		return false;
-	}
+    /// <summary>
+    /// 獲取Int32
+    /// </summary>
+    /// <param name="colName"></param>
+    /// <returns></returns>
+    public static int GetInt32(this DataRow dr, string colName) {
+        int result = 0;
+
+        if (dr[colName] != DBNull.Value && dr[colName] != null) {
+            if (!int.TryParse(dr[colName].ToString(), out result))
+                throw new Exception("GetInt32轉換失敗(" + colName + ")");
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 獲取Double
+    /// </summary>
+    /// <param name="colName"></param> 
+    /// <returns></returns>
+    public static double GetDouble(this DataRow dr, string colName) {
+        double result = 0.00;
+        if (dr[colName] != DBNull.Value && dr[colName] != null) {
+            if (!double.TryParse(dr[colName].ToString(), out result))
+                throw new Exception("GetDouble轉換失敗(" + colName + ")");
+        }
+        return result;
+    }
+    /// <summary>
+    /// 獲取Single
+    /// </summary>
+    /// <param name="colName"></param>
+    /// <returns></returns>
+    public static float GetSingle(this DataRow dr, string colName) {
+        float result = 0.00f;
+        if (dr[colName] != DBNull.Value && dr[colName] != null) {
+            if (!float.TryParse(dr[colName].ToString(), out result))
+                throw new Exception("GetSingle轉換失敗(" + colName + ")");
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 獲取Decimal
+    /// </summary>
+    /// <param name="colName"></param> 
+    /// <returns></returns>
+    public static decimal GetDecimal(this DataRow dr, string colName) {
+        decimal result = 0.00m;
+        if (dr[colName] != DBNull.Value && dr[colName] != null) {
+            if (!decimal.TryParse(dr[colName].ToString(), out result))
+                throw new Exception("GetDecimal轉換失敗(" + colName + ")");
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 獲取Byte
+    /// </summary> 
+    /// <param name="colName"></param>
+    /// <returns></returns>
+    public static byte GetByte(this DataRow dr, string colName) {
+        byte result = 0;
+        if (dr[colName] != DBNull.Value && dr[colName] != null) {
+            if (!byte.TryParse(dr[colName].ToString(), out result))
+                throw new Exception("GetByte轉換失敗(" + colName + ")");
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 獲取bool(如果是1或Y時回傳true);
+    /// </summary>
+    /// <param name="colName"></param>
+    /// <returns></returns>
+    public static bool GetBool(this DataRow dr, string colName) {
+        if (dr[colName] != DBNull.Value && dr[colName] != null) {
+            return dr[colName].ToString() == "1" || dr[colName].ToString() == "Y" || dr[colName].ToString().ToLower() == "true";
+        }
+        return false;
+    }
     #endregion
 
     #region RequestForm 擴展
-	public static Dictionary<string, string> ToDictionary(this NameValueCollection col) {
-		var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public static Dictionary<string, string> ToDictionary(this NameValueCollection col) {
+        var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var key in col.Keys) {
             dict.Add(key.ToString(), col[key.ToString()].ToBig5().Trim());
@@ -619,24 +619,46 @@ public static class DataExt
     }
     #endregion
 
-	#region Dictionary 擴展
-	public static string TryGet<TKey, TValue>(this Dictionary<TKey, TValue> input, TKey key) {
-		TValue val;
-		if (input.TryGetValue(key, out val)) {
-			return val.ToString();
-		}
+    #region Dictionary 擴展
+    public static string TryGet<TKey, TValue>(this Dictionary<TKey, TValue> input, TKey key) {
+        TValue val;
+        if (input.TryGetValue(key, out val)) {
+            return val.ToString();
+        }
 
-		return "";
-	}
-	public static TValue TryGet<TKey, TValue>(this Dictionary<TKey, TValue> input, TKey key, TValue ifNotFound) {
-		TValue val;
-		if (input.TryGetValue(key, out val)) {
-			return val;
-		}
+        return "";
+    }
+    public static TValue TryGet<TKey, TValue>(this Dictionary<TKey, TValue> input, TKey key, TValue ifNotFound) {
+        TValue val;
+        if (input.TryGetValue(key, out val)) {
+            return val;
+        }
 
-		return ifNotFound;
-	}
-	#endregion
+        return ifNotFound;
+    }
+
+    public static string GetInsertSQL(this Dictionary<string, string> dic) {
+        string strCol = "", strValue = "";
+
+        foreach (KeyValuePair<string, string> item in dic) {
+            strCol += (strCol != "" ? "," : "") + item.Key;//串接欄位
+            strValue += (strValue != "" ? "," : "") + item.Value;//串接欄位
+        }
+
+        return string.Format("({0})values({1})", strCol, strValue);
+    }
+
+    public static string GetUpdateSQL(this Dictionary<string, string> dic) {
+        string strSet = "";
+
+        foreach (KeyValuePair<string, string> item in dic) {
+            strSet += string.Format("{0}{1}={2}", (strSet != "" ? "," : ""), item.Key, item.Value);
+        }
+
+        return strSet;
+    }
+
+    #endregion
 }
 
 

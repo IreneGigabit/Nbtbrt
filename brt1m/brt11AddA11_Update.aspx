@@ -145,7 +145,7 @@
             colList.Add(new DBColumn("prior_no", "tfz1_prior_no", ColType.Str, true));
             colList.Add(new DBColumn("good_name", "tfd1_good_name", ColType.Str, true));//證明內容
             colList.Add(new DBColumn("good_name", "tf91_good_name", ColType.Str, true));//表彰內容
-            colList.Add(new DBColumn("remark1", "tfz_remark1", ColType.Str, true));
+            colList.Add(new DBColumn("remark1", "tfz1_remark1", ColType.Str, true));
             colList.Add(new DBColumn("remark2", "tfz1_remark2", ColType.Str, true));
             colList.Add(new DBColumn("Appl_name", "tfz1_Appl_name", ColType.Str, true));
             colList.Add(new DBColumn("color", "tfz1_color", ColType.Str, true));
@@ -298,7 +298,7 @@
                     //2015/12/29修改，總契約書或委任書不需更換檔名
                     if ((Request[fld + "_apattach_sqlno_" + k] ?? "") != "") {
                         attach_name = straa;
-                        newattach_path = Request[fld + "_apattach_sqlno_" + k] ?? "";
+                        newattach_path = Request[fld + "_" + k] ?? "";
                     } else {
                         attach_name = RSno + "-" + k + sExt;//重新命名檔名
                         newattach_path = strpath1 + "/" + attach_name;//存在資料庫路徑
