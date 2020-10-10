@@ -139,6 +139,21 @@ public partial class Sys
     }
     #endregion
 
+    #region getEndCode - 結案代碼
+    /// <summary>  
+    /// 抓取結案代碼
+    /// </summary>  
+    public static DataTable getEndCode() {
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            string SQL = "SELECT chrelno, chrelname FROM relation where ChRelType = 'ENDCODE' ORDER BY sortfld";
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
     #region getAgent - 抓取代理人清單
     /// <summary>  
     /// 抓取代理人清單

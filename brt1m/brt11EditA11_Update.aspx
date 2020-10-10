@@ -11,9 +11,9 @@
     protected string StrFormBtnTop = "";
     protected string StrFormBtn = "";
     protected string formFunction = "";
-    
+
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
-    protected Dictionary<string, string> ColMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    protected Dictionary<string, string> ColMap = new Dictionary<string, string>();
 
     protected StringBuilder strOut = new StringBuilder();
 
@@ -23,7 +23,7 @@
         Response.Expires = -1;
 
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
-        
+
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
@@ -58,28 +58,21 @@
             Sys.insert_log_table(conn, "U", prgid, "casedmt_show", "in_no;case_sqlno", Request["in_no"] + ";0", "");
             SQL = "delete from casedmt_show where in_no='" + Request["in_no"] + "' and case_sqlno=0";
             conn.ExecuteNonQuery(SQL);
-            
+
             //寫入case_dmt
             SQL = "UPDATE case_dmt set ";
             foreach (var key in Request.Form.Keys) {
                 string colkey = key.ToString().ToLower();
                 string colValue = Request[colkey];
-                
+
                 //取2~4碼(直接用substr若欄位名稱太短會壞掉)
                 if (colkey.Left(4).Substring(1) == "fy_") {
                     if (colkey.Left(1) == "d") {
                         SQL += " " + colkey.Substring(4) + "=" + Util.dbnull(colValue) + ",";
-                    }
-                    else if (colkey.Left(1) == "n") {
+                    } else if (colkey.Left(1) == "n") {
                         SQL += " " + colkey.Substring(4) + "=" + Util.dbzero(colValue) + ",";
-                    }
-                    else {
-                        if (colkey == "tfy_arcase") {
-                            SQL += " " + colkey.Substring(4) + "=" + Util.dbchar(colValue) + ",";
-                        }
-                        else {
-                            SQL += " " + colkey.Substring(4) + "=" + Util.dbnull(colValue) + ",";
-                        }
+                    } else {
+                        SQL += " " + colkey.Substring(4) + "=" + Util.dbnull(colValue) + ",";
                     }
                 }
             }
@@ -98,7 +91,7 @@
             } else {
                 SQL += " acc_chk = 'N',";
             }
-	        //*****契約書後補註記
+            //*****契約書後補註記
             if (Request["tfy_contract_flag"] == null) {
                 SQL += " contract_flag='N',";
             }
@@ -124,7 +117,7 @@
             foreach (var key in Request.Form.Keys) {
                 string colkey = key.ToString().ToLower();
                 string colValue = Request[colkey];
-                
+
                 //取2~5碼(直接用substr若欄位名稱太短會壞掉)
                 if (colkey.Left(5).Substring(1) == "fz1_") {
                     if (colkey.Left(1) == "d") {
@@ -136,7 +129,7 @@
                     }
                 }
             }
-            
+
             if (Request["tfd1_good_name"] != null) {//證明內容
                 ColMap["good_name"] = Util.dbchar(Request["tfd1_good_name"]);
             }
@@ -147,11 +140,11 @@
             ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
             ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
-            
+
             SQL = "UPDATE dmt_temp set " + ColMap.GetUpdateSQL();
             SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "'";
             conn.ExecuteNonQuery(SQL);
-            
+
             //****主委辦案性
             ColMap.Clear();
             ColMap["in_scode"]=Util.dbchar(Request["F_tscode"]);
@@ -162,7 +155,7 @@
             ColMap["item_service"]=Util.dbchar(Request["nfyi_service"]);
             ColMap["item_fees"]=Util.dbchar(Request["nfyi_fees"]);
             ColMap["item_count"]="'1'";
-            
+
             SQL = "insert into caseitem_dmt "+ ColMap.GetInsertSQL();
             //Response.Write(SQL + "<HR>");
             conn.ExecuteNonQuery(SQL);

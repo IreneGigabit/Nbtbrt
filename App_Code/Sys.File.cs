@@ -137,7 +137,7 @@ public partial class Sys
         } else {
             HttpContext.Current.Response.Write("來源=" + sFi.FullName + "<BR>");
             HttpContext.Current.Response.Write("目的=" + dFi.FullName + "<BR>");
-            HttpContext.Current.Response.Write("衝突備份=" +dFi.DirectoryName + "\\" + backup_name + "<HR>");
+            HttpContext.Current.Response.Write("衝突備份=" + dFi.DirectoryName + "\\" + backup_name + "<HR>");
         }
     }
     #endregion
@@ -204,18 +204,18 @@ public partial class Sys
                     ColMap["in_date"] = "getdate()";
                     ColMap["in_scode"] = "'" + context.Session["scode"] + "'";
                     ColMap["attach_no"] = "'" + attach_no + "'";
-                    ColMap["attach_path"] = "'" + newattach_path + "'";
+                    ColMap["attach_path"] = "'" + Sys.Path2Btbrt(newattach_path) + "'";
                     ColMap["doc_type"] = Util.dbchar(context.Request["doc_type_" + k]);
-                    ColMap["attach_desc"] = Util.dbchar(context.Request["_desc_" + k]);
+                    ColMap["attach_desc"] = Util.dbchar(context.Request[fld + "_desc_" + k]);
                     ColMap["attach_name"] = Util.dbchar(attach_name);
                     ColMap["source_name"] = Util.dbchar(source_name);
-                    ColMap["attach_size"] = Util.dbnull(context.Request["_size_" + k]);
+                    ColMap["attach_size"] = Util.dbnull(context.Request[fld + "_size_" + k]);
                     ColMap["attach_flag"] = "'A'";
                     ColMap["Mark"] = "''";
                     ColMap["tran_date"] = "getdate()";
                     ColMap["tran_scode"] = "'" + context.Session["scode"] + "'";
-                    ColMap["attach_branch"] = Util.dbnull(context.Request["_branch_" + k]);
-                    ColMap["apattach_sqlno"] = Util.dbnull(context.Request["_apattach_sqlno_" + k]);
+                    ColMap["attach_branch"] = Util.dbnull(context.Request[fld + "_branch_" + k]);
+                    ColMap["apattach_sqlno"] = Util.dbnull(context.Request[fld + "_apattach_sqlno_" + k]);
 
                     SQL = "insert into dmt_attach " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
@@ -249,14 +249,14 @@ public partial class Sys
                         }
                     }
                     SQL = "Update dmt_attach set Source=" + Util.dbchar(uploadSource);
-                    SQL += ",attach_path=" + Util.dbchar(newattach_path);
-                    SQL += ",attach_desc=" + Util.dbchar(context.Request["_desc_" + k]);
+                    SQL += ",attach_path=" + Util.dbchar(Sys.Path2Btbrt(newattach_path));
+                    SQL += ",attach_desc=" + Util.dbchar(context.Request[fld + "_desc_" + k]);
                     SQL += ",attach_name=" + Util.dbchar(attach_name);
-                    SQL += ",attach_size=" + Util.dbnull(context.Request["_size_" + k]);
-                    SQL += ",source_name=" + Util.dbchar(source_name); ;
+                    SQL += ",attach_size=" + Util.dbnull(context.Request[fld + "_size_" + k]);
+                    SQL += ",source_name=" + Util.dbchar(source_name);
                     SQL += ",doc_type=" + Util.dbchar(context.Request["doc_type_" + k]);
                     SQL += ",attach_flag='U'";
-                    SQL += ",attach_branch=" + Util.dbnull(context.Request["_branch_" + k]);
+                    SQL += ",attach_branch=" + Util.dbnull(context.Request[fld + "_branch_" + k]);
                     SQL += ",tran_date=getdate()";
                     SQL += ",tran_scode='" + context.Session["scode"] + "'";
                     SQL += ",case_no=" + Util.dbchar(context.Request["attach_case_no"]);
@@ -275,5 +275,4 @@ public partial class Sys
         }
     }
     #endregion
-
 }
