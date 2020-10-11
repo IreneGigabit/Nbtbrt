@@ -30,6 +30,20 @@ public static class Conn
 	}
 
     /// <summary>
+    /// 案件管理系統-for 轉案 分案用(指定區所)
+    /// </summary>
+    public static string brp(string pBranch) {
+        switch (Host) {
+            case "SINN05": return Sys.getConnString("prod_" + pBranch.ToUpper() + "_brp");//正式環境北
+            case "SIC10": return Sys.getConnString("prod_" + pBranch.ToUpper() + "_brp");//正式環境中
+            case "SIS10": return Sys.getConnString("prod_" + pBranch.ToUpper() + "_brp");//正式環境南
+            case "SIK10": return Sys.getConnString("prod_" + pBranch.ToUpper() + "_brp");//正式環境雄
+            case "WEB10": return Sys.getConnString("test_" + pBranch.ToUpper() + "_brp");//使用者測試環境
+            default: return Sys.getConnString("dev_" + pBranch.ToUpper() + "_brp");//開發環境
+        }
+    }
+
+    /// <summary>
     /// Sysctrl
     /// </summary>
     public static string Sysctrl {

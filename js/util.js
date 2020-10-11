@@ -86,6 +86,22 @@ function ajaxByPost(url, param) {
     });
 }
 
+/*ajax function(post)*/
+function scriptByGet(titleName,url) {
+    $.ajax({
+        url: url,
+        type: "get",
+        dataType: "script",
+        async: false,
+        cache: false,
+        error: function (xhr) {
+            $("#dialog").html("<a href='" + this.url + "' target='_new'>" + titleName + "<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+            $("#dialog").dialog({ title: titleName + '失敗！', modal: true, maxHeight: 500, width: 800 });
+            //toastr.error("<a href='" + this.url + "' target='_new'>"+titleName+"失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+        }
+    });
+}
+
 //將&#nnnn;轉為字元
 function decodeStr(encodedString) {
     var textArea = document.createElement('textarea');
@@ -107,6 +123,18 @@ function xRound(num, pos) {
     //return Math.round(Math.round(val * Math.pow(10, (pos || 0) + 1)) / 10) / Math.pow(10, (pos || 0));
 }
 //#endregion
+
+/* 左邊補0(padStr) */
+function padLeft(str, len, padStr) {
+    str = '' + str;
+    return str.length >= len ? str : new Array(len - str.length + 1).join(padStr) + str;
+}
+
+/* 右邊補0(padStr) */
+function padRight(str, len, padStr) {
+    str = '' + str;
+    return str.length >= len ? str : str + new Array(len - str.length + 1).join(padStr);
+}
 
 //#region dateReviver
 //json日期格式返回new Date格式

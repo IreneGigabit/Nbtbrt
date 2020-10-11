@@ -312,7 +312,7 @@
 
     protected string GetNXLink(RepeaterItem Container) {
         string stat_code = DataBinder.Eval(Container.DataItem, "stat_code").ToString();
-        if (stat_code == "NX")
+        if (stat_code == "NX")//**todo
             return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13ListA.aspx") + 
                     "?in_scode="+DataBinder.Eval(Container.DataItem, "in_scode").ToString()+
                     "&in_no="+DataBinder.Eval(Container.DataItem, "in_no").ToString()+
