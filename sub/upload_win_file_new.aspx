@@ -67,7 +67,7 @@
 <body bgcolor="#FFFFFF">
     <p align="center"><big><font face="標楷體" color="#004000"><strong><big><big><%=cont%></big></big></strong></font></big></p>
     <center>
-      <form id="AttachForm" name="AttachForm" action="upload_win_file_new.aspx?<%#QueryString%>" method="Post" enctype="multipart/form-data" accept-charset="UTF-8">
+      <form id="AttachForm" name="AttachForm" method="Post" enctype="multipart/form-data" accept-charset="UTF-8">
         <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
             <tr>
                 <td align="left">
@@ -191,6 +191,14 @@
                 } else {
                     $('#<%=ReqVal.TryGet("draw_name")%>', window.opener.document).prop('disabled', false);
                 }
+            }
+        }
+        if ("<%=ReqVal.TryGet("attach_sqlno_name")%>".length > 0 && "<%=ReqVal.TryGet("attach_flag_name")%>".length > 0) {
+            //先判斷原本資料是否有attach_sqlno,若有表示修改,若沒有表示新增
+            if ($("#<%=ReqVal.TryGet("attach_sqlno_name")%>", window.opener.document).val() != "") {
+                $("#<%=ReqVal.TryGet("attach_flag_name")%>", window.opener.document).val("U");//修改
+            } else {
+                $("#<%=ReqVal.TryGet("attach_flag_name")%>", window.opener.document).val("A");//新增
             }
         }
         window.close();

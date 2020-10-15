@@ -51,7 +51,7 @@
 	<tr>			
 	    <td class=lightbluetable align=right>案件種類：</td>
 	    <td class=whitetablebg colspan=7>
-            <Select id="tfy_case_stat" name="tfy_case_stat" onchange=new_oldcase>
+            <Select id="tfy_case_stat" name="tfy_case_stat" onchange="dmt_form.new_oldcase()">
 		        <option value="NN">新案</option>
 		        <option value="SN">新案(指定編號)</option>
 		        <option value="OO">舊案</option>
@@ -62,15 +62,15 @@
 		<td class=lightbluetable align=right>主案件編號：</td>
 		<td class=whitetablebg colspan=3>
             <span id=DelayCase><!--舊案-->
-			    <INPUT TYPE=text NAME=old_seq id=old_seq SIZE=5 MAXLENGTH=5 onblur="mainseqChange('old_seq')">-<INPUT TYPE=text NAME=old_seq1 id=old_seq1 SIZE=1 MAXLENGTH=1 value="_" onblur="mainseqChange('old_seq')" style="text-transform:uppercase;">	
-			    <INPUT TYPE=button name=btnseq_ok id=btnseq_ok onclick="delayNO reg.old_seq.value,reg.old_seq1.value " value="確定">　<input type=button class="cbutton" name="Query" id="Query" value ="查詢主案件編號" style="width:140" onclick="Queryclick(reg.F_cust_seq.value)">
-			    <input type=button class="cbutton" name="Qry_step" id="Qry_step" value ="查詢案件進度" style="width:100" onclick="vbscript:Qstepclick reg.old_seq.value,reg.old_seq1.value">
-			    <input type=button class="c1button <%#Hide["brt51"]%>" name="Upd_seq" id="Upd_seq" value ="案件主檔維護" style="width:100" onclick="vbscript:Updseqclick reg.old_seq.value,reg.old_seq1.value">
+			    <INPUT TYPE=text NAME=old_seq id=old_seq SIZE=5 MAXLENGTH=5 onblur="dmt_form.mainseqChange('old_seq')">-<INPUT TYPE=text NAME=old_seq1 id=old_seq1 SIZE=1 MAXLENGTH=1 value="_" onblur="dmt_form.mainseqChange('old_seq')" style="text-transform:uppercase;">	
+			    <INPUT TYPE=button name=btnseq_ok id=btnseq_ok onclick="delayNO reg.old_seq.value,reg.old_seq1.value " value="確定">　<input type=button class="cbutton" name="Query" id="Query" value ="查詢主案件編號" style="width:140" onclick="dmt_form.Queryclick(reg.F_cust_seq.value)">
+			    <input type=button class="cbutton" name="Qry_step" id="Qry_step" value ="查詢案件進度" style="width:100" onclick="dmt_form.Qstepclick(reg.old_seq.value,reg.old_seq1.value)">
+			    <input type=button class="c1button <%#Hide.TryGet("brt51")%>" name="Upd_seq" id="Upd_seq" value ="案件主檔維護" style="width:100" onclick="dmt_form.Updseqclick(reg.old_seq.value,reg.old_seq1.value)">
 			    <input type="text" name=keyseq id=keyseq value="N">
             </span>
             <span id=CaseNew><!--新案-->
 			    <INPUT TYPE=text NAME=New_seq id=New_seq SIZE=5 MAXLENGTH=5 class="sedit" readonly>-
-			    <select name=New_seq1 id=New_seq1 class="<%#Lock["brt51"]%>">
+			    <select name=New_seq1 id=New_seq1 class="<%#Lock.TryGet("brt51")%>">
 				    <option value="_">一般</option>
 				    <option value="Z">Z_雜卷</option>
 				    <%if(Session["seBranch"].ToString()=="N")%><option value="M">M_大陸案</option>
@@ -78,7 +78,7 @@
             </span>
             <span id=CaseNewAssign><!--新案(指定編號)-->
  			    <INPUT TYPE=text id=New_Ass_seq NAME=New_Ass_seq SIZE=5 MAXLENGTH=5>-<INPUT TYPE=text id=New_Ass_seq1 NAME=New_Ass_seq1 SIZE=1 MAXLENGTH=1 value="" style="text-transform:uppercase;">	
-           </span>
+            </span>
 		</td>
 		<td class=lightbluetable align=right>母案本所編號：</td>
 		<td class=whitetablebg colspan=3 >
@@ -90,9 +90,7 @@
 			<input type=hidden name="end_code51" id="end_code51">
 			<input type=hidden name="end_type51" id="end_type51">
 			<input type=hidden name="end_remark51" id="end_remark51">
-			<%if prgid = "Brt51" and request("ar_form")="A8" then%>
-				<INPUT TYPE=button Name="but_end" id="but_end" onclick="btnendA8click 'tfzd_ref_no',reg.tfzd_ref_no.value,reg.tfzd_ref_no1.value"  class="redbutton" value="母案結案">
-			<%end if%>
+			<INPUT TYPE=button style="display:none" Name="but_end" id="but_end" onclick="dmt_form.btnendA8click('tfzd_ref_no',reg.tfzd_ref_no.value,reg.tfzd_ref_no1.value)"  class="redbutton" value="母案結案">
 		</td>
 	</tr>
 	<tr>
@@ -129,7 +127,7 @@
 	<tr>
 		<td class=lightbluetable align=right>正聯防：</td>
 		<td class=whitetablebg colspan=7>
-            <SELECT NAME=tfzy_Pul id=tfzy_Pul onchange=tfzd_showmark(reg.tfzy_pul.value)>
+            <SELECT NAME=tfzy_Pul id=tfzy_Pul onchange=dmt_form.tfzd_showmark(this.value)>
 			<option value="">正商標</option>
 			<option value="1">聯合商標</option>
 			<option value="2">防護商標</option>
@@ -169,7 +167,8 @@
 		<td class=lightbluetable align=right>商標圖樣：</td>	
 		<td class=whitetablebg colspan=7>	
 			<input TYPE="hidden" id="file" name="file">
-			<input type="button" class="cbutton" id="butUpload1" name="butUpload1"  value="商標圖檔上傳" onclick="dmt_form.UploadAttach_photo()" >
+	        <input TYPE="text" name="Draw_file" id="Draw_file" SIZE="50" maxlength="50" readonly>
+			<input type="button" class="cbutton" id="butUpload" name="butUpload"  value="商標圖檔上傳" onclick="dmt_form.UploadAttach_photo()" >
 		    <input type="button" class="redbutton" id="btnDelAtt" name="btnDelAtt"  value="商標圖檔刪除" onclick="dmt_form.DelAttach_photo()" >
             <input type="button" class="cbutton" id="btnDisplay" name="btnDisplay" value="商標圖檔檢視" onclick="dmt_form.PreviewAttach_photo()" >
 	        <input type="hidden" name="draw_attach_file" id="draw_attach_file">
@@ -253,9 +252,9 @@
 		<td class="lightbluetable" align="right">延展次數：</td>
 		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_renewal" id="tfzd_renewal" SIZE="2"></TD>
 	</tr>
-	<tr>
+	<tr class='sfont9'>
 		<td colspan=8>
-			<TABLE id=tabbr1 name=tabbr1 border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+			<TABLE id=tabdmt1 border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
             <thead>
 			    <tr>	
 				    <td class="lightbluetable" align="right" >類別種類：</td>
@@ -277,7 +276,7 @@
             <tbody></tbody>
             <script type="text/html" id="class_template"><!--類別樣板-->
 		        <tr class="tr_class_##">
-				    <td class="lightbluetable" align="right" style="cursor:hand" title="請輸入類別，並以逗號分開(例如：1,5,32)。或輸入類別範圍，並以  -  (半形) 分開(例如：8-16)。也可複項組合(例如：3,5,13-32,35)">類別##：</td>		
+				    <td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別，並以逗號分開(例如：1,5,32)。或輸入類別範圍，並以  -  (半形) 分開(例如：8-16)。也可複項組合(例如：3,5,13-32,35)">類別##：</td>		
 				    <td class="whitetablebg" colspan="7"><!--2013/1/22玉雀告知不顯示商標法施行細則第13條-->第<INPUT type="text" id=class1_## name=class1_## size=3 maxlength=3 onchange="dmt_form.count_kind('##')">類</td>
 			    </tr>
 			    <tr class="tr_class_##" style="height:107.6pt">
@@ -289,17 +288,19 @@
 			    </tr>
 		        <tr class="tr_class_##">
 				    <td class="lightbluetable" align="right">商品群組代碼##：</td>
-				    <td class="whitetablebg" colspan="7"><textarea id=grp_code1_## NAME=grp_code1_## ROWS="1" COLS="50"></textarea>(跨群組請以全形「、」作分隔)</td>
-				    <input type="hidden" id="color_##" name="color_##" value="">
+				    <td class="whitetablebg" colspan="7">
+                        <textarea id=grp_code1_## NAME=grp_code1_## ROWS="1" COLS="50"></textarea>(跨群組請以全形「、」作分隔)
+				        <input type="hidden" id="color_##" name="color_##" value="">
+                    </td>
 			    </tr>
             </script>
 			</table>
 		</td>
 	</tr>
-	<tr>
+	<tr class='sfont9'>
 		<td colspan=8>
 			<input type=hidden id=shownum_dmt name=shownum_dmt value="0">
-			<TABLE id=tabshow_dmt border=1 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
+			<TABLE id=tabshow_dmt border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
                 <thead>
 			    <TR class=whitetablebg align=center>
 				    <TD colspan=3 >
@@ -314,17 +315,17 @@
 			    </tr>
                 </thead>
                 <tbody></tbody>
-                <script type="text/html" id="show_template"><!--展覽會優先權樣板-->
-	                <tr id=tr_show_##>
+                <script type="text/html" id="dmt_show_template"><!--展覽會優先權樣板-->
+	                <tr id=tr_show_dmt_##>
 		                <td class=whitetablebg align=center>
-                            <input type=text id='shownum_##' name='shownum_##' class=SEdit readonly size=2 value='##.'>
-                            <input type=hidden id='show_sqlno_##' name='show_sqlno_##'>
+                            <input type=text id='shownum_dmt_##' name='shownum_dmt_##' class=SEdit readonly size=2 value='##.'>
+                            <input type=hidden id='show_sqlno_dmt_##' name='show_sqlno_dmt_##'>
 		                </td>
 		                <td class=whitetablebg align=center>
-		                    <input type=text size=10 maxlength=10 id='show_date_##' name='show_date_##' onblur="dmt_form.chk_showdate('##')" class="dateField" <%=Qclass%> />
+		                    <input type=text size=10 maxlength=10 id='show_date_dmt_##' name='show_date_dmt_##' onblur="dmt_form.chk_showdate('##')" class="dateField" />
 		                </td>
 		                <td class=whitetablebg align=center>
-		                    <input type=text id='show_name_##' name='show_name_##' size=50 maxlength=100 <%=Qclass%> />
+		                    <input type=text id='show_name_dmt_##' name='show_name_dmt_##' size=50 maxlength=100 />
 		                </td>
 	                </tr>
                 </script>
@@ -337,6 +338,9 @@
 <script language="javascript" type="text/javascript">
     var dmt_form = {};
     dmt_form.init = function () {
+        if(main.prgid=="brt51"&&main.ar_form=="A8"){
+            $("#but_end").show();
+        }
     }
 
     //新案(指定編號)
@@ -397,97 +401,50 @@
         }
     }
 
-    /*
-    //查詢主案件編號
-    dmt_form.Queryclick = function(cust_seq) {
-        //***todo
-        window.open("brta21Query.asp?cust_seq="+cust_seq ,"myWindowOne", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
-    }
-    dmt_form.mainseqChange = function(fld1) {
-        $("#keyseq").val("N");
-        $("#btnseq_ok").prop("disabled",false);
-    }
-    //母案結案
-    dmt_form.btnendA8click = function(fld,value1,value2) {
-        if (value1==""){
-            alert("請先輸入本所編號!!!");
-            $("#"+fld).focus();
-            return false;
+    //商標種類(x:0=案件主檔→交辦內容,x:1=交辦內容→案件主檔)
+    dmt_form.change_mark = function (x) {
+        if(x==1){
+            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr3_S_mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr2_S_mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr21_S_mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr4_S_mark']:checked").val()+"']").prop("checked",true);
+            $("#tfzy_Pul").val("2");
+            dmt_form.tfzd_showmark($("#tfzy_Pul").val());
+            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr1_S_mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr3_S_mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='frf_S_mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fbf_S_mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr_S_mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr11_S_mark']:checked").val()+"']").prop("checked",true);
         }else{
-            if(fld.indexOf("dmseq")>-1){
-                from_fld=fld.substr(5);
-            }else{
-                from_fld="";
-            }
-            //***todo
-            window.open("..\brt5m\brt15ShowFP.asp?seq="&value1&"&seq1="&value2 & "&from_fld=" & from_fld & "&submittask=Q&prgid=Brt51&end_type=012","", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
+            $("input[name='fr3_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='fr2_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='fr1_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='fr4_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='frf_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='fbf_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='fr_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
+            $("input[name='fr11_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
         }
-    }
-    //案件進度查詢
-    dmt_form.Qstepclick = function(pseq,pseq1) {
-        if (pseq!=""&&pseq1!=""){
-        //***todo
-            window.open("/btbrt/brtam/brta61Edit.asp?submitTask=Q&qtype=A&prgid="+main.prgid+"&closewin=Y&winact=1&aseq=" &pseq& "&aseq1=" &pseq1,"myWindowOne", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
-        }else{
-            alert("請先輸入本所編號再執行維護功能!!!");
-            return false;
-       }
-    }
-    //案件主檔維護
-    dmt_form.Updseqclick = function(pseq,pseq1) {
-        if (pseq!=""&&pseq1!=""){
-            //***todo
-            window.open("/btbrt/brt5m/brt15ShowFP.asp?seq="&pseq&"&seq1="&pseq1&"&submittask=U&prgid=Brt51&closewin=Y","myWindowOneu", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
-        }else{
-            alert("請先輸入本所編號再執行維護功能!!!");
-            return false;
-        }
-    }
-*/
-//商標種類(x:0=案件主檔→交辦內容,x:1=交辦內容→案件主檔)
-dmt_form.change_mark = function (x) {
-    if(x==1){
-        $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr3_S_mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr2_S_mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr21_S_mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr4_S_mark']:checked").val()+"']").prop("checked",true);
-        $("#tfzy_Pul").val("2");
-        dmt_form.tfzd_showmark($("#tfzy_Pul").val());
-        $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr1_S_mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr3_S_mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='tfzy_S_Mark'][value='"+ $("input[name='frf_S_mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fbf_S_mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr_S_mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr11_S_mark']:checked").val()+"']").prop("checked",true);
-    }else{
-        $("input[name='fr3_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='fr2_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='fr1_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='fr4_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='frf_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='fbf_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='fr_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-        $("input[name='fr11_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-    }
 
-    var smark_val=$("input[name='tfzy_S_Mark']:checked").val();
-    if(smark_val=="S"){
-        $("#s_marka1").val("92年修正前服務標章");
-        $("#s_markb1").val("92年修正前服務標章");
-    }else if(smark_val=="N"){
-        $("#s_marka1").val("團體商標");
-        $("#s_markb1").val("團體商標");
-    }else if(smark_val=="M"){
-        $("#s_marka1").val("團體標章");
-        $("#s_markb1").val("團體標章");
-    }else if(smark_val=="L"){
-        $("#s_marka1").val("證明標章");
-        $("#s_markb1").val("證明標章");
-    }else{
-        $("#s_marka1").val("商標");
-        $("#s_markb1").val("商標");
-    }
-};
+        var smark_val=$("input[name='tfzy_S_Mark']:checked").val();
+        if(smark_val=="S"){
+            $("#s_marka1").val("92年修正前服務標章");
+            $("#s_markb1").val("92年修正前服務標章");
+        }else if(smark_val=="N"){
+            $("#s_marka1").val("團體商標");
+            $("#s_markb1").val("團體商標");
+        }else if(smark_val=="M"){
+            $("#s_marka1").val("團體標章");
+            $("#s_markb1").val("團體標章");
+        }else if(smark_val=="L"){
+            $("#s_marka1").val("證明標章");
+            $("#s_markb1").val("證明標章");
+        }else{
+            $("#s_marka1").val("商標");
+            $("#s_markb1").val("商標");
+        }
+    };
 
     //註冊號數帶資料到交辦內容
     $("#tfzd_issue_no").blur(function () {
@@ -566,7 +523,7 @@ dmt_form.change_mark = function (x) {
             for (var nRow = num1; nRow < doCount ; nRow++) {
                 var copyStr = $("#class_template").text() || "";
                 copyStr = copyStr.replace(/##/g, nRow + 1);
-                $("#tabbr1 tbody").append(copyStr);
+                $("#tabdmt1 tbody").append(copyStr);
                 $("#num1").val(nRow + 1);
             }
         } else {
@@ -599,7 +556,7 @@ dmt_form.change_mark = function (x) {
             }
         }
 
-        $("#tfz1_class").val($("#tabbr1>tbody input[id^='class1_']").map(function (index) {
+        $("#tfz1_class").val($("#tabdmt1>tbody input[id^='class1_']").map(function (index) {
             if (index == 0 || $(this).val() != "") return $(this).val();
         }).get().join(','));
     }
@@ -638,13 +595,13 @@ dmt_form.change_mark = function (x) {
                 if (jShow.length != 0) {
                     $.each(jShow.case_show, function (i, item) {
                         dmt_form.add_show();//展覽優先權增加一筆
-                        $("#show_sqlno_" + (i + 1)).val(item.show_sqlno);//流水號
-                        $("#show_date_" + (i + 1)).val(dateReviver(item.show_date, "yyyy/M/d"));//展覽會優先權日
-                        $("#show_name_" + (i + 1)).val(item.show_name);//展覽會名稱
+                        $("#show_sqlno_dmt_" + (i + 1)).val(item.show_sqlno);//流水號
+                        $("#show_date_dmt_" + (i + 1)).val(dateReviver(item.show_date, "yyyy/M/d"));//展覽會優先權日
+                        $("#show_name_dmt_" + (i + 1)).val(item.show_name);//展覽會名稱
                         if(xtype=="dmt"){//來源為案件主檔不能修改
-                            $("#show_sqlno_" + (i + 1)).lock();
-                            $("#show_date_" + (i + 1)).lock();
-                            $("#show_name_" + (i + 1)).lock();
+                            $("#show_sqlno_dmt_" + (i + 1)).lock();
+                            $("#show_date_dmt_" + (i + 1)).lock();
+                            $("#show_name_dmt_" + (i + 1)).lock();
                         }
                     });
                 }
@@ -660,32 +617,32 @@ dmt_form.change_mark = function (x) {
 
     //展覽優先權增加一筆
     dmt_form.add_show = function () {
-        var nRow = parseInt($("#shownum").val(), 10) + 1;
+        var nRow = parseInt($("#shownum_dmt").val(), 10) + 1;
         //複製樣板
-        var copyStr = $("#show_template").text() || "";
+        var copyStr = $("#dmt_show_template").text() || "";
         copyStr = copyStr.replace(/##/g, nRow);
-        $("#tabshow tbody").append(copyStr);
-        $("#shownum").val(nRow);
-        $(".dateField", $('#tr_show_' + nRow)).datepick();
+        $("#tabshow_dmt tbody").append(copyStr);
+        $("#shownum_dmt").val(nRow);
+        $(".dateField", $('#tr_show_dmt_' + nRow)).datepick();
     }
 
     //展覽優先權減少一筆
     dmt_form.del_show = function () {
-        var nRow = CInt($("#shownum").val());
-        $('#tr_show_' + nRow).remove();
-        $("#shownum").val(Math.max(0, nRow - 1));
+        var nRow = CInt($("#shownum_dmt").val());
+        $('#tr_show_dmt_' + nRow).remove();
+        $("#shownum_dmt").val(Math.max(0, nRow - 1));
     }
 
     //檢查展覽優先權日期
     dmt_form.chk_showdate = function (pno) {
-        ChkDate($("#show_date_" + pno)[0]);
+        ChkDate($("#show_date_dmt_" + pno)[0]);
 
-        if ($("#show_date_" + pno).val() != "") {
-            var sdate = new Date($("#show_date_" + pno).val()).setHours(0, 0, 0, 0);
+        if ($("#show_date_dmt_" + pno).val() != "") {
+            var sdate = new Date($("#show_date_dmt_" + pno).val()).setHours(0, 0, 0, 0);
             var today = new Date().setHours(0, 0, 0, 0);
             if (sdate > today) {
                 alert("展覽優先權日期不可大於系統日期!!");
-                $("#show_date_" + pno).focus();
+                $("#show_date_dmt_" + pno).focus();
             }
         }
     }
@@ -735,19 +692,19 @@ dmt_form.change_mark = function (x) {
         }
         var url = getRootPath() + "/sub/upload_win_file_new.aspx?type=dmt_photo" +
             "&nfilename=" + nfilename +
-            "&draw_file=" + ($("#Draw_file1").val() || "") +
+            "&draw_file=" + ($("#Draw_file").val() || "") +
             "&folder_name=temp" +
             "&form_name=draw_attach_file" +
-            "&file_name=Draw_file1" +
+            "&file_name=Draw_file" +
             "&prgid=<%=prgid%>" +
             "&btnname=butUpload1" +
             "&filename_flag=source_name";
-        window.open(url, "", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(url, "dmtupload", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
     //商標圖檔刪除
     dmt_form.DelAttach_photo = function () {
-        if ($("#Draw_file1").val() == "") {
+        if ($("#Draw_file").val() == "") {
             alert("無圖檔可刪除 !!");
             return false;
         }
@@ -763,13 +720,13 @@ dmt_form.change_mark = function (x) {
             window.open(url, "myWindowOne1", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
             //window.open(url, "myWindowOne1", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
             $("#draw_attach_file").val("");
-            $("#Draw_file1").val("");
+            $("#Draw_file").val("");
         }
     }
 
     //商標圖檔檢視
     dmt_form.PreviewAttach_photo = function () {
-        if ($("#Draw_file1").val() == "") {
+        if ($("#Draw_file").val() == "") {
             alert("請先上傳圖檔 !!");
             return false;
         }
@@ -784,4 +741,187 @@ dmt_form.change_mark = function (x) {
         window.open(url);
     }
 
+
+    //查詢主案件編號
+    dmt_form.Queryclick = function(cust_seq) {
+        //***todo
+        window.open("brta21Query.asp?cust_seq="+cust_seq ,"myWindowOne", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+    }
+    dmt_form.mainseqChange = function(fld1) {
+        $("#keyseq").val("N");
+        $("#btnseq_ok").prop("disabled",false);
+    }
+    //母案結案
+    dmt_form.btnendA8click = function(fld,value1,value2) {
+        if (value1==""){
+            alert("請先輸入本所編號!!!");
+            $("#"+fld).focus();
+            return false;
+        }else{
+            if(fld.indexOf("dmseq")>-1){
+                from_fld=fld.substr(5);
+            }else{
+                from_fld="";
+            }
+            //***todo
+            window.open("..\brt5m\brt15ShowFP.asp?seq="&value1&"&seq1="&value2 & "&from_fld=" & from_fld & "&submittask=Q&prgid=Brt51&end_type=012","", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
+        }
+    }
+    //案件進度查詢
+    dmt_form.Qstepclick = function(pseq,pseq1) {
+        if (pseq!=""&&pseq1!=""){
+            //***todo
+            window.open("/btbrt/brtam/brta61Edit.asp?submitTask=Q&qtype=A&prgid="+main.prgid+"&closewin=Y&winact=1&aseq=" &pseq& "&aseq1=" &pseq1,"myWindowOne", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        }else{
+            alert("請先輸入本所編號再執行維護功能!!!");
+            return false;
+        }
+    }
+    //案件主檔維護
+    dmt_form.Updseqclick = function(pseq,pseq1) {
+        if (pseq!=""&&pseq1!=""){
+            //***todo
+            window.open("/btbrt/brt5m/brt15ShowFP.asp?seq="&pseq&"&seq1="&pseq1&"&submittask=U&prgid=Brt51&closewin=Y","myWindowOneu", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
+        }else{
+            alert("請先輸入本所編號再執行維護功能!!!");
+            return false;
+        }
+    }
+
+    //*********正聯防	
+    dmt_form.tfzd_showmark=function(xmark){
+        if (IsNumeric(xmark)) {
+            $("#tfzd_Smark,#tfzd_Smark1").show();
+            if ($("#tfy_case_stat").val()=="OO"){
+                $("#tfzd_Tcn_mark").lock();
+            }else{
+                $("#tfzd_Tcn_mark").unlock();
+            }
+        }else{
+            $("#tfzd_Smark,#tfzd_Smark1").hide();
+            $("#tfzd_Tcn_mark").val("");//***正商標種類
+            $("#tfzd_Tcn_ref").val("");//***正商標號數
+            $("#tfzd_Tcn_name").val("");//***正商標名稱
+            $("#tfzd_Tcn_Class").val("");//***正商標類別
+
+        }
+    }
+
+	//*****將特定欄位disabled
+    dmt_form.Filereadonly = function () {
+        $("input[name^='tfzd' i]").lock();
+        $("input[name^='fr' i]").lock();
+        if (main.seq == "") {
+            $("input[name^='tfzd' i]").val("");
+            $("input[name^='fr' i]").val("");
+        }
+        $("input[name=tfzy_S_Mark]").lock();//商標種類
+        $("#pfzd_prior_date").lock();//優先權申請日
+        $("#tfzy_prior_country").lock();//優先權首次申請國家
+        $("#tfzy_Pul").lock();//正聯防
+        $("#but_ref").hide();//母案複製
+        $("#Draw_file").val("");//商標圖樣
+        $("#butUpload,btnDelAtt").lock();
+        $("input[name=tfzy_color]").lock();//圖樣顏色
+        $("#tfzy_Zname_type").lock();//語文別
+        $("#tfzy_end_code").lock();//結案代碼
+        $("#tfzr_class_count").val("").lock();//類別
+        $("#tfzr_class").val("").lock();
+        $("#class1_1").val("").lock();
+        $("#good_name1_1").val("").lock();
+        $("#good_count1_1").val("").lock();
+        //展覽優先權欄位
+        $("#show_Add_button_dmt,#show_Del_button").lock();
+        $("#tabshow_dmt input[type='text']").lock();
+    }
+
+    //*****將特定欄位enabled
+    dmt_form.Filecanput = function () {
+        $("input[name^='tfzd' i]").unlock().val("");
+        $("input[name^='fr' i]").unlock().val("");
+
+        $("input[name=tfzy_S_Mark").unlock();//商標種類
+        $("#pfzd_prior_date").unlock();//優先權申請日
+        $("#tfzy_prior_country").unlock();//優先權首次申請國家
+        $("#tfzy_Pul").unlock();//正聯防
+        $("#but_ref").show();//母案複製
+        $("#Draw_file").val("");//商標圖樣
+        $("#butUpload,btnDelAtt").unlock();
+        $("input[name=tfzy_color").unlock();//圖樣顏色
+        $("#tfzy_Zname_type").unlock();//語文別
+        $("#tfzy_end_code").unlock();//結案代碼
+        $("#tfzr_class_count").val("").unlock();//類別
+        $("#tfzr_class").val("").unlock();
+        $("#class1_1").val("").unlock();
+        $("#good_name1_1").val("").unlock();
+        $("#good_count1_1").val("").unlock();
+        //展覽優先權欄位
+        $("#show_Add_button,show_Del_button").unlock();
+        $("#tabshow_dmt input[type='text']").unlock();
+    }
+
+    //******新舊案切換控制
+    dmt_form.new_oldcase=function(){
+        if ($("#tfy_case_stat").val() == "NN") {//新案
+            $("#DelayCase,#CaseNewAssign").hide();
+            $("#CaseNew").show();
+            //***2011/1/24因復案流程修改
+            $("#A9Ztr_endtype,#A9Ztr_backflag").hide();
+            if(main.prgid=="brt52"){
+                $("#New_seq,#tfzb_seq").val(jMain.case_main[0].seq);
+                $("#New_seq1,#tfzb_seq1").val(jMain.case_main[0].seq1);
+            }else{
+                $("#New_seq").val("");
+            }
+            dmt_form.Filecanput();//***todo將特定欄位disabled
+            $("#F_cust_seq").unlock();
+            $("#btncust_seq").show();
+            dmt_form.Add_class(1);//預設顯示第1筆
+            $("#color_1").val("");
+            $("#keyseq").val("N");
+            $("#btnseq_ok").unlock();//舊案[查詢主案件編號]
+            $("#tfzd_ref_no1").val("_");//母案本所編號副號
+        } else if ($("#tfy_case_stat").val() == "SN") {//新案(指定編號)
+            $("#DelayCase,#CaseNew").hide();
+            $("#CaseNewAssign").show();
+            //***2011/1/24因復案流程修改
+            $("#A9Ztr_endtype,#A9Ztr_backflag").hide();
+            dmt_form.Filecanput();//***todo將特定欄位disabled
+            $("#F_cust_seq").unlock();
+            $("#btncust_seq").show();
+            dmt_form.Add_class(1);//預設顯示第1筆
+            $("#color_1").val("");
+            $("#keyseq").val("N");
+            $("#btnseq_ok").unlock();//舊案[查詢主案件編號]
+            $("#tfzd_ref_no1").val("_");//母案本所編號副號
+        } else if ($("#tfy_case_stat").val() == "OO") {//舊案
+            $("#DelayCase").show();
+            $("#CaseNewAssign,#CaseNew").hide();
+            //***2011/1/24因復案流程修改
+            $("#A9Ztr_endtype,#A9Ztr_backflag").hide();
+            dmt_form.Add_class(1);//預設顯示第1筆
+            $("#color_1").val("class=SEdit");
+            dmt_form.Filereadonly();//***todo將特定欄位enable
+            //***接收舊案檢索資料
+            if (main.formFunction == "Edit") {
+                $("#old_seq,#tfzb_seq").val(jMain.case_main[0].seq);
+                $("#old_seq1,#tfzb_seq1").val(jMain.case_main[0].seq1);
+            } else {
+                $("#tfzb_seq").val(main.seq);
+                $("#tfzb_seq1").val("_");
+                if(main.seq1!=""){
+                    $("#tfzb_seq1").val(main.seq1);
+                }
+            }
+            //舊案時不可更改區所編號
+            $("#F_cust_seq").lock();
+            $("#btncust_seq").hide();
+            if (main.seq == "") {
+                $("#tfzy_Pul,#tfzd_Pul").val("");
+                $("#tfzd_S_Mark").val("");
+                $("input[name=tfzy_S_Mark]").prop("checked", false);
+                $("input[name=tfzy_color]").prop("checked", false);
+            }
+        }
+    }
 </script>

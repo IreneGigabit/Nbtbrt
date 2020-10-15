@@ -4,8 +4,9 @@
 <%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
 <%@ Register Src="~/commonForm/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
 <%@ Register Src="~/commonForm/dmt/case_form.ascx" TagPrefix="uc1" TagName="case_form" %>
+<%@ Register Src="~/commonForm/dmt/dmt_Form.ascx" TagPrefix="uc1" TagName="dmt_Form" %>
 <%@ Register Src="~/commonForm/dmt/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
-<%@ Register Src="~/brt1m/CaseForm/A11_form.ascx" TagPrefix="uc1" TagName="br_A11_form" %>
+
 
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
@@ -38,7 +39,6 @@
         Response.Expires = -1;
 
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
-        submitTask = (Request["submittask"] ?? "").Trim();
         submitTask = (Request["submittask"] ?? "").Trim();
         ar_form = (Request["ar_form"] ?? "").Trim();
         cust_area = (Request["cust_area"] ?? "").Trim();
@@ -101,8 +101,8 @@
         //收費與接洽事項
         case_form.formFunction = formFunction;
         case_form.HTProgRight = HTProgRight;
-        //交辦內容
-        br_A11_form.Lock = Lock;
+        //案件內容
+        dmt_Form.Lock = Lock;
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -160,6 +160,7 @@
                 <td class="tab" href="#attent">案件聯絡人</td>
                 <td class="tab" href="#apcust">案件申請人</td>
                 <td class="tab" href="#case">收費與接洽事項</td>
+                <td class="tab" href="#dmt">案件主檔</td>
                 <td class="tab" href="#tran">交辦內容</td>
                 <td class="tab" href="#upload">文件上傳</td>
             </tr>
@@ -184,8 +185,11 @@
                 <uc1:case_form runat="server" id="case_form" />
                 <!--include file="../commonForm/dmt/case_form.ascx"--><!--收費與接洽事項-->
             </div>
+            <div class="tabCont" id="#dmt">
+                <uc1:dmt_Form runat="server" id="dmt_Form" />
+                <!--include file="../commonForm/dmt/dmt_Form.ascx"--><!--案件主檔-->
+            </div>
             <div class="tabCont" id="#tran">
-                <uc1:br_A11_form runat="server" ID="br_A11_form" />
             </div>
             <div class="tabCont" id="#upload">
                 <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" />
@@ -292,7 +296,7 @@
 
         //-----------------
         main.bind();//資料綁定
-        br_form.bind();//交辦內容資料綁定
+        //br_form.bind();//交辦內容資料綁定
         $("input.dateField").datepick();
         $(".Lock").lock();
     }

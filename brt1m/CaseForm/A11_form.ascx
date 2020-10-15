@@ -397,6 +397,7 @@
 			<td class="lightbluetable" align="right" STYLE="cursor:pointer;COLOR:BLUE">表彰：</td>
 			<td class="whitetablebg" colspan="7">
 			    <input type="text" name="tf91_good_name" ID="tf91_good_name" size=60 value="">會員之會籍。（填寫申請人名稱）
+		        <input type="hidden" name="tfz1_good_name" ID="tfz1_good_name" size=50>
 			</td>
 		</tr>	
 	</table>
@@ -419,6 +420,7 @@
 		<td class="lightbluetable" align="right">二、證明內容：</td>
 		<td class="whitetablebg" colspan="7">
 		    <input type="text" name="tfd1_good_name" ID="tfd1_good_name" size=50>
+		    <input type="hidden" name="tfz1_good_name" ID="tfz1_good_name" size=50>
 		</td>
 	</tr>	
 	</table>
@@ -657,7 +659,7 @@
             "&prgid=<%=prgid%>" +
             "&btnname=butUpload1" +
             "&filename_flag=source_name";
-        window.open(url, "", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(url, "dmtupload", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
     //商標圖檔刪除
@@ -697,6 +699,134 @@
         var url = getRootPath() + "/sub/display_draw.aspx?draw_file=" + $("#draw_attach_file").val();
         //window.open(url, "window", "width=700,height=600,toolbar=yes,menubar=yes,resizable=yes,scrollbars=yes,status=0,top=50,left=80");
         window.open(url);
+    }
+
+    //交辦內容綁定
+    br_form.bind = function () {
+        //console.log("br_form.bind");
+        if (jMain.case_main.length == 0) {
+            //　類別種類
+            $("#tfz1_class_typeI").prop("checked", true);
+        } else {
+            $("#tfz1_Appl_name").val(jMain.case_main[0].appl_name);//*商標名稱
+            $("#tfz1_cust_prod").val(jMain.case_main[0].cust_prod);//20180301增加客戶卷號
+            $("#tfz1_Oappl_name").val(jMain.case_main[0].oappl_name);//不單獨主張專用權
+            $("#tfz1_Cappl_name").val(jMain.case_main[0].cappl_name);//商標圖樣中文
+            $("#tfz1_Eappl_name").val(jMain.case_main[0].eappl_name);//商標圖樣外文
+            $("#tfz1_Eappl_name1").val(jMain.case_main[0].eappl_name1);//圖樣分析中文字義
+            $("#tfz1_Eappl_name2").val(jMain.case_main[0].eappl_name2);//圖樣分析讀音
+            $("#tfz1_Zname_type").val(jMain.case_main[0].zname_type);//語文別
+            $("#tfz1_Draw").val(jMain.case_main[0].draw);//圖形說明
+            $("#tfz1_Symbol").val(jMain.case_main[0].symbol);//記號說明
+            //if(main.formFunction=="Edit"){
+            $("#Draw_file1").val(jMain.case_main[0].draw_file);//*圖檔實際路徑
+            $("#file1").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+            $("#draw_attach_file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+            if ($("#Draw_file1").val() != "") {
+                $("#butUpload1").prop("disabled", true);
+            }
+            //}
+            if (jMain.case_main[0].color == "B") {
+                $("#tfz1_colorB").prop("checked", true);
+            } else if (jMain.case_main[0].color == "C" || jMain.case_main[0].color == "M") {
+                $("#tfz1_colorC").prop("checked", true);
+            }
+
+            //標章描述
+            $("input[name=tfz1_remark3][value='" + jMain.case_main[0].remark3 + "'").prop("checked", true);
+            //聲音/立體商標圖樣
+            switch (jMain.case_main[0].arcase.substr(2, 1).toUpperCase()) {//案性第3碼
+                case '4': case '8': case 'C': case 'G'://立體
+                    if (jMain.case_main[0].remark3 != "") {
+                        var arr_remark3 = jMain.case_main[0].remark3.split("|");
+                        for (var i = 0; i < arr_remark3.length; i++) {
+                            $("#tt44_" + arr_remark3[i]).prop("checked", true);
+                        }
+                    }
+                    break;
+                case '3': case '7': case 'B': case 'F'://聲音
+                    if (jMain.case_main[0].remark3 == "Y") {
+                        $("input[name=tfz1_remark3][value='Y']").prop("checked", true);
+                    } else {
+                        $("input[name=tfz1_remark3][value='N']").prop("checked", true);
+                    }
+                    break;
+            }
+            $("#tfz1_agt_no").val(jMain.case_main[0].agt_no);//*出名代理人代碼
+            //**優先權聲明
+            $("#pfz1_prior_date").val(dateReviver(jMain.case_main[0].prior_date, "yyyy/M/d"));
+            $("#tfz1_prior_country").val(jMain.case_main[0].prior_country);
+            $("#tfz1_prior_no").val(jMain.case_main[0].prior_no);
+            //**類別種類
+            $("input[name='tfz1_class_type'][value='" + jMain.case_main[0].class_type + "']").prop('checked', true).triggerHandler("click");
+            //指定使用商品／服務類別
+            if ($("#tabbr1").length > 0) {//有載入才要檢查
+                if (jMain.case_good.length > 0) {
+                    $("#tfz1_class").val(jMain.case_main[0].class);//*類別
+                    $("#tfz1_class_count").val(jMain.case_good.length);//共N類
+                    br_form.Add_class(jMain.case_good.length);//產生筆數
+                    $.each(jMain.case_good, function (i, item) {
+                        $("#class1_" + (i + 1)).val(item.class);//第X類
+                        $("#good_count1_" + (i + 1)).val(item.dmt_goodcount);//共N項
+                        $("#grp_code1_" + (i + 1)).val(item.dmt_grp_code);//商品群組代碼
+                        $("#good_name1_" + (i + 1)).val(item.dmt_goodname);//商品名稱
+                    });
+                } else {
+                    br_form.count_kind(1);////類別串接
+                }
+            }
+            //**表彰之內容
+            $("#tf91_good_name").val(jMain.case_main[0].good_name);
+            //**證明標的
+            $("input[name='pul'][value='" + jMain.case_main[0].pul + "']").prop('checked', true).triggerHandler("click");
+            $("#tfz1_pul").val(jMain.case_main[0].pul);
+            //**證明內容
+            $("#tfd1_good_name").val(jMain.case_main[0].good_name);
+            //**描述實際使用說明
+            $("#tfz1_Remark4").val(jMain.case_main[0].remark4);
+            //**展覽優先權資料
+            $("#tabshow tbody").empty();
+            $("#shownum").val(0);
+            $.each(jMain.case_show, function (i, item) {
+                br_form.add_show();//展覽優先權增加一筆
+                $("#show_sqlno_" + (i + 1)).val(item.show_sqlno);//流水號
+                $("#show_date_" + (i + 1)).val(dateReviver(item.show_date, "yyyy/M/d"));//展覽會優先權日
+                $("#show_name_" + (i + 1)).val(item.show_name);//展覽會名稱
+            });
+            //**簽章及具結
+            $("#tfz1_remark2").val(jMain.case_main[0].remark2);
+            if (jMain.case_main[0].remark2 != "") {
+                var arr_remark2 = jMain.case_main[0].remark2.split("|");
+                $("#ttz1_" + arr_remark2[0] + "Code").prop('checked', true);
+                if (arr_remark2.length > 1) {
+                    $("#ttz1_" + arr_remark2[0]).val(arr_remark2[1]);
+                }
+            }
+            //**附件
+            $("#tfz1_remark1").val(jMain.case_main[0].remark1);
+            if (jMain.case_main[0].remark1 != "") {
+                var arr_remark1 = jMain.case_main[0].remark1.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
+                    var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    if (substr != null) {
+                        $("#tt11_Z9t").val(substr[1]);
+                    } else {
+                        $("#tt11_" + arr_remark1[i]).prop("checked", true);
+                    }
+                }
+            }
+
+            //**商標種類2
+            if (jMain.case_main[0].s_mark2 == "H") {
+                $("input[name=tfz1_s_mark2][value='H']").prop("checked", true);//位置
+            } else if (jMain.case_main[0].s_mark2 == "I") {
+                $("input[name=tfz1_s_mark2][value='I']").prop("checked", true);//氣味
+            } else if (jMain.case_main[0].s_mark2 == "J") {
+                $("input[name=tfz1_s_mark2][value='J']").prop("checked", true);//觸覺
+            }
+        }
     }
 
     //依案性切換要顯示的欄位
@@ -843,5 +973,8 @@
             tfap_cname += $("#ap_cname1_" + papnum).val() + $("#ap_cname2_" + papnum).val() + "、";
         }
         $("#tf91_good_name").val(tfap_cname.substring(0, tfap_cname.length - 1));
+
+        //切換後重新綁資料
+        br_form.bind();
     }
 </script>

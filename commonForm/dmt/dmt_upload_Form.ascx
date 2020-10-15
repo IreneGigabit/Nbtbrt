@@ -154,20 +154,20 @@
 
 <script language="javascript" type="text/javascript">
     var upload_form = {};
-    upload_form.prgid = "<%#prgid%>";
-    upload_form.submittask = "<%#submitTask%>";
     upload_form.uploadtype = "<%#uploadtype%>";
+
     upload_form.init = function () {
         var fld = $("#uploadfield").val();
 
         if (upload_form.prgid == "brt81") {
             $("#uploadTitle").html("交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;相&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;關&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件");
         } else {
-            if (upload_form.prgid != "brt62" || (upload_form.prgid == "brt62" && upload_form.submittask == "A")) {
+            if (upload_form.prgid != "brt62" || (upload_form.prgid == "brt62" && main.submittask == "A")) {
                 $("#tabfile" + fld + ">thead").append($("#upload_btn").text());//增加按鈕
             }
         }
 
+        /*
         $("#tabfile" + fld + ">tbody").empty();
         //從接洽記錄上傳
         if (upload_form.uploadtype == "case") {
@@ -218,7 +218,7 @@
             });
 
 
-            if (upload_form.prgid == "brt81") {
+            if (main.prgid == "brt81") {
                 //異動上傳作業
                 $("#tabfile" + fld + ">tbody").append(
                 "<TR><TD align=center colspan=5 class=lightbluetable1>"+
@@ -227,7 +227,7 @@
             }
         } else {
             //案件附件
-        }
+        }*/
     }
 
 
@@ -283,7 +283,7 @@
     upload_form.appendFile = function () {
         var fld = $("#uploadfield").val();
 
-        if (upload_form.prgid == "brt62" && upload_form.submittask == "A") {//文件上傳作業
+        if (main.prgid == "brt62" && main.submittask == "A") {//文件上傳作業
             if ($("#step_grade").val() == "0" && $("#" + fld + "_filenum").val() == "0") {
                 var ans = confirm("對應進度0，是否確定將文件上傳至進度0？若不是進度0，請先點選「否」再點選「查詢」以重新選取對應進度後再上傳");
                 if (ans == false) {
@@ -350,6 +350,7 @@
     upload_form.UploadAttach = function (nRow) {
         var tfolder = $("#" + $("#uploadfield").val() + "_path").val();
         var url = getRootPath() + "/sub/upload_win_file_new.aspx?type=doc" +
+            "&attach_sqlno_name=attach_sqlno_" + nRow +
             "&folder_name=" + tfolder +
             "&file_name=" + $("#uploadfield").val() + "_name_" + nRow +
             "&size_name=" + $("#uploadfield").val() + "_size_" + nRow +
@@ -358,7 +359,7 @@
             "&prgid=<%=prgid%>" +
             "&btnname=btn" + $("#uploadfield").val() + "_" + nRow +
             "&filename_flag=source_name";
-        window.open(url, "", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(url, "dmtupload", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
     //[刪除]

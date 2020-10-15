@@ -120,7 +120,6 @@ public partial class Sys
     /// <param name="srcFile">原始路徑(虛擬路徑)</param>
     /// <param name="dstFile">目的路徑(虛擬路徑)</param>
     /// <param name="backupFlag">檔案衝突時是否備份舊檔</param>
-    /// <returns></returns>
     public static void RenameFile(string srcFile, string dstFile, bool backupFlag) {
         System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(srcFile));
         System.IO.FileInfo dFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(dstFile));
@@ -130,14 +129,24 @@ public partial class Sys
                                             , Sys.GetSession("scode")
                                             , dFi.Extension);
         if (HttpContext.Current.Request["chkTest"] != "TEST") {
-            if (dFi.Exists && backupFlag) {
-                dFi.MoveTo(dFi.DirectoryName + "\\" + backup_name);
+            //來源跟目的不同時才要搬,否則會出錯
+            if (sFi.FullName != dFi.FullName) {
+                if (dFi.Exists && backupFlag) {
+                    dFi.MoveTo(dFi.DirectoryName + "\\" + backup_name);
+                    sFi.MoveTo(dFi.FullName);
+                } else if (dFi.Exists && !backupFlag) {
+                    dFi.Delete();
+                    sFi.MoveTo(dFi.FullName);
+                }
             }
-            sFi.CopyTo(dFi.FullName, true);
         } else {
-            HttpContext.Current.Response.Write("來源=" + sFi.FullName + "<BR>");
-            HttpContext.Current.Response.Write("目的=" + dFi.FullName + "<BR>");
-            HttpContext.Current.Response.Write("衝突備份=" + dFi.DirectoryName + "\\" + backup_name + "<HR>");
+            HttpContext.Current.Response.Write("sFi.FullName=" + sFi.FullName + "<BR>");
+            HttpContext.Current.Response.Write("dFi.FullName=" + dFi.FullName + "<BR>");
+            if (sFi.FullName != dFi.FullName) {
+                HttpContext.Current.Response.Write("來源=" + sFi.FullName + "<BR>");
+                HttpContext.Current.Response.Write("目的=" + dFi.FullName + "<BR>");
+                HttpContext.Current.Response.Write("衝突備份=" + dFi.DirectoryName + "\\" + backup_name + "<HR>");
+            }
         }
     }
     #endregion
@@ -173,7 +182,7 @@ public partial class Sys
             string attach_sqlno = (context.Request["attach_sqlno_" + k] ?? "").Trim();
             string attach_path = (context.Request[fld + "_" + k] ?? "").Trim();//上傳路徑
             string apattach_sqlno = (context.Request[fld + "_apattach_sqlno_" + k] ?? "").Trim();//總契約書流水號
-            string attach_no = (context.Request[fld + "attach_no_" + k] ?? "").Trim();//序號
+            string attach_no = (context.Request["attach_no_" + k] ?? "").Trim();//序號
             string straa = (context.Request[fld + "_name_" + k] ?? "").Trim();//上傳檔名
 
             if (attach_flag == "A") {
@@ -261,6 +270,7 @@ public partial class Sys
                     SQL += ",tran_scode='" + context.Session["scode"] + "'";
                     SQL += ",case_no=" + Util.dbchar(context.Request["attach_case_no"]);
                     SQL += " Where attach_sqlno='" + attach_sqlno + "' and in_no='" + pin_no + "'";
+                    conn.ExecuteNonQuery(SQL);
                 }
             } else if (attach_flag == "D") {
                 Sys.insert_log_table(conn, "D", pprgid, "dmt_attach", "attach_sqlno", attach_sqlno, "");

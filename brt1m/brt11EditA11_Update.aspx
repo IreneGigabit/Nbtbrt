@@ -108,7 +108,10 @@
                 string strpath = sfile.gbrWebDir + "/temp";
                 string attach_name = Request["in_no"] + System.IO.Path.GetExtension(aa);//重新命名檔名
                 newfilename = strpath + "/" + attach_name;//存在資料庫路徑
-                Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
+                if (aa.IndexOf("/") > -1 || aa.IndexOf("\\") > -1)
+                    Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
+                else
+                    Sys.RenameFile(strpath + "/" + aa, strpath + "/" + attach_name, true);
             }
 
             //dmt_temp
@@ -130,12 +133,12 @@
                 }
             }
 
-            if (Request["tfd1_good_name"] != null) {//證明內容
-                ColMap["good_name"] = Util.dbchar(Request["tfd1_good_name"]);
-            }
-            if (Request["tf91_good_name"] != null) {//表彰內容
-                ColMap["good_name"] = Util.dbchar(Request["tf91_good_name"]);
-            }
+            //if (Request["tfd1_good_name"] != null) {//證明內容
+            //    ColMap["good_name"] = Util.dbchar(Request["tfd1_good_name"]);
+            //}
+            //if (Request["tf91_good_name"] != null) {//表彰內容
+            //    ColMap["good_name"] = Util.dbchar(Request["tf91_good_name"]);
+            //}
             ColMap["draw_file"] = Util.dbchar(Sys.Path2Btbrt(newfilename));
             ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
             ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
@@ -258,16 +261,17 @@
             conn.Commit();
             //conn.RollBack();
 
-            if (Request["chkTest"] != "TEST") {
-                strOut.AppendLine("<script language='javascript' type='text/javascript'>");
-            }
-
-            strOut.AppendLine("alert(\"資料更新成功\");");
-            strOut.AppendLine("window.parent.tt.rows=\"100%,0%\";");
-
-            if (Request["chkTest"] != "TEST") {
-                strOut.AppendLine("<" + "/script>");
-            }
+            strOut.AppendLine("<div align='center'><h1>資料更新成功</h1></div>");
+            //if (Request["chkTest"] != "TEST") {
+            //    strOut.AppendLine("<script language='javascript' type='text/javascript'>");
+            //}
+            //
+            //strOut.AppendLine("alert(\"資料更新成功\");");
+            //strOut.AppendLine("window.parent.tt.rows=\"100%,0%\";");
+            //
+            //if (Request["chkTest"] != "TEST") {
+            //    strOut.AppendLine("<" + "/script>");
+            //}
         }
     }
 </script>

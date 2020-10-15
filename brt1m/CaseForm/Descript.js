@@ -84,7 +84,7 @@ var a3Remark1 = "<tr><td>◎商標／標章圖樣描述必須充分詳實，應�
 var a4Appl_name = "<tr><td>◎商標／標章名稱應與所申請註冊之商標／標章圖樣相符；商標／標章權以請准註冊之商標／標章圖樣為限，商標／標章名稱不受商標法之保護。<font color=red>所載之商標／標章名稱，請以中文繁體字、英文或日文書寫。</font></td></tr>";
 var a4Rapcust = "<tr><td>◎請填寫原授權使用人（被授權人）／終止再授權使用人（被授權人）之人名資料。</td></tr>";
 var a4Term1 = "<tr><td>◎請填寫終止（再）授權之日期。</td></tr>";
-var a4color = "<tr><td>◎商標圖樣全部為墨色者，應勾選墨色欄框；商標圖樣全部為彩色者或其中部分有彩色者，應勾選彩色欄框，如係顏色商標，請另填寫顏色商標註冊申請書辦理之。</td>" +
+var a4Color = "<tr><td>◎商標圖樣全部為墨色者，應勾選墨色欄框；商標圖樣全部為彩色者或其中部分有彩色者，應勾選彩色欄框，如係顏色商標，請另填寫顏色商標註冊申請書辦理之。</td>" +
 			 "<tr><td>◎圖樣應以實線將商品或其包裝、容器、設計外觀以立體圖表現出來，若為彩色者應於適當部分施以使用顏色；如特殊設計僅係產品或包裝容器一部分，應以虛線將商品實物描繪出來，並聲明該虛線之部分不專用。例如：立於汽車引擎蓋上之黑豹立體形狀，其汽車體部份應以虛線表示，黑豹立體形狀應以實線表示，並聲明該虛線之部分不專用。</td></tr>";
 var a4Remark3M = "<tr><td>虛線框內請黏貼商標之主要立體圖樣一張，該立體圖樣應選擇最足以表現本商標圖樣之視圖。<font color=red>標章圖樣應清晰可辨，長、寬以五至八公分為標準</font>。</td></tr>";
 var a4Remark3O = "<tr><td>◎虛線框計有六個，圖樣（一）主要立體圖，圖樣（二）～（六）請黏貼五張以下不同角度但相同比例之視圖或樣本。<font color=red>審查以黏貼之圖樣為準，務必正確</font>。</td>" +
@@ -211,7 +211,7 @@ var d2Issue_no = "<tr><td>◎請將原註冊號數／原註冊申請案號、商
 var d2Class = "<tr><td>◎請就原核准審定後註冊公告前、已註冊之商標權／團體商標權／證明標章權、被異議或評定之已註冊商標權／團體商標權／證明標章權所指定之商品／服務內容，依分割之情況，按商品及服務分類表之類別順序，依序填寫組群代碼，並具體列舉商品／服務名稱。</td>" +
 			 "<tr><td>◎申請分割不受商品組群或類別之限制，同一商品組群、同一類別亦可辦理分割之申請。</td></tr>";
 var d2Tran_remark = "<tr><td>◎核准審定後註冊公告前之分割申請案件、已註冊之商標權／團體商標權／證明標章權之分割申請案件、被異議或評定之已註冊商標權／團體商標權／證明標章權之分割申請案件，需俟相關異議／評定／移轉／變更案／延展案確定後，再行審理者，請於備註欄以英文字母「V」於  內勾選，並填寫其相關申請或註冊號數。</tr></td>";
-var d2Attech = Zattech +
+var d2Attech = zAttech +
 			 "<tr><td>◎分割申請書副本。例如分割為二件者，則請檢送副本二份；如分割為三件者，則請檢送副本三份，依此類推。（每份分割申請書副本，應浮貼商標圖樣五張，圖樣為彩色，應另檢附黑白圖樣二張）</tr></td>";
 
 var e1Class = "<tr><td>◎請於書表標題□框格內勾選申請之中文或英文證明書。＊書表左上方之英文字母Ｐ代表申請中文證明書；Ｍ代表申請英文證明書。</td></tr>" +
@@ -439,7 +439,7 @@ var zApcust = "<tr><td>１、公司、行號、工廠、身分證統一編號欄
 var zPrior = ztextp;
 var zAppl_name = "<tr><td>標章名稱應與所申請註冊之標章圖樣相符；標章專用權以請准註冊之標章圖樣為限，未載入圖樣中之標章名稱，不受商標法之保護。<font color=red>所載之標章名稱，請以中文繁體字、英文或日文書寫。</font></td></tr>";
 var zOappl_name = ztext + "<tr><td>◎標章圖樣中之文字或圖形，符合前述規定者，請填寫於：標章圖樣中之「  」不單獨主張專用權。</TD></TR>";
-var zCappl_name = "<tr><td>圖樣分析資料欄位，請依圖樣中所組成中文、外文、圖形或記號，一一填寫。</td></tr>" + textz + ztextc + ztexte + ztextd + ztexts;
+var zCappl_name = "<tr><td>圖樣分析資料欄位，請依圖樣中所組成中文、外文、圖形或記號，一一填寫。</td></tr>" + ztextz + ztextc + ztexte + ztextd + ztexts;
 var zColor = "<tr><td>◎標章圖樣全部為墨色者，應勾選墨色欄框；標章圖樣全部為彩色者或其中部分有彩色者，應勾選彩色欄框，如係顏色組合商標／標章，請另填寫顏色組合商標／標章註冊申請書辦理之。</td></tr>";
 
 var FOFappl_name = "<tr><td>註冊號數、商標/92年修正前服務標章名稱及商標或標章種類請務必填寫正確，請參考註冊證所載之資料。</td></tr>";
@@ -527,7 +527,7 @@ function PMARK(A) {
         case "FAG":
             if (A==a4Remark1) A=agRemark1;
             if (A==a5Attech) A=afAttech;
-            if (A==a4color) A=g4color;
+            if (A==a4Color) A=g4color;
             break;
         case "FAI":
             if (A == a4Remark1) A = aiRemark1;
@@ -550,7 +550,7 @@ function PMARK(A) {
             break;
     }
 
-    if($('#PEND').is(':visible')){
+    if ($('#PEND').is(':visible')) {
         $('#PEND').hide();
         $("#tfz1_prior_country").show();
         $("#tfz1_zname_type").show();
@@ -559,7 +559,7 @@ function PMARK(A) {
         $("#tfz4_prior_country").show();
         $("#apclass").show();
         $("#ap_country").show();
-    }else{
+    } else {
         var contStr = "<TABLE WIDTH='100%'>" + A + "</table>";
         $("#PEND").empty();
         $("#PEND").append(contStr);

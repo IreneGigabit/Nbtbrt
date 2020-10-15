@@ -149,6 +149,7 @@
 
     function AddForm(){
         reg.action = "Brt11Add" + reg.new_form.value + ".aspx";
+        reg.submitTask.value = "Add";
         reg.submit();
     }
 	

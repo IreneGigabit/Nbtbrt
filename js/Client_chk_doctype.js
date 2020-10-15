@@ -5,7 +5,7 @@ function check_doctype(pdept, pvalue, pchktype) {
     if (pvalue == "M") {
         //依據經營會報101年6月份經營會報應執行事項決議：
         //簽訂總契約書的客戶交辦案件時，應另提供由客戶窗口人員具名之委辦書。
-        pdoc_type = "082";	//客戶案件委辦書
+        var pdoc_type = "082";	//客戶案件委辦書
         if (check_ctrl_doctype(pdept, pdoc_type, pchktype) == "A") { //A:不可交辦,B:提醒
             return true;
         }
@@ -17,7 +17,7 @@ function check_ctrl_doctype(pdept, pdoc_type, pchktype) {
     var rtn = "Z";
     var fld = $("#uploadfield").val();
     var sqlnum = CInt($("#" + fld + "_filenum").val());
-    var doctype_name = $("#doc_type").val();
+    var doctype_name = "doc_type";
     if (pdept == "TE") doctype_name = "doc_code";
 
     //檢查上傳筆數

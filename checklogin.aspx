@@ -16,10 +16,10 @@
         string strChk = CheckUser();
         //sb.AppendLine("alert(\"" + Session["Password"] + " !\");");
         if (strChk.Length > 0) {
-            sb = sb.AppendLine("alert(\"" + strChk + "\");");
-            sb = sb.AppendLine("top.location.href = \"login.aspx\";");
+            sb.AppendLine("alert(\"" + strChk + "\\n" + (Request["tfx_scode"] ?? "") + "\");");
+            sb.AppendLine("top.location.href = \"login.aspx\";");
         } else if (exMsg.Length == 0) {
-            sb = sb.AppendLine("top.location.href = \"Default.aspx\";");
+            sb.AppendLine("top.location.href = \"Default.aspx\";");
         }
 
         ScriptString = sb.ToString();

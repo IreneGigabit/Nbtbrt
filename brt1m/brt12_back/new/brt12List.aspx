@@ -244,9 +244,9 @@
             urlasp += "&uploadtype=case";
 
             if (Sys.GetSession("scode") == page.pagedTable.Rows[i].SafeRead("in_scode", "") || (HTProgRight & 128) != 0)
-                urlasp += "&submittask=U";
+                urlasp += "&submittask=Edit";
             else
-                urlasp += "&submittask=Q";
+                urlasp += "&submittask=Show";
             page.pagedTable.Rows[i]["urlasp"] = urlasp;
         }
         var settings = new JsonSerializerSettings()

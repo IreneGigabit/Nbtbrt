@@ -348,9 +348,7 @@
         //        showEmpty:false
         //    });
         //}
-
-        br_form.changeTag("000");//交辦內容顯示預設項目
-        
+       
         if ($("#Ar_Form").val() == "A0" || $("#Ar_Form").val() == "A1") {
             //對應後續交辦作業序號(新申請案不用顯示)
             $("#tr_grconf").hide();

@@ -76,15 +76,23 @@
     private DataTable GetCase() {
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            //Dictionary<string, string> paras = new Dictionary<string, string>();
+            //paras.Add("nIn_no", in_no);
+            //conn.Procedure("Pro_case2", paras, dt);
+            //if (formfunction == "Add" && submitTask != "AddNext") {//新增模式
+            //    SQL = "SELECT A.*, B.*,''in_no ";
+            //    SQL += ",(select min(att_sql) from custz_att c where B.cust_area = C.cust_area AND B.cust_seq = C.cust_seq and (dept='T' or dept is null) )att_sql ";
+            //    SQL += " FROM apcust A ";
+            //    SQL += "INNER JOIN custz B ON A.cust_area = B.cust_area AND A.cust_seq = B.cust_seq ";
+            //    //SQL += " LEFT OUTER JOIN custz_att C ON B.cust_area = C.cust_area AND B.cust_seq = C.cust_seq ";
+            //    SQL += "where b.cust_area='" + cust_area + "' and b.cust_seq='" + cust_seq + "'";
+            //    conn.DataTable(SQL, dt);
+            //} else {//編輯/複製 模式
+            //    SQL = "Pro_case2 '" + in_no + "'";
+            //    conn.DataTable(SQL, dt);
+            //}
             if (submitTask == "Edit" || submitTask == "AddNext") {//編輯/複製下一筆 模式
-                //SQL = "Pro_case2 '" + in_no + "'";
-                SQL="SELECT a.*,c.* ";
-                SQL += ",(SELECT b.coun_c FROM sysctrl.dbo.country b WHERE b.coun_code = a.zname_type and b.markb<>'X') AS nzname ";
-                SQL += ",(SELECT c.coun_code+c.coun_cname FROM sysctrl.dbo.ipo_country c WHERE c.ref_coun_code = a.prior_country ) AS ncountry ";
-                SQL += ",a.mark temp_mark,c.mark case_mark ";
-                SQL += " FROM dmt_temp A";
-                SQL += " inner join case_dmt c on a.in_no = c.in_no and a.in_scode = c.in_scode";
-                SQL += " WHERE A.in_no ='" + in_no + "'";
+                SQL = "Pro_case2 '" + in_no + "'";
                 conn.DataTable(SQL, dt);
 
                 if (dt.Rows.Count > 0) {

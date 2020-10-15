@@ -63,7 +63,7 @@
                     } else if (colkey.Left(1) == "n") {
                         ColMap[colkey.Substring(4)] = Util.dbzero(colValue);
                     } else {
-                        ColMap[colkey.Substring(4)] = Util.dbchar(colValue);
+                        ColMap[colkey.Substring(4)] = Util.dbnull(colValue);
                     }
                 }
             }
@@ -101,7 +101,10 @@
                 string strpath = sfile.gbrWebDir + "/temp";
                 string attach_name = RSno + System.IO.Path.GetExtension(aa);//重新命名檔名
                 newfilename = strpath + "/" + attach_name;//存在資料庫路徑
-                Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
+                if (aa.IndexOf("/") > -1 || aa.IndexOf("\\") > -1)
+                    Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
+                else
+                    Sys.RenameFile(strpath + "/" + aa, strpath + "/" + attach_name, true);
             }
 
             ColMap.Clear();
@@ -121,12 +124,12 @@
                 }
             }
 
-            if (Request["tfd1_good_name"] != null) {//證明內容
-                ColMap["good_name"] = Util.dbchar(Request["tfd1_good_name"]);
-            }
-            if (Request["tf91_good_name"] != null) {//表彰內容
-                ColMap["good_name"] = Util.dbchar(Request["tf91_good_name"]);
-            }
+            //if (Request["tfd1_good_name"] != null) {//證明內容
+            //    ColMap["good_name"] = Util.dbchar(Request["tfd1_good_name"]);
+            //}
+            //if (Request["tf91_good_name"] != null) {//表彰內容
+            //    ColMap["good_name"] = Util.dbchar(Request["tf91_good_name"]);
+            //}
             ColMap["class_count"] = Util.dbnull(Request["ctrlcount1"]);
             ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
             ColMap["in_no"] = "'" + RSno + "'";
@@ -282,9 +285,6 @@
                     ColMap["source_name"] = Util.dbchar(straa);
                     ColMap["attach_size"] = Util.dbnull(Request[fld + "_size_" + k]);
                     ColMap["attach_flag"] = "'A'";
-                    ColMap["Mark"] = "''";
-                    ColMap["tran_date"] = "getdate()";
-                    ColMap["tran_scode"] = "'" + Session["scode"] + "'";
                     ColMap["attach_branch"] = Util.dbchar(Request[fld + "_branch_" + k]);
                     ColMap["apattach_sqlno"] = Util.dbchar(Request[fld + "_apattach_sqlno_" + k]);
 
