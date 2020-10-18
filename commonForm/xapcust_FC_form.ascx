@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="apcust_re_form" %>
+﻿<%@ Control Language="C#" ClassName="apcust_FC_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -27,22 +27,25 @@
 </script>
 
 <%=Sys.GetAscxPath(this)%>
-<input type=hidden id=apnum name=apnum value=0><!--筆數-->
-<table border="0" id=tabap class="bluetable" cellspacing="1" cellpadding="2" width="100%">
+<input type=hidden id=FC_apnum name=FC_apnum value=0><!--筆數-->
+<table border="0" id=FC_tabap class="bluetable" cellspacing="1" cellpadding="2" width="100%">
 	<THEAD>
 		<tr id=tr_tg_arf style="display:none">
 		    <td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(t1Apcust)"><strong>貳、<u>申請人(受讓人)</u></strong></td>
 		</tr>
-		<tr id=tr_tg_arf_fl>
-		    <td class="lightbluetable" colspan="4" valign="top" id=tg_arf STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zApcust)"><strong><span id=span_FL name=span_FL></span></strong></td>
+		<tr id=tr_tg_arf_fl style="display:none">
+		    <td class="lightbluetable" colspan="4" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zApcust)"><strong><span id=span_FL></span></strong></td>
+		</tr>
+		<tr id=tr_tg_arf_fc style="display:">
+		    <td class="lightbluetable" colspan="4" valign="top"><strong><span id=span_FC></span></strong></td>
 		</tr>
 	    <TR>
 		    <TD class="bluetable sfont9" style="border-color:red" colspan=4 align=right>
                 <span id="span_btn_POA">
     			    <input type=button class="greenbutton <%#Lock.TryGet("Qdisabled")%>" id="btn_POA" name="btn_POA" value="查詢申請人委任書">
 			    </span>
-			    <input type=button value="增加一筆申請人" class="cbutton" id=AP_Add_button name=AP_Add_button>
-			    <input type=button value="減少一筆申請人" class="cbutton" id=AP_Del_button name=AP_Del_button>
+			    <input type=button value="增加一筆申請人" class="cbutton" id=FC_AP_Add_button name=FC_AP_Add_button>
+			    <input type=button value="減少一筆申請人" class="cbutton" id=FC_AP_Del_button name=FC_AP_Del_button>
 		    </TD>
 	    </TR>
 	</THEAD>
@@ -58,8 +61,8 @@
 		</TD>
 		<TD class=sfont9>
 			<select id="apclass_##" name="apclass_##" class="SEdit" readonly><%#apclass%></select>
-            <label><input type="checkbox" id="ap_hserver_flag_##" name="ap_hserver_flag_##" value="Y" onclick="apcust_form.apserver_flag('##')"><%#apserver_name%>
-            <input type="hidden" id="ap_server_flag_##" name="ap_server_flag_##" value="N"></label>
+            <label><input type="checkbox" id="fc_ap_hserver_flag_##" name="fc_ap_hserver_flag_##" value="Y" onclick="apcust_form.apserver_flag('##')"><%#apserver_name%>
+            <input type="hidden" id="fc_ap_server_flag_##" name="fc_ap_server_flag_##" value="N"></label>
 		</TD>
 		<TD class=lightbluetable align=right title="輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。">
 			<span id="span_apcust_no_##" style="cursor:pointer;color:blue">申請人編號<br>(統一編號/身份證字號)：</span>
@@ -92,7 +95,7 @@
 		    名：<INPUT TYPE=text id="ap_lcname_##" name="ap_lcname_##" SIZE=20 MAXLENGTH=60 class="SEdit" readonly>
 		</TD>
 	</TR>
-	<TR id="trap_sql_##">
+	<TR id="FCtrap_sql_##">
 		<TD class=lightbluetable align=right>申請人序號：</TD>
 		<TD class=sfont9 colspan=3>
 		    <INPUT TYPE=text id="ap_sql_##" name="ap_sql_##" SIZE=3 MAXLENGTH=3 class="SEdit" readonly>
@@ -100,7 +103,7 @@
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>
-            <input type=button class='cbutton <%#Lock.TryGet("QA1disabled")%>' value='查詢' onclick="apcust_form.get_apnameaddr('##')">申請人名稱(英)：
+            <input type=button class='cbutton <%#Lock.TryGet("QA1disabled")%>' value='查詢' onclick="apcust_form.get_apnameaddr('##', 'FC', '')">申請人名稱(英)：
 		</TD>
 		<TD class=sfont9 colspan=3>
             <input type=hidden id="ap_ename_##" name="ap_ename_##">
@@ -175,28 +178,28 @@
     }
     
     //增加一筆申請人
-    $("#AP_Add_button").click(function () { apcust_form.appendAP(); });
+    $("#FC_AP_Add_button").click(function () { apcust_form.appendAP(); });
     apcust_form.appendAP = function () {
-        var nRow = CInt($("#apnum").val()) + 1;
+        var nRow = CInt($("#FC_apnum").val()) + 1;
         //複製樣板
         var copyStr = $("#apcust_template").text()||"";
         copyStr = copyStr.replace(/##/g, nRow);
 
-        $("#tabap>tbody").append("<tr id='tr_ap_" + nRow + "' class='sfont9'><td><table border='0' class='bluetable' cellspacing='1' cellpadding='2' width='100%'>" + copyStr + "</table></td></tr>");
+        $("#FC_tabap>tbody").append("<tr id='tr_ap_" + nRow + "' class='sfont9'><td><table border='0' class='bluetable' cellspacing='1' cellpadding='2' width='100%'>" + copyStr + "</table></td></tr>");
         $("#tr_ap_" + nRow + " .Lock").lock();
-        $("#apnum").val(nRow);
+        $("#FC_apnum").val(nRow);
     }
 
     //減少一筆申請人
-    $("#AP_Del_button").click(function () { apcust_form.deleteAP(); });
+    $("#FC_AP_Del_button").click(function () { apcust_form.deleteAP(); });
     apcust_form.deleteAP = function () {
-        var nRow = CInt($("#apnum").val());
+        var nRow = CInt($("#FC_apnum").val());
         $('#tr_ap_'+nRow).remove();
-        $("#apnum").val(Math.max(0, nRow - 1));
+        $("#FC_apnum").val(Math.max(0, nRow - 1));
     }
 
     apcust_form.getapp=function(apcust_no,in_no){
-        $("#tabap tbody").empty();
+        $("#FC_tabap tbody").empty();
 
         $.ajax({
             type: "get",
@@ -213,9 +216,9 @@
 
                 $.each(apcust_list, function (i, item) {
                     //增加一筆
-                    $("#AP_Add_button").click();
+                    $("#FC_AP_Add_button").click();
                     //填資料
-                    var nRow = $("#apnum").val();
+                    var nRow = $("#FC_apnum").val();
                     $("#apsqlno_" + nRow).val(item.apsqlno);
                     $("#apclass_" + nRow).val(item.apclass);
                     $("#apcust_no_" + nRow).val(item.apcust_no);
@@ -243,11 +246,10 @@
                     $("#apatt_tel1_" + nRow).val(item.apatt_tel1);
                     $("#apatt_fax_" + nRow).val(item.apatt_fax);
                     if (item.Server_flag == "Y") {
-                        $("#ap_hserver_flag_" + nRow).prop("checked", true);
+                        $("#fc_ap_hserver_flag_" + nRow).prop("checked", true).triggerHandler("click");
                     } else {
-                        $("#ap_hserver_flag_" + nRow).prop("checked", false);
+                        $("#fc_ap_hserver_flag_" + nRow).prop("checked", false).triggerHandler("click");
                     }
-                    apcust_form.apserver_flag(nRow);
                     $("#ap_fcname_" + nRow).val(item.ap_fcname);
                     $("#ap_lcname_" + nRow).val(item.ap_lcname);
                     $("#ap_fename_" + nRow).val(item.ap_fename);
@@ -255,7 +257,7 @@
                     $("#ap_sql_" + nRow).val(item.ap_sql);
                     //申請人序號空值不顯示
                     if (item.ap_sql == "" || item.ap_sql == "0") {
-                        $("#trap_sql_" + nRow).hide();
+                        $("#FCtrap_sql_" + nRow).hide();
                     }
                 })
             },
@@ -310,11 +312,10 @@
                     $("#apatt_tel1_" + nRow).val(item.apatt_tel1);
                     $("#apatt_fax_" + nRow).val(item.apatt_fax);
                     if (item.Server_flag == "Y") {
-                        $("#ap_hserver_flag_" + nRow).prop("checked", true);
+                        $("#fc_ap_hserver_flag_" + nRow).prop("checked", true).triggerHandler("click");
                     } else {
-                        $("#ap_hserver_flag_" + nRow).prop("checked", false);
+                        $("#fc_ap_hserver_flag_" + nRow).prop("checked", false).triggerHandler("click");
                     }
-                    apcust_form.apserver_flag(nRow);
                     $("#ap_fcname_" + nRow).val(item.ap_fcname);
                     $("#ap_lcname_" + nRow).val(item.ap_lcname);
                     $("#ap_fename_" + nRow).val(item.ap_fename);
@@ -343,16 +344,16 @@
 
     //應受送達人給值
     apcust_form.apserver_flag = function (papnum) {
-        if ($("#ap_hserver_flag_" + papnum).prop("checked"))
-            $("#ap_server_flag_" + papnum).val("Y");
+        if ($("#fc_ap_hserver_flag_" + papnum).prop("checked"))
+            $("#fc_ap_server_flag_" + papnum).val("Y");
         else
-            $("#ap_server_flag_" + papnum).val("N");
+            $("#fc_ap_server_flag_" + papnum).val("N");
     }
 
     //檢查申請人重覆
     apcust_form.chkapcust_no = function (papnum) {
         var objAp = {};
-        for (var r = 1; r <= CInt($("#apnum").val()) ; r++) {
+        for (var r = 1; r <= CInt($("#FC_apnum").val()) ; r++) {
             var lineAp = $("#apcust_no_" + r).val();
             if (lineAp != "" && objAp[lineAp]) {
                 alert("(" + r + ")申請人重覆，請重新輸入！！");
@@ -370,8 +371,18 @@
             alert("請先輸入統編或再點選統編後「確定」重新抓取申請人資料！");
             return false;
         }
+        /*
+        select case ptrid
+		   case "FC0"
+		        fld="dbmn_"
+		   case ""
+				fld="dbmn1_"     
+		   case else
+		        fld=""
+		end select
+        */
         //***todo
-        var url = getRootPath() +"/cust/cust13_2Qlist.aspx?prgid=Si04W01&apsqlno=" + apsqlno + "&pnum=" + nRow ;
+        var url = getRootPath() + "/cust/cust13_2Qlist.aspx?prgid=Si04W01&apsqlno=" + apsqlno + "&pnum=" + nRow + "&fld=" + fld;
         window.open(url, 'myWindowOneN',"width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
@@ -382,7 +393,7 @@
     where apattach_sqlno='N201512015'
     */
     $("#btn_POA").click(function () {
-	    var allapsqlno= $("#tabap input[id^='apsqlno_']").map(function (){
+	    var allapsqlno= $("#FC_tabap input[id^='apsqlno_']").map(function (){
 		    return $(this).val();
 	    }).get().join(',');
 

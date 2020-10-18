@@ -6,6 +6,7 @@
 <%@ Register Src="~/commonForm/dmt/case_form.ascx" TagPrefix="uc1" TagName="case_form" %>
 <%@ Register Src="~/commonForm/dmt/dmt_Form.ascx" TagPrefix="uc1" TagName="dmt_Form" %>
 <%@ Register Src="~/commonForm/dmt/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
+<%@ Register Src="~/brt1m/CaseForm/A9Z_end.ascx" TagPrefix="uc1" TagName="A9Z_end" %>
 
 
 <script runat="server">
@@ -71,6 +72,48 @@
         StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Brt11blank\">[聯絡人新增]</a>\n";
         StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Brt11blank\">[申請人新增]</a>\n";
 
+        //申請人欄位畫面
+        if (ar_form == "A6") {//變更
+            apcustHolder.Controls.Add(LoadControl("~/CommonForm/apcust_FC_RE_form.ascx"));
+            apcustHolder.Controls.Add(LoadControl("~/CommonForm/apcust_FC_RE1_form.ascx"));
+        }
+
+        //交辦內容欄位畫面
+        if (ar_form == "A3") {
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FFForm.ascx"));//註冊費
+        } else if (ar_form == "A4") {
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FR1Form.ascx"));//延展
+        } else if (ar_form == "A5") {
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FD1Form.ascx"));//分割
+        } else if (ar_form == "A6") {
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FC1Form.ascx"));//變更
+        } else if (ar_form == "A7") {
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FL1Form.ascx"));//授權
+        } else if (ar_form == "A8") {
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FT1Form.ascx"));//移轉
+        } else if (ar_form == "A9") {
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FP1Form.ascx"));//質權
+        } else if (ar_form == "AA") {
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FN1Form.ascx"));//各種證明書
+        } else if (ar_form == "AB") {
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FI1Form.ascx"));//補(換)發證
+        } else if (ar_form == "AC") {
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FV1Form.ascx"));//閲案
+        } else if (ar_form == "B") {
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DO1Form.ascx"));//申請異議
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DR1Form.ascx"));//申請廢止
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DI1Form.ascx"));//申請評定
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/BZZ1Form.ascx"));//無申請書之交辦內容案
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/B5C1Form.ascx"));//聽證
+        } else{
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/ZZ1Form.ascx"));
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FOBForm.ascx"));
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/B5C1Form.ascx"));
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FOFForm.ascx"));
+            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FB7Form.ascx"));
+        }
+
+        
         if (formFunction == "Edit") {
             if ((HTProgRight & 8) > 0) {
                 if (prgid == "brt51") {//客收確認
@@ -119,6 +162,7 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util_NumberConvert.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
@@ -180,6 +224,7 @@
             <div class="tabCont" id="#apcust">
                 <uc1:apcust_form runat="server" ID="apcust_form" />
                 <!--include file="../commonForm/apcust_form.ascx"--><!--案件申請人-->
+                <asp:PlaceHolder ID="apcustHolder" runat="server"></asp:PlaceHolder>
             </div>
             <div class="tabCont" id="#case">
                 <uc1:case_form runat="server" id="case_form" />
@@ -190,6 +235,9 @@
                 <!--include file="../commonForm/dmt/dmt_Form.ascx"--><!--案件主檔-->
             </div>
             <div class="tabCont" id="#tran">
+                <asp:PlaceHolder ID="tranHolder" runat="server"></asp:PlaceHolder><!--交辦內容.依ar_form動態載入form-->
+                <uc1:A9Z_end runat="server" ID="A9Z_end" />
+                <!--include file="../brt1m/CaseForm/A9Z_end.ascx"--><!--結案復案資料-->
             </div>
             <div class="tabCont" id="#upload">
                 <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" />
@@ -265,7 +313,11 @@
     })
 
     function this_init() {
-        //console.log("this_init");
+        if(main.ar_form=="A6"){//變更
+            $("#CTab td.tab[href='#dmt']").after($("#CTab td.tab[href='#apcust']"));//[案件申請人]移到[案件主檔]後面
+        }else{
+            $("#CTab td.tab[href='#case']").before($("#CTab td.tab[href='#apcust']"));//[案件申請人]移到[收費與接洽事項]前面
+        }
         //-----------------
         //取得交辦資料
         $.ajax({
@@ -291,6 +343,8 @@
         attent_form.init();//案件聯絡人
         apcust_form.init();//案件申請人
         case_form.init();//收費與接洽事項
+        dmt_form.init();//案件主檔
+        br_form.init();//交辦內容
         upload_form.init();//文件上傳
         settab("#case");//收費與接洽事項
 

@@ -2,7 +2,7 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
-    //新申請案交辦內容
+    //A4延展案交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     
@@ -26,68 +26,68 @@
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>※、代理人</strong></td>
-		<td class="whitetablebg" colspan="7" >
+		<td class="whitetablebg">
 		    <select id="tfzd_agt_no" NAME="tfzd_agt_no"><%#tfzd_agt_no%></select>
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Issue)">
+		<td class="lightbluetable" colspan="2" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Issue)">
             <strong>壹、<u>註冊號數、商標/標章名稱、商標種類</u></strong>
 		</td>
 	</tr>
     <tr>
 		<td class=lightbluetable align=right >商標種類：</td>
-		<td class=whitetablebg colspan="7">
-            <input type="radio" name="fr_S_Mark" value="" onclick="dmt_form.change_mark(1)">商標
-            <input type="radio" name="fr_S_Mark" value="S" onclick="dmt_form.change_mark(1)">92年修正前服務標章
-            <input type="radio" name="fr_S_Mark" value="N" onclick="dmt_form.change_mark(1)">團體商標
-            <input type="radio" name="fr_S_Mark" value="M" onclick="dmt_form.change_mark(1)">團體標章
-            <input type="radio" name="fr_S_Mark" value="L" onclick="dmt_form.change_mark(1)">證明標章
+		<td class=whitetablebg>
+            <input type="radio" name="fr_S_Mark" value="" onclick="dmt_form.change_mark(1, this)">商標
+            <input type="radio" name="fr_S_Mark" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
+            <input type="radio" name="fr_S_Mark" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+            <input type="radio" name="fr_S_Mark" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+            <input type="radio" name="fr_S_Mark" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >註冊號數：</td>
-		<td class=whitetablebg colspan="7"><input type="text" id="fr_issue_no" name="fr_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=reg.fr_issue_no.value"></TD>
+		<td class=whitetablebg><input type="text" id="fr_issue_no" name="fr_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標/標章名稱：</td>
-		<td class=whitetablebg colspan="7"><input type="text" id="fr_Appl_name" name="fr_Appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_Appl_name.value=reg.fr_Appl_name.value"></TD>
+		<td class=whitetablebg><input type="text" id="fr_Appl_name" name="fr_Appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_Appl_name.value=rthis.value"></TD>
 	</tr>
 	<tr style="display:none">
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Term2)"><strong>肆、<u>原註冊證核准專用期間</u></strong></td>
+		<td class="lightbluetable" colspan="2" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Term2)"><strong>肆、<u>原註冊證核准專用期間</u></strong></td>
 	</tr>
 	<tr style="display:none">
         <td class=lightbluetable STYLE="cursor:pointer;COLOR:BLUE">　</td>
-        <td class=whitetablebg colspan=7 >
+        <td class=whitetablebg>
             自<INPUT type=text id=tfgp_term1 name=tfgp_term1 size=10 class="dateField">
             至<INPUT type=text id=tfgp_term2 name=tfgp_term2 size=10 class="dateField">
         </TD>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Term1)">
+		<td class="lightbluetable" colspan="2" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Term1)">
             <strong>肆、<u>變更事項</u></strong>
-		    <input type="hidden" id="tfgp_mod_ap" name="tfgp_mod_ap">
-		    <input type="hidden" id="tfgp_mod_aprep" name="tfgp_mod_aprep">
-		    <input type="hidden" id="tfgp_mod_agt" name="tfgp_mod_agt">
-		    <input type="hidden" id="tfgp_mod_apaddr" name="tfgp_mod_apaddr">
-		    <input type="hidden" id="tfgp_mod_agtaddr" name="tfgp_mod_agtaddr">
-		    <input type="hidden" id="tfgp_mod_pul" name="tfgp_mod_pul">
-		    <input type="hidden" id="tfgp_mod_oth" name="tfgp_mod_oth">
-		    <input type="hidden" id="tfgp_mod_oth1" name="tfgp_mod_oth1">
-		    <input type="hidden" id="tfgp_mod_oth2" name="tfgp_mod_oth2">
-		    <input type="hidden" id="tfgp_mod_dmt" name="tfgp_mod_dmt">
-		    <input type="hidden" id="tfgp_mod_agttype" name="tfgp_mod_agttype">
+		    <input type="text" id="tfgp_mod_ap" name="tfgp_mod_ap" size="2">
+		    <input type="text" id="tfgp_mod_aprep" name="tfgp_mod_aprep" size="2">
+		    <input type="text" id="tfgp_mod_agt" name="tfgp_mod_agt" size="2">
+		    <input type="text" id="tfgp_mod_apaddr" name="tfgp_mod_apaddr" size="2">
+		    <input type="text" id="tfgp_mod_agtaddr" name="tfgp_mod_agtaddr" size="2">
+		    <input type="text" id="tfgp_mod_pul" name="tfgp_mod_pul" size="2">
+		    <input type="text" id="tfgp_mod_oth" name="tfgp_mod_oth" size="2">
+		    <input type="text" id="tfgp_mod_oth1" name="tfgp_mod_oth1" size="2">
+		    <input type="text" id="tfgp_mod_oth2" name="tfgp_mod_oth2" size="2">
+		    <input type="text" id="tfgp_mod_dmt" name="tfgp_mod_dmt" size="2">
+		    <input type="text" id="tfgp_mod_agttype" name="tfgp_mod_agttype" size="2">
 		</td>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right></td>
-		<td class=whitetablebg colspan="7">
+		<td class=whitetablebg>
             <input type="checkbox" id="tfzr_mod_dmt" name="tfzr_mod_dmt">變更商標／標章名稱：<input type="text" id="new_appl_name" name="new_appl_name" size="60" maxlength="100" onblur="fDataLen(this)">
 		</TD>
 	</tr>
 	<tr >
 		<td class=lightbluetable align=right></td>
-		<td class=whitetablebg colspan="7">
+		<td class=whitetablebg>
             <span style="display:none">
                 <input type="checkbox" id="tfzr_mod_apaddr" name="tfzr_mod_apaddr">申請人地址&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="checkbox" id="tfzr_mod_agtaddr" name="tfzr_mod_agtaddr" onclick="chkagttype()">代理人地址&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -97,7 +97,7 @@
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right></td>
-		<td class=whitetablebg colspan="7">
+		<td class=whitetablebg>
             <span style="display:none">
                 <input type="checkbox" name="tfzr_mod_ap" id="tfzr_mod_ap">申請人名稱&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="checkbox" name="tfzr_mod_aprep" id="tfzr_mod_aprep">代表人或負責人&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -110,48 +110,48 @@
 	</tr>
     <tr style="display:none">
 		<td class=lightbluetable align=right></td>
-		<td class=whitetablebg colspan="7">
+		<td class=whitetablebg>
             <input type="checkbox" id="tfzr_mod_oth" name="tfzr_mod_oth">申請人印鑑&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="checkbox" id="tfzr_mod_oth1" name="tfzr_mod_oth1">代表人或負責人印鑑&nbsp
             <input type="checkbox" id="tfzr_mod_oth2" name="tfzr_mod_oth2" onclick="chkagttype()">代理人印鑑
 		</TD>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Good)"><strong>伍、<u>延展商標權範圍及內容</u></strong></td>
+		<td class="lightbluetable" colspan="2" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Good)"><strong>伍、<u>延展商標權範圍及內容</u></strong></td>
 	</tr>
-	<tr>
-		<td colspan=8>
-		    <TABLE id=tabbr2 border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+	<tr class='sfont9'>
+		<td colspan=2>
+		    <TABLE id=tabbr2 border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
             <thead>
 		        <tr>
 			        <td class=lightbluetable align=right>一、</td>
-			        <td class=whitetablebg colspan="7">
+			        <td class=whitetablebg>
                         <input type="radio" name="tfzy_mark" id="tfzy_markY" value="Y">全部延展（原指定使用之商品／服務全部延展者，請勾選此欄位即可）
-			            <input type="hidden" name="tfzd_mark" id="tfzd_mark">
+			            <input type="text" name="tfzd_mark" id="tfzd_mark">
 			        </TD>
 		        </tr>
 		        <tr>
 			        <td class=lightbluetable align=right>二、</td>
-			        <td class=whitetablebg colspan="7">
+			        <td class=whitetablebg>
                         <input type="radio" name="tfzy_mark" id="tfzy_markN" value="N">部分延展：(請指明延展之商品/服務名稱)
                     </td>
 		        </tr>
 		        <tr>
 			        <td class=lightbluetable align=right>類別：</td>
-			        <td class="whitetablebg" colspan="7">
+			        <td class="whitetablebg">
                         <span style="display:none">商標法施行細則第<INPUT type="text" id=tfgp_other_item2 name=tfgp_other_item2 size=3 maxlength=3>條</span>第<input type="text" name="tfzd_class" id="tfzd_class" readonly>類
 			        </td>
 		        </tr>
 		        <tr>	
 			        <td class="lightbluetable" align="right" >類別種類：</td>
-			        <td class="whitetablebg" colspan="7" >
+			        <td class="whitetablebg" >
 				        <input type="radio" id=tfzd_class_typeI name=tfzd_class_type value="int">國際分類
 				        <input type="radio" id=tfzd_class_typeO name=tfzd_class_type value="old">舊類
 			        </td>
 		        </tr>
 		        <tr>	
 			        <td class="lightbluetable" align="right">類別項目：</td>
-			        <td class="whitetablebg" colspan="7" >共<input type="text" id=tfzd_class_count name=tfzd_class_count size=2 onchange="br_form.Add_class(this.value)">類
+			        <td class="whitetablebg" >共<input type="text" id=tfzd_class_count name=tfzd_class_count size=2 onchange="br_form.Add_class(this.value)">類
 				        <input type=text id=num2 name=num2 value="0"><!--畫面上有幾筆-->
 				        <input type=text id=ctrlnum2 name=ctrlnum2 value="0">
 				        <input type=text id=ctrlcount2 name=ctrlcount2 value="">
@@ -162,43 +162,43 @@
             <script type="text/html" id="br_class_template"><!--類別樣板-->
                 <tr class="tr_br_class_##">
 			        <td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別，並以逗號分開(例如：1,5,32)。或輸入類別範圍，並以  -  (半形) 分開(例如：8-16)。也可複項組合(例如：3,5,13-32,35)">類別##：</td>
-			        <td class="whitetablebg" colspan="7">第<INPUT type="text" id=class2_## name=class2_## size=3 maxlength=3 onchange="br_form.count_kind('##')">類</td>		
+			        <td class="whitetablebg">第<INPUT type="text" id=class2_## name=class2_## size=3 maxlength=3 onchange="br_form.count_kind('##')">類</td>		
 		        </tr>
 		        <tr class="tr_br_class_##" style="height:107.6pt">
 			        <td class="lightbluetable" align="right" width="18%">商品名稱##：</td>
-			        <td class="whitetablebg" colspan="7">
+			        <td class="whitetablebg">
                         <textarea id="good_name2_##" NAME="good_name2_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('##')"></textarea>
                         <br>共<input type="text" id=good_count2_## name=good_count2_## size=2>項
 			        </td>
 		        </tr>
 		        <tr class="tr_br_class_##">
 			        <td class="lightbluetable" align="right">商品群組代碼##：</td>
-			        <td class="whitetablebg" colspan="7"><textarea id=grp_code2_## NAME=grp_code2_## ROWS="1" COLS="50"></textarea>(跨群組請以全形「、」作分隔)</td>
+			        <td class="whitetablebg"><textarea id=grp_code2_## NAME=grp_code2_## ROWS="1" COLS="50"></textarea>(跨群組請以全形「、」作分隔)</td>
 		        </tr>
             </script>
 		    </table>
 		</td>
 	</tr>
 	<tr style="display:none">
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="COLOR:BLUE">
+		<td class="lightbluetable" colspan="2" valign="top" STYLE="COLOR:BLUE">
             <strong>伍、延展證明標的及內容/表彰組織及會員之會籍</strong>
-            <input type="hidden" name="tfgp_tran_remark2" id="tfgp_tran_remark2" value="">
+            <input type="text" name="tfgp_tran_remark2" id="tfgp_tran_remark2" value="">
 		</td>
 	</tr>
 	<tr style="display:none">
 		<td class=lightbluetable align=right ><INPUT type="radio" name="ttr1_RCode" id="ttr1_RCodeL" value="L" onclick="br_form.CopyStr1(reg.tfgp_tran_remark2,'1',this)"></td>
-		<td class=whitetablebg colspan="7">證明標章證明標的及內容：<input TYPE="text" NAME="ttr1_R1" id="ttr1_R1" SIZE="20" MAXLENGTH="50" onchange="br_form.CopyStr1(reg.tfgp_tran_remark2,'0',this)"></TD>
+		<td class=whitetablebg>證明標章證明標的及內容：<input TYPE="text" NAME="ttr1_R1" id="ttr1_R1" SIZE="20" MAXLENGTH="50" onchange="br_form.CopyStr1(reg.tfgp_tran_remark2,'0',this)"></TD>
 	</tr>
 	<tr style="display:none">
 		<td class=lightbluetable align=right ><INPUT type="radio" name="ttr1_RCode" id="ttr1_RCodeM" value="M" onclick="br_form.CopyStr1(reg.tfgp_tran_remark2, '1', this)"></td>
-		<td class=whitetablebg colspan="7">團體標章：<input TYPE="text" NAME="ttr1_R9" id="ttr1_R9" SIZE="20" MAXLENGTH="50" onchange="br_form.CopyStr1(reg.tfgp_tran_remark2,'0',this)"></TD>
+		<td class=whitetablebg>團體標章：<input TYPE="text" NAME="ttr1_R9" id="ttr1_R9" SIZE="20" MAXLENGTH="50" onchange="br_form.CopyStr1(reg.tfgp_tran_remark2,'0',this)"></TD>
 	</tr>
 	<tr>
-		<td class=lightbluetable colspan="8" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Remark1)"><strong><u>備註：本案另涉有他案時，請於備註欄內填明。</u></strong></td>
+		<td class=lightbluetable colspan="2" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Remark1)"><strong><u>備註：本案另涉有他案時，請於備註欄內填明。</u></strong></td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top">
-			<INPUT type="checkbox" name="O_item" value="1" ><label onclick="reg.O_item(0).checked=true">
+		<td class="lightbluetable" colspan="2" valign="top">
+			<INPUT type="checkbox" name="O_item" value="1" ><label onclick="reg.O_item[0].checked=true">
 			本案於<INPUT type=text id=O_item1 name=O_item1 size=10 class="dateField">(年/月/日)
 			，另案辦理<INPUT type=radio id=O_item2FI1 name=O_item2 value="FI1"><label for=O_item2FI1>補證案</label>
 			<INPUT type=radio id=O_item2FT1 name=O_item2 value="FT1"><label for=O_item2FT1>移轉案</label>
@@ -207,48 +207,72 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top">
+		<td class="lightbluetable" colspan="2" valign="top">
 			<INPUT type="checkbox" name="O_item" value="Z">
-			其他：<input type=text id=O_item2t name=O_item2t size=44 onclick="reg.O_item(1).checked=true">
+			其他：<input type=text id=O_item2t name=O_item2t size=44 onclick="reg.O_item[1].checked=true">
 		</TD>
 	</tr>
-</TABLE>
-
-<TABLE id=tabrem4 style="display:none" border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="COLOR:BLUE" onclick="PMARK(ZAttech)">
+		<td class="lightbluetable" colspan="2" valign="top" STYLE="COLOR:BLUE" onclick="PMARK(ZAttech)">
             <strong><u>附件：</u></strong>
-            <input type=hidden id="tfzd_remark1" name="tfzd_remark1" value="">
+            <input type=text id="tfzd_remark1" name="tfzd_remark1" value="">
 		</td>
 	</tr>
-	<tr style="display:none">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z1" NAME="ttzd_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">大陸地區（含港、澳地區）之自然人或法人之身分證明文件。</td>
-	</tr>
-	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z2" NAME="ttzd_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttzd_Z2C" NAME="ttzd_Z2C" value="Z2C" onclick="br_form.AttachStr()">附中文譯本)。</td>
-	</tr>
-	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z3" NAME="ttzd_Z3" value="Z3" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">變更證明文件。(更名時檢附)</td>
-	</tr>
-	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z9" NAME="ttzd_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" id="ttzd_Z9t" NAME="ttzd_Z9t" SIZE="50" onchange="br_form.AttachStr()">
+	<tr class='sfont9'>
+		<td colspan=2>
+            <TABLE id=tabrem4 style="display:" border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
+	            <tr style="display:none">
+		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z1" NAME="ttzd_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
+		            <td class="whitetablebg">大陸地區（含港、澳地區）之自然人或法人之身分證明文件。</td>
+	            </tr>
+	            <tr>
+		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z2" NAME="ttzd_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
+		            <td class="whitetablebg">委任書(<input TYPE="checkbox" id="ttzd_Z2C" NAME="ttzd_Z2C" value="Z2C" onclick="br_form.AttachStr()">附中文譯本)。</td>
+	            </tr>
+	            <tr>
+		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z3" NAME="ttzd_Z3" value="Z3" onclick="br_form.AttachStr()"></td>
+		            <td class="whitetablebg">變更證明文件。(更名時檢附)</td>
+	            </tr>
+	            <tr>
+		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z9" NAME="ttzd_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
+		            <td class="whitetablebg">其他證明文件。<input TYPE="text" id="ttzd_Z9t" NAME="ttzd_Z9t" SIZE="50" onchange="br_form.AttachStr()">
 			
-		</td>
-	</tr>
+		            </td>
+	            </tr>
+            </TABLE>
+        </td>
+    </tr>
 </table>
-<INPUT TYPE=hidden id=tfgp_seq NAME=tfgp_seq>
-<INPUT TYPE=hidden id=tfgp_seq1 NAME=tfgp_seq1>
+<INPUT TYPE=text id=tfgp_seq NAME=tfgp_seq>
+<INPUT TYPE=text id=tfgp_seq1 NAME=tfgp_seq1>
 
 <script language="javascript" type="text/javascript">
     var br_form = {};
     br_form.init = function () {
+        br_form.Add_class(1);//類別預設顯示第1筆
     }
 
-    //*****依商品名稱計算類別
+    //*****共N類
+    br_form.Add_class = function (classCount) {
+        var doCount = Math.max(0, CInt(classCount));//要改為幾筆,最少是0
+        var num2 = CInt($("#num2").val());//目前畫面上有幾筆
+        if (doCount > num2) {//要加
+            for (var nRow = num2; nRow < doCount ; nRow++) {
+                var copyStr = $("#br_class_template").text() || "";
+                copyStr = copyStr.replace(/##/g, nRow + 1);
+                $("#tabbr2 tbody").append(copyStr);
+                $("#num2").val(nRow + 1);
+            }
+        } else {
+            //要減
+            for (var nRow = num2; nRow > doCount ; nRow--) {
+                $('.tr_br_class_' + nRow).remove();
+                $("#num2").val(nRow - 1);
+            }
+        }
+    }
+
+    //依商品名稱計算類別
     br_form.good_name_count = function (nRow) {
         var MyString = $("#good_name2_" + nRow).val().trim();
         MyString = MyString.replace(/;/gm, "；");
@@ -268,26 +292,6 @@
 
             if (MyString.indexOf("及") > -1 || MyString.indexOf("或") > -1) {
                 alert("【商品服務項目中包含有「及」、「或」等用語，請留意商品項目數。】");
-            }
-        }
-    }
-
-    //共N類
-    br_form.Add_class = function (classCount) {
-        var doCount = Math.max(0, CInt(classCount));//要改為幾筆,最少是0
-        var num2 = CInt($("#num2").val());//目前畫面上有幾筆
-        if (doCount > num2) {//要加
-            for (var nRow = num2; nRow < doCount ; nRow++) {
-                var copyStr = $("#br_class_template").text() || "";
-                copyStr = copyStr.replace(/##/g, nRow + 1);
-                $("#tabbr2 tbody").append(copyStr);
-                $("#num2").val(nRow + 1);
-            }
-        } else {
-            //要減
-            for (var nRow = num2; nRow > doCount ; nRow--) {
-                $('.tr_br_class_' + nRow).remove();
-                $("#num2").val(nRow - 1);
             }
         }
     }
@@ -313,9 +317,11 @@
             }
         }
 
-        $("#tfzd_class").val($("#tabbr2>tbody input[id^='class2_']").map(function (index) {
+        var nclass = $("#tabbr2>tbody input[id^='class2_']").map(function (index) {
             if (index == 0 || $(this).val() != "") return $(this).val();
-        }).get().join(','));
+        });
+        $("#tfzd_class").val(nclass.get().join(','));
+        $("#tfzd_class_count").val(Math.max(CInt($("#tfzd_class_count").val()), nclass.length));//回寫共N類
     }
 
 
@@ -528,5 +534,12 @@
                 }
             }
         }
+    }
+
+    //依案性切換要顯示的欄位
+    br_form.changeTag = function (T1) {
+        var code3 = T1.substr(2, 1).toUpperCase();//案性第3碼
+        //切換後重新綁資料
+        br_form.bind();
     }
 </script>

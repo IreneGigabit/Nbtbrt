@@ -97,7 +97,7 @@
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>
-            <input type=button class='cbutton <%#Lock.TryGet("QA1disabled")%>' value='查詢' onclick="apcust_form.get_apnameaddr('##')">申請人名稱(英)：
+            <input type=button class='cbutton <%#Lock.TryGet("QA1disabled")%>' value='查詢' onclick="apcust_form.get_apnameaddr('##', '', '')">申請人名稱(英)：
 		</TD>
 		<TD class=sfont9 colspan=3>
             <input type=hidden id="ap_ename_##" name="ap_ename_##">
@@ -240,11 +240,10 @@
                     $("#apatt_tel1_" + nRow).val(item.apatt_tel1);
                     $("#apatt_fax_" + nRow).val(item.apatt_fax);
                     if (item.Server_flag == "Y") {
-                        $("#ap_hserver_flag_" + nRow).prop("checked", true);
+                        $("#ap_hserver_flag_" + nRow).prop("checked", true).triggerHandler("click");
                     } else {
-                        $("#ap_hserver_flag_" + nRow).prop("checked", false);
+                        $("#ap_hserver_flag_" + nRow).prop("checked", false).triggerHandler("click");
                     }
-                    apcust_form.apserver_flag(nRow);
                     $("#ap_fcname_" + nRow).val(item.ap_fcname);
                     $("#ap_lcname_" + nRow).val(item.ap_lcname);
                     $("#ap_fename_" + nRow).val(item.ap_fename);
@@ -307,11 +306,10 @@
                     $("#apatt_tel1_" + nRow).val(item.apatt_tel1);
                     $("#apatt_fax_" + nRow).val(item.apatt_fax);
                     if (item.Server_flag == "Y") {
-                        $("#ap_hserver_flag_" + nRow).prop("checked", true);
+                        $("#ap_hserver_flag_" + nRow).prop("checked", true).triggerHandler("click");
                     } else {
-                        $("#ap_hserver_flag_" + nRow).prop("checked", false);
+                        $("#ap_hserver_flag_" + nRow).prop("checked", false).triggerHandler("click");
                     }
-                    apcust_form.apserver_flag(nRow);
                     $("#ap_fcname_" + nRow).val(item.ap_fcname);
                     $("#ap_lcname_" + nRow).val(item.ap_lcname);
                     $("#ap_fename_" + nRow).val(item.ap_fename);

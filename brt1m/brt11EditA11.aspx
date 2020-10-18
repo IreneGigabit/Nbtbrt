@@ -5,7 +5,7 @@
 <%@ Register Src="~/commonForm/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
 <%@ Register Src="~/commonForm/dmt/case_form.ascx" TagPrefix="uc1" TagName="case_form" %>
 <%@ Register Src="~/commonForm/dmt/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
-<%@ Register Src="~/brt1m/CaseForm/A11_form.ascx" TagPrefix="uc1" TagName="br_A11_form" %>
+<%@ Register Src="~/brt1m/CaseForm/FA1Form.ascx" TagPrefix="uc1" TagName="FA1Form" %>
 
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
@@ -109,7 +109,7 @@
         case_form.formFunction = formFunction;
         case_form.HTProgRight = HTProgRight;
         //交辦內容
-        br_A11_form.Lock = Lock;
+        FA1Form.Lock = Lock;
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -192,7 +192,7 @@
                 <!--include file="../commonForm/dmt/case_form.ascx"--><!--收費與接洽事項-->
             </div>
             <div class="tabCont" id="#tran">
-                <uc1:br_A11_form runat="server" ID="br_A11_form" />
+                <uc1:FA1Form runat="server" ID="FA1Form" />
             </div>
             <div class="tabCont" id="#upload">
                 <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" />
@@ -298,6 +298,7 @@
         attent_form.init();//案件聯絡人
         apcust_form.init();//案件申請人
         case_form.init();//收費與接洽事項
+        br_form.init();//交辦內容
         upload_form.init();//文件上傳
         settab("#case");//收費與接洽事項
 

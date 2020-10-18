@@ -1,5 +1,7 @@
-﻿<%@ Control Language="C#" ClassName="br_A11_form" %>
+﻿<%@ Control Language="C#" ClassName="FA1Form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
+<%@ Register Src="~/brt1m/CaseForm/FA1Form_remark1.ascx" TagPrefix="uc1" TagName="FA1Form_remark1" %>
+
 
 <script runat="server">
     //新申請案交辦內容
@@ -151,7 +153,8 @@
 	    </td>
     </tr>
     <tr>
-        <td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a5Attech)"><strong><u>附件：</u></strong>
+        <td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a5Attech)">
+            <strong><u>附件：</u></strong>
             <input type="text" id="tfz1_remark1" name="tfz1_remark1">
         </td>
     </tr>
@@ -468,7 +471,8 @@
         </script>
 	</table>
 </script>
-<!--#include virtual="~\brt1m\CaseForm\A11_remark1.inc" --><!--附件様版 依案性第3碼切換顯示-->
+
+<uc1:FA1Form_remark1 runat="server" ID="FA1Form_remark1" /><!--附件様版 依案性第3碼切換顯示-->
 
 <script language="javascript" type="text/javascript">
     var br_form = {};
@@ -507,7 +511,27 @@
         }
     }
 
-    //*****依商品名稱計算類別
+    //*****共N類
+    br_form.Add_class = function (classCount) {
+        var doCount = Math.max(0, CInt(classCount));//要改為幾筆,最少是0
+        var num1 = CInt($("#num1").val());//目前畫面上有幾筆
+        if (doCount > num1) {//要加
+            for (var nRow = num1; nRow < doCount ; nRow++) {
+                var copyStr = $("#class_template").text() || "";
+                copyStr = copyStr.replace(/##/g, nRow + 1);
+                $("#tabbr1 tbody").append(copyStr);
+                $("#num1").val(nRow + 1);
+            }
+        } else {
+            //要減
+            for (var nRow = num1; nRow > doCount ; nRow--) {
+                $('.tr_class_' + nRow).remove();
+                $("#num1").val(nRow - 1);
+            }
+        }
+    }
+
+    //依商品名稱計算類別
     br_form.good_name_count = function (nRow) {
         var MyString = $("#good_name1_" + nRow).val().trim();
         MyString = MyString.replace(/;/gm, "；");
@@ -527,26 +551,6 @@
 
             if (MyString.indexOf("及") > -1 || MyString.indexOf("或") > -1) {
                 alert("【商品服務項目中包含有「及」、「或」等用語，請留意商品項目數。】");
-            }
-        }
-    }
-
-    //共N類
-    br_form.Add_class = function (classCount) {
-        var doCount = Math.max(0, CInt(classCount));//要改為幾筆,最少是0
-        var num1 = CInt($("#num1").val());//目前畫面上有幾筆
-        if (doCount > num1) {//要加
-            for (var nRow = num1; nRow < doCount ; nRow++) {
-                var copyStr = $("#class_template").text() || "";
-                copyStr = copyStr.replace(/##/g, nRow + 1);
-                $("#tabbr1 tbody").append(copyStr);
-                $("#num1").val(nRow + 1);
-            }
-        } else {
-            //要減
-            for (var nRow = num1; nRow > doCount ; nRow--) {
-                $('.tr_class_' + nRow).remove();
-                $("#num1").val(nRow - 1);
             }
         }
     }
@@ -572,9 +576,11 @@
             }
         }
 
-        $("#tfz1_class").val($("#tabbr1>tbody input[id^='class1_']").map(function (index) {
+        var nclass = $("#tabbr1>tbody input[id^='class1_']").map(function (index) {
             if (index == 0 || $(this).val() != "") return $(this).val();
-        }).get().join(','));
+        });
+        $("#tfz1_class").val(nclass.get().join(','));
+        $("#tfz1_class_count").val(Math.max(CInt($("#tfz1_class_count").val()), nclass.length));//回寫共N類
     }
 
 

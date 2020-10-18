@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="apcust_form" %>
+﻿<%@ Control Language="C#" ClassName="apcust_FL_form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
@@ -9,8 +9,8 @@
     protected string SQL = "";
 
     protected string ar_form = "";
-    protected string apserver_name = "";
     protected string apclass = "", ap_country = "";
+    protected string apserver_name = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         apclass = Sys.getCustCode("apclass", "", "sortfld").Option("{cust_code}", "{code_name}");
@@ -18,9 +18,10 @@
         ar_form = (Request["ar_form"] ?? "").Trim();
         
         apserver_name = "註記此申請人為應受送達人";
-        if (ar_form == "A7" || ar_form == "A8" || ar_form == "B")
+
+        if (ar_form == "A7" || ar_form == "A8"||ar_form=="B")
             apserver_name = "此申請人為選定代表人";
-        
+         
         this.DataBind();
     }
 </script>
@@ -29,47 +30,49 @@
 <input type=hidden id=apnum name=apnum value=0><!--筆數-->
 <table border="0" id=tabap class="bluetable" cellspacing="1" cellpadding="2" width="100%">
 	<THEAD>
-		<tr id=tr_tg_arf_re style="display:none">
-		    <td class="lightbluetable" colspan="4" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(t1Apcust)"><strong>貳、<u>申請人(受讓人)</u></strong></td>
+		<tr id=tr_tg_arf style="display:none">
+		    <td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(t1Apcust)"><strong>貳、<u>申請人(受讓人)</u></strong></td>
 		</tr>
-		<tr id=tr_tg_arf_fl style="display:none">
-		    <td class="lightbluetable" colspan="4" valign="top" id=tg_arf STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zApcust)"><strong><span id=span_FL></span></strong></td>
+		<tr id=tr_tg_arf_fl>
+		    <td class="lightbluetable" colspan="4" valign="top" id=tg_arf STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zApcust)"><strong><span id=span_FL name=span_FL></span></strong></td>
 		</tr>
 	    <TR>
 		    <TD class="bluetable sfont9" style="border-color:red" colspan=4 align=right>
                 <span id="span_btn_POA">
-    			    <input type=button class="greenbutton <%#Lock.TryGet("Qdisabled")%>" value="查詢申請人委任書" onclick="apcust_form.btn_POA('tabap', '')">
+    			    <input type=button class="greenbutton <%#Lock.TryGet("Qdisabled")%>" id="btn_POA" name="btn_POA" value="查詢申請人委任書">
 			    </span>
 			    <input type=button value="增加一筆申請人" class="cbutton" id=AP_Add_button name=AP_Add_button>
 			    <input type=button value="減少一筆申請人" class="cbutton" id=AP_Del_button name=AP_Del_button>
 		    </TD>
 	    </TR>
 	</THEAD>
-	<TBODY></TBODY>
+	<TBODY>
+	</TBODY>
 </table>
+<INPUT TYPE=hidden id=tfr_mod_field value="mod_ap">
 
 <script type="text/html" id="apcust_template">
 	<TR>
 		<TD class=lightbluetable align=right>
-			<input type=text id="apnum_##" name="apnum_##" value="##." class="Lock" size=2>申請人種類：
+			<input type=text id="apnum_##" name="apnum_##" value="##." class="SEdit" readonly size=2>申請人種類：
 		</TD>
 		<TD class=sfont9>
-			<select id="apclass_##" name="apclass_##" class="Lock"><%#apclass%></select>
-            <label><input type="checkbox" id="ap_hserver_flag_##" name="ap_hserver_flag_##" value="Y" onclick="apcust_form.apserver_flag('##','')">註記此申請人為應受送達人
+			<select id="apclass_##" name="apclass_##" class="SEdit" readonly><%#apclass%></select>
+            <label><input type="checkbox" id="ap_hserver_flag_##" name="ap_hserver_flag_##" value="Y" onclick="apcust_form.apserver_flag('##')"><%#apserver_name%>
             <input type="hidden" id="ap_server_flag_##" name="ap_server_flag_##" value="N"></label>
 		</TD>
 		<TD class=lightbluetable align=right title="輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。">
 			<span id="span_apcust_no_##" style="cursor:pointer;color:blue">申請人編號<br>(統一編號/身份證字號)：</span>
 		</TD>
 		<TD class=sfont9>
-			<input type=text id="apcust_no_##" name="apcust_no_##" size=11 maxlength=10 onblur="apcust_form.chkapcust_no(reg.apnum.value,'##','apcust_no_')">
+			<input type=text id="apcust_no_##" name="apcust_no_##" size=11 maxlength=10 onblur="apcust_form.chkapcust_no('##')">
 		    <input type='button' id='queryap_##' name='queryap_##' value='確定' onclick="apcust_form.getAP('##')" style='cursor:pointer;' title='輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。'>
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>申請人國籍：</TD>
 		<TD class=sfont9 colspan=3>
-            <select id="ap_country_##" name="ap_country_##" class="Lock"><%#ap_country%></select>
+            <select id="ap_country_##" name="ap_country_##" class="SEdit" readonly><%#ap_country%></select>
 		</TD>
 	</TR>
 	<TR>
@@ -85,14 +88,14 @@
 	<TR>
 		<TD class=lightbluetable align=right>申請人名稱(中)：</TD>
 		<TD class=sfont9 colspan=3>
-		    姓：<INPUT TYPE=text id="ap_fcname_##" name="ap_fcname_##" SIZE=20 MAXLENGTH=60 class="Lock">
-		    名：<INPUT TYPE=text id="ap_lcname_##" name="ap_lcname_##" SIZE=20 MAXLENGTH=60 class="Lock">
+		    姓：<INPUT TYPE=text id="ap_fcname_##" name="ap_fcname_##" SIZE=20 MAXLENGTH=60 class="SEdit" readonly>
+		    名：<INPUT TYPE=text id="ap_lcname_##" name="ap_lcname_##" SIZE=20 MAXLENGTH=60 class="SEdit" readonly>
 		</TD>
 	</TR>
 	<TR id="trap_sql_##">
 		<TD class=lightbluetable align=right>申請人序號：</TD>
 		<TD class=sfont9 colspan=3>
-		    <INPUT TYPE=text id="ap_sql_##" name="ap_sql_##" SIZE=3 MAXLENGTH=3 class="Lock">
+		    <INPUT TYPE=text id="ap_sql_##" name="ap_sql_##" SIZE=3 MAXLENGTH=3 class="SEdit" readonly>
 		</TD>
 	</TR>
 	<TR>
@@ -108,57 +111,57 @@
 	<TR>
 		<TD class=lightbluetable align=right>申請人名稱(英)：</TD>
 		<TD class=sfont9 colspan=3>
-		    姓：<INPUT TYPE=text id="ap_fename_##" name="ap_fename_##" SIZE=20 MAXLENGTH=60 class="Lock">
-		    名：<INPUT TYPE=text id="ap_lename_##" name="ap_lename_##" SIZE=20 MAXLENGTH=60 class="Lock">
+		    姓：<INPUT TYPE=text id="ap_fename_##" name="ap_fename_##" SIZE=20 MAXLENGTH=60 class="SEdit" readonly>
+		    名：<INPUT TYPE=text id="ap_lename_##" name="ap_lename_##" SIZE=20 MAXLENGTH=60 class="SEdit" readonly>
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>代表人名稱(中)：</TD>
 		<TD class=sfont9 colspan=3>
-		    <INPUT TYPE=text id="ap_crep_##" name="ap_crep_##" SIZE=40 MAXLENGTH=40 class="Lock">
+		    <INPUT TYPE=text id="ap_crep_##" name="ap_crep_##" SIZE=40 MAXLENGTH=40 class="SEdit" readonly>
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>代表人名稱(英)：</TD>
 		<TD class=sfont9 colspan=3>
-		    <INPUT TYPE=text id="ap_erep_##" name="ap_erep_##" SIZE=80 MAXLENGTH=80 class="Lock">
+		    <INPUT TYPE=text id="ap_erep_##" name="ap_erep_##" SIZE=80 MAXLENGTH=80 class="SEdit" readonly>
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>證照地址(中)：</TD>
 		<TD class=sfont9 colspan=3>
-		    <INPUT TYPE=text id="ap_zip_##" name="ap_zip_##" SIZE=8 MAXLENGTH=8 class="Lock">
-		    <INPUT TYPE=text id="ap_addr1_##" name="ap_addr1_##" SIZE=103 MAXLENGTH=120 class="Lock"><br>
-		    <INPUT TYPE=text id="ap_addr2_##" name="ap_addr2_##" SIZE=103 MAXLENGTH=120 class="Lock">
+		    <INPUT TYPE=text id="ap_zip_##" name="ap_zip_##" SIZE=8 MAXLENGTH=8 class="SEdit" readonly>
+		    <INPUT TYPE=text id="ap_addr1_##" name="ap_addr1_##" SIZE=103 MAXLENGTH=120 class="SEdit" readonly><br>
+		    <INPUT TYPE=text id="ap_addr2_##" name="ap_addr2_##" SIZE=103 MAXLENGTH=120 class="SEdit" readonly>
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>證照地址(英)：</TD>
 		<TD class=sfont9 colspan=3>
-		    <INPUT TYPE=text id="ap_eaddr1_##" name="ap_eaddr1_##" SIZE=103 MAXLENGTH=120 class="Lock"><br>
-		    <INPUT TYPE=text id="ap_eaddr2_##" name="ap_eaddr2_##" SIZE=103 MAXLENGTH=120 class="Lock"><br>
-		    <INPUT TYPE=text id="ap_eaddr3_##" name="ap_eaddr3_##" SIZE=103 MAXLENGTH=120 class="Lock"><br>
-		    <INPUT TYPE=text id="ap_eaddr4_##" name="ap_eaddr4_##" SIZE=103 MAXLENGTH=120 class="Lock">
+		    <INPUT TYPE=text id="ap_eaddr1_##" name="ap_eaddr1_##" SIZE=103 MAXLENGTH=120 class="SEdit" readonly><br>
+		    <INPUT TYPE=text id="ap_eaddr2_##" name="ap_eaddr2_##" SIZE=103 MAXLENGTH=120 class="SEdit" readonly><br>
+		    <INPUT TYPE=text id="ap_eaddr3_##" name="ap_eaddr3_##" SIZE=103 MAXLENGTH=120 class="SEdit" readonly><br>
+		    <INPUT TYPE=text id="ap_eaddr4_##" name="ap_eaddr4_##" SIZE=103 MAXLENGTH=120 class="SEdit" readonly>
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>聯絡地址：</TD>
 		<TD class=sfont9 colspan=3>
-		    <INPUT TYPE=text id="apatt_zip_##" name="apatt_zip_##" SIZE=8 MAXLENGTH=8 class="Lock">
-		    <INPUT TYPE=text id="apatt_addr1_##" name="apatt_addr1_##" SIZE=30 MAXLENGTH=60 class="Lock">
-		    <INPUT TYPE=text id="apatt_addr2_##" name="apatt_addr2_##" SIZE=30 MAXLENGTH=60 class="Lock">
+		    <INPUT TYPE=text id="apatt_zip_##" name="apatt_zip_##" SIZE=8 MAXLENGTH=8 class="SEdit" readonly>
+		    <INPUT TYPE=text id="apatt_addr1_##" name="apatt_addr1_##" SIZE=30 MAXLENGTH=60 class="SEdit" readonly>
+		    <INPUT TYPE=text id="apatt_addr2_##" name="apatt_addr2_##" SIZE=30 MAXLENGTH=60 class="SEdit" readonly>
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>電話：</TD>
 		<TD class=sfont9>
-            <INPUT TYPE=text id="apatt_tel0_##" name="apatt_tel0_##" SIZE=4 MAXLENGTH=4 class="Lock">
-            <INPUT TYPE=text id="apatt_tel_##" name="apatt_tel_##" SIZE=15 MAXLENGTH=15 class="Lock">
-            <INPUT TYPE=text id="apatt_tel1_##" name="apatt_tel1_##" SIZE=10 MAXLENGTH=10 class="Lock">
+            <INPUT TYPE=text id="apatt_tel0_##" name="apatt_tel0_##" SIZE=4 MAXLENGTH=4 class="SEdit" readonly>
+            <INPUT TYPE=text id="apatt_tel_##" name="apatt_tel_##" SIZE=15 MAXLENGTH=15 class="SEdit" readonly>
+            <INPUT TYPE=text id="apatt_tel1_##" name="apatt_tel1_##" SIZE=10 MAXLENGTH=10 class="SEdit" readonly>
 		</TD>
 		<TD class=lightbluetable align=right>傳真：</TD>
 		<TD class=sfont9>
-			<INPUT TYPE=text id="apatt_fax_##" name="apatt_fax_##" SIZE=20 MAXLENGTH=20 class="Lock">
+			<INPUT TYPE=text id="apatt_fax_##" name="apatt_fax_##" SIZE=20 MAXLENGTH=20 class="SEdit" readonly>
 		</TD>
 	</TR>
 </script>
@@ -167,9 +170,7 @@
     var apcust_form={};
     apcust_form.init = function () {
         if (main.ar_form == "A8") {
-            $("#tr_tg_arf_re").show();
-        }else if (main.ar_form == "A7") {
-            $("#tr_tg_arf_fl").show();
+            $("#tr_tg_arf").show();
         }
     }
     
@@ -339,23 +340,21 @@
     }
 
     //應受送達人給值
-    //pfld = ap_hserver_flag欄位的前置名，如dbmn_ap_hserver_flag, 傳入dbmn_
-    apcust_form.apserver_flag = function (nRow, pFld) {
-        if ($("#" + pFld + "ap_hserver_flag_" + nRow).prop("checked"))
-            $("#" + pFld + "ap_server_flag_" + nRow).val("Y");
+    apcust_form.apserver_flag = function (papnum) {
+        if ($("#ap_hserver_flag_" + papnum).prop("checked"))
+            $("#ap_server_flag_" + papnum).val("Y");
         else
-            $("#" + pFld + "ap_server_flag_" + nRow).val("N");
+            $("#ap_server_flag_" + papnum).val("N");
     }
 
     //檢查申請人重覆
-    //papnum=筆數,pfld=檢查重覆的欄位名,ex:apcust_no_,dbmn_new_no_
-    apcust_form.chkapcust_no = function (papnum, nRow, pfld) {
+    apcust_form.chkapcust_no = function (papnum) {
         var objAp = {};
         for (var r = 1; r <= CInt($("#apnum").val()) ; r++) {
-            var lineAp = $("#" + pfld + "" + r).val();
+            var lineAp = $("#apcust_no_" + r).val();
             if (lineAp != "" && objAp[lineAp]) {
                 alert("(" + r + ")申請人重覆，請重新輸入！！");
-                $("#" + pfld + nRow).focus();
+                $("#apcust_no_" + papnum).focus();
             } else {
                 objAp[lineAp] = { flag: true, idx: r };
             }
@@ -363,15 +362,14 @@
     }
 
     //抓取申請人多組英文名稱及地址(申請人英文名稱[查詢])
-    //pTrId=申請人序號的tr前置名,pFld=欄位前置名
-    apcust_form.get_apnameaddr = function (nRow, pTrId, pFld) {
-        var apsqlno = $("#" + pFld + "apsqlno_" + nRow).val();
+    apcust_form.get_apnameaddr = function (nRow) {
+        var apsqlno = $("#apsqlno_" + nRow).val();
         if (apsqlno == "") {
             alert("請先輸入統編或再點選統編後「確定」重新抓取申請人資料！");
             return false;
         }
         //***todo
-        var url = getRootPath() + "/cust/cust13_2Qlist.aspx?prgid=Si04W01&apsqlno=" + apsqlno + "&pnum=" + nRow + "&trid=" + pTrId + "&fld=" + pFld;
+        var url = getRootPath() +"/cust/cust13_2Qlist.aspx?prgid=Si04W01&apsqlno=" + apsqlno + "&pnum=" + nRow ;
         window.open(url, 'myWindowOneN',"width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
@@ -381,14 +379,12 @@
     --update apcust_attach set use_datee='2020/12/30'--2016-12-31 00:00:00
     where apattach_sqlno='N201512015'
     */
-    //委任書清單
-    //ptbl = 申請人table名, pfld = apsqlno欄位的前置名，如dbmn_apsqlno, 傳入dbmn_
-    apcust_form.btn_POA = function (ptbl, pfld) {
-        var allapsqlno = $("#" + ptbl + " input[id^='" + pfld + "apsqlno_']").map(function () {
-            return $(this).val();
-        }).get().join(',');
+    $("#btn_POA").click(function () {
+	    var allapsqlno= $("#tabap input[id^='apsqlno_']").map(function (){
+		    return $(this).val();
+	    }).get().join(',');
 
-        var url = getRootPath() + "/brt1m/POA_attachlist.aspx?prgid=" + $("#prgid").val() + "&dept=T&source=POA&allapsqlno=" + allapsqlno + "&upload_tabname=upload";
-        window.open(url, "myWindowapN", "width=900 height=680 top=20 left=20 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
-    }
+		var url = getRootPath() +"/brt1m/POA_attachlist.aspx?prgid="+$("#prgid").val()+"&dept=T&source=POA&allapsqlno=" +allapsqlno+ "&upload_tabname=upload";
+		window.open(url,"myWindowapN","width=900 height=680 top=20 left=20 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+    });
 </script>

@@ -200,11 +200,10 @@ function getdmtap(pseq, pseq1){
                 $("#apatt_tel1_" + nRow).val(item.apatt_tel1);
                 $("#apatt_fax_" + nRow).val(item.apatt_fax);
                 if (item.Server_flag == "Y") {
-                    $("#ap_hserver_flag_" + nRow).prop("checked", true);
+                    $("#ap_hserver_flag_" + nRow).prop("checked", true).triggerHandler("click");
                 } else {
-                    $("#ap_hserver_flag_" + nRow).prop("checked", false);
+                    $("#ap_hserver_flag_" + nRow).prop("checked", false).triggerHandler("click");
                 }
-                apcust_form.apserver_flag(nRow);
                 $("#ap_fcname_" + nRow).val(item.ap_fcname);
                 $("#ap_lcname_" + nRow).val(item.ap_lcname);
                 $("#ap_fename_" + nRow).val(item.ap_fename);
@@ -273,11 +272,10 @@ function getdmtap_FC(pseq, pseq1){
                 $("#apatt_tel1_" + nRow).val(item.apatt_tel1);
                 $("#apatt_fax_" + nRow).val(item.apatt_fax);
                 if (item.Server_flag == "Y") {
-                    $("#ap_hserver_flag_" + nRow).prop("checked", true);
+                    $("#ap_hserver_flag_" + nRow).prop("checked", true).triggerHandler("click");
                 } else {
-                    $("#ap_hserver_flag_" + nRow).prop("checked", false);
+                    $("#ap_hserver_flag_" + nRow).prop("checked", false).triggerHandler("click");
                 }
-                apcust_form.apserver_flag(nRow);
                 $("#ap_fcname_" + nRow).val(item.ap_fcname);
                 $("#ap_lcname_" + nRow).val(item.ap_lcname);
                 $("#ap_fename_" + nRow).val(item.ap_fename);
@@ -336,11 +334,10 @@ function getdmtap_FC0(pseq, pseq1){
                 $("#dbmn_neaddr3_" + nRow).val(item.ap_eaddr3);
                 $("#dbmn_neaddr4_" + nRow).val(item.ap_eaddr4);
                 if (item.Server_flag == "Y") {
-                    $("#fc0_ap_hserver_flag_" + nRow).prop("checked", true);
+                    $("#fc0_ap_hserver_flag_" + nRow).prop("checked", true).triggerHandler("click");
                 } else {
-                    $("#fc0_ap_hserver_flag_" + nRow).prop("checked", false);
+                    $("#fc0_ap_hserver_flag_" + nRow).prop("checked", false).triggerHandler("click");
                 }
-                apcust_form.apserver_flag(nRow);
                 $("#dbmn_fcname_" + nRow).val(item.ap_fcname);
                 $("#dbmn_lcname_" + nRow).val(item.ap_lcname);
                 $("#dbmn_fename_" + nRow).val(item.ap_fename);
@@ -405,11 +402,10 @@ function getdmtap_FC1(pseq, pseq1) {
                 $("#dbmn1_fename_" + nRow).val(item.ap_fename);
                 $("#dbmn1_lename_" + nRow).val(item.ap_lename);
                 if (item.Server_flag == "Y") {
-                    $("#ap_hserver_flag_" + nRow).prop("checked", true);
+                    $("#ap_hserver_flag_" + nRow).prop("checked", true).triggerHandler("click");
                 } else {
-                    $("#ap_hserver_flag_" + nRow).prop("checked", false);
+                    $("#ap_hserver_flag_" + nRow).prop("checked", false).triggerHandler("click");
                 }
-                apcust_form.apserver_flag(nRow);
             })
         },
         error: function (xhr) {

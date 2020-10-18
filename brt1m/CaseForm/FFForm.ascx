@@ -2,7 +2,7 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
-    //新申請案交辦內容
+    //A3註冊費交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     
@@ -12,7 +12,7 @@
     protected string tfg1_agt_no1 = "";
     
     private void Page_Load(System.Object sender, System.EventArgs e) {
-        PageLayout();
+        PageLayout();   
         this.DataBind();
     }
     
@@ -27,7 +27,7 @@
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>參、代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
-            <input type="hidden" id="tfzd_agt_no" name="tfzd_agt_no">
+            <input type="text" id="tfzd_agt_no" name="tfzd_agt_no">
 		    <select id="tfg1_agt_no1" NAME="tfg1_agt_no1"><%#tfg1_agt_no1%></select>
 		</td>
 	</tr>
@@ -46,22 +46,22 @@
 
 	<tr>
 		<td class=lightbluetable align=right id=no1 >申請號數：</td>
-		<td class=whitetablebg colspan="3" id=no2 ><input type="text" name="fr_apply_no" id="fr_apply_no" value="" size="20" maxlength="20" onchange="reg.tfzd_apply_no.value=reg.fr_apply_no.value"></TD>
+		<td class=whitetablebg colspan="3" id=no2 ><input type="text" name="fr_apply_no" id="fr_apply_no" value="" size="20" maxlength="20" onchange="reg.tfzd_apply_no.value=this.value"></TD>
 		<td class=lightbluetable align=right id=no3 style="display:none">註冊號數：</td>
-		<td class=whitetablebg colspan="3" id=no4 style="display:none"><input type="text" name="fr_issue_no" id="fr_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=reg.fr_issue_no.value"></TD>
+		<td class=whitetablebg colspan="3" id=no4 style="display:none"><input type="text" name="fr_issue_no" id="fr_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 		<td class=lightbluetable align=right >商標名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" name="fr_Appl_name" id="fr_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=reg.fr_Appl_name.value"></TD>
+		<td class=whitetablebg colspan="3"><input type="text" name="fr_Appl_name" id="fr_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
 		<td class="whitetablebg" colspan=7>
-            <input type="radio" name="fr_S_Mark" value="" onclick="dmt_form.change_mark(1)">商標
+            <input type="radio" name="fr_S_Mark" value="" onclick="dmt_form.change_mark(1,this)">商標
 			<span id="smark2" style="display:none">
-            <input type="radio" name="fr_S_Mark" value="S" onclick="dmt_form.change_mark(1)">92年修正前服務標章
+            <input type="radio" name="fr_S_Mark" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
 			</span>
-            <input type="radio" name="fr_S_Mark" value="N" onclick="dmt_form.change_mark(1)">團體商標
-            <input type="radio" name="fr_S_Mark" value="M" onclick="dmt_form.change_mark(1)">團體標章
-            <input type="radio" name="fr_S_Mark" value="L" onclick="dmt_form.change_mark(1)">證明標章
+            <input type="radio" name="fr_S_Mark" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+            <input type="radio" name="fr_S_Mark" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+            <input type="radio" name="fr_S_Mark" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
 	<tr>
@@ -75,7 +75,7 @@
 <TABLE id=tabrem4 style="display:none" border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ><strong>附件：請勾註所檢附之文件</strong>
-            <input type="hidden" id="tfzd_remark1" name="tfzd_remark1">
+            <input type="text" id="tfzd_remark1" name="tfzd_remark1">
 		</td>
 	</tr>
 	<tr>
@@ -91,8 +91,8 @@
 		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" id="FF4_Z9t" NAME="FF4_Z9t" SIZE="50" onchange="br_form.AttachStr()"></td>
 	</tr>
 </table>
-<INPUT TYPE=hidden id=tfg1_seq NAME=tfg1_seq>
-<INPUT TYPE=hidden id=tfg1_seq1 NAME=tfg1_seq1>
+<INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
+<INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
     var br_form = {};
@@ -161,5 +161,12 @@
                 }
             }
         }
+    }
+
+    //依案性切換要顯示的欄位
+    br_form.changeTag = function (T1) {
+        var code3 = T1.substr(2, 1).toUpperCase();//案性第3碼
+        //切換後重新綁資料
+        br_form.bind();
     }
 </script>

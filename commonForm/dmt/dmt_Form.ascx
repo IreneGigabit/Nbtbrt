@@ -9,7 +9,7 @@
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
 
-    protected string tfz1_agt_no = "", tfz_country = "", tfzy_end_code = "";
+    protected string tfz_country = "", tfzy_end_code = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         PageLayout();
@@ -25,8 +25,6 @@
             Lock["brt51"] = "";
         }
 
-        //代理人
-        tfz1_agt_no = Sys.getAgent().Option("{agt_no}", "{agt_no}_{agt_namefull}", " v1='{agt_name1}' {selected}", true);
         //語文別/國家
         tfz_country = Sys.getCountry().Option("{coun_code}", "{coun_code}-{coun_c}");
         //結案代碼
@@ -63,7 +61,7 @@
 		<td class=whitetablebg colspan=3>
             <span id=DelayCase><!--舊案-->
 			    <INPUT TYPE=text NAME=old_seq id=old_seq SIZE=5 MAXLENGTH=5 onblur="dmt_form.mainseqChange('old_seq')">-<INPUT TYPE=text NAME=old_seq1 id=old_seq1 SIZE=1 MAXLENGTH=1 value="_" onblur="dmt_form.mainseqChange('old_seq')" style="text-transform:uppercase;">	
-			    <INPUT TYPE=button name=btnseq_ok id=btnseq_ok onclick="delayNO reg.old_seq.value,reg.old_seq1.value " value="確定">　<input type=button class="cbutton" name="Query" id="Query" value ="查詢主案件編號" style="width:140" onclick="dmt_form.Queryclick(reg.F_cust_seq.value)">
+			    <INPUT TYPE=button name=btnseq_ok id=btnseq_ok onclick="delayNO(reg.old_seq.value,reg.old_seq1.value)" value="確定">　<input type=button class="cbutton" name="Query" id="Query" value ="查詢主案件編號" style="width:140" onclick="dmt_form.Queryclick(reg.F_cust_seq.value)">
 			    <input type=button class="cbutton" name="Qry_step" id="Qry_step" value ="查詢案件進度" style="width:100" onclick="dmt_form.Qstepclick(reg.old_seq.value,reg.old_seq1.value)">
 			    <input type=button class="c1button <%#Hide.TryGet("brt51")%>" name="Upd_seq" id="Upd_seq" value ="案件主檔維護" style="width:100" onclick="dmt_form.Updseqclick(reg.old_seq.value,reg.old_seq1.value)">
 			    <input type="text" name=keyseq id=keyseq value="N">
@@ -83,7 +81,7 @@
 		<td class=lightbluetable align=right>母案本所編號：</td>
 		<td class=whitetablebg colspan=3 >
 			<INPUT TYPE=text NAME="tfzd_ref_no" id="tfzd_ref_no" SIZE=5 MAXLENGTH=5>-<INPUT TYPE=text NAME="tfzd_ref_no1" id="tfzd_ref_no1" SIZE=1 MAXLENGTH=1 value="_">
-			<INPUT TYPE=button Name="but_ref" id="but_ref" onclick="delayNO1 reg.tfzd_ref_no.value,reg.tfzd_ref_no1.value "  class="bluebutton" value="母案複製">
+			<INPUT TYPE=button Name="but_ref" id="but_ref" onclick="delayNO1(reg.tfzd_ref_no.value,reg.tfzd_ref_no1.value)"  class="bluebutton" value="母案複製">
 			<!-- 程序客收移轉舊案要結案 2006/5/26 -->
 			<input type=hidden name="endflag51" id="endflag51" value="X">
 			<input type=hidden name="end_date51" id="end_date51">
@@ -97,10 +95,20 @@
 		<td class="lightbluetable" align="right" rowspan=2>商標種類：</td>
 		<td class="whitetablebg" colspan=7>
             <input type="radio" name="tfzy_S_Mark" value="" onclick="dmt_form.change_mark(0)">商標
-            <input type="radio" name="tfzy_S_Mark" value="S" onclick="dmt_form.change_mark(0)">92年修正前服務標章
-            <input type="radio" name="tfzy_S_Mark" value="N" onclick="dmt_form.change_mark(0)">團體商標
-            <input type="radio" name="tfzy_S_Mark" value="M" onclick="dmt_form.change_mark(0)">團體標章
-            <input type="radio" name="tfzy_S_Mark" value="L" onclick="dmt_form.change_mark(0)">證明標章
+            <span id="smark">
+                <input type="radio" name="tfzy_S_Mark" value="S" onclick="dmt_form.change_mark(0)">92年修正前服務標章
+            </span>
+            <span id="smark1">
+				<span id="fr_smark1">
+                    <input type="radio" name="tfzy_S_Mark" value="N" onclick="dmt_form.change_mark(0)">團體商標
+				</span>
+				<span id="fr_smark2" style="display:">
+                    <input type="radio" name="tfzy_S_Mark" value="M" onclick="dmt_form.change_mark(0)">團體標章
+				</span>
+				<span id="fr_smark3" style="display:">
+                    <input type="radio" name="tfzy_S_Mark" value="L" onclick="dmt_form.change_mark(0)">證明標章
+				</span>
+			</span>
             <input type="text" id="tfzd_S_Mark" name="tfzd_S_Mark" value="">
 		</TD>
 	</tr>
@@ -267,9 +275,9 @@
 				    <td class=lightbluetable align=right>類別：</td>		
 				    <td class=whitetablebg colspan=7>共<input type="text" id=tfzr_class_count name=tfzr_class_count size=2 onchange="dmt_form.Add_class(this.value)">類
                         <input type="text" name=tfzr_class id=tfzr_class style="width:70%" readonly>
-					    <input type=hidden name=num1 id=num1 value="0"><!--畫面上有幾筆-->
-				        <input type=hidden name=ctrlnum1 id=ctrlnum1 value="0">
-					    <input type=hidden name=ctrlcount1 id=ctrlcount1 value="">
+					    <input type=text name=num1 id=num1 value="0"><!--畫面上有幾筆-->
+				        <input type=text name=ctrlnum1 id=ctrlnum1 value="0">
+					    <input type=text name=ctrlcount1 id=ctrlcount1 value="">
 				    </td>
 			    </tr>
             </thead>
@@ -341,6 +349,7 @@
         if(main.prgid=="brt51"&&main.ar_form=="A8"){
             $("#but_end").show();
         }
+        dmt_form.Add_class(1);//預設顯示第1筆
     }
 
     //新案(指定編號)
@@ -402,20 +411,13 @@
     }
 
     //商標種類(x:0=案件主檔→交辦內容,x:1=交辦內容→案件主檔)
-    dmt_form.change_mark = function (x) {
-        if(x==1){
-            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr3_S_mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr2_S_mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr21_S_mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr4_S_mark']:checked").val()+"']").prop("checked",true);
-            $("#tfzy_Pul").val("2");
-            dmt_form.tfzd_showmark($("#tfzy_Pul").val());
-            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr1_S_mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr3_S_mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='frf_S_mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fbf_S_mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr_S_mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='tfzy_S_Mark'][value='"+ $("input[name='fr11_S_mark']:checked").val()+"']").prop("checked",true);
+    dmt_form.change_mark = function (x,obj) {
+        if (x == 1) {
+            $("input[name='tfzy_S_Mark'][value='" + $(obj).val() + "']").prop("checked", true);
+            if ($("#tfy_Arcase").val() == "FC4") {
+                $("#tfzy_Pul").val("2");
+                dmt_form.tfzd_showmark($("#tfzy_Pul").val());
+            }
         }else{
             $("input[name='fr3_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
             $("input[name='fr2_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
@@ -556,9 +558,15 @@
             }
         }
 
-        $("#tfz1_class").val($("#tabdmt1>tbody input[id^='class1_']").map(function (index) {
+        var nclass = $("#tabdmt1>tbody input[id^='class1_']").map(function (index) {
             if (index == 0 || $(this).val() != "") return $(this).val();
-        }).get().join(','));
+        });
+        $("#tfzr_class").val(nclass.get().join(','));
+        $("#tfzr_class_count").val(Math.max(CInt($("#tfzr_class_count").val()), nclass.length));//回寫共N類
+
+        if ($("#ar_form").val() == "A3") {//註冊費交辦內容連動
+            $("#fr_class").val($("#tfzr_class").val());
+        }
     }
 
     //*****展覽優先權抓資料
