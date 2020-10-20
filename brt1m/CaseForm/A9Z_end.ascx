@@ -30,8 +30,7 @@
 	<tr id="A9Ztr_endtype" style="display:">
 		<td class="lightbluetable" align="right">結案註記：</td>
 		<td class="whitetablebg" >
-            <input type="checkbox" name="A9Z_end_flag" id="A9Z_end_flag" value="Y" onclick="dmt_form.get_enddata('A9Z')">
-            <font color=red>結案註記</font>(當此交辦需同時結案，請勾選)
+            <input type="checkbox" name="A9Z_end_flag" id="A9Z_end_flag" value="Y" onclick="dmt_form.get_enddata('A9Z')"><font color=red>結案註記</font>(當此交辦需同時結案，請勾選)
 		</td>
 		<td class="lightbluetable" align="right">結案原因：</td>
 		<td class="whitetablebg">

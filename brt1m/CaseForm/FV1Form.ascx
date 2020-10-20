@@ -2,7 +2,7 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
-    //閱案交辦內容
+    //AC閱案交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     
@@ -38,20 +38,19 @@
 	<tr>
 		<td class=lightbluetable align=right >程序種類：</td>
 		<td class=whitetablebg colspan="7">
-			<input type=radio name=tfzd_Mark value="A" onclick="change_no('A')">申請
-			<input type=radio name=tfzd_Mark value="I" onclick="change_no('I')">註冊
-			<input type=radio name=tfzd_Mark value="R" onclick="change_no('R')">核駁
+			<input type=radio name=tfzd_Mark value="A" onclick="br_form.change_no('A')">申請
+			<input type=radio name=tfzd_Mark value="I" onclick="br_form.change_no('I')">註冊
+			<input type=radio name=tfzd_Mark value="R" onclick="br_form.change_no('R')">核駁
 		</TD>					
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right ><span id=span_no></span>號數：</td>
-		<td class=whitetablebg colspan="3"><input type="text" id="no" name="no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=reg.fr_issue_no.value"></TD>
+		<td class=whitetablebg colspan="3"><input type="text" id="no" name="no" value="" size="20" maxlength="20"></TD>
 		<td class=lightbluetable align=right >商標名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" id="fr_Appl_name name="fr_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value">
+		<td class=whitetablebg colspan="3"><input type="text" id="fr_Appl_name" name="fr_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value">
 		<input type="hidden" value="" id=fr_issue_no name=fr_issue_no>
         </TD>
 	</tr>
-
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
 		<td class=whitetablebg colspan="7">
@@ -62,49 +61,31 @@
 			<input type=radio name=fr_S_Mark value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
-	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(s1Claim1)"><strong>伍、<u>簽章及具結</u></strong></td>
-	</tr>
-	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="tfg1_mod_claim1" NAME="tfg1_mod_claim1" value="Y"></td>
-		<td class="whitetablebg" colspan="7">一、註冊證遺失聲明：本件註冊商標/標章註冊證確實遺失。</td>
-	</tr>
     <tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zAttech)"><strong><u>附件</u></strong>
-            <input type="text" id="tfzd_remark1" name="tfzd_remark1">
-		</td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(vread_reason)"><strong>肆、<u>閱卷理由</u></strong></td>
 	</tr>
-	<tr style="display:none" class="br_attchstr">
+	<tr>
+		<td class="lightbluetable" align="right"></td>
+		<td class=whitetablebg colspan=7 width=100><TEXTAREA rows=5 cols=60 id=tfg1_tran_remark1 name=tfg1_tran_remark1></TEXTAREA></TD>
+	</tr>				
+	<tr>
+	 	<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zAttech)"><strong>伍、<u>附件</u></strong>
+            <input type="text" id="tfzd_remark1" name="tfzd_remark1">
+	 	</td>
+	</tr>	
+	<tr class="br_attchstr">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">原註冊證。</td>
+		<td class="whitetablebg" colspan="7">申請人證明文件(<input type=checkbox id="ttz1_Z1C" name="ttz1_Z1C" value="Z1C" onclick="br_form.AttachStr()">外文者應附中譯本)。</td>
 	</tr>
 	<tr class="br_attchstr">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z2" NAME="ttz1_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">委任書(<input type="checkbox" id="ttz1_Z2C" name="ttz1_Z2C" value="Z2C" onclick="br_form.AttachStr()">附中文譯本)。</td>
-	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z3" NAME="ttz1_Z3" value="Z3" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">浮貼商標圖樣2張。</td>
+		<td class="whitetablebg" colspan="7">申請人之代理人委任書(<input type=checkbox id="ttz1_Z2C" name="ttz1_Z2C" value="Z2C" onclick="br_form.AttachStr()">附中譯本）。</td>
 	</tr>
 	<tr class="br_attchstr">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z9" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz1_Z9t" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr()">
-		</td>
+		<td class="whitetablebg" colspan="7">其他。</td>
 	</tr>	
-	<tr style="display:none">
-		<td class=lightbluetable  ROWSPAN=2 ><strong>附註：</strong></td>
-		<td class=whitetablebg colspan=7>本件商標(標章)於<INPUT type=text id=O_item1 name=O_item1 size=10 class="dateField">(年/月/日)</td>
-	</tr>
-	<tr style="display:none">		  
-		<td class=whitetablebg colspan=7>另案辦理<INPUT type="radio" id=O_item2FT1 name=O_item2 value="FT1">移轉案
-													<INPUT type="radio" id=O_item2FL1 name=O_item2 value="FL1">授權案
-													<INPUT type="radio" id=O_item2FC1 name=O_item2 value="FC1">變更案
-													<INPUT type="radio" id=O_item2FR1 name=O_item2 value="FR1">延展案</TD>
-	</tr>
 </TABLE>
-
-
-<INPUT TYPE=text id=tfr_mod_field NAME=tfr_mod_field value="mod_ap">
 <INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
@@ -112,6 +93,35 @@
     var br_form = {};
     br_form.init = function () {
     }
+
+    //程序種類
+    br_form.change_no = function (x) {
+        if(x=="A"){
+            $("#span_no").html("申請");
+            $("#no").val($("#O_apply_no").val());
+        }else if(x=="I"){
+            $("#span_no").html("註冊");
+            $("#no").val($("#O_issue_no").val());
+        }else if(x=="R"){
+            $("#span_no").html("核駁");
+            $("#no").val($("#O_rej_no").val());
+        }
+    }
+	
+    //號數
+    $("#no").blur(function (e) {
+        $("#tfzd_apply_no").val($("#O_apply_no").val());
+        $("#tfzd_issue_no").val($("#O_issue_no").val());
+        $("#tfzd_rej_no").val($("#O_rej_no").val());
+        
+        if($("input[name='tfzd_Mark']:checked").val() == "A"){
+            $("#tfzd_apply_no").val($(this).val());
+        }else if($("input[name='tfzd_Mark']:checked").val() == "I"){
+            $("#tfzd_issue_no").val($(this).val());
+        }else if($("input[name='tfzd_Mark']:checked").val() == "R"){
+            $("#tfzd_rej_no").val($(this).val());
+        }
+    })
 
     //附件
     br_form.AttachStr = function () {

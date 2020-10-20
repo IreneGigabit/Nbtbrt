@@ -1,5 +1,5 @@
 ﻿//依案件編號抓案件資料並綁定
-function delayNO(){
+function delayNO(low_no, low_no1) {
     if ($("#tfy_Arcase").val() == "") {
         alert("請選擇案性!!");
         settab("#case");

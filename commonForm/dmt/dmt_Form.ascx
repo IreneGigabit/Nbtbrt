@@ -817,11 +817,17 @@
 
 	//*****將特定欄位disabled
     dmt_form.Filereadonly = function () {
-        $("input[name^='tfzd' i]").lock();
+        /*$("input[name^='tfzd' i]").lock();
         $("input[name^='fr' i]").lock();
         if (main.seq == "") {
             $("input[name^='tfzd' i]").val("");
             $("input[name^='fr' i]").val("");
+        }*/
+        $("input[name^='tfzd']").lock();
+        $("input[name^='fr']").lock();
+        if (main.seq == "") {
+            $("input[name^='tfzd']").val("");
+            $("input[name^='fr']").val("");
         }
         $("input[name=tfzy_S_Mark]").lock();//商標種類
         $("#pfzd_prior_date").lock();//優先權申請日
@@ -845,8 +851,10 @@
 
     //*****將特定欄位enabled
     dmt_form.Filecanput = function () {
-        $("input[name^='tfzd' i]").unlock().val("");
-        $("input[name^='fr' i]").unlock().val("");
+        //$("input[name^='tfzd' i]").unlock().val("");
+        //$("input[name^='fr' i]").unlock().val("");
+        $("input[name^='tfzd']").unlock().val("");
+        $("input[name^='fr']").unlock().val("");
 
         $("input[name=tfzy_S_Mark").unlock();//商標種類
         $("#pfzd_prior_date").unlock();//優先權申請日

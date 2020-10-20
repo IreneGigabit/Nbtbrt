@@ -79,7 +79,7 @@
 		    <input type=hidden id="apsqlno_##" name="apsqlno_##">
 		    <INPUT TYPE=text id="ap_cname1_##" name="ap_cname1_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)"><br>
 		    <INPUT TYPE=text id="ap_cname2_##" name="ap_cname2_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)">
-		    <INPUT type='button' value='申請人查詢' onclick="apcust_form.cust13query('##')"  style='cursor:pointer;' title='輸入關鍵字並點選申請人查詢，即顯示申請人資料清單。'>
+		    <INPUT type='button' value='申請人查詢' onclick="apcust_form.cust13query('##','')"  style='cursor:pointer;' title='輸入關鍵字並點選申請人查詢，即顯示申請人資料清單。'>
 		</TD>
 	</TR>
 	<TR>
@@ -328,13 +328,14 @@
     }
 
     //申請人查詢
-    apcust_form.cust13query = function (nRow) {
-        if ($("#apcust_no_" + nRow).val() == "" && $("#ap_cname1_" + nRow).val() == "") {
+    //pfld = ap_hserver_flag欄位的前置名，如dbmn_ap_hserver_flag, 傳入dbmn_
+    apcust_form.cust13query = function (nRow, pFld) {
+        if ($("#" + pFld + "apcust_no_" + nRow).val() == "" && $("#" + pFld + "ap_cname1_" + nRow).val() == "") {
             alert("請輸入統一編號或申請人(關係人)名稱");
             return false;
         }
         //***todo
-        var url = getRootPath() + "/cust/cust13_list.aspx?ap_cname1=" + $("#ap_cname1_" + nRow).val() + "&ap_cname2=" + $("#ap_cname2_" + nRow).val() + "&hRight=2";
+        var url = getRootPath() + "/cust/cust13_list.aspx?ap_cname1=" + $("#" + pFld + "ap_cname1_" + nRow).val() + "&ap_cname2=" + $("#" + pFld + "ap_cname2_" + nRow).val() + "&hRight=2";
         window.open(url, 'cust13Blank');
     }
 
@@ -351,7 +352,7 @@
     //papnum=筆數,pfld=檢查重覆的欄位名,ex:apcust_no_,dbmn_new_no_
     apcust_form.chkapcust_no = function (papnum, nRow, pfld) {
         var objAp = {};
-        for (var r = 1; r <= CInt($("#apnum").val()) ; r++) {
+        for (var r = 1; r <= CInt(papnum) ; r++) {
             var lineAp = $("#" + pfld + "" + r).val();
             if (lineAp != "" && objAp[lineAp]) {
                 alert("(" + r + ")申請人重覆，請重新輸入！！");

@@ -398,16 +398,16 @@
         var code3 = T1.Left(3).toUpperCase();//案性前3碼
 
         $(".br_FD1,.br_FD2").hide();
-        if(code3=="FD1"){
+        if (code3 == "FD1") {
             $(".br_FD1").show();
-              $("#fr1_smark1,#smark").hide();//92年修正前服務標章
-              $("#tr_tfg1_div_arcase").show();//分割後申請案性
-        $("#tabrem4").html($("#tabbr_remark1_FD1").text());
-        }else if(code3=="FD2"||code3=="FD3"){
+            $("#fr1_smark1,#smark").hide();//92年修正前服務標章
+            $("#tr_tfg1_div_arcase").show();//分割後申請案性
+            $("#tabrem4").html($("#tabbr_remark1_FD1").text());
+        } else if (code3 == "FD2" || code3 == "FD3") {
             $(".br_FD2").show();
-              $("#fr1_smark1,#smark").show();//92年修正前服務標章
-              $("#tr_tfg1_div_arcase").hide();//分割後申請案性
-        $("#tabrem4").html($("#tabbr_remark1_FD2").text());
+            $("#fr1_smark1,#smark").show();//92年修正前服務標章
+            $("#tr_tfg1_div_arcase").hide();//分割後申請案性
+            $("#tabrem4").html($("#tabbr_remark1_FD2").text());
         }
         $("#fr_smark1").show();//團體商標
         $("#fr_smark2").hide();//團體標章
