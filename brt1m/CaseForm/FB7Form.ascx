@@ -1,0 +1,210 @@
+﻿<%@ Control Language="C#" ClassName="FB7Form" %>
+<%@ Import Namespace = "System.Collections.Generic"%>
+
+<script runat="server">
+    //ZZ交辦內容
+    //父控制項傳入的參數
+    public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    
+    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string SQL = "";
+
+    protected string tfb7_agt_no1 = "";
+    
+    private void Page_Load(System.Object sender, System.EventArgs e) {
+        PageLayout();   
+        this.DataBind();
+    }
+    
+    private void PageLayout() {
+        //代理人
+        tfb7_agt_no1 = Sys.getAgent().Option("{agt_no}", "{agt_no}_{agt_namefull}", " v1='{agt_name1}' {selected}", true);
+    }
+</script>
+
+<%=Sys.GetAscxPath(this)%>
+<TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
+	<tr>
+		<td class="lightbluetable" valign="top" ><strong>參、代理人</strong></td>
+		<td class="whitetablebg" colspan="7" >
+		    <select id="tfb7_agt_no1" NAME="tfb7_agt_no1"><%#tfb7_agt_no1%></select>
+		</td>
+	</tr>
+	<tr>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(FB7appl_name)">
+            <strong>壹、<u>註冊申請案號、商標/標章名稱、商標種類</u></strong>
+		</td>
+	</tr>
+	<tr>
+		<td class=lightbluetable align=right >註冊申請案號：</td>
+		<td class=whitetablebg colspan="7">
+			<input type="text" id="fbf_no" name="fbf_no" value="" size="20" maxlength="20" >
+		</TD>
+	</tr>
+	<tr>
+		<td class=lightbluetable align=right >商標/標章名稱：</td>
+		<td class=whitetablebg colspan="7">
+            <input type="text" id="fbf_Appl_name" name="fbf_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value">
+		</TD>
+	</tr>
+	<tr>
+		<td class=lightbluetable align=right >商標種類：</td>
+		<td class=whitetablebg colspan="7">
+			<input type=radio name=fbf_S_Mark value="" onclick="dmt_form.change_mark(1, this)">商標
+			<!--<input type=radio name=fbf_S_Mark value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章-->
+			<input type=radio name=fbf_S_Mark value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+			<input type=radio name=fbf_S_Mark value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+			<input type=radio name=fbf_S_Mark value="L" onclick="dmt_form.change_mark(1, this)">證明標章
+		</TD>
+	</tr>
+	<tr>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(FB7mark)">
+            <strong>肆、<u>補送文件</u></strong><input TYPE="hidden" NAME="tfb7_other_item" id="tfb7_other_item">
+        </td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z1" name="tfb7_Z1" value="Z1" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">商標圖樣浮貼一式５張。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z2" name="tfb7_Z2" value="Z2" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">載有本件聲音之.wav檔光碟片。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z31" name="tfb7_Z31" value="Z31" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">商標樣本。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z3" name="tfb7_Z3" value="Z3" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">商標陳述意見書。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z4" name="tfb7_Z4" value="Z4" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">委任書（<input type="checkbox" id="tfb7_Z4C" name="tfb7_Z4C" value="Z4C" onclick="br_form.AttachStr()" >附中文譯本）。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z5" name="tfb7_Z5" value="Z5" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">優先權證明文件（<input type="checkbox" id="tfb7_Z5C" name="tfb7_Z5C" value="Z5C" onclick="br_form.AttachStr()" >附中文譯本）。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z71" name="tfb7_Z71" value="Z71" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">展覽會優先權證明文件（<input type="checkbox" id="tfb7_Z71C" name="tfb7_Z71C" value="Z71C" onclick="br_form.AttachStr()" >附中文譯本）。</td>
+	</tr>
+	<tr class="br_attchstr" style="display:none">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z6" name="tfb7_Z6" value="Z6" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">大陸地區之自然人或法人之身分證明文件。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z7" name="tfb7_Z7" value="Z7" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">具結書。（印鑑遺失具結書）</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z8" name="tfb7_Z8" value="Z8" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">法人、團體或政府機關證明文件。（證明標章之附件）</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z9" name="tfb7_Z9" value="Z9" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">申請人得為證明之資格或能力之文件。（證明標章之附件）</td>
+	</tr>
+	<tr class="br_attchstr" style="display:none">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z10" name="tfb7_Z10" value="Z10" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">標示標章條件及控制標章使用方式。（證明標章之附件）</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z111" name="tfb7_Z111" value="Z111" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">申請人具代表性證明文件。（申請產地團體商標/產地證明標章者始需檢附）</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z11" name="tfb7_Z11" value="Z11" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">申請人不從事所證明商品之製造、行銷或服務提供之聲明。（證明標章之附件）</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z131" name="tfb7_Z131" value="Z131" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">使用規範書（<input type="checkbox" id="tfb7_Z131C" name="tfb7_Z131C" value="Z131C" onclick="br_form.AttachStr()" >附中文譯本或應記載事項之中文節譯本）。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z141" name="tfb7_Z141" value="Z141" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">使用規範書之電子檔光碟片（<input type="checkbox" id="tfb7_Z141C" name="tfb7_Z141C" value="Z141C" onclick="br_form.AttachStr()" >附中文譯本或應記載事項之中文節譯本）。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z12" name="tfb7_Z12" value="Z12" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">法人資格證明文件。（團體商標、團體標章之附件）</td>
+	</tr>
+	<tr class="br_attchstr" style="display:none">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z13" name="tfb7_Z13" value="Z13" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">載明申請人成員資格及控制團體商標使用方式之商標使用規範書。（團體商標之附件）</td>
+	</tr>
+	<tr class="br_attchstr" style="display:none">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z14" name="tfb7_Z14" value="Z14" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">載明申請人成員資格及控制團體標章使用方式之使用規範書。（團體標章之附件）</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z15" name="tfb7_Z15" value="Z15" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">分割後之商標註冊申請書正本（含相關文件）。（註冊申請案分割案之附件）</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z16" name="tfb7_Z16" value="Z16" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">變更證明文件。（註冊前變更申請書之附件）</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input type="checkbox" id="tfb7_Z17" name="tfb7_Z17" value="Z17" onclick="br_form.AttachStr()" ></td>
+		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" id="tfb7_Z17t" NAME="tfb7_Z17t" SIZE="50" onchange="br_form.AttachStr()"></td>
+	</tr>
+</table>
+
+<script language="javascript" type="text/javascript">
+    var br_form = {};
+    br_form.init = function () {
+    }
+    
+    //代理人
+    $("#tfzf_agt_no1").blur(function (e) {
+        var tagt_name="";
+        var tselectedindex=$(this)[0].selectedIndex;
+        if(tselectedindex>0){
+            //2016/3/17修改，因出名代理人增加顯示代碼，所以抓取A19_後名稱
+            //2020/6/19修改，改抓agt.agt_name1,不用文字切割
+            tagt_name=$("#tfzf_agt_no1 option:selected").attr("v1");
+        }
+        $("#tfzf_other_item").val(tagt_name);
+    });
+
+    //註冊申請案號
+    $("#fbf_no").blur(function (e) {
+        $("#tfzd_apply_no").val($(this).val());
+    })
+    
+    //附件
+    br_form.AttachStr = function () {
+        var strRemark1 = "";
+        $(".br_attchstr :checkbox").each(function (index) {
+            var $this = $(this);
+            if ($this.prop("checked")) {
+                strRemark1 += $this.val()
+                //其他文件輸入框
+                if ($("#tfb7_" + $this.val() + "t").length > 0) {
+                    if ($("#tfb7_" + $this.val() + "t").val() != "") {
+                        strRemark1 += "|Z9-" + $("#tfb7_" + $this.val() + "t").val() + "-Z9";
+                    }
+                }
+                strRemark1 += "|";
+            }
+        });
+        reg.tfz1_remark1.value = strRemark1;
+    }
+
+    //交辦內容綁定
+    br_form.bind = function () {
+        //console.log("br_form.bind");
+        if (jMain.case_main.length == 0) {
+        } else {
+        }
+    }
+
+    //依案性切換要顯示的欄位
+    br_form.changeTag = function (T1) {
+        var code3 = T1.Left(3).toUpperCase();//案性前3碼
+        //切換後重新綁資料
+        br_form.bind();
+    }
+</script>

@@ -328,17 +328,18 @@
     //附件
     br_form.AttachStr = function () {
         var strRemark1 = "";
+
         $("#tabrem4 :checkbox").each(function (index) {
             var $this = $(this);
             if ($this.prop("checked")) {
-                strRemark1 += $this.val() + "|";
-            }
-        });
-        //其他文件輸入框
-        $("#tabrem4 :text").each(function (index) {
-            var $this = $(this);
-            if ($this.val() != "") {
-                strRemark1 += "Z9-" + $this.val() + "-Z9|";
+                strRemark1 += $this.val()
+                //其他文件輸入框
+                if ($("#ttzd_" + $this.val() + "t").length > 0) {
+                    if ($("#ttzd_" + $this.val() + "t").val() != "") {
+                        strRemark1 += "|Z9-" + $("#ttzd_" + $this.val() + "t").val() + "-Z9";
+                    }
+                }
+                strRemark1 += "|";
             }
         });
         reg.tfzd_remark1.value = strRemark1;
@@ -538,7 +539,7 @@
 
     //依案性切換要顯示的欄位
     br_form.changeTag = function (T1) {
-        var code3 = T1.substr(2, 1).toUpperCase();//案性第3碼
+        var code3 = T1.Left(3).toUpperCase();//案性前3碼
         //切換後重新綁資料
         br_form.bind();
     }
