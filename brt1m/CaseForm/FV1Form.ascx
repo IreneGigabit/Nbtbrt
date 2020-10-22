@@ -74,15 +74,15 @@
 	 	</td>
 	</tr>	
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">申請人證明文件(<input type=checkbox id="ttz1_Z1C" name="ttz1_Z1C" value="Z1C" onclick="br_form.AttachStr()">外文者應附中譯本)。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">申請人證明文件(<input type=checkbox id="ttz1_Z1C" name="ttz1_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">外文者應附中譯本)。</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z2" NAME="ttz1_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">申請人之代理人委任書(<input type=checkbox id="ttz1_Z2C" name="ttz1_Z2C" value="Z2C" onclick="br_form.AttachStr()">附中譯本）。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z2" NAME="ttz1_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">申請人之代理人委任書(<input type=checkbox id="ttz1_Z2C" name="ttz1_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中譯本）。</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z9" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z9" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">其他。</td>
 	</tr>	
 </TABLE>
@@ -90,7 +90,6 @@
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
-    var br_form = {};
     br_form.init = function () {
     }
 
@@ -122,25 +121,6 @@
             $("#tfzd_rej_no").val($(this).val());
         }
     })
-
-    //附件
-    br_form.AttachStr = function () {
-        var strRemark1 = "";
-        $(".br_attchstr :checkbox").each(function (index) {
-            var $this = $(this);
-            if ($this.prop("checked")) {
-                strRemark1 += $this.val()
-                //其他文件輸入框
-                if ($("#ttz1_" + $this.val() + "t").length > 0) {
-                    if ($("#ttz1_" + $this.val() + "t").val() != "") {
-                        strRemark1 += "|Z9-" + $("#ttz1_" + $this.val() + "t").val() + "-Z9";
-                    }
-                }
-                strRemark1 += "|";
-            }
-        });
-        reg.tfzd_remark1.value = strRemark1;
-    }
 
     //交辦內容綁定
     br_form.bind = function () {

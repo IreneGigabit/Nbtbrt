@@ -121,15 +121,15 @@
 		    </tr>
 		    <tr class="trft2_##">
 			    <td class="lightbluetable" align="right">商標種類##:</td>
-			    <td class="whitetablebg" colspan=3><input type=text id=s_markb_## NAME=s_markb_## size=30 readonly "&reg.color.value&"></td>
+			    <td class="whitetablebg" colspan=3><input type=text id=s_markb_## NAME=s_markb_## size=30 readonly></td>
 		    </tr>		
 		    <tr class="trft2_##">
 			    <td class="lightbluetable" align="right">商標/標章名稱##:</td>
-			    <td class="whitetablebg" colspan=3><input type=text id=appl_nameb_## NAME=appl_nameb_## size=30 readonly "&reg.color.value&"></td>
+			    <td class="whitetablebg" colspan=3><input type=text id=appl_nameb_## NAME=appl_nameb_## size=30 readonly></td>
 		    </tr>		
 		    <tr class="trft2_##">
 			    <td class="lightbluetable" align="right">註冊號數##:</td>
-			    <td class="whitetablebg" colspan=3><input type=text id=issue_nob_## NAME=issue_nob_## size=30 readonly "&reg.color.value&"></td>
+			    <td class="whitetablebg" colspan=3><input type=text id=issue_nob_## NAME=issue_nob_## size=30 readonly></td>
 		    </tr>
         </script>
 		</table>
@@ -153,51 +153,51 @@
 		</td>
 	</tr>	
 	<tr class="br_attchstr" style="display:none">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">移轉契約書或其他移轉證明文件(<input type="checkbox" name="ttz1_Z1C" value="Z1C" onclick="br_form.AttachStr()">附中譯本)。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">移轉契約書或其他移轉證明文件(<input type="checkbox" name="ttz1_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中譯本)。</td>
 	</tr>
 	<tr class="br_attchstr" style="display:none">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">申請人之代理人委任書(<input type="checkbox" name="ttz1_Z2C" value="Z2C" onclick="br_form.AttachStr()">附中譯本)。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">申請人之代理人委任書(<input type="checkbox" name="ttz1_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中譯本)。</td>
 	</tr>
 	<!--2012/7/1新申請書增加，9/6修改-->
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" value="Z3" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">合意(買賣)移轉：應檢附移轉契約書(<input type="checkbox" name="ttz1_Z3C" value="Z3C" onclick="br_form.AttachStr()">附中文譯本)。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">合意(買賣)移轉：應檢附移轉契約書(<input type="checkbox" name="ttz1_Z3C" value="Z3C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" value="Z4" onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" value="Z4" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">繼承移轉，應檢附下列文件：<br>
 			1.原商標權人死亡證明、原商標權人全戶戶籍謄本(由受讓人具結係全戶謄本)、專用權歸屬證明或其他繼承證明文件(如係外文應另附中文譯本)。<br>
 			2.稽徵機關核發之稅款繳清證明書，或核定免稅證明書，或不計入遺產總額證明書，或同意移轉證明書之副本，或稽徵機關核發之其他證明文件。
 		</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z5" value="Z5" onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z5" value="Z5" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">贈與移轉，應檢附下列文件：<br>
-			1.贈與契約書(<input type="checkbox" name="ttz1_Z5C" value="Z5C" onclick="br_form.AttachStr()">附中文譯本)。<br>
+			1.贈與契約書(<input type="checkbox" name="ttz1_Z5C" value="Z5C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。<br>
 			2.稽徵機關核發之稅款繳清證明書，或核定免稅證明書，或不計入贈與總額證明書，或同意移轉證明書之副本，或稽徵機關核發之其他證明文件。
 		</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z6" value="Z6" onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z6" value="Z6" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">拍賣移轉：應檢附法院拍定證明影本。
 		</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z7" value="Z7" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">公司合併移轉：應檢附公司合併證明文件(<input type="checkbox" name="ttz1_Z7C" value="Z7C" onclick="br_form.AttachStr()">附中文譯本)。
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z7" value="Z7" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">公司合併移轉：應檢附公司合併證明文件(<input type="checkbox" name="ttz1_Z7C" value="Z7C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。
 			
 		</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z8" value="Z8" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">團體標章、團體商標、證明標章移轉：移轉契約書及使用規範書或使用規範書之電子檔光碟片(<input type="checkbox" name="ttz1_Z8C" value="Z8C" onclick="br_form.AttachStr()">附中文譯本)。
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z8" value="Z8" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">團體標章、團體商標、證明標章移轉：移轉契約書及使用規範書或使用規範書之電子檔光碟片(<input type="checkbox" name="ttz1_Z8C" value="Z8C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。
 		</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr()">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">
 		</td>
 	</tr>
 	<tr style="display:none">
@@ -219,7 +219,6 @@
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
-    var br_form = {};
     br_form.init = function () {
         //br_form.Add_FC21(1);//移轉件數預設1筆
     }
@@ -452,25 +451,6 @@
     br_form.seqChange = function (nRow){
         $("#keydseqb_"+nRow).val("N")//有變動給N
         $("#btndseq_okb_"+nRow).prop("disabled",false);
-    }
-
-    //附件
-    br_form.AttachStr = function () {
-        var strRemark1 = "";
-        $(".br_attchstr :checkbox").each(function (index) {
-            var $this = $(this);
-            if ($this.prop("checked")) {
-                strRemark1 += $this.val()
-                //其他文件輸入框
-                if ($("#ttz1_" + $this.val() + "t").length > 0) {
-                    if ($("#ttz1_" + $this.val() + "t").val() != "") {
-                        strRemark1 += "|Z9-" + $("#ttz1_" + $this.val() + "t").val() + "-Z9";
-                    }
-                }
-                strRemark1 += "|";
-            }
-        });
-        reg.tfzd_remark1.value = strRemark1;
     }
 
     //交辦內容綁定

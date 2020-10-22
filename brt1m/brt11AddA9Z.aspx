@@ -6,7 +6,7 @@
 <%@ Register Src="~/commonForm/dmt/case_form.ascx" TagPrefix="uc1" TagName="case_form" %>
 <%@ Register Src="~/commonForm/dmt/dmt_Form.ascx" TagPrefix="uc1" TagName="dmt_Form" %>
 <%@ Register Src="~/commonForm/dmt/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
-<%@ Register Src="~/brt1m/CaseForm/A9Z_end.ascx" TagPrefix="uc1" TagName="A9Z_end" %>
+<%@ Register Src="~/brt1m/Brt11FormA9Z.ascx" TagPrefix="uc1" TagName="Brt11FormA9Z" %>
 
 
 <script runat="server">
@@ -78,42 +78,6 @@
             apcustHolder.Controls.Add(LoadControl("~/CommonForm/apcust_FC_RE1_form.ascx"));
         }
 
-        //交辦內容欄位畫面
-        if (ar_form == "A3") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FFForm.ascx"));//註冊費
-        } else if (ar_form == "A4") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FR1Form.ascx"));//延展
-        } else if (ar_form == "A5") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FD1Form.ascx"));//分割
-        } else if (ar_form == "A6") {
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FC1Form.ascx"));//變更
-        } else if (ar_form == "A7") {
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FL1Form.ascx"));//授權
-        } else if (ar_form == "A8") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FT1Form.ascx"));//移轉
-        } else if (ar_form == "A9") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FP1Form.ascx"));//質權
-        } else if (ar_form == "AA") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FN1Form.ascx"));//各種證明書
-        } else if (ar_form == "AB") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FI1Form.ascx"));//補(換)發證
-        } else if (ar_form == "AC") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FV1Form.ascx"));//閲案
-        } else if (ar_form == "B") {
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DO1Form.ascx"));//申請異議
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DR1Form.ascx"));//申請廢止
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DI1Form.ascx"));//申請評定
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/BZZ1Form.ascx"));//無申請書之交辦內容案
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/B5C1Form.ascx"));//聽證
-        } else{
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/ZZ1Form.ascx"));
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FOBForm.ascx"));
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/B5C1Form.ascx"));
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FOFForm.ascx"));
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FB7Form.ascx"));
-        }
-
-        
         if (formFunction == "Edit") {
             if ((HTProgRight & 8) > 0) {
                 if (prgid == "brt51") {//客收確認
@@ -235,9 +199,8 @@
                 <!--include file="../commonForm/dmt/dmt_Form.ascx"--><!--案件主檔-->
             </div>
             <div class="tabCont" id="#tran">
-                <asp:PlaceHolder ID="tranHolder" runat="server"></asp:PlaceHolder><!--交辦內容.依ar_form動態載入form-->
-                <uc1:A9Z_end runat="server" ID="A9Z_end" />
-                <!--include file="../brt1m/CaseForm/A9Z_end.ascx"--><!--結案復案資料-->
+                <uc1:Brt11FormA9Z runat="server" ID="Brt11FormA9Z" />
+                <!--include file="../brt1m/Brt11FormA9Z.ascx"--><!--交辦內容-->
             </div>
             <div class="tabCont" id="#upload">
                 <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" />
@@ -401,3 +364,5 @@
     }
 </script>
 <script src="CaseForm/Descript.js"></script><!--欄位說明-->
+
+

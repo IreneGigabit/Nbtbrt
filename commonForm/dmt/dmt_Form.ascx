@@ -176,9 +176,9 @@
 		<td class=whitetablebg colspan=7>	
 			<input TYPE="hidden" id="file" name="file">
 	        <input TYPE="text" name="Draw_file" id="Draw_file" SIZE="50" maxlength="50" readonly>
-			<input type="button" class="cbutton" id="butUpload" name="butUpload"  value="商標圖檔上傳" onclick="dmt_form.UploadAttach_photo()" >
-		    <input type="button" class="redbutton" id="btnDelAtt" name="btnDelAtt"  value="商標圖檔刪除" onclick="dmt_form.DelAttach_photo()" >
-            <input type="button" class="cbutton" id="btnDisplay" name="btnDisplay" value="商標圖檔檢視" onclick="dmt_form.PreviewAttach_photo()" >
+			<input type="button" class="cbutton" id="butUpload" name="butUpload"  value="商標圖檔上傳" onclick="dmt_form.UploadAttach_photo('')" >
+		    <input type="button" class="redbutton" id="btnDelAtt" name="btnDelAtt"  value="商標圖檔刪除" onclick="dmt_form.DelAttach_photo('')" >
+            <input type="button" class="cbutton" id="btnDisplay" name="btnDisplay" value="商標圖檔檢視" onclick="dmt_form.PreviewAttach_photo('')" >
 	        <input type="hidden" name="draw_attach_file" id="draw_attach_file">
 		</TD>
 	</tr>	
@@ -692,27 +692,38 @@
 
     //*****商標圖檔
     //商標圖檔上傳
-    dmt_form.UploadAttach_photo = function () {
+    dmt_form.UploadAttach_photo = function (pfld) {
         var tfolder = "temp";
         var nfilename = "";
         if (main.formFunction == "Edit") {
             nfilename = reg.in_no.value
         }
+        var pfile_name = "Draw_file";
+        if (pfld!=""){
+            //for爭救案,tfp2:DO1form
+            pfile_name=pfld+"_draw_file";
+        }
         var url = getRootPath() + "/sub/upload_win_file_new.aspx?type=dmt_photo" +
             "&nfilename=" + nfilename +
-            "&draw_file=" + ($("#Draw_file").val() || "") +
+            "&draw_file=" + ($("#" + pfile_name).val() || "") +
             "&folder_name=temp" +
             "&form_name=draw_attach_file" +
-            "&file_name=Draw_file" +
+            "&file_name=" + pfile_name +
             "&prgid=<%=prgid%>" +
-            "&btnname=butUpload1" +
+            "&btnname=butUpload"+pfld +
             "&filename_flag=source_name";
         window.open(url, "dmtupload", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
     //商標圖檔刪除
-    dmt_form.DelAttach_photo = function () {
-        if ($("#Draw_file").val() == "") {
+    dmt_form.DelAttach_photo = function (pfld) {
+        var pfile_name = "Draw_file";
+        if (pfld != "") {
+            //for爭救案,tfp2:DO1form
+            pfile_name = pfld + "_draw_file";
+        }
+
+        if ($("#" + pfile_name).val() == "") {
             alert("無圖檔可刪除 !!");
             return false;
         }
@@ -724,17 +735,23 @@
 
         if (confirm("確定刪除上傳圖檔？")) {
             var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() +
-                "&btnname=butUpload1";
+                "&btnname=butUpload" + pfld;
             window.open(url, "myWindowOne1", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
             //window.open(url, "myWindowOne1", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
             $("#draw_attach_file").val("");
-            $("#Draw_file").val("");
+            $("#" + pfile_name).val("");
         }
     }
 
     //商標圖檔檢視
-    dmt_form.PreviewAttach_photo = function () {
-        if ($("#Draw_file").val() == "") {
+    dmt_form.PreviewAttach_photo = function (pfld) {
+        var pfile_name = "Draw_file";
+        if (pfld != "") {
+            //for爭救案,tfp2:DO1form
+            pfile_name = pfld + "_draw_file";
+        }
+
+        if ($("#" + pfile_name).val() == "") {
             alert("請先上傳圖檔 !!");
             return false;
         }
@@ -889,7 +906,7 @@
             }else{
                 $("#New_seq").val("");
             }
-            dmt_form.Filecanput();//***todo將特定欄位disabled
+            dmt_form.Filecanput();//***todo將特定欄位enabled
             $("#F_cust_seq").unlock();
             $("#btncust_seq").show();
             dmt_form.Add_class(1);//預設顯示第1筆
@@ -902,7 +919,7 @@
             $("#CaseNewAssign").show();
             //***2011/1/24因復案流程修改
             $("#A9Ztr_endtype,#A9Ztr_backflag").hide();
-            dmt_form.Filecanput();//***todo將特定欄位disabled
+            dmt_form.Filecanput();//***todo將特定欄位enabled
             $("#F_cust_seq").unlock();
             $("#btncust_seq").show();
             dmt_form.Add_class(1);//預設顯示第1筆
@@ -917,7 +934,7 @@
             $("#A9Ztr_endtype,#A9Ztr_backflag").hide();
             dmt_form.Add_class(1);//預設顯示第1筆
             $("#color_1").val("class=SEdit");
-            dmt_form.Filereadonly();//***todo將特定欄位enable
+            dmt_form.Filereadonly();//***todo將特定欄位disabled
             //***接收舊案檢索資料
             if (main.formFunction == "Edit") {
                 $("#old_seq,#tfzb_seq").val(jMain.case_main[0].seq);

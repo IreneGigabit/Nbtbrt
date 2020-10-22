@@ -28,11 +28,11 @@
         } else if (ar_form == "A5") {
             tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FD1Form.ascx"));//分割
         } else if (ar_form == "A6") {
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FC1Form.ascx"));//變更
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FC1Form.ascx"));//變更
         } else if (ar_form == "A7") {
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FL1Form.ascx"));//授權
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FL1Form.ascx"));//授權
         } else if (ar_form == "A8") {
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FT1Form.ascx"));//移轉
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FT1Form.ascx"));//移轉
         } else if (ar_form == "A9") {
             tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FP1Form.ascx"));//質權
         } else if (ar_form == "AA") {
@@ -42,23 +42,44 @@
         } else if (ar_form == "AC") {
             tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FV1Form.ascx"));//閲案
         } else if (ar_form == "B") {
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DO1Form.ascx"));//申請異議
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DR1Form.ascx"));//申請廢止
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DI1Form.ascx"));//申請評定
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/BZZ1Form.ascx"));//無申請書之交辦內容案
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/B5C1Form.ascx"));//聽證
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DO1Form.ascx"));//申請異議
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DR1Form.ascx"));//申請廢止
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DI1Form.ascx"));//申請評定
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/BZZ1Form.ascx"));//無申請書之交辦內容案
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/B5C1Form.ascx"));//聽證
         } else {
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/ZZ1Form.ascx"));
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FOBForm.ascx"));
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/B5C1Form.ascx"));
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FOFForm.ascx"));
-            //tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FB7Form.ascx"));
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/ZZ1Form.ascx"));
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FOBForm.ascx"));
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/B5C1Form.ascx"));
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FOFForm.ascx"));
+            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FB7Form.ascx"));
         }
     }
 </script>
 <script language="javascript" type="text/javascript">
     var br_form = {};
     br_form.init = function () {
+    }
+
+    //附件
+    //selector:物件範圍,pfld:附件欄位名,tar:目的欄位
+    br_form.AttachStr = function (selector, pfld, tar) {
+        var strRemark1 = "";
+
+        $(selector + " :checkbox").each(function (index) {
+            var $this = $(this);
+            if ($this.prop("checked")) {
+                strRemark1 += $this.val()
+                //其他文件輸入框
+                if ($("#" + pfld + $this.val() + "t").length > 0) {
+                    if ($("#" + pfld + $this.val() + "t").val() != "") {
+                        strRemark1 += "|Z9-" + $("#" + pfld + $this.val() + "t").val() + "-Z9";
+                    }
+                }
+                strRemark1 += "|";
+            }
+        });
+        tar.value = strRemark1;
     }
 </script>
 <%=Sys.GetAscxPath(this)%>

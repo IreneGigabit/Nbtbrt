@@ -112,21 +112,20 @@
 	 	</td>
 	</tr>	
 	<tr class="br_attchstr" style="display:none">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">中文註冊證影本(已註冊者)/原商標註冊申請書影本(申請中者)，另申中文註冊證明者，請檢附與申請份數相同之影本。</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z3" NAME="ttz1_Z3" value="Z3" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">委任書(<input type=checkbox id="ttz1_Z3C" name="ttz1_Z3C" value="Z3C" onclick="br_form.AttachStr()">附中文譯本）。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z3" NAME="ttz1_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">委任書(<input type=checkbox id="ttz1_Z3C" name="ttz1_Z3C" value="Z3C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本）。</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z2" NAME="ttz1_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z2" NAME="ttz1_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">申請人於貿易局廠商登記之英文名稱及地址資料或申請人英文名稱及地址其他資料。</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z9" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz1_Z9t" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr()">
-			
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z9" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz1_Z9t" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">
 		</td>
 	</tr>	
 	<tr style="display:none">
@@ -148,7 +147,6 @@
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
-    var br_form = {};
     br_form.init = function () {
     }
 
@@ -174,25 +172,6 @@
             $("#tfzd_issue_no").val($(this).val());
         }
     })
-
-    //附件
-    br_form.AttachStr = function () {
-        var strRemark1 = "";
-        $(".br_attchstr :checkbox").each(function (index) {
-            var $this = $(this);
-            if ($this.prop("checked")) {
-                strRemark1 += $this.val()
-                //其他文件輸入框
-                if ($("#ttz1_" + $this.val() + "t").length > 0) {
-                    if ($("#ttz1_" + $this.val() + "t").val() != "") {
-                        strRemark1 += "|Z9-" + $("#ttz1_" + $this.val() + "t").val() + "-Z9";
-                    }
-                }
-                strRemark1 += "|";
-            }
-        });
-        reg.tfzd_remark1.value = strRemark1;
-    }
 
     //交辦內容綁定
     br_form.bind = function () {

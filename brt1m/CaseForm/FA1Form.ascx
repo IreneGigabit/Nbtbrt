@@ -475,7 +475,6 @@
 <uc1:FA1Form_remark1 runat="server" ID="FA1Form_remark1" /><!--附件様版 依案性第3碼切換顯示-->
 
 <script language="javascript" type="text/javascript">
-    var br_form = {};
     br_form.init = function () {
     }
 
@@ -634,8 +633,9 @@
     br_form.seq1_conctrl = function () {
         var old_ar_mark = "";
         if ($("#tfy_Arcase").val() != "") {
-            if ("#tfz1_seq1".val == "M") {
+            if ($("#tfz1_seq1").val() == "M") {
                 $("#tfy_Ar_mark").val("X");//請款註記:大陸進口案
+                old_ar_mark = "X";
             } else {
                 if (old_ar_mark == "X") {
                     $("#tfy_Ar_mark").val("");

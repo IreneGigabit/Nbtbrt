@@ -79,43 +79,23 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="FF4_Z1" NAME="FF4_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="FF4_Z1C" NAME="FF4_Z1C" value="Z1C" onclick="br_form.AttachStr()">附中文譯本)。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="FF4_Z1" NAME="FF4_Z1" value="Z1" onclick="br_form.AttachStr('#tabrem4','FF4_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="FF4_Z1C" NAME="FF4_Z1C" value="Z1C" onclick="br_form.AttachStr('#tabrem4','FF4_',reg.tfzd_remark1)">附中文譯本)。</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="FF4_Z2" NAME="FF4_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="FF4_Z2" NAME="FF4_Z2" value="Z2" onclick="br_form.AttachStr('#tabrem4','FF4_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">繳費資料(劃撥收據、即期票據如支票、本票、匯票等)。</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="FF4_Z9" NAME="FF4_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" id="FF4_Z9t" NAME="FF4_Z9t" SIZE="50" onchange="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="FF4_Z9" NAME="FF4_Z9" value="Z9" onclick="br_form.AttachStr('#tabrem4','FF4_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" id="FF4_Z9t" NAME="FF4_Z9t" SIZE="50" onchange="br_form.AttachStr('#tabrem4','FF4_',reg.tfzd_remark1)"></td>
 	</tr>
 </table>
 <INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
-    var br_form = {};
     br_form.init = function () {
-    }
-
-    //附件
-    br_form.AttachStr = function () {
-        var strRemark1 = "";
-        $("#tabrem4 :checkbox").each(function (index) {
-            var $this = $(this);
-            if ($this.prop("checked")) {
-                strRemark1 += $this.val()
-                //其他文件輸入框
-                if ($("#FF4_" + $this.val() + "t").length > 0) {
-                    if ($("#FF4_" + $this.val() + "t").val() != "") {
-                        strRemark1 += "|Z9-" + $("#FF4_" + $this.val() + "t").val() + "-Z9";
-                    }
-                }
-                strRemark1 += "|";
-            }
-        });
-        reg.tfz1_remark1.value = strRemark1;
     }
 
     //交辦內容綁定

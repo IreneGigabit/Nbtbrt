@@ -187,24 +187,24 @@
 		</td>
 	</tr>
     <tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1"  onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1"  onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz1_Z1C" NAME="ttz1_Z1C" value="Z1C">附中文譯本)。)</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z2" id="ttz1_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">按分割件數之分割申請書副本<input TYPE="text" NAME="ttz1_Z2C" id="ttz1_Z2C" value="" size="2" onchange="reg.ttz1_Z2.checked=true;br_form.AttachStr()">份。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z2" id="ttz1_Z2" value="Z2" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">按分割件數之分割申請書副本<input TYPE="text" NAME="ttz1_Z2C" id="ttz1_Z2C" value="" size="2" onchange="reg.ttz1_Z2.checked=true;br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)">份。</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" id="ttz1_Z3" value="Z3" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">分割後之商標註冊申請書正本(含相關文件)<input TYPE="text" NAME="ttz1_Z3C" id="ttz1_Z3C" value="" size="2" onchange="reg.ttz1_Z3.checked=true;br_form.AttachStr()">份。(每份應附商標圖樣5張)</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" id="ttz1_Z3" value="Z3" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">分割後之商標註冊申請書正本(含相關文件)<input TYPE="text" NAME="ttz1_Z3C" id="ttz1_Z3C" value="" size="2" onchange="reg.ttz1_Z3.checked=true;br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)">份。(每份應附商標圖樣5張)</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" id="ttz1_Z4" value="Z4" onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" id="ttz1_Z4" value="Z4" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">全體共有人同意書。</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z9" id="ttz1_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" NAME="ttz1_Z9t" id="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z9" id="ttz1_Z9" value="Z9" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" NAME="ttz1_Z9t" id="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
 	</tr>
 </script>
 
@@ -216,21 +216,20 @@
         </td>
 	</tr>
     <tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1"  onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1"  onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz1_Z1C" NAME="ttz1_Z1C" value="Z1C">附中文譯本)。)</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" id="ttz1_Z3" value="Z3" onclick="br_form.AttachStr()"></td>
-		<td class="whitetablebg" colspan="7">分割後之商標註冊申請書正本<input TYPE="text" NAME="ttz1_Z3C" id="ttz1_Z3C" value="" size="2" onchange="reg.ttz1_Z3.checked=true;br_form.AttachStr()">份。(每份應附商標圖樣5張)</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" id="ttz1_Z3" value="Z3" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">分割後之商標註冊申請書正本<input TYPE="text" NAME="ttz1_Z3C" id="ttz1_Z3C" value="" size="2" onchange="reg.ttz1_Z3.checked=true;br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)">份。(每份應附商標圖樣5張)</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" id="ttz1_Z4" value="Z4" onclick="br_form.AttachStr()"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" id="ttz1_Z4" value="Z4" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">全體共有人同意書。</td>
 	</tr>
 </script>
 
 <script language="javascript" type="text/javascript">
-    var br_form = {};
     br_form.init = function () {
         br_form.Add_arcase(1);//分割件數預設1筆
     }
@@ -354,23 +353,23 @@
 
 
     //附件
-    br_form.AttachStr = function () {
+    br_form.AttachStr1 = function (selector, pfld, tar) {
         var strRemark1 = "";
-        $("#tabrem4 :checkbox").each(function (index) {
+        $(selector + ":checkbox").each(function (index) {
             var $this = $(this);
             if ($this.prop("checked")) {
                 strRemark1 += $this.val()
                 //查有無份數欄位
-                if ($("#ttz1_" + $this.val() + "C").length > 0) {
-                    strRemark1 += ";"+$("#ttz1_" + $this.val() + "C").val();
+                if ($("#ttz1_" + pfld + $this.val() + "C").length > 0) {
+                    strRemark1 += ";" + $("#" + pfld + $this.val() + "C").val();
                 }
-                else if ($("#ttz1_" + $this.val() + "t").length > 0) {
-                    strRemark1 += ";"+$("#ttz1_" + $this.val() + "t").val();
+                else if ($("#" + pfld + $this.val() + "t").length > 0) {
+                    strRemark1 += ";" + $("#" + pfld + $this.val() + "t").val();
                 }
                 strRemark1 += "|";
             }
         });
-        reg.tfzd_remark1.value = strRemark1;
+        tar.value = strRemark1;
     }
 
     //原申請案號

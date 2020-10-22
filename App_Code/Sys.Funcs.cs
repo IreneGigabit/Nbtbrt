@@ -154,6 +154,26 @@ public partial class Sys
     }
     #endregion
 
+    #region getTagNo - 抓取現行案件預設出名代理人
+    /// <summary>  
+    /// 抓取現行案件預設出名代理人
+    /// <para>N:一般案件預設出名代理人。</para> 
+    /// <para>C:涉外案件預設出名代理人</para> 
+    /// </summary> 
+    public static DataTable getTagNo(string mark) {
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            string SQL = "select cust_code,form_name as agt_name,mark,remark ";
+            SQL += ",(select agt_namefull from agt where agt_no=cust_code) as agt_namefull ";
+            SQL += "from cust_code ";
+            SQL += "where code_type='Tagt_no' and mark='" + mark + "' ";
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
     #region getAgent - 抓取代理人清單
     /// <summary>  
     /// 抓取代理人清單
@@ -161,19 +181,29 @@ public partial class Sys
     public static DataTable getAgent() {
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
             //現行案件預設出名代理人
-            string SQL="select cust_code from cust_code where code_type='Tagt_no' and mark='N'";
-            object objResult = conn.ExecuteScalar(SQL);
-            string d_agt_no1= (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString().Trim();
+            string d_agt_no1 = getTagNo("N").Rows[0].SafeRead("cust_code", "");
 
-            SQL = "SELECT agt_no,agt_name1,agt_name2,agt_name3,agt_namefull,''selected ";
+            string SQL = "SELECT agt_no,agt_name1,agt_name2,agt_name3,agt_namefull,''agt_name,''strcomp_name,''selected ";
+            SQL += ",treceipt,(select form_name from cust_code where code_type='company' and cust_code=agt.treceipt) as comp_name ";
             SQL += "FROM agt ";
             SQL += "ORDER BY agt_no";
 
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
             for (int i = 0; i < dt.Rows.Count; i++) {
-                if(dt.Rows[i].SafeRead("agt_no", "")==d_agt_no1){
-                    dt.Rows[i]["selected"] ="selected";
+                dt.Rows[i]["agt_name"] = dt.Rows[i].SafeRead("agt_name1", "");
+                if (dt.Rows[i].SafeRead("agt_name2", "") != "") {
+                    dt.Rows[i]["agt_name"] = dt.Rows[i].SafeRead("agt_name", "") + "&" + dt.Rows[i].SafeRead("agt_name2", "");
+                    if (dt.Rows[i].SafeRead("agt_name3", "") != "") {
+                        dt.Rows[i]["agt_name"] = dt.Rows[i].SafeRead("agt_name", "") + "&" + dt.Rows[i].SafeRead("agt_name3", "");
+                    }
+                }
+                if (dt.Rows[i].SafeRead("comp_name", "") != "") {
+                    dt.Rows[i]["strcomp_name"] = "(" + dt.Rows[i].SafeRead("comp_name", "") + ")";
+                }
+
+                if (dt.Rows[i].SafeRead("agt_no", "") == d_agt_no1) {
+                    dt.Rows[i]["selected"] = "selected";
                 }
             }
             return dt;

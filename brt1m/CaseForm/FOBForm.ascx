@@ -117,7 +117,6 @@
 </table>
 
 <script language="javascript" type="text/javascript">
-    var br_form = {};
     br_form.init = function () {
     }
 

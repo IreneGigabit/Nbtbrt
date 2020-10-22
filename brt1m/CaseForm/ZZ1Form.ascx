@@ -56,8 +56,8 @@
 			    </td>
 		    </tr>
 		    <tr class="br_attchstr">
-			    <td class="lightbluetable" align="right"><input type="checkbox" name="tfw1_Z1" id="tfw1_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
-			    <td class="whitetablebg" colspan="7">委任書（<input type="checkbox" name="tfw1_Z1C" id="tfw1_Z1C" value="Z1C" onclick="br_form.AttachStr()">附中文譯本）。</td>
+			    <td class="lightbluetable" align="right"><input type="checkbox" name="tfw1_Z1" id="tfw1_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','tfw1_',reg.tfw1_other_item)"></td>
+			    <td class="whitetablebg" colspan="7">委任書（<input type="checkbox" name="tfw1_Z1C" id="tfw1_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr','tfw1_',reg.tfw1_other_item)">附中文譯本）。</td>
 		    </tr>
 		    </table>
 		</td>
@@ -69,27 +69,7 @@
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
-    var br_form = {};
     br_form.init = function () {
-    }
-
-    //附件
-    br_form.AttachStr = function () {
-        var strRemark1 = "";
-        $(".br_attchstr :checkbox").each(function (index) {
-            var $this = $(this);
-            if ($this.prop("checked")) {
-                strRemark1 += $this.val()
-                //其他文件輸入框
-                if ($("#tfw1_" + $this.val() + "t").length > 0) {
-                    if ($("#tfw1_" + $this.val() + "t").val() != "") {
-                        strRemark1 += "|Z9-" + $("#tfw1_" + $this.val() + "t").val() + "-Z9";
-                    }
-                }
-                strRemark1 += "|";
-            }
-        });
-        reg.tfw1_other_item.value = strRemark1;
     }
 
     //交辦內容綁定

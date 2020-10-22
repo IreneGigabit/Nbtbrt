@@ -221,20 +221,20 @@
 			    <td class="lightbluetable" colspan="8" valign="top" id=tg_attech STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zAttech)"><strong><u>附件：</u></strong></td>
 		    </tr>
 		    <tr class="br_attchstr">
-			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z2" NAME="ttz1_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
-			    <td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz1_Z2C" NAME="ttz1_Z2C" value="Z2C" onclick="br_form.AttachStr()">附中文譯本)。</td>
+			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z2" NAME="ttz1_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+			    <td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz1_Z2C" NAME="ttz1_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。</td>
 		    </tr>
 		    <tr class="br_attchstr">
-			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
-			    <td class="whitetablebg" colspan="7">設定質權契約書或其他證明文件(<input type="checkbox" id="ttz1_Z1C" name="ttz1_Z1C" value="Z1C" onclick="br_form.AttachStr()">附中文譯本)。</td>
+			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+			    <td class="whitetablebg" colspan="7">設定質權契約書或其他證明文件(<input type="checkbox" id="ttz1_Z1C" name="ttz1_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。</td>
 		    </tr>
 		    <tr class="br_attchstr" style="display:none">
-			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z3" NAME="ttz1_Z3" value="Z3" onclick="br_form.AttachStr()"></td>
-			    <td class="whitetablebg" colspan="7">關係人之代理人委任書(<input TYPE="checkbox" id="ttz1_Z3C" NAME="ttz1_Z3C" value="Z3C" onclick="br_form.AttachStr()">附中譯本)。</td>
+			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z3" NAME="ttz1_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+			    <td class="whitetablebg" colspan="7">關係人之代理人委任書(<input TYPE="checkbox" id="ttz1_Z3C" NAME="ttz1_Z3C" value="Z3C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中譯本)。</td>
 		    </tr>
 		    <tr class="br_attchstr">
-			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z9" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
-			    <td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz1_Z9t" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr()">
+			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z9" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+			    <td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz1_Z9t" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">
 			    </td>
 		    </tr>
 		    <tr style="display:none">
@@ -263,16 +263,16 @@
 			    <td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zAttech)"><strong><u>附件：</u></strong></td>
 		    </tr>
 		    <tr class="br_attchstr">
-			    <td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
-			    <td class="whitetablebg" colspan="7">委任書(<input type="checkbox" name="ttz2_Z2C" value="Z2C" onclick="br_form.AttachStr()">附中文譯本)。</td>
+			    <td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+			    <td class="whitetablebg" colspan="7">委任書(<input type="checkbox" name="ttz2_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。</td>
 		    </tr>
 		    <tr class="br_attchstr">
-			    <td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
-			    <td class="whitetablebg" colspan="7">同意塗銷質權契約書或其他證明文件(<input type="checkbox" name="ttz2_Z1C" value="Z1C" onclick="br_form.AttachStr()">附中文譯本)。</td>
+			    <td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+			    <td class="whitetablebg" colspan="7">同意塗銷質權契約書或其他證明文件(<input type="checkbox" name="ttz2_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。</td>
 		    </tr>
 		    <tr class="br_attchstr">
-			    <td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
-			    <td class="whitetablebg" colspan="7">其他。<input TYPE="text" NAME="ttz2_Z9t" SIZE="50" onchange="br_form.AttachStr()"></td>
+			    <td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+			    <td class="whitetablebg" colspan="7">其他。<input TYPE="text" NAME="ttz2_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		    </tr>
 		    </table>
 		</td>
@@ -285,9 +285,8 @@
 
 
 <script language="javascript" type="text/javascript">
-    var br_form = {};
     br_form.init = function () {
-        $("#FT_AP_Add_button").click();//關係人預設1筆
+        //$("#FT_AP_Add_button").click();//關係人預設1筆
     }
 
     //申請人種類
@@ -325,6 +324,9 @@
         $("#FT_tabap>tbody").append("<tr id='tr_role_" + nRow + "' class='sfont9'><td><table border='0' class='bluetable' cellspacing='1' cellpadding='2' width='100%'>" + copyStr + "</table></td></tr>");
         $("#tr_role_" + nRow + " .Lock").lock();
         $("#FT_apnum").val(nRow);
+
+        //申請人角色顯示授權人或被授權人
+        $("input[name='tfzd_mark']:checked").triggerHandler("click");
     });
 
     //減少一筆關係人
@@ -397,25 +399,6 @@
                 objAp[lineAp] = { flag: true, idx: r };
             }
         }
-    }
-
-    //附件
-    br_form.AttachStr = function () {
-        var strRemark1 = "";
-        $(".br_attchstr :checkbox").each(function (index) {
-            var $this = $(this);
-            if ($this.prop("checked")) {
-                strRemark1 += $this.val()
-                //其他文件輸入框
-                if ($("#ttz1_" + $this.val() + "t").length > 0) {
-                    if ($("#ttz1_" + $this.val() + "t").val() != "") {
-                        strRemark1 += "|Z9-" + $("#ttz1_" + $this.val() + "t").val() + "-Z9";
-                    }
-                }
-                strRemark1 += "|";
-            }
-        });
-        reg.tfzd_remark1.value = strRemark1;
     }
 
     //交辦內容綁定

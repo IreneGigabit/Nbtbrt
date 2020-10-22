@@ -222,20 +222,20 @@
 		<td colspan=2>
             <TABLE id=tabrem4 style="display:" border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
 	            <tr style="display:none">
-		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z1" NAME="ttzd_Z1" value="Z1" onclick="br_form.AttachStr()"></td>
+		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z1" NAME="ttzd_Z1" value="Z1" onclick="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)"></td>
 		            <td class="whitetablebg">大陸地區（含港、澳地區）之自然人或法人之身分證明文件。</td>
 	            </tr>
 	            <tr>
-		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z2" NAME="ttzd_Z2" value="Z2" onclick="br_form.AttachStr()"></td>
-		            <td class="whitetablebg">委任書(<input TYPE="checkbox" id="ttzd_Z2C" NAME="ttzd_Z2C" value="Z2C" onclick="br_form.AttachStr()">附中文譯本)。</td>
+		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z2" NAME="ttzd_Z2" value="Z2" onclick="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)"></td>
+		            <td class="whitetablebg">委任書(<input TYPE="checkbox" id="ttzd_Z2C" NAME="ttzd_Z2C" value="Z2C" onclick="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)">附中文譯本)。</td>
 	            </tr>
 	            <tr>
-		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z3" NAME="ttzd_Z3" value="Z3" onclick="br_form.AttachStr()"></td>
+		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z3" NAME="ttzd_Z3" value="Z3" onclick="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)"></td>
 		            <td class="whitetablebg">變更證明文件。(更名時檢附)</td>
 	            </tr>
 	            <tr>
-		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z9" NAME="ttzd_Z9" value="Z9" onclick="br_form.AttachStr()"></td>
-		            <td class="whitetablebg">其他證明文件。<input TYPE="text" id="ttzd_Z9t" NAME="ttzd_Z9t" SIZE="50" onchange="br_form.AttachStr()">
+		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z9" NAME="ttzd_Z9" value="Z9" onclick="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)"></td>
+		            <td class="whitetablebg">其他證明文件。<input TYPE="text" id="ttzd_Z9t" NAME="ttzd_Z9t" SIZE="50" onchange="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)">
 			
 		            </td>
 	            </tr>
@@ -247,7 +247,6 @@
 <INPUT TYPE=text id=tfgp_seq1 NAME=tfgp_seq1>
 
 <script language="javascript" type="text/javascript">
-    var br_form = {};
     br_form.init = function () {
         br_form.Add_class(1);//類別預設顯示第1筆
     }
@@ -322,27 +321,6 @@
         });
         $("#tfzd_class").val(nclass.get().join(','));
         $("#tfzd_class_count").val(Math.max(CInt($("#tfzd_class_count").val()), nclass.length));//回寫共N類
-    }
-
-
-    //附件
-    br_form.AttachStr = function () {
-        var strRemark1 = "";
-
-        $("#tabrem4 :checkbox").each(function (index) {
-            var $this = $(this);
-            if ($this.prop("checked")) {
-                strRemark1 += $this.val()
-                //其他文件輸入框
-                if ($("#ttzd_" + $this.val() + "t").length > 0) {
-                    if ($("#ttzd_" + $this.val() + "t").val() != "") {
-                        strRemark1 += "|Z9-" + $("#ttzd_" + $this.val() + "t").val() + "-Z9";
-                    }
-                }
-                strRemark1 += "|";
-            }
-        });
-        reg.tfzd_remark1.value = strRemark1;
     }
 
     //交辦內容綁定
