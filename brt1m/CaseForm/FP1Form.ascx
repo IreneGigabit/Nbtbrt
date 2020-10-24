@@ -412,17 +412,6 @@
     //依案性切換要顯示的欄位
     br_form.changeTag = function (T1) {
         var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        if (code3 == "FP1") {
-            $("#smark1,#smark2,#smark3").hide();
-            $("#tabrem1").show();
-            $("#tabrem2").hide();
-            $("#tfzd_remark1").val("");
-        } else if (code3 == "FP2") {
-            $("#smark1,#smark2,#smark3").hide();
-            $("#tabrem1").show();
-            $("#tabrem2").hide();
-            $("#tfzd_remark1").val("");
-        }
         //切換後重新綁資料
         br_form.bind();
     }

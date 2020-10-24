@@ -22,6 +22,7 @@
     }
 </script>
 
+<script type="text/html" id="div_ZZ1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -86,4 +87,5 @@
         //切換後重新綁資料
         br_form.bind();
     }
+</script>
 </script>

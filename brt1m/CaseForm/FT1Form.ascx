@@ -60,19 +60,19 @@
 		    <tr>
 			    <td class="lightbluetable" align="right" width="23%">此次<span id="sp_titlecnt">移轉</span>總件數：</td>
 			    <td class="whitetablebg"  colspan=3>共<input type="text" id=tot_num21 name=tot_num21 size=2 onchange="br_form.Add_FC21(this.value)" >件
-				    <input type=text id=cnt211 name=cnt211 value="1"><!--畫面上有幾筆-->
-				    <input type=text id=nfy_tot_num name=nfy_tot_num value="1">
+				    <input type=text id=cnt211 name=cnt211 value="0"><!--畫面上有幾筆-->
+				    <input type=text id=nfy_tot_num name=nfy_tot_num value="0">
 			    </td>
 		    </tr>
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>案件編號1:</td>
 			    <td class="whitetablebg">
-                    <input type="text" id=dseqb_1 name=dseqb_1 size=5  maxlength=5 onblur="br_form.seqChange(1)" readonly class=sedit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=1  maxlength=1 value="_" onblur="br_form.seqChange(1)" readonly class=sedit>
+                    <input type="text" id=dseqb_1 name=dseqb_1 size=5  maxlength=5 onblur="br_form.seqChange('b_1')" readonly class=sedit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=1  maxlength=1 value="_" onblur="br_form.seqChange('b_1')" readonly class=sedit>
                     <input type=button class="cbutton" id="btndseq_okb_1" name="btndseq_okb_1" value ="確定" onclick="delayNO(reg.dseqb_1.value,reg.dseq1b_1.value)">
-                    <input type=radio value=NN checked id="case_stat1b_1NN" name="case_stat1b_1" onclick="br_form.case_stat1_control('NN','b_1')">新案
+                    <input type=radio value=NN id="case_stat1b_1NN" name="case_stat1b_1" onclick="br_form.case_stat1_control('NN','b_1')" checked>新案
                     <input type=radio value=OO id="case_stat1b_1OO" name="case_stat1b_1" onclick="br_form.case_stat1_control('OO','b_1')">舊案
-                    <input type=button class="cbutton" id="btnQueryb_1" name="btnQueryb_1" value ="查詢主案件編號" width=85 onclick="br_form.btnQueryclick('b_1',reg.F_cust_seq.value)">
-                    <input type=button class="cbutton" id="btncaseb_1" name="btncaseb_1"  value ="案件主檔查詢" width=85 onclick="br_form.btncaseclick('1')">
+                    <input type=button class="cbutton" id="btnQueryb_1" name="btnQueryb_1" value ="查詢主案件編號" onclick="br_form.btnQueryclick('b_1',reg.F_cust_seq.value)">
+                    <input type=button class="cbutton" id="btncaseb_1" name="btncaseb_1"  value ="案件主檔查詢" onclick="br_form.btncaseclick('b_1')">
 			　       <input type="text" id=keydseqb_1 name=keydseqb_1 value="N">
 			    </td>
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>母案本所編號1:</td>
@@ -98,13 +98,13 @@
 		    <tr class="trft2_##">
 			    <td class="lightbluetable" align="right">本所編號##:</td>
 			    <td class="whitetablebg"  >
-					<input type=text id=dseqb_## name=dseqb_## size=5  maxlength=5 onblur="br_form.seqChange('##')" readonly>-<input type=text id=dseq1b_## name=dseq1b_## size=1  maxlength=1 value='_' onblur="br_form.seqChange('##')" readonly >
+					<input type=text id=dseqb_## name=dseqb_## size=5  maxlength=5 onblur="br_form.seqChange('b_##')" readonly>-<input type=text id=dseq1b_## name=dseq1b_## size=1  maxlength=1 value='_' onblur="br_form.seqChange('b_##')" readonly >
 					<input type=button class='cbutton' id='btndseq_okb_##' name='btndseq_okb_##' value ='確定' onclick="br_form.btnseqclick('##','b_')">
 					<input type=radio value=NN checked name='case_stat1b_##' id='case_stat1b_##NN' onclick="br_form.case_stat1_control('NN','b_##')">新案
                     <input type=radio value=OO name='case_stat1b_##' id='case_stat1b_##OO' onclick="br_form.case_stat1_control('OO','b_##')">舊案
-					<input type=button class='cbutton' id='btnQueryb_##' name='btnQueryb_##' value ='查詢本所編號' width=85 onclick="br_form.btnQueryclick('b_##', reg.F_cust_seq.value)">
-					<input type=button class='cbutton' id=btncaseb_## name=btncaseb_##  value ='案件主檔查詢' width=85 onclick="br_form.btncaseclick('##')">
-					<input type=button class=cbutton id=btndmt_tempb_## name=btndmt_tempb_##  value ='案件主檔新增' width=85 onclick="btndmt_tempclick('b_##')">
+					<input type=button class='cbutton' id='btnQueryb_##' name='btnQueryb_##' value ='查詢本所編號' onclick="br_form.btnQueryclick('b_##', reg.F_cust_seq.value)">
+					<input type=button class='cbutton' id=btncaseb_## name=btncaseb_##  value ='案件主檔查詢' onclick="br_form.btncaseclick('b_##')">
+					<input type=button class=cbutton id=btndmt_tempb_## name=btndmt_tempb_##  value ='案件主檔新增' onclick="br_form.btndmt_tempclick('b_##')">
 					<input type=text id=keydseqb_## name=keydseqb_##>
 					<input type=text id=case_sqlnob_## name=case_sqlnob_##>
 					<input type=text id=submitTaskb_## name=submitTaskb_##>
@@ -275,7 +275,6 @@
             $("#issue_no"+fld).val("");
             $("#s_mark"+fld).val("");
             $("#appl_name"+fld).val("");
-
             if(fld=="a_1"||fld=="b_1"){//是主案
                 $("#tfy_case_stat").val("NN");
                 $("#keyseq").val("N");
@@ -377,11 +376,13 @@
                 cache: false,
                 success: function (json) {
                     //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-                    dmt_list = $.parseJSON(json);
+                    var dmt_list = $.parseJSON(json);
                     if (dmt_list.length > 0) {
                         var backflag_fldname="A9Z";
                         $("#s_mark"+fld+nRow).val(dmt_list[0].smarknm);
                         $("#appl_name"+fld+nRow).val(dmt_list[0].appl_name);
+                        $("#apply_no" + fld + nRow).val(dmt_list[0].apply_no);
+                        $("#issue_no" + fld + nRow).val(dmt_list[0].issue_no);
                         //2011/2/8因應復案修改，提醒結案是否要復案
                         if(dmt_list[0].end_date!=""){
                             if($("#"+backflag_fldname+"_end_flag").prop("checked")==true){
@@ -399,10 +400,10 @@
                         alert("該客戶無此案件編號");
                         $("#dseq"+fld+nRow).unlock().val("").focus();
                         $("#dseq1"+fld+nRow).unlock().val("_");
-                        $("#issue_no"+fld+nRow).val("");
-                        $("#s_mark"+fld+nRow).val("");
-                        $("#appl_name"+fld+nRow).val("");
-                        $("#issue_no"+fld+nRow).val("");
+                        $("#s_mark" + fld + nRow).val("");
+                        $("#appl_name" + fld + nRow).val("");
+                        $("#apply_no" + fld + nRow).val("");
+                        $("#issue_no" + fld + nRow).val("");
                     }
                 },
                 error: function (xhr) {
@@ -435,11 +436,11 @@
 
     //[案件主檔查詢]
     br_form.btncaseclick=function(nRow){
-        var value1=$("#dseqb_"+nRow).val();
-        var value2=$("#dseq1b_"+nRow).val();
+        var value1=$("#dseq"+nRow).val();
+        var value2=$("#dseq1"+nRow).val();
         if(value1==""){
             alert("請先輸入本所編號!!!");
-            $("#dseqb_"+nRow).focus();
+            $("#dseq"+nRow).focus();
             return false;
         }else{
             //***todo
@@ -449,8 +450,8 @@
     }
 
     br_form.seqChange = function (nRow){
-        $("#keydseqb_"+nRow).val("N")//有變動給N
-        $("#btndseq_okb_"+nRow).prop("disabled",false);
+        $("#keydseq"+nRow).val("N")//有變動給N
+        $("#btndseq_ok"+nRow).prop("disabled",false);
     }
 
     //交辦內容綁定
@@ -464,12 +465,6 @@
     //依案性切換要顯示的欄位
     br_form.changeTag = function (T1) {
         var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        if (code3 == "FT1") {
-            $("#tabft2").hide();
-        } else if (code3 == "FT2") {
-            $("#tabft2").show();
-        }
-
         //切換後重新綁資料
         br_form.bind();
     }

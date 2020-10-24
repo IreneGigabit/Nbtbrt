@@ -30,8 +30,8 @@
 	</tr>
 	<tr>
 		<td class="lightbluetable">
-            <INPUT type="checkbox" id=tfop_mod_agt name=tfop_mod_agt value="Y" onclick="modagttype_chk(me.id)">
-            <INPUT type="hidden" name="tfg2_mod_agt" value="">
+            <INPUT type="checkbox" id=tfop_mod_agt name=tfop_mod_agt value="Y" onclick="br_form.modagttype_chk(this)">
+            <INPUT type="hidden" id="tfg2_mod_agt" name="tfg2_mod_agt" value="">
 		</td>
 		<td class="whitetablebg" colspan="7" valign="top">
 		    <select id="ttg2_agt_no" NAME="ttg2_agt_no"><%#ttg2_agt_no%></select>
@@ -106,7 +106,7 @@
 		    <INPUT type="checkbox" name=tfop_mod_apaddr value="Y" onclick="br_form.Cul_DmtTran('tfop_mod_apaddr','tfg2_mod_apaddr')">申請人英文地址
 		    <INPUT type="checkbox" name=tfop_mod_aprep value="Y" onclick="br_form.Cul_DmtTran('tfop_mod_aprep','tfg2_mod_aprep')">代表人中文名稱<INPUT type="hidden" name=tfg2_mod_aprep id=tfg2_mod_aprep value="">
 		    <INPUT type="checkbox" name=tfop_mod_aprep value="Y" onclick="br_form.Cul_DmtTran('tfop_mod_aprep','tfg2_mod_aprep')">代表人英文名稱
-		    <INPUT type="checkbox"  name=tfop_mod_oth1 value="Y">代表人印章<INPUT type=hidden name=tfg2_mod_oth1 id=tfg2_mod_oth1 value="">
+		    <INPUT type="checkbox" name=tfop_mod_oth1 value="Y">代表人印章<INPUT type=hidden name=tfg2_mod_oth1 id=tfg2_mod_oth1 value="">
 		</td>
 	</tr>
 	<tr>
@@ -219,6 +219,14 @@
 <script language="javascript" type="text/javascript">
     br_form.init = function () {
         //br_form.Add_class(1);//類別預設顯示第1筆
+    }
+
+    //代理人變更
+    br_form.modagttype_chk = function (tfield) {
+        if ($(tfield).prop("checked") == false) {
+            $("input[name='tfop1_mod_agttype']").prop("checked", false);
+            $("input[name='tfg2_mod_agttype']").prop("checked", false);
+        }
     }
 
     br_form.clearmod = function (x) {

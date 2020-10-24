@@ -62,7 +62,7 @@
             <thead>
 		    <tr>	
 			    <td class="lightbluetable" align="right" width="18%">件數：</td>
-			    <td class="whitetablebg" colspan="7" >共<input type="text" id=tft3_class_count1 name=tft3_class_count1 size=2 onchange="br_form.Add_class(this.value)">件<input type="text" id="tft3_class1" name="tft3_class1" readonly>
+			    <td class="whitetablebg" colspan="7" >共<input type="text" id=tft3_class_count1 name=tft3_class_count1 size=2 onchange="br_form.Add_class(this.value,'#num31','#br_class_template0','#tabbr31 tbody')">件<input type="text" id="tft3_class1" name="tft3_class1" readonly>
 				    <input type=hidden id=ctrlnum31 name=ctrlnum31 value="0">
 				    <input type=hidden id=ctrlcount31 name=ctrlcount31 value="">
 				    <input type=hidden id=num31 name=num31 value="0"><!--畫面上有幾筆-->
@@ -72,14 +72,14 @@
 		    </tr>
             </thead>
             <tbody></tbody>
-            <script type="text/html" id="br_class_template"><!--類別樣板-->
-		    <tr>	
+            <script type="text/html" id="br_class_template0"><!--類別樣板-->
+		    <tr class="br_class_template0_##">
 			    <td class="lightbluetable" align="right">類別##：</td>
-			    <td class="whitetablebg" colspan="7" ><input type="text" id=class31_## name=class31_## size=3 maxlength=3 onchange="br_form.count_kind('##')"></td>
+			    <td class="whitetablebg" colspan="7" ><input type="text" id=class31_## name=class31_## size=3 maxlength=3 onchange="br_form.count_kind(this,'1')"></td>
 		    </tr>
-		    <tr>	
+		    <tr class="br_class_template0_##">
 			    <td class="lightbluetable" align="right">商標/服務名稱1：</td>
-			    <td class="whitetablebg" colspan="7"><textarea id="good_name31_##" NAME="good_name31_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('##')"></textarea>
+			    <td class="whitetablebg" colspan="7"><textarea id="good_name31_##" NAME="good_name31_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('good_name31_##','good_count31_##')"></textarea>
 			    <input type="hidden" id=good_count31_## name=good_count31_## size=2>
 			    </td>
 		    </tr>
@@ -103,7 +103,7 @@
 		</tr>
 		<tr>	
 			<td class="lightbluetable" align="right" width="18%">件數：</td>
-			<td class="whitetablebg" colspan="7" >共<input type="text" id=tft3_class_count2 name=tft3_class_count2 size=2 onchange="br_form.Add_class(this.value)">件<input type="text" id=tft3_class2 name=tft3_class2 readonly>
+			<td class="whitetablebg" colspan="7" >共<input type="text" id=tft3_class_count2 name=tft3_class_count2 size=2 onchange="br_form.Add_class(this.value,'#num32','#br_class_template1','#tabbr32 tbody')">件<input type="text" id=tft3_class2 name=tft3_class2 readonly>
 				<input type=hidden id=ctrlnum32 name=ctrlnum32 value="0">
 				<input type=hidden id=ctrlcount32 name=ctrlcount32 value="">
 				<input type=hidden id=num32 name=num32 value="0"><!--畫面上有幾筆-->
@@ -111,14 +111,14 @@
 		</tr>
         </thead>
         <tbody></tbody>
-        <script type="text/html" id="br_class_template"><!--類別樣板-->
-		    <tr>	
+        <script type="text/html" id="br_class_template1"><!--類別樣板-->
+		    <tr class="br_class_template1_##">	
 			    <td class="lightbluetable" align="right">類別##：</td>
-			    <td class="whitetablebg" colspan="7" ><input type="text" id=class32_## name=class32_## size=3 maxlength=3 onchange="br_form.count_kind('##')"></td>
+			    <td class="whitetablebg" colspan="7" ><input type="text" id=class32_## name=class32_## size=3 maxlength=3 onchange="br_form.count_kind(this,'2')"></td>
 		    </tr>
-		    <tr>	
+		    <tr class="br_class_template1_##">	
 			    <td class="lightbluetable" align="right">商標/服務名稱1：</td>
-			    <td class="whitetablebg" colspan="7"><textarea id="good_name32_##" NAME="good_name32_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('##')"></textarea>
+			    <td class="whitetablebg" colspan="7"><textarea id="good_name32_##" NAME="good_name32_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('good_name32_##','good_count32_##')"></textarea>
 			    <input type="hidden" id=good_count32_## name=good_count32_## size=2>
 			    </td>
 		    </tr>
@@ -127,7 +127,9 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttech)"><strong><u>附件：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttech)">
+            <strong><u>附件：</u></strong><input type="hidden" name=tfzd_remark1 id=tfzd_remark1>
+		</td>
 	</tr>
 	<tr class="br_attchstr">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz3_Z1" NAME="ttz3_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)"></td>
@@ -170,38 +172,25 @@
         //br_form.Add_class(1);//類別預設顯示第1筆
     }
 
-    br_form.clearmod = function (x) {
-        if(x==1){
-            if($("#tfop_mod_dmt").prop("checked")==true){
-                $("#tfg2_mod_dmt").val("Y");
-            }else{
-                $("#tfg2_mod_dmt").val("N");
-                $("#ttg2_ncname1").val("");
-            }
-        }else if(x==3){
-            if($("#tfop_mod_claim2").prop("checked")==true){
-                $("#tfg2_mod_claim2").val("Y");
-            }else{
-                $("#tfg2_mod_claim2").val("N");
-                $("#ttg2_ncname1").val("");
-            }
-        }else{
-            if($("#tfop_mod_claim1").prop("checked")==true){
-                $("#tfg2_mod_claim1").val("Y");
-            }else{
-                $("#tfg2_mod_claim1").val("N");
+    //類別串接
+    br_form.count_kind = function (pObj,pFld) {
+        if ($(pObj).val() != "") {
+            if (IsNumeric($(pObj).val())) {
+                var x = ("000" + $(pObj).val()).Right(3);//補0
+                $(pObj).val(x);
+                br_form.checkclass(x);
+            } else {
+                alert("商品類別請輸入數值!!!");
+                $(pObj).val("");
             }
         }
-    }
 
-    br_form.Cul_DmtTran = function (src,tar) {
-        var nclass = $("input[name='"+src+"']").map(function (index) {
-            return ($(this).prop("checked")==true? "Y":"N");
+        var nclass = $("input[id^='class3"+pFld+"_']").map(function (index) {
+            if (index == 0 || $(this).val() != "") return $(this).val();
         });
-
-        $("#"+tar).val().get().join('');
+        $("#tft3_class" + pFld).val(nclass.get().join(','));
+        $("#ctrlcount3" + pFld).val(Math.max(CInt($("#tft3_class" + pFld).val()), nclass.length));//回寫共N類
     }
-
 
     //交辦內容綁定
     br_form.bind = function () {

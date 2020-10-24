@@ -475,6 +475,7 @@
 <uc1:FA1Form_remark1 runat="server" ID="FA1Form_remark1" /><!--附件様版 依案性第3碼切換顯示-->
 
 <script language="javascript" type="text/javascript">
+    var br_form = {};
     br_form.init = function () {
     }
 

@@ -67,12 +67,12 @@
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>案件編號1:</td>
 			    <td class="whitetablebg" colspan=3>
-                    <input type="text" id=dseqb_1 name=dseqb_1 size=5  maxlength=5 onblur="br_form.seqChange(1)" readonly class=sedit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=1  maxlength=1 value="_" onblur="br_form.seqChange(1)" readonly class=sedit>
+                    <input type="text" id=dseqb_1 name=dseqb_1 size=5  maxlength=5 onblur="br_form.seqChange('b_1')" readonly class=sedit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=1  maxlength=1 value="_" onblur="br_form.seqChange('b_1')" readonly class=sedit>
                     <input type=button class="cbutton" id="btndseq_okb_1" name="btndseq_okb_1" value ="確定" onclick="delayNO(reg.dseqb_1.value,reg.dseq1b_1.value)">
                     <input type=radio value=NN checked id="case_stat1b_1NN" name="case_stat1b_1" onclick="br_form.case_stat1_control('NN','b_1')">新案
                     <input type=radio value=OO id="case_stat1b_1OO" name="case_stat1b_1" onclick="br_form.case_stat1_control('OO','b_1')">舊案
-                    <input type=button class="cbutton" id="btnQueryb_1" name="btnQueryb_1" value ="查詢主案件編號" width=85 onclick="br_form.btnQueryclick('b_1',reg.F_cust_seq.value)">
-                    <input type=button class="cbutton" id="btncaseb_1" name="btncaseb_1"  value ="案件主檔查詢" width=85 onclick="br_form.btncaseclick('1')">
+                    <input type=button class="cbutton" id="btnQueryb_1" name="btnQueryb_1" value ="查詢主案件編號" onclick="br_form.btnQueryclick('b_1',reg.F_cust_seq.value)">
+                    <input type=button class="cbutton" id="btncaseb_1" name="btncaseb_1"  value ="案件主檔查詢" onclick="br_form.btncaseclick('b_1')">
 			　       <input type="text" id=keydseqb_1 name=keydseqb_1 value="N">
 			    </td>
 		    </tr>
@@ -94,13 +94,13 @@
 		    <tr class="trfl1_##">
 			    <td class="lightbluetable" align="right">本所編號##:</td>
 			    <td class="whitetablebg" colspan=3>
-					<input type=text id=dseqb_## name=dseqb_## size=5  maxlength=5 onblur="br_form.seqChange('##')" readonly>-<input type=text id=dseq1b_## name=dseq1b_## size=1  maxlength=1 value='_' onblur="br_form.seqChange('##')" readonly >
+					<input type=text id=dseqb_## name=dseqb_## size=5  maxlength=5 onblur="br_form.seqChange('b_##')" readonly>-<input type=text id=dseq1b_## name=dseq1b_## size=1  maxlength=1 value='_' onblur="br_form.seqChange('b_##')" readonly >
 					<input type=button class='cbutton' id='btndseq_okb_##' name='btndseq_okb_##' value ='確定' onclick="br_form.btnseqclick('##','b_')">
 					<input type=radio value=NN checked name='case_stat1b_##' id='case_stat1b_##NN' onclick="br_form.case_stat1_control('NN','b_##')">新案
                     <input type=radio value=OO name='case_stat1b_##' id='case_stat1b_##OO' onclick="br_form.case_stat1_control('OO','b_##')">舊案
-					<input type=button class='cbutton' id='btnQueryb_##' name='btnQueryb_##' value ='查詢本所編號' width=85 onclick="br_form.btnQueryclick('b_##', reg.F_cust_seq.value)">
-					<input type=button class='cbutton' id=btncaseb_## name=btncaseb_##  value ='案件主檔查詢' width=85 onclick="br_form.btncaseclick('##')">
-					<input type=button class=cbutton id=btndmt_tempb_## name=btndmt_tempb_##  value ='案件主檔新增' width=85 onclick="btndmt_tempclick('b_##')">
+					<input type=button class='cbutton' id='btnQueryb_##' name='btnQueryb_##' value ='查詢本所編號' onclick="br_form.btnQueryclick('b_##', reg.F_cust_seq.value)">
+					<input type=button class='cbutton' id=btncaseb_## name=btncaseb_##  value ='案件主檔查詢' onclick="br_form.btncaseclick('b_##')">
+					<input type=button class=cbutton id=btndmt_tempb_## name=btndmt_tempb_##  value ='案件主檔新增' onclick="br_form.btndmt_tempclick('b_##')">
 					<input type=text id=keydseqb_## name=keydseqb_##>
 					<input type=text id=case_sqlnob_## name=case_sqlnob_##>
 					<input type=text id=submitTaskb_## name=submitTaskb_##>
@@ -282,7 +282,7 @@
         <thead>
 		<tr>
 			<td class="lightbluetable" align="right">類別項目：</td>
-			<td class="whitetablebg" colspan="7" >共<input type="text" id=mod_count name=mod_count size=2 onchange=br_form.Add_class(this.value)>類<input type="text" id="mod_dclass" name="mod_dclass" readonly>
+			<td class="whitetablebg" colspan="7" >共<input type="text" id=mod_count name=mod_count size=2 onchange="br_form.Add_class(this.value,'#num2','#br_class_template','#tabbr2 tbody')">類<input type="text" id="mod_dclass" name="mod_dclass" readonly>
 				<input type=hidden id=ctrlnum2 name=ctrlnum2 value="0">
 				<input type=hidden id=ctrlcount2 name=ctrlcount2 value="">
 				<input type=hidden id=num2 name=num2 value="0"><!--畫面上有幾筆-->
@@ -292,14 +292,14 @@
         </thead>
         <tbody></tbody>
         <script type="text/html" id="br_class_template"><!--類別樣板-->
-		<tr>
+		<tr class="br_class_template_##">
 			<td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別，並以逗號分開(例如：1,5,32)。或輸入類別範圍，並以  -  (半形) 分開(例如：8-16)。也可複項組合(例如：3,5,13-32,35)">類別##：</td>		
 			<td class="whitetablebg" colspan="7">第<INPUT type="text" id=new_no_## name=new_no_## size=3 maxlength=3 onchange="br_form.count_kind('##')">類</td>		
 		</tr>
-		<tr style="height:107.6pt">
+		<tr class="br_class_template_##" style="height:107.6pt">
 			<td class="lightbluetable" align="right" width="18%">商品名稱##：</td>
 			<td class="whitetablebg" colspan="7">
-                <textarea id="list_remark_##" NAME="list_remark_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('##')"></textarea>
+                <textarea id="list_remark_##" NAME="list_remark_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('list_remark_##','')"></textarea>
 			</td>
 		</tr>		
         </script>
@@ -543,48 +543,6 @@
         }
     }
 
-    //*****共N類
-    br_form.Add_class = function (classCount) {
-        var doCount = Math.max(0, CInt(classCount));//要改為幾筆,最少是0
-        var num2 = CInt($("#num2").val());//目前畫面上有幾筆
-        if (doCount > num2) {//要加
-            for (var nRow = num2; nRow < doCount ; nRow++) {
-                var copyStr = $("#br_class_template").text() || "";
-                copyStr = copyStr.replace(/##/g, nRow + 1);
-                $("#tabbr2 tbody").append(copyStr);
-                $("#num2").val(nRow + 1);
-            }
-        } else {
-            //要減
-            for (var nRow = num2; nRow > doCount ; nRow--) {
-                $('.tr_br_class_' + nRow).remove();
-                $("#num2").val(nRow - 1);
-            }
-        }
-    }
-
-    //依商品名稱計算類別
-    br_form.good_name_count = function (nRow) {
-        var MyString = $("#list_remark_" + nRow).val().trim();
-        MyString = MyString.replace(/;/gm, "；");
-        MyString = MyString.replace(/,/gm, "，");
-
-        if (MyString.Right(1) == "；" || MyString.Right(1) == "，" || MyString.Right(1) == "、") {
-            MyString = MyString.substring(0, MyString.length - 1);
-        }
-
-        if (MyString != "") {
-            var myarray = MyString.split(/[；，、]/);
-            $("#list_remark_" + nRow).val(MyString);
-            var aKind = myarray.length;//共幾類
-            alert("商品內容共" + aKind + "項");
-
-            if (MyString.indexOf("及") > -1 || MyString.indexOf("或") > -1) {
-                alert("【商品服務項目中包含有「及」、「或」等用語，請留意商品項目數。】");
-            }
-        }
-    }
-
     //類別串接
     br_form.count_kind = function (nRow) {
         if ($("#new_no_" + nRow).val() != "") {
@@ -657,7 +615,6 @@
             $("#issue_no"+fld).val("");
             $("#s_mark"+fld).val("");
             $("#appl_name"+fld).val("");
-
             if(fld=="a_1"||fld=="b_1"){//是主案
                 $("#tfy_case_stat").val("NN");
                 $("#keyseq").val("N");
@@ -759,11 +716,13 @@
                 cache: false,
                 success: function (json) {
                     //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-                    dmt_list = $.parseJSON(json);
+                    var dmt_list = $.parseJSON(json);
                     if (dmt_list.length > 0) {
                         var backflag_fldname="A9Z";
                         $("#s_mark"+fld+nRow).val(dmt_list[0].smarknm);
                         $("#appl_name"+fld+nRow).val(dmt_list[0].appl_name);
+                        $("#apply_no" + fld + nRow).val(dmt_list[0].apply_no);
+                        $("#issue_no" + fld + nRow).val(dmt_list[0].issue_no);
                         //2011/2/8因應復案修改，提醒結案是否要復案
                         if(dmt_list[0].end_date!=""){
                             if($("#"+backflag_fldname+"_end_flag").prop("checked")==true){
@@ -781,10 +740,10 @@
                         alert("該客戶無此案件編號");
                         $("#dseq"+fld+nRow).unlock().val("").focus();
                         $("#dseq1"+fld+nRow).unlock().val("_");
-                        $("#issue_no"+fld+nRow).val("");
-                        $("#s_mark"+fld+nRow).val("");
-                        $("#appl_name"+fld+nRow).val("");
-                        $("#issue_no"+fld+nRow).val("");
+                        $("#s_mark" + fld + nRow).val("");
+                        $("#appl_name" + fld + nRow).val("");
+                        $("#apply_no" + fld + nRow).val("");
+                        $("#issue_no" + fld + nRow).val("");
                     }
                 },
                 error: function (xhr) {
@@ -817,11 +776,11 @@
 
     //[案件主檔查詢]
     br_form.btncaseclick=function(nRow){
-        var value1=$("#dseqb_"+nRow).val();
-        var value2=$("#dseq1b_"+nRow).val();
+        var value1=$("#dseq"+nRow).val();
+        var value2=$("#dseq1"+nRow).val();
         if(value1==""){
             alert("請先輸入本所編號!!!");
-            $("#dseqb_"+nRow).focus();
+            $("#dseq"+nRow).focus();
             return false;
         }else{
             //***todo
@@ -831,8 +790,8 @@
     }
 
     br_form.seqChange = function (nRow){
-        $("#keydseqb_"+nRow).val("N")//有變動給N
-        $("#btndseq_okb_"+nRow).prop("disabled",false);
+        $("#keydseq"+nRow).val("N")//有變動給N
+        $("#btndseq_ok"+nRow).prop("disabled",false);
     }
 
     //交辦內容綁定

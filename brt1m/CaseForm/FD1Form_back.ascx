@@ -46,9 +46,20 @@
         </td>
 	</tr>
 	<tr>
+		<td class="lightbluetable" colspan=8 valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(d2Issue_no)">
+            <strong>壹、<u>原註冊申請案號、商標/標章名稱、商標種類、分割件數、商標/標章圖樣</u></strong>
+        </td>
+	</tr>
+	<tr class="br_FD1">
 		<td class=lightbluetable align=right >一、原申請案號：</td>
 		<td class=whitetablebg colspan="7">
 			<input type=text id=fr1_apply_no name=fr1_apply_no onchange="reg.tfzd_apply_no.value=this.value">
+		</TD>
+	</tr>
+	<tr class="br_FD2">
+		<td class=lightbluetable align=right >一、原註冊案號：</td>
+		<td class=whitetablebg colspan="7">
+			<input type=text id=fr1_issue_no name=fr1_issue_no onchange="reg.tfzd_issue_no.value=this.value">
 		</TD>
 	</tr>
 	<tr>
@@ -79,17 +90,22 @@
 			<input type=text id=nfy_tot_num name=nfy_tot_num value="0">
 		</TD>
 	</tr>
-	<tr>
+	<tr id="tr_tfg1_div_arcase">
 		<td class=lightbluetable align=right >分割後申請案性：</td>
 		<td class=whitetablebg colspan="7">
             <select id="tfg1_div_arcase" name="tfg1_div_arcase"><%#tfg1_div_arcase%></SELECT>
             <font color="red">(為列印商標註冊申請書，請選擇分割後申請案性)</font><input type=hidden name=tfy_div_arcase id=tfy_div_arcase>
 		</TD>
 	</tr>
-	<tr>
+	<tr class="br_FD1">
 		<td class="lightbluetable" colspan=8 valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(d1Class)">
             <strong>肆、<u>分割商品/服務類別、名稱、證明內容及標的(請依序填寫商品/服務類別、名稱)</u></strong>
 		</td>
+	</tr>
+	<tr class="br_FD2">
+		<td class="lightbluetable" colspan=8 valign="top" STYLE="cursor:hand;COLOR:BLUE" ONCLICK="PMARK(d2Class)">
+            <strong>肆、<u>分割商品/服務類別、名稱、證明內容及標的(請依序填寫商品/服務類別、名稱)</u></strong>
+        </td>
 	</tr>
 	<tr class='sfont9'>
 	    <td colspan=8 id="tdbr_da">
@@ -107,7 +123,7 @@
 		    </tr>
 		    <tr>
 			    <td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別" width="30%" ><font color=red>分割(<span class="numberCh$$"></span>)</font>類別項目:</td>		
-			    <td class="whitetablebg" width="70%">共<INPUT type="text" id=FD1_class_count_$$ name=FD1_class_count_$$ size=2 maxlength=2 onchange="br_form.Add_class_FD1('$$',this.value)">類
+			    <td class="whitetablebg" width="70%">共<INPUT type="text" id=FD1_class_count_$$ name=FD1_class_count_$$ size=2 maxlength=2 onchange="br_form.Add_class('$$',this.value)">類
 			        <input type=hidden name=FD1_count_$$ id=FD1_count_$$ value="0">
 				    <input type=hidden name=FD1_ctrlcnt_$$ id=FD1_ctrlcnt_$$ value="0">
 				    <input type=hidden name=FD1_cnt_$$ id=FD1_cnt_$$ value="0"><!--目前畫面上有幾筆-->
@@ -141,7 +157,8 @@
     </script>
 
     <tr>
-		<td class="lightbluetable" ROWSPAN=2 STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(d1Tran_remark)"><strong><u>備註：</u></strong></td>
+		<td class="lightbluetable br_FD1" ROWSPAN=2 STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(d1Tran_remark)"><strong><u>備註：</u></strong></td>
+        <td class="lightbluetable br_FD2" ROWSPAN=2 STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(d2Tran_remark)"><strong><u>備註：</u></strong></td>
 		<td class=whitetablebg colspan=7>本案於<INPUT type=text id=O_item11 name=O_item11 size=10 class="dateField">(年/月/日)</td>
 	</tr>
 	<tr>		  
@@ -153,37 +170,64 @@
 			<INPUT type="radio" id=O_item12FR1 name=O_item12 value="FR1" onclick="reg.O_item13.value=''">延展案
 			<INPUT type="radio" id=O_item12ZZ name=O_item12 value="ZZ">其他<input type="text" id="O_item13" name="O_item13" size=20 onchange="reg.O_item12[5].checked=true">案
 		</TD>
-	</tr>
+	</tr>	
+</TABLE>
+
+<TABLE id=tabrem4 border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%"><!--附件-->
+</table>
+
+<INPUT TYPE=hidden id=tfgp_seq NAME=tfgp_seq>
+<INPUT TYPE=hidden id=tfgp_seq1 NAME=tfgp_seq1>
+
+<script type="text/html" id="tabbr_remark1_FD1"><!--附件樣版1-->
     <tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="COLOR:BLUE" onclick="PMARK(d1attech)">
             <strong><u>附件：</u></strong>
             <input type=text id="tfzd_remark1" name="tfzd_remark1" value="">
 		</td>
 	</tr>
-    <tr class="br_attchstr_FD1">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1"  onclick="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
+    <tr>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1"  onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz1_Z1C" NAME="ttz1_Z1C" value="Z1C">附中文譯本)。)</td>
 	</tr>
-	<tr class="br_attchstr_FD1">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z2" id="ttz1_Z2" value="Z2" onclick="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">按分割件數之分割申請書副本<input TYPE="text" NAME="ttz1_Z2C" id="ttz1_Z2C" value="" size="2" onchange="reg.ttz1_Z2.checked=true;br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)">份。</td>
+	<tr>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z2" id="ttz1_Z2" value="Z2" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">按分割件數之分割申請書副本<input TYPE="text" NAME="ttz1_Z2C" id="ttz1_Z2C" value="" size="2" onchange="reg.ttz1_Z2.checked=true;br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)">份。</td>
 	</tr>
-	<tr class="br_attchstr_FD1">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" id="ttz1_Z3" value="Z3" onclick="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">分割後之商標註冊申請書正本(含相關文件)<input TYPE="text" NAME="ttz1_Z3C" id="ttz1_Z3C" value="" size="2" onchange="reg.ttz1_Z3.checked=true;br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)">份。(每份應附商標圖樣5張)</td>
+	<tr>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" id="ttz1_Z3" value="Z3" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">分割後之商標註冊申請書正本(含相關文件)<input TYPE="text" NAME="ttz1_Z3C" id="ttz1_Z3C" value="" size="2" onchange="reg.ttz1_Z3.checked=true;br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)">份。(每份應附商標圖樣5張)</td>
 	</tr>
-	<tr class="br_attchstr_FD1">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" id="ttz1_Z4" value="Z4" onclick="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
+	<tr>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" id="ttz1_Z4" value="Z4" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">全體共有人同意書。</td>
 	</tr>
-	<tr class="br_attchstr_FD1">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z9" id="ttz1_Z9" value="Z9" onclick="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" NAME="ttz1_Z9t" id="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
+	<tr>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z9" id="ttz1_Z9" value="Z9" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" NAME="ttz1_Z9t" id="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
 	</tr>
-</TABLE>
+</script>
 
-<INPUT TYPE=hidden id=tfgp_seq NAME=tfgp_seq>
-<INPUT TYPE=hidden id=tfgp_seq1 NAME=tfgp_seq1>
+<script type="text/html" id="tabbr_remark1_FD2"><!--附件樣版2-->
+    <tr>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(d2Attech)">
+            <strong><u>附件：</u></strong>
+            <input type=text id="tfzd_remark1" name="tfzd_remark1" value="">
+        </td>
+	</tr>
+    <tr>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1"  onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz1_Z1C" NAME="ttz1_Z1C" value="Z1C">附中文譯本)。)</td>
+	</tr>
+	<tr>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" id="ttz1_Z3" value="Z3" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">分割後之商標註冊申請書正本<input TYPE="text" NAME="ttz1_Z3C" id="ttz1_Z3C" value="" size="2" onchange="reg.ttz1_Z3.checked=true;br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)">份。(每份應附商標圖樣5張)</td>
+	</tr>
+	<tr>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" id="ttz1_Z4" value="Z4" onclick="br_form.AttachStr1('#tabrem4','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">全體共有人同意書。</td>
+	</tr>
+</script>
 
 <script language="javascript" type="text/javascript">
     br_form.init = function () {
@@ -214,7 +258,7 @@
                 $("#tdbr_da").append(copyStr);
                 $(".numberCh"+(nRow + 1)).html(NumberToCh(nRow+1));
                 $("#cnt1").val(nRow + 1);
-                br_form.Add_class_FD1(nRow+1,1);//預設一個類別
+                br_form.Add_class(nRow+1,1);//預設一個類別
             }
         } else {
             //要減
@@ -226,7 +270,7 @@
     }
 
     //*****共N類
-    br_form.Add_class_FD1 = function (nSplit, classCount) {
+    br_form.Add_class = function (nSplit, classCount) {
         if (!IsNumeric(classCount)) {
             alert("分割後類別項目"+nSplit+"：請輸入數值!!");
             settab("#tran");
@@ -309,7 +353,7 @@
             if ($this.prop("checked")) {
                 strRemark1 += $this.val()
                 //查有無份數欄位
-                if ($("#" + pfld + $this.val() + "C").length > 0) {
+                if ($("#ttz1_" + pfld + $this.val() + "C").length > 0) {
                     strRemark1 += ";" + $("#" + pfld + $this.val() + "C").val();
                 }
                 else if ($("#" + pfld + $this.val() + "t").length > 0) {
@@ -344,6 +388,25 @@
     //依案性切換要顯示的欄位
     br_form.changeTag = function (T1) {
         var code3 = T1.Left(3).toUpperCase();//案性前3碼
+
+        $(".br_FD1,.br_FD2").hide();
+        if (code3 == "FD1") {
+            $(".br_FD1").show();
+            $("#fr1_smark1,#smark").hide();//92年修正前服務標章
+            $("#tr_tfg1_div_arcase").show();//分割後申請案性
+            $("#tabrem4").html($("#tabbr_remark1_FD1").text());
+        } else if (code3 == "FD2" || code3 == "FD3") {
+            $(".br_FD2").show();
+            $("#fr1_smark1,#smark").show();//92年修正前服務標章
+            $("#tr_tfg1_div_arcase").hide();//分割後申請案性
+            $("#tabrem4").html($("#tabbr_remark1_FD2").text());
+        }
+        $("#fr_smark1").show();//團體商標
+        $("#fr_smark2").hide();//團體標章
+        $("#fr_smark3").show();//證明標章
+
+        $('#tfy_case_stat option:eq(1)').val("").text("");//案件種類
+
         //切換後重新綁資料
         br_form.bind();
     }

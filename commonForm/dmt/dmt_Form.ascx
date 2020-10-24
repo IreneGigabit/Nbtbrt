@@ -61,9 +61,10 @@
 		<td class=whitetablebg colspan=3>
             <span id=DelayCase><!--舊案-->
 			    <INPUT TYPE=text NAME=old_seq id=old_seq SIZE=5 MAXLENGTH=5 onblur="dmt_form.mainseqChange('old_seq')">-<INPUT TYPE=text NAME=old_seq1 id=old_seq1 SIZE=1 MAXLENGTH=1 value="_" onblur="dmt_form.mainseqChange('old_seq')" style="text-transform:uppercase;">	
-			    <INPUT TYPE=button name=btnseq_ok id=btnseq_ok onclick="delayNO(reg.old_seq.value,reg.old_seq1.value)" value="確定">　<input type=button class="cbutton" name="Query" id="Query" value ="查詢主案件編號" style="width:140" onclick="dmt_form.Queryclick(reg.F_cust_seq.value)">
-			    <input type=button class="cbutton" name="Qry_step" id="Qry_step" value ="查詢案件進度" style="width:100" onclick="dmt_form.Qstepclick(reg.old_seq.value,reg.old_seq1.value)">
-			    <input type=button class="c1button <%#Hide.TryGet("brt51")%>" name="Upd_seq" id="Upd_seq" value ="案件主檔維護" style="width:100" onclick="dmt_form.Updseqclick(reg.old_seq.value,reg.old_seq1.value)">
+			    <INPUT TYPE=button name=btnseq_ok id=btnseq_ok onclick="delayNO(reg.old_seq.value,reg.old_seq1.value)" value="確定">
+                <input type=button class="cbutton" name="Query" id="Query" value ="查詢主案件編號" onclick="dmt_form.Queryclick(reg.F_cust_seq.value)">
+			    <input type=button class="cbutton" name="Qry_step" id="Qry_step" value ="查詢案件進度" onclick="dmt_form.Qstepclick(reg.old_seq.value,reg.old_seq1.value)">
+			    <input type=button class="c1button <%#Hide.TryGet("brt51")%>" name="Upd_seq" id="Upd_seq" value ="案件主檔維護" onclick="dmt_form.Updseqclick(reg.old_seq.value,reg.old_seq1.value)">
 			    <input type="text" name=keyseq id=keyseq value="N">
             </span>
             <span id=CaseNew><!--新案-->

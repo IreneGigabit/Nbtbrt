@@ -151,7 +151,7 @@
 		        </tr>
 		        <tr>	
 			        <td class="lightbluetable" align="right">類別項目：</td>
-			        <td class="whitetablebg" >共<input type="text" id=tfzd_class_count name=tfzd_class_count size=2 onchange="br_form.Add_class(this.value)">類
+			        <td class="whitetablebg" >共<input type="text" id=tfzd_class_count name=tfzd_class_count size=2 onchange="br_form.Add_class(this.value,'#num2','#br_class_template','#tabbr2 tbody')">類
 				        <input type=text id=num2 name=num2 value="0"><!--畫面上有幾筆-->
 				        <input type=text id=ctrlnum2 name=ctrlnum2 value="0">
 				        <input type=text id=ctrlcount2 name=ctrlcount2 value="">
@@ -160,18 +160,18 @@
             </thead>
             <tbody></tbody>
             <script type="text/html" id="br_class_template"><!--類別樣板-->
-                <tr class="tr_br_class_##">
+                <tr class="br_class_template_##">
 			        <td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別，並以逗號分開(例如：1,5,32)。或輸入類別範圍，並以  -  (半形) 分開(例如：8-16)。也可複項組合(例如：3,5,13-32,35)">類別##：</td>
 			        <td class="whitetablebg">第<INPUT type="text" id=class2_## name=class2_## size=3 maxlength=3 onchange="br_form.count_kind('##')">類</td>		
 		        </tr>
-		        <tr class="tr_br_class_##" style="height:107.6pt">
+		        <tr class="br_class_template_##" style="height:107.6pt">
 			        <td class="lightbluetable" align="right" width="18%">商品名稱##：</td>
 			        <td class="whitetablebg">
-                        <textarea id="good_name2_##" NAME="good_name2_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('##')"></textarea>
+                        <textarea id="good_name2_##" NAME="good_name2_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('good_name2_##','good_count2_##')"></textarea>
                         <br>共<input type="text" id=good_count2_## name=good_count2_## size=2>項
 			        </td>
 		        </tr>
-		        <tr class="tr_br_class_##">
+		        <tr class="br_class_template_##">
 			        <td class="lightbluetable" align="right">商品群組代碼##：</td>
 			        <td class="whitetablebg"><textarea id=grp_code2_## NAME=grp_code2_## ROWS="1" COLS="50"></textarea>(跨群組請以全形「、」作分隔)</td>
 		        </tr>
@@ -248,59 +248,7 @@
 
 <script language="javascript" type="text/javascript">
     br_form.init = function () {
-        br_form.Add_class(1);//類別預設顯示第1筆
-    }
-
-    //*****共N類
-    br_form.Add_class = function (classCount) {
-        var doCount = Math.max(0, CInt(classCount));//要改為幾筆,最少是0
-        var num2 = CInt($("#num2").val());//目前畫面上有幾筆
-        if (doCount > num2) {//要加
-            for (var nRow = num2; nRow < doCount ; nRow++) {
-                var copyStr = $("#br_class_template").text() || "";
-                copyStr = copyStr.replace(/##/g, nRow + 1);
-                $("#tabbr2 tbody").append(copyStr);
-                $("#num2").val(nRow + 1);
-            }
-        } else {
-            //要減
-            for (var nRow = num2; nRow > doCount ; nRow--) {
-                $('.tr_br_class_' + nRow).remove();
-                $("#num2").val(nRow - 1);
-            }
-        }
-    }
-
-    //依商品名稱計算類別
-    br_form.good_name_count = function (nRow) {
-        var MyString = $("#good_name2_" + nRow).val().trim();
-        MyString = MyString.replace(/;/gm, "；");
-        MyString = MyString.replace(/,/gm, "，");
-
-        if (MyString.Right(1) == "；" || MyString.Right(1) == "，" || MyString.Right(1) == "、") {
-            MyString = MyString.substring(0, MyString.length - 1);
-        }
-
-        $("#good_count2_" + nRow).val("");
-        if (MyString != "") {
-            var myarray = MyString.split(/[；，、]/);
-            $("#good_name2_" + nRow).val(MyString);
-            var aKind = myarray.length;//共幾類
-            alert("商品內容共" + aKind + "項");
-            $("#good_count2_" + nRow).val(aKind);
-
-            if (MyString.indexOf("及") > -1 || MyString.indexOf("或") > -1) {
-                alert("【商品服務項目中包含有「及」、「或」等用語，請留意商品項目數。】");
-            }
-        }
-    }
-
-    //檢查類別範圍0~45
-    br_form.checkclass = function (xclass) {
-        if (CInt(xclass) < 0 || CInt(xclass) > 45) {
-            alert("商品類別需介於1~45之間,請重新輸入。");
-            return false;
-        }
+        //br_form.Add_class(1);//類別預設顯示第1筆
     }
 
     //類別串接
