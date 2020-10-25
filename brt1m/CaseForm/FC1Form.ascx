@@ -23,6 +23,7 @@
     }
 </script>
 
+<div id="div_Form_FC1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -55,8 +56,8 @@
 		</TD>
 	</tr>
 	<tr>
-		<td colspan=8>
-		    <TABLE id=tabbr11 style="display:" border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+		<td colspan=8 class="sfont9">
+		    <TABLE id=tabbr11 style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
 		    <tr>	
 			    <td class="lightbluetable" align="right">件數：</td>
 			    <td class="whitetablebg" colspan="7" ><input type="text" readonly class="sedit" id=tft1_mod_count11 name=tft1_mod_count11 size=2 value="1">件
@@ -153,25 +154,14 @@
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z9" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" id="ttz1_Z9t" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 	</tr>
-</table>	
-
+</table>
+</div>
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-        //br_form.Add_class(1);//類別預設顯示第1筆
-    }
-
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFC1 = function () {
+        console.log("fc1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

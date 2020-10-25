@@ -31,6 +31,7 @@
     }
 </script>
 
+<div id="div_Form_FD2">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -71,7 +72,7 @@
 	<tr>
 		<td class=lightbluetable align=right >四、分割件數：</td>
 		<td class=whitetablebg colspan="7">
-			分割為<input type=text id=tot_num2 name=tot_num2 size="2" maxlength="2" onchange="br_form.Add_arcase(this.value)">件
+			分割為<input type=text id=tot_num2 name=tot_num2 size="2" maxlength="2" onchange="br_form.Add_arcaseFD2(this.value)">件
 			<input type=hidden id=cnt2 name=cnt2 value="0"><!--畫面上有幾筆-->
 			<input type=hidden id=count2 name=count2 value="0">
 			<input type=hidden id=ctrlcnt2 name=ctrlcnt2 value="">
@@ -81,7 +82,7 @@
 		<td class=lightbluetable align=right >分割後申請案性：</td>
 		<td class=whitetablebg colspan="7">
             <select id="tfg2_div_arcase" name="tfg2_div_arcase"><%#tfg2_div_arcase%></SELECT>
-            <font color="red">(為列印商標註冊申請書，請選擇分割後申請案性)</font><input type=hidden name=tfy_div_arcase id=tfy_div_arcase>
+            <font color="red">(為列印商標註冊申請書，請選擇分割後申請案性)</font>
 		</TD>
 	</tr>
 	<tr>
@@ -124,10 +125,10 @@
         <tbody></tbody>
 		</table>
     </script>
-    <script type="text/html" id="br_class_template"><!--分割_類別樣板-->
+    <script type="text/html" id="br_class_templateFD2"><!--分割_類別樣板-->
         <tr class="tr_br_class_$$_##">
 			<td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別"><font color=red>(<span class="numberCh$$"></span>)</font>類別##:</td>
-			<td class="whitetablebg">第<INPUT type="text" id=classb_$$_## name=classb_$$_## size=3 maxlength=3 onchange="br_form.count_kind('$$','##')">類
+			<td class="whitetablebg">第<INPUT type="text" id=classb_$$_## name=classb_$$_## size=3 maxlength=3 onchange="br_form.count_kindFD2('$$','##')">類
 			</td>
 		</tr>
         <tr class="tr_br_class_$$_##">
@@ -154,7 +155,6 @@
     <tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(d2Attech)">
             <strong><u>附件：</u></strong>
-            <input type=text id="tfzd_remark1" name="tfzd_remark1" value="">
         </td>
 	</tr>
     <tr class="br_attchstr_FD2">
@@ -170,17 +170,11 @@
 		<td class="whitetablebg" colspan="7">全體共有人同意書。</td>
 	</tr>
 </TABLE>
-<INPUT TYPE=hidden id=tfgp_seq NAME=tfgp_seq>
-<INPUT TYPE=hidden id=tfgp_seq1 NAME=tfgp_seq1>
-
+</div>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-        br_form.Add_arcase(1);//分割件數預設1筆
-    }
-
     //分割件數
-    br_form.Add_arcase = function (arcaseCount) {
+    br_form.Add_arcaseFD2 = function (arcaseCount) {
         if (!IsNumeric(arcaseCount)) {
             alert("分割件數請輸入數值!!");
             settab("#tran");
@@ -227,7 +221,7 @@
         var num2 = CInt($("#FD2_cnt_"+nSplit).val());//目前畫面上有幾筆
         if (doCount > num2) {//要加
             for (var nRow = num2; nRow < doCount ; nRow++) {
-                var copyStr = $("#br_class_template").text() || "";
+                var copyStr = $("#br_class_templateFD2").text() || "";
                 copyStr = copyStr.replace(/\$\$/g, nSplit);
                 copyStr = copyStr.replace(/##/g, nRow + 1);
                 $("#tabbDb_" + nSplit + " tbody").append(copyStr);
@@ -269,8 +263,8 @@
     }*/
 
     //類別串接
-    br_form.count_kind = function (nSplit,nRow) {
-        var vobj=$("#classb_"+nSplit+"_" + nRow);//第xx類
+    br_form.count_kindFD2 = function (nSplit,nRow) {
+        var vobj = $("#classb_" + nSplit + "_" + nRow);//第xx類
         if (vobj.val() != "") {
             if (IsNumeric(vobj.val())) {
                 var x = ("000" + vobj.val()).Right(3);//補0
@@ -284,30 +278,9 @@
 
         var nclass = $("#tabbDb_" + nSplit + ">tbody input[id^='classb_" + nSplit + "_']").map(function (index) {
             if (index == 0 || $(this).val() != "") return $(this).val();
-        });
+        }); 
         $("#FD2_class_"+nSplit).val(nclass.get().join(','));
         $("#FD2_class_count_"+nSplit).val(Math.max(CInt($("#FD2_class_count_"+nSplit).val()), nclass.length));//回寫共N類
-    }
-
-
-    //附件
-    br_form.AttachStr1 = function (selector, pfld, tar) {
-        var strRemark1 = "";
-        $(selector + ":checkbox").each(function (index) {
-            var $this = $(this);
-            if ($this.prop("checked")) {
-                strRemark1 += $this.val()
-                //查有無份數欄位
-                if ($("#" + pfld + $this.val() + "C").length > 0) {
-                    strRemark1 += ";" + $("#" + pfld + $this.val() + "C").val();
-                }
-                else if ($("#" + pfld + $this.val() + "t").length > 0) {
-                    strRemark1 += ";" + $("#" + pfld + $this.val() + "t").val();
-                }
-                strRemark1 += "|";
-            }
-        });
-        tar.value = strRemark1;
     }
 
     //原註冊案號
@@ -317,17 +290,10 @@
     })
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFD2 = function () {
+        console.log("fd2.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

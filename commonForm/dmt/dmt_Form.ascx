@@ -180,7 +180,7 @@
 			<input type="button" class="cbutton" id="butUpload" name="butUpload"  value="商標圖檔上傳" onclick="dmt_form.UploadAttach_photo('')" >
 		    <input type="button" class="redbutton" id="btnDelAtt" name="btnDelAtt"  value="商標圖檔刪除" onclick="dmt_form.DelAttach_photo('')" >
             <input type="button" class="cbutton" id="btnDisplay" name="btnDisplay" value="商標圖檔檢視" onclick="dmt_form.PreviewAttach_photo('')" >
-	        <input type="hidden" name="draw_attach_file" id="draw_attach_file">
+	        <!--input type="hidden" name="draw_attach_file" id="draw_attach_file"-->
 		</TD>
 	</tr>	
 	<tr>
@@ -361,17 +361,17 @@
             var url=getRootPath() + "/brt1m/chk_dmt.aspx?p1=Y&p2=A&seq=" +$("#New_Ass_seq").val()+ "&seq1=" +$("#New_Ass_seq1").val();
             scriptByGet("chk案件主檔",url);
         }
-        $("#dseqa1").val($("#New_Ass_seq").val());
-        $("#dseq1a1").val($("#New_Ass_seq1").val());
-        $("#dseqb1").val($("#New_Ass_seq").val());
-        $("#dseq1b1").val($("#New_Ass_seq1").val());
+        $("#dseqa_1").val($("#New_Ass_seq").val());
+        $("#dseq1a_1").val($("#New_Ass_seq1").val());
+        $("#dseqb_1").val($("#New_Ass_seq").val());
+        $("#dseq1b_1").val($("#New_Ass_seq1").val());
     }
     //新案-副號選擇
     $("#New_seq1").change(function () {
-        $("#dseqa1").val($("#New_seq").val());
-        $("#dseq1a1").val($("#New_seq1").val());
-        $("#dseqb1").val($("#New_seq").val());
-        $("#dseq1b1").val($("#New_seq1").val());
+        $("#dseqa_1").val($("#New_seq").val());
+        $("#dseq1a_1").val($("#New_seq1").val());
+        $("#dseqb_1").val($("#New_seq").val());
+        $("#dseq1b_1").val($("#New_seq1").val());
     });
     //新案指定編號-副號
     $("#New_ass_seq1").blur(function () {
@@ -432,20 +432,20 @@
 
         var smark_val=$("input[name='tfzy_S_Mark']:checked").val();
         if(smark_val=="S"){
-            $("#s_marka1").val("92年修正前服務標章");
-            $("#s_markb1").val("92年修正前服務標章");
+            $("#s_marka_1").val("92年修正前服務標章");
+            $("#s_markb_1").val("92年修正前服務標章");
         }else if(smark_val=="N"){
-            $("#s_marka1").val("團體商標");
-            $("#s_markb1").val("團體商標");
+            $("#s_marka_1").val("團體商標");
+            $("#s_markb_1").val("團體商標");
         }else if(smark_val=="M"){
-            $("#s_marka1").val("團體標章");
-            $("#s_markb1").val("團體標章");
+            $("#s_marka_1").val("團體標章");
+            $("#s_markb_1").val("團體標章");
         }else if(smark_val=="L"){
-            $("#s_marka1").val("證明標章");
-            $("#s_markb1").val("證明標章");
+            $("#s_marka_1").val("證明標章");
+            $("#s_markb_1").val("證明標章");
         }else{
-            $("#s_marka1").val("商標");
-            $("#s_markb1").val("商標");
+            $("#s_marka_1").val("商標");
+            $("#s_markb_1").val("商標");
         }
     };
 
@@ -455,7 +455,7 @@
         $("#fr3_issue_no").val($(this).val());
         $("#new_no21").val($(this).val());
         $("#fr4_issue_no").val($(this).val());
-        $("#issue_nob1").val($(this).val());
+        $("#issue_nob_1").val($(this).val());
         $("#fr1_issue_no").val($(this).val());
         $("#fr2_issue_no").val($(this).val());
         $("#fr_issue_no").val($(this).val());
@@ -470,8 +470,8 @@
         $("#ncname121").val($(this).val());
         $("#fr3_appl_name").val($(this).val());
         $("#fr4_appl_name").val($(this).val());
-        $("#appl_namea1").val($(this).val());
-        $("#appl_nameb1").val($(this).val());
+        $("#appl_namea_1").val($(this).val());
+        $("#appl_nameb_1").val($(this).val());
         $("#fr1_appl_name").val($(this).val());
         $("#fr2_appl_name").val($(this).val());
         $("#frf_Appl_name").val($(this).val());
@@ -484,7 +484,7 @@
         $("#O_apply_no").val($(this).val());
         $("#fr_apply_no").val($(this).val());
         $("#new_no11").val($(this).val());
-        $("#apply_noa1").val($(this).val());
+        $("#apply_noa_1").val($(this).val());
         $("#fr1_apply_no").val($(this).val());
         $("#fbf_no").val($(this).val());
     });

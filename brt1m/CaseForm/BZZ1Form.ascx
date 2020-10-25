@@ -22,6 +22,7 @@
     }
 </script>
 
+<div id="div_Form_BZZ1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -35,6 +36,7 @@
 		<td class="whitetablebg" colspan="7"><TEXTAREA rows=15 cols=80 id=tfg1_tran_remark1 name=tfg1_tran_remark1></TEXTAREA></td>
 	</tr>
 </table>
+</div>
 <input type=hidden name=fr_S_Mark value="" >
 <input type=hidden name=fr_S_Mark value="S">
 <input type=hidden name=fr_S_Mark value="N">
@@ -48,21 +50,11 @@
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-    }
-
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindBZZ1 = function () {
+        console.log("bzz1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

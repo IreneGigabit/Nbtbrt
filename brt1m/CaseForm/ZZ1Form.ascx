@@ -22,7 +22,7 @@
     }
 </script>
 
-<script type="text/html" id="div_ZZ1">
+<div id="div_Form_ZZ1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -36,7 +36,7 @@
 		<td class="whitetablebg" colspan="7"><TEXTAREA rows=15 cols=80 id=tfg1_tran_remark1 name=tfg1_tran_remark1></TEXTAREA></td>
 	</tr>
 	<tr id="tr_fw1" style="display:none">
-		<td colspan=8>
+		<td colspan=8 class='sfont9'>
 		    <table border="0" class="bluetable" cellspacing="1" cellpadding="1" style="font-size: 9pt" width="100%">
 		    <tr>
 			    <td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(fw1remark)">
@@ -64,28 +64,17 @@
 		</td>
 	</tr>
 </table>
-
+</div>
 <INPUT TYPE=hidden id=tfr_mod_field NAME=tfr_mod_field value="mod_ap">
 <INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-    }
-
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindZZ1 = function () {
+        console.log("zz1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
     }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
-    }
-</script>
 </script>

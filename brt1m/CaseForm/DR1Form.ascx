@@ -22,6 +22,7 @@
     }
 </script>
 
+<div id="div_Form_DR1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>			
@@ -116,7 +117,7 @@
 		</td>
 	</tr>
 	<tr >
-		<td colspan="8">
+		<td colspan="8" class='sfont9'>
 		<input type=hidden id=DR1_apnum name=DR1_apnum value=0><!--進度筆數-->
 		<table border="0" id=DR1_tabap class="bluetable" cellspacing="1" cellpadding="1" width="100%">
         <thead>
@@ -411,11 +412,9 @@
 		</TD>
 	</TR>
 </table>
+</div>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-    }
-    
     //爭救案-異議、評定、廢止提供新案指定編號功能2011/6/27新增
     br_form.new_oldcaseB=function(pfldname){
         $("#showseq_"+pfldname).show();
@@ -587,17 +586,10 @@
     }
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindDR1 = function () {
+        console.log("dr1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

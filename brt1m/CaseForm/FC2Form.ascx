@@ -23,6 +23,7 @@
     }
 </script>
 
+<div id="div_Form_FC2">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
     <tr>
@@ -45,7 +46,7 @@
             <input type="radio" id=tfg2_mod_agttypeD name=tfg2_mod_agttype value="D">撤銷
 		</td>
 	</tr>
-	<tr id="FC1_tr_addagtno" style="display:none">
+	<tr id="FC2_tr_addagtno" style="display:none">
 		<td class="lightbluetable" valign="top"><strong>※、新增代理人(代碼)</strong></td>
 		<td class="whitetablebg" colspan="7" valign="top">
 		    <select id="FC2_add_agt_no" NAME="FC2_add_agt_no"><%#FC2_add_agt_no%></select>
@@ -67,8 +68,8 @@
 		</TD>
 	</tr>
 	<tr id=tabbr2 style="display:none">
-		<td colspan=8>
-		    <TABLE border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+		<td colspan=8 class="sfont9">
+		    <TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
 		    <tr>	
 			    <td class="lightbluetable" align="right">件數：</td>
 			    <td class="whitetablebg" colspan="7" ><input type="text" readonly class="sedit" id=tft2_mod_count2 name=tft2_mod_count2 size=2 value="1">件
@@ -149,7 +150,7 @@
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttech)">
-            <strong><u>附件：</u></strong><input type="hidden" name=tfzd_remark1 id=tfzd_remark1>
+            <strong><u>附件：</u></strong>
 		</td>
 	</tr>
 	<tr class="br_attchstr">
@@ -215,12 +216,9 @@
 		</TD>
 	</tr>	
 </table>
+</div>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-        //br_form.Add_class(1);//類別預設顯示第1筆
-    }
-
     //代理人變更
     br_form.modagttype_chk = function (tfield) {
         if ($(tfield).prop("checked") == false) {
@@ -262,17 +260,10 @@
     }
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFC2 = function () {
+        console.log("fc2.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

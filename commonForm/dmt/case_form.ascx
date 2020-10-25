@@ -455,12 +455,12 @@
         //***2011/1/10因交辦其他案性也可勾選結案註記，所以每個畫面加結案註記，因此結案案性畫面欄位名稱修改
         if (prt_code == "ZZ" && $("#Ar_Form").val().Left(1) != "B") {
             if ($("#tfy_Arcase").val().Left(2) == "XX") {
-                $("#ZZ1tr_endtype").show();
+                $("#A9Ztr_endtype").show();
                 if (confirm("交辦結案案性，請問是否結案？※確認結案則系統將續行結案流程並管制結案期限。")) {
-                    $("#ZZ1_end_flag").prop("chedked", true);//zz_form
+                    $("#A9Z_end_flag").prop("checked", true);//zz_form
                     $("#tfy_end_flag").val("Y");//dmt_form
                 } else {
-                    $("#ZZ1_end_flag").prop("chedked", false);//zz_form
+                    $("#A9Z_end_flag").prop("checked", false);//zz_form
                     $("#tfy_end_flag").val("N");//dmt_form
                 }
             }

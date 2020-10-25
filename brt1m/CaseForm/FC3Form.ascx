@@ -22,6 +22,7 @@
     }
 </script>
 
+<div id="div_Form_FC3">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
  	<tr>
@@ -57,8 +58,8 @@
 		<td class="lightbluetable" colspan=8 valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(m5Good1)"><strong>肆、<u>擬減縮商品（服務）名稱</u></strong></td>
 	</tr>
 	<tr>
-		<td colspan=8>
-		    <TABLE id=tabbr31 style="display:" border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+		<td colspan=8 class="sfont9">
+		    <TABLE id=tabbr31 style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
             <thead>
 		    <tr>	
 			    <td class="lightbluetable" align="right" width="18%">件數：</td>
@@ -91,8 +92,8 @@
 		<td class="lightbluetable" colspan=8 valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(m5Good2)"><strong>伍、<u>減縮後指定商品（服務）名稱</u></strong></td>
 	</tr>
 	<tr>
-		<td colspan=8>
-		<TABLE id=tabbr32 style="display:" border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+		<td colspan=8 class="sfont9">
+		<TABLE id=tabbr32 style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
         <thead>
 		<tr>	
 			<td class="lightbluetable" align="right" >類別種類：</td>
@@ -128,7 +129,7 @@
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttech)">
-            <strong><u>附件：</u></strong><input type="hidden" name=tfzd_remark1 id=tfzd_remark1>
+            <strong><u>附件：</u></strong>
 		</td>
 	</tr>
 	<tr class="br_attchstr">
@@ -166,12 +167,9 @@
 		</TD>
 	</tr>
 </table>
+</div>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-        //br_form.Add_class(1);//類別預設顯示第1筆
-    }
-
     //類別串接
     br_form.count_kind = function (pObj,pFld) {
         if ($(pObj).val() != "") {
@@ -193,17 +191,10 @@
     }
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFC3 = function () {
+        console.log("fc3.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

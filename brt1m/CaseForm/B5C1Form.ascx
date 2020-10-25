@@ -22,7 +22,7 @@
     }
 </script>
 
-<script type="text/html" id="div_B5C1">
+<div id="div_Form_B5C1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -105,7 +105,7 @@
 	</tr>
 	<!--DE1 or AD7申請聽證之對造當事人 start-->
 	<tr id="tr_de1_ap" style="display:none">
-		<td colspan="4">
+		<td colspan="4" class='sfont9'>
 		    <input type=hidden id=DE1_apnum name=DE1_apnum value=0><!--進度筆數-->
 		    <table border="0" id=DE1_tabap class="bluetable" cellspacing="1" cellpadding="1" width="100%">
             <thead>
@@ -148,11 +148,9 @@
 		</TD>
 	</TR>
 </table>
+</div>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-    }
-    
     //**各畫面之代理人資料丟到案件主檔
     //br_form.copycase('tfp4_agt_no')
     br_form.copycase = function (xy) {
@@ -182,18 +180,10 @@
     });
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindB5C1 = function () {
+        console.log("b5c1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
     }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
-    }
-</script>
 </script>

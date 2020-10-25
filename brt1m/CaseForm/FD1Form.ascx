@@ -31,6 +31,7 @@
     }
 </script>
 
+<div id="div_Form_FD1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -74,7 +75,7 @@
 	<tr>
 		<td class=lightbluetable align=right >四、分割件數：</td>
 		<td class=whitetablebg colspan="7">
-			分割為<input type=text id=tot_num1 name=tot_num1 size="2" maxlength="2" onchange="br_form.Add_arcase(this.value)">件
+			分割為<input type=text id=tot_num1 name=tot_num1 size="2" maxlength="2" onchange="br_form.Add_arcaseFD1(this.value)">件
 			<input type=hidden id=cnt1 name=cnt1 value="0"><!--畫面上有幾筆-->
 			<input type=text id=nfy_tot_num name=nfy_tot_num value="0">
 		</TD>
@@ -126,10 +127,10 @@
         <tbody></tbody>
 		</table>
     </script>
-    <script type="text/html" id="br_class_template"><!--分割_類別樣板-->
+    <script type="text/html" id="br_class_templateFD1"><!--分割_類別樣板-->
         <tr class="tr_br_class_$$_##">
 			<td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別"><font color=red>(<span class="numberCh$$"></span>)</font>類別##:</td>
-			<td class="whitetablebg">第<INPUT type="text" id=classa_$$_## name=classa_$$_## size=3 maxlength=3 onchange="br_form.count_kind('$$','##')">類
+			<td class="whitetablebg">第<INPUT type="text" id=classa_$$_## name=classa_$$_## size=3 maxlength=3 onchange="br_form.count_kindFD1('$$','##')">類
 			</td>
 		</tr>
         <tr class="tr_br_class_$$_##">
@@ -181,17 +182,14 @@
 		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" NAME="ttz1_Z9t" id="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
 	</tr>
 </TABLE>
+</div>
 
 <INPUT TYPE=hidden id=tfgp_seq NAME=tfgp_seq>
 <INPUT TYPE=hidden id=tfgp_seq1 NAME=tfgp_seq1>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-        br_form.Add_arcase(1);//分割件數預設1筆
-    }
-
     //分割件數
-    br_form.Add_arcase = function (arcaseCount) {
+    br_form.Add_arcaseFD1 = function (arcaseCount) {
         if (!IsNumeric(arcaseCount)) {
             alert("分割件數請輸入數值!!");
             settab("#tran");
@@ -238,7 +236,7 @@
         var num2 = CInt($("#FD1_cnt_"+nSplit).val());//目前畫面上有幾筆
         if (doCount > num2) {//要加
             for (var nRow = num2; nRow < doCount ; nRow++) {
-                var copyStr = $("#br_class_template").text() || "";
+                var copyStr = $("#br_class_templateFD1").text() || "";
                 copyStr = copyStr.replace(/\$\$/g, nSplit);
                 copyStr = copyStr.replace(/##/g, nRow + 1);
                 $("#tabbDa_"+nSplit+" tbody").append(copyStr);
@@ -280,7 +278,7 @@
     }*/
 
     //類別串接
-    br_form.count_kind = function (nSplit,nRow) {
+    br_form.count_kindFD1 = function (nSplit,nRow) {
         var vobj=$("#classa_"+nSplit+"_" + nRow);//第xx類
         if (vobj.val() != "") {
             if (IsNumeric(vobj.val())) {
@@ -327,24 +325,11 @@
         $("#tfzd_apply_no").val($(this).val());
     })
 
-    //原註冊案號
-    $("#fr2_issue_no").blur(function (e) {
-        chk_dmt_issueno($(this)[0],8);
-        $("#tfzd_issue_no").val($(this).val());
-    })
-
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFD1 = function () {
+        console.log("fd1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

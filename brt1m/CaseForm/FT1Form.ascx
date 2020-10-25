@@ -25,6 +25,7 @@
     }
 </script>
 
+<div id="div_Form_FT1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -213,16 +214,12 @@
 													<INPUT type="radio" id=O_item2FP1 name=O_item2 value="FP1">質權案</TD>
 	</tr>
 </TABLE>
-
+</div>
 <INPUT TYPE=text id=tfr_mod_field NAME=tfr_mod_field value="mod_ap">
 <INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-        //br_form.Add_FC21(1);//移轉件數預設1筆
-    }
-
     //*****共N件
     br_form.Add_FC21 = function (arcaseCount) {
         if(arcaseCount>50){
@@ -231,8 +228,8 @@
             return false;
         }
 
-        var doCount = Math.max(1, CInt(arcaseCount));//要改為幾筆,最少是1
-        var cnt211 = CInt($("#cnt211").val());//目前畫面上有幾筆
+        var doCount = CInt(arcaseCount);//要改為幾筆
+        var cnt211 = Math.max(1, CInt($("#cnt211").val()));//目前畫面上有幾筆,最少是1
         if (doCount > cnt211) {//要加
             for (var nRow = cnt211; nRow < doCount ; nRow++) {
                 var copyStr = $("#br_ft2_template").text() || "";
@@ -455,17 +452,10 @@
     }
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFT1 = function () {
+        console.log("ft1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

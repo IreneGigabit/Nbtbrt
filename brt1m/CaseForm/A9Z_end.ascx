@@ -27,7 +27,7 @@
 	<TR>
 		<TD align=center colspan=4 class=lightbluetable1><font color=white>結&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;案&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;復&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;案&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;資&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;料</font></TD>
 	</TR>
-	<tr id="A9Ztr_endtype" style="display:">
+	<tr id="A9Ztr_endtype" style="display:none">
 		<td class="lightbluetable" align="right">結案註記：</td>
 		<td class="whitetablebg" >
             <input type="checkbox" name="A9Z_end_flag" id="A9Z_end_flag" value="Y" onclick="dmt_form.get_enddata('A9Z')"><font color=red>結案註記</font>(當此交辦需同時結案，請勾選)
@@ -38,7 +38,7 @@
             <input type=text name="A9Z_end_remark" id="A9Z_end_remark" size="60" maxlength=120 onblur="dmt_form.get_enddata('A9Z')" style="width:90%">
 		</td>
 	</tr>
-	<tr id="A9Ztr_backflag" style="display:">
+	<tr id="A9Ztr_backflag" style="display:none">
 		<td class="lightbluetable" align="right">復案註記：</td>
 		<td class="whitetablebg" >
             <input type="checkbox" name="A9Z_back_flag" id="A9Z_back_flag" value="Y" onclick="dmt_form.get_backdata('A9Z')"><font color=red>復案註記</font>(當案件已結案且此交辦需復案，請勾選。<br>

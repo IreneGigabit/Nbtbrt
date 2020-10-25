@@ -25,6 +25,7 @@
     }
 </script>
 
+<div id="div_Form_FL1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -60,8 +61,8 @@
 		    <tr>
 			    <td class="lightbluetable" align="right" width="23%">此次<span id="sp_titlecnt">授權</span>總件數：</td>
 			    <td class="whitetablebg"  colspan=3>共<input type="text" id=tot_num21 name=tot_num21 size=2 onchange="br_form.Add_FC21(this.value)" >件
-				    <input type=text id=cnt211 name=cnt211 value="1"><!--畫面上有幾筆-->
-				    <input type=text id=nfy_tot_num name=nfy_tot_num value="1">
+				    <input type=text id=cnt211 name=cnt211 value="0"><!--畫面上有幾筆-->
+				    <input type=text id=nfy_tot_num name=nfy_tot_num value="0">
 			    </td>
 		    </tr>
 		    <tr>	
@@ -136,7 +137,7 @@
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a1Rapcust)"><span id=role1></span></td>
 	</tr>
 	<tr>
-		<td colspan="8">
+		<td class=sfont9 colspan="8">
 		<input type=hidden id=FL_apnum name=FL_apnum value=0><!--進度筆數-->
 		<table border="0" id=FL_tabap class="bluetable" cellspacing="1" cellpadding="1" style="font-size: 9pt" width="100%">
             <thead>
@@ -277,8 +278,8 @@
 		<td class=whitetablebg colspan=7><input type=radio id=tfl1_mod_typeP name=tfl1_mod_type value="Part">部份授權(請按商品/服務類別分別填寫商品/服務名稱類別)</td>
 	</tr>
 	<tr id=remark1 style="display:">
-		<td colspan=8>
-		<TABLE id=tabbr2 style="display:" border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+		<td colspan=8 class=sfont9>
+		<TABLE id=tabbr2 style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
         <thead>
 		<tr>
 			<td class="lightbluetable" align="right">類別項目：</td>
@@ -312,7 +313,7 @@
 	<tr class=whitetablebg>
 	    <td colspan=8><input type=hidden id="tfzd_remark1" name="tfzd_remark1" value="">
 	    <!--FL1的附件畫面-->
-	    <TABLE id=tabrem1 style="display:" border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">			
+	    <TABLE id=tabrem1 style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">			
 	    <tr >
 		    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z4" NAME="ttz1_Z4" value="Z4" onclick="br_form.AttachStr('#tabrem1', 'ttz1_', reg.tfzd_remark1)"></td>
 		    <td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz1_Z4C" NAME="ttz1_Z4C" value="Z4C" onclick="br_form.AttachStr('#tabrem1','ttz1_',reg.tfzd_remark1)">附中文譯本)。</td>
@@ -335,7 +336,7 @@
 	    </tr>	
 	    </table>
 	    <!--FL2的附件畫面-->
-	    <TABLE id=tabrem2 style="display:none" border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">			
+	    <TABLE id=tabrem2 style="display:none" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">			
 	    <tr >
 		    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z5" NAME="ttz2_Z5" value="Z5" onclick="br_form.AttachStr('#tabrem2','ttz2_',reg.tfzd_remark1)"></td>
 		    <td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz2_Z5C" NAME="ttz2_Z5C" value="Z5C" onclick="br_form.AttachStr('#tabrem2','ttz2_',reg.tfzd_remark1)">附中文譯本)。</td>
@@ -362,7 +363,7 @@
 	    </tr>	
 	    </table>
 	    <!--FL3的附件畫面-->
-	    <TABLE id=tabrem3 style="display:none" border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">			
+	    <TABLE id=tabrem3 style="display:none" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">			
 	    <tr >
 		    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz3_Z4" NAME="ttz3_Z4" value="Z4" onclick="br_form.AttachStr('#tabrem3','ttz3_',reg.tfzd_remark1)"></td>
 		    <td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz3_Z4C" NAME="ttz3_Z4C" value="Z4C" onclick="br_form.AttachStr('#tabrem3','ttz3_',reg.tfzd_remark1)">附中文譯本)。</td>
@@ -385,7 +386,7 @@
 	    </tr>	
 	    </table>
 	    <!--FL4的附件畫面-->
-	    <TABLE id=tabrem4 style="display:none" border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">			
+	    <TABLE id=tabrem4 style="display:none" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">			
 	    <tr >
 		    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz4_Z4" NAME="ttz4_Z4" value="Z4" onclick="br_form.AttachStr('#tabrem4','ttz4_',reg.tfzd_remark1)"></td>
 		    <td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz4_Z4C" NAME="ttz4_Z4C" value="Z4C" onclick="br_form.AttachStr('#tabrem4','ttz4_',reg.tfzd_remark1)">附中文譯本)。</td>
@@ -422,16 +423,12 @@
 													<INPUT type="radio" id=O_item2FL2 name=O_item2 value="FL2"><span id=oth_FL></span></TD>
 	</tr>
 </table>
-
+</div>
 <INPUT TYPE=text id=tfr_mod_field NAME=tfr_mod_field value="mod_ap">
 <INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-        //br_form.Add_FC21(1);//移轉件數預設1筆
-    }
-
     //申請人種類
     br_form.apcust_role = function (role) {
         if (role == "A") {
@@ -571,14 +568,14 @@
             return false;
         }
 
-        var doCount = Math.max(1, CInt(arcaseCount));//要改為幾筆,最少是1
-        var cnt211 = CInt($("#cnt211").val());//目前畫面上有幾筆
+        var doCount = CInt(arcaseCount);//要改為幾筆
+        var cnt211 = Math.max(1, CInt($("#cnt211").val()));//目前畫面上有幾筆,最少是1
         if (doCount > cnt211) {//要加
             for (var nRow = cnt211; nRow < doCount ; nRow++) {
                 var copyStr = $("#br_fl1_template").text() || "";
                 copyStr = copyStr.replace(/##/g, nRow + 1);
                 if(nRow%2!=0) copyStr = copyStr.replace(/whitetablebg/g,"greentablebg");
-                $("#tabfl1 tbody").append(copyStr);
+                $("#tabfl5 tbody").append(copyStr);
                 if(nRow%2!=0) {
                     $(".trfl1_"+(nRow + 1)+" input[type=text]").attr("class","sedit2");
                 }else{
@@ -795,23 +792,10 @@
     }
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFL1 = function () {
+        console.log("fl1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        if (code3 == "FT1") {
-            $("#tabfl1").hide();
-        } else if (code3 == "fl1") {
-            $("#tabfl1").show();
-        }
-
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

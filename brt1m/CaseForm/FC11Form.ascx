@@ -22,6 +22,7 @@
     }
 </script>
 
+<div id="div_Form_FC11">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -73,14 +74,14 @@
 		</TD>
 	</tr>
 	<tr>
-		<td colspan=8>
-		<TABLE border=1 class="greentable"  cellspacing=1 cellpadding=2 width="100%">
+		<td colspan=8 class="sfont9">
+		<TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
 		<tr>	
 			<td class="lightbluetable" align="right" width="23%">此次變更總件數：</td>
 			<td class="whitetablebg" colspan="7" >共<input type="text" id=tot_num11 name=tot_num11 size=2 onchange="br_form.Add_FC11(this.value)">件
 				<input type=hidden id=count111 name=count111 value="0">
 				<input type=hidden id=ctrlcnt111 name=ctrlcnt111 value="">
-				<input type=hidden id=cnt111 name=cnt111 value="0"><!--畫面上有幾筆-->
+				<input type=text id=cnt111 name=cnt111 value="0"><!--畫面上有幾筆-->
 				<input type=hidden id=nfy_tot_num name=nfy_tot_num value="0">
 			</td>
 		</tr>
@@ -88,8 +89,8 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan=8>
-		<TABLE id=tabbr111 border=1 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
+		<td colspan=8 class="sfont9">
+		<TABLE id=tabbr111 border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
         <thead>
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>案件編號1:</td>
@@ -151,7 +152,7 @@
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttech)">
-            <strong><u>附件：</u></strong><input type="hidden" name=tfzd_remark1 id=tfzd_remark1>
+            <strong><u>附件：</u></strong>
 		</td>
 	</tr>
 	<tr class="br_attchstr">
@@ -191,12 +192,9 @@
 		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" id="ttz11_Z9t" NAME="ttz11_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
 	</tr>
 </table>	
+</div>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-        //br_form.Add_class(1);//類別預設顯示第1筆
-    }
-
     //*****共N件
     br_form.Add_FC11 = function (arcaseCount) {
         if (arcaseCount > 50) {
@@ -205,8 +203,8 @@
             return false;
         }
 
-        var doCount = Math.max(1, CInt(arcaseCount));//要改為幾筆,最少是1
-        var cnt111 = CInt($("#cnt111").val());//目前畫面上有幾筆
+        var doCount = CInt(arcaseCount);//要改為幾筆
+        var cnt111 = Math.max(1, CInt($("#cnt111").val()));//目前畫面上有幾筆,最少是1
         if (doCount > cnt111) {//要加
             for (var nRow = cnt111; nRow < doCount ; nRow++) {
                 var copyStr = $("#br_fc11_template").text() || "";
@@ -431,17 +429,10 @@
     }
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFC11 = function () {
+        console.log("fc11.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

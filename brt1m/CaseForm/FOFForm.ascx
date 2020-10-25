@@ -22,7 +22,7 @@
     }
 </script>
 
-<script type="text/html" id="div_FOF">
+<div id="div_Form_FOF">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -88,11 +88,9 @@
 		</td>
 	</tr>
 </table>
+</div>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-    }
-    
     //代理人
     $("#tfzf_agt_no1").blur(function (e) {
         var tagt_name="";
@@ -140,18 +138,10 @@
     }
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFOF = function () {
+        console.log("fof.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
     }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
-    }
-</script>
 </script>

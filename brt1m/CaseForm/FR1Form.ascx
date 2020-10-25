@@ -22,6 +22,7 @@
     }
 </script>
 
+<div id="div_Form_FR1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -218,39 +219,31 @@
             <input type=text id="tfzd_remark1" name="tfzd_remark1" value="">
 		</td>
 	</tr>
-	<tr class='sfont9'>
-		<td colspan=2>
-            <TABLE id=tabrem4 style="display:" border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
-	            <tr style="display:none">
-		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z1" NAME="ttzd_Z1" value="Z1" onclick="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)"></td>
-		            <td class="whitetablebg">大陸地區（含港、澳地區）之自然人或法人之身分證明文件。</td>
-	            </tr>
-	            <tr>
-		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z2" NAME="ttzd_Z2" value="Z2" onclick="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)"></td>
-		            <td class="whitetablebg">委任書(<input TYPE="checkbox" id="ttzd_Z2C" NAME="ttzd_Z2C" value="Z2C" onclick="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)">附中文譯本)。</td>
-	            </tr>
-	            <tr>
-		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z3" NAME="ttzd_Z3" value="Z3" onclick="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)"></td>
-		            <td class="whitetablebg">變更證明文件。(更名時檢附)</td>
-	            </tr>
-	            <tr>
-		            <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z9" NAME="ttzd_Z9" value="Z9" onclick="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)"></td>
-		            <td class="whitetablebg">其他證明文件。<input TYPE="text" id="ttzd_Z9t" NAME="ttzd_Z9t" SIZE="50" onchange="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)">
+	<tr class="br_attchstr" style="display:none">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z1" NAME="ttzd_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttzd_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg">大陸地區（含港、澳地區）之自然人或法人之身分證明文件。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z2" NAME="ttzd_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttzd_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg">委任書(<input TYPE="checkbox" id="ttzd_Z2C" NAME="ttzd_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstr','ttzd_',reg.tfzd_remark1)">附中文譯本)。</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z3" NAME="ttzd_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstr','ttzd_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg">變更證明文件。(更名時檢附)</td>
+	</tr>
+	<tr class="br_attchstr">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z9" NAME="ttzd_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttzd_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg">其他證明文件。<input TYPE="text" id="ttzd_Z9t" NAME="ttzd_Z9t" SIZE="50" onchange="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)">
 			
-		            </td>
-	            </tr>
-            </TABLE>
-        </td>
-    </tr>
+		</td>
+	</tr>
 </table>
+</div>
+
 <INPUT TYPE=text id=tfgp_seq NAME=tfgp_seq>
 <INPUT TYPE=text id=tfgp_seq1 NAME=tfgp_seq1>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-        //br_form.Add_class(1);//類別預設顯示第1筆
-    }
-
     //類別串接
     br_form.count_kind = function (nRow) {
         if ($("#class2_" + nRow).val() != "") {
@@ -272,8 +265,9 @@
     }
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFR = function () {
+        console.log("fr1.br_form.bind");
+        return;
         if (jMain.case_main.length == 0) {
         } else {
             //*出名代理人代碼
@@ -461,12 +455,5 @@
                 }
             }
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

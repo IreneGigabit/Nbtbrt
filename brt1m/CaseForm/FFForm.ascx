@@ -22,6 +22,7 @@
     }
 </script>
 
+<div id="div_Form_FF">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -43,7 +44,6 @@
             <strong>壹、號數（前商標局核准註冊【係於大陸註冊之商標】，請於號數前加註「前商標局」字樣）</strong>
 		</td>
 	</tr>
-
 	<tr>
 		<td class=lightbluetable align=right id=no1 >申請號數：</td>
 		<td class=whitetablebg colspan="3" id=no2 ><input type="text" name="fr_apply_no" id="fr_apply_no" value="" size="20" maxlength="20" onchange="reg.tfzd_apply_no.value=this.value"></TD>
@@ -71,7 +71,6 @@
 		</td>
 	</tr>
 </TABLE>
-
 <TABLE id=tabrem4 style="display:none" border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ><strong>附件：請勾註所檢附之文件</strong>
@@ -91,16 +90,14 @@
 		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" id="FF4_Z9t" NAME="FF4_Z9t" SIZE="50" onchange="br_form.AttachStr('#tabrem4','FF4_',reg.tfzd_remark1)"></td>
 	</tr>
 </table>
+</div>
+
 <INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
-
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-    }
-
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFF = function () {
+        console.log("ff.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
             $("#tfg1_agt_no1").val(jMain.case_main[0].agt_no);//*出名代理人代碼
@@ -141,12 +138,5 @@
                 }
             }
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>

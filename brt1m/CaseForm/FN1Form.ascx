@@ -22,6 +22,7 @@
     }
 </script>
 
+<div id="div_Form_FN1">
 <%=Sys.GetAscxPath(this)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -139,17 +140,13 @@
 													<INPUT type="radio" id=O_item2FR1 name=O_item2 value="FR1" onclick="reg.O_item21.value = ''">延展案
 													<INPUT type="radio" id=O_item2ZZ name=O_item2 value="ZZ">其他<input type=text id=O_item21 name=O_item21 size=20 maxlength=20>案</TD>
 	</tr>
-
-
 </TABLE>
+</div>
 <INPUT TYPE=hidden id=tfr_mod_field NAME=tfr_mod_field value="mod_ap">
 <INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
-    br_form.init = function () {
-    }
-
     //程序種類
     br_form.change_no = function (x) {
         if(x=="A"){
@@ -174,17 +171,10 @@
     })
 
     //交辦內容綁定
-    br_form.bind = function () {
-        //console.log("br_form.bind");
+    br_form.bindFN1 = function () {
+        console.log("fn1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
         }
-    }
-
-    //依案性切換要顯示的欄位
-    br_form.changeTag = function (T1) {
-        var code3 = T1.Left(3).toUpperCase();//案性前3碼
-        //切換後重新綁資料
-        br_form.bind();
     }
 </script>
