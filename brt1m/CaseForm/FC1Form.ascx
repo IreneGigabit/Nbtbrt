@@ -60,7 +60,7 @@
 		    <TABLE id=tabbr11 style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
 		    <tr>	
 			    <td class="lightbluetable" align="right">件數：</td>
-			    <td class="whitetablebg" colspan="7" ><input type="text" readonly class="sedit" id=tft1_mod_count11 name=tft1_mod_count11 size=2 value="1">件
+			    <td class="whitetablebg" colspan="7" ><input type="text" readonly class="SEdit" id=tft1_mod_count11 name=tft1_mod_count11 size=2 value="1">件
 				    <input type=hidden id=count11 name=count11 value="1">
 				    <input type=hidden id=ctrlcnt11 name=ctrlcnt11 value="">
 				    <input type=hidden id=cnt11 name=cnt11 value="1">
@@ -72,7 +72,7 @@
 		    </tr>
 		    <tr>	
 			    <td class="lightbluetable" align="right">商標/標章名稱：</td>
-			    <td class="whitetablebg" colspan="7"><input type="text" readonly class=sedit id=ncname111 name=ncname111 size=40 maxlength=50 onchange="reg.tfzd_Appl_name.value=this.value"></td>
+			    <td class="whitetablebg" colspan="7"><input type="text" readonly class=sedit id=ncname111 name=ncname111 size=40 maxlength=50 onchange="reg.tfzd_appl_name.value=this.value"></td>
 		    </tr>
 		    </table>
 		</td>

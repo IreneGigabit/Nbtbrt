@@ -5,7 +5,7 @@
 <%@ Register Src="~/commonForm/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
 <%@ Register Src="~/commonForm/dmt/case_form.ascx" TagPrefix="uc1" TagName="case_form" %>
 <%@ Register Src="~/commonForm/dmt/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
-<%@ Register Src="~/brt1m/CaseForm/FA1Form.ascx" TagPrefix="uc1" TagName="FA1Form" %>
+<%@ Register Src="~/brt1m/Brt11FormA11.ascx" TagPrefix="uc1" TagName="Brt11FormA11" %>
 
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
@@ -27,7 +27,6 @@
     protected string in_no = "";
     protected string prt_code = "";
     protected string new_form = "";
-    protected string case_stat = "";
     protected string code_type = "";
     protected string seq = "";
     protected string seq1 = "";
@@ -45,7 +44,6 @@
         in_no = (Request["in_no"] ?? "").Trim();
         prt_code = (Request["prt_code"] ?? "").Trim();
         new_form = (Request["new_form"] ?? "").Trim();
-        case_stat = (Request["case_stat"] ?? "").Trim();
         code_type = (Request["code_type"] ?? "").Trim();
         seq = (Request["seq"] ?? "").Trim();
         seq1 = (Request["seq1"] ?? "").Trim();
@@ -108,8 +106,6 @@
         //收費與接洽事項
         case_form.formFunction = formFunction;
         case_form.HTProgRight = HTProgRight;
-        //交辦內容
-        FA1Form.Lock = Lock;
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -133,6 +129,21 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_doctype.js")%>"></script><!--檢查契約書種類與上傳文件-->
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_custwatch.js")%>"></script><!--檢查是否為雙邊代理查照對象-->
 </head>
+<script language="javascript" type="text/javascript">
+    var main = {};
+    main.branch = "<%#Session["SeBranch"]%>";
+    main.prgid = "<%#prgid%>";
+    main.right = <%#HTProgRight%>;
+    main.formFunction = "<%#formFunction%>";
+    main.ar_form = "<%#ar_form%>";
+    main.cust_area = "<%#cust_area%>";
+    main.cust_seq = "<%#cust_seq%>";
+    main.in_no = "<%#in_no%>";
+    main.code_type = "<%#code_type%>";
+    main.seq = "<%#seq%>";
+    main.seq1 = "<%#seq1%>";
+    jMain = {};
+</script>
 
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
@@ -155,7 +166,6 @@
     <INPUT TYPE="text" id=prt_code name=prt_code value="<%=prt_code%>">
     <INPUT TYPE="text" id=new_form name=new_form value="<%=new_form%>">
     <INPUT TYPE="text" id=add_arcase name=add_arcase value="">
-    <INPUT TYPE="text" id=tfy_case_stat name=tfy_case_stat value="<%=case_stat%>"><!--案件狀態-->
     <input type="text" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
@@ -192,10 +202,12 @@
                 <!--include file="../commonForm/dmt/case_form.ascx"--><!--收費與接洽事項-->
             </div>
             <div class="tabCont" id="#tran">
-                <uc1:FA1Form runat="server" ID="FA1Form" />
+                <uc1:Brt11FormA11 runat="server" ID="Brt11FormA11" />
+                <!--include file="../brt1m/Brt11FormA11.ascx"--><!--交辦內容-->
             </div>
             <div class="tabCont" id="#upload">
                 <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" />
+                <!--include file="../commonForm/dmt/dmt_upload_Form.ascx"--><!--文件上傳-->
             </div>
         </td>
     </tr>
@@ -225,20 +237,6 @@
 </html>
 
 <script language="javascript" type="text/javascript">
-    var main = {};
-    main.branch = "<%#Session["SeBranch"]%>";
-    main.prgid = "<%#prgid%>";
-    main.right = <%#HTProgRight%>;
-    main.formFunction = "<%#formFunction%>";
-    main.ar_form = "<%#ar_form%>";
-    main.cust_area = "<%#cust_area%>";
-    main.cust_seq = "<%#cust_seq%>";
-    main.in_no = "<%#in_no%>";
-    main.code_type = "<%#code_type%>";
-    main.seq = "<%#seq%>";
-    main.seq1 = "<%#seq1%>";
-    jMain = {};
-
     $(function () {
         if (window.parent.tt !== undefined) {
             if($("#prgid").val()!="brt51"){
@@ -288,8 +286,7 @@
             },
             error: function (xhr) {
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
 
@@ -313,8 +310,8 @@
         }
     }
 
-    <!--#include virtual="~\brt1m\CaseForm\A11_bind.js" --><!--資料綁定(main.bind)-->
-    <!--#include virtual="~\brt1m\CaseForm\A11_savechk.js" --><!--存檔檢查(main.savechk)-->
+    <!--xxinclude virtual="~\brt1m\CaseForm\A11_bind.js" --><!--資料綁定(main.bind)xx-->
+    <!--xxinclude virtual="~\brt1m\CaseForm\A11_savechk.js" --><!--存檔檢查(main.savechk)xx-->
     
     //存檔
     function formModSubmit(){

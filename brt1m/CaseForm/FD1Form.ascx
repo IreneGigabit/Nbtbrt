@@ -26,7 +26,7 @@
             SQL = "SELECT  rs_code,prt_code,rs_detail,remark ";
             SQL += "FROM code_br WHERE rs_class like 'A1%' And  cr= 'Y' and dept='T' And rs_type='" + code_type + "' AND no_code='N' ";
             SQL += "and getdate() >= beg_date and end_date is null ORDER BY rs_code";
-            tfg1_div_arcase = SHtml.Option(conn, SQL, "{rs_code}", "{rs_code}--{rs_detail}");
+            tfg1_div_arcase = Util.Option(conn, SQL, "{rs_code}", "{rs_code}--{rs_detail}");
         }
     }
 </script>
@@ -108,7 +108,7 @@
 		    </tr>
 		    <tr>
 			    <td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別" width="30%" ><font color=red>分割(<span class="numberCh$$"></span>)</font>類別項目:</td>		
-			    <td class="whitetablebg" width="70%">共<INPUT type="text" id=FD1_class_count_$$ name=FD1_class_count_$$ size=2 maxlength=2 onchange="br_form.Add_class_FD1('$$',this.value)">類
+			    <td class="whitetablebg" width="70%">共<INPUT type="text" id=FD1_class_count_$$ name=FD1_class_count_$$ size=2 maxlength=2 onchange="br_form.Add_classFD1('$$',this.value)">類
 			        <input type=hidden name=FD1_count_$$ id=FD1_count_$$ value="0">
 				    <input type=hidden name=FD1_ctrlcnt_$$ id=FD1_ctrlcnt_$$ value="0">
 				    <input type=hidden name=FD1_cnt_$$ id=FD1_cnt_$$ value="0"><!--目前畫面上有幾筆-->
@@ -184,8 +184,6 @@
 </TABLE>
 </div>
 
-<INPUT TYPE=hidden id=tfgp_seq NAME=tfgp_seq>
-<INPUT TYPE=hidden id=tfgp_seq1 NAME=tfgp_seq1>
 
 <script language="javascript" type="text/javascript">
     //分割件數
@@ -212,7 +210,7 @@
                 $("#tdbr_da").append(copyStr);
                 $(".numberCh"+(nRow + 1)).html(NumberToCh(nRow+1));
                 $("#cnt1").val(nRow + 1);
-                br_form.Add_class_FD1(nRow+1,1);//預設一個類別
+                br_form.Add_classFD1(nRow+1,1);//預設一個類別
             }
         } else {
             //要減
@@ -224,7 +222,7 @@
     }
 
     //*****共N類
-    br_form.Add_class_FD1 = function (nSplit, classCount) {
+    br_form.Add_classFD1 = function (nSplit, classCount) {
         if (!IsNumeric(classCount)) {
             alert("分割後類別項目"+nSplit+"：請輸入數值!!");
             settab("#tran");

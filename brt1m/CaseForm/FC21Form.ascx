@@ -91,15 +91,15 @@
 		    </tr>
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>商標種類1:</td>
-			    <td class="whitetablebg" colspan="7"><input type="text" id=s_markb_1 name=s_markb_1 size=50 maxlength=50  readonly class=sedit></td>
+			    <td class="whitetablebg" colspan="7"><input type="text" id=s_markb_1 name=s_markb_1 size=50 maxlength=50  readonly class=SEdit></td>
 		    </tr>		
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>商標/標章名稱1:</td>
-			    <td class="whitetablebg" colspan="7"><input type="text" id=appl_nameb_1 name=appl_nameb_1 size=50 maxlength=50 readonly class=sedit></td>
+			    <td class="whitetablebg" colspan="7"><input type="text" id=appl_nameb_1 name=appl_nameb_1 size=50 maxlength=50 readonly class=SEdit></td>
 		    </tr>		
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>註冊號數1:</td>
-			    <td class="whitetablebg" colspan="7"><input type="text" id=issue_nob_1 name=issue_nob_1 size=50 maxlength=50 readonly class=sedit></td>
+			    <td class="whitetablebg" colspan="7"><input type="text" id=issue_nob_1 name=issue_nob_1 size=50 maxlength=50 readonly class=SEdit></td>
 		    </tr>
         </thead>
         <tbody></tbody>
@@ -484,8 +484,7 @@
                 },
                 error: function (xhr) {
                     $("#dialog").html("<a href='" + this.url + "' target='_new'>check案件結案資料失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                    $("#dialog").dialog({ title: 'check案件結案資料失敗！', modal: true, maxHeight: 500, width: 800 });
-                    //toastr.error("<a href='" + this.url + "' target='_new'>check案件結案資料失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                    $("#dialog").dialog({ title: 'check案件結案資料失敗！', modal: true, maxHeight: 500, width: "90%" });
                 }
             });
             $("#keydseq" + fld + nRow).val("Y");

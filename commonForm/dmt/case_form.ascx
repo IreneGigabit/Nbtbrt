@@ -71,7 +71,7 @@
                 SQL += "and (end_date is null or end_date = '' or end_date > getdate()) ";
             }
             SQL += " ORDER BY rs_code";
-            tfy_Arcase = SHtml.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}", "v1='{prt_code}' v2='{remark}'", true);
+            tfy_Arcase = Util.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}", "v1='{prt_code}' v2='{remark}'", true);
 
             //其他費用
             //SQL = "SELECT  rs_code, rs_detail FROM  code_br WHERE rs_class = 'Z1' And  cr= 'Y' and dept='T' AND no_code='N' and getdate() >= beg_date ";
@@ -83,15 +83,15 @@
             //    SQL += "and (end_date is null or end_date = '' or end_date > getdate()) ";
             //}
             //SQL += "ORDER BY rs_code ";
-            //nfyi_item_Arcase = SHtml.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}");
+            //nfyi_item_Arcase = Util.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}");
             
             //轉帳費用
             SQL = "SELECT  rs_code,prt_code,rs_detail FROM  code_br WHERE  cr= 'Y' and dept='T' And rs_type='" + code_type + "' AND no_code='N' and mark='M' ";
             SQL += "and getdate() >= beg_date and (end_date is null or end_date = '' or end_date > getdate()) ORDER BY rs_code";
-            tfy_oth_arcase = SHtml.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}");
+            tfy_oth_arcase = Util.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}");
 
             //轉帳單位
-            tfy_oth_code = SHtml.Option(conn, "SELECT branch,branchname FROM sysctrl.dbo.branch_code WHERE class='branch'", "{branch}", "{branch}_{branchname}");
+            tfy_oth_code = Util.Option(conn, "SELECT branch,branchname FROM sysctrl.dbo.branch_code WHERE class='branch'", "{branch}", "{branch}_{branchname}");
             
             //請款註記
             tfy_Ar_mark = Sys.getCustCode("ar_mark", "and (mark1 like '%" + Session["SeBranch"] + Session["Dept"] + "%' or mark1 is null)", "").Option("{cust_code}", "{code_name}", false);
@@ -410,8 +410,7 @@
             cache: false,
             error: function (xhr) { 
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>取得承辦期限控制失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
-                $("#dialog").dialog({ title: '取得承辦期限控制失敗！', modal: true, maxHeight: 500,width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>取得承辦期限控制失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '取得承辦期限控制失敗！', modal: true, maxHeight: 500,width: "90%" });
             }
         });
     }
@@ -429,7 +428,7 @@
         }
         var Arcase = x2;
         var prt_code = $("#tfy_Arcase option:selected").attr("v1");
-        br_form.changeTag(x2);//轉換要SHOW的交辦書面
+        main.changeTag(x2);//轉換要SHOW的交辦書面
         reg.tfy_Arcase.value = x2;
         //2011/9/26抓取案性特殊控制
         if (x2 != "") {
@@ -487,8 +486,7 @@
             },
             error: function (xhr) { 
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
-                $("#dialog").dialog({ title: '取得轉帳費用失敗！', modal: true, maxHeight: 500,width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '取得轉帳費用失敗！', modal: true, maxHeight: 500,width: "90%" });
             }
         });
         //程序客收確認不能修改法定期限
@@ -529,8 +527,7 @@
             },
             error: function (xhr) { 
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
-                $("#dialog").dialog({ title: '取得轉帳費用失敗！', modal: true, maxHeight: 500,width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '取得轉帳費用失敗！', modal: true, maxHeight: 500,width: "90%" });
             }
         });
     }
@@ -621,8 +618,7 @@
             },
             error: function (xhr) { 
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>取得案性費用失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
-                $("#dialog").dialog({ title: '取得案性費用失敗！', modal: true, maxHeight: 500,width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>取得案性費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '取得案性費用失敗！', modal: true, maxHeight: 500,width: "90%" });
             }
         });
 

@@ -72,7 +72,7 @@
 		    <TABLE border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
 		    <tr>	
 			    <td class="lightbluetable" align="right">件數：</td>
-			    <td class="whitetablebg" colspan="7" ><input type="text" readonly class="sedit" id=tft2_mod_count2 name=tft2_mod_count2 size=2 value="1">件
+			    <td class="whitetablebg" colspan="7" ><input type="text" readonly class="SEdit" id=tft2_mod_count2 name=tft2_mod_count2 size=2 value="1">件
 				    <input type=hidden id=count2 name=count2 value="1">
 				    <input type=hidden id=ctrlcnt2 name=ctrlcnt2 value="">
 				    <input type=hidden id=cnt2 name=cnt2 value="1">
@@ -80,11 +80,11 @@
 		    </tr>
 		    <tr>	
 			    <td class="lightbluetable" align="right">註冊案號：</td>
-			    <td class="whitetablebg" colspan="7" ><input type="text" id=new_no21 name=new_no21 size=20  readonly class=sedit maxlength=20 onchange="reg.tfzd_issue_no.value=this.value"></td>
+			    <td class="whitetablebg" colspan="7" ><input type="text" id=new_no21 name=new_no21 size=20  readonly class=SEdit maxlength=20 onchange="reg.tfzd_issue_no.value=this.value"></td>
 		    </tr>
 		    <tr>	
 			    <td class="lightbluetable" align="right">商標/標章名稱：</td>
-			    <td class="whitetablebg" colspan="7"><input type="text" id=ncname121 name=ncname121 size=50 readonly class=sedit maxlength=50 onchange="reg.tfzd_Appl_name.value=this.value"></td>
+			    <td class="whitetablebg" colspan="7"><input type="text" id=ncname121 name=ncname121 size=50 readonly class=SEdit maxlength=50 onchange="reg.tfzd_appl_name.value=this.value"></td>
 		    </tr>		
 		    </table>
 		</td>

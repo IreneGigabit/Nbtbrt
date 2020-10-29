@@ -109,12 +109,17 @@ public class DBHelper : IDisposable
     /// 執行查詢，取得第一行第一欄資料，會忽略其他的資料行或資料列。
     /// </summary>
     public object ExecuteScalar(string commandText) {
-        //if (this._debug) {
-        //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
-        //}
-        //this.exeSQL.Add(commandText);
-        this._cmd.CommandText = commandText;
-        return this._cmd.ExecuteScalar();
+        try {
+            //if (this._debug) {
+            //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
+            //}
+            //this.exeSQL.Add(commandText);
+            this._cmd.CommandText = commandText;
+            return this._cmd.ExecuteScalar();
+        }
+        catch (Exception ex) {
+            throw new Exception(commandText, ex);
+        }
     }
     #endregion
 
@@ -123,15 +128,20 @@ public class DBHelper : IDisposable
     /// 執行查詢，並傳回DataTable。
     /// </summary>
     public void DataTable(string commandText, DataTable dt) {
-        //if (this._debug) {
-        //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
-        //}
-        //this.exeSQL.Add(commandText);
-        using (SqlDataAdapter adapter = new SqlDataAdapter(commandText, this._conn)) {
-            if (this._isTran) {
-                adapter.SelectCommand.Transaction = this._tran;
+        try {
+            //if (this._debug) {
+            //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
+            //}
+            //this.exeSQL.Add(commandText);
+            using (SqlDataAdapter adapter = new SqlDataAdapter(commandText, this._conn)) {
+                if (this._isTran) {
+                    adapter.SelectCommand.Transaction = this._tran;
+                }
+                adapter.Fill(dt);
             }
-            adapter.Fill(dt);
+        }
+        catch (Exception ex) {
+            throw new Exception(commandText, ex);
         }
     }
     #endregion
@@ -141,16 +151,21 @@ public class DBHelper : IDisposable
     /// 執行查詢，並傳回DataSet。
     /// </summary>
     public void DataSet(string commandText, DataSet ds) {
-        //if (this._debug) {
-        //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
-        //}
-        //this.exeSQL.Add(commandText);
-        using (SqlDataAdapter adapter = new SqlDataAdapter(commandText, this._conn)) {
-            if (this._isTran) {
-                adapter.SelectCommand.Transaction = this._tran;
+        try {
+            //if (this._debug) {
+            //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
+            //}
+            //this.exeSQL.Add(commandText);
+            using (SqlDataAdapter adapter = new SqlDataAdapter(commandText, this._conn)) {
+                if (this._isTran) {
+                    adapter.SelectCommand.Transaction = this._tran;
+                }
+                //DataSet ds = new DataSet();
+                adapter.Fill(ds);
             }
-            //DataSet ds = new DataSet();
-            adapter.Fill(ds);
+        }
+        catch (Exception ex) {
+            throw new Exception(commandText, ex);
         }
     }
     #endregion
@@ -160,23 +175,28 @@ public class DBHelper : IDisposable
     /// 執行StoreProcedure，並傳回DataTable。
     /// </summary>
     public void Procedure(string commandText, Dictionary<string, string> param, DataTable dt) {
-        if (this._debug) {
-            HttpContext.Current.Response.Write(commandText + "<HR>\n");
+        try {
+            if (this._debug) {
+                HttpContext.Current.Response.Write(commandText + "<HR>\n");
+            }
+            this.exeSQL.Add(commandText);
+
+            using (SqlDataAdapter adapter = new SqlDataAdapter(this._cmd)) {
+                this._cmd.CommandType = CommandType.StoredProcedure;
+                this._cmd.CommandText = commandText;
+
+                if (this._isTran) {
+                    adapter.SelectCommand.Transaction = this._tran;
+                }
+
+                foreach (KeyValuePair<string, string> pair in param) {
+                    this._cmd.Parameters.AddWithValue("@" + pair.Key, pair.Value);
+                }
+                adapter.Fill(dt);
+            }
         }
-        this.exeSQL.Add(commandText);
-
-        using (SqlDataAdapter adapter = new SqlDataAdapter(this._cmd)) {
-            this._cmd.CommandType = CommandType.StoredProcedure;
-            this._cmd.CommandText = commandText;
-
-            if (this._isTran) {
-                adapter.SelectCommand.Transaction = this._tran;
-            }
-
-            foreach (KeyValuePair<string, string> pair in param) {
-                this._cmd.Parameters.AddWithValue("@" + pair.Key, pair.Value);
-            }
-            adapter.Fill(dt);
+        catch (Exception ex) {
+            throw new Exception(commandText, ex);
         }
     }
     #endregion
@@ -186,19 +206,24 @@ public class DBHelper : IDisposable
     /// 執行StoreProcedure，並傳回SqlDataReader。
     /// </summary>
     public SqlDataReader Procedure(string commandText, Dictionary<string, string> param) {
-        if (this._debug) {
-            HttpContext.Current.Response.Write(commandText + "<HR>\n");
-        }
-        this.exeSQL.Add(commandText);
+        try {
+            if (this._debug) {
+                HttpContext.Current.Response.Write(commandText + "<HR>\n");
+            }
+            this.exeSQL.Add(commandText);
 
-        this._cmd.CommandType = CommandType.StoredProcedure;
-        this._cmd.CommandText = commandText;
-        foreach (KeyValuePair<string, string> pair in param) {
-            this._cmd.Parameters.AddWithValue("@" + pair.Key, pair.Value);
-        }
+            this._cmd.CommandType = CommandType.StoredProcedure;
+            this._cmd.CommandText = commandText;
+            foreach (KeyValuePair<string, string> pair in param) {
+                this._cmd.Parameters.AddWithValue("@" + pair.Key, pair.Value);
+            }
 
-        SqlDataReader dr = this._cmd.ExecuteReader();
-        return dr;
+            SqlDataReader dr = this._cmd.ExecuteReader();
+            return dr;
+        }
+        catch (Exception ex) {
+            throw new Exception(commandText, ex);
+        }
     }
     #endregion
 }

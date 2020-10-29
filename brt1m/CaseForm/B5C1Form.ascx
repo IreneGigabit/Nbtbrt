@@ -28,7 +28,7 @@
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>※、代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
-		    <select id="tfp4_agt_no" NAME="tfp4_agt_no" onchange="br_form.copycase('tfp4_agt_no')"><%#tfp4_agt_no%></select>
+		    <select id="tfp4_agt_no" NAME="tfp4_agt_no" onchange="br_form.copycaseZZ('tfp4_agt_no')"><%#tfp4_agt_no%></select>
 		</td>
 	</tr>
 	<tr>
@@ -51,7 +51,7 @@
 		</TD>
 		<td class=lightbluetable align=right width="20%">商標/標章名稱：</td>
 		<td class=whitetablebg width="30%">
-			<input type="text" id="fr4_Appl_name" name="fr4_Appl_name" value="" size="40" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value">
+			<input type="text" id="fr4_appl_name" name="fr4_appl_name" value="" size="40" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
 		</TD>
 	</tr>
 	<tr id="tr_remark3" style="display:none">
@@ -120,7 +120,7 @@
             <script type="text/html" id="de1_ap_template">
 	            <TR>
 		            <TD class=lightbluetable align=right>
-			            <input type=text id='DE1_apnum_##' name='DE1_apnum_##' class=sedit readonly style='color:black;' size=2 value='##.'>名稱：
+			            <input type=text id='DE1_apnum_##' name='DE1_apnum_##' class=SEdit readonly style='color:black;' size=2 value='##.'>名稱：
 		            </TD>
 		            <TD class=whitetablebg>
 		                <input TYPE=text id=tfr4_ncname1_## NAME=tfr4_ncname1_## SIZE=60 MAXLENGTH=60 alt='『名稱』' onblur='fDataLen(this)'>
@@ -151,15 +151,6 @@
 </div>
 
 <script language="javascript" type="text/javascript">
-    //**各畫面之代理人資料丟到案件主檔
-    //br_form.copycase('tfp4_agt_no')
-    br_form.copycase = function (xy) {
-        $("#tfzd_"+xy.substr(5)).val($("#"+xy).val());
-        if(xy.substr(5,6)=="S_Mark"){
-            $("#tfyy_"+xy.substr(5)).val($("#"+xy).val());
-        }
-    }
-
     //增加一筆對造當事人
     $("#DE1_AP_Add_button").click(function () {
         var nRow = CInt($("#DE1_apnum").val()) + 1;

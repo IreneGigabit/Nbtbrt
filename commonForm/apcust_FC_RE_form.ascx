@@ -30,10 +30,10 @@
 		<tr>
 			<td class="lightbluetable" align=right width="10%">一、變更種類：</td>
 		    <td class="whitetablebg">
-		       <input type=radio name=tfzd_mark id=tfzd_markI value="I">商標(標章)權人
-		       <input type=radio name=tfzd_mark id=tfzd_markA value="A">被授權人
-               <input type=radio name=tfzd_mark id=tfzd_markB value="B">再被授權人
-               <input type=radio name=tfzd_mark id=tfzd_markC value="C">質權人(請撰擇其一)
+		       <input type=radio name=tfzd_Mark id=tfzd_MarkI value="I">商標(標章)權人
+		       <input type=radio name=tfzd_Mark id=tfzd_MarkA value="A">被授權人
+               <input type=radio name=tfzd_Mark id=tfzd_MarkB value="B">再被授權人
+               <input type=radio name=tfzd_Mark id=tfzd_MarkC value="C">質權人(請撰擇其一)
             </td>   
         </tr> 
         <tr>
@@ -211,8 +211,7 @@
             },
             error: function (xhr) { 
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>申請人資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
-                $("#dialog").dialog({ title: '申請人資料載入失敗！', modal: true, maxHeight: 500,width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '申請人資料載入失敗！', modal: true, maxHeight: 500,width: "90%" });
             }
         });
     }
@@ -257,8 +256,7 @@
             },
             error: function (xhr) { 
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>申請人資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
-                $("#dialog").dialog({ title: '申請人資料載入失敗！', modal: true, maxHeight: 500,width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '申請人資料載入失敗！', modal: true, maxHeight: 500,width: "90%" });
             }
         });
     }

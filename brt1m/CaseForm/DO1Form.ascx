@@ -37,7 +37,7 @@
 	<tr  >
 		<td class="lightbluetable" align=right><strong>本所編號：</strong></td>
 		<td class="whitetablebg" colspan="7" id="showseq_tfp2" style="display:none">
-			<input type="text" size="5" name="tfp2_seq" id="tfp2_seq" readonly class="sedit">-
+			<input type="text" size="5" name="tfp2_seq" id="tfp2_seq" readonly class="SEdit">-
 			<select name=tfp2_seq1 id=tfp2_seq1 onchange="br_form.seq1_conctrl()">
 				<option value="_">一般</option>
 				<option value="M">M_大陸案</option>
@@ -50,7 +50,7 @@
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>※、代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
-		    <select id="tfp2_agt_no" NAME="tfp2_agt_no" onchange="br_form.copycase('tfp2_agt_no')"><%#tfp2_agt_no%></select>
+		    <select id="tfp2_agt_no" NAME="tfp2_agt_no" onchange="br_form.copycaseZZ('tfp2_agt_no')"><%#tfp2_agt_no%></select>
 		</td>
 	</tr>
 	<tr>
@@ -75,7 +75,7 @@
 		</TD>
 		<td class=lightbluetable align=right width="18%">商標/標章名稱：</td>
 		<td class=whitetablebg colspan="3">
-			<input type="text" id="fr2_Appl_name" name="fr2_Appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value">
+			<input type="text" id="fr2_appl_name" name="fr2_appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
 		</TD>
 	</tr>
 	<tr>
@@ -87,7 +87,7 @@
 		<td class=lightbluetable align=right width="18%" STYLE="cursor:pointer;COLOR:BLUE" title="請輸入類別，並以逗號分開(例如：001,005,032)。">擬異議之類別：</td>
 		<td class=whitetablebg colspan="3">
 			<input type="text" id="fr2_class" name="fr2_class" value="" size="30" maxlength="100" onchange="br_form.count_kind_DO1()">，
-			共<input type="text" id="fr2_class_count" name="fr2_class_count" value="" size=3 readonly class="sedit" >類(異議案依類別計算，請填具正確類別)
+			共<input type="text" id="fr2_class_count" name="fr2_class_count" value="" size=3 readonly class="SEdit" >類(異議案依類別計算，請填具正確類別)
 		</TD>
 	</tr>
 	<tr>
@@ -114,7 +114,6 @@
 		<td class=lightbluetable align=right></td>
 		<td class=whitetablebg colspan=7>
             <INPUT TYPE=text NAME=O_remark3 id=O_remark3 SIZE=30 MAXLENGTH=50>
-		    <input type="hidden" name="tfzd_remark3" id="tfzd_remark3" >
 		</td>
 	</tr>
 	<tr>
@@ -138,7 +137,7 @@
         <script type="text/html" id="do1_ap_template">
 	        <TR>
 		        <TD class=lightbluetable align=right>
-			        <input type=text id='DO1_apnum_##' name='DO1_apnum_##' class=sedit readonly style='color:black;' size=2 value='##.'>名稱或姓名：
+			        <input type=text id='DO1_apnum_##' name='DO1_apnum_##' class=SEdit readonly style='color:black;' size=2 value='##.'>名稱或姓名：
 		        </TD>
 		        <TD class=whitetablebg>
 		            <input TYPE=text NAME=ttg2_mod_ap_ncname1_## id=ttg2_mod_ap_ncname1_## SIZE=60 MAXLENGTH=100 alt='『被異議人名稱或姓名』' onblur='fDataLen(this)'><br>
@@ -356,66 +355,6 @@
 </div>
 
 <script language="javascript" type="text/javascript">
-    //爭救案-異議、評定、廢止提供新案指定編號功能2011/6/27新增
-    br_form.new_oldcaseB=function(pfldname){
-        $("#showseq_"+pfldname).show();
-        $("#ShowNewAssign_"+pfldname).hide();
-        if ($("#"+pfldname+"_case_stat").val() == "NN") {//新案
-            if(main.prgid=="brt52"){
-                $("#New_seq,#tfzb_seq,#"+pfldname+"_seq").val(jMain.case_main[0].seq);
-                $("#New_seq1,#tfzb_seq1,#"+pfldname+"_seq1").val(jMain.case_main[0].seq1);
-            }else{
-                $("#New_seq").val("");
-            }
-            dmt_form.Filecanput();//**todo
-            $("#F_cust_seq").unlock();
-            $("#btncust_seq").show();
-        } else if ($("#"+pfldname+"_case_stat").val() == "SN") {//新案(指定編號)
-            $("#showseq_"+pfldname).hide();
-            $("#ShowNewAssign_"+pfldname).show();
-            dmt_form.Filecanput();//**todo
-        }
-    }
-
-    br_form.seq1_conctrl = function () {
-        var old_ar_mark = "";
-        if ($("#tfy_Arcase").val() != "") {
-            var e="";
-            if ($("#tfy_Arcase").val()=="DR1"){
-                e="1";
-            }else if ($("#tfy_Arcase").val()=="DO1"){
-                e="2";
-            }else if ($("#tfy_Arcase").val()=="DI1"){
-                e="3";
-            }if ($("#tfy_Arcase").val()=="DE1"||$("#tfy_Arcase").val()=="DE2"){
-                e="4";
-            }
-
-            if ($("#tfz1_seq1").val() == "M"||$("#tfp"+e+"_seq1").val()=="M") {
-                $("#tfy_Ar_mark").val("X");//請款註記:大陸進口案
-                old_ar_mark = "X";
-            } else {
-                if (old_ar_mark == "X") {
-                    $("#tfy_Ar_mark").val("");
-                    old_ar_mark = "";
-                }
-            }
-        } else {
-            alert("請選擇交辦案性!!");
-            settab("#case");
-            $("#tfy_Arcase").focus();
-        }
-    }
-
-    //**各畫面之代理人資料丟到案件主檔
-    //br_form.copycase('tfp2_agt_no')
-    br_form.copycase = function (xy) {
-        $("#tfzd_"+xy.substr(5)).val($("#"+xy).val());
-        if(xy.substr(5,6)=="S_Mark"){
-            $("#tfyy_"+xy.substr(5)).val($("#"+xy).val());
-        }
-    }
-
     //增加一筆被異議人
     $("#DO1_AP_Add_button").click(function () {
         var nRow = CInt($("#DO1_apnum").val()) + 1;
@@ -474,76 +413,6 @@
                 $("#cnt21").val(nRow - 1);
             }
         }
-    }
-
-    //增加一筆圖檔--for爭救案之據以異議商標圖樣，pfld=欄位名
-    br_form.drawadd=function(pfld){
-        var pnum=CInt($("#draw_num_"+pfld).val())+1;
-        if(pnum>10){
-            alert("商標圖檔已超過10筆！");
-            pnum-=1;
-            return false;
-        }
-        $("#draw_num_"+pfld).val(pnum);
-        $("#sp_"+pfld+"_"+pnum).show();
-    }
-
-    //*****據以異議商標圖樣
-    //商標圖檔上傳--for爭救案之據以異議商標圖樣,pfld=欄位名,pbtn=上傳button名稱
-    br_form.UploadAttach_photo_mod = function (pfld,pbtn) {
-        var tfolder = "temp";
-        var nfilename = "";
-        if (main.formFunction == "Edit") {
-            nfilename = reg.in_no.value
-        }
-        var url = getRootPath() + "/sub/upload_win_file_new.aspx?type=dmt_photo" +
-            "&nfilename=" + nfilename +
-            "&draw_file=" + ($("#" + pfld).val() || "") +
-            "&folder_name=temp" +
-            "&form_name=draw_attach_file_" +pbtn+
-            "&file_name=" + pfld +
-            "&prgid=<%=prgid%>" +
-            "&btnname=butUpload"+pbtn +
-            "&filename_flag=source_name";
-        window.open(url, "dmtupload", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
-    }
-
-    //商標圖檔刪除--for爭救案之據以異議商標圖樣,pfld=欄位名,pbtn=上傳button名稱
-    br_form.DelAttach_photo_mod = function (pfld,pbtn) {
-        if ($("#" + pfld).val() == "") {
-            alert("無圖檔可刪除 !!");
-            return false;
-        }
-        var draw_attach_file=$("#draw_attach_file_" +pbtn).val();
-        if (draw_attach_file == "") {
-            alert("無圖檔可刪除 !!");
-            return false;
-        }
-
-        if (confirm("確定刪除上傳圖檔？")) {
-            var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() +
-                "&btnname=butUpload" + pbtn;
-            window.open(url, "myWindowOne1", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            //window.open(url, "myWindowOne1", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            $("#draw_attach_file_"+pbtn).val("");
-            $("#" + pfld).val("");
-        }
-    }
-
-    //商標圖檔檢視--for爭救案之據以異議商標圖樣,pfld=欄位名,pbtn=上傳button名稱
-    br_form.PreviewAttach_photo_mod = function (pfld,pbtn) {
-        if ($("#" + pfld).val() == "") {
-            alert("請先上傳圖檔 !!");
-            return false;
-        }
-        var draw_attach_file=$("#draw_attach_file_" +pbtn).val();
-        if (draw_attach_file == "") {
-            alert("請先上傳圖檔 !!");
-            return false;
-        }
-
-        var url = getRootPath() + "/sub/display_draw.aspx?draw_file=" + draw_attach_file;
-        window.open(url);
     }
 
     //交辦內容綁定

@@ -44,7 +44,7 @@
 		<td class=lightbluetable align=right >註冊號數：</td>
 		<td class=whitetablebg colspan="3"><input type="text" id="fr1_issue_no" name="fr1_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 		<td class=lightbluetable align=right >商標/標章名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" id="fr1_Appl_name" name="fr1_Appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value"></TD>
+		<td class=whitetablebg colspan="3"><input type="text" id="fr1_appl_name" name="fr1_appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
@@ -64,8 +64,8 @@
 	<tr>
 		<td class=lightbluetable align=right width="18%"></td>
 		<td class=whitetablebg colspan="7">
-            <input type="radio" name="tfzd_mark" value="A" onclick="br_form.apcust_role('A')"><span id=markA>商標權人</span>
-            <input type="radio" name="tfzd_mark" value="B" onclick="br_form.apcust_role('B')"><span id=markB>質權人</span>
+            <input type="radio" name="tfzd_Mark" value="A" onclick="br_form.apcust_role('A')"><span id=markA>商標權人</span>
+            <input type="radio" name="tfzd_Mark" value="B" onclick="br_form.apcust_role('B')"><span id=markB>質權人</span>
 		</TD>
 	</tr>
 	<tr>
@@ -89,7 +89,7 @@
             <script type="text/html" id="br_role_template">
 	            <TR>
 		            <TD class="lightbluetable role9" align=right title="輸入編號並點選確定，即顯示質權人資料；若無資料，請直接輸入質權人資料。">
-                        <input type=text id='FT_apnum_##' name='FT_apnum_##' class=sedit readonly size=2 value='##.'>
+                        <input type=text id='FT_apnum_##' name='FT_apnum_##' class=SEdit readonly size=2 value='##.'>
                         <span id='span_FT_Apcust_no_##' style='cursor:pointer;color:blue'><span class="span_role">質權</span>人統一編號：</span>
 		            </TD>
 		            <TD class=sfont9 colspan="3">
@@ -377,8 +377,7 @@
             },
             error: function (xhr) {
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>關係人資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '關係人資料載入失敗！', modal: true, maxHeight: 500, width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>關係人資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '關係人資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
     }

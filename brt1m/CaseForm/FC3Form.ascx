@@ -52,7 +52,7 @@
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標/標章名稱：</td>
-		<td class=whitetablebg colspan="7"><input type="text" id="fr3_Appl_name" name="fr3_Appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value"></TD>
+		<td class=whitetablebg colspan="7"><input type="text" id="fr3_appl_name" name="fr3_appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan=8 valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(m5Good1)"><strong>肆、<u>擬減縮商品（服務）名稱</u></strong></td>
@@ -63,7 +63,7 @@
             <thead>
 		    <tr>	
 			    <td class="lightbluetable" align="right" width="18%">件數：</td>
-			    <td class="whitetablebg" colspan="7" >共<input type="text" id=tft3_class_count1 name=tft3_class_count1 size=2 onchange="br_form.Add_class(this.value,'#num31','#br_class_template0','#tabbr31 tbody')">件<input type="text" id="tft3_class1" name="tft3_class1" readonly>
+			    <td class="whitetablebg" colspan="7" >共<input type="text" id=tft3_class_count1 name=tft3_class_count1 size=2 onchange="br_form.Add_classFC3(this.value,1)">件<input type="text" id="tft3_class1" name="tft3_class1" readonly>
 				    <input type=hidden id=ctrlnum31 name=ctrlnum31 value="0">
 				    <input type=hidden id=ctrlcount31 name=ctrlcount31 value="">
 				    <input type=hidden id=num31 name=num31 value="0"><!--畫面上有幾筆-->
@@ -73,12 +73,12 @@
 		    </tr>
             </thead>
             <tbody></tbody>
-            <script type="text/html" id="br_class_template0"><!--類別樣板-->
-		    <tr class="br_class_template0_##">
+            <script type="text/html" id="fc3_br_class_template1"><!--類別樣板-->
+		    <tr class="fc3_br_class_template1_##">
 			    <td class="lightbluetable" align="right">類別##：</td>
-			    <td class="whitetablebg" colspan="7" ><input type="text" id=class31_## name=class31_## size=3 maxlength=3 onchange="br_form.count_kind(this,'1')"></td>
+			    <td class="whitetablebg" colspan="7" ><input type="text" id=class31_## name=class31_## size=3 maxlength=3 onchange="br_form.count_kindFC3(this,'1')"></td>
 		    </tr>
-		    <tr class="br_class_template0_##">
+		    <tr class="fc3_br_class_template1_##">
 			    <td class="lightbluetable" align="right">商標/服務名稱1：</td>
 			    <td class="whitetablebg" colspan="7"><textarea id="good_name31_##" NAME="good_name31_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('good_name31_##','good_count31_##')"></textarea>
 			    <input type="hidden" id=good_count31_## name=good_count31_## size=2>
@@ -104,7 +104,7 @@
 		</tr>
 		<tr>	
 			<td class="lightbluetable" align="right" width="18%">件數：</td>
-			<td class="whitetablebg" colspan="7" >共<input type="text" id=tft3_class_count2 name=tft3_class_count2 size=2 onchange="br_form.Add_class(this.value,'#num32','#br_class_template1','#tabbr32 tbody')">件<input type="text" id=tft3_class2 name=tft3_class2 readonly>
+			<td class="whitetablebg" colspan="7" >共<input type="text" id=tft3_class_count2 name=tft3_class_count2 size=2 onchange="br_form.Add_classFC3(this.value,2)">件<input type="text" id=tft3_class2 name=tft3_class2 readonly>
 				<input type=hidden id=ctrlnum32 name=ctrlnum32 value="0">
 				<input type=hidden id=ctrlcount32 name=ctrlcount32 value="">
 				<input type=hidden id=num32 name=num32 value="0"><!--畫面上有幾筆-->
@@ -112,12 +112,12 @@
 		</tr>
         </thead>
         <tbody></tbody>
-        <script type="text/html" id="br_class_template1"><!--類別樣板-->
-		    <tr class="br_class_template1_##">	
+        <script type="text/html" id="fc3_br_class_template2"><!--類別樣板-->
+		    <tr class="fc3_br_class_template2_##">	
 			    <td class="lightbluetable" align="right">類別##：</td>
-			    <td class="whitetablebg" colspan="7" ><input type="text" id=class32_## name=class32_## size=3 maxlength=3 onchange="br_form.count_kind(this,'2')"></td>
+			    <td class="whitetablebg" colspan="7" ><input type="text" id=class32_## name=class32_## size=3 maxlength=3 onchange="br_form.count_kindFC3(this,'2')"></td>
 		    </tr>
-		    <tr class="br_class_template1_##">	
+		    <tr class="fc3_br_class_template2_##">	
 			    <td class="lightbluetable" align="right">商標/服務名稱1：</td>
 			    <td class="whitetablebg" colspan="7"><textarea id="good_name32_##" NAME="good_name32_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('good_name32_##','good_count32_##')"></textarea>
 			    <input type="hidden" id=good_count32_## name=good_count32_## size=2>
@@ -170,8 +170,28 @@
 </div>
 
 <script language="javascript" type="text/javascript">
+    //共N件，classCount:要改成幾筆,cntTar:第幾個類別table
+    br_form.Add_classFC3 = function (classCount, cntTar) {
+        var doCount = Math.max(0, CInt(classCount));//要改為幾筆,最少是0
+        var num = CInt($("#num3" + cntTar).val());//目前畫面上有幾筆
+        if (doCount > num) {//要加
+            for (var nRow = num; nRow < doCount ; nRow++) {
+                var copyStr = $("#br_class_template" + cntTar).text() || "";
+                copyStr = copyStr.replace(/##/g, nRow + 1);
+                $("#tabbr3" + cntTar + " tbody").append(copyStr);
+                $("#num3" + cntTar).val(nRow + 1);
+            }
+        } else {
+            //要減
+            for (var nRow = num; nRow > doCount ; nRow--) {
+                $('.br_class_template' + cntTar + "_" + +nRow, $("#tabbr3" + cntTar + " tbody")).remove();
+                $("#num3" + cntTar).val(nRow - 1);
+            }
+        }
+    }
+
     //類別串接
-    br_form.count_kind = function (pObj,pFld) {
+    br_form.count_kindFC3 = function (pObj,pFld) {
         if ($(pObj).val() != "") {
             if (IsNumeric($(pObj).val())) {
                 var x = ("000" + $(pObj).val()).Right(3);//補0

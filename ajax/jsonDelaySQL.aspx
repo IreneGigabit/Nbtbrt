@@ -46,13 +46,13 @@
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             if (type == "ref_no") {
                 SQL = "SELECT *,''dmt_temp_remark3 ";
-                SQL = ",(select agt_name from agt where agt_no=vdmtall.agt_no) as agt_name ";
+                SQL += ",(select agt_name from agt where agt_no=vdmtall.agt_no) as agt_name ";
                 SQL += "FROM vdmtall ";
                 SQL += "where seq=" + delay_seq + " ";
                 SQL += "and seq1='" + delay_seq1 + "' ";
             } else {
                 SQL = "SELECT *,''dmt_temp_remark3 ";
-                SQL = ",(select agt_name from agt where agt_no=vdmtall.agt_no) as agt_name ";
+                SQL += ",(select agt_name from agt where agt_no=vdmtall.agt_no) as agt_name ";
                 SQL += "FROM vdmtall ";
                 SQL += "where seq=" + delay_seq + " ";
                 SQL += "and seq1='" + delay_seq1 + "' ";

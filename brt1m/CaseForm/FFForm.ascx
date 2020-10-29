@@ -36,7 +36,7 @@
 		<td class=lightbluetable align=right>繳費金額：</TD>
 		<td class=whitetablebg colspan="7">
             <span id=span_issue_money></span>註冊費：新臺幣　
-            <input type="text" name="fr_fees" id="fr_fees" size="8" class=sedit readonly>元
+            <input type="text" name="fr_fees" id="fr_fees" size="8" class=SEdit readonly>元
 		</TD>
 	</tr>
     <tr>
@@ -50,7 +50,7 @@
 		<td class=lightbluetable align=right id=no3 style="display:none">註冊號數：</td>
 		<td class=whitetablebg colspan="3" id=no4 style="display:none"><input type="text" name="fr_issue_no" id="fr_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 		<td class=lightbluetable align=right >商標名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" name="fr_Appl_name" id="fr_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value"></TD>
+		<td class=whitetablebg colspan="3"><input type="text" name="fr_appl_name" id="fr_appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
@@ -67,7 +67,7 @@
 	<tr>
 		<td class=lightbluetable align=right >類別：</td>
 		<td class=whitetablebg colspan="7">
-			<input type=text name=fr_class id=fr_class value="" class="sedit" readonly>
+			<input type=text name=fr_class id=fr_class value="" class="SEdit" readonly>
 		</td>
 	</tr>
 </TABLE>
@@ -116,7 +116,7 @@
            
             $("#fr_apply_no").val(jMain.case_main[0].apply_no);//申請號數
             $("#fr_issue_no").val(jMain.case_main[0].issue_no);//註冊號
-            $("#fr_Appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
             //商標種類
             $("input[name=fr_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
             //類別

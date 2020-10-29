@@ -19,10 +19,10 @@
     private void PageLayout() {
         if (prgid.ToLower() == "brt51") {//程序客收確認
             Lock["brt51"] = "Lock";
-            Hide["brt51"] = "Hide";
+            Hide["brt51"] = "";
         } else {
             Lock["brt51"] = "";
-            Lock["brt51"] = "";
+            Hide["brt51"] = "Hide";
         }
 
         //語文別/國家
@@ -68,7 +68,7 @@
 			    <input type="text" name=keyseq id=keyseq value="N">
             </span>
             <span id=CaseNew><!--新案-->
-			    <INPUT TYPE=text NAME=New_seq id=New_seq SIZE=5 MAXLENGTH=5 class="sedit" readonly>-
+			    <INPUT TYPE=text NAME=New_seq id=New_seq SIZE=5 MAXLENGTH=5 class="SEdit" readonly>-
 			    <select name=New_seq1 id=New_seq1 class="<%#Lock.TryGet("brt51")%>">
 				    <option value="_">一般</option>
 				    <option value="Z">Z_雜卷</option>
@@ -170,7 +170,7 @@
     </tr>
     <tr>
 	    <td class=lightbluetable align=right>商標名稱：</td>
-	    <td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_Appl_name id=tfzd_Appl_name alt="『商標名稱』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)"></TD>
+	    <td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_appl_name id=tfzd_appl_name alt="『商標名稱』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)"></TD>
     </tr>
 	<tr id=fileupload>
 		<td class=lightbluetable align=right>商標圖樣：</td>	
@@ -252,12 +252,14 @@
 		<td class="lightbluetable" align="right">結案代碼：</td>
 		<td class="whitetablebg" colspan="3">
             <select NAME="tfzy_end_code" id="tfzy_end_code"><%#tfzy_end_code%></select>
-			<input type="hidden" name="tfzd_End_Code" id="tfzd_End_Code">
+			<input type="hidden" name="tfzd_end_code" id="tfzd_end_code">
 		</TD>
 	</tr>
 	<tr>
 		<td class="lightbluetable" align="right">專用期限：</td>
-		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_dmt_term1" id="tfzd_dmt_term1" SIZE="10" class="dateField"></TD>
+		<td class="whitetablebg" colspan="3">
+            <input TYPE="text" NAME="tfzd_dmt_term1" id="tfzd_dmt_term1" SIZE="10" class="dateField">～<input TYPE="text" NAME="tfzd_dmt_term2" id="tfzd_dmt_term2" SIZE="10" class="dateField">
+		</TD>
 		<td class="lightbluetable" align="right">延展次數：</td>
 		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_renewal" id="tfzd_renewal" SIZE="2"></TD>
 	</tr>
@@ -299,7 +301,6 @@
 				    <td class="lightbluetable" align="right">商品群組代碼##：</td>
 				    <td class="whitetablebg" colspan="7">
                         <textarea id=grp_code1_## NAME=grp_code1_## ROWS="1" COLS="50"></textarea>(跨群組請以全形「、」作分隔)
-				        <input type="hidden" id="color_##" name="color_##" value="">
                     </td>
 			    </tr>
             </script>
@@ -313,8 +314,8 @@
                 <thead>
 			    <TR class=whitetablebg align=center>
 				    <TD colspan=3 >
-				        <input type=button value ="增加一筆展覽會優先權" class="cbutton" id=show_Add_button name=show_Add_button_FA1 onclick="dmt_form.add_show()">			
-				        <input type=button value ="減少一筆展覽會優先權" class="cbutton" id=show_Del_button name=show_Del_button_FA1 onclick="dmt_form.del_show()">
+				        <input type=button value ="增加一筆展覽會優先權" class="cbutton" id=show_Add_button_dmt name=show_Add_button_dmt onclick="dmt_form.add_show()">			
+				        <input type=button value ="減少一筆展覽會優先權" class="cbutton" id=show_Del_button_dmt name=show_Del_button_dmt onclick="dmt_form.del_show()">
 				    </TD>
 			    </TR>
 			    <tr>
@@ -367,7 +368,19 @@
         $("#dseq1b_1").val($("#New_Ass_seq1").val());
     }
     //新案-副號選擇
+    var old_ar_mark = "";
     $("#New_seq1").change(function () {
+        $("#tfzb_seq1").val($("#New_seq1").val());
+        if ($("#New_seq1").val() == "M") {
+            $("#tfy_Ar_mark").val("X");////請款註記:大陸進口案
+            old_ar_mark = "X";
+        } else {
+            if (old_ar_mark == "X") {
+                $("#tfy_Ar_mark").val("");
+                old_ar_mark = "";
+            }
+        }
+
         $("#dseqa_1").val($("#New_seq").val());
         $("#dseq1a_1").val($("#New_seq1").val());
         $("#dseqb_1").val($("#New_seq").val());
@@ -462,21 +475,20 @@
     });
 
     //商標名稱帶資料到交辦內容
-    $("#tfzd_Appl_name").blur(function () {
+    $("#tfzd_appl_name").blur(function () {
         if (check_CustWatch("appl_name",$(this).val())==true){
             return false;
         }
         $("#ncname111").val($(this).val());
         $("#ncname121").val($(this).val());
-        $("#fr3_appl_name").val($(this).val());
-        $("#fr4_appl_name").val($(this).val());
         $("#appl_namea_1").val($(this).val());
         $("#appl_nameb_1").val($(this).val());
         $("#fr1_appl_name").val($(this).val());
         $("#fr2_appl_name").val($(this).val());
+        $("#fr3_appl_name").val($(this).val());
+        $("#fr4_appl_name").val($(this).val());
         $("#frf_Appl_name").val($(this).val());
-        $("#fr_Appl_name").val($(this).val());
-        $("#fr_Appl_name").val($(this).val());
+        $("#fr_appl_name").val($(this).val());
     });
 
     //申請號數帶資料到交辦內容
@@ -571,7 +583,7 @@
     }
 
     //*****展覽優先權抓資料
-    dmt_form.getshow = function (pfld,xtype) {
+    dmt_form.getshow = function (xtype) {
         $("#tabshow_dmt tbody").empty();
 
         var jurl="";
@@ -617,16 +629,14 @@
             },
             error: function (xhr) {
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>抓取展覽優先權！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '抓取展覽優先權！', modal: true, maxHeight: 500, width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>轉帳金額合計抓收費標準失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '抓取展覽優先權！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
-
     }
 
     //展覽優先權增加一筆
     dmt_form.add_show = function () {
-        var nRow = parseInt($("#shownum_dmt").val(), 10) + 1;
+        var nRow = CInt($("#shownum_dmt").val()) + 1;
         //複製樣板
         var copyStr = $("#dmt_show_template").text() || "";
         copyStr = copyStr.replace(/##/g, nRow);
@@ -771,7 +781,7 @@
     //查詢主案件編號
     dmt_form.Queryclick = function(cust_seq) {
         //***todo
-        window.open("brta21Query.asp?cust_seq="+cust_seq ,"myWindowOne", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open("brta21Query.aspx?cust_seq="+cust_seq ,"myWindowOne", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
     dmt_form.mainseqChange = function(fld1) {
         $("#keyseq").val("N");
@@ -815,127 +825,159 @@
     }
 
     //*********正聯防	
-    dmt_form.tfzd_showmark=function(xmark){
+    dmt_form.tfzd_showmark = function (xmark) {
         if (IsNumeric(xmark)) {
-            $("#tfzd_Smark,#tfzd_Smark1").show();
-            if ($("#tfy_case_stat").val()=="OO"){
-                $("#tfzd_Tcn_mark").lock();
-            }else{
-                $("#tfzd_Tcn_mark").unlock();
+            $("#tfzd_Smark,#tfzd_Smark1").show();//正商標號數/正商標類別/正商標名稱/正商標種類
+            if (main.ar_form != "A5") {
+                if ($("#tfy_case_stat").val() == "OO") {//案件狀態
+                    $("#tfzd_Tcn_mark").lock();//正商標種類
+                } else {
+                    $("#tfzd_Tcn_mark").unlock();
+                }
             }
-        }else{
+        } else {
             $("#tfzd_Smark,#tfzd_Smark1").hide();
             $("#tfzd_Tcn_mark").val("");//***正商標種類
             $("#tfzd_Tcn_ref").val("");//***正商標號數
             $("#tfzd_Tcn_name").val("");//***正商標名稱
             $("#tfzd_Tcn_Class").val("");//***正商標類別
-
         }
     }
 
-	//*****將特定欄位disabled
-    dmt_form.Filereadonly = function () {
-        /*$("input[name^='tfzd' i]").lock();
-        $("input[name^='fr' i]").lock();
+    //*****將特定欄位disabled
+    function Filereadonly(){
+        $("input[id^='tfzd'],input[name^='tfzd']").lock();
+        $("input[id^='fr'],input[name^='fr']").lock();
         if (main.seq == "") {
-            $("input[name^='tfzd' i]").val("");
-            $("input[name^='fr' i]").val("");
-        }*/
-        $("input[name^='tfzd']").lock();
-        $("input[name^='fr']").lock();
-        if (main.seq == "") {
-            $("input[name^='tfzd']").val("");
-            $("input[name^='fr']").val("");
+            $("input[id^='tfzd'],input[name^='tfzd']").val("");
+            $("input[id^='fr'],input[name^='fr']").val("");
         }
-        $("input[name=tfzy_S_Mark]").lock();//商標種類
-        $("#pfzd_prior_date").lock();//優先權申請日
-        $("#tfzy_prior_country").lock();//優先權首次申請國家
+        $("input[name=tfzy_S_Mark],input[name=fr_S_Mark]").lock();//商標種類
+        $("input[name=tfzd_s_mark2]").unlock();//商標種類2
+        $("#no").lock();//號數
         $("#tfzy_Pul").lock();//正聯防
-        $("#but_ref").hide();//母案複製
         $("#Draw_file").val("");//商標圖樣
-        $("#butUpload,btnDelAtt").lock();
+        $("#butUpload,#btnDelAtt").lock();
+        $("#but_ref").hide();//母案複製
         $("input[name=tfzy_color]").lock();//圖樣顏色
         $("#tfzy_Zname_type").lock();//語文別
+        $("#pfzd_prior_date").lock();//優先權申請日
+        $("#tfzy_prior_country").lock();//優先權首次申請國家
         $("#tfzy_end_code").lock();//結案代碼
         $("#tfzr_class_count").val("").lock();//類別
         $("#tfzr_class").val("").lock();
         $("#class1_1").val("").lock();
         $("#good_name1_1").val("").lock();
         $("#good_count1_1").val("").lock();
-        //展覽優先權欄位
-        $("#show_Add_button_dmt,#show_Del_button").lock();
+        $("#grp_code1_1").val("").lock();
+        //主檔展覽優先權欄位
+        $("#show_Add_button_dmt,#show_Del_button_dmt").lock();
         $("#tabshow_dmt input[type='text']").lock();
+        //分割
+        $("#tft1_mod_count11,#tft2_mod_count2").lock();//件數
+        $("#new_no11").lock();//申請案號
+        $("#new_no21").lock();//註冊案號
+        $("#ncname111,#ncname121").lock();//商標/標章名稱
     }
 
     //*****將特定欄位enabled
-    dmt_form.Filecanput = function () {
-        //$("input[name^='tfzd' i]").unlock().val("");
-        //$("input[name^='fr' i]").unlock().val("");
-        $("input[name^='tfzd']").unlock().val("");
-        $("input[name^='fr']").unlock().val("");
-
-        $("input[name=tfzy_S_Mark").unlock();//商標種類
+    function Filecanput(){
+        $("input[id^='tfzd'],input[name^='tfzd']").unlock().val("");
+        $("input[id^='fr'],input[name^='fr']").unlock().val("");
+        $("input[name=tfzy_S_Mark],input[name=fr_S_Mark]").unlock();//商標種類
+        $("input[name=tfzd_s_mark2]").unlock();//商標種類2
+        $("#no").unlock();//號數
+        $("#tfzy_Pul").unlock();//正聯防
+        $("#Draw_file").val("");//商標圖樣
+        $("#butUpload,#btnDelAtt").unlock();
+        $("#but_ref").show();//母案複製
+        $("input[name=tfzy_color]").unlock();//圖樣顏色
+        $("#tfzy_Zname_type").unlock();//語文別
         $("#pfzd_prior_date").unlock();//優先權申請日
         $("#tfzy_prior_country").unlock();//優先權首次申請國家
-        $("#tfzy_Pul").unlock();//正聯防
-        $("#but_ref").show();//母案複製
-        $("#Draw_file").val("");//商標圖樣
-        $("#butUpload,btnDelAtt").unlock();
-        $("input[name=tfzy_color").unlock();//圖樣顏色
-        $("#tfzy_Zname_type").unlock();//語文別
         $("#tfzy_end_code").unlock();//結案代碼
         $("#tfzr_class_count").val("").unlock();//類別
         $("#tfzr_class").val("").unlock();
         $("#class1_1").val("").unlock();
         $("#good_name1_1").val("").unlock();
         $("#good_count1_1").val("").unlock();
-        //展覽優先權欄位
-        $("#show_Add_button,show_Del_button").unlock();
+        $("#grp_code1_1").val("").unlock();
+        //主檔展覽優先權欄位
+        $("#show_Add_button_dmt,#show_Del_button_dmt").unlock();
         $("#tabshow_dmt input[type='text']").unlock();
+        //分割
+        //$("#tft1_mod_count11,#tft2_mod_count2").unlock();//件數
+        $("#new_no11").unlock();//申請案號
+        $("#new_no21").unlock();//註冊案號
+        //$("#ncname111,#ncname121").unlock();//商標/標章名稱
     }
 
     //******新舊案切換控制
-    dmt_form.new_oldcase=function(){
+    dmt_form.new_oldcase = function () {
+        //function new_oldcase() {
         if ($("#tfy_case_stat").val() == "NN") {//新案
-            $("#DelayCase,#CaseNewAssign").hide();
-            $("#CaseNew").show();
-            //***2011/1/24因復案流程修改
-            $("#A9Ztr_endtype,#A9Ztr_backflag").hide();
+            $("#DelayCase,#CaseNewAssign").hide();//舊案/新案(指定編號)
+            $("#CaseNew").show();//新案
+            $("#A9Ztr_endtype,#A9Ztr_backflag").hide();//結案/復案
             if(main.prgid=="brt52"){
                 $("#New_seq,#tfzb_seq").val(jMain.case_main[0].seq);
                 $("#New_seq1,#tfzb_seq1").val(jMain.case_main[0].seq1);
             }else{
                 $("#New_seq").val("");
             }
-            dmt_form.Filecanput();//***todo將特定欄位enabled
+            Filecanput();//***todo將特定欄位enabled
             $("#F_cust_seq").unlock();
             $("#btncust_seq").show();
-            dmt_form.Add_class(1);//預設顯示第1筆
-            $("#color_1").val("");
+            dmt_form.Add_class(1);//類別預設顯示第1筆
             $("#keyseq").val("N");
             $("#btnseq_ok").unlock();//舊案[查詢主案件編號]
             $("#tfzd_ref_no1").val("_");//母案本所編號副號
+            //將展覽優先權資料清空
+            for (var i = 1; i <= CInt($("#shownum_dmt").val()) ; i++) {
+                dmt_form.del_show();
+            }
+            //一案多件
+            $("#dseqa_1,#dseqb_1").lock().val("");
+            $("#dseq1a_1,#dseq1b_1").lock().val("_");
+            $("#btndseq_oka_1,#btncasea_1,#btndseq_okb_1,#btncaseb_1").hide();//[確定][案件主檔查詢]
+            $("#s_marka_1,#s_markb_1").val("");//商標種類
+            $("#appl_namea_1,#appl_nameb_1,#apply_noa_1,#issue_nob_1").val("");//商標/標章名稱/申請號數/註冊號數
+            $("#case_stat1a_1NN,#case_stat1b_1NN").prop("checked", true);//新舊案
+            $("#btnQuerya_1,#btnQueryb_1").hide();//[查詢主案件編號]
         } else if ($("#tfy_case_stat").val() == "SN") {//新案(指定編號)
-            $("#DelayCase,#CaseNew").hide();
-            $("#CaseNewAssign").show();
-            //***2011/1/24因復案流程修改
-            $("#A9Ztr_endtype,#A9Ztr_backflag").hide();
-            dmt_form.Filecanput();//***todo將特定欄位enabled
+            $("#DelayCase,#CaseNew").hide();//舊案/新案
+            $("#CaseNewAssign").show();//新案(指定編號)
+            $("#A9Ztr_endtype,#A9Ztr_backflag").hide();//結案/復案
+            Filecanput();//***todo將特定欄位enabled
             $("#F_cust_seq").unlock();
             $("#btncust_seq").show();
             dmt_form.Add_class(1);//預設顯示第1筆
-            $("#color_1").val("");
             $("#keyseq").val("N");
             $("#btnseq_ok").unlock();//舊案[查詢主案件編號]
             $("#tfzd_ref_no1").val("_");//母案本所編號副號
+            //將展覽優先權資料清空
+            for (var i = 1; i <= CInt($("#shownum_dmt").val()) ; i++) {
+                dmt_form.del_show();
+            }
+            //一案多件
+            $("#dseqa_1,#dseqb_1").lock().val("");
+            $("#dseq1a_1,#dseq1b_1").lock().val("_");
+            $("#btndseq_oka_1,#btncasea_1,#btndseq_okb_1,#btncaseb_1").hide();//[確定][案件主檔查詢]
+            $("#s_marka_1,#s_markb_1").val("");//商標種類
+            $("#appl_namea_1,#appl_nameb_1,#apply_noa_1,#issue_nob_1").val("");//商標/標章名稱/申請號數/註冊號數
         } else if ($("#tfy_case_stat").val() == "OO") {//舊案
-            $("#DelayCase").show();
-            $("#CaseNewAssign,#CaseNew").hide();
-            //***2011/1/24因復案流程修改
-            $("#A9Ztr_endtype,#A9Ztr_backflag").hide();
+            $("#DelayCase").show();//舊案
+            $("#CaseNew,#CaseNewAssign").hide();//新案/新案(指定編號)
+            $("#A9Ztr_endtype,#A9Ztr_backflag").show();//結案/復案
             dmt_form.Add_class(1);//預設顯示第1筆
-            $("#color_1").val("class=SEdit");
-            dmt_form.Filereadonly();//***todo將特定欄位disabled
+            //一案多件
+            $("#dseqa_1,#dseqb_1").unlock();
+            $("#dseq1a_1,#dseq1b_1").unlock();
+            $("#btndseq_oka_1,#btncasea_1,#btndseq_okb_1,#btncaseb_1").show();//[確定][案件主檔查詢]
+            $("#s_marka_1,#s_markb_1").val("");//商標種類
+            $("#appl_namea_1,#appl_nameb_1,#apply_noa_1,#issue_nob_1").val("");//商標/標章名稱/申請號數/註冊號數
+            $("#case_stat1a_1OO,#case_stat1b_1OO").prop("checked", true);//新舊案
+            Filereadonly();//***todo將特定欄位disabled
             //***接收舊案檢索資料
             if (main.formFunction == "Edit") {
                 $("#old_seq,#tfzb_seq").val(jMain.case_main[0].seq);

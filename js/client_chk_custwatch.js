@@ -97,8 +97,7 @@ function check_ctrl_keydata(pjob_branch,pkeytype,pkeydata){
         },
         error: function (xhr) { 
             $("#dialog").html("<a href='" + this.url + "' target='_new'>檢查雙邊代理查照對象失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
-            $("#dialog").dialog({ title: '檢查雙邊代理查照對象失敗！', modal: true, maxHeight: 500,width: 800 });
-            //toastr.error("<a href='" + this.url + "' target='_new'>取得案性費用失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            $("#dialog").dialog({ title: '檢查雙邊代理查照對象失敗！', modal: true, maxHeight: 500, width: "90%" });
         }
     });
     return rtn;

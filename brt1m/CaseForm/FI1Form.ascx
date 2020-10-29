@@ -41,7 +41,7 @@
 		<td class=lightbluetable align=right >註冊號數：</td>
 		<td class=whitetablebg colspan="3"><input type="text" name="fr_issue_no" id="fr_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 		<td class=lightbluetable align=right >商標/標章名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" name="fr_Appl_name" id="fr_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=reg.fr_Appl_name.value"></TD>
+		<td class=whitetablebg colspan="3"><input type="text" name="fr_appl_name" id="fr_appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>

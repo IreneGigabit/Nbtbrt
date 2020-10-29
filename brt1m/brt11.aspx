@@ -218,9 +218,8 @@
                 }
             },
             error: function (xhr) { 
-                $("#dialog").html(xhr.responseText);
-                $("#dialog").dialog({ title: '查詢案件編號載入失敗！', modal: true, maxHeight: 500,width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>查詢案件編號載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '查詢案件編號載入失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
 

@@ -77,7 +77,7 @@
             SQL = "SELECT RS_code, RS_detail FROM code_br WHERE dept = 'T' AND cr = 'Y' AND no_code='N' ";
             SQL += "and (end_date is null or end_date = '' or end_date > getdate()) ";
             SQL += " ORDER BY rs_type desc,rs_class ,rs_code";
-            pfx_Arcase = SHtml.Option(conn, SQL, "{rs_code}", "{rs_code}--{rs_detail}");
+            pfx_Arcase = Util.Option(conn, SQL, "{rs_code}", "{rs_code}--{rs_detail}");
         }
     }
 </script>

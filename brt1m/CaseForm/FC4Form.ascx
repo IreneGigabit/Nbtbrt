@@ -47,7 +47,7 @@
 	</tr>
 	<tr>
 		<td class="lightbluetable" align="right">商標/標章名稱：</td>
-		<td class="whitetablebg" colspan="7"><input type="text" id="fr4_Appl_name" name="fr4_Appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value"></td>
+		<td class="whitetablebg" colspan="7"><input type="text" id="fr4_appl_name" name="fr4_Appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttech)"><u>附件：</u></td>

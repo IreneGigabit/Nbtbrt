@@ -2,8 +2,8 @@
 main.bind=function() {
     //console.log("main.bind");
     if (jMain.case_main.length == 0) {
-        //br_form.changeTag("000");//交辦內容顯示預設項目
-        br_form.changeTag($("#tfy_Arcase option[value!='']").eq(0).val());//交辦內容顯示預設項目用第一個案性
+        //main.changeTag("000");//交辦內容顯示預設項目
+        main.changeTag($("#tfy_Arcase option[value!='']").eq(0).val());//交辦內容顯示預設項目用第一個案性
 
         //無交辦資料則帶基本設定
         $("#in_date").val(Today().format("yyyy/M/d"));
@@ -32,7 +32,7 @@ main.bind=function() {
         $("#tfz1_seq1").val("_");
         $("#showseq1").hide();
     } else {
-        //br_form.changeTag(jMain.case_main[0].arcase);
+        //main.changeTag(jMain.case_main[0].arcase);
         $("#in_scode").val(jMain.case_main[0].in_scode);
         $("#in_no").val(jMain.case_main[0].in_no);
         $("#in_date").val(dateReviver(jMain.case_main[0].in_date3, "yyyy/M/d"));//欄位同名會順便序號
@@ -179,8 +179,7 @@ main.bind=function() {
             },
             error: function (xhr) {
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>轉帳金額合計抓收費標準失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '轉帳金額合計抓收費標準失敗！', modal: true, maxHeight: 500, width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>轉帳金額合計抓收費標準失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '轉帳金額合計抓收費標準失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
         //****折扣請核單

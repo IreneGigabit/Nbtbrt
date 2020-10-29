@@ -42,7 +42,7 @@
 		<td class=lightbluetable align=right width="16%">註冊號數：</td>
 		<td class=whitetablebg colspan="3"><input type="text" id="fr_issue_no" name="fr_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 		<td class=lightbluetable align=right width="15%">商標/標章名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" id="fr_Appl_name" name="fr_Appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value"></TD>
+		<td class=whitetablebg colspan="3"><input type="text" id="fr_appl_name" name="fr_appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
@@ -68,7 +68,7 @@
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>案件編號1:</td>
 			    <td class="whitetablebg">
-                    <input type="text" id=dseqb_1 name=dseqb_1 size=5  maxlength=5 onblur="br_form.seqChange('b_1')" readonly class=sedit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=1  maxlength=1 value="_" onblur="br_form.seqChange('b_1')" readonly class=sedit>
+                    <input type="text" id=dseqb_1 name=dseqb_1 size=5  maxlength=5 onblur="br_form.seqChange('b_1')" readonly class=SEdit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=1  maxlength=1 value="_" onblur="br_form.seqChange('b_1')" readonly class=SEdit>
                     <input type=button class="cbutton" id="btndseq_okb_1" name="btndseq_okb_1" value ="確定" onclick="delayNO(reg.dseqb_1.value,reg.dseq1b_1.value)">
                     <input type=radio value=NN id="case_stat1b_1NN" name="case_stat1b_1" onclick="br_form.case_stat1_control('NN','b_1')" checked>新案
                     <input type=radio value=OO id="case_stat1b_1OO" name="case_stat1b_1" onclick="br_form.case_stat1_control('OO','b_1')">舊案
@@ -78,20 +78,20 @@
 			    </td>
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>母案本所編號1:</td>
 			    <td class="whitetablebg" >
-                    <input type="text" id=dmseqb_1 name=dmseqb_1 size=5  maxlength=5 readonly class=sedit>-<input type="text" id=dmseq1b_1 name=dmseq1b_1 size=1  maxlength=1 value="_" readonly class=sedit>
+                    <input type="text" id=dmseqb_1 name=dmseqb_1 size=5  maxlength=5 readonly class=SEdit>-<input type="text" id=dmseq1b_1 name=dmseq1b_1 size=1  maxlength=1 value="_" readonly class=SEdit>
 			    </td>
 		    </tr>
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>商標種類1:</td>
-			    <td class="whitetablebg" colspan=3><input type="text" id=s_markb_1 name=s_markb_1 size=50 maxlength=50  readonly class=sedit></td>
+			    <td class="whitetablebg" colspan=3><input type="text" id=s_markb_1 name=s_markb_1 size=50 maxlength=50  readonly class=SEdit></td>
 		    </tr>		
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>商標/標章名稱1:</td>
-			    <td class="whitetablebg" colspan=3><input type="text" id=appl_nameb_1 name=appl_nameb_1 size=50 maxlength=50 readonly class=sedit></td>
+			    <td class="whitetablebg" colspan=3><input type="text" id=appl_nameb_1 name=appl_nameb_1 size=50 maxlength=50 readonly class=SEdit></td>
 		    </tr>		
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>註冊號數1:</td>
-			    <td class="whitetablebg" colspan=3><input type="text" id=issue_nob_1 name=issue_nob_1 size=50 maxlength=50 readonly class=sedit></td>
+			    <td class="whitetablebg" colspan=3><input type="text" id=issue_nob_1 name=issue_nob_1 size=50 maxlength=50 readonly class=SEdit></td>
 		    </tr>
         </thead>
         <tbody></tbody>
@@ -405,8 +405,7 @@
                 },
                 error: function (xhr) {
                     $("#dialog").html("<a href='" + this.url + "' target='_new'>check案件結案資料失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                    $("#dialog").dialog({ title: 'check案件結案資料失敗！', modal: true, maxHeight: 500, width: 800 });
-                    //toastr.error("<a href='" + this.url + "' target='_new'>check案件結案資料失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                    $("#dialog").dialog({ title: 'check案件結案資料失敗！', modal: true, maxHeight: 500, width: "90%" });
                 }
             });
             $("#keydseq"+fld+nRow).val("Y");

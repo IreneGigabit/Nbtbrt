@@ -96,8 +96,7 @@ function scriptByGet(titleName,url) {
         cache: false,
         error: function (xhr) {
             $("#dialog").html("<a href='" + this.url + "' target='_new'>" + titleName + "<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-            $("#dialog").dialog({ title: titleName + '失敗！', modal: true, maxHeight: 500, width: 800 });
-            //toastr.error("<a href='" + this.url + "' target='_new'>"+titleName+"失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            $("#dialog").dialog({ title: titleName + '失敗！', modal: true, maxHeight: 500, width: "90%" });
         }
     });
 }

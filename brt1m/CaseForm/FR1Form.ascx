@@ -52,7 +52,7 @@
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標/標章名稱：</td>
-		<td class=whitetablebg><input type="text" id="fr_Appl_name" name="fr_Appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_Appl_name.value=rthis.value"></TD>
+		<td class=whitetablebg><input type="text" id="fr_appl_name" name="fr_appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=rthis.value"></TD>
 	</tr>
 	<tr style="display:none">
 		<td class="lightbluetable" colspan="2" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Term2)"><strong>肆、<u>原註冊證核准專用期間</u></strong></td>
@@ -128,7 +128,7 @@
 			        <td class=lightbluetable align=right>一、</td>
 			        <td class=whitetablebg>
                         <input type="radio" name="tfzy_mark" id="tfzy_markY" value="Y">全部延展（原指定使用之商品／服務全部延展者，請勾選此欄位即可）
-			            <input type="text" name="tfzd_mark" id="tfzd_mark">
+			            <input type="text" name="tfzd_Mark" id="tfzd_Mark">
 			        </TD>
 		        </tr>
 		        <tr>
@@ -152,7 +152,7 @@
 		        </tr>
 		        <tr>	
 			        <td class="lightbluetable" align="right">類別項目：</td>
-			        <td class="whitetablebg" >共<input type="text" id=tfzd_class_count name=tfzd_class_count size=2 onchange="br_form.Add_class(this.value,'#num2','#br_class_template','#tabbr2 tbody')">類
+			        <td class="whitetablebg" >共<input type="text" id=tfzd_class_count name=tfzd_class_count size=2 onchange="br_form.Add_classFR1(this.value)">類
 				        <input type=text id=num2 name=num2 value="0"><!--畫面上有幾筆-->
 				        <input type=text id=ctrlnum2 name=ctrlnum2 value="0">
 				        <input type=text id=ctrlcount2 name=ctrlcount2 value="">
@@ -160,19 +160,19 @@
 		        </tr>
             </thead>
             <tbody></tbody>
-            <script type="text/html" id="br_class_template"><!--類別樣板-->
-                <tr class="br_class_template_##">
+            <script type="text/html" id="fr1_br_class_template"><!--類別樣板-->
+                <tr class="fr1_br_class_template_##">
 			        <td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別，並以逗號分開(例如：1,5,32)。或輸入類別範圍，並以  -  (半形) 分開(例如：8-16)。也可複項組合(例如：3,5,13-32,35)">類別##：</td>
-			        <td class="whitetablebg">第<INPUT type="text" id=class2_## name=class2_## size=3 maxlength=3 onchange="br_form.count_kind('##')">類</td>		
+			        <td class="whitetablebg">第<INPUT type="text" id=class2_## name=class2_## size=3 maxlength=3 onchange="br_form.count_kindFR1('##')">類</td>		
 		        </tr>
-		        <tr class="br_class_template_##" style="height:107.6pt">
+		        <tr class="fr1_br_class_template_##" style="height:107.6pt">
 			        <td class="lightbluetable" align="right" width="18%">商品名稱##：</td>
 			        <td class="whitetablebg">
                         <textarea id="good_name2_##" NAME="good_name2_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('good_name2_##','good_count2_##')"></textarea>
                         <br>共<input type="text" id=good_count2_## name=good_count2_## size=2>項
 			        </td>
 		        </tr>
-		        <tr class="br_class_template_##">
+		        <tr class="fr1_br_class_template_##">
 			        <td class="lightbluetable" align="right">商品群組代碼##：</td>
 			        <td class="whitetablebg"><textarea id=grp_code2_## NAME=grp_code2_## ROWS="1" COLS="50"></textarea>(跨群組請以全形「、」作分隔)</td>
 		        </tr>
@@ -187,11 +187,11 @@
 		</td>
 	</tr>
 	<tr style="display:none">
-		<td class=lightbluetable align=right ><INPUT type="radio" name="ttr1_RCode" id="ttr1_RCodeL" value="L" onclick="br_form.CopyStr1(reg.tfgp_tran_remark2,'1',this)"></td>
+		<td class=lightbluetable align=right ><INPUT type="radio" name="ttr1_RCode" id="ttr1_R1Code" value="L" onclick="br_form.CopyStr1(reg.tfgp_tran_remark2,'1',this)"></td>
 		<td class=whitetablebg>證明標章證明標的及內容：<input TYPE="text" NAME="ttr1_R1" id="ttr1_R1" SIZE="20" MAXLENGTH="50" onchange="br_form.CopyStr1(reg.tfgp_tran_remark2,'0',this)"></TD>
 	</tr>
 	<tr style="display:none">
-		<td class=lightbluetable align=right ><INPUT type="radio" name="ttr1_RCode" id="ttr1_RCodeM" value="M" onclick="br_form.CopyStr1(reg.tfgp_tran_remark2, '1', this)"></td>
+		<td class=lightbluetable align=right ><INPUT type="radio" name="ttr1_RCode" id="ttr1_R9Code" value="M" onclick="br_form.CopyStr1(reg.tfgp_tran_remark2, '1', this)"></td>
 		<td class=whitetablebg>團體標章：<input TYPE="text" NAME="ttr1_R9" id="ttr1_R9" SIZE="20" MAXLENGTH="50" onchange="br_form.CopyStr1(reg.tfgp_tran_remark2,'0',this)"></TD>
 	</tr>
 	<tr>
@@ -240,12 +240,29 @@
 </table>
 </div>
 
-<INPUT TYPE=text id=tfgp_seq NAME=tfgp_seq>
-<INPUT TYPE=text id=tfgp_seq1 NAME=tfgp_seq1>
-
 <script language="javascript" type="text/javascript">
+    //共N類，classCount:要改成幾筆
+    br_form.Add_classFR1 = function (classCount) {
+        var doCount = Math.max(0, CInt(classCount));//要改為幾筆,最少是0
+        var num = CInt($("#num2").val());//目前畫面上有幾筆
+        if (doCount > num) {//要加
+            for (var nRow = num; nRow < doCount ; nRow++) {
+                var copyStr = $("#fr1_br_class_template").text() || "";
+                copyStr = copyStr.replace(/##/g, nRow + 1);
+                $("#tabbr2 tbody").append(copyStr);
+                $("#num2").val(nRow + 1);
+            }
+        } else {
+            //要減
+            for (var nRow = num; nRow > doCount ; nRow--) {
+                $(".fr1_br_class_template_" + +nRow, $("#tabbr2 tbody")).remove();
+                $("#num2").val(nRow - 1);
+            }
+        }
+    }
+
     //類別串接
-    br_form.count_kind = function (nRow) {
+    br_form.count_kindFR1 = function (nRow) {
         if ($("#class2_" + nRow).val() != "") {
             if (IsNumeric($("#class2_" + nRow).val())) {
                 var x = ("000" + $("#class2_" + nRow).val()).Right(3);//補0
@@ -264,6 +281,24 @@
         $("#tfzd_class_count").val(Math.max(CInt($("#tfzd_class_count").val()), nclass.length));//回寫共N類
     }
 
+
+    //**延展證明標的及內容/表彰組織及會員之會籍
+    br_form.CopyStr1 = function (x, y, z) {
+        //x=要丟值的欄位reg.tfgp_tran_remark2,y=1=radio 0=text,z=觸發的欄位
+        x.value = "";
+        if (y == "1") {//選radio時清空文字內容
+            $("#ttr1_R1,#ttr1_R9").val("");
+        }
+        if (y == "0") {
+            var id = $(z).attr("id");
+            if (z.value != "") {
+                $("#"+id).prop("checked", true);
+                var j = $("#" + id).val() || "";
+                x.value = j + "|" + z.value + "|";
+            }
+        }
+    }
+
     //交辦內容綁定
     br_form.bindFR = function () {
         console.log("fr1.br_form.bind");
@@ -276,7 +311,7 @@
             $("input[name=fr_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
 
             $("#fr_issue_no").val(jMain.case_main[0].issue_no);//註冊號
-            $("#fr_Appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
             $("#fr_apply_no").val(jMain.case_main[0].apply_no);//申請號數
             //***原註冊證核准專用期間
             $("#tfgp_term1").val(jMain.case_main[0].term1);
@@ -428,15 +463,14 @@
                 //指定使用商品／服務類別
                 $("#tfzd_class").val(jMain.case_main[0].class);//*類別
                 $("#tfzd_class_count").val(jMain.case_good.length);//共N類
-                br_form.Add_class(jMain.case_good.length);//產生筆數
+                br_form.Add_classFR1(jMain.case_good.length);//產生筆數
                 $.each(jMain.case_good, function (i, item) {
                     $("#class2_" + (i + 1)).val(item.class);//第X類
                     $("#good_count2_" + (i + 1)).val(item.dmt_goodcount);//共N項
                     $("#grp_code2_" + (i + 1)).val(item.dmt_grp_code);//商品群組代碼
                     $("#good_name2_" + (i + 1)).val(item.dmt_goodname);//商品名稱
                 });
-            } else {
-                br_form.count_kind(1);////類別串接
+                br_form.count_kindFR1(1);//類別串接
             }
 
             //**附件

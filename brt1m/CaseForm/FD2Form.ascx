@@ -26,7 +26,7 @@
             SQL = "SELECT  rs_code,prt_code,rs_detail,remark ";
             SQL += "FROM code_br WHERE rs_class like 'A1%' And  cr= 'Y' and dept='T' And rs_type='" + code_type + "' AND no_code='N' ";
             SQL += "and getdate() >= beg_date and end_date is null ORDER BY rs_code";
-            tfg2_div_arcase = SHtml.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}");
+            tfg2_div_arcase = Util.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}");
         }
     }
 </script>

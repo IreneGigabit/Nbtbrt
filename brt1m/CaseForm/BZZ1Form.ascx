@@ -42,8 +42,8 @@
 <input type=hidden name=fr_S_Mark value="N">
 <input type=hidden name=fr_S_Mark value="M">
 <input type=hidden name=fr_S_Mark value="L">
-<input type=hidden name=fr_appl_name>
-<input type=hidden name=fr_issue_no>
+<input type=hidden id=fr_appl_name name=fr_appl_name>
+<input type=hidden id=fr_issue_no name=fr_issue_no>
 
 <INPUT TYPE=hidden id=tfr_mod_field NAME=tfr_mod_field value="mod_ap">
 <INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>

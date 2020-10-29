@@ -42,7 +42,7 @@
 		<td class=lightbluetable align=right width="16%">註冊號數：</td>
 		<td class=whitetablebg colspan="3"><input type="text" id="fr_issue_no" name="fr_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 		<td class=lightbluetable align=right width="15%">商標/標章名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" id="fr_Appl_name" name="fr_Appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value"></TD>
+		<td class=whitetablebg colspan="3"><input type="text" id="fr_appl_name" name="fr_appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
@@ -68,7 +68,7 @@
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>案件編號1:</td>
 			    <td class="whitetablebg" colspan=3>
-                    <input type="text" id=dseqb_1 name=dseqb_1 size=5  maxlength=5 onblur="br_form.seqChange('b_1')" readonly class=sedit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=1  maxlength=1 value="_" onblur="br_form.seqChange('b_1')" readonly class=sedit>
+                    <input type="text" id=dseqb_1 name=dseqb_1 size=5  maxlength=5 onblur="br_form.seqChange('b_1')" readonly class=SEdit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=1  maxlength=1 value="_" onblur="br_form.seqChange('b_1')" readonly class=SEdit>
                     <input type=button class="cbutton" id="btndseq_okb_1" name="btndseq_okb_1" value ="確定" onclick="delayNO(reg.dseqb_1.value,reg.dseq1b_1.value)">
                     <input type=radio value=NN checked id="case_stat1b_1NN" name="case_stat1b_1" onclick="br_form.case_stat1_control('NN','b_1')">新案
                     <input type=radio value=OO id="case_stat1b_1OO" name="case_stat1b_1" onclick="br_form.case_stat1_control('OO','b_1')">舊案
@@ -79,15 +79,15 @@
 		    </tr>
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>商標種類1:</td>
-			    <td class="whitetablebg" colspan=3><input type="text" id=s_markb_1 name=s_markb_1 size=50 maxlength=50  readonly class=sedit></td>
+			    <td class="whitetablebg" colspan=3><input type="text" id=s_markb_1 name=s_markb_1 size=50 maxlength=50  readonly class=SEdit></td>
 		    </tr>		
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>商標/標章名稱1:</td>
-			    <td class="whitetablebg" colspan=3><input type="text" id=appl_nameb_1 name=appl_nameb_1 size=50 maxlength=50 readonly class=sedit></td>
+			    <td class="whitetablebg" colspan=3><input type="text" id=appl_nameb_1 name=appl_nameb_1 size=50 maxlength=50 readonly class=SEdit></td>
 		    </tr>		
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>註冊號數1:</td>
-			    <td class="whitetablebg" colspan=3><input type="text" id=issue_nob_1 name=issue_nob_1 size=50 maxlength=50 readonly class=sedit></td>
+			    <td class="whitetablebg" colspan=3><input type="text" id=issue_nob_1 name=issue_nob_1 size=50 maxlength=50 readonly class=SEdit></td>
 		    </tr>
         </thead>
         <tbody></tbody>
@@ -129,8 +129,8 @@
     <tr>
 		<td class=lightbluetable align=right width="18%"></td>
 		<td class=whitetablebg colspan="7">
-            <input type="radio" name="tfzd_mark" value="A" onclick="br_form.apcust_role('A')"><span id=markA></span>
-            <input type="radio" name="tfzd_mark" value="B" onclick="br_form.apcust_role('B')">被授權人<span id=markB></span>
+            <input type="radio" name="tfzd_Mark" value="A" onclick="br_form.apcust_role('A')"><span id=markA></span>
+            <input type="radio" name="tfzd_Mark" value="B" onclick="br_form.apcust_role('B')">被授權人<span id=markB></span>
 		</TD>
 	</tr>
 	<tr>
@@ -152,7 +152,7 @@
             <script type="text/html" id="fl_role_template">
 	            <TR>
 		            <TD class="lightbluetable role9" align=right title="輸入編號並點選確定，即顯示被授權人資料；若無資料，請直接輸入被授權人資料。">
-                        <input type=text id='FL_apnum_##' name='FL_apnum_##' class=sedit readonly size=2 value='##.'>
+                        <input type=text id='FL_apnum_##' name='FL_apnum_##' class=SEdit readonly size=2 value='##.'>
                         <span id='span_FT_Apcust_no_##' style='cursor:pointer;color:blue'><span class="span_role"></span>授權人統編：</span>
 		            </TD>
 		            <TD class=sfont9 colspan="3">
@@ -283,7 +283,7 @@
         <thead>
 		<tr>
 			<td class="lightbluetable" align="right">類別項目：</td>
-			<td class="whitetablebg" colspan="7" >共<input type="text" id=mod_count name=mod_count size=2 onchange="br_form.Add_class(this.value,'#num2','#br_class_template','#tabbr2 tbody')">類<input type="text" id="mod_dclass" name="mod_dclass" readonly>
+			<td class="whitetablebg" colspan="7" >共<input type="text" id=mod_count name=mod_count size=2 onchange="br_form.Add_classFL1(this.value)">類<input type="text" id="mod_dclass" name="mod_dclass" readonly>
 				<input type=hidden id=ctrlnum2 name=ctrlnum2 value="0">
 				<input type=hidden id=ctrlcount2 name=ctrlcount2 value="">
 				<input type=hidden id=num2 name=num2 value="0"><!--畫面上有幾筆-->
@@ -292,12 +292,12 @@
 		</tr>
         </thead>
         <tbody></tbody>
-        <script type="text/html" id="br_class_template"><!--類別樣板-->
-		<tr class="br_class_template_##">
+        <script type="text/html" id="fl1_br_class_template"><!--類別樣板-->
+		<tr class="fl1_br_class_template_##">
 			<td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別，並以逗號分開(例如：1,5,32)。或輸入類別範圍，並以  -  (半形) 分開(例如：8-16)。也可複項組合(例如：3,5,13-32,35)">類別##：</td>		
-			<td class="whitetablebg" colspan="7">第<INPUT type="text" id=new_no_## name=new_no_## size=3 maxlength=3 onchange="br_form.count_kind('##')">類</td>		
+			<td class="whitetablebg" colspan="7">第<INPUT type="text" id=new_no_## name=new_no_## size=3 maxlength=3 onchange="br_form.count_kindFL1('##')">類</td>		
 		</tr>
-		<tr class="br_class_template_##" style="height:107.6pt">
+		<tr class="fl1_br_class_template_##" style="height:107.6pt">
 			<td class="lightbluetable" align="right" width="18%">商品名稱##：</td>
 			<td class="whitetablebg" colspan="7">
                 <textarea id="list_remark_##" NAME="list_remark_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('list_remark_##','')"></textarea>
@@ -519,8 +519,7 @@
             },
             error: function (xhr) {
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>關係人資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '關係人資料載入失敗！', modal: true, maxHeight: 500, width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>關係人資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '關係人資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
     }
@@ -540,8 +539,28 @@
         }
     }
 
+    //共N類，classCount:要改成幾筆
+    br_form.Add_classFL1 = function (classCount) {
+        var doCount = Math.max(0, CInt(classCount));//要改為幾筆,最少是0
+        var num = CInt($("#num2").val());//目前畫面上有幾筆
+        if (doCount > num) {//要加
+            for (var nRow = num; nRow < doCount ; nRow++) {
+                var copyStr = $("#fl1_br_class_template").text() || "";
+                copyStr = copyStr.replace(/##/g, nRow + 1);
+                $("#tabbr2 tbody").append(copyStr);
+                $("#num2").val(nRow + 1);
+            }
+        } else {
+            //要減
+            for (var nRow = num; nRow > doCount ; nRow--) {
+                $(".fl1_br_class_template_" + +nRow, $("#tabbr2 tbody")).remove();
+                $("#num2").val(nRow - 1);
+            }
+        }
+    }
+
     //類別串接
-    br_form.count_kind = function (nRow) {
+    br_form.count_kindFL1 = function (nRow) {
         if ($("#new_no_" + nRow).val() != "") {
             if (IsNumeric($("#new_no_" + nRow).val())) {
                 var x = ("000" + $("#new_no_" + nRow).val()).Right(3);//補0
@@ -745,8 +764,7 @@
                 },
                 error: function (xhr) {
                     $("#dialog").html("<a href='" + this.url + "' target='_new'>check案件結案資料失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                    $("#dialog").dialog({ title: 'check案件結案資料失敗！', modal: true, maxHeight: 500, width: 800 });
-                    //toastr.error("<a href='" + this.url + "' target='_new'>check案件結案資料失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                    $("#dialog").dialog({ title: 'check案件結案資料失敗！', modal: true, maxHeight: 500, width: "90%" });
                 }
             });
             $("#keydseq"+fld+nRow).val("Y");

@@ -48,7 +48,7 @@
 		<td class=lightbluetable align=right ><span id=span_no></span>號數：</td>
 		<td class=whitetablebg colspan="3"><input type="text" id="no" name="no" value="" size="20" maxlength="20"></TD>
 		<td class=lightbluetable align=right >商標名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" id="fr_Appl_name" name="fr_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value">
+		<td class=whitetablebg colspan="3"><input type="text" id="fr_appl_name" name="fr_appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
 		<input type="hidden" value="" id=fr_issue_no name=fr_issue_no>
         </TD>
 	</tr>

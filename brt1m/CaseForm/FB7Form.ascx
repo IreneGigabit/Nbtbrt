@@ -45,7 +45,7 @@
 	<tr>
 		<td class=lightbluetable align=right >商標/標章名稱：</td>
 		<td class=whitetablebg colspan="7">
-            <input type="text" id="fbf_Appl_name" name="fbf_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value">
+            <input type="text" id="fbf_Appl_name" name="fbf_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
 		</TD>
 	</tr>
 	<tr>
@@ -155,18 +155,6 @@
 </div>
 
 <script language="javascript" type="text/javascript">
-    //代理人
-    $("#tfzf_agt_no1").blur(function (e) {
-        var tagt_name="";
-        var tselectedindex=$(this)[0].selectedIndex;
-        if(tselectedindex>0){
-            //2016/3/17修改，因出名代理人增加顯示代碼，所以抓取A19_後名稱
-            //2020/6/19修改，改抓agt.agt_name1,不用文字切割
-            tagt_name=$("#tfzf_agt_no1 option:selected").attr("v1");
-        }
-        $("#tfzf_other_item").val(tagt_name);
-    });
-
     //註冊申請案號
     $("#fbf_no").blur(function (e) {
         $("#tfzd_apply_no").val($(this).val());

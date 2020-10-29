@@ -58,7 +58,7 @@
 	<tr>
 		<td class=lightbluetable align=right >商標名稱：</td>
 		<td class=whitetablebg colspan="7">
-            <input type="text" id="frf_Appl_name" name="frf_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value">
+            <input type="text" id="frf_Appl_name" name="frf_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
 		</TD>
 	</tr>
 	<tr>
@@ -92,7 +92,7 @@
 
 <script language="javascript" type="text/javascript">
     //代理人
-    $("#tfzf_agt_no1").blur(function (e) {
+    $("#tfzf_agt_no1").change(function (e) {
         var tagt_name="";
         var tselectedindex=$(this)[0].selectedIndex;
         if(tselectedindex>0){

@@ -29,10 +29,10 @@
     protected string in_no = "";
     protected string prt_code = "";
     protected string new_form = "";
-    protected string case_stat = "";
     protected string code_type = "";
     protected string seq = "";
     protected string seq1 = "";
+    protected string add_arcase = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -47,10 +47,10 @@
         in_no = (Request["in_no"] ?? "").Trim();
         prt_code = (Request["prt_code"] ?? "").Trim();
         new_form = (Request["new_form"] ?? "").Trim();
-        case_stat = (Request["case_stat"] ?? "").Trim();
         code_type = (Request["code_type"] ?? "").Trim();
         seq = (Request["seq"] ?? "").Trim();
         seq1 = (Request["seq1"] ?? "").Trim();
+        add_arcase = (Request["add_arcase"] ?? "").Trim();
 
         formFunction = (Request["formFunction"] ?? "").Trim();
         if (formFunction == "") {
@@ -133,7 +133,24 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_agtno.js")%>"></script><!--檢查輸入出名代理人是否與預設出名代理人相同-->
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_doctype.js")%>"></script><!--檢查契約書種類與上傳文件-->
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_custwatch.js")%>"></script><!--檢查是否為雙邊代理查照對象-->
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/CaseForm/Oldcase_Data.js")%>"></script><!--新舊案控制-->
 </head>
+<script language="javascript" type="text/javascript">
+    var main = {};
+    main.branch = "<%#Session["SeBranch"]%>";
+    main.prgid = "<%#prgid%>";
+    main.right = <%#HTProgRight%>;
+    main.formFunction = "<%#formFunction%>";
+    main.ar_form = "<%#ar_form%>";
+    main.cust_area = "<%#cust_area%>";
+    main.cust_seq = "<%#cust_seq%>";
+    main.in_no = "<%#in_no%>";
+    main.code_type = "<%#code_type%>";
+    main.seq = "<%#seq%>";
+    main.seq1 = "<%#seq1%>";
+    jMain = {};
+    oMain = {};
+</script>
 
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
@@ -155,8 +172,7 @@
     <INPUT TYPE="text" id="Ar_Form" name="Ar_Form" value="<%=ar_form%>">
     <INPUT TYPE="text" id=prt_code name=prt_code value="<%=prt_code%>">
     <INPUT TYPE="text" id=new_form name=new_form value="<%=new_form%>">
-    <INPUT TYPE="text" id=add_arcase name=add_arcase value="">
-    <INPUT TYPE="text" id=tfy_case_stat name=tfy_case_stat value="<%=case_stat%>"><!--案件狀態-->
+    <INPUT TYPE="text" id=add_arcase name=add_arcase value="<%=add_arcase%>">
     <input type="text" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
@@ -212,6 +228,8 @@
 	<INPUT TYPE="text" id=in_scode name=in_scode>
 	<INPUT TYPE="text" id=in_no name=in_no>
     <INPUT TYPE="text" id=in_date name=in_date size="8">
+    <INPUT TYPE="text" id=tfgp_seq NAME=tfgp_seq>
+    <INPUT TYPE="text" id=tfgp_seq1 NAME=tfgp_seq1>
 
     <%#DebugStr%>
 </form>
@@ -233,20 +251,6 @@
 </html>
 
 <script language="javascript" type="text/javascript">
-    var main = {};
-    main.branch = "<%#Session["SeBranch"]%>";
-    main.prgid = "<%#prgid%>";
-    main.right = <%#HTProgRight%>;
-    main.formFunction = "<%#formFunction%>";
-    main.ar_form = "<%#ar_form%>";
-    main.cust_area = "<%#cust_area%>";
-    main.cust_seq = "<%#cust_seq%>";
-    main.in_no = "<%#in_no%>";
-    main.code_type = "<%#code_type%>";
-    main.seq = "<%#seq%>";
-    main.seq1 = "<%#seq1%>";
-    jMain = {};
-
     $(function () {
         if (window.parent.tt !== undefined) {
             window.parent.tt.rows = "100%,0%";
@@ -276,6 +280,8 @@
     })
 
     function this_init() {
+        dmt_form.new_oldcase();
+
         if(main.ar_form=="A6"){//變更
             $("#CTab td.tab[href='#dmt']").after($("#CTab td.tab[href='#apcust']"));//[案件申請人]移到[案件主檔]後面
         }else{
@@ -296,8 +302,7 @@
             },
             error: function (xhr) {
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                $("#dialog").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
 
@@ -316,10 +321,11 @@
         //br_form.bind();//交辦內容資料綁定
         $("input.dateField").datepick();
         $(".Lock").lock();
+        $(".Hide").hide();
     }
 
-    <!--#include virtual="~\brt1m\CaseForm\A11_bind.js" --><!--資料綁定(main.bind)-->
-    <!--#include virtual="~\brt1m\CaseForm\A11_savechk.js" --><!--存檔檢查(main.savechk)-->
+    <!--xxinclude virtual="~\brt1m\CaseForm\A11_bind.js" --><!--資料綁定(main.bind)xx-->
+    <!--xxinclude virtual="~\brt1m\CaseForm\A11_savechk.js" --><!--存檔檢查(main.savechk)xx-->
     
     //存檔
     function formAddSubmit(){

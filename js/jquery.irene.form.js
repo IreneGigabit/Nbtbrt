@@ -141,8 +141,7 @@
 	                    },
 	                    error: function (xhr) { 
 	                        $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getOption)！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
-	                        $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getOption)！', modal: true, maxHeight: 500,width: 800 });
-	                        //toastr.error("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getOption)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+	                        $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getOption)！', modal: true, maxHeight: 500, width: "90%" });
 	                    }
 	                });
 	            }
@@ -250,8 +249,7 @@
 	                    },
 	                    error: function (xhr) {
 	                        $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getRadio)！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-	                        $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getRadio)！', modal: true, maxHeight: 500, width: 800 });
-	                        //toastr.error("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getRadio)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+	                        $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getRadio)！', modal: true, maxHeight: 500, width: "90%" });
 	                    }
 	                });
 	            }
@@ -355,8 +353,7 @@
 	                    },
 	                    error: function (xhr) {
 	                        $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getCheckbox)！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-	                        $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getCheckbox)！', modal: true, maxHeight: 500, width: 800 });
-	                        //toastr.error("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getCheckbox)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+	                        $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getCheckbox)！', modal: true, maxHeight: 500, width: "90%" });
 	                    }
 	                });
 	            }

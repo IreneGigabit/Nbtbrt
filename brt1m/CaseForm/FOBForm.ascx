@@ -48,7 +48,7 @@
 		<td class=lightbluetable align=right ><span id=span_no></span>號數：</td>
 		<td class=whitetablebg colspan="3"><input type="text" id="no" name="no" value="" size="20" maxlength="20"></TD>
 		<td class=lightbluetable align=right >商標名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" id="fr_Appl_name" name="fr_Appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_Appl_name.value=this.value">
+		<td class=whitetablebg colspan="3"><input type="text" id="fr_appl_name" name="fr_appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
 		    <input type="hidden" value="" id=fr_issue_no name=fr_issue_no>
 		</TD>
 	</tr>
@@ -68,51 +68,51 @@
         </td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P1" name="ttz1_P1" value="P1" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P1" name="ttz1_P1" value="P1" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">註冊簿</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P2" name="ttz1_P2" value="P2" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P2" name="ttz1_P2" value="P2" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">訴願決定書　經（<input type="text" id="P2_mod_dclass" name="P2_mod_dclass" size="10" maxlength="20">）訴第<input type="text" id="P2_new_no" name="P2_new_no" size="20" maxlength="20">號</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P3" name="ttz1_P3" value="P3" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P3" name="ttz1_P3" value="P3" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">再訴願決定書　台（<input type="text" id="P3_mod_dclass" name="P3_mod_dclass" size="10" maxlength="20">）訴第<input type="text" id="P3_new_no" name="P3_new_no" size="20" maxlength="20">號</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P4" name="ttz1_P4" value="P4" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P4" name="ttz1_P4" value="P4" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">行政法院判決書（<input type="text" id="P4_mod_dclass" name="P4_mod_dclass" size="10" maxlength="20">）年度裁／判字第<input type="text" id="P4_new_no" name="P4_new_no" size="20" maxlength="20">號</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P5" name="ttz1_P5" value="P5" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P5" name="ttz1_P5" value="P5" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">臺北高等行法院判決（<input type="text" id="P5_mod_dclass" name="P5_mod_dclass" size="10" maxlength="20">）年度訴字第<input type="text" id="P5_new_no" name="P5_new_no" size="20" maxlength="20">號</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P6" name="ttz1_P6" value="P6" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P6" name="ttz1_P6" value="P6" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">最高行政法院判決書第<input type="text" id="P6_new_no" name="P6_new_no" size="20" maxlength="20">號</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P7" name="ttz1_P7" value="P7" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P7" name="ttz1_P7" value="P7" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">異議審定書第<input type="text" id="P7_new_no" name="P7_new_no" size="20" maxlength="20">號</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P8" name="ttz1_P8" value="P8" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P8" name="ttz1_P8" value="P8" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">異議案附件第<input type="text" id="P8_new_no" name="P8_new_no" size="20" maxlength="20">號</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P9" name="ttz1_P9" value="P9" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P9" name="ttz1_P9" value="P9" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">評定書第<input type="text" id="P9_new_no" name="P9_new_no" size="20" maxlength="20">號</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P10" name="ttz1_P10" value="P10" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P10" name="ttz1_P10" value="P10" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">評定書附件第<input type="text" id="P10_new_no" name="P10_new_no" size="20" maxlength="20">號</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P11" name="ttz1_P11" value="P11" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P11" name="ttz1_P11" value="P11" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">廢止處分書第<input type="text" id="P11_new_no" name="P11_new_no" size="20" maxlength="20">號</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P12" name="ttz1_P12" value="P12" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item)"></td>
+		<td class="lightbluetable" align="right"><input type="checkbox" id="ttz1_P12" name="ttz1_P12" value="P12" onclick="br_form.CopyStr('input[name^=ttz1_]',reg.tfg1_other_item,this)"></td>
 		<td class="whitetablebg" colspan="7">其他</td>
 	</tr>
 </table>
@@ -148,12 +148,27 @@
         }
     })
     
-    br_form.CopyStr = function (selector,tar) {
+    //影印內容
+    br_form.CopyStr = function (selector, tar, tri) {
         var strRemark1 = "";
-        $(selector).each(function (index) {
+        $(selector + " :checkbox").each(function (index) {
             var $this = $(this);
             if ($this.prop("checked")) {
-                strRemark1 += $this.val() + "|";
+                strRemark1 += $this.val()
+                //其他文件輸入框
+                if ($("#" + pfld + $this.val() + "t").length > 0) {
+                    if ($("#" + pfld + $this.val() + "t").val() != "") {
+                        strRemark1 += "|Z9-" + $("#" + pfld + $this.val() + "t").val() + "-Z9";
+                    }
+                }
+                strRemark1 += "|";
+            }
+            var z = tri.value;
+            if (z == "P2" || z == "P3" || z == "P4" || z == "P5") {
+                $("#" + z + "_mod_dclass").val("");
+            }
+            if (!(z == "P1" || z == "P12" || z.Left(1) == "Z")) {
+                $("#" + z + "_new_no").val("");
             }
         });
         tar.value = strRemark1;
