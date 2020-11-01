@@ -398,8 +398,8 @@
 
         if (confirm("確定刪除上傳檔案？")) {
             //var tfolder = "\\btbrt\\<%=Session["SeBranch"]%>t\\<%=epath%>";
-            //window.open("/btbrt/sub/del_draw_file.asp?type=doc&folder_name=" + tfolder + "&draw_file=" + file + "&btnname=btn<%=uploadfield%>D_" + nRow + "&form_name=<%=uploadfield%>" + nRow, "myWindowOne1", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            window.open(getRootPath() + "/sub/del_draw_file_new.aspx?type=doc&draw_file=" + file, "myWindowOne1", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            //window.open("/btbrt/sub/del_draw_file.asp?type=doc&folder_name=" + tfolder + "&draw_file=" + file + "&btnname=btn<%=uploadfield%>D_" + nRow + "&form_name=<%=uploadfield%>" + nRow, "myWindowOneN", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            window.open(getRootPath() + "/sub/del_draw_file_new.aspx?type=doc&draw_file=" + file, "myWindowOneN", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
             document.getElementById(fld + "_name_" + nRow).value = "";
             document.getElementById("source_name_" + nRow).value = "";
             document.getElementById(fld + "_desc_" + nRow).value = "";

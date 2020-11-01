@@ -188,6 +188,7 @@
             $("#span_tscode").html(jMain.br_in_scname);
             //　案件主檔請款註記
             $("#tfy_Ar_mark").val("N");
+            //期限
             $("#dfy_cust_date").val("");
             $("#dfy_pr_date").val(new Date().addDays(15).format("yyyy/M/d"));
             $("#nfy_tot_case").val("0");
@@ -199,10 +200,12 @@
             $("#in_scode").val(jMain.case_main[0].in_scode);
             $("#in_no").val(jMain.case_main[0].in_no);
             $("#in_date").val(dateReviver(jMain.case_main[0].in_date3, "yyyy/M/d"));//欄位同名會順便序號
+            //案性
+            $("#code_type").val(jMain.case_main[0].arcase_type);
+            $("#nfy_tot_case").val(jMain.case_main[0].nfy_tot_case);
             //　洽案營洽
             $("#F_tscode").val(jMain.br_in_scode);
             $("#span_tscode").html(jMain.br_in_scname);
-            //$("#code_type").val(jMain.case_main[0].arcase_type);
             //***聯絡人與客戶資料	
             $("#F_cust_area").val(jMain.case_main[0].cust_area);
             $("#F_cust_seq").val(jMain.case_main[0].cust_seq);
@@ -221,9 +224,6 @@
             //Table(case_dmt)案件主檔
             $("#tfz1_seq").val(jMain.case_main[0].seq);
             $("#tfz1_seq1").val(jMain.case_main[0].seq1);
-            //案性
-            $("#code_type").val(jMain.case_main[0].arcase_type);
-            $("#nfy_tot_case").val(jMain.case_main[0].nfy_tot_case);
             //接洽費用
             $("tr[id^='tr_ta_']").remove();
             $.each(jMain.case_item, function (i, item) {
@@ -326,25 +326,7 @@
             $("#tfy_oth_arcase").val(jMain.case_main[0].oth_arcase);//轉帳費用
             $("#tfy_oth_code").val(jMain.case_main[0].oth_code);//轉帳單位
             $("#nfy_oth_money").val(jMain.case_main[0].oth_money);//轉帳金額
-            //轉帳金額合計抓收費標準
-            $.ajax({
-                type: "get",
-                url: getRootPath() + "/ajax/json_Fee.aspx?type=Fee&country=T&Arcase=" + jMain.case_main[0].oth_arcase,
-                async: false,
-                cache: false,
-                success: function (json) {
-                    var jFee = $.parseJSON(json);
-                    if (jFee.length != 0) {
-                        $("#oth_money").val(jFee[0].service);
-                    } else {
-                        $("#oth_money").val("0");//轉帳金額
-                    }
-                },
-                error: function (xhr) {
-                    $("#dialog").html("<a href='" + this.url + "' target='_new'>轉帳金額合計抓收費標準失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                    $("#dialog").dialog({ title: '轉帳金額合計抓收費標準失敗！', modal: true, maxHeight: 500, width: "90%" });
-                }
-            });
+            $("#oth_money").val(jMain.case_main[0].casefee_oth_money);//轉帳金額合計
             //****折扣請核單
             $("#tfy_discount_chk[value='" + jMain.case_main[0].discount_chk + "']").prop('checked', true).triggerHandler("click");
             //*****請款單	

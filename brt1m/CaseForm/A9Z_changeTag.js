@@ -48,20 +48,17 @@ main.changeTag = function (T1) {
             break;
         case "A4"://延展
             $("#div_Form_FR").show();
-            br_form.bind = br_form.bindFR;
             break;
         case "A5"://分割
             switch (code3) {
                 case "FD1":
                     $("#div_Form_FD1").show();
-                    br_form.bind = br_form.bindFD1;
                     $("#smark").hide();
                     $("#fr_smark1,#fr_smark3").show();
                     $("#fr_smark2").hide();
                     break;
                 case "FD2": case "FD3":
                     $("#div_Form_FD2").show();
-                    br_form.bind = br_form.bindFD2;
                     $("#smark").show();
                     $("#fr_smark1,#fr_smark3").show();
                     $("#fr_smark2").hide();
@@ -76,7 +73,6 @@ main.changeTag = function (T1) {
             switch (arcase) {
                 case "FC1": case "FC10": case "FC9": case "FCA": case "FCB": case "FCF":
                     $("#FC1_tabap,#div_Form_FC1").show();
-                    br_form.bind = br_form.bindFC1;
                     $("#smark").hide();
                     if (arcase == "FCA") {
                         $("#FC1_tr_addagtno").show();//新增代理人
@@ -86,7 +82,6 @@ main.changeTag = function (T1) {
                     break;
                 case "FC11": case "FC15": case "FC7": case "FCH":
                     $("#FC1_tabap,#div_Form_FC11").show();
-                    br_form.bind = br_form.bindFC11;
                     $("#smark").hide();
                     $("#dseqa_1").lock().val("");
                     $("#dseq1a_1").lock().val("_");
@@ -97,7 +92,6 @@ main.changeTag = function (T1) {
                     break;
                 case "FC2": case "FC20": case "FC0": case "FCC": case "FCD": case "FCG":
                     $("#FC0_tabap,#div_Form_FC2").show();
-                    br_form.bind = br_form.bindFC2;
                     $("#smark").hide();
                     $("#tabbr2").show();
                     if (arcase == "FCC") {
@@ -108,7 +102,6 @@ main.changeTag = function (T1) {
                     break;
                 case "FC21": case "FC6": case "FC8": case "FCI":
                     $("#FC0_tabap,#div_Form_FC21").show();
-                    br_form.bind = br_form.bindFC21;
                     $("#smark").show();
                     $("#dseqb_1").lock().val("");
                     $("#dseq1b_1").lock().val("_");
@@ -119,14 +112,12 @@ main.changeTag = function (T1) {
                     break;
                 case "FC3":
                     $("#tabap,#div_Form_FC3").show();
-                    br_form.bind = br_form.bindFC3;
                     $("#CTab td.tab[href='#apcust']").html("案件申請人");
                     $("#span_FC").html("貳、申請人");
                     $("#smark").show();
                     break;
                 case "FC4":
                     $("#tabap,#div_Form_FC4").show();
-                    br_form.bind = br_form.bindFC4;
                     $("#span_FC").html("參、申請人(填寫變更後之正確資料)");
                     $("#smark").show();
                     break;
@@ -139,7 +130,6 @@ main.changeTag = function (T1) {
             break;
         case "A7"://授權
             $("#div_Form_FL1").show();
-            br_form.bind = br_form.bindFL1;
             $("[id^='tabrem']").hide();
             var tabid = arcase.substr(2, 1);
             if (arcase == "FL5")//授權一案多件同FL1
@@ -245,7 +235,6 @@ main.changeTag = function (T1) {
             break;
         case "A8"://移轉
             $("#div_Form_FT1").show();
-            br_form.bind = br_form.bindFT1;
             if (code3 == "FT1") {
                 $("#tabft2").hide();
             } else if (code3 == "FT2") {
@@ -254,7 +243,6 @@ main.changeTag = function (T1) {
             break;
         case "A9"://質權
             $("#div_Form_FP1").show();
-            br_form.bind = br_form.bindFP1;
             if (code3 == "FP1") {
                 $("#smark1,#smark2,#smark3").hide();
                 $("#tabrem1").show();
@@ -269,32 +257,24 @@ main.changeTag = function (T1) {
             break;
         case "AA"://各種證明書
             $("#div_Form_FN1").show();
-            br_form.bind = br_form.bindFN1;
             break;
         case "AB"://補(換)發證
             $("#div_Form_FI1").show();
-            br_form.bind = br_form.bindFI1;
             break;
         case "AC"://閱案
             $("#div_Form_FV1").show();
-            br_form.bind = br_form.bindFV1;
             break;
         case "B"://爭議案
             if (prt_code == "DO1") {
                 $("#div_Form_DO1").show();
-                br_form.bind = br_form.bindDO1;
             } else if (prt_code == "DR1") {
                 $("#div_Form_DR1").show();
-                br_form.bind = br_form.bindDR1;
             } else if (prt_code == "DI1") {
                 $("#div_Form_DI1").show();
-                br_form.bind = br_form.bindDI1;
             } else if (prt_code == "B5C1") {
                 $("#div_Form_B5C1").show();
-                br_form.bind = br_form.bindB5C1;
             } else {
                 $("#div_Form_BZZ1").show();
-                br_form.bind = br_form.bindBZZ1;
             }
 
             var d_agt_no1 = "";
@@ -336,10 +316,8 @@ main.changeTag = function (T1) {
         default://其他
             if (prt_code == "FOB" || prt_code == "FOF" || prt_code == "FB7" || prt_code == "B5C1") {
                 $("#div_Form_" + prt_code).show();
-                eval("br_form.bind = br_form.bind" + prt_code);
             } else {
                 $("#div_Form_ZZ1").show();
-                br_form.bind = br_form.bindZZ1;
             }
 
             //預設代理人

@@ -61,28 +61,28 @@
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
 		<td class=whitetablebg colspan="7">
-			<input type=radio name=fr2_S_Mark value="" onclick="dmt_form.change_mark(1, this)">商標
-			<input type=radio name=fr2_S_Mark value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
-			<input type=radio name=fr2_S_Mark value="N" onclick="dmt_form.change_mark(1, this)">團體商標
-			<input type=radio name=fr2_S_Mark value="M" onclick="dmt_form.change_mark(1, this)">團體標章
-			<input type=radio name=fr2_S_Mark value="L" onclick="dmt_form.change_mark(1, this)">證明標章
+			<input type=radio name=fr2_S_Mark class="onoff" value="" onclick="dmt_form.change_mark(1, this)">商標
+			<input type=radio name=fr2_S_Mark class="onoff" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
+			<input type=radio name=fr2_S_Mark class="onoff" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+			<input type=radio name=fr2_S_Mark class="onoff" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+			<input type=radio name=fr2_S_Mark class="onoff" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >註冊號數：</td>
 		<td class=whitetablebg colspan="3">
-			<input type="text" id="fr2_issue_no" name="fr2_issue_no" value="" size="20" maxlength="20" >
+			<input type="text" id="fr2_issue_no" name="fr2_issue_no" class="onoff" value="" size="20" maxlength="20" >
 		</TD>
 		<td class=lightbluetable align=right width="18%">商標/標章名稱：</td>
 		<td class=whitetablebg colspan="3">
-			<input type="text" id="fr2_appl_name" name="fr2_appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
+			<input type="text" id="fr2_appl_name" name="fr2_appl_name" class="onoff" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >擬異議之類別種類：</td>
 		<td class=whitetablebg colspan="3">
-			<input type="radio" id=fr2_class_typeI name=fr2_class_type value="int" onclick="reg.tfzr_class_type(0).checked = reg.fr2_class_type(0).checked">國際分類
-			<input type="radio" id=fr2_class_typeO name=fr2_class_type value="old" onclick="reg.tfzr_class_type(1).checked = reg.fr2_class_type(1).checked">舊類
+			<input type="radio" id=fr2_class_typeI name=fr2_class_type class="onoff" value="int" onclick="reg.tfzr_class_type(0).checked = reg.fr2_class_type(0).checked">國際分類
+			<input type="radio" id=fr2_class_typeO name=fr2_class_type class="onoff" value="old" onclick="reg.tfzr_class_type(1).checked = reg.fr2_class_type(1).checked">舊類
 		</TD>
 		<td class=lightbluetable align=right width="18%" STYLE="cursor:pointer;COLOR:BLUE" title="請輸入類別，並以逗號分開(例如：001,005,032)。">擬異議之類別：</td>
 		<td class=whitetablebg colspan="3">

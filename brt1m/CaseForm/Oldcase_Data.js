@@ -33,8 +33,7 @@ function delayNO(low_no, low_no1) {
         async: false,
         cache: false,
         success: function (json) {
-            //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-            toastr.info("<a href='" + this.url + "' target='_new'>Debug(jsonDelaySQL)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(jsonDelaySQL)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
             oMain = $.parseJSON(json);
         },
         error: function (xhr) {
@@ -123,6 +122,7 @@ function delayNO(low_no, low_no1) {
         $("#tfzd_Tcn_Class").val(oMain.vdmtall[0].tcn_class);
         $("#tfzd_Tcn_name").val(oMain.vdmtall[0].tcn_name);
         $("#tfzd_Tcn_mark").val(oMain.vdmtall[0].tcn_mark);
+
         $("#tfzd_cust_prod").val(oMain.vdmtall[0].cust_prod);
         $("#tfzd_apply_no,#O_apply_no").val(oMain.vdmtall[0].apply_no);
         $("#tfzd_issue_no,#O_issue_no").val(oMain.vdmtall[0].issue_no);
@@ -153,12 +153,13 @@ function delayNO(low_no, low_no1) {
         $("#tfzd_Draw").val(oMain.vdmtall[0].draw);//圖形描述
         $("#tfzd_Symbol").val(oMain.vdmtall[0].symbol);//記號說明
         //圖樣顏色
+        $("#tfzd_color").val(oMain.vdmtall[0].color);
         if (oMain.vdmtall[0].color == "B") {
-            $("input[name='tfzy_color'][value='B']").prop("checked", false);//墨色
+            $("#tfzy_colorB").prop("checked", true);//墨色
         } else if (oMain.vdmtall[0].color == "C" || oMain.vdmtall[0].color == "M") {
-            $("input[name='tfzy_color'][value='C']").prop("checked", false);//彩色
+            $("#tfzy_colorC").prop("checked", true);//彩色
         } else {
-            $("input[name='tfzy_color'][value='X']").prop("checked", false);//無
+            $("#tfzy_colorX").prop("checked", true);//無
         }
         $("#pfzd_prior_date").val(dateReviver(oMain.vdmtall[0].prior_date, "yyyy/M/d"));//優先權申請日
         $("#tfzy_prior_country,#tfzd_prior_country").val(oMain.vdmtall[0].prior_country);//優先權首次申請國家
@@ -168,7 +169,7 @@ function delayNO(low_no, low_no1) {
         $("#tfzd_open_date").val(dateReviver(oMain.vdmtall[0].open_date, "yyyy/M/d"));//公告日期
         $("#tfzd_rej_no,#O_rej_no").val(oMain.vdmtall[0].rej_no);//核駁號
         $("#tfzd_end_date").val(dateReviver(oMain.vdmtall[0].end_date, "yyyy/M/d"));//結案日期
-        $("#tfzy_end_code,#tfzy_end_code,#tfzd_end_code").val(oMain.vdmtall[0].end_code);//結案代碼
+        $("#tfzy_end_code,#tfzd_end_code").val(oMain.vdmtall[0].end_code);//結案代碼
         $("#tfzd_dmt_term1").val(dateReviver(oMain.vdmtall[0].term1, "yyyy/M/d"));//專用期限
         $("#tfzd_dmt_term2").val(dateReviver(oMain.vdmtall[0].term2, "yyyy/M/d"));//專用期限
         $("#tfzd_renewal").val(oMain.vdmtall[0].renewal);//延展次數
@@ -183,7 +184,6 @@ function delayNO(low_no, low_no1) {
         
         $("#tfzr_class_count,#tft3_class_count2,#mod_count").val(oMain.vdmtall[0].class_count);//共N類
         $("#tfzr_class,#tft3_class2,#mod_dclass").val(oMain.vdmtall[0].class);//類別
-        dmt_form.Add_class(0);//將類別資料清空
         if (br_form.Add_classFC3) br_form.Add_classFC3(0);
         if (br_form.Add_classFL1) br_form.Add_classFL1(0);
         if (CInt($("#tfzr_class_count").val() == 0)) {
@@ -213,11 +213,11 @@ function delayNO(low_no, low_no1) {
             if (br_form.count_kindFC3) br_form.count_kindFC3(1);//fc3類別串接
             if (br_form.count_kindFL1) br_form.count_kindFL1(1);//fl1類別串接
         }
-        var kclass_type = oMain.dmt_good.class_type;//案件主檔之類別種類
-        var ks_mark2 = oMain.dmt_good.s_mark2;//案件主檔之商標種類
+        var kclass_type = oMain.vdmtall[0].class_type;//案件主檔之類別種類
+        var ks_mark2 = oMain.vdmtall[0].s_mark2;//案件主檔之商標種類
         $("input[name='tft3_class_type2'][value='" + kclass_type + "']").prop("checked", true);
         $("input[name='tfzr_class_type'][value='" + kclass_type + "']").prop("checked", true);
-        $("input[name=tfzd_s_mark2][value='" +ks_mark2 + "']").prop("checked", true);//商標種類2
+        $("input[name='tfzd_s_mark2'][value='" +ks_mark2 + "']").prop("checked", true);//商標種類2
 
         //展覽會優先權資料
         dmt_form.getshow("dmt");
@@ -226,10 +226,10 @@ function delayNO(low_no, low_no1) {
         if (pagt_no == "") {
             pagt_no = get_tagtno("N").no;//2015/10/21因應104年度出名代理人修改並改抓取cust_code.code_type=Tagt_no and mark=N預設出名代理人
         }
-        var kagt_no = oMain.dmt_good.agt_no;//案件主檔之出名代理人
-        var kagt_name = oMain.dmt_good.agt_name || kagt_no;//案件主檔之出名代理人
+        var kagt_no = oMain.vdmtall[0].agt_no;//案件主檔之出名代理人
+        var kagt_name = oMain.vdmtall[0].agt_name;//案件主檔之出名代理人
         if (pagt_no != kagt_no) {
-            if (confirm("預設的出名代理人與案件主檔出名代理人(" + kagt_no + kagt_name + ")不同，是否依案件主檔出名代理人資料覆蓋?")) {
+            if (confirm("預設的出名代理人與案件主檔出名代理人(" + kagt_no + kagt_name + ")不同，是否依案件主檔出名代理人資料覆蓋?")==false) {
                 kagt_no = pagt_no;
             }
         }
@@ -309,7 +309,7 @@ function delayNO1(low_no, low_no1) {
         $("#btndseq_oka_1,#btndseq_okb_1").hide();//[確定]
         $("#dmseqb_1").val(low_no);
         $("#dmseq1b_1").val(low_no1);
-        if (confirm("確定要依母案本所編號資料覆蓋嗎？")==false) {
+        if (confirm("確定要依母案本所編號資料覆蓋嗎？") == false) {
             return false;
         }
         $("#tfzd_S_mark").val(oMain.vdmtall[0].s_mark);
@@ -341,6 +341,7 @@ function delayNO1(low_no, low_no1) {
         $("#tfzd_Tcn_name").val(oMain.vdmtall[0].tcn_name);
         $("#tfzd_Tcn_mark").val(oMain.vdmtall[0].tcn_mark);
         $("#tfzd_cust_prod").val(oMain.vdmtall[0].cust_prod);
+
         $("#tfzd_apply_no,#O_apply_no").val(oMain.vdmtall[0].apply_no);
         $("#tfzd_issue_no,#O_issue_no").val(oMain.vdmtall[0].issue_no);
 
@@ -363,11 +364,11 @@ function delayNO1(low_no, low_no1) {
         $("#tfzd_Symbol").val(oMain.vdmtall[0].symbol);//記號說明
         //圖樣顏色
         if (oMain.vdmtall[0].color == "B") {
-            $("input[name='tfzy_color'][value='B']").prop("checked", false);//墨色
+            $("#tfzy_colorB").prop("checked", true);//墨色
         } else if (oMain.vdmtall[0].color == "C" || oMain.vdmtall[0].color == "M") {
-            $("input[name='tfzy_color'][value='C']").prop("checked", false);//彩色
+            $("#tfzy_colorC").prop("checked", true);//彩色
         } else {
-            $("input[name='tfzy_color'][value='X']").prop("checked", false);//無
+            $("#tfzy_colorX").prop("checked", true);//無
         }
         $("#pfzd_prior_date").val(dateReviver(oMain.vdmtall[0].prior_date, "yyyy/M/d"));//優先權申請日
         $("#tfzy_prior_country,#tfzd_prior_country").val(oMain.vdmtall[0].prior_country);//優先權首次申請國家
@@ -382,7 +383,6 @@ function delayNO1(low_no, low_no1) {
 
         $("#tfzr_class_count,#tft3_class_count2,#mod_count").val(oMain.vdmtall[0].class_count);//共N類
         $("#tfzr_class,#tft3_class2,#mod_dclass").val(oMain.vdmtall[0].class);//類別
-        dmt_form.Add_class(0);//將類別資料清空
         if (br_form.Add_classFC3) br_form.Add_classFC3(0);
         if (br_form.Add_classFL1) br_form.Add_classFL1(0);
         if (CInt($("#tfzr_class_count").val() == 0)) {
@@ -413,17 +413,16 @@ function delayNO1(low_no, low_no1) {
             if (br_form.count_kindFL1) br_form.count_kindFL1(1);//fl1類別串接
         }
 
-        var kclass_type = oMain.dmt_good.class_type;//案件主檔之類別種類
-        var ks_mark2 = oMain.dmt_good.s_mark2;//案件主檔之商標種類
+        var kclass_type = oMain.vdmtall[0].class_type;//案件主檔之類別種類
+        var ks_mark2 = oMain.vdmtall[0].s_mark2;//案件主檔之商標種類
         $("input[name='tft3_class_type2'][value='" + kclass_type + "']").prop("checked", true);
         $("input[name='tfzr_class_type'][value='" + kclass_type + "']").prop("checked", true);
-        $("input[name=tfzd_s_mark2][value='" + ks_mark2 + "']").prop("checked", true);//商標種類2
+        $("input[name='tfzd_s_mark2'][value='" + ks_mark2 + "']").prop("checked", true);//商標種類2
 
-            //展覽會優先權資料
+        //展覽會優先權資料
         dmt_form.getshow("dmt_mseq");
 
         $("input[name=fr4_remark3][value='" + oMain.vdmtall[0].dmt_temp_remark3 + "']").prop("checked", true);
-            ////////////////////////////////////////////////////////
     }
 }
 
@@ -460,13 +459,13 @@ function chkdmtandtemp_ap(pseq, pseq1) {
                     getdmtap_FC0(pseq, pseq1);
                     return false;
                 } else if (item.dmt_apcount != CInt($("#FC0_apnum").val())) {
-                    if (confirm("輸入的申請人數與案件主檔申請人數不同，是否依案件主檔申請人資料覆蓋?")) {
+                    if (confirm("輸入的申請人數與案件主檔申請人數不同，是否依案件主檔申請人資料覆蓋⑴?")) {
                         getdmtap_FC0(pseq, pseq1);
                         return false;
                     }
                 } else {
                     for (var r = 1; r <= CInt($("#FC0_apnum").val()) ; r++) {
-                        if (item.dmt_apcount != $("#dbmn_apsqlno_" + r).val()) {
+                        if (item.apsqlno != $("#dbmn_apsqlno_" + r).val()) {
                             same_ap_flag = "Y";
                             break;
                         }
@@ -475,7 +474,7 @@ function chkdmtandtemp_ap(pseq, pseq1) {
             });
 
             if (same_ap_flag == "Y") {
-                if (confirm("輸入的申請人與案件主檔申請人不同，是否依案件主檔申請人資料覆蓋?")) {
+                if (confirm("輸入的申請人與案件主檔申請人不同，是否依案件主檔申請人資料覆蓋⑵?")) {
                     getdmtap_FC0(pseq, pseq1);
                     return false;
                 }
@@ -487,13 +486,13 @@ function chkdmtandtemp_ap(pseq, pseq1) {
                     getdmtap_FC1(pseq, pseq1);
                     return false;
                 } else if (item.dmt_apcount != CInt($("#apnum").val())) {
-                    if (confirm("輸入的申請人數與案件主檔申請人數不同，是否依案件主檔申請人資料覆蓋?")) {
+                    if (confirm("輸入的申請人數與案件主檔申請人數不同，是否依案件主檔申請人資料覆蓋⑶?")) {
                         getdmtap_FC1(pseq, pseq1);
                         return false;
                     }
                 } else {
                     for (var r = 1; r <= CInt($("#apnum").val()) ; r++) {
-                        if (item.dmt_apcount != $("#dbmn1_apsqlno_" + r).val()) {
+                        if (item.apsqlno != $("#dbmn1_apsqlno_" + r).val()) {
                             same_ap_flag = "Y";
                             break;
                         }
@@ -502,7 +501,7 @@ function chkdmtandtemp_ap(pseq, pseq1) {
             });
 
             if (same_ap_flag == "Y") {
-                if (confirm("輸入的申請人與案件主檔申請人不同，是否依案件主檔申請人資料覆蓋?")) {
+                if (confirm("輸入的申請人與案件主檔申請人不同，是否依案件主檔申請人資料覆蓋⑷?")) {
                     getdmtap_FC1(pseq, pseq1);
                     return false;
                 }
@@ -514,13 +513,13 @@ function chkdmtandtemp_ap(pseq, pseq1) {
                     getdmtap_FC(pseq, pseq1);
                     return false;
                 } else if (item.dmt_apcount != CInt($("#fc_apnum").val())) {
-                    if (confirm("輸入的申請人數與案件主檔申請人數不同，是否依案件主檔申請人資料覆蓋?")) {
+                    if (confirm("輸入的申請人數與案件主檔申請人數不同，是否依案件主檔申請人資料覆蓋⑸?")) {
                         getdmtap_FC(pseq, pseq1);
                         return false;
                     }
                 } else {
                     for (var r = 1; r <= CInt($("#fc_apnum").val()) ; r++) {
-                        if (item.dmt_apcount != $("#apsqlno_" + r).val()) {
+                        if (item.apsqlno != $("#apsqlno_" + r).val()) {
                             same_ap_flag = "Y";
                             break;
                         }
@@ -529,7 +528,7 @@ function chkdmtandtemp_ap(pseq, pseq1) {
             });
 
             if (same_ap_flag == "Y") {
-                if (confirm("輸入的申請人與案件主檔申請人不同，是否依案件主檔申請人資料覆蓋?")) {
+                if (confirm("輸入的申請人與案件主檔申請人不同，是否依案件主檔申請人資料覆蓋⑹?")) {
                     getdmtap_FC(pseq, pseq1);
                     return false;
                 }
@@ -541,13 +540,13 @@ function chkdmtandtemp_ap(pseq, pseq1) {
                     getdmtap(pseq, pseq1);
                     return false;
                 } else if (item.dmt_apcount != CInt($("#apnum").val())) {
-                    if (confirm("輸入的申請人數與案件主檔申請人數不同，是否依案件主檔申請人資料覆蓋?")) {
+                    if (confirm("輸入的申請人數與案件主檔申請人數不同，是否依案件主檔申請人資料覆蓋⑺?")) {
                         getdmtap(pseq, pseq1);
                         return false;
                     }
                 } else {
                     for (var r = 1; r <= CInt($("#apnum").val()) ; r++) {
-                        if (item.dmt_apcount != $("#apsqlno_" + r).val() || item.ap_cname1 != $("#ap_cname1_" + r).val()) {
+                        if (item.apsqlno != $("#apsqlno_" + r).val() || item.ap_cname1 != $("#ap_cname1_" + r).val()) {
                             same_ap_flag = "Y";
                             break;
                         }
@@ -556,7 +555,7 @@ function chkdmtandtemp_ap(pseq, pseq1) {
             });
 
             if (same_ap_flag == "Y") {
-                if (confirm("輸入的申請人與案件主檔申請人不同，是否依案件主檔申請人資料覆蓋?")) {
+                if (confirm("輸入的申請人與案件主檔申請人不同，是否依案件主檔申請人資料覆蓋⑻?")) {
                     getdmtap(pseq, pseq1);
                     return false;
                 }
@@ -568,6 +567,7 @@ function chkdmtandtemp_ap(pseq, pseq1) {
 
 function getdmtap(pseq, pseq1){
     $("#tabap tbody").empty();
+    $("#apnum").val("0");
 
     $.ajax({
         type: "get",
@@ -639,6 +639,7 @@ function getdmtap(pseq, pseq1){
 //FC3、FC4減縮註冊商品之案件申請人
 function getdmtap_FC(pseq, pseq1){
     $("#FC_tabap tbody").empty();
+    $("#FC_apnum").val("0");
 
     $.ajax({
         type: "get",
@@ -710,6 +711,7 @@ function getdmtap_FC(pseq, pseq1){
 //FC0申請事項變更之案件申請人
 function getdmtap_FC0(pseq, pseq1){
     $("#FC0_tabap tbody").empty();
+    $("#FC0_apnum").val("0");
 
     $.ajax({
         type: "get",
@@ -765,7 +767,8 @@ function getdmtap_FC0(pseq, pseq1){
 
 //FC1申請事項變更之案件申請人
 function getdmtap_FC1(pseq, pseq1) {
-    $("#FC1_tabap tbody").empty();
+    $("#FC2_tabap tbody").empty();
+    $("#FC2_apnum").val("0");
 
     $.ajax({
         type: "get",
@@ -782,7 +785,7 @@ function getdmtap_FC1(pseq, pseq1) {
 
             $.each(apcust_list, function (i, item) {
                 //增加一筆
-                $("#AP_Add_button").click();
+                $("#FC2_AP_Add_button").click();
                 //填資料
                 var nRow = $("#FC0_apnum").val();
                 $("#dbmn1_apsqlno_" + nRow).val(item.apsqlno);

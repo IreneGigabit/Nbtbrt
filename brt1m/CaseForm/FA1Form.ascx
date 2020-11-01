@@ -684,8 +684,8 @@
         if (confirm("確定刪除上傳圖檔？")) {
             var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() +
                 "&btnname=butUpload1";
-            window.open(url, "myWindowOne1", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            //window.open(url, "myWindowOne1", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            window.open(url, "myWindowOneN", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            //window.open(url, "myWindowOneN", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
             $("#draw_attach_file").val("");
             $("#Draw_file1").val("");
         }
@@ -814,7 +814,7 @@
                 var arr_remark1 = jMain.case_main[0].remark1.split("|");
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
-                    var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
                     var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
                     if (substr != null) {
                         $("#tt11_Z9t").val(substr[1]);

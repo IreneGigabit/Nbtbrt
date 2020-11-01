@@ -165,6 +165,27 @@
         console.log("fb7.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            $("#tfb7_agt_no1").val(jMain.case_main[0].agt_no);     
+            $("#fbf_no").val(jMain.case_main[0].apply_no);//註冊申請案號
+            $("#frf_Appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            //商標種類
+            $("input[name=fbf_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+
+            //**附件
+            $("#tfb7_other_item").val(jMain.case_main[0].other_item);
+            if (jMain.case_main[0].other_item != "") {
+                var arr_remark1 = jMain.case_main[0].other_item.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
+                    //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    if (substr != null) {
+                        $("#tfb7_Z17t").val(substr[1]);
+                    } else {
+                        $("#tfb7_" + arr_remark1[i]).prop("checked", true);
+                    }
+                }
+            }
         }
     }
 </script>

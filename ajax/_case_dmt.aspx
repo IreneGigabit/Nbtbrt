@@ -23,6 +23,7 @@
 
     protected string br_in_scode = "";//交辦單營洽
     protected string br_in_scname = "";//交辦單營洽
+    protected string casefee_oth_money = "";//轉帳金額合計抓收費標準
     
     Sys sfile = new Sys();
 
@@ -38,6 +39,7 @@
         
         br_in_scode = Sys.GetSession("scode");
         br_in_scname = Sys.GetSession("sc_name");
+        casefee_oth_money = "0";
         sfile.getFileServer(Sys.GetSession("SeBranch"), "brt");//檔案上傳相關設定
 
         var settings = new JsonSerializerSettings()
@@ -49,16 +51,18 @@
         
         Response.Write("{");
         Response.Write("\"case_main\":" + JsonConvert.SerializeObject(GetCase(), settings).ToUnicode() + "\n");
-        Response.Write(",\"case_item\":" + JsonConvert.SerializeObject(GetCaseItem(), settings).ToUnicode() + "\n");
+        Response.Write(",\"case_item\":" + JsonConvert.SerializeObject(GetCaseItem(), settings).ToUnicode() + "\n");//交辦費用.案性
         Response.Write(",\"case_good\":" + JsonConvert.SerializeObject(GetCaseGood(), settings).ToUnicode() + "\n");
         Response.Write(",\"case_show\":" + JsonConvert.SerializeObject(GetCaseShow(), settings).ToUnicode() + "\n");
         Response.Write(",\"case_attach\":" + JsonConvert.SerializeObject(GetCaseAttach(), settings).ToUnicode() + "\n");
         Response.Write(",\"case_tran\":" + JsonConvert.SerializeObject(GetCaseTran(), settings).ToUnicode() + "\n");
         Response.Write(",\"case_tranlist\":" + JsonConvert.SerializeObject(GetCaseTranlist(), settings).ToUnicode() + "\n");
         Response.Write(",\"cust\":" + JsonConvert.SerializeObject(GetCust(), settings).ToUnicode() + "\n");
+        Response.Write(",\"case_sql\":" + JsonConvert.SerializeObject(GetCaseSql(), settings).ToUnicode() + "\n");//一案多件.副案
         //Response.Write(",\"salesList\":" + JsonConvert.SerializeObject(GetSales(), settings).ToUnicode() + "\n");
         Response.Write(",\"br_in_scode\":" + JsonConvert.SerializeObject(br_in_scode, settings).ToUnicode() + "\n");
         Response.Write(",\"br_in_scname\":" + JsonConvert.SerializeObject(br_in_scname, settings).ToUnicode() + "\n");
+        Response.Write(",\"casefee_oth_money\":" + JsonConvert.SerializeObject(casefee_oth_money, settings).ToUnicode() + "\n");
         Response.Write("}");
 
         //Response.Write(JsonConvert.SerializeObject(dt, settings).ToUnicode());
@@ -84,7 +88,7 @@
                 SQL += ",a.mark temp_mark,c.mark case_mark ";
                 SQL += " FROM dmt_temp A";
                 SQL += " inner join case_dmt c on a.in_no = c.in_no and a.in_scode = c.in_scode";
-                SQL += " WHERE A.in_no ='" + in_no + "'";
+                SQL += " WHERE A.in_no ='" + in_no + "' and a.case_sqlno=0";
                 conn.DataTable(SQL, dt);
 
                 if (dt.Rows.Count > 0) {
@@ -100,10 +104,19 @@
                             dt.Rows[0]["draw_file"] = strpath1 + "/" + newName;
                         }
                     }
-                    
+
                     SQL = "select sc_name from sysctrl.dbo.scode where scode='" + br_in_scode + "'";
                     object objResult = conn.ExecuteScalar(SQL);
                     br_in_scname = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+                    //轉帳金額合計抓收費標準
+                    SQL = "select b.service ";
+                    SQL += "from case_dmt a ";
+                    SQL += "inner join case_fee b on a.oth_arcase=b.rs_code ";
+                    SQL += "where and a.in_no= '" + in_no + "' and a.in_scode='" + br_in_scode + "' ";
+                    SQL += "and b.dept='T' and b.country='T'  and getdate() between b.beg_date and b.end_date";
+                    objResult = conn.ExecuteScalar(SQL);
+                    casefee_oth_money = (objResult == DBNull.Value || objResult == null) ? "0" : objResult.ToString();
                 }
 
             }
@@ -210,6 +223,17 @@
             SQL += " FROM vcustlist b ";
             SQL += "where cust_area='" + cust_area + "' ";
             SQL += "and cust_seq='" + cust_seq + "'";
+            conn.DataTable(SQL, dt);
+        }
+        return dt;
+    }
+    #endregion
+    
+    #region GetCust 一案多件.副案
+    private DataTable GetCaseSql() {
+        DataTable dt = new DataTable();
+        using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            SQL = "Select * from dmt_temp where in_no='" + in_no + "' and in_scode='" + br_in_scode + "' and case_sqlno<>0";
             conn.DataTable(SQL, dt);
         }
         return dt;

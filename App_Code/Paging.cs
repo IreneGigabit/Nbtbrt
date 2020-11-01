@@ -86,4 +86,23 @@ public class Paging
         }
         return rtn;
     }
+
+    /// <summary>
+    /// 分頁submit隱藏欄位
+    /// </summary>
+    public string GetHiddenText(string exclud) {
+        string rtn = "";
+        string[] excludArray = exclud.Split(',');
+
+        Dictionary<string, string> ReqVal = Util.GetRequestParam(HttpContext.Current);
+        foreach (KeyValuePair<string, string> p in ReqVal) {
+            var pos = Array.FindIndex(excludArray
+                , x => string.Equals(x, p.Key, StringComparison.InvariantCultureIgnoreCase));
+            if (pos == -1) {
+                //rtn += string.Format(p.Key + ":<input type=\"text\" id=\"{0}\" name=\"{0}\" value=\"{1}\">\n", p.Key, p.Value);
+                rtn += string.Format("<input type=\"hidden\" id=\"{0}\" name=\"{0}\" value=\"{1}\">\n", p.Key, p.Value);
+            }
+        }
+        return rtn;
+    }
 }

@@ -30,10 +30,10 @@
 		<tr>
 			<td class="lightbluetable" align=right width="10%">一、變更種類：</td>
 		    <td class="whitetablebg">
-		       <input type=radio name=tfzd_Mark id=tfzd_MarkI value="I">商標(標章)權人
-		       <input type=radio name=tfzd_Mark id=tfzd_MarkA value="A">被授權人
-               <input type=radio name=tfzd_Mark id=tfzd_MarkB value="B">再被授權人
-               <input type=radio name=tfzd_Mark id=tfzd_MarkC value="C">質權人(請撰擇其一)
+		       <input type=radio name=tfzd_Mark id=tfzd_MarkI class="onoff" value="I">商標(標章)權人
+		       <input type=radio name=tfzd_Mark id=tfzd_MarkA class="onoff" value="A">被授權人
+               <input type=radio name=tfzd_Mark id=tfzd_MarkB class="onoff" value="B">再被授權人
+               <input type=radio name=tfzd_Mark id=tfzd_MarkC class="onoff" value="C">質權人(請撰擇其一)
             </td>   
         </tr> 
         <tr>

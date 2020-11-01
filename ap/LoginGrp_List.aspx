@@ -16,7 +16,6 @@
     protected string SQL = "";
 
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
-    protected string hiddenText = "";
     protected Paging page = new Paging(1, 20);
     protected string syscode = "";
     protected string logingrp = "";
@@ -30,12 +29,6 @@
         logingrp = Request["logingrp"] ?? "";
         
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
-        foreach (KeyValuePair<string, string> p in ReqVal) {
-            if (String.Compare(p.Key, "GoPage", true) != 0
-                && String.Compare(p.Key, "PerPage", true) != 0
-                && String.Compare(p.Key, "SetOrder", true) != 0)
-                hiddenText += string.Format("<input type=\"hidden\" id=\"{0}\" name=\"{0}\" value=\"{1}\">\n", p.Key, p.Value);
-        }
 
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
@@ -109,7 +102,7 @@
     </tr>
 </table>
 <form id="reg" name="reg" method="post">
-    <%#hiddenText%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>

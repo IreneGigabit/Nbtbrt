@@ -39,27 +39,27 @@
 	<tr>
 		<td class=lightbluetable align=right >程序種類：</td>
 		<td class=whitetablebg colspan="7">
-			<input type=radio name=tfzd_Mark value="A" onclick="br_form.change_no('A')">申請
-			<input type=radio name=tfzd_Mark value="I" onclick="br_form.change_no('I')">註冊
-			<input type=radio name=tfzd_Mark value="R" onclick="br_form.change_no('R')">核駁
+			<input type=radio name=tfzd_Mark class="onoff" value="A" onclick="br_form.change_no('A')">申請
+			<input type=radio name=tfzd_Mark class="onoff" value="I" onclick="br_form.change_no('I')">註冊
+			<input type=radio name=tfzd_Mark class="onoff" value="R" onclick="br_form.change_no('R')">核駁
 		</TD>					
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right ><span id=span_no></span>號數：</td>
 		<td class=whitetablebg colspan="3"><input type="text" id="no" name="no" value="" size="20" maxlength="20"></TD>
 		<td class=lightbluetable align=right >商標名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" id="fr_appl_name" name="fr_appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
+		<td class=whitetablebg colspan="3"><input type="text" id="fr_appl_name" name="fr_appl_name" class="onoff" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
 		<input type="hidden" value="" id=fr_issue_no name=fr_issue_no>
         </TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
 		<td class=whitetablebg colspan="7">
-			<input type=radio name=fr_S_Mark value="" onclick="dmt_form.change_mark(1, this)">商標
-			<input type=radio name=fr_S_Mark value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
-			<input type=radio name=fr_S_Mark value="N" onclick="dmt_form.change_mark(1, this)">團體商標
-			<input type=radio name=fr_S_Mark value="M" onclick="dmt_form.change_mark(1, this)">團體標章
-			<input type=radio name=fr_S_Mark value="L" onclick="dmt_form.change_mark(1, this)">證明標章
+			<input type=radio name=fr_S_Mark class="onoff" value="" onclick="dmt_form.change_mark(1, this)">商標
+			<input type=radio name=fr_S_Mark class="onoff" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
+			<input type=radio name=fr_S_Mark class="onoff" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+			<input type=radio name=fr_S_Mark class="onoff" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+			<input type=radio name=fr_S_Mark class="onoff" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
     <tr>

@@ -39,20 +39,20 @@
     <tr>
 		<td class=lightbluetable align=right >商標種類：</td>
 		<td class=whitetablebg>
-            <input type="radio" name="fr_S_Mark" value="" onclick="dmt_form.change_mark(1, this)">商標
-            <input type="radio" name="fr_S_Mark" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
-            <input type="radio" name="fr_S_Mark" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
-            <input type="radio" name="fr_S_Mark" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
-            <input type="radio" name="fr_S_Mark" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
+            <input type="radio" name="fr_S_Mark" class="onoff" value="" onclick="dmt_form.change_mark(1, this)">商標
+            <input type="radio" name="fr_S_Mark" class="onoff" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
+            <input type="radio" name="fr_S_Mark" class="onoff" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+            <input type="radio" name="fr_S_Mark" class="onoff" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+            <input type="radio" name="fr_S_Mark" class="onoff" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >註冊號數：</td>
-		<td class=whitetablebg><input type="text" id="fr_issue_no" name="fr_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
+		<td class=whitetablebg><input type="text" id="fr_issue_no" name="fr_issue_no" class="onoff" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標/標章名稱：</td>
-		<td class=whitetablebg><input type="text" id="fr_appl_name" name="fr_appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=rthis.value"></TD>
+		<td class=whitetablebg><input type="text" id="fr_appl_name" name="fr_appl_name" class="onoff" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=rthis.value"></TD>
 	</tr>
 	<tr style="display:none">
 		<td class="lightbluetable" colspan="2" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Term2)"><strong>肆、<u>原註冊證核准專用期間</u></strong></td>
@@ -146,8 +146,8 @@
 		        <tr>	
 			        <td class="lightbluetable" align="right" >類別種類：</td>
 			        <td class="whitetablebg" >
-				        <input type="radio" id=tfzd_class_typeI name=tfzd_class_type value="int">國際分類
-				        <input type="radio" id=tfzd_class_typeO name=tfzd_class_type value="old">舊類
+				        <input type="radio" id=tfzd_class_typeI name=tfzd_class_type class="onoff" value="int">國際分類
+				        <input type="radio" id=tfzd_class_typeO name=tfzd_class_type class="onoff" value="old">舊類
 			        </td>
 		        </tr>
 		        <tr>	
@@ -459,9 +459,8 @@
             if (jMain.case_good.length > 0) {
                 //類別種類
                 $("input[name='tfzd_class_type'][value='" + jMain.case_main[0].class_type + "']").prop('checked', true).triggerHandler("click");
-                $("#fr_class").val(jMain.case_main[0].class);
                 //指定使用商品／服務類別
-                $("#tfzd_class").val(jMain.case_main[0].class);//*類別
+                $("#tfzd_class,#fr_class").val(jMain.case_main[0].class);//*類別
                 $("#tfzd_class_count").val(jMain.case_good.length);//共N類
                 br_form.Add_classFR1(jMain.case_good.length);//產生筆數
                 $.each(jMain.case_good, function (i, item) {
@@ -479,7 +478,7 @@
                 var arr_remark1 = jMain.case_main[0].remark1.split("|");
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
-                    var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
                     var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
                     if (substr != null) {
                         $("#ttzd_Z9t").val(substr[1]);

@@ -36,7 +36,7 @@
 <input type="hidden" name="branch" id="branch" value=<%=Session["seBranch"]%>>
 <input type="hidden" name="tfy_end_flag" id="tfy_end_flag"><!--結案註記-->
 <input type="hidden" name="tfy_end_type" id="tfy_end_type"><!--結案原因-->
-<input type="hidden" name="tfy_end_remark" id="tfy_end_remark"><!--結案原因-->
+<input type="hidden" name="tfy_end_remark" id="tfy_end_remark"><!--結案說明-->
 <input type="hidden" name="tfy_back_flag" id="tfy_back_flag"><!--復案註記-->
 <input type="hidden" name="tfy_back_remark" id="tfy_back_remark"><!--復案原因-->
 <input type="hidden" name="oback_flag" id="oback_flag">
@@ -81,7 +81,7 @@
 		</td>
 		<td class=lightbluetable align=right>母案本所編號：</td>
 		<td class=whitetablebg colspan=3 >
-			<INPUT TYPE=text NAME="tfzd_ref_no" id="tfzd_ref_no" SIZE=5 MAXLENGTH=5>-<INPUT TYPE=text NAME="tfzd_ref_no1" id="tfzd_ref_no1" SIZE=1 MAXLENGTH=1 value="_">
+			<INPUT TYPE=text NAME="tfzd_ref_no" id="tfzd_ref_no" class="onoff" SIZE=5 MAXLENGTH=5>-<INPUT TYPE=text NAME="tfzd_ref_no1" id="tfzd_ref_no1" SIZE=1 MAXLENGTH=1 value="_">
 			<INPUT TYPE=button Name="but_ref" id="but_ref" onclick="delayNO1(reg.tfzd_ref_no.value,reg.tfzd_ref_no1.value)"  class="bluebutton" value="母案複製">
 			<!-- 程序客收移轉舊案要結案 2006/5/26 -->
 			<input type=hidden name="endflag51" id="endflag51" value="X">
@@ -130,7 +130,7 @@
 	<tr>
 		<td class="lightbluetable" align="right">客戶卷號：</td>
 		<td class="whitetablebg" colspan=7>
-			<input type="text" id="tfzd_cust_prod" name="tfzd_cust_prod" size="15">
+			<input type="text" id="tfzd_cust_prod" name="tfzd_cust_prod" class="onoff" size="15">
 		</td>
 	</tr>
 	<tr>
@@ -146,13 +146,13 @@
 	</tr>
 	<tr style="display:none" id="tfzd_Smark">
 		<td class=lightbluetable align=right>正商標號數：</td>
-		<td class=whitetablebg colspan=3><INPUT TYPE=text NAME=tfzd_Tcn_ref id=tfzd_Tcn_ref SIZE=7 alt="『正商標號數』"  MAXLENGTH="7" onblur="fDataLen(this)"></TD>
+		<td class=whitetablebg colspan=3><INPUT TYPE=text NAME=tfzd_Tcn_ref id=tfzd_Tcn_ref class="onoff" SIZE=7 alt="『正商標號數』"  MAXLENGTH="7" onblur="fDataLen(this)"></TD>
 		<td class=lightbluetable align=right>正商標類別：</td>
-		<td class=whitetablebg colspan=3><input TYPE=text NAME=tfzd_Tcn_Class id=tfzd_Tcn_Class SIZE=20 alt="『正商標類別』"  MAXLENGTH="20" onblur="fDataLen(this)"></td>
+		<td class=whitetablebg colspan=3><input TYPE=text NAME=tfzd_Tcn_Class id=tfzd_Tcn_Class class="onoff" SIZE=20 alt="『正商標類別』"  MAXLENGTH="20" onblur="fDataLen(this)"></td>
 	</tr>
 	<tr style="display:none" id="tfzd_Smark1">
 		<td class=lightbluetable align=right>正商標名稱：</td>
-		<td class=whitetablebg colspan=3><INPUT TYPE=text NAME=tfzd_Tcn_name id=tfzd_Tcn_name alt="『正商標名稱』" SIZE="20" MAXLENGTH="100" onblur="fDataLen(this)"></TD>
+		<td class=whitetablebg colspan=3><INPUT TYPE=text NAME=tfzd_Tcn_name id=tfzd_Tcn_name class="onoff" alt="『正商標名稱』" SIZE="20" MAXLENGTH="100" onblur="fDataLen(this)"></TD>
 		<td class=lightbluetable align=right>正商標種類：</td>
 		<td class=whitetablebg colspan=3>
             <select NAME=tfzd_Tcn_mark id=tfzd_Tcn_mark >
@@ -164,19 +164,19 @@
 	</tr>
     <tr>
 	    <td class=lightbluetable align=right>申請號數：</td>
-	    <td class=whitetablebg colspan=3><INPUT TYPE=text NAME=tfzd_apply_no id=tfzd_apply_no SIZE=20 alt="『申請號數』" MAXLENGTH="20" onblur="chk_dmt_applyno(this,9)"><input type="hidden" name=O_apply_no id=O_apply_no></TD>
+	    <td class=whitetablebg colspan=3><INPUT TYPE=text NAME=tfzd_apply_no id=tfzd_apply_no class="onoff" SIZE=20 alt="『申請號數』" MAXLENGTH="20" onblur="chk_dmt_applyno(this,9)"><input type="hidden" name=O_apply_no id=O_apply_no></TD>
 	    <td class=lightbluetable align=right>註冊號數：</td>
-	    <td class=whitetablebg colspan=3><input TYPE=text NAME=tfzd_issue_no id=tfzd_issue_no SIZE=20 alt="『註冊號數』" MAXLENGTH="20" onblur="chk_dmt_issueno(this,8)" ><input type="hidden" name=O_issue_no id=O_issue_no></td>
+	    <td class=whitetablebg colspan=3><input TYPE=text NAME=tfzd_issue_no id=tfzd_issue_no class="onoff" SIZE=20 alt="『註冊號數』" MAXLENGTH="20" onblur="chk_dmt_issueno(this,8)" ><input type="hidden" name=O_issue_no id=O_issue_no></td>
     </tr>
     <tr>
 	    <td class=lightbluetable align=right>商標名稱：</td>
-	    <td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_appl_name id=tfzd_appl_name alt="『商標名稱』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)"></TD>
+	    <td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_appl_name id=tfzd_appl_name class="onoff" alt="『商標名稱』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)"></TD>
     </tr>
 	<tr id=fileupload>
 		<td class=lightbluetable align=right>商標圖樣：</td>	
 		<td class=whitetablebg colspan=7>	
 			<input TYPE="hidden" id="file" name="file">
-	        <input TYPE="text" name="Draw_file" id="Draw_file" SIZE="50" maxlength="50" readonly>
+	        <input TYPE="text" name="Draw_file" id="Draw_file" SIZE="50" maxlength="50" class=SEdit readonly>
 			<input type="button" class="cbutton" id="butUpload" name="butUpload"  value="商標圖檔上傳" onclick="dmt_form.UploadAttach_photo('')" >
 		    <input type="button" class="redbutton" id="btnDelAtt" name="btnDelAtt"  value="商標圖檔刪除" onclick="dmt_form.DelAttach_photo('')" >
             <input type="button" class="cbutton" id="btnDisplay" name="btnDisplay" value="商標圖檔檢視" onclick="dmt_form.PreviewAttach_photo('')" >
@@ -185,29 +185,29 @@
 	</tr>	
 	<tr>
 		<td class=lightbluetable align=right>聲明不專用：</td>
-		<td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_Oappl_name id=tfzd_Oappl_name alt="『不單獨主張專用』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)" ></TD>
+		<td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_Oappl_name id=tfzd_Oappl_name class="onoff" alt="『不單獨主張專用』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)" ></TD>
 	</tr>			
 	<tr>
 		<td class=lightbluetable align=right>圖樣中文部份：</td>
-		<td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_Cappl_name id=tfzd_Cappl_name alt="『圖樣中文』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)" ></TD>
+		<td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_Cappl_name id=tfzd_Cappl_name class="onoff" alt="『圖樣中文』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)" ></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right>圖樣外文部份：</td>
 		<td class=whitetablebg colspan=7>
-			外文：<INPUT TYPE=text NAME=tfzd_Eappl_name id=tfzd_Eappl_name alt="『圖樣外文』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)" ><br>
-			中文字義：<input type=text name=tfzd_eappl_name1 id=tfzd_eappl_name1 alt="『中文字義』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)" ><br>
-			讀音：<input type=text name=tfzd_eappl_name2 id=tfzd_eappl_name2 alt="『讀音』" SIZE="30" MAXLENGTH="100" onblur="fDataLen(this)" >　
+			外文：<INPUT TYPE=text NAME=tfzd_Eappl_name id=tfzd_Eappl_name class="onoff" alt="『圖樣外文』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)" ><br>
+			中文字義：<input type=text name=tfzd_eappl_name1 id=tfzd_eappl_name1 class="onoff" alt="『中文字義』" SIZE="60" MAXLENGTH="100" onblur="fDataLen(this)" ><br>
+			讀音：<input type=text name=tfzd_eappl_name2 id=tfzd_eappl_name2 class="onoff" alt="『讀音』" SIZE="30" MAXLENGTH="100" onblur="fDataLen(this)" >　
 			語文別：<select NAME="tfzy_Zname_type" id="tfzy_Zname_type"><%#tfz_country%></select>
 			<input type="hidden" name="tfzd_Zname_type" id="tfzd_Zname_type">
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right>圖形描述：</td>
-		<td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_Draw id=tfzd_Draw alt="『圖形描述』" SIZE="50" MAXLENGTH="50" onblur="fDataLen(this)" ></TD>
+		<td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_Draw id=tfzd_Draw class="onoff" alt="『圖形描述』" SIZE="50" MAXLENGTH="50" onblur="fDataLen(this)" ></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right>記號說明：</td>
-		<td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_Symbol id=tfzd_Symbol alt="『記號說明』" SIZE="50" MAXLENGTH="50" onblur="fDataLen(this)" ></TD>
+		<td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_Symbol id=tfzd_Symbol class="onoff" alt="『記號說明』" SIZE="50" MAXLENGTH="50" onblur="fDataLen(this)" ></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right>圖樣顏色：</td>
@@ -229,26 +229,26 @@
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right>優先權申請案號：</td>
-		<td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_prior_no ID=tfzd_prior_no value="" size="10" maxlength="20"></td>
+		<td class=whitetablebg colspan=7><INPUT TYPE=text NAME=tfzd_prior_no ID=tfzd_prior_no class="onoff" value="" size="10" maxlength="20"></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" align="right">申請日期：</td>
-		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_apply_date"  id="tfzd_apply_date" SIZE="10" class="dateField"></TD>
+		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_apply_date" id="tfzd_apply_date" SIZE="10" class="dateField onoff"></TD>
 		<td class="lightbluetable" align="right">註冊日期：</td>
-		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_issue_date" id="tfzd_issue_date" SIZE="10" class="dateField"></TD>
+		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_issue_date" id="tfzd_issue_date" SIZE="10" class="dateField onoff"></TD>
 	</tr>
 	<tr>
 		<td class="lightbluetable" align="right">公告日期：</td>
-		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_open_date" id="tfzd_open_date" SIZE="10" class="dateField"></TD>
+		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_open_date" id="tfzd_open_date" SIZE="10" class="dateField onoff"></TD>
 		<td class="lightbluetable" align="right">核駁號：</td>
 		<td class="whitetablebg" colspan="3">
-            <input TYPE="text" NAME="tfzd_rej_no" id="tfzd_rej_no" SIZE="10" alt="『核駁號』"  MAXLENGTH="20" onblur="chk_dmt_rejno(this,7)">
+            <input TYPE="text" NAME="tfzd_rej_no" id="tfzd_rej_no" class="onoff" SIZE="10" alt="『核駁號』"  MAXLENGTH="20" onblur="chk_dmt_rejno(this,7)">
             <input type="hidden" name=O_rej_no id=O_rej_no>
 		</TD>
 	</tr>
 	<tr>
 		<td class="lightbluetable" align="right">結案日期：</td>
-		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_end_date" id="tfzd_end_date" SIZE="10" class="dateField"></TD>
+		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_end_date" id="tfzd_end_date" SIZE="10" class="dateField onoff"></TD>
 		<td class="lightbluetable" align="right">結案代碼：</td>
 		<td class="whitetablebg" colspan="3">
             <select NAME="tfzy_end_code" id="tfzy_end_code"><%#tfzy_end_code%></select>
@@ -258,10 +258,10 @@
 	<tr>
 		<td class="lightbluetable" align="right">專用期限：</td>
 		<td class="whitetablebg" colspan="3">
-            <input TYPE="text" NAME="tfzd_dmt_term1" id="tfzd_dmt_term1" SIZE="10" class="dateField">～<input TYPE="text" NAME="tfzd_dmt_term2" id="tfzd_dmt_term2" SIZE="10" class="dateField">
+            <input TYPE="text" NAME="tfzd_dmt_term1" id="tfzd_dmt_term1" SIZE="10" class="dateField onoff">～<input TYPE="text" NAME="tfzd_dmt_term2" id="tfzd_dmt_term2" SIZE="10" class="dateField onoff">
 		</TD>
 		<td class="lightbluetable" align="right">延展次數：</td>
-		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_renewal" id="tfzd_renewal" SIZE="2"></TD>
+		<td class="whitetablebg" colspan="3"><input TYPE="text" NAME="tfzd_renewal" id="tfzd_renewal" class="onoff" SIZE="2"></TD>
 	</tr>
 	<tr class='sfont9'>
 		<td colspan=8>
@@ -564,7 +564,7 @@
             if (IsNumeric($("#class1_" + nRow).val())) {
                 var x = ("000" + $("#class1_" + nRow).val()).Right(3);//補0
                 $("#class1_" + nRow).val(x);
-                dmt_form.checkclass(x);
+                //dmt_form.checkclass(x);
             } else {
                 alert("商品類別請輸入數值!!!");
                 $("#class1_" + nRow).val("");
@@ -747,8 +747,8 @@
         if (confirm("確定刪除上傳圖檔？")) {
             var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() +
                 "&btnname=butUpload" + pfld;
-            window.open(url, "myWindowOne1", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            //window.open(url, "myWindowOne1", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            window.open(url, "myWindowOneN", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            //window.open(url, "myWindowOneN", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
             $("#draw_attach_file").val("");
             $("#" + pfile_name).val("");
         }
@@ -780,8 +780,10 @@
 
     //查詢主案件編號
     dmt_form.Queryclick = function(cust_seq) {
-        //***todo
-        window.open("brta21Query.aspx?cust_seq="+cust_seq ,"myWindowOne", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open("brta21Query.aspx?cust_seq="+cust_seq ,"myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        /*$('#dialog')
+            .html('<iframe style="border: 0px;" src="brta21Query.aspx?cust_seq='+cust_seq+'" width="100%" height="100%"></iframe>')
+            .dialog({autoOpen: true,modal: true,height: 420,width: 650,title: "查詢主案件編號"});*/
     }
     dmt_form.mainseqChange = function(fld1) {
         $("#keyseq").val("N");
@@ -807,7 +809,7 @@
     dmt_form.Qstepclick = function(pseq,pseq1) {
         if (pseq!=""&&pseq1!=""){
             //***todo
-            window.open("/btbrt/brtam/brta61Edit.asp?submitTask=Q&qtype=A&prgid="+main.prgid+"&closewin=Y&winact=1&aseq=" &pseq& "&aseq1=" &pseq1,"myWindowOne", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+            window.open("/btbrt/brtam/brta61Edit.asp?submitTask=Q&qtype=A&prgid="+main.prgid+"&closewin=Y&winact=1&aseq=" &pseq& "&aseq1=" &pseq1,"myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
         }else{
             alert("請先輸入本所編號再執行維護功能!!!");
             return false;
@@ -846,11 +848,13 @@
 
     //*****將特定欄位disabled
     function Filereadonly(){
-        $("input[id^='tfzd'],input[name^='tfzd']").lock();
-        $("input[id^='fr'],input[name^='fr']").lock();
+        //$("input[id^='tfzd'],input[name^='tfzd']").lock();
+        //$("input[id^='fr'],input[name^='fr']").lock();
+        $(".onoff").lock();
         if (main.seq == "") {
-            $("input[id^='tfzd'],input[name^='tfzd']").val("");
-            $("input[id^='fr'],input[name^='fr']").val("");
+            //$("input[id^='tfzd']:not(:checked,:radio),input[name^='tfzd']:not(:checked,:radio)").val("");
+            //$("input[id^='fr']:not(:checked,:radio),input[name^='fr']:not(:checked,:radio)").val("");
+            $(".onoff:not(:checked,:radio)").val("");
         }
         $("input[name=tfzy_S_Mark],input[name=fr_S_Mark]").lock();//商標種類
         $("input[name=tfzd_s_mark2]").unlock();//商標種類2
@@ -882,8 +886,11 @@
 
     //*****將特定欄位enabled
     function Filecanput(){
-        $("input[id^='tfzd'],input[name^='tfzd']").unlock().val("");
-        $("input[id^='fr'],input[name^='fr']").unlock().val("");
+        //$("input[id^='tfzd']:not(:checked,:radio),input[name^='tfzd']:not(:checked,:radio)").unlock().val("");
+        //$("input[id^='fr']:not(:checked,:radio),input[name^='fr']:not(:checked,:radio)").unlock().val("");
+        $(".onoff").unlock();
+        $(".onoff:not(:checked,:radio)").val("");
+        $("#fr_fees").lock();//部份欄位不開啟
         $("input[name=tfzy_S_Mark],input[name=fr_S_Mark]").unlock();//商標種類
         $("input[name=tfzd_s_mark2]").unlock();//商標種類2
         $("#no").unlock();//號數
@@ -968,7 +975,10 @@
         } else if ($("#tfy_case_stat").val() == "OO") {//舊案
             $("#DelayCase").show();//舊案
             $("#CaseNew,#CaseNewAssign").hide();//新案/新案(指定編號)
-            $("#A9Ztr_endtype,#A9Ztr_backflag").show();//結案/復案
+            $("#A9Ztr_backflag").show();//復案
+            if ($("#tfy_Arcase").val().Left(2) == "XX") {
+                $("#A9Ztr_endtype").show();//結案
+            }
             dmt_form.Add_class(1);//預設顯示第1筆
             //一案多件
             $("#dseqa_1,#dseqb_1").unlock();

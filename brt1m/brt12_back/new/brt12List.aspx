@@ -305,7 +305,7 @@
             return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13ListA.aspx") +
                     "?in_scode=" + row.SafeRead("in_scode", "") +
                     "&in_no=" + row.SafeRead("in_no", "") +
-                    "&Ar_Form=" + row.SafeRead("ar_form", "") +
+                    "&ar_form=" + row.SafeRead("ar_form", "") +
                     "&homelist=" + Request["homelist"] +
                     "&qs_dept=T' target='Eblank'><font color=red>說明</font></a>";
         return "";

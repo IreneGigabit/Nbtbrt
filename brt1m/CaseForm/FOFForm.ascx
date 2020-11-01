@@ -82,7 +82,7 @@
 	</tr>
 	<tr>
 		<td class="whitetablebg" ></td>
-		<td class="whitetablebg" colspan=6><input TYPE=hidden NAME="tfzf_other_item2" >
+		<td class="whitetablebg" colspan=6><input TYPE=hidden id="tfzf_other_item2" NAME="tfzf_other_item2" >
 			<input type="radio" name="ttzf_F1" value="F2" onclick="br_form.CopyStr1(reg.tfzf_other_item2,'F2')">
 			(<input type="text" id="F2_yy" name="F2_yy" size="3" maxlength="5" onblur="br_form.CopyStr1(reg.tfzf_other_item2,'F2')">)慧商<input type="text" id="F2_word" name="F2_word" size="10" maxlength="20" onblur="br_form.CopyStr1(reg.tfzf_other_item2,'F2')">字第<input type="text" id="F2_no" name="F2_no" size=20 maxlength="30" onblur="br_form.CopyStr1(reg.tfzf_other_item2,'F2')">號書函
 		</td>
@@ -142,6 +142,29 @@
         console.log("fof.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            $("#tfzf_agt_no1").val(jMain.case_main[0].agt_no);
+            //商標種類
+            $("input[name=frf_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+            //申請/註冊號數
+            $("input[name=frf_mark][value='" + jMain.case_main[0].mark + "']").prop("checked", true).triggerHandler("click");
+            //號數
+            if (jMain.case_main[0].mark == "A") {
+                $("#no").val(jMain.case_main[0].apply_no);
+            } else if (jMain.case_main[0].mark == "I") {
+                $("#no").val(jMain.case_main[0].issue_no);
+            }
+            $("#frf_Appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            $("#tfzf_other_item").val(jMain.case_main[0].other_item);//國庫支票抬頭名稱
+            $("#tfzf_debit_money").val(jMain.case_main[0].debit_money);//退費金額
+            $("#tfzf_other_item1").val(jMain.case_main[0].other_item1);//規費收據號碼
+            $("#tfzf_other_item2").val(jMain.case_main[0].other_item2);//本局通知退費函字號
+            if ($("#tfzf_other_item2").val() != "") {
+                var strmark = $("#tfzf_other_item2").val().split("|");
+                $("input[name=ttzf_F1][value='" + strmark[0] + "']").prop("checked", true);
+                $("#" + strmark[0] + "_yy").val(strmark[1]);
+                $("#" + strmark[0] + "_word").val(strmark[2]);
+                $("#" + strmark[0] + "_no").val(strmark[3]);
+            }
         }
     }
 </script>

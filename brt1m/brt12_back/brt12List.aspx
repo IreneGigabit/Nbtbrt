@@ -16,7 +16,6 @@
     protected string SQL = "";
 
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
-    protected string hiddenText = "";
     protected Paging page = new Paging(1, 10);
     
     protected string StrFormBtnTop = "";
@@ -48,13 +47,7 @@
         cnn = new DBHelper(Conn.ODBCDSN).Debug(Request["chkTest"] == "TEST");
 
         ReqVal = Util.GetRequestParam(Context,Request["chkTest"] == "TEST");
-        foreach (KeyValuePair<string, string> p in ReqVal) {
-            if (String.Compare(p.Key, "GoPage", true) != 0
-                && String.Compare(p.Key, "PerPage", true) != 0
-                && String.Compare(p.Key, "SetOrder", true) != 0)
-                hiddenText += string.Format("<input type=\"hidden\" id=\"{0}\" name=\"{0}\" value=\"{1}\">\n", p.Key, p.Value);
-        }
-            submitTask = Request["submitTask"] ?? "";
+        submitTask = Request["submitTask"] ?? "";
 
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
@@ -316,7 +309,7 @@
             return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13ListA.aspx") + 
                     "?in_scode="+DataBinder.Eval(Container.DataItem, "in_scode").ToString()+
                     "&in_no="+DataBinder.Eval(Container.DataItem, "in_no").ToString()+
-                    "&Ar_Form="+DataBinder.Eval(Container.DataItem, "ar_form").ToString()+
+                    "&ar_form=" + DataBinder.Eval(Container.DataItem, "ar_form").ToString() +
                     "&homelist="+Request["homelist"]+
                     "&qs_dept=T' target='Eblank'><font color=red>說明</font></a>";
           return "";
@@ -351,7 +344,7 @@
 </table>
 
 <form style="margin:0;" id="regPage" name="regPage" method="post">
-    <%#hiddenText%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>

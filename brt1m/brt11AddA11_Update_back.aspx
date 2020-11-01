@@ -337,7 +337,7 @@
 
             strOut.AppendLine("document.location.href='Brt11addnext.aspx?prgid=" + prgid +
                 "&cust_area=" + Request["tfy_cust_area"] + "&cust_seq=" + Request["tfy_cust_seq"] +
-                "&in_no=" + RSno + "&add_arcase=" + Request["tfy_arcase"] + "&Ar_Form=" + Request["Ar_Form"] +
+                "&in_no=" + RSno + "&add_arcase=" + Request["tfy_arcase"] + "&ar_form=" + Request["ar_form"] +
                 "&code_type=" + Request["code_type"] + "&F_tscode=" + Request["F_tscode"] +
                 "&seq=" + Request["tfzb_seq"] + "&seq1=" + Request["tfzb_seq1"] +
                 "&prt_code=" + Request["prt_code"] + "&new_form=" + Request["new_form"] + "'");

@@ -75,6 +75,23 @@
         console.log("zz1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            $("#tfg1_agt_no1").val(jMain.case_main[0].agt_no);
+            //承辦內容說明
+            $("#tfg1_tran_remark1").val(jMain.case_main[0].tran_remark1);
+            //自請撤回聲明
+            $("input[name=tfw1_mod_claim1][value='" + jMain.case_main[0].mod_claim1 + "']").prop("checked", true);
+            //其他聲明事項
+            $("#tfw1_tran_remark1").val(jMain.case_main[0].tran_remark1);
+            //**附件
+            $("#tfw1_other_item").val(jMain.case_main[0].other_item);
+            if (jMain.case_main[0].other_item != "") {
+                var arr_remark1 = jMain.case_main[0].other_item.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
+                    //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    $("#tfw1_" + arr_remark1[i]).prop("checked", true);
+                }
+            }
         }
     }
 </script>

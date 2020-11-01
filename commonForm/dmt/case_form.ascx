@@ -149,7 +149,7 @@
 	            <tr id=tr_ta_##>
 		            <td class=lightbluetable align=right width="4%">##.其他費用：</td>
 		            <td class=whitetablebg align=left width="10%">
-		                <select id="nfyi_item_Arcase_##" name="nfyi_item_Arcase_##" onchange="case_form.ToFee('T',this.value ,reg.Ar_Form.value,'##')" class="<%=Lock["brt51"]%>">
+		                <select id="nfyi_item_Arcase_##" name="nfyi_item_Arcase_##" onchange="case_form.ToFee('T',this.value ,reg.ar_form.value,'##')" class="<%=Lock["brt51"]%>">
                         <%#nfyi_item_Arcase%>
 		                </select> x <input type=text id="nfyi_item_count_##" name="nfyi_item_count_##" size=3 maxlength=3 value="1" onblur="case_form.item_count('##')" class="<%=Lock["brt51"]%>">項
 		            </td>
@@ -175,7 +175,7 @@
 		    <TR>
 			    <TD class=lightbluetable align=right width="4%">轉帳費用：</TD>
 			    <TD class=whitetablebg width="11%">
-                    <select id=tfy_oth_arcase NAME=tfy_oth_arcase onchange="case_form.ToFee('T',this.value ,reg.Ar_Form.value,'10')" class="<%=Lock["brt51"]%>"><%#tfy_oth_arcase%></SELECT>
+                    <select id=tfy_oth_arcase NAME=tfy_oth_arcase onchange="case_form.ToFee('T',this.value ,reg.ar_form.value,'10')" class="<%=Lock["brt51"]%>"><%#tfy_oth_arcase%></SELECT>
 			    </TD>
 			    <TD class=lightbluetable align=right width=4%>轉帳金額：</TD>
 			    <TD class=whitetablebg width=5%><input type="text" id="nfy_oth_money" name="nfy_oth_money" size="8" style="text-align:right;" onblur="case_form.summary()" class="<%=Lock["brt51"]%>"></TD>
@@ -349,7 +349,7 @@
         //    });
         //}
        
-        if ($("#Ar_Form").val() == "A0" || $("#Ar_Form").val() == "A1") {
+        if ($("#ar_form").val() == "A0" || $("#ar_form").val() == "A1") {
             //對應後續交辦作業序號(新申請案不用顯示)
             $("#tr_grconf").hide();
             //後續案無契約書(新申請案不用顯示)
@@ -452,7 +452,7 @@
         //***2010/6/7因應結案流程修改，交辦結案代碼XX1~XX4且為舊案,顯示結案原因
         //***2010/10/12因增加結案選項，提醒交辦結案案性是否結案
         //***2011/1/10因交辦其他案性也可勾選結案註記，所以每個畫面加結案註記，因此結案案性畫面欄位名稱修改
-        if (prt_code == "ZZ" && $("#Ar_Form").val().Left(1) != "B") {
+        if (prt_code == "ZZ" && $("#ar_form").val().Left(1) != "B") {
             if ($("#tfy_Arcase").val().Left(2) == "XX") {
                 $("#A9Ztr_endtype").show();
                 if (confirm("交辦結案案性，請問是否結案？※確認結案則系統將續行結案流程並管制結案期限。")) {
@@ -472,7 +472,7 @@
         $("#spe_ctrl3").val("");
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/json_Fee.aspx?type=spectrl&country=" + x1 + "&Arcase=" + x2 + "&Ar_Form=" + $("#Ar_Form").val() + "&prgid=<%#prgid%>",
+            url: getRootPath() + "/ajax/json_Fee.aspx?type=spectrl&country=" + x1 + "&Arcase=" + x2 + "&ar_form=" + $("#ar_form").val() + "&prgid=<%#prgid%>",
             async: false,
             cache: false,
             success: function (json) {
@@ -512,7 +512,7 @@
         $("#tfy_oth_arcase").val("");
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/json_Fee.aspx?type=Arcase&country=" + x1 + "&Arcase=" + x2 + "&Ar_Form=" + x3 + "&mark=M&prgid=<%#prgid%>",
+            url: getRootPath() + "/ajax/json_Fee.aspx?type=Arcase&country=" + x1 + "&Arcase=" + x2 + "&ar_form=" + x3 + "&mark=M&prgid=<%#prgid%>",
             async: false,
             cache: false,
             success: function (json) {
@@ -523,7 +523,7 @@
                         $("#tfy_oth_arcase").val(item.rs_code);
                     }
                 });
-                case_form.ToFee("T", $("#tfy_oth_arcase").val(), $("#Ar_Form").val(), "10");
+                case_form.ToFee("T", $("#tfy_oth_arcase").val(), $("#ar_form").val(), "10");
             },
             error: function (xhr) { 
                 $("#dialog").html("<a href='" + this.url + "' target='_new'>取得轉帳費用失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
@@ -575,7 +575,7 @@
 
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/json_Fee.aspx?type=Fee&country=" + x1 + "&Arcase=" + x2 + "&Ar_Form=" + x3 + "&Service=" + x4 + "&prgid=<%#prgid%>",
+            url: getRootPath() + "/ajax/json_Fee.aspx?type=Fee&country=" + x1 + "&Arcase=" + x2 + "&ar_form=" + x3 + "&Service=" + x4 + "&prgid=<%#prgid%>",
             async: false,
             cache: false,
             success: function (json) {
@@ -640,7 +640,7 @@
         $("#OthSum").val(nfy_service + nfy_fees + CInt($("#nfy_oth_money").val()));
         case_form.special();
 
-        if ($("#Ar_Form").val() == "A3") {//註冊費
+        if ($("#ar_form").val() == "A3") {//註冊費
             $("#fr_fees").val(nfy_fees);//繳費金額=規費
         }
 
@@ -659,6 +659,7 @@
     case_form.special = function () {
         if ($("#tfy_Ar_mark").val()=="") return false;
         $("#span_discount_remark").hide();
+        $("#tfy_discount_remark").val("");
 	
         if($("#tfy_Ar_mark").val()== "X"){
             $("#nfy_Discount").val(0);
@@ -755,7 +756,7 @@
 
         var url = getRootPath() + "/brt1m/brt11Qlist.aspx?prgid=<%=prgid%>&qrytype=" + act;
         url += "&cust_seq=" + $("#F_cust_seq").val() + "&scode=" + $("#F_tscode") + "&grconf_sqlno=" + $("#grconf_sqlno").val();
-        window.open(url, "myWindowOne", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(url, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
     //查詢總契約書

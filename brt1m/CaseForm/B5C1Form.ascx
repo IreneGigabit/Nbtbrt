@@ -37,11 +37,11 @@
 	<tr>
 		<td class=lightbluetable align=right>商標種類：</td>
 		<td class=whitetablebg colspan="3" >
-			<input type=radio name=fr4_S_Mark value="" onclick="dmt_form.change_mark(1, this)">商標
-			<input type=radio name=fr4_S_Mark value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
-			<input type=radio name=fr4_S_Mark value="N" onclick="dmt_form.change_mark(1, this)">團體商標
-			<input type=radio name=fr4_S_Mark value="M" onclick="dmt_form.change_mark(1, this)">團體標章
-			<input type=radio name=fr4_S_Mark value="L" onclick="dmt_form.change_mark(1, this)">證明標章
+			<input type=radio name=fr4_S_Mark class="onoff" value="" onclick="dmt_form.change_mark(1, this)">商標
+			<input type=radio name=fr4_S_Mark class="onoff" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
+			<input type=radio name=fr4_S_Mark class="onoff" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+			<input type=radio name=fr4_S_Mark class="onoff" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+			<input type=radio name=fr4_S_Mark class="onoff" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
 	<tr>
@@ -175,6 +175,35 @@
         console.log("b5c1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            $("#tfp4_agt_no").val(jMain.case_main[0].agt_no);
+            //商標種類
+            $("input[name=fr4_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+            $("#fr4_issue_no").val(jMain.case_main[0].issue_no);//註冊號數
+            $("#fr4_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            //案件種類
+            $("input[name=fr4_remark3][value='" + jMain.case_main[0].remark3 + "']").prop("checked", true);
+            //申請人種類
+            $("input[name=fr4_Mark][value='" + jMain.case_main[0].dmt_mark + "']").prop("checked", true);
+            //出席代表種類
+            $("input[name=fr4_tran_mark][value='" + jMain.case_main[0].tran_mark + "']").prop("checked", true);
+            $("#fr4_other_item").val(jMain.case_main[0].other_item2);//指定發言姓名
+            $("#fr4_other_item1").val(jMain.case_main[0].other_item1);//職稱
+            $("#fr4_other_item2").val(jMain.case_main[0].other_item2);//聯絡電話
+            //對造當事人
+            $.each(jMain.case_tranlist, function (i, item) {
+                if (item.mod_field == "mod_client") {
+                    //增加一筆
+                    $("#DE1_AP_Add_button").click();
+                    //填資料
+                    var nRow = $("#DE1_apnum").val();
+                    $("#tfr4_ncname1_" + nRow).val(item.ncname1);
+                    $("#tfr4_naddr1_" + nRow).val(item.naddr1);
+                }
+            });
+            if (CInt($("#DE1_apnum").val()) == 0) {
+                alert("查無此交辦案件之對造當事人資料!!");
+            }
+            $("#fr4_tran_remark1").val(jMain.case_main[0].tran_remark1);
         }
     }
 </script>

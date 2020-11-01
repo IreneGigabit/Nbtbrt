@@ -48,25 +48,25 @@
 	<tr>
 		<td class=lightbluetable align=right >一、原註冊案號：</td>
 		<td class=whitetablebg colspan="7">
-			<input type=text id=fr2_issue_no name=fr2_issue_no onchange="reg.tfzd_issue_no.value=this.value">
+			<input type=text id=fr2_issue_no name=fr2_issue_no class="onoff" onchange="reg.tfzd_issue_no.value=this.value">
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >二、商標／標章名稱：</td>
 		<td class=whitetablebg colspan="7">
-			<input type=text id=fr2_appl_name name=fr2_appl_name onchange="reg.tfzd_appl_name.value=this.value">
+			<input type=text id=fr2_appl_name name=fr2_appl_name class="onoff" onchange="reg.tfzd_appl_name.value=this.value">
 		</TD>
 	</tr>
     <tr>
 		<td class=lightbluetable align=right >三、商標種類：</td>
 		<td class=whitetablebg colspan="7">
-            <input type="radio" name="fr2_S_Mark" value="" onclick="dmt_form.change_mark(1, this)">商標
-            <input type="radio" name="fr2_S_Mark" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
-            <input type="radio" name="fr2_S_Mark" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+            <input type="radio" name="fr2_S_Mark" class="onoff" value="" onclick="dmt_form.change_mark(1, this)">商標
+            <input type="radio" name="fr2_S_Mark" class="onoff" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
+            <input type="radio" name="fr2_S_Mark" class="onoff" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
             <span id="fr2_smark" style="display:none">
-                <input type="radio" name="fr2_S_Mark" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+                <input type="radio" name="fr2_S_Mark" class="onoff" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
             </span>
-            <input type="radio" name="fr2_S_Mark" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
+            <input type="radio" name="fr2_S_Mark" class="onoff" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
 	<tr>
@@ -294,6 +294,73 @@
         console.log("fd2.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            //*出名代理人代碼
+            $("#ttg2_agt_no").val(jMain.case_main[0].agt_no);
+
+            $("#fr2_issue_no").val(jMain.case_main[0].issue_no);//原註冊案號
+            $("#fr2_appl_name").val(jMain.case_main[0].appl_name);//商標／標章名稱
+            //商標種類
+            $("input[name=fr2_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+            //分割件數
+            if (main.prgid == "brt52") {
+                $("#tot_num2").lock();
+            }
+            $("#tot_num2,#nfy_tot_num").val(jMain.case_main[0].tot_num);
+            br_form.Add_arcaseFD2(jMain.case_main[0].tot_num);
+            $.each(jMain.case_sql, function (i, item) {
+                var spl_num = (i + 1);
+                if (main.prgid == "brt52") {
+                    $("#FD2_seqb_" + spl_num).val(item.seq);
+                    $("#FD2_seq1b_" + spl_num).val(item.seq1);
+                }
+                $("#FD2_case_sqlno_" + spl_num).val(item.case_sqlno);//流水號
+                $("#FD2_class_count_" + spl_num).val(item.class_count);//共N類
+                $("#FD2_class_" + spl_num).val(item.class);//類別
+                //類別種類
+                $("input[name='FD2_class_type_" + spl_num + "'][value='" + item.class_type + "']").prop('checked', true);
+                //名稱種類
+                $("input[name='FD2_Markb_" + spl_num + "'][value='" + item.mark + "']").prop('checked', true);
+                //產生分割_類別
+                br_form.Add_classFD2(spl_num, item.class_count);
+                $.each(jMain.case_good, function (i, item) {
+                    var good_num = (i + 1);
+                    if (item.case_sqlno == $("#FD2_case_sqlno_" + spl_num).val()) {
+                        $("#classb_" + spl_num + "_" + good_num).val(item.class);//第X類
+                        $("#FD2_good_countb_" + good_num).val(item.dmt_goodcount);//共N項
+                        $("#FD2_good_nameb_" + good_num).val(item.dmt_goodname);//商品名稱
+                    }
+                });
+                br_form.count_kindFD2(spl_num, 1);////類別串接
+            });
+            //分割後申請案性
+            $("#tfg2_div_arcase").val(jMain.case_main[0].div_arcase);
+            //**備註
+            if (jMain.case_tran.length > 0) {
+                if (jMain.case_tran[0].other_item.indexOf(";") > -1) {
+                    var oitem = jMain.case_tran[0].other_item.split(";");
+                    $("#O_item21").val(oitem[0]);
+                    $("input[name='O_item22'][value='" + oitem[1] + "']").prop('checked', true);
+                    $("#O_item23").val(oitem[2]);
+                }
+            }
+            //**附件
+            $("#tfzd_remark1").val(jMain.case_main[0].remark1);
+            if (jMain.case_main[0].remark1 != "") {
+                var arr_remark1 = jMain.case_main[0].remark1.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    //var str="Z2;2|Z3;3|Z4|Z9;333xxxxx|";
+                    var Rem_detail = arr_remark1[i].split(";");
+                    $("#ttz2_" + Rem_detail[0]).prop("checked", true);
+                    $("#ttz2_" + Rem_detail[0] + "C").val(Rem_detail[1]);//副本數
+                    $("#ttz2_" + Rem_detail[0] + "t").val(Rem_detail[1]);//其他證明文件說明
+                }
+            }
+            //主檔商標種類控制
+            $("#fr_smark2").hide();
+            $("#smark,#fr_smark1,#fr_smark3").show();
+            if (main.prgid != "brt52") {
+                $('#tfy_case_stat option:eq(1)').val("").text("");//案件種類
+            }
         }
     }
 </script>

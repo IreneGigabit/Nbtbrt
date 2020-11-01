@@ -15,7 +15,8 @@ public partial class Sys
     /// 組本所編號
     /// </summary>  
     public static string formatSeq(string seq, string seq1, string country, string branch, string dept) {
-        string lseq = branch + dept + "-" + seq;
+        string lseq = branch + dept;
+        lseq += (lseq != "" ? "-" : "") + seq;
         lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
         return lseq;

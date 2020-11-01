@@ -48,18 +48,17 @@
 		<td class=lightbluetable align=right ><span id=span_no></span>號數：</td>
 		<td class=whitetablebg colspan="3"><input type="text" id="no" name="no" value="" size="20" maxlength="20"></TD>
 		<td class=lightbluetable align=right >商標名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" id="fr_appl_name" name="fr_appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
-		    <input type="hidden" value="" id=fr_issue_no name=fr_issue_no>
+		<td class=whitetablebg colspan="3"><input type="text" id="fr_appl_name" name="fr_appl_name" class="onoff" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
 		<td class=whitetablebg colspan="7">
-			<input type=radio name=fr_S_Mark value="" onclick="dmt_form.change_mark(1, this)">商標
-			<input type=radio name=fr_S_Mark value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
-			<input type=radio name=fr_S_Mark value="N" onclick="dmt_form.change_mark(1, this)">團體商標
-			<input type=radio name=fr_S_Mark value="M" onclick="dmt_form.change_mark(1, this)">團體標章
-			<input type=radio name=fr_S_Mark value="L" onclick="dmt_form.change_mark(1, this)">證明標章
+			<input type=radio name=fr_S_Mark class="onoff" value="" onclick="dmt_form.change_mark(1, this)">商標
+			<input type=radio name=fr_S_Mark class="onoff" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
+			<input type=radio name=fr_S_Mark class="onoff" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+			<input type=radio name=fr_S_Mark class="onoff" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+			<input type=radio name=fr_S_Mark class="onoff" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
 	<tr>
@@ -179,6 +178,40 @@
         console.log("fob.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            $("#tfg2_agt_no1").val(jMain.case_main[0].agt_no);
+            //程序種類
+            $("input[name=fr_mark][value='" + jMain.case_main[0].dmt_mark + "']").prop("checked", true).triggerHandler("click");
+            //號數
+            if(jMain.case_main[0].dmt_mark=="A"){
+                $("#no").val(jMain.case_main[0].apply_no);
+            }else if(jMain.case_main[0].dmt_mark=="I"){
+                $("#no").val(jMain.case_main[0].issue_no);
+            }else if(jMain.case_main[0].dmt_mark=="R"){
+                $("#no").val(jMain.case_main[0].rej_no);
+            }
+            $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            //商標種類
+            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+            //影印內容
+            $("#tfg1_other_item").val(jMain.case_main[0].other_item);
+            if (jMain.case_main[0].other_item != "") {
+                var arr_remark1 = jMain.case_main[0].other_item.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
+                    //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    $("#ttz1_" + arr_remark1[i]).prop("checked", true);
+                }
+            }
+
+            $.each(jMain.case_tranlist, function (i, item) {
+                if (item.mod_field == "other_item"){
+                    if (item.mod_dclass != "") {
+                        $("#" + item.mod_type + "_mod_dclass").val(item.mod_dclass);
+                    } else {
+                        $("#" + item.mod_type + "_mod_dclass").val(item.new_no);
+                    }
+                }
+            });
         }
     }
 </script>

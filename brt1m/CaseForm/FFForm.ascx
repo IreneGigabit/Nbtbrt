@@ -48,20 +48,20 @@
 		<td class=lightbluetable align=right id=no1 >申請號數：</td>
 		<td class=whitetablebg colspan="3" id=no2 ><input type="text" name="fr_apply_no" id="fr_apply_no" value="" size="20" maxlength="20" onchange="reg.tfzd_apply_no.value=this.value"></TD>
 		<td class=lightbluetable align=right id=no3 style="display:none">註冊號數：</td>
-		<td class=whitetablebg colspan="3" id=no4 style="display:none"><input type="text" name="fr_issue_no" id="fr_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
+		<td class=whitetablebg colspan="3" id=no4 style="display:none"><input type="text" name="fr_issue_no" id="fr_issue_no" class="onoff" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 		<td class=lightbluetable align=right >商標名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" name="fr_appl_name" id="fr_appl_name" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
+		<td class=whitetablebg colspan="3"><input type="text" name="fr_appl_name" id="fr_appl_name" class="onoff" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
 		<td class="whitetablebg" colspan=7>
-            <input type="radio" name="fr_S_Mark" value="" onclick="dmt_form.change_mark(1,this)">商標
+            <input type="radio" name="fr_S_Mark" class="onoff" value="" onclick="dmt_form.change_mark(1,this)">商標
 			<span id="smark2" style="display:none">
-            <input type="radio" name="fr_S_Mark" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
+            <input type="radio" name="fr_S_Mark" class="onoff" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
 			</span>
-            <input type="radio" name="fr_S_Mark" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
-            <input type="radio" name="fr_S_Mark" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
-            <input type="radio" name="fr_S_Mark" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
+            <input type="radio" name="fr_S_Mark" class="onoff" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+            <input type="radio" name="fr_S_Mark" class="onoff" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+            <input type="radio" name="fr_S_Mark" class="onoff" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
 	<tr>
@@ -103,14 +103,33 @@
             $("#tfg1_agt_no1").val(jMain.case_main[0].agt_no);//*出名代理人代碼
             $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);//*出名代理人代碼
             //**繳費金額
-            if ($("#tfy_Arcase").val() == "FF0") {
-                $("#span_issue_money").html("全期(第一至第十年)");
-            } else if ($("#tfy_Arcase").val() == "FF1") {
-                $("#span_issue_money").html("第一期(第一至第三年)");
-            } else if ($("#tfy_Arcase").val() == "FF2") {
-                $("#span_issue_money").html("第二期(第四至第十年)");
-            } else if ($("#tfy_Arcase").val() == "FF3") {
-                $("#span_issue_money").html("加倍繳納第二期(第四至第十年)");
+            $("#smark2,#smark").hide();
+            $("#no1,#no2,#no3,#no4").hide();
+            switch ($("#tfy_Arcase").val().Left(3)) {
+                case "FF0": case "FF4":
+                    if ($("#tfy_Arcase").val().Left(3) == "FF0") {
+                        $("#span_issue_money").html("自審定書送達之次日起2個月內，應繳納");
+                    } else {
+                        $("#span_issue_money").html("自審定書送達之次日起2個月期限屆期後6個月內，應繳納2倍");
+                        //FF4商標申請的附件
+                        $("#tabrem4").show();
+                    }
+                    $("#no1,#no2").show();
+                    break;
+                case "FF1":
+                    $("#span_issue_money").html("第一期(第一至第三年)");
+                    $("#no1,#no2").show();
+                    break;
+                case "FF2":
+                    $("#smark2,#smark").show();
+                    $("#span_issue_money").html("第二期(第四至第十年)");
+                    $("#no3,#no4").show();
+                    break;
+                case "FF3":
+                    $("#smark2,#smark").show();
+                    $("#span_issue_money").html("加倍繳納第二期(第四至第十年)");
+                    $("#no3,#no4").show();
+                    break;
             }
             $("#fr_Fees").val(jMain.case_main[0].fees);
            
@@ -128,7 +147,7 @@
                 var arr_remark1 = jMain.case_main[0].remark1.split("|");
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
-                    var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
                     var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
                     if (substr != null) {
                         $("#FF4_Z9t").val(substr[1]);

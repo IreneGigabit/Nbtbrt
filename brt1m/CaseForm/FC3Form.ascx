@@ -39,20 +39,20 @@
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
 		<td class=whitetablebg colspan="7">
-			<input type=radio name=fr_S_Mark value="" onclick="dmt_form.change_mark(1, this)">商標
-			<input type=radio name=fr_S_Mark value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
-			<input type=radio name=fr_S_Mark value="N" onclick="dmt_form.change_mark(1, this)">團體商標
-			<input type=radio name=fr_S_Mark value="M" onclick="dmt_form.change_mark(1, this)">團體標章
-			<input type=radio name=fr_S_Mark value="L" onclick="dmt_form.change_mark(1, this)">證明標章
+			<input type=radio name=fr_S_Mark class="onoff" value="" onclick="dmt_form.change_mark(1, this)">商標
+			<input type=radio name=fr_S_Mark class="onoff" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
+			<input type=radio name=fr_S_Mark class="onoff" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+			<input type=radio name=fr_S_Mark class="onoff" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+			<input type=radio name=fr_S_Mark class="onoff" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >註冊號數：</td>
-		<td class=whitetablebg colspan="7"><input type="text" id="fr3_issue_no" name="fr3_issue_no" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
+		<td class=whitetablebg colspan="7"><input type="text" id="fr3_issue_no" name="fr3_issue_no" class="onoff" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標/標章名稱：</td>
-		<td class=whitetablebg colspan="7"><input type="text" id="fr3_appl_name" name="fr3_appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
+		<td class=whitetablebg colspan="7"><input type="text" id="fr3_appl_name" name="fr3_appl_name" class="onoff" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan=8 valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(m5Good1)"><strong>肆、<u>擬減縮商品（服務）名稱</u></strong></td>

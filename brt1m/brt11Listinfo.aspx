@@ -141,7 +141,7 @@
     <input type=hidden id=prgid name=prgid value="<%#prgid%>">
     <input type=hidden id=cust_area name=cust_area>
     <input type=hidden id=cust_seq name=cust_seq>
-    <input type=hidden id=Ar_Form name=Ar_Form>
+    <input type=hidden id=ar_form name=ar_form>
     <input type=hidden id=prt_code name=prt_code>
     <input type=hidden id=new_form name=new_form>
     <input type=hidden id=submitTask name=submitTask>
@@ -236,7 +236,7 @@
         reg.cust_seq.value = y;
         reg.submitTask.value = "Add";
         
-        reg.Ar_Form.value = oThis.val();
+        reg.ar_form.value = oThis.val();
         reg.prt_code.value = $('option:selected', oThis).attr('v1');
         reg.new_form.value = $('option:selected', oThis).attr('v2');//20201006原由form_name判斷案性入口aspx,改為remark
         reg.action = "Brt11Add" + reg.new_form.value + ".aspx";

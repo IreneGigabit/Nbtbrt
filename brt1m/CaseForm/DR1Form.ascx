@@ -61,11 +61,11 @@
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
 		<td class=whitetablebg colspan="7">
-			<input type=radio name=fr1_S_Mark value="" onclick="dmt_form.change_mark(1, this)">商標
-			<input type=radio name=fr1_S_Mark value="S" onclick="dmt_form.change_mark(1, this)">商標(92年修正前服務標章)
-			<input type=radio name=fr1_S_Mark value="N" onclick="dmt_form.change_mark(1, this)">團體商標
-			<input type=radio name=fr1_S_Mark value="M" onclick="dmt_form.change_mark(1, this)">團體標章
-			<input type=radio name=fr1_S_Mark value="L" onclick="dmt_form.change_mark(1, this)">證明標章
+			<input type=radio name=fr1_S_Mark class="onoff" value="" onclick="dmt_form.change_mark(1, this)">商標
+			<input type=radio name=fr1_S_Mark class="onoff" value="S" onclick="dmt_form.change_mark(1, this)">商標(92年修正前服務標章)
+			<input type=radio name=fr1_S_Mark class="onoff" value="N" onclick="dmt_form.change_mark(1, this)">團體商標
+			<input type=radio name=fr1_S_Mark class="onoff" value="M" onclick="dmt_form.change_mark(1, this)">團體標章
+			<input type=radio name=fr1_S_Mark class="onoff" value="L" onclick="dmt_form.change_mark(1, this)">證明標章
 		</TD>
 	</tr>
 	<tr>
@@ -75,14 +75,14 @@
 		</TD>
 		<td class=lightbluetable align=right width="18%">商標/標章名稱：</td>
 		<td class=whitetablebg colspan="3">
-			<input type="text" id="fr1_appl_name" name="fr1_appl_name" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
+			<input type="text" id="fr1_appl_name" name="fr1_appl_name" class="onoff" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value">
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >擬廢止之類別種類：</td>
 		<td class=whitetablebg colspan="3">
-			<input type="radio" id=fr1_class_typeI name=fr1_class_type value="int" onclick="reg.tfzr_class_type(0).checked = reg.fr1_class_type(0).checked">國際分類
-			<input type="radio" id=fr1_class_typeO name=fr1_class_type value="old" onclick="reg.tfzr_class_type(1).checked = reg.fr1_class_type(1).checked">舊類
+			<input type="radio" id=fr1_class_typeI name=fr1_class_type value="int" class="onoff" onclick="reg.tfzr_class_type(0).checked = reg.fr1_class_type(0).checked">國際分類
+			<input type="radio" id=fr1_class_typeO name=fr1_class_type value="old" class="onoff" onclick="reg.tfzr_class_type(1).checked = reg.fr1_class_type(1).checked">舊類
 		</TD>
 		<td class=lightbluetable align=right width="18%" STYLE="cursor:pointer;COLOR:BLUE" title="請輸入類別，並以逗號分開(例如：001,005,032)。">擬廢止之類別：</td>
 		<td class=whitetablebg colspan="3">
