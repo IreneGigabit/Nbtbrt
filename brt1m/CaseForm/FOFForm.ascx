@@ -144,7 +144,7 @@
         } else {
             $("#tfzf_agt_no1").val(jMain.case_main[0].agt_no);
             //商標種類
-            $("input[name=frf_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+            $("input[name=frf_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
             //申請/註冊號數
             $("input[name=frf_mark][value='" + jMain.case_main[0].mark + "']").prop("checked", true).triggerHandler("click");
             //號數

@@ -104,6 +104,35 @@
         console.log("fi1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            $("#tfg1_agt_no1").val(jMain.case_main[0].agt_no);//代理人
+            $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);//代理人
+            $("#fr_issue_no").val(jMain.case_main[0].issue_no);//註冊號
+            $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            //商標種類
+            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            //遺失聲明
+            $("input[name=tfg1_mod_claim1][value='" + jMain.case_main[0].mod_claim1 + "']").prop("checked", true);
+            //**附件
+            $("#tfzd_remark1").val(jMain.case_main[0].remark1);
+            if (jMain.case_main[0].remark1 != "") {
+                var arr_remark1 = jMain.case_main[0].remark1.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
+                    //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    if (substr != null) {
+                        $("#ttz1_Z9t").val(substr[1]);
+                    } else {
+                        $("#ttz1_" + arr_remark1[i]).prop("checked", true);
+                    }
+                }
+            }
+            //**附註
+            if (jMain.case_tran[0].other_item.indexOf(";") > -1) {
+                var oitem = jMain.case_tran[0].other_item.split(";");
+                $("#O_item1").val(oitem[0]);
+                $("input[name=O_item2][value='" + oitem[1] + "']").prop("checked", true);
+            }
         }
     }
 </script>

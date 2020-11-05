@@ -167,9 +167,6 @@
 <script language="javascript" type="text/javascript">
     var apcust_form={};
     apcust_form.init = function () {
-        if (main.ar_form == "A8") {
-            $("#tr_tg_arf").show();
-        }
     }
     
     //增加一筆申請人
@@ -193,7 +190,8 @@
         $("#FC_apnum").val(Math.max(0, nRow - 1));
     }
 
-    apcust_form.getapp=function(apcust_no,in_no){
+    apcust_form.getapp = function (apcust_no, in_no) {
+        console.log("apcust_fc_getapp");
         $("#FC_tabap tbody").empty();
 
         $.ajax({

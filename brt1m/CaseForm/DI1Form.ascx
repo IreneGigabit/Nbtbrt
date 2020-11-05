@@ -433,7 +433,207 @@
     br_form.bindDI1 = function () {
         console.log("di1.br_form.bind");
         if (jMain.case_main.length == 0) {
+            //案件種類
+            $("#tfp3_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            $("#tfp3_seq").val("");
+            $("#tfp3_seq1").val("_");
+            $("#DI1_AP_Add_button").click();//註冊人預設顯示第1筆
+            $("#ttg3_mod_aprep_mod_count").val("1").triggerHandler("change");//條款項目預設顯示第1筆
         } else {
+            //案件種類
+            $("#tfp3_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            //本所編號
+            if ($("#tfy_case_stat").val() == "NN") {
+                $("#tfp3_seq").val(jMain.case_main[0].seq);
+                $("#tfp3_seq1").val(jMain.case_main[0].seq1);
+            } else if ($("#tfy_case_stat").val() == "SN") {
+                $("#tfp3_New_Ass_seq").val(jMain.case_main[0].seq);
+                $("#tfp3_New_Ass_seq1").val(jMain.case_main[0].seq1);
+            }
+            $("#tfp3_agt_no").val(jMain.case_main[0].agt_no);//代理人
+            //商標種類
+            $("input[name='fr3_S_Mark'][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            $("#fr3_issue_no").val(jMain.case_main[0].issue_no);//註冊號數
+            $("#fr3_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            //擬評定之類別種類
+            $("input[name='fr3_class_type'][value='" + jMain.case_main[0].class_type + "']").prop("checked", true);
+            $("#fr3_class").val(jMain.case_main[0].class);//擬異議之類別
+            $("#fr3_class_count").val(jMain.case_main[0].class_count);//共N類
+            //商標/標章圖樣部份
+            if (jMain.case_main[0].cappl_name == "C") {
+                $("input[name='I_cappl_name']").prop("checked", true);
+            }
+            if (jMain.case_main[0].eappl_name == "E") {
+                $("input[name='I_eappl_name']").prop("checked", true);
+            }
+            if (jMain.case_main[0].jappl_name == "J") {
+                $("#tfzd_jappl_name").val(jMain.case_main[0].jappl_name);
+                $("input[name='I_jappl_name']").prop("checked", true);
+            }
+            if (jMain.case_main[0].zappl_name1 == "Z") {
+                $("#tfzd_zappl_name1").val(jMain.case_main[0].zappl_name1);
+                $("input[name='I_zappl_name1']").prop("checked", true);
+            }
+            if (jMain.case_main[0].draw == "D") {
+                $("input[name='I_draw']").prop("checked", true);
+            }
+            $("#I_remark3").val(jMain.case_main[0].remark3);
+            $("#tfzd_remark3").val(jMain.case_main[0].remark3);
+            //註冊人
+            $.each(jMain.case_tranlist, function (i, item) {
+                if (item.mod_field == "mod_ap") {
+                    //增加一筆
+                    $("#DI1_AP_Add_button").click();
+                    //填資料
+                    var nRow = $("#DI1_apnum").val();
+                    $("#ttg3_mod_ap_ncname1_" + nRow).val(item.ncname1);
+                    $("#ttg3_mod_ap_ncname2_" + nRow).val(item.ncname2);
+                    $("#ttg3_mod_ap_nzip_" + nRow).val(item.nzip);
+                    $("#ttg3_mod_ap_naddr1_" + nRow).val(item.naddr1);
+                    $("#ttg3_mod_ap_naddr2_" + nRow).val(item.naddr2);
+                    $("#ttg3_mod_ap_ncrep_" + nRow).val(item.ncrep);
+                }
+            });
+            if (CInt($("#DI1_apnum").val()) == 0) {
+                alert("查無此交辦案件之被異議人資料!!");
+            }
+            //評定聲明
+            $.each(jMain.case_tranlist, function (i, item) {
+                if (item.mod_field == "mod_pul") {
+                    switch (item.mod_type) {
+                        case "Tmark": case "Lmark":
+                            $("input[name='ttg31_mod_pul_mod_type'][value='" + item.mod_type + "']").prop("checked", true);
+                            $("#ttg31_mod_pul_new_no").val(item.new_no);
+                            $("#ttg31_mod_pul_ncname1").val(item.ncname1);
+                            break;
+                        case "I1":
+                            $("input[name='ttg32_mod_pul_mod_type']").prop("checked", true);
+                            break;
+                        case "I2":
+                            $("input[name='ttg33_mod_pul_mod_type']").prop("checked", true);
+                            $("#ttg33_mod_pul_new_no").val(item.new_no);
+                            $("#ttg33_mod_pul_mod_dclass").val(item.mod_dclass);
+                            break;
+                        case "I3":
+                            $("input[name='ttg34_mod_pul_mod_type']").prop("checked", true);
+                            $("#ttg34_mod_pul_new_no").val(item.new_no);
+                            $("#ttg34_mod_pul_mod_dclass").val(item.mod_dclass);
+                            $("#ttg34_mod_pul_ncname1").val(item.ncname1);
+                            break;
+                    }
+                }
+            });
+            //主張法條
+            if (jMain.case_main[0].other_item1 != "") {
+                var v=jMain.case_main[0].other_item1.split(";");
+                if(v[0]!=""){
+                    var I_item1=v[0].split("|");
+                    for(var i in I_item1){
+                        $("input[name='I_item1'][value='" +I_item1[i] + "']").prop("checked", true);
+                    }
+                }
+                if(v[1]!=""){
+                    if(v[1].indexOf("|") > -1){
+                        var I_item2=v[1].split("|");
+                        $("#I_item2").val(I_item2[0]);
+                        $("#I_item2t").val(I_item2[1]);
+                    }else{
+                        if($("input[name='I_item1'][value='O']").prop("checked")==true){
+                            $("#I_item2t").val(v[1]);
+                        }else{
+                            $("#I_item2").val(v[1]);
+                        }
+                    }
+                }
+                $("#tfz3_other_item1").val(jMain.case_main[0].other_item1);
+            }
+            //主張條款/據以評定商標
+            if (jMain.case_main[0].mod_aprep == "Y") {
+                var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_aprep' });
+                if (tranlist.length > 0) {
+                    $("#ttg3_mod_aprep_mod_count").val(tranlist[0].mod_count);
+                    br_form.add_button_DI1(tranlist[0].mod_count);
+                }
+                $.each(tranlist, function (i, item) {
+                    $("#ttg3_mod_aprep_ncname1_" + (i + 1)).val(item.ncname1);
+                    $("#ttg3_mod_aprep_new_no_" + (i + 1)).val(item.new_no);
+                });
+            }
+            $("#tfz3_tran_remark3").val(jMain.case_main[0].tran_remark3);//利害關係
+            $("#tfz3_tran_remark1").val(jMain.case_main[0].tran_remark1);//事實及理由
+            $("#tfz3_tran_remark4").val(jMain.case_main[0].tran_remark4);//註冊已滿3年使用說明
+            $("#tfz3_tran_remark2").val(jMain.case_main[0].tran_remark2);//證據內容
+            //**相關聯案件
+            $("#tfz3_other_item").val(jMain.case_main[0].other_item);
+            if (jMain.case_main[0].other_item != "") {
+                var v = jMain.case_main[0].other_item.split(";");
+                $("#I_O_item1").val(v[0]);
+                $("#I_O_item2").val(v[1]);
+                $("#I_O_item3").val(v[2]);
+            }
+            //評定標的圖樣
+            $("#tfp3_file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+            $("#tfp3_draw_file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+            if ($("#tfp3_file").val() != "") {
+                $("#butUploadtfp3").prop("disabled", true);
+            }
+
+            //據以異議商標圖樣
+            if (jMain.case_main[0].mod_dmt == "Y") {
+                var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_dmt' });
+                if (tranlist.length > 0) {
+                    $("#ttg3_mod_dmt_ncname1,#draw_attach_file_ttg3_1,#old_file_ttg3_1").val(tranlist[0].ncname1);
+                    if ($("#ttg3_mod_dmt_ncname1").val() != "") {
+                        $("#butUploadttg3_1").prop("disabled", true);
+                    }
+                    $("#ttg3_mod_dmt_ncname2,#draw_attach_file_ttg3_2,#old_file_ttg3_2").val(tranlist[0].ncname2);
+                    if ($("#ttg3_mod_dmt_ncname2").val() != "") {
+                        $("#butUploadttg3_2").prop("disabled", true);
+                    }
+                    $("#ttg3_mod_dmt_nename1,#draw_attach_file_ttg3_3,#old_file_ttg3_3").val(tranlist[0].nename1);
+                    if ($("#ttg3_mod_dmt_nename1").val() != "") {
+                        $("#butUploadttg3_3").prop("disabled", true);
+                    }
+                    $("#ttg3_mod_dmt_nename2,#draw_attach_file_ttg3_4,#old_file_ttg3_4").val(tranlist[0].nename2);
+                    if ($("#ttg3_mod_dmt_nename2").val() != "") {
+                        $("#butUploadttg3_4").prop("disabled", true);
+                    }
+                    $("#ttg3_mod_dmt_ncrep,#draw_attach_file_ttg3_5,#old_file_ttg3_5").val(tranlist[0].ncrep);
+                    if ($("#ttg3_mod_dmt_ncrep").val() != "") {
+                        $("#butUploadttg3_5").prop("disabled", true);
+                    }
+                    $("#ttg3_mod_dmt_nerep,#draw_attach_file_ttg3_6,#old_file_ttg3_6").val(tranlist[0].nerep);
+                    if ($("#ttg3_mod_dmt_nerep").val() != "") {
+                        $("#draw_num_ttg3").val("6");
+                        $("#sp_ttg3_6").show();
+                        $("#butUploadttg3_6").prop("disabled", true);
+                    }
+                    $("#ttg3_mod_dmt_neaddr1,#draw_attach_file_ttg3_7,#old_file_ttg3_7").val(tranlist[0].neaddr1);
+                    if ($("#ttg3_mod_dmt_neaddr1").val() != "") {
+                        $("#draw_num_ttg3").val("7");
+                        $("#sp_ttg3_7").show();
+                        $("#butUploadttg3_7").prop("disabled", true);
+                    }
+                    $("#ttg3_mod_dmt_neaddr2,#draw_attach_file_ttg3_8,#old_file_ttg3_8").val(tranlist[0].neaddr2);
+                    if ($("#ttg3_mod_dmt_neaddr2").val() != "") {
+                        $("#draw_num_ttg3").val("8");
+                        $("#sp_ttg3_8").show();
+                        $("#butUploadttg3_8").prop("disabled", true);
+                    }
+                    $("#ttg3_mod_dmt_neaddr3,#draw_attach_file_ttg3_9,#old_file_ttg3_9").val(tranlist[0].neaddr3);
+                    if ($("#ttg3_mod_dmt_neaddr3").val() != "") {
+                        $("#draw_num_ttg3").val("9");
+                        $("#sp_ttg3_9").show();
+                        $("#butUploadttg3_9").prop("disabled", true);
+                    }
+                    $("#ttg3_mod_dmt_neaddr4,#draw_attach_file_ttg3_10,#old_file_ttg3_10").val(tranlist[0].neaddr4);
+                    if ($("#ttg3_mod_dmt_neaddr4").val() != "") {
+                        $("#draw_num_ttg3").val("10");
+                        $("#sp_ttg3_10").show();
+                        $("#butUploadttg3_10").prop("disabled", true);
+                    }
+                }
+            }
         }
     }
 </script>

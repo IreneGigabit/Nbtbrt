@@ -35,7 +35,7 @@ main.bind=function() {
         //main.changeTag(jMain.case_main[0].arcase);
         $("#in_scode").val(jMain.case_main[0].in_scode);
         $("#in_no").val(jMain.case_main[0].in_no);
-        $("#in_date").val(dateReviver(jMain.case_main[0].in_date3, "yyyy/M/d"));//欄位同名會順便序號
+        $("#in_date").val(dateReviver(jMain.case_main[0].in_date, "yyyy/M/d"));//欄位同名會順便序號
         //　洽案營洽
         $("#F_tscode").val(jMain.br_in_scode);
         $("#span_tscode").html(jMain.br_in_scname);

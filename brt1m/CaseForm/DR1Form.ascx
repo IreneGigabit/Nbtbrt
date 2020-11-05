@@ -247,8 +247,8 @@
 			<input TYPE=hidden NAME=draw_attach_file_ttg1c_1 id=draw_attach_file_ttg1c_1 >
 			<input TYPE=hidden NAME=old_file_ttg1c_1 id=old_file_ttg1c_1 >
 			<input type="button" class="cbutton" id="butUploadttg1c_1" name="butUploadttg1c_1" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_ncname1','ttg1c_1')" >
-		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1c_mod_dmt_ncname1', 'ttg1c_1')" >
-            <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1c_mod_dmt_ncname1', 'ttg1c_1')" >
+		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1c_mod_class_ncname1', 'ttg1c_1')" >
+            <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1c_mod_class_ncname1', 'ttg1c_1')" >
 			<br>
 			2.<input TYPE=text NAME=ttg1_mod_class_ncname2 id=ttg1_mod_class_ncname2 SIZE=50 MAXLENGTH=50 readonly>
 			  <input TYPE=hidden NAME=draw_attach_file_ttg1c_2 id=draw_attach_file_ttg1c_2 >
@@ -459,7 +459,234 @@
     br_form.bindDR1 = function () {
         console.log("dr1.br_form.bind");
         if (jMain.case_main.length == 0) {
+            //案件種類
+            $("#tfp1_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            $("#tfp1_seq").val("");
+            $("#tfp1_seq1").val("_");
+            $("#DR1_AP_Add_button").click();//註冊人預設顯示第1筆
         } else {
+            //案件種類
+            $("#tfp1_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            //本所編號
+            if ($("#tfy_case_stat").val() == "NN") {
+                $("#tfp1_seq").val(jMain.case_main[0].seq);
+                $("#tfp1_seq1").val(jMain.case_main[0].seq1);
+            } else if ($("#tfy_case_stat").val() == "SN") {
+                $("#tfp1_New_Ass_seq").val(jMain.case_main[0].seq);
+                $("#tfp1_New_Ass_seq1").val(jMain.case_main[0].seq1);
+            }
+            $("#tfp1_agt_no").val(jMain.case_main[0].agt_no);//代理人
+            //商標種類
+            $("input[name='fr1_S_Mark'][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            $("#fr1_issue_no").val(jMain.case_main[0].issue_no);//註冊號數
+            $("#fr1_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            //擬廢止之類別種類
+            $("input[name='fr1_class_type'][value='" + jMain.case_main[0].class_type + "']").prop("checked", true);
+            $("#fr1_class").val(jMain.case_main[0].class);//擬廢止之類別
+            $("#fr1_class_count").val(jMain.case_main[0].class_count);//共N類
+            //商標/標章圖樣部份
+            if (jMain.case_main[0].cappl_name == "C") {
+                $("input[name='R_cappl_name']").prop("checked", true);
+            }
+            if (jMain.case_main[0].eappl_name == "E") {
+                $("input[name='R_eappl_name']").prop("checked", true);
+            }
+            if (jMain.case_main[0].jappl_name == "J") {
+                $("#tfzd_jappl_name").val(jMain.case_main[0].jappl_name);
+                $("input[name='R_jappl_name']").prop("checked", true);
+            }
+            if (jMain.case_main[0].zappl_name1 == "Z") {
+                $("#tfzd_zappl_name1").val(jMain.case_main[0].zappl_name1);
+                $("input[name='R_zappl_name1']").prop("checked", true);
+            }
+            if (jMain.case_main[0].draw == "D") {
+                $("input[name='R_draw']").prop("checked", true);
+            }
+            $("#R_remark3").val(jMain.case_main[0].remark3);
+            $("#tfzd_remark3").val(jMain.case_main[0].remark3);
+            //註冊人
+            $.each(jMain.case_tranlist, function (i, item) {
+                if (item.mod_field == "mod_ap") {
+                    //增加一筆
+                    $("#DR1_AP_Add_button").click();
+                    //填資料
+                    var nRow = $("#DO1_apnum").val();
+                    $("#ttg1_mod_ap_ncname1_" + nRow).val(item.ncname1);
+                    $("#ttg1_mod_ap_ncname2_" + nRow).val(item.ncname2);
+                    $("#ttg1_mod_ap_nzip_" + nRow).val(item.nzip);
+                    $("#ttg1_mod_ap_naddr1_" + nRow).val(item.naddr1);
+                    $("#ttg1_mod_ap_naddr2_" + nRow).val(item.naddr2);
+                    $("#ttg1_mod_ap_ncrep_" + nRow).val(item.ncrep);
+                }
+            });
+            if (CInt($("#DR1_apnum").val()) == 0) {
+                alert("查無此交辦案件之註冊人資料!!");
+            }
+            //廢止聲明
+            $.each(jMain.case_tranlist, function (i, item) {
+                if (item.mod_field == "mod_pul") {
+                    switch (item.mod_type) {
+                        case "Tmark": case "Lmark":
+                            $("input[name='ttg11_mod_pul_mod_type'][value='" + item.mod_type + "']").prop("checked", true);
+                            $("#ttg11_mod_pul_new_no").val(item.new_no);
+                            $("#ttg11_mod_pul_ncname1").val(item.ncname1);
+                            break;
+                        case "R1":
+                            $("input[name='ttg12_mod_pul_mod_type']").prop("checked", true);
+                            break;
+                        case "R2":
+                            $("input[name='ttg13_mod_pul_mod_type']").prop("checked", true);
+                            $("#ttg13_mod_pul_new_no").val(item.new_no);
+                            $("#ttg13_mod_pul_mod_dclass").val(item.mod_dclass);
+                            break;
+                        case "R3":
+                            $("input[name='ttg14_mod_pul_mod_type']").prop("checked", true);
+                            $("#ttg14_mod_pul_new_no").val(item.new_no);
+                            $("#ttg14_mod_pul_mod_dclass").val(item.mod_dclass);
+                            $("#ttg14_mod_pul_ncname1").val(item.ncname1);
+                            break;
+                    }
+                }
+            });
+            $("#tfz1_other_item1").val(jMain.case_main[0].other_item1);//主張條款
+            //據以廢止商標
+            if (jMain.case_main[0].mod_claim1 == "Y") {
+                var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_claim1' });
+                if (tranlist.length > 0) {
+                    $("#ttg1_mod_claim1_ncname1").val(tranlist[0].ncname1);
+                }
+            }
+            $("#tfz1_tran_remark1").val(jMain.case_main[0].tran_remark1);//事實及理由
+            $("#tfz1_tran_remark4").val(jMain.case_main[0].tran_remark4);//註冊已滿3年之使用說明
+            $("#tfz1_tran_remark2").val(jMain.case_main[0].tran_remark2);//證據內容
+            //**相關聯案件
+            $("#tfz1_other_item").val(jMain.case_main[0].other_item);
+            if (jMain.case_main[0].other_item != "") {
+                var v = jMain.case_main[0].other_item.split(";");
+                $("#R_O_item1").val(v[0]);
+                $("#R_O_item2").val(v[1]);
+                $("#R_O_item3").val(v[2]);
+            }
+            //廢止標的圖樣
+            $("#tfp1_file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+            $("#tfp1_draw_file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+            if ($("#tfp1_file").val() != "") {
+                $("#butUploadtfp1").prop("disabled", true);
+            }
+            //變換加附記使用後之商標圖樣
+            if (jMain.case_main[0].mod_class == "Y") {
+                var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_class' });
+                if (tranlist.length > 0) {
+                    $("#ttg1_mod_class_ncname1,#draw_attach_file_ttg1c_1,#old_file_ttg1c_1").val(tranlist[0].ncname1);
+                    if ($("#ttg1_mod_class_ncname1").val() != "") {
+                        $("#butUploadttg1c_1").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_class_ncname2,#draw_attach_file_ttg1c_2,#old_file_ttg1c_2").val(tranlist[0].ncname2);
+                    if ($("#ttg1_mod_class_ncname2").val() != "") {
+                        $("#butUploadttg1c_2").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_class_nename1,#draw_attach_file_ttg1c_3,#old_file_ttg1c_3").val(tranlist[0].nename1);
+                    if ($("#ttg1_mod_class_nename1").val() != "") {
+                        $("#butUploadttg1c_3").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_class_nename2,#draw_attach_file_ttg1c_4,#old_file_ttg1c_4").val(tranlist[0].nename2);
+                    if ($("#ttg1_mod_class_nename2").val() != "") {
+                        $("#butUploadttg1c_4").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_class_ncrep,#draw_attach_file_ttg1c_5,#old_file_ttg1c_5").val(tranlist[0].ncrep);
+                    if ($("#ttg1_mod_class_ncrep").val() != "") {
+                        $("#butUploadttg1c_5").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_class_nerep,#draw_attach_file_ttg1c_6,#old_file_ttg1c_6").val(tranlist[0].nerep);
+                    if ($("#ttg1_mod_class_nerep").val() != "") {
+                        $("#draw_num_ttg1c").val("6");
+                        $("#sp_ttg1c_6").show();
+                        $("#butUploadttg1c_6").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_class_neaddr1,#draw_attach_file_ttg1c_7,#old_file_ttg1c_7").val(tranlist[0].neaddr1);
+                    if ($("#ttg1_mod_class_neaddr1").val() != "") {
+                        $("#draw_num_ttg1c").val("7");
+                        $("#sp_ttg1c_7").show();
+                        $("#butUploadttg1c_7").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_class_neaddr2,#draw_attach_file_ttg1c_8,#old_file_ttg1c_8").val(tranlist[0].neaddr2);
+                    if ($("#ttg1_mod_class_neaddr2").val() != "") {
+                        $("#draw_num_ttg1c").val("8");
+                        $("#sp_ttg1c_8").show();
+                        $("#butUploadttg1c_8").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_class_neaddr3,#draw_attach_file_ttg1c_9,#old_file_ttg1c_9").val(tranlist[0].neaddr3);
+                    if ($("#ttg1_mod_class_neaddr3").val() != "") {
+                        $("#draw_num_ttg1c").val("9");
+                        $("#sp_ttg1c_9").show();
+                        $("#butUploadttg1c_9").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_class_neaddr4,#draw_attach_file_ttg1c_10,#old_file_ttg1c_10").val(tranlist[0].neaddr4);
+                    if ($("#ttg1_mod_class_neaddr4").val() != "") {
+                        $("#draw_num_ttg1c").val("10");
+                        $("#sp_ttg1c_10").show();
+                        $("#butUploadttg1c_10").prop("disabled", true);
+                    }
+                }
+            }
+
+            //據以廢止商標圖樣
+            if (jMain.case_main[0].mod_dmt == "Y") {
+                var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_dmt' });
+                if (tranlist.length > 0) {
+                    $("#ttg1_mod_dmt_ncname1,#draw_attach_file_ttg1_1,#old_file_ttg1_1").val(tranlist[0].ncname1);
+                    if ($("#ttg1_mod_dmt_ncname1").val() != "") {
+                        $("#butUploadttg1_1").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_dmt_ncname2,#draw_attach_file_ttg1_2,#old_file_ttg1_2").val(tranlist[0].ncname2);
+                    if ($("#ttg1_mod_dmt_ncname2").val() != "") {
+                        $("#butUploadttg1_2").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_dmt_nename1,#draw_attach_file_ttg1_3,#old_file_ttg1_3").val(tranlist[0].nename1);
+                    if ($("#ttg1_mod_dmt_nename1").val() != "") {
+                        $("#butUploadttg1_3").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_dmt_nename2,#draw_attach_file_ttg1_4,#old_file_ttg1_4").val(tranlist[0].nename2);
+                    if ($("#ttg1_mod_dmt_nename2").val() != "") {
+                        $("#butUploadttg1_4").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_dmt_ncrep,#draw_attach_file_ttg1_5,#old_file_ttg1_5").val(tranlist[0].ncrep);
+                    if ($("#ttg1_mod_dmt_ncrep").val() != "") {
+                        $("#butUploadttg1_5").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_dmt_nerep,#draw_attach_file_ttg1_6,#old_file_ttg1_6").val(tranlist[0].nerep);
+                    if ($("#ttg1_mod_dmt_nerep").val() != "") {
+                        $("#draw_num_ttg1").val("6");
+                        $("#sp_ttg1_6").show();
+                        $("#butUploadttg1_6").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_dmt_neaddr1,#draw_attach_file_ttg1_7,#old_file_ttg1_7").val(tranlist[0].neaddr1);
+                    if ($("#ttg1_mod_dmt_neaddr1").val() != "") {
+                        $("#draw_num_ttg1").val("7");
+                        $("#sp_ttg1_7").show();
+                        $("#butUploadttg1_7").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_dmt_neaddr2,#draw_attach_file_ttg1_8,#old_file_ttg1_8").val(tranlist[0].neaddr2);
+                    if ($("#ttg1_mod_dmt_neaddr2").val() != "") {
+                        $("#draw_num_ttg1").val("8");
+                        $("#sp_ttg1_8").show();
+                        $("#butUploadttg1_8").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_dmt_neaddr3,#draw_attach_file_ttg1_9,#old_file_ttg1_9").val(tranlist[0].neaddr3);
+                    if ($("#ttg1_mod_dmt_neaddr3").val() != "") {
+                        $("#draw_num_ttg1").val("9");
+                        $("#sp_ttg1_9").show();
+                        $("#butUploadttg1_9").prop("disabled", true);
+                    }
+                    $("#ttg1_mod_dmt_neaddr4,#draw_attach_file_ttg1_10,#old_file_ttg1_10").val(tranlist[0].neaddr4);
+                    if ($("#ttg1_mod_dmt_neaddr4").val() != "") {
+                        $("#draw_num_ttg1").val("10");
+                        $("#sp_ttg1_10").show();
+                        $("#butUploadttg1_10").prop("disabled", true);
+                    }
+                }
+            }
+
         }
     }
 </script>

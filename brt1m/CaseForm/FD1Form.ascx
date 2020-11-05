@@ -161,25 +161,25 @@
             <input type=text id="tfzd_remark1" name="tfzd_remark1" value="">
 		</td>
 	</tr>
-    <tr class="br_attchstr_FD1">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1"  onclick="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
+    <tr class="br_attchstrFD1">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1"  onclick="br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz1_Z1C" NAME="ttz1_Z1C" value="Z1C">附中文譯本)。)</td>
 	</tr>
-	<tr class="br_attchstr_FD1">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z2" id="ttz1_Z2" value="Z2" onclick="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">按分割件數之分割申請書副本<input TYPE="text" NAME="ttz1_Z2C" id="ttz1_Z2C" value="" size="2" onchange="reg.ttz1_Z2.checked=true;br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)">份。</td>
+	<tr class="br_attchstrFD1">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z2" id="ttz1_Z2" value="Z2" onclick="br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">按分割件數之分割申請書副本<input TYPE="text" NAME="ttz1_Z2C" id="ttz1_Z2C" value="" size="2" onchange="reg.ttz1_Z2.checked=true;br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)">份。</td>
 	</tr>
-	<tr class="br_attchstr_FD1">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" id="ttz1_Z3" value="Z3" onclick="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">分割後之商標註冊申請書正本(含相關文件)<input TYPE="text" NAME="ttz1_Z3C" id="ttz1_Z3C" value="" size="2" onchange="reg.ttz1_Z3.checked=true;br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)">份。(每份應附商標圖樣5張)</td>
+	<tr class="br_attchstrFD1">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" id="ttz1_Z3" value="Z3" onclick="br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">分割後之商標註冊申請書正本(含相關文件)<input TYPE="text" NAME="ttz1_Z3C" id="ttz1_Z3C" value="" size="2" onchange="reg.ttz1_Z3.checked=true;br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)">份。(每份應附商標圖樣5張)</td>
 	</tr>
-	<tr class="br_attchstr_FD1">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" id="ttz1_Z4" value="Z4" onclick="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFD1">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" id="ttz1_Z4" value="Z4" onclick="br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">全體共有人同意書。</td>
 	</tr>
-	<tr class="br_attchstr_FD1">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z9" id="ttz1_Z9" value="Z9" onclick="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" NAME="ttz1_Z9t" id="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr1('.br_attchstr_FD1','ttz1_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFD1">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z9" id="ttz1_Z9" value="Z9" onclick="br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" NAME="ttz1_Z9t" id="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)"></td>
 	</tr>
 </TABLE>
 </div>
@@ -327,6 +327,7 @@
     br_form.bindFD1 = function () {
         console.log("fd1.br_form.bind");
         if (jMain.case_main.length == 0) {
+            br_form.Add_arcaseFD1(1);//分割預設顯示第1筆
         } else {
             //*出名代理人代碼
             $("#ttg1_agt_no").val(jMain.case_main[0].agt_no);
@@ -335,7 +336,7 @@
             $("#fr1_apply_no").val(jMain.case_main[0].apply_no);//原申請案號
             $("#fr1_appl_name").val(jMain.case_main[0].appl_name);//商標／標章名稱
             //商標種類
-            $("input[name=fr1_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+            $("input[name=fr1_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
             //分割件數
             if (main.prgid == "brt52") {
                 $("#tot_num1").lock();

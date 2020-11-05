@@ -32,6 +32,7 @@
     protected string code_type = "";
     protected string seq = "";
     protected string seq1 = "";
+    protected string add_arcase = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -39,7 +40,6 @@
         Response.Expires = -1;
 
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
-        submitTask = (Request["submittask"] ?? "").Trim();
         submitTask = (Request["submittask"] ?? "").Trim();
         ar_form = (Request["ar_form"] ?? "").Trim();
         cust_area = (Request["cust_area"] ?? "").Trim();
@@ -51,6 +51,7 @@
         code_type = (Request["code_type"] ?? "").Trim();
         seq = (Request["seq"] ?? "").Trim();
         seq1 = (Request["seq1"] ?? "").Trim();
+        add_arcase = (Request["add_arcase"] ?? "").Trim();
 
         formFunction = (Request["formFunction"] ?? "").Trim();
         if (formFunction == "") {
@@ -161,7 +162,7 @@
     <INPUT TYPE="text" id="ar_form" name="ar_form" value="<%=ar_form%>">
     <INPUT TYPE="text" id=prt_code name=prt_code value="<%=prt_code%>">
     <INPUT TYPE="text" id=new_form name=new_form value="<%=new_form%>">
-    <INPUT TYPE="text" id=add_arcase name=add_arcase value="">
+    <INPUT TYPE="text" id=add_arcase name=add_arcase value="<%=add_arcase%>">
     <INPUT TYPE="text" id=tfy_case_stat name=tfy_case_stat value="<%=case_stat%>"><!--案件狀態-->
     <input type="text" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
 
@@ -288,7 +289,7 @@
         attent_form.init();//案件聯絡人
         apcust_form.init();//案件申請人
         case_form.init();//收費與接洽事項
-        br_form.init();//交辦內容
+        //br_form.init();//交辦內容
         upload_form.init();//文件上傳
         settab("#case");//收費與接洽事項
 
@@ -299,8 +300,8 @@
         $(".Lock").lock();
     }
 
-    <!--xxinclude virtual="~\brt1m\CaseForm\A11_bind.js" --><!--資料綁定(main.bind)xx-->
-    <!--xxinclude virtual="~\brt1m\CaseForm\A11_savechk.js" --><!--存檔檢查(main.savechk)xx-->
+    <!--xxinclude virtual="~\brt1m\A11_bind.js" --><!--資料綁定(main.bind)xx-->
+    <!--xxinclude virtual="~\brt1m\A11_savechk.js" --><!--存檔檢查(main.savechk)xx-->
     
     //存檔
     function formAddSubmit(){

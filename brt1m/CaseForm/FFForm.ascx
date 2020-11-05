@@ -46,15 +46,15 @@
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right id=no1 >申請號數：</td>
-		<td class=whitetablebg colspan="3" id=no2 ><input type="text" name="fr_apply_no" id="fr_apply_no" value="" size="20" maxlength="20" onchange="reg.tfzd_apply_no.value=this.value"></TD>
-		<td class=lightbluetable align=right id=no3 style="display:none">註冊號數：</td>
-		<td class=whitetablebg colspan="3" id=no4 style="display:none"><input type="text" name="fr_issue_no" id="fr_issue_no" class="onoff" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
+		<td class=whitetablebg id=no2 ><input type="text" name="fr_apply_no" id="fr_apply_no" value="" size="20" maxlength="20" onchange="reg.tfzd_apply_no.value=this.value"></TD>
+		<td class=lightbluetable align=right id=no3>註冊號數：</td>
+		<td class=whitetablebg id=no4><input type="text" name="fr_issue_no" id="fr_issue_no" class="onoff" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 		<td class=lightbluetable align=right >商標名稱：</td>
-		<td class=whitetablebg colspan="3"><input type="text" name="fr_appl_name" id="fr_appl_name" class="onoff" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
+		<td class=whitetablebg ><input type="text" name="fr_appl_name" id="fr_appl_name" class="onoff" value="" size="50" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標種類：</td>
-		<td class="whitetablebg" colspan=7>
+		<td class="whitetablebg" colspan="7">
             <input type="radio" name="fr_S_Mark" class="onoff" value="" onclick="dmt_form.change_mark(1,this)">商標
 			<span id="smark2" style="display:none">
             <input type="radio" name="fr_S_Mark" class="onoff" value="S" onclick="dmt_form.change_mark(1, this)">92年修正前服務標章
@@ -102,42 +102,12 @@
         } else {
             $("#tfg1_agt_no1").val(jMain.case_main[0].agt_no);//*出名代理人代碼
             $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);//*出名代理人代碼
-            //**繳費金額
-            $("#smark2,#smark").hide();
-            $("#no1,#no2,#no3,#no4").hide();
-            switch ($("#tfy_Arcase").val().Left(3)) {
-                case "FF0": case "FF4":
-                    if ($("#tfy_Arcase").val().Left(3) == "FF0") {
-                        $("#span_issue_money").html("自審定書送達之次日起2個月內，應繳納");
-                    } else {
-                        $("#span_issue_money").html("自審定書送達之次日起2個月期限屆期後6個月內，應繳納2倍");
-                        //FF4商標申請的附件
-                        $("#tabrem4").show();
-                    }
-                    $("#no1,#no2").show();
-                    break;
-                case "FF1":
-                    $("#span_issue_money").html("第一期(第一至第三年)");
-                    $("#no1,#no2").show();
-                    break;
-                case "FF2":
-                    $("#smark2,#smark").show();
-                    $("#span_issue_money").html("第二期(第四至第十年)");
-                    $("#no3,#no4").show();
-                    break;
-                case "FF3":
-                    $("#smark2,#smark").show();
-                    $("#span_issue_money").html("加倍繳納第二期(第四至第十年)");
-                    $("#no3,#no4").show();
-                    break;
-            }
-            $("#fr_Fees").val(jMain.case_main[0].fees);
-           
+            $("#fr_Fees").val(jMain.case_main[0].fees);//**繳費金額
             $("#fr_apply_no").val(jMain.case_main[0].apply_no);//申請號數
             $("#fr_issue_no").val(jMain.case_main[0].issue_no);//註冊號
             $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
             //商標種類
-            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
             //類別
             $("#fr_class").val(jMain.case_main[0].class);
 

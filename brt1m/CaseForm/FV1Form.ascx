@@ -126,6 +126,30 @@
         console.log("fv1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);//代理人
+            //程序種類
+            $("input[name='tfzd_Mark'][value='" + jMain.case_main[0].dmt_mark + "']").prop("checked", true).triggerHandler("click");
+            //號數
+            if (jMain.case_main[0].dmt_mark == "A") {
+                $("#no").val(jMain.case_main[0].apply_no);
+            } else if (jMain.case_main[0].dmt_mark == "I") {
+                $("#no").val(jMain.case_main[0].issue_no);
+            } else if (jMain.case_main[0].dmt_mark == "R") {
+                $("#no").val(jMain.case_main[0].rej_no);
+            }
+            $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            $("#fr_issue_no").val(jMain.case_main[0].issue_no);//註冊號
+            //商標種類
+            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            $("#tfg1_tran_remark1").val(jMain.case_main[0].tran_remark1);//閱卷理由
+            //**附件
+            $("#tfzd_remark1").val(jMain.case_main[0].remark1);
+            if (jMain.case_main[0].remark1 != "") {
+                var arr_remark1 = jMain.case_main[0].remark1.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    $("#ttz1_" + arr_remark1[i]).prop("checked", true);
+                }
+            }
         }
     }
 </script>

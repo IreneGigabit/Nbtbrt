@@ -174,10 +174,11 @@
     br_form.bindB5C1 = function () {
         console.log("b5c1.br_form.bind");
         if (jMain.case_main.length == 0) {
+            $("#DE1_AP_Add_button").click();//對造當事人預設顯示第1筆
         } else {
             $("#tfp4_agt_no").val(jMain.case_main[0].agt_no);
             //商標種類
-            $("input[name=fr4_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+            $("input[name=fr4_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
             $("#fr4_issue_no").val(jMain.case_main[0].issue_no);//註冊號數
             $("#fr4_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
             //案件種類

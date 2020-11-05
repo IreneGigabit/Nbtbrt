@@ -27,6 +27,7 @@
     protected string in_no = "";
     protected string prt_code = "";
     protected string new_form = "";
+    protected string case_stat = "";
     protected string code_type = "";
     protected string seq = "";
     protected string seq1 = "";
@@ -44,6 +45,7 @@
         in_no = (Request["in_no"] ?? "").Trim();
         prt_code = (Request["prt_code"] ?? "").Trim();
         new_form = (Request["new_form"] ?? "").Trim();
+        case_stat = (Request["case_stat"] ?? "").Trim();
         code_type = (Request["code_type"] ?? "").Trim();
         seq = (Request["seq"] ?? "").Trim();
         seq1 = (Request["seq1"] ?? "").Trim();
@@ -166,6 +168,7 @@
     <INPUT TYPE="text" id=prt_code name=prt_code value="<%=prt_code%>">
     <INPUT TYPE="text" id=new_form name=new_form value="<%=new_form%>">
     <INPUT TYPE="text" id=add_arcase name=add_arcase value="">
+    <INPUT TYPE="text" id=tfy_case_stat name=tfy_case_stat value="<%=case_stat%>"><!--案件狀態-->
     <input type="text" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
@@ -295,7 +298,7 @@
         attent_form.init();//案件聯絡人
         apcust_form.init();//案件申請人
         case_form.init();//收費與接洽事項
-        br_form.init();//交辦內容
+        //br_form.init();//交辦內容
         upload_form.init();//文件上傳
         settab("#case");//收費與接洽事項
 
@@ -310,8 +313,8 @@
         }
     }
 
-    <!--xxinclude virtual="~\brt1m\CaseForm\A11_bind.js" --><!--資料綁定(main.bind)xx-->
-    <!--xxinclude virtual="~\brt1m\CaseForm\A11_savechk.js" --><!--存檔檢查(main.savechk)xx-->
+    <!--xxinclude virtual="~\brt1m\A11_bind.js" --><!--資料綁定(main.bind)xx-->
+    <!--xxinclude virtual="~\brt1m\A11_savechk.js" --><!--存檔檢查(main.savechk)xx-->
     
     //存檔
     function formModSubmit(){

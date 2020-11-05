@@ -214,7 +214,7 @@
 		</TD>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="2" valign="top" STYLE="COLOR:BLUE" onclick="PMARK(ZAttech)">
+		<td class="lightbluetable" colspan="2" valign="top" STYLE="COLOR:BLUE" onclick="PMARK(zAttech)">
             <strong><u>附件：</u></strong>
             <input type=text id="tfzd_remark1" name="tfzd_remark1" value="">
 		</td>
@@ -300,22 +300,22 @@
     }
 
     //交辦內容綁定
-    br_form.bindFR = function () {
+    br_form.bindFR1 = function () {
         console.log("fr1.br_form.bind");
-        return;
         if (jMain.case_main.length == 0) {
+            br_form.Add_classFR1(1);//類別預設顯示第1筆
         } else {
             //*出名代理人代碼
             $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);
             //商標種類
-            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
 
             $("#fr_issue_no").val(jMain.case_main[0].issue_no);//註冊號
             $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
             $("#fr_apply_no").val(jMain.case_main[0].apply_no);//申請號數
             //***原註冊證核准專用期間
-            $("#tfgp_term1").val(jMain.case_main[0].term1);
-            $("#tfgp_term2").val(jMain.case_main[0].term2);
+            $("#tfgp_term1").val(dateReviver(jMain.case_main[0].term1, "yyyy/M/d"));
+            $("#tfgp_term2").val(dateReviver(jMain.case_main[0].term2, "yyyy/M/d"));
 
             if (jMain.case_tran.length != 0) {
                 //**變更事項

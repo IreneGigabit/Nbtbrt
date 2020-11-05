@@ -32,6 +32,9 @@
 		<tr id=tr_tg_arf_re style="display:none">
 		    <td class="lightbluetable" colspan="4" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(t1Apcust)"><strong>貳、<u>申請人(受讓人)</u></strong></td>
 		</tr>
+		<tr id=tr_tg_arf_fc style="display:none">
+		    <td class="lightbluetable" colspan="4" valign="top"><strong><span id=span_FC></span></strong></td>
+		</tr>
 		<tr id=tr_tg_arf_fl style="display:none">
 		    <td class="lightbluetable" colspan="4" valign="top" id=tg_arf STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zApcust)"><strong><span id=span_FL></span></strong></td>
 		</tr>
@@ -167,10 +170,10 @@
 <script language="javascript" type="text/javascript">
     var apcust_form={};
     apcust_form.init = function () {
-        if (main.ar_form == "A8") {
-            $("#tr_tg_arf_re").show();
-        }else if (main.ar_form == "A7") {
+        if (main.ar_form == "A7") {//授權
             $("#tr_tg_arf_fl").show();
+        } else if (main.ar_form == "A8") {//移轉
+            $("#tr_tg_arf_re").show();
         }
     }
     

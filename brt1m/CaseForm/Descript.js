@@ -37,7 +37,7 @@ var ztextz = "<tr><td>◎語文別：依據圖樣中之語文別填寫，如英�
 var ztext05 = "<tr><td>◎變更之註冊號數超過五件時，請加註ˇ記，並於附頁填寫其餘變更之註冊號數。</td></tr>";
 
 var zAttech = "<tr><td>◎提出申請時，所附之附件，請於該項文件前□框格內打V註記。</td></tr>";
-var zAttechd = "<tr><td>請務必就理由書內所述證據依序一一檢附，並簡短說明證據名稱及份數，欲取回證據(附件)者，請另裝一袋，並以V表示；申請書/理由書及其相關附</td></tr>" +
+var zAttechD = "<tr><td>請務必就理由書內所述證據依序一一檢附，並簡短說明證據名稱及份數，欲取回證據(附件)者，請另裝一袋，並以V表示；申請書/理由書及其相關附</td></tr>" +
              "<tr><td>件皆須完整列印1份為副本，以便本局送對造答辯。</td></tr>" +
              "<tr><td>□附件1、異議/評定人公司年報正本及影本 各 1 份 </td></tr>" +
              "<tr><td>□附件2、異議/評定人在各國刊登廣告影本 計： 1 份 </td></tr>" +
@@ -65,7 +65,7 @@ var a1Term1 = "<tr><td>◎請分別依有明確起、迄日期或僅有起日而
 var a1Good = ztextg +
 			 "<tr><td>◎授權使用之商品或服務，以商標權範圍為限。商標權人得就其所註冊之商品之全部或一部授權他人使用其商標。故授權使用商品之範圍應具體明確。</td></tr>";
 
-var a2term1 = "<tr><td>◎再授權期間不得逾原授權期間。（商標法施行細則第二十九條第五項之規定）</td>" +
+var a2Term1 = "<tr><td>◎再授權期間不得逾原授權期間。（商標法施行細則第二十九條第五項之規定）</td>" +
 			 ztextl;
 var a2Good = ztextg +
 			 "<tr><td>◎再授權使用之商品或服務不得逾原授權使用商品或服務之範圍。（商標法施行細則第38條第5項之規定）。</td></tr>";
@@ -100,7 +100,7 @@ var a4Good = "<tr><td>◎未填寫商品／服務名稱者，無法取得申請�
 		     "<tr><td>◎所指定之商品／服務名稱應具體明確，不得以概括性之語句，如「及不屬別類之一切商品／服務」或「及應屬本類之一切商品／服務」等字樣提出申請。</td>" +
 			 "<tr><td>◎無法得知商品／服務組群碼，可不必填寫。</td></tr>";
 
-var a5Rapcust = "<tr><td>◎請填寫原質權人之人名資料。</td></tr>"
+var a5Rapcust = "<tr><td>◎請填寫原質權人之人名資料。</td></tr>";
 var a5Term1 = "<tr><td>◎請填寫塗銷質權之日期。</td></tr>";
 var a5Attech = zAttech +
 			 "<tr><td>◎申請人具法人資格之身分證明文件：</td>" +
@@ -113,7 +113,7 @@ var a5Attech = zAttech +
 var a7Remark1 = "<tr><td>◎商標／標章圖樣描述必須充分詳實，應足以使任何人閱讀後，均能得知本件聲音商標／標章之內容。</td>" +
 			 "<tr><td>◎聲音或音樂得搭配文字，亦可不包括文字，其搭配文字部分，應於商標／標章圖樣描述欄中，詳實說明。</td>" +
 			 "<tr><td>◎例如：（一）檢附樂譜者：本商標／標章如申請書所附之光碟片所載，係由女高音唱出申請書上所附之音符所構成。（二）未檢附樂譜單純以文字描述者：本件商標／標章如申請書所附之光碟片所載，係由兩聲牛走在柏油路上的牛蹄聲，緊接著一聲牛叫聲所構成。</td></tr>";
-var a9color = "<tr><td>◎標章圖樣全部為墨色者，應勾選墨色欄框；標章圖樣全部為彩色者或其中部分有彩色者，應勾選彩色欄框），如係顏色團體標章／顏色商標，請另填寫顏色團體標章／顏色商標註冊申請書辦理之。</td></tr>";
+var a9Color = "<tr><td>◎標章圖樣全部為墨色者，應勾選墨色欄框；標章圖樣全部為彩色者或其中部分有彩色者，應勾選彩色欄框），如係顏色團體標章／顏色商標，請另填寫顏色團體標章／顏色商標註冊申請書辦理之。</td></tr>";
 
 var aaRemark1 = "<tr><td>商標法施行細則第九條規定：申請註冊顏色團體／証明標章者，應於申請書中聲明，並載明該顏色及相關說明。前項標章，得以虛線表現實際使用之方式、位置或內容態樣。前項虛線部分，不屬於顏色(証明)商標／標章之一部分。</td>" +
 			 "<tr><td>◎請詳細填寫顏色(証明)標章實際使用於所証明商品或服務之態樣（如顏色實際標示之特殊方式、位置、內容；亦得以實物、照片或型錄為說明）以及實際顏色（如色彩種類、明度、漸層等）之說明。</td></tr>";
@@ -136,13 +136,13 @@ var agRemark1 = "<tr><td>◎請詳細說明立體標章實際使用於證明內�
 var aiRemark1 = "<tr><td>◎請詳細說明全像圖商標實際使用於指定商品或服務之顏色、方式、位置或內容態樣，及申請註冊所欲保護的內容。若全像圖因視角差異產生不同圖像變化時，應說明該變化情形。</td></tr>" +
              "<tr><td>◎商標樣本，指商標本身之樣品或存載商標之電子載體。全像圖商標樣本，指商標本身之樣品，如實際使用之全像圖，以輔助商標圖樣之審查。</td></tr>";
 var ajRemark1 = "<tr><td>◎請詳細說明動態商標實際使用於指定商品或服務之顏色、方式、位置或內容態樣，及申請註冊所欲保護的內容。</td></tr>" +
-             "<tr><td>◎商標樣本，指商標本身之樣品或存載商標之電子載體。動態商標樣本，指存載動態商標的電子載體等，以輔助商標圖樣之審查。</td></tr>"
+             "<tr><td>◎商標樣本，指商標本身之樣品或存載商標之電子載體。動態商標樣本，指存載動態商標的電子載體等，以輔助商標圖樣之審查。</td></tr>";
 var akRemark1 = "<tr><td>◎請詳細說明其他非傳統商標實際使用於指定商品或服務之顏色、方式、位置或內容態樣，及申請註冊所欲保護的內容。</td></tr>" +
-             "<tr><td>◎商標樣本，指商標本身之樣品或存載商標之電子載體。其他商標樣本，指商標本身之樣品，如實際使用之樣品；存載商標的電子載體等，如存載影像或聲音之光碟片等，以輔助商標圖樣之審查。</td></tr>"
+             "<tr><td>◎商標樣本，指商標本身之樣品或存載商標之電子載體。其他商標樣本，指商標本身之樣品，如實際使用之樣品；存載商標的電子載體等，如存載影像或聲音之光碟片等，以輔助商標圖樣之審查。</td></tr>";
 
 var b1Rapcust = "<tr><td>◎請填寫質權人之人名資料。</td></tr>" +
 			 "<tr><td>◎質權人之質權設定如有清償順位時，請於質權人名稱後加註清償順位。</td></tr>";
-var b1Remark1 = "<tr><td>請寫出其他防護商標（其正商標號數為本件註冊號數）與本件一併辦理設定質權者。</td></tr>"
+var b1Remark1 = "<tr><td>請寫出其他防護商標（其正商標號數為本件註冊號數）與本件一併辦理設定質權者。</td></tr>";
 var b1Remark2 = "<tr><td>請寫出其他防護商標號數（其正商標號數為本件註冊號數），並沒有與本件一併辦理設定質權者。</td></tr>" +
 			 "<tr><td>防護商標未與正商標一併設定質權者，將來債務屆期未清償，設定質權之商標遭查封拍賣後，防護商標未與正商標一併拍賣移轉者，其商標權恐有消滅之虞。防護商標單獨移轉者，其移轉無效。（舊商標法第二十九條之規定）</td></tr>";
 var b1Term1 = "<tr><td>請填寫設定質權起迄日期，質權設定期間，以商標權期間為限，所約定質權設定設定期間超過商標權期間者，以商標權期間屆滿日為質權期間之末日，商標權期間如經延展註冊，應另行申請質權登記。（商標法施行細則第二十三條第三項之規定）</td></tr>";
@@ -453,7 +453,7 @@ var FW1remark = "<tr><td>◎請於「本申請案自請撤回」項目打V註記
 var FW1mark = "<tr><td>提出申請時，所附之附件，請於該項文件前□框格內打V註記。</td></tr>";
 
 if ($("body").find("#PEND").length == 0) {
-    $("body").append("<div id=PEND style='display:none;position:absolute;right:50px;background-color:LightCyan;border-style:groove;border-color:red'></div> ");
+    $("body").append("<div id=PEND style='display:none;position:absolute;right:50px;background-color:LightCyan;border-style:groove;border-color:red'></div>");
 }
 
 function Getpx(obj) {
@@ -474,60 +474,60 @@ function Getpy(obj) {
 }
 
 function PMARK(A) {
-    var sObj= event.srcElement ? event.srcElement : event.target;
+    var sObj = event.srcElement ? event.srcElement : event.target;
     var xp = Getpx(sObj) + 80;
     var yp = Getpy(sObj);
     var strcase = reg.tfy_Arcase.value.Left(3);
     switch (strcase) {
-        case "FA1" :
-        case "FA2" :
-        case "FA3" :
-        case "FA4" :
-            if( A==a5attech) A=zAttech;
+        case "FA1":
+        case "FA2":
+        case "FA3":
+        case "FA4":
+            if (A == a5attech) A = zAttech;
             break
-        case "FA5" :
-            if (A==p1Good) A=p5Good;
+        case "FA5":
+            if (A == p1Good) A = p5Good;
             break;
-        case "FA6" :
-            if (A==p2Good) A=p5Good;
+        case "FA6":
+            if (A == p2Good) A = p5Good;
             break;
-        case "FA7" :
-            if (A==a3Appl_name) A=p3Appl_name;
-            if (A==a3remark1) A=a7remark1;
+        case "FA7":
+            if (A == a3Appl_name) A = p3Appl_name;
+            if (A == a3Remark1) A = a7Remark1;
             break;
-        case "FA9" :
-            if (A==p1Color)  A=a9Color;
-            if (A==a5Attech) A=p3Attech;
+        case "FA9":
+            if (A == p1Color) A = a9Color;
+            if (A == a5Attech) A = p3Attech;
             break;
         case "FAA":
-            if (A==p5Remark1) A=aaRemark1;
-            if (A==a5Attech) A=p3Attech;
+            if (A == p5Remark1) A = aaRemark1;
+            if (A == a5Attech) A = p3Attech;
             break;
         case "FAB":
-            if (A==a3Appl_name) A=p3Appl_name;
-            if (A==a5Attech) A=p3Attech;
+            if (A == a3Appl_name) A = p3Appl_name;
+            if (A == a5Attech) A = p3Attech;
             break;
         case "FAC":
-            if (A==a4Color) A=acColor;
-            if (A==a4Remark1) A=acRemark1;
-            if (A==a5Attech) A=p3Attech;
+            if (A == a4Color) A = acColor;
+            if (A == a4Remark1) A = acRemark1;
+            if (A == a5Attech) A = p3Attech;
             break;
         case "FAD":
-            if (A==p1Color ) A=a9Color;
-            if (A==a5Attech) A=p4Attech;
+            if (A == p1Color) A = a9Color;
+            if (A == a5Attech) A = p4Attech;
             break;
         case "FAE":
-            if (A==p5Remark1) A=aaRemark1;
-            if (A==a5Attech) A=aeAttech;
+            if (A == p5Remark1) A = aaRemark1;
+            if (A == a5Attech) A = aeAttech;
             break;
         case "FAF":
-            if (A==a3Good ) A=p4Good;
-            if (A==a5Attech) A=afAttech;
+            if (A == a3Good) A = p4Good;
+            if (A == a5Attech) A = afAttech;
             break;
         case "FAG":
-            if (A==a4Remark1) A=agRemark1;
-            if (A==a5Attech) A=afAttech;
-            if (A==a4Color) A=g4color;
+            if (A == a4Remark1) A = agRemark1;
+            if (A == a5Attech) A = afAttech;
+            if (A == a4Color) A = g4color;
             break;
         case "FAI":
             if (A == a4Remark1) A = aiRemark1;
@@ -540,13 +540,13 @@ function PMARK(A) {
             break;
         case "FL2":
         case "FL6":
-            if (A==a1Term1) A=a2Term1;
-            if (A==a1Good ) A=a2Good;
+            if (A == a1Term1) A = a2Term1;
+            if (A == a1Good) A = a2Good;
             break;
         case "FL3":
         case "FL4":
-            if (A==a1Term1) A=a4Term1;
-            if (A==L1Appl_name) A=L3Appl_name;
+            if (A == a1Term1) A = a4Term1;
+            if (A == L1Appl_name) A = L3Appl_name;
             break;
     }
 
@@ -564,7 +564,7 @@ function PMARK(A) {
         $("#PEND").empty();
         $("#PEND").append(contStr);
         $("#PEND").show();
-        $("#PEND").css({top: yp, left: xp, fontSize:10});
+        $("#PEND").css({ top: yp, left: xp, fontSize: 10 });
 
         $("#tfz1_prior_country").hide();
         $("#tfz1_zname_type").hide();

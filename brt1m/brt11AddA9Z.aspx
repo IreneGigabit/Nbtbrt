@@ -29,6 +29,7 @@
     protected string in_no = "";
     protected string prt_code = "";
     protected string new_form = "";
+    protected string case_stat = "";
     protected string code_type = "";
     protected string seq = "";
     protected string seq1 = "";
@@ -47,6 +48,7 @@
         in_no = (Request["in_no"] ?? "").Trim();
         prt_code = (Request["prt_code"] ?? "").Trim();
         new_form = (Request["new_form"] ?? "").Trim();
+        case_stat = (Request["case_stat"] ?? "").Trim();
         code_type = (Request["code_type"] ?? "").Trim();
         seq = (Request["seq"] ?? "").Trim();
         seq1 = (Request["seq1"] ?? "").Trim();
@@ -133,7 +135,7 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_agtno.js")%>"></script><!--檢查輸入出名代理人是否與預設出名代理人相同-->
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_doctype.js")%>"></script><!--檢查契約書種類與上傳文件-->
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_custwatch.js")%>"></script><!--檢查是否為雙邊代理查照對象-->
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/CaseForm/Oldcase_Data.js")%>"></script><!--新舊案控制-->
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/Oldcase_Data.js")%>"></script><!--新舊案控制-->
 </head>
 <script language="javascript" type="text/javascript">
     var main = {};
@@ -312,7 +314,7 @@
         apcust_form.init();//案件申請人
         case_form.init();//收費與接洽事項
         dmt_form.init();//案件主檔
-        br_form.init();//交辦內容
+        //br_form.init();//交辦內容
         upload_form.init();//文件上傳
         settab("#case");//收費與接洽事項
 
@@ -324,8 +326,7 @@
         $(".Hide").hide();
     }
 
-    <!--xxinclude virtual="~\brt1m\CaseForm\A11_bind.js" --><!--資料綁定(main.bind)xx-->
-    <!--xxinclude virtual="~\brt1m\CaseForm\A11_savechk.js" --><!--存檔檢查(main.savechk)xx-->
+    <!--xxinclude virtual="~\brt1m\A9Z_savechk.js" --><!--存檔檢查(main.savechk)xx-->
     
     //存檔
     function formAddSubmit(){

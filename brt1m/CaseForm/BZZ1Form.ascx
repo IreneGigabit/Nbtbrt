@@ -37,11 +37,6 @@
 	</tr>
 </table>
 </div>
-<input type=hidden name=fr_S_Mark value="" >
-<input type=hidden name=fr_S_Mark value="S">
-<input type=hidden name=fr_S_Mark value="N">
-<input type=hidden name=fr_S_Mark value="M">
-<input type=hidden name=fr_S_Mark value="L">
 <input type=hidden id=fr_appl_name name=fr_appl_name>
 <input type=hidden id=fr_issue_no name=fr_issue_no>
 
@@ -55,6 +50,10 @@
         console.log("bzz1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            $("#tfg1_agt_no1").val(jMain.case_main[0].agt_no);//代理人
+            $("#tfg1_tran_remark1").val(jMain.case_main[0].tran_remark1);//承辦內容說明
+            $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            $("#fr_issue_no").val(jMain.case_main[0].issue_no);//註冊號
         }
     }
 </script>

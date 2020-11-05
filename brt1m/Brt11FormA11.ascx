@@ -199,7 +199,7 @@
             //main.changeTag(jMain.case_main[0].arcase);
             $("#in_scode").val(jMain.case_main[0].in_scode);
             $("#in_no").val(jMain.case_main[0].in_no);
-            $("#in_date").val(dateReviver(jMain.case_main[0].in_date3, "yyyy/M/d"));//欄位同名會順便序號
+            $("#in_date").val(dateReviver(jMain.case_main[0].in_date, "yyyy/M/d"));//欄位同名會順便序號
             //案性
             $("#code_type").val(jMain.case_main[0].arcase_type);
             $("#nfy_tot_case").val(jMain.case_main[0].nfy_tot_case);

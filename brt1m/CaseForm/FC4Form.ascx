@@ -52,9 +52,9 @@
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttech)"><u>附件：</u></td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz4_Z1" NAME="ttz4_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz4_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">委任書（<input TYPE="checkbox" id="ttz4_Z1C" NAME="ttz4_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr', 'ttz4_', reg.tfzd_remark1)">附中譯本）。</td>
+	<tr class="br_attchstrFC4">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz4_Z1" NAME="ttz4_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstrFC4','ttz4_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">委任書（<input TYPE="checkbox" id="ttz4_Z1C" NAME="ttz4_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstrFC4', 'ttz4_', reg.tfzd_remark1)">附中譯本）。</td>
 	</tr>
 </table>
 </div>
@@ -65,6 +65,21 @@
         console.log("fc4.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            //代理人
+            $("#ttg4_agt_no").val(jMain.case_main[0].agt_no);
+            if (jMain.case_main[0].pul=="2"){
+                $("input[name=fr4_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            }
+            $("#fr4_issue_no").val(jMain.case_main[0].issue_no);//註冊號
+            $("#fr4_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            //附件
+            $("#tfzd_remark1").val(jMain.case_main[0].remark1);
+            if (jMain.case_main[0].remark1 != "") {
+                var arr_remark1 = jMain.case_main[0].remark1.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    $("#ttz4_" + arr_remark1[i]).prop("checked", true);
+                }
+            }
         }
     }
 </script>

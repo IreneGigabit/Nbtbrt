@@ -56,9 +56,9 @@
                     <strong><u>附件</u></strong><input TYPE="hidden" NAME="tfw1_other_item" id="tfw1_other_item">
 			    </td>
 		    </tr>
-		    <tr class="br_attchstr">
-			    <td class="lightbluetable" align="right"><input type="checkbox" name="tfw1_Z1" id="tfw1_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','tfw1_',reg.tfw1_other_item)"></td>
-			    <td class="whitetablebg" colspan="7">委任書（<input type="checkbox" name="tfw1_Z1C" id="tfw1_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr','tfw1_',reg.tfw1_other_item)">附中文譯本）。</td>
+		    <tr class="br_attchstrZZ1">
+			    <td class="lightbluetable" align="right"><input type="checkbox" name="tfw1_Z1" id="tfw1_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstrZZ1','tfw1_',reg.tfw1_other_item)"></td>
+			    <td class="whitetablebg" colspan="7">委任書（<input type="checkbox" name="tfw1_Z1C" id="tfw1_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstrZZ1','tfw1_',reg.tfw1_other_item)">附中文譯本）。</td>
 		    </tr>
 		    </table>
 		</td>

@@ -155,41 +155,41 @@
             <strong><u>附件：</u></strong>
 		</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z2" NAME="ttz11_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz11_Z2C" NAME="ttz11_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)">附中文譯本)。</td>
+	<tr class="br_attchstrFC11">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z2" NAME="ttz11_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz11_Z2C" NAME="ttz11_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)">附中文譯本)。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z1" NAME="ttz11_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC11">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z1" NAME="ttz11_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">變更證明文件。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z8" NAME="ttz11_Z8" value="Z8" onclick="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC11">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z8" NAME="ttz11_Z8" value="Z8" onclick="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">移轉契約或其他移轉證明文件。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z3" NAME="ttz11_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC11">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z3" NAME="ttz11_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">個人身分證影本。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z4" NAME="ttz11_Z4" value="Z4" onclick="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC11">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z4" NAME="ttz11_Z4" value="Z4" onclick="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">法人公司執照影本。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z5" NAME="ttz11_Z5" value="Z5" onclick="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC11">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z5" NAME="ttz11_Z5" value="Z5" onclick="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">身分或法人證明影本。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z6" NAME="ttz11_Z6" value="Z6" onclick="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC11">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z6" NAME="ttz11_Z6" value="Z6" onclick="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">具結書。(印鑑遺失具結書)</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z7" NAME="ttz11_Z7" value="Z7" onclick="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC11">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z7" NAME="ttz11_Z7" value="Z7" onclick="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">全體共有人同意書。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z9" NAME="ttz11_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" id="ttz11_Z9t" NAME="ttz11_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz11_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC11">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz11_Z9" NAME="ttz11_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">其他證明文件。<input TYPE="text" id="ttz11_Z9t" NAME="ttz11_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstrFC11','ttz11_',reg.tfzd_remark1)"></td>
 	</tr>
 </table>	
 </div>
@@ -232,7 +232,118 @@
     br_form.bindFC11 = function () {
         console.log("fc11.br_form.bind");
         if (jMain.case_main.length == 0) {
+            $("#tot_num11,#nfy_tot_num").val("1").triggerHandler("change");
         } else {
+            //代理人
+            $("#ttg11_agt_no").val(jMain.case_main[0].agt_no);
+            //商標種類
+            $("input[name=fr11_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            //變更事項
+            var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_claim1", "mod_oth", "mod_oth1", "mod_oth2"];
+            for (var m in arr_mod) {
+                if (jMain.case_main[0][arr_mod[m]] == "Y") {
+                    $("#tfzr1_" + arr_mod[m]).prop("checked", true);
+                    $("#ttfg1_" + arr_mod[m]).val("Y");
+                } else {
+                    $("#tfzr1_" + arr_mod[m]).prop("checked", false);
+                    $("#ttfg1_" + arr_mod[m]).val("N");
+                }
+            }
+            //變更一案多件
+            if (main.prgid == "brt52") {
+                $("#tot_num11").lock();
+                $("#btndseq_oka_1,#btnQuerya_1").hide();
+                $("#dseqa_1,#dseq1a_1").lock();
+                $("input[name=case_stat1a_1]").lock();
+            }
+            $("#tot_num11,#nfy_tot_num").val(jMain.case_main[0].tot_num).triggerHandler("change");
+            if (jMain.case_main[0].seq == "0") {
+                $("#dseqa_1").val("");
+            } else {
+                $("#dseqa_1").val(item.seq);
+            }
+            $("#dseq1a_1").val(item.seq1);
+            $("#btndseq_oka_1").lock();
+            $("#keydseqa_1").val("Y");
+            var smark_val = jMain.case_main[0].s_mark;
+            if (smark_val == "S") {
+                $("#s_marka_1").val("92年修正前服務標章");
+            } else if (smark_val == "N") {
+                $("#s_marka_1").val("團體商標");
+            } else if (smark_val == "M") {
+                $("#s_marka_1").val("團體標章");
+            } else if (smark_val == "L") {
+                $("#s_marka_1").val("證明標章");
+            } else {
+                $("#s_marka_1").val("商標");
+            }
+            $("#appl_namea_1").val(jMain.case_main[0].appl_name);//商標名稱
+            $("#apply_noa_1").val(jMain.case_main[0].apply_no);//申請號數
+            $.each(jMain.case_dmt1, function (i, item) {
+                //填資料
+                var nRow = (i + 1);
+                $("#dseqa_" + nRow).val(item.seq);
+                $("#dseq1a_" + nRow).val(item.seq1);
+                if (item.case_stat1 == "NN") {
+                    $("input[name='case_stat1a_" + nRow + "'][value=NN]").prop("checked", true).triggerHandler("click");
+                    var smark_val = item.s_mark;
+                    if (smark_val == "S") {
+                        $("#s_marka_" + nRow).val("92年修正前服務標章");
+                    } else if (smark_val == "N") {
+                        $("#s_marka_" + nRow).val("團體商標");
+                    } else if (smark_val == "M") {
+                        $("#s_marka_" + nRow).val("團體標章");
+                    } else if (smark_val == "L") {
+                        $("#s_marka_" + nRow).val("證明標章");
+                    } else {
+                        $("#s_marka_" + nRow).val("商標");
+                    }
+                    $("#appl_namea_" + nRow).val(item.appl_name);
+                    $("#apply_noa_" + nRow).val(item.apply_no);
+                    $("#btndmt_tempa_" + nRow).val("案件主檔編修").show();
+                    $("#case_sqlnoa_" + nRow).val(item.case_sqlno);
+                    $("#dseqa_" + nRow).val(item.seq).lock();
+                    $("#dseq1a_" + nRow).val(item.seq1).lock();
+                    if (main.prgid == "brt52") {
+                        $("#btndseq_oka_" + nRow + ",#btnQuerya_" + nRow).hide();
+                        $("input[name=case_stat1a_" + nRow + " ]").lock();
+                    }
+                } else {
+                    $("input[name='case_stat1a_" + nRow + "'][value=OO]").prop("checked", true).triggerHandler("click");
+                    $("#btndmt_tempa_" + nRow).hide();
+                    if (main.prgid == "brt52") {
+                        $("#dseqa_" + nRow).lock();
+                        $("#dseq1a_" + nRow).lock();
+                    } else {
+                        $("#dseqa_" + nRow).unlock();
+                        $("#dseq1a_" + nRow).unlock();
+                    }
+                    $("#btncasea_" + nRow).show();
+                    $("#btnQuerya_" + nRow).show();
+                    br_form.btnseqclick(nRow, 'a_');
+                    if (main.prgid == "brt52") {
+                        $("#btndseq_oka_" + nRow + ",#btnQuerya_" + nRow).hide();
+                        $("#btndmt_tempa_" + nRow).val("案件主檔編修").show();
+                        $("input[name=case_stat1a_" + nRow + " ]").lock();
+                        $("#btncasea_" + nRow).hide();
+                    }
+                }
+            });
+            //附件
+            $("#tfzd_remark1").val(jMain.case_main[0].remark1);
+            if (jMain.case_main[0].remark1 != "") {
+                var arr_remark1 = jMain.case_main[0].remark1.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
+                    //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    if (substr != null) {
+                        $("#ttz11_Z9t").val(substr[1]);
+                    } else {
+                        $("#ttz11_" + arr_remark1[i]).prop("checked", true);
+                    }
+                }
+            }
         }
     }
 </script>

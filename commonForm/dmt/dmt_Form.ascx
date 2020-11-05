@@ -914,8 +914,8 @@
         $("#tabshow_dmt input[type='text']").unlock();
         //分割
         //$("#tft1_mod_count11,#tft2_mod_count2").unlock();//件數
-        $("#new_no11").unlock();//申請案號
-        $("#new_no21").unlock();//註冊案號
+        //$("#new_no11").unlock();//申請案號
+        //$("#new_no21").unlock();//註冊案號
         //$("#ncname111,#ncname121").unlock();//商標/標章名稱
     }
 

@@ -58,7 +58,8 @@
         Response.Write(",\"case_tran\":" + JsonConvert.SerializeObject(GetCaseTran(), settings).ToUnicode() + "\n");
         Response.Write(",\"case_tranlist\":" + JsonConvert.SerializeObject(GetCaseTranlist(), settings).ToUnicode() + "\n");
         Response.Write(",\"cust\":" + JsonConvert.SerializeObject(GetCust(), settings).ToUnicode() + "\n");
-        Response.Write(",\"case_sql\":" + JsonConvert.SerializeObject(GetCaseSql(), settings).ToUnicode() + "\n");//一案多件.副案
+        Response.Write(",\"case_dmt1\":" + JsonConvert.SerializeObject(GetCaseDmt1(), settings).ToUnicode() + "\n");//一案多件.子案
+        Response.Write(",\"case_sql\":" + JsonConvert.SerializeObject(GetCaseSql(), settings).ToUnicode() + "\n");//一案多件.子案
         //Response.Write(",\"salesList\":" + JsonConvert.SerializeObject(GetSales(), settings).ToUnicode() + "\n");
         Response.Write(",\"br_in_scode\":" + JsonConvert.SerializeObject(br_in_scode, settings).ToUnicode() + "\n");
         Response.Write(",\"br_in_scname\":" + JsonConvert.SerializeObject(br_in_scname, settings).ToUnicode() + "\n");
@@ -82,12 +83,13 @@
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             if (submitTask == "Edit" || submitTask == "AddNext") {//編輯/複製下一筆 模式
                 //SQL = "Pro_case2 '" + in_no + "'";
-                SQL="SELECT a.*,c.* ";
+                SQL="SELECT a.*,c.*,g.* ";
                 SQL += ",(SELECT b.coun_c FROM sysctrl.dbo.country b WHERE b.coun_code = a.zname_type and b.markb<>'X') AS nzname ";
                 SQL += ",(SELECT c.coun_code+c.coun_cname FROM sysctrl.dbo.ipo_country c WHERE c.ref_coun_code = a.prior_country ) AS ncountry ";
                 SQL += ",a.mark temp_mark,c.mark case_mark ";
                 SQL += " FROM dmt_temp A";
                 SQL += " inner join case_dmt c on a.in_no = c.in_no and a.in_scode = c.in_scode";
+                SQL += " left JOIN dmt_tran G ON C.in_scode = G.in_scode AND C.in_no = G.in_no";
                 SQL += " WHERE A.in_no ='" + in_no + "' and a.case_sqlno=0";
                 conn.DataTable(SQL, dt);
 
@@ -113,8 +115,8 @@
                     SQL = "select b.service ";
                     SQL += "from case_dmt a ";
                     SQL += "inner join case_fee b on a.oth_arcase=b.rs_code ";
-                    SQL += "where and a.in_no= '" + in_no + "' and a.in_scode='" + br_in_scode + "' ";
-                    SQL += "and b.dept='T' and b.country='T'  and getdate() between b.beg_date and b.end_date";
+                    SQL += "where a.in_no= '" + in_no + "' and a.in_scode='" + br_in_scode + "' ";
+                    SQL += "and b.dept='T' and b.country='T' and getdate() between b.beg_date and b.end_date";
                     objResult = conn.ExecuteScalar(SQL);
                     casefee_oth_money = (objResult == DBNull.Value || objResult == null) ? "0" : objResult.ToString();
                 }
@@ -207,8 +209,25 @@
     private DataTable GetCaseTranlist() {
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
-            SQL = "select * from dmt_tranlist where in_no= '"  + in_no + "' and in_scode='" + br_in_scode +"'";
+            SQL = "select * from dmt_tranlist where in_no= '" + in_no + "' and in_scode='" + br_in_scode + "'";
             conn.DataTable(SQL, dt);
+
+            for (int i = 0; i < dt.Rows.Count; i++) {
+                if (submitTask == "AddNext") {//複製模式,改為新檔名
+                    if (dt.Rows[i].SafeRead("mod_field", "") == "mod_dmt") {
+                        string[] fld = { "ncname1", "ncname2", "nename1", "nename2", "ncrep", "nerep", "neaddr1", "neaddr2", "neaddr3", "neaddr4" };//會存據以異議/評定/廢止商標圖樣的欄位
+                        foreach (string f in fld) {
+                            System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[0].SafeRead(f, ""))));
+                            if (sFi.Exists) {//因會存其他資料,判斷檔案存在則表示為檔案路徑,才可改為新檔名
+                                string strpath1 = sfile.gbrWebDir + "/temp";
+                                string newName = br_in_scode + "-" + Path.GetFileName(dt.Rows[i].SafeRead(f, ""));
+                                sFi.CopyTo(Server.MapPath(Sys.Path2Nbtbrt(strpath1 + "/" + newName)), true);
+                                dt.Rows[i][f] = strpath1 + "/" + newName;
+                            }
+                        }
+                    }
+                }
+            }
         }
         return dt;
     }
@@ -228,8 +247,21 @@
         return dt;
     }
     #endregion
+
+    #region GetCaseDmt1 子案
+    private DataTable GetCaseDmt1() {
+        DataTable dt = new DataTable();
+        using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            SQL = "Select * from case_dmt1 d ";
+            SQL += "left join dmt_temp t on d.in_no=t.in_no and d.case_sqlno=t.case_sqlno ";
+            SQL += "where d.in_no='" + in_no + "' ";
+            conn.DataTable(SQL, dt);
+        }
+        return dt;
+    }
+    #endregion
     
-    #region GetCust 一案多件.副案
+    #region GetCust 一案多件.子案
     private DataTable GetCaseSql() {
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {

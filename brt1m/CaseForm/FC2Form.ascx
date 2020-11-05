@@ -153,55 +153,55 @@
             <strong><u>附件：</u></strong>
 		</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z1" NAME="ttz2_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">公司變更登記事項卡影本或其他法人證明文件(<input TYPE="checkbox" id="ttz2_Z1C" NAME="ttz2_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)">附中譯本)。</td>
+	<tr class="br_attchstrFC2">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z1" NAME="ttz2_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">公司變更登記事項卡影本或其他法人證明文件(<input TYPE="checkbox" id="ttz2_Z1C" NAME="ttz2_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)">附中譯本)。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z3" NAME="ttz2_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC2">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z3" NAME="ttz2_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">戶口謄本。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z2" NAME="ttz2_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz2_Z2C" NAME="ttz2_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)">附中譯本)。</td>
+	<tr class="br_attchstrFC2">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z2" NAME="ttz2_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz2_Z2C" NAME="ttz2_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)">附中譯本)。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z4" NAME="ttz2_Z4" value="Z4" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">使用規範書(<input TYPE="checkbox" id="ttz2_Z4C" NAME="ttz2_Z4C" value="Z4C" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)">附中文譯本或應記載事項之中文節譯本)。</td>
+	<tr class="br_attchstrFC2">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z4" NAME="ttz2_Z4" value="Z4" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">使用規範書(<input TYPE="checkbox" id="ttz2_Z4C" NAME="ttz2_Z4C" value="Z4C" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)">附中文譯本或應記載事項之中文節譯本)。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z5" NAME="ttz2_Z5" value="Z5" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">使用規範書之電子檔光碟片(<input TYPE="checkbox" id="ttz2_Z5C" NAME="ttz2_Z5C" value="Z5C" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)">附中文譯本或應記載事項之中文節譯本)。</td>
+	<tr class="br_attchstrFC2">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z5" NAME="ttz2_Z5" value="Z5" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">使用規範書之電子檔光碟片(<input TYPE="checkbox" id="ttz2_Z5C" NAME="ttz2_Z5C" value="Z5C" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)">附中文譯本或應記載事項之中文節譯本)。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z6" NAME="ttz2_Z6" value="Z6" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC2">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z6" NAME="ttz2_Z6" value="Z6" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">全體共有人同意書。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z7" NAME="ttz2_Z7" value="Z7" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC2">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z7" NAME="ttz2_Z7" value="Z7" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">讓與債權時，質權隨同移轉，應檢附下列證明文件：</td>
 	</tr>
-	<tr class="br_attchstr">
+	<tr class="br_attchstrFC2">
 		<td class="lightbluetable" align="right"></td>
-		<td class="whitetablebg" colspan="7"><input TYPE="checkbox" id="ttz2_Z71" NAME="ttz2_Z71" value="Z71" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)">
-		擔保債權有償讓與：應檢附擔保債權讓與契約書(<input TYPE="checkbox" id="ttz2_Z71C" NAME="ttz2_Z71C" value="Z71C" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)">附中文譯本)。
+		<td class="whitetablebg" colspan="7"><input TYPE="checkbox" id="ttz2_Z71" NAME="ttz2_Z71" value="Z71" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)">
+		擔保債權有償讓與：應檢附擔保債權讓與契約書(<input TYPE="checkbox" id="ttz2_Z71C" NAME="ttz2_Z71C" value="Z71C" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)">附中文譯本)。
 		</td>
 	</tr>
-	<tr class="br_attchstr">
+	<tr class="br_attchstrFC2">
 		<td class="lightbluetable" align="right"></td>
-		<td class="whitetablebg" colspan="7"><input TYPE="checkbox" id="ttz2_Z72" NAME="ttz2_Z72" value="Z72" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)">
-		擔保債權無償讓與，應檢附擔保債權無償讓與契約書(<input TYPE="checkbox" id="ttz2_Z72C" NAME="ttz2_Z72C" value="Z72C" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)">附中文譯本)，<br>稽徵機關核發之稅款繳清證明書，或核定免稅證明書，或不計入贈與總額證明書，或同意移轉證明書之副本，或稽徵機關核發之其他證明文件。
+		<td class="whitetablebg" colspan="7"><input TYPE="checkbox" id="ttz2_Z72" NAME="ttz2_Z72" value="Z72" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)">
+		擔保債權無償讓與，應檢附擔保債權無償讓與契約書(<input TYPE="checkbox" id="ttz2_Z72C" NAME="ttz2_Z72C" value="Z72C" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)">附中文譯本)，<br>稽徵機關核發之稅款繳清證明書，或核定免稅證明書，或不計入贈與總額證明書，或同意移轉證明書之副本，或稽徵機關核發之其他證明文件。
 		</td>
 	</tr>
-	<tr class="br_attchstr">
+	<tr class="br_attchstrFC2">
 		<td class="lightbluetable" align="right"></td>
-		<td class="whitetablebg" colspan="7"><input TYPE="checkbox" id="ttz2_Z73" NAME="ttz2_Z73" value="Z73" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)">
-		擔保債權繼承移轉，應檢附質權人死亡證明、質權人全戶戶籍謄本(由繼承人具結係全戶謄本)、質權歸屬證明或其他繼承證明文件(<input TYPE="checkbox" id="ttz2_Z73C" NAME="ttz2_Z73C" value="Z73C" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)">附中文譯本)，<br>稽徵機關核發之稅款繳清證明書，或核定免稅證明書，或不計入遺產總額證明書，或同意移轉證明書之副本，或稽徵機關核發之其他證明文件。
+		<td class="whitetablebg" colspan="7"><input TYPE="checkbox" id="ttz2_Z73" NAME="ttz2_Z73" value="Z73" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)">
+		擔保債權繼承移轉，應檢附質權人死亡證明、質權人全戶戶籍謄本(由繼承人具結係全戶謄本)、質權歸屬證明或其他繼承證明文件(<input TYPE="checkbox" id="ttz2_Z73C" NAME="ttz2_Z73C" value="Z73C" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)">附中文譯本)，<br>稽徵機關核發之稅款繳清證明書，或核定免稅證明書，或不計入遺產總額證明書，或同意移轉證明書之副本，或稽徵機關核發之其他證明文件。
 		</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z9" NAME="ttz2_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz2_Z9t" NAME="ttz2_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz2_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC2">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z9" NAME="ttz2_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz2_Z9t" NAME="ttz2_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstrFC2','ttz2_',reg.tfzd_remark1)"></td>
 	</tr>
 	<tr style="display:none">
 		<td class=lightbluetable  ROWSPAN=2 ><strong>附註一：</strong></td>
@@ -230,20 +230,22 @@
     br_form.clearmod = function (x) {
         if(x==1){
             if($("#tfop_mod_dmt").prop("checked")==true){
+                //變更商標名稱
                 $("#tfg2_mod_dmt").val("Y");
             }else{
                 $("#tfg2_mod_dmt").val("N");
                 $("#ttg2_ncname1").val("");
             }
         }else if(x==3){
+            //質權人名稱、地址、代表人及印章變更
             if($("#tfop_mod_claim2").prop("checked")==true){
                 $("#tfg2_mod_claim2").val("Y");
             }else{
                 $("#tfg2_mod_claim2").val("N");
-                $("#ttg2_ncname1").val("");
             }
         }else{
             if($("#tfop_mod_claim1").prop("checked")==true){
+                //選定代表人
                 $("#tfg2_mod_claim1").val("Y");
             }else{
                 $("#tfg2_mod_claim1").val("N");
@@ -264,6 +266,116 @@
         console.log("fc2.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
+            //代理人
+            if (jMain.case_main[0].mod_agt == "Y") {
+                $("#tfop_mod_agt").prop("checked", true);
+            }
+            $("#ttg2_agt_no").val(jMain.case_main[0].agt_no);
+            //代理人異動
+            $("input[name=tfg2_mod_agttype][value='" + jMain.case_main[0].mod_agttype + "']").prop("checked", true);
+            //新增代理人
+            var tranlist_agt = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_agt' });
+            if (tranlist_agt.length > 0) {
+                $("#FC2_add_agt_no").val(tranlist_agt[0].new_no);
+            }
+            //商標種類
+            $("input[name=fr2_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            var tranlist_tcnref = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_tcnref' });
+            if (tranlist_tcnref.length > 0) {
+                $("#new_no21").val(jMain.case_main[0].new_no);//註冊案號
+                $("#ncname121").val(jMain.case_main[0].ncname1);//商標名稱
+            }
+            //變更事項
+            //申請人名稱
+            if (jMain.case_main[0].mod_ap.indexOf("Y") > -1) {
+                $("input[name=tfop_mod_ap]").each(function(idx){
+                    if(jMain.case_main[0].mod_ap.substr(idx,1)=="Y"){
+                        $(this).prop("checked",true);
+                    }
+                });
+                $("#tfg2_mod_ap").val(jMain.case_main[0].mod_ap);
+            }
+            //申請人地址
+            if (jMain.case_main[0].mod_apaddr.indexOf("Y") > -1) {
+                $("input[name=tfop_mod_apaddr]").each(function (idx) {
+                    if (jMain.case_main[0].mod_apaddr.substr(idx, 1) == "Y") {
+                        $(this).prop("checked", true);
+                    }
+                });
+                $("#tfg2_mod_apaddr").val(jMain.case_main[0].mod_apaddr);
+            }
+            //申請人印章
+            if (jMain.case_main[0].mod_oth == "Y") {
+                $("input[name=tfop_mod_oth]").prop("checked", true);
+            }
+            //代表人名稱
+            if (jMain.case_main[0].mod_aprep.indexOf("Y") > -1) {
+                $("input[name=tfop_mod_aprep]").each(function (idx) {
+                    if (jMain.case_main[0].mod_aprep.substr(idx, 1) == "Y") {
+                        $(this).prop("checked", true);
+                    }
+                });
+                $("#tfg2_mod_aprep").val(jMain.case_main[0].mod_aprep);
+            }
+            //代表人印章
+            if (jMain.case_main[0].mod_oth1 == "Y") {
+                $("input[name=tfop_mod_oth1]").prop("checked", true);
+            }
+            //選定代表人
+            if (jMain.case_main[0].mod_claim1 == "Y") {
+                $("input[name=tfop_mod_claim1]").prop("checked", true);
+                $("#tfg2_mod_claim1").val("Y");
+                var tranlist_claim1 = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_claim1' });
+                if (tranlist_claim1.length > 0) {
+                    $("#ttg2_ncname2").val(tranlist_claim1[0].ncname1);
+                }
+            }
+            //變更商標名稱
+            if (jMain.case_main[0].mod_dmt == "Y") {
+                $("input[name=tfop_mod_dmt]").prop("checked", true);
+                $("#tfg2_mod_dmt").val("Y");
+                var tranlist_dmt = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_dmt' });
+                if (tranlist_dmt.length > 0) {
+                    $("#ttg2_ncname1").val(tranlist_dmt[0].ncname1);
+                }
+            }
+            //修正使用規範書
+            if (jMain.case_main[0].other_item1 == "Y") {
+                $("input[name=tfop_oitem1]").prop("checked", true);
+                $("input[name=tfop_oitem1c][value='" + jMain.case_main[0].other_item1.substr(2,1) + "']").prop("checked", true);
+            }
+            //質權人名稱、地址、代表人及印章變更
+            if (jMain.case_main[0].mod_claim2 == "Y") {
+                $("input[name=tfop_mod_claim2]").prop("checked", true);
+                $("#tfg2_mod_claim2").val("Y");
+            }
+            //質權移轉
+            if (jMain.case_main[0].other_item2 == "Y") {
+                $("input[name=tfop_oitem2]").prop("checked", true);
+                $("input[name=tfop_oitem2c][value='" + jMain.case_main[0].other_item2.substr(2, 1) + "']").prop("checked", true);
+            }
+            //附件
+            $("#tfzd_remark1").val(jMain.case_main[0].remark1);
+            if (jMain.case_main[0].remark1 != "") {
+                var arr_remark1 = jMain.case_main[0].remark1.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
+                    //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    if (substr != null) {
+                        $("#ttz2_Z9t").val(substr[1]);
+                    } else {
+                        $("#ttz2_" + arr_remark1[i]).prop("checked", true);
+                    }
+                }
+            }
+            //**附註
+            if (jMain.case_tran[0].other_item.indexOf(";") > -1) {
+                var oitem = jMain.case_tran[0].other_item.split(";");
+                $("#O_item21").val(oitem[0]);
+                $("input[name=O_item22][value='" + oitem[1] + "']").prop("checked", true);
+                $("#O_item23").val(oitem[2]);
+            }
         }
     }
 </script>

@@ -191,7 +191,7 @@
             }
             $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
             //商標種類
-            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].S_mark + "']").prop("checked", true);
+            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
             //影印內容
             $("#tfg1_other_item").val(jMain.case_main[0].other_item);
             if (jMain.case_main[0].other_item != "") {

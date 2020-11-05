@@ -5,17 +5,17 @@
     //A6變更案交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    
+
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
 
     protected string ttg3_agt_no = "";
-    
+
     private void Page_Load(System.Object sender, System.EventArgs e) {
         PageLayout();
         this.DataBind();
     }
-    
+
     private void PageLayout() {
         //代理人
         ttg3_agt_no = Sys.getAgent().Option("{agt_no}", "{agt_no}_{agt_namefull}", " v1='{agt_name1}' {selected}", true);
@@ -132,25 +132,25 @@
             <strong><u>附件：</u></strong>
 		</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz3_Z1" NAME="ttz3_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz3_Z1C" NAME="ttz3_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)">附中文譯本)。</td>
+	<tr class="br_attchstrFC3">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz3_Z1" NAME="ttz3_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstrFC3','ttz3_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz3_Z1C" NAME="ttz3_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstrFC3','ttz3_',reg.tfzd_remark1)">附中文譯本)。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz3_Z2" NAME="ttz3_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">全體共有人同意書(<input TYPE="checkbox" id="ttz3_Z2C" NAME="ttz3_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)">附中文譯本)。</td>
+	<tr class="br_attchstrFC3">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz3_Z2" NAME="ttz3_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstrFC3','ttz3_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">全體共有人同意書(<input TYPE="checkbox" id="ttz3_Z2C" NAME="ttz3_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstrFC3','ttz3_',reg.tfzd_remark1)">附中文譯本)。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz3_Z3" id="ttz3_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">團體商標或證明標章使用規範書(<input TYPE="checkbox" id="ttz3_Z3C" NAME="ttz3_Z3C" value="Z3C" onclick="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)">附中文譯本)。</td>
+	<tr class="br_attchstrFC3">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz3_Z3" id="ttz3_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstrFC3','ttz3_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">團體商標或證明標章使用規範書(<input TYPE="checkbox" id="ttz3_Z3C" NAME="ttz3_Z3C" value="Z3C" onclick="br_form.AttachStr('.br_attchstrFC3','ttz3_',reg.tfzd_remark1)">附中文譯本)。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz3_Z4" NAME="ttz3_Z4" value="Z4" onclick="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">團體商標或證明標章使用規範書之電子檔光碟片(<input TYPE="checkbox" id="ttz3_Z4C" NAME="ttz3_Z4C" value="Z4C" onclick="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)">附中文譯本)。</td>
+	<tr class="br_attchstrFC3">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz3_Z4" NAME="ttz3_Z4" value="Z4" onclick="br_form.AttachStr('.br_attchstrFC3','ttz3_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">團體商標或證明標章使用規範書之電子檔光碟片(<input TYPE="checkbox" id="ttz3_Z4C" NAME="ttz3_Z4C" value="Z4C" onclick="br_form.AttachStr('.br_attchstrFC3','ttz3_',reg.tfzd_remark1)">附中文譯本)。</td>
 	</tr>
-	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz3_Z9" NAME="ttz3_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz3_Z9t" NAME="ttz3_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz3_',reg.tfzd_remark1)"></td>
+	<tr class="br_attchstrFC3">
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz3_Z9" NAME="ttz3_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstrFC3','ttz3_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz3_Z9t" NAME="ttz3_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstrFC3','ttz3_',reg.tfzd_remark1)"></td>
 	</tr>	
 	<tr>
 		<td class=lightbluetable  colspan="8"><strong>備註：本案另涉有他案時，請於備註欄內填明。</strong></td>
@@ -176,7 +176,7 @@
         var num = CInt($("#num3" + cntTar).val());//目前畫面上有幾筆
         if (doCount > num) {//要加
             for (var nRow = num; nRow < doCount ; nRow++) {
-                var copyStr = $("#br_class_template" + cntTar).text() || "";
+                var copyStr = $("#fc3_br_class_template" + cntTar).text() || "";
                 copyStr = copyStr.replace(/##/g, nRow + 1);
                 $("#tabbr3" + cntTar + " tbody").append(copyStr);
                 $("#num3" + cntTar).val(nRow + 1);
@@ -214,7 +214,51 @@
     br_form.bindFC3 = function () {
         console.log("fc3.br_form.bind");
         if (jMain.case_main.length == 0) {
+            br_form.Add_classFC3(1, 1);//擬減縮商品預設顯示第1筆
+            br_form.Add_classFC3(1, 2);//減縮後指定商品預設顯示第1筆
         } else {
+            //代理人
+            $("#ttg3_agt_no").val(jMain.case_main[0].agt_no);
+            //商標種類
+            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            $("#fr3_issue_no").val(jMain.case_main[0].issue_no);//註冊號
+            $("#fr3_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            //擬減縮商品
+            var tranlist_dgood = $(jMain.case_tranlist).filter(function (i, n) { return (n.mod_type==='Dgood' && n.mod_field === 'mod_agt') });
+            if (tranlist_dgood.length > 0) {
+                $("#tft3_class_count1").val(tranlist_dgood.length).triggerHandler("change");//產生筆數
+                $("#tft3_class1").val(tranlist_dgood[0].mod_dclass);
+                $.each(tranlist_dgood, function (i, item) {
+                    $("#class31_" + (i + 1)).val(item.new_no).triggerHandler("change");//類別
+                    $("#good_name31_" + (i + 1)).val(item.list_remark).triggerHandler("change");//商標/服務名稱
+                });
+            }
+            //減縮後指定商品
+            $("input[name='tft3_class_type2'][value='" + jMain.case_main[0].class_type + "']").prop('checked', true);
+            if (jMain.case_good.length > 0) {
+                $("#tft3_class2").val(jMain.case_main[0].class);//*類別
+                $("#tft3_class_count2").val(jMain.case_good.length).triggerHandler("change");//共N類
+                $.each(jMain.case_good, function (i, item) {
+                    if (item.case_sqlno == 0) {
+                        $("#class32_" + (i + 1)).val(item.class).triggerHandler("change");//第X類
+                        $("#good_name32_" + (i + 1)).val(item.dmt_goodname);//商品名稱
+                        $("#good_count32_" + (i + 1)).val(item.dmt_goodcount);//共N項
+                    }
+                });
+            }
+            //附件
+            $("#tfzd_remark1").val(jMain.case_main[0].remark1);
+            if (jMain.case_main[0].remark1 != "") {
+                var arr_remark1 = jMain.case_main[0].remark1.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    if (substr != null) {
+                        $("#ttz3_Z9t").val(substr[1]);
+                    } else {
+                        $("#ttz3_" + arr_remark1[i]).prop("checked", true);
+                    }
+                }
+            }
         }
     }
 </script>

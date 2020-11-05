@@ -257,7 +257,128 @@
     br_form.bindFT1 = function () {
         console.log("ft1.br_form.bind");
         if (jMain.case_main.length == 0) {
+            $("#tot_num21,#nfy_tot_num").val("1").triggerHandler("change");
         } else {
+            //代理人
+            $("#tfg1_agt_no1").val(jMain.case_main[0].agt_no);
+            $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);
+            $("#fr_issue_no").val(jMain.case_main[0].issue_no);//註冊號
+            $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            //商標種類
+            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            //移轉一案多件
+            if (main.prgid == "brt52") {
+                $("#tot_num21").lock();
+                $("#btndseq_okb_1,#btnQueryb_1").hide();
+                $("#dseqb_1,#dseq1b_1").lock();
+                $("input[name=case_stat1b_1]").lock();
+            }
+            $("#tot_num21,#nfy_tot_num").val(jMain.case_main[0].tot_num);
+            br_form.Add_FT1(jMain.case_main[0].tot_num);
+            if (jMain.case_main[0].seq == "0") {
+                $("#dseqb_1").val("");
+            } else {
+                $("#dseqb_1").val(item.seq);
+            }
+            $("#dseq1b_1").val(item.seq1);
+            $("#dmseqb_1").val(item.ref_no);
+            $("#dmseq1b_1").val(item.ref_no1);
+            $("#btndseq_okb_1").lock();
+            $("#keydseqb_1").val("Y");
+            var smark_val = $("input[name='tfzy_S_Mark']:checked").val();
+            if (smark_val == "S") {
+                $("#s_markb_1").val("92年修正前服務標章");
+            } else if (smark_val == "N") {
+                $("#s_markb_1").val("團體商標");
+            } else if (smark_val == "M") {
+                $("#s_markb_1").val("團體標章");
+            } else if (smark_val == "L") {
+                $("#s_markb_1").val("證明標章");
+            } else {
+                $("#s_markb_1").val("商標");
+            }
+            $("#appl_nameb_1").val(jMain.case_main[0].appl_name);//商標名稱
+            $("#issue_nob_1").val(jMain.case_main[0].issue_no);//註冊號
+            $.each(jMain.case_dmt1, function (i, item) {
+                //填資料
+                var nRow = (i+1);
+                $("#dseqb_" + nRow).val(item.seq);
+                $("#dseq1b_" + nRow).val(item.seq1);
+                $("#dmseqb_" + nRow).val(item.cseq);
+                $("#dmseq1b_" + nRow).val(item.cseq1);
+                if (main.prgid = "brt51") {
+                    $("#but_endb_" + nRow).show();
+                }
+                if (item.case_stat1 == "NN") {
+                    $("input[name='case_stat1b_" + nRow + "'][value=NN]").prop("checked", true).triggerHandler("click");
+                    var smark_val = item.s_mark;
+                    if (smark_val == "S") {
+                        $("#s_markb_" + nRow).val("92年修正前服務標章");
+                    } else if (smark_val == "N") {
+                        $("#s_markb_" + nRow).val("團體商標");
+                    } else if (smark_val == "M") {
+                        $("#s_markb_" + nRow).val("團體標章");
+                    } else if (smark_val == "L") {
+                        $("#s_markb_" + nRow).val("證明標章");
+                    } else {
+                        $("#s_markb_" + nRow).val("商標");
+                    }
+                    $("#appl_nameb_" + nRow).val(item.appl_name);
+                    $("#issue_nob_" + nRow).val(item.issue_no);
+                    $("#btndmt_tempb_" + nRow).val("案件主檔編修").show();
+                    $("#case_sqlnob_" + nRow).val(item.case_sqlno);
+                    $("#dseqb_" + nRow).val(item.seq).lock();
+                    $("#dseq1b_" + nRow).val(item.seq1).lock();
+                    $("#dmseqb_" + nRow).val(item.ref_no);
+                    $("#dmseq1b_" + nRow).val(item.ref_no1);
+                    if (main.prgid == "brt52") {
+                        $("#btndseq_okb_" + nRow + ",#btnQueryb_" + nRow).hide();
+                        $("input[name=case_stat1b_" + nRow + " ]").lock();
+                    }
+                } else {
+                    $("input[name='case_stat1b_" + nRow + "'][value=OO]").prop("checked", true).triggerHandler("click");
+                    $("#btndmt_tempb_" + nRow).hide();
+                    if (main.prgid == "brt52") {
+                        $("#dseqb_" + nRow).lock();
+                        $("#dseq1b_" + nRow).lock();
+                    } else {
+                        $("#dseqb_" + nRow).unlock();
+                        $("#dseq1b_" + nRow).unlock();
+                    }
+                    $("#btncaseb_" + nRow).show();
+                    $("#btnQueryb_" + nRow).show();
+                    br_form.btnseqclick(nRow, 'b_');
+                    if (main.prgid == "brt52") {
+                        $("#btndseq_okb_" + nRow + ",#btnQueryb_" + nRow).hide();
+                        $("#btndmt_tempb_" + nRow).val("案件主檔編修").show();
+                        $("input[name=case_stat1b_" + nRow + " ]").lock();
+                        $("#btncaseb_" + nRow).hide();
+                    }
+                }
+            });
+            $("#tfg1_tran_remark1").val(jMain.case_main[0].tran_remark1);//一併設定號數
+            $("#tfg1_tran_remark2").val(jMain.case_main[0].tran_remark2);//未一併設定號數
+            //附件
+            $("#tfzd_remark1").val(jMain.case_main[0].remark1);
+            if (jMain.case_main[0].remark1 != "") {
+                var arr_remark1 = jMain.case_main[0].remark1.split("|");
+                for (var i = 0; i < arr_remark1.length; i++) {
+                    //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
+                    //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
+                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    if (substr != null) {
+                        $("#ttz1_Z9t").val(substr[1]);
+                    } else {
+                        $("#ttz1_" + arr_remark1[i]).prop("checked", true);
+                    }
+                }
+            }
+            //**附註
+            if (jMain.case_tran[0].other_item.indexOf(";") > -1) {
+                var oitem = jMain.case_tran[0].other_item.split(";");
+                $("#O_item1").val(oitem[0]);
+                $("input[name=O_item2][value='" + oitem[1] + "']").prop("checked", true);
+            }
         }
     }
 </script>

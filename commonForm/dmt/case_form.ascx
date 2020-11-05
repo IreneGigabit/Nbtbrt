@@ -462,6 +462,10 @@
                     $("#A9Z_end_flag").prop("checked", false);//zz_form
                     $("#tfy_end_flag").val("N");//dmt_form
                 }
+            } else {
+                $("#A9Ztr_endtype").hide();
+                $("#A9Z_end_flag").prop("checked", false);//zz_form
+                $("#tfy_end_flag").val("N");//dmt_form
             }
         }
         case_form.setSendWay(x2)//20160909 增加發文方式

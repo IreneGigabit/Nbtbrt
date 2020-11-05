@@ -476,8 +476,7 @@
 
 <script language="javascript" type="text/javascript">
     var br_form = {};
-    br_form.init = function () {
-    }
+    //br_form.init = function () {}
 
     //展覽優先權增加一筆
     br_form.add_show = function () {
