@@ -1324,7 +1324,14 @@
         }
     }
 
+    <!--#include virtual="~\brt1m\A9Z_savechk.js" -->//存檔檢查(main.savechk)
     //存檔檢查
+    main.savechk = function () {
+        if (main.ar_form == "A3") {
+            main.savechkA3();
+        }
+    }
+    /*
     main.savechk = function () {
         if ($("#tfy_case_stat").val()  != "OO") {//新案
             //2014/4/22增加檢查是否為雙邊代理查照對象,客戶名稱
@@ -1979,5 +1986,5 @@
         }
 
         return true;
-    }
+    }*/
 </script>

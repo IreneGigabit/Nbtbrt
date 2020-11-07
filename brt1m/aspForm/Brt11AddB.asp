@@ -1,160 +1,29 @@
 <%
 function formAddSubmit()	
 '----- 用戶端Submit前的檢查碼放在這裡 ，如下例 not valid 時 exit sub 離開------------ 
-main.chkCustAtt();
+    //客戶聯絡人檢查
+    if (main.chkCustAtt() == false) return false;
 	
-	'申請人檢查
-	IF reg.apnum.value=0 then
-		msgbox "請輸入申請人資料！！"
-		settab 2
-		reg.AP_Add_button.focus
-		exit function
-	End IF
+    //申請人檢查
+    if (main.chkApp() == false) return false;
 	
-	for tapnum=1 to reg.apnum.value
-		if eval("reg.Apcust_no"& tapnum &".value") = empty then	
-			MsgBox "申請人編號不得為空白！", 64, "Sorry!"
-			settab 2
-			execute "reg.Apcust_no"& tapnum &".focus"
-			Exit function  
-		end if
-	
-		execute "reg.ap_cname"& tapnum &".value = reg.ap_cname1_"& tapnum &".value + reg.ap_cname2_"& tapnum &".value"
-		execute "reg.ap_ename"& tapnum &".value = reg.ap_ename1_"& tapnum &".value + reg.ap_ename2_"& tapnum &".value"
-		if eval("reg.ap_cname1_"&tapnum&".value")<>empty then
-			if fDataLen(eval("reg.ap_cname1_"& tapnum &".value"),44,"申請人名稱(中)")="" then 
-				settab 2
-			    execute "reg.ap_cname1_"& tapnum &".focus"
-				exit function
-			end if
-		End IF
-		if eval("reg.ap_cname2_"& tapnum &".value")<>empty then
-			if fDataLen(eval("reg.ap_cname2_"& tapnum &".value"),44,"申請人名稱(中)")="" then
-				settab 2
-			   execute "reg.ap_cname2_"& tapnum &".focus"
-			exit function
-			end if
-		End IF
-		if eval("reg.ap_ename1_"& tapnum &".value")<>empty then
-			if fDataLen(eval("reg.ap_ename1_"& tapnum &".value"),100,"申請人名稱(英)")="" then
-				settab 2
-			   execute "reg.ap_ename1_"& tapnum &".focus"
-			exit function
-			end if
-		End IF
-		if eval("reg.ap_ename2_"& tapnum &".value")<>empty then
-			if fDataLen(eval("reg.ap_ename2_"& tapnum &".value"),100,"申請人名稱(英)")="" then 
-				settab 2
-			   execute "reg.ap_ename2_"& tapnum &".focus"
-			exit function	
-			end if
-		End IF
-		if reg.tfy_case_stat.value<>"OO" then	'新案
-		   '2014/4/22增加檢查是否為雙邊代理查照對象
-			if cust_name_chk(eval("reg.ap_cname"& tapnum &".value"),eval("reg.ap_ename"& tapnum &".value"))=true then 
-				settab 2
-				exit function
-			end if   
-			if aprep_name_chk(eval("reg.ap_crep"& tapnum &".value"),eval("reg.ap_erep"& tapnum &".value"))=true then 
-				settab 2
-				exit function
-			end if   
-		end if
-	next	
-	
+	//日期格式檢查,抓class=dateField,有輸入則檢查
+    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢杳"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢杳"); return false; }
+    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢杳"); return false; }
+
+ 	//商標名稱檢查
+    if (main.chkApplName() == false) return false;
+
+    //必填欄位檢查
+    if (main.chkRequire() == false) return false;
+
     //接洽內容相關檢查
     if (main.chkCaseForm() == false) return false;
 
-
-'優先權申請日檢查
-If reg.pfzd_prior_date.value <> empty then
-	IF isdate(reg.pfzd_prior_date.value) = false then
-		msgbox "請檢查優先權申請日，日期格式是否正確!!"
-		settab 4
-		reg.pfzd_prior_date.focus
-		exit function
-	End If
-End If 	
-
-'***申請日期
-If reg.tfzd_apply_date.value <> empty then
-	IF isdate(reg.tfzd_apply_date.value) = false then
-		msgbox "請檢查申請日期 ，日期格式是否正確!!"
-		settab 4
-		reg.tfzd_apply_date.focus
-		exit function
-	End If
-End If 	
-'***註冊日期
-If reg.tfzd_issue_date.value <> empty then
-	IF isdate(reg.tfzd_issue_date.value) = false then
-		msgbox "請檢查註冊日期 ，日期格式是否正確!!"
-		settab 4
-		reg.tfzd_issue_date.focus
-		exit function
-	End If
-End If 	
-'***公告日期
-If reg.tfzd_open_date.value <> empty then
-	IF isdate(reg.tfzd_open_date.value) = false then
-		msgbox "請檢查公告日期 ，日期格式是否正確!!"
-		settab 4
-		reg.tfzd_open_date.focus
-		exit function
-	End If
-End If
-'***結案日期
-If reg.tfzd_end_date.value <> empty then
-	IF isdate(reg.tfzd_end_date.value) = false then
-		msgbox "請檢查結案日期 ，日期格式是否正確!!"
-		settab 4
-		reg.tfzd_end_date.focus
-		exit function
-	End If
-End If
-'***專用期限
-If reg.tfzd_dmt_term1.value <> empty then
-	IF isdate(reg.tfzd_dmt_term1.value) = false then
-		msgbox "請檢查專用期限起日 ，日期格式是否正確!!"
-		settab 4
-		reg.tfzd_dmt_term1.focus
-		exit function
-	End If
-End If 	
-'***專用期限
-If reg.tfzd_dmt_term2.value <> empty then
-	IF isdate(reg.tfzd_dmt_term2.value) = false then
-		msgbox "請檢查專用期限迄日 ，日期格式是否正確!!"
-		settab 4
-		reg.tfzd_dmt_term2.focus
-		exit function
-	End If
-End If 	
-'案性預設代理人2008/1/9
-v=split(reg.tfy_Arcase.value,"&")
-if ubound(v)=2 then
-   pagt_no=v(2)
-else
-   'pagt_no="A05"
-   'pagt_no="A07"	'2008/12/16因應98年度出名代理人修改為A07高&楊&林
-   'pagt_no="A09"	'2013/7/17因應102年度出名代理人修改為A09高&楊
-   pagt_no=get_tagtno("N")	'2015/10/21因應104年度出名代理人修改並改抓取cust_code.code_type=Tagt_no and mark=N預設出名代理人
-end if  
 '****備註日期
 select case left(reg.tfy_arcase.value,3)
 case "DR1"
-	IF reg.fr1_Appl_name.value=empty then
-		msgbox "商標名稱不可空白！！"
-		settab 6
-		reg.fr1_Appl_name.focus
-		exit function
-	End IF
-	'2014/4/22增加檢查是否為雙邊代理查照對象,案件名稱
-	if check_CustWatch("appl_name",reg.fr1_Appl_name.value)=true then 
-		settab 6
-		reg.fr1_Appl_name.focus
-		exit function  
-	end if
 	'2013/12/12複製下一筆，案件名稱及註冊號，如未修改就存檔，資料空白，所以再給一次值
 	reg.tfzd_appl_name.value=reg.fr1_appl_name.value
 	reg.tfzd_issue_no.value=reg.fr1_issue_no.value
@@ -169,20 +38,6 @@ case "DR1"
 		reg.tfp1_seq1.focus 
 		Exit function
 	end if
-	'IF reg.tfy_ar_mark.value = "X" then 
-	'	MsgBox "請款註記不得為大陸進口案 !!", 64, "Sorry!" 
-	'	settab 3
-	'	reg.tfy_ar_mark.focus 
-	'	Exit function
-	'end if
-	If reg.R_O_item1.value <> empty then
-		IF isdate(reg.R_O_item1.value) = false then
-			msgbox "請檢查相關聯案件日期 ，日期格式是否正確!!"
-			settab 6
-			reg.R_O_item1.focus
-			exit function
-		End If
-	End If 	
 	IF reg.R_O_item1.value<>empty or reg.R_O_item2.value<>empty or reg.R_O_item3.value<>empty then
 		reg.tfz1_other_item.value=reg.R_O_item1.value&";"&reg.R_O_item2.value&";"&reg.R_O_item3.value
 	End IF
@@ -210,30 +65,10 @@ case "DR1"
 			exit function
 		End IF
 	End IF
-	'出名代理人檢查
-	apclass_flag="N"
-	for capnum=1 to reg.apnum.value
-		IF left(eval("reg.apclass"& capnum &".value"),1)="C" then
-			apclass_flag="C"	
-		End IF
-	next
-	if apclass_flag="C" then
-	      if check_agtno("C",reg.tfp1_agt_no.value)=true then
-		     settab 6
-		 	 reg.tfp1_agt_no.focus
-		  	 exit function
-		  end if
-	else	  
-	   if trim(reg.tfp1_agt_no.value)<>trim(pagt_no) then
-	       ans=msgbox("出名代理人與案性預設出名代理人不同，是否確定交辦？",vbYesNo+vbdefaultbutton2,"確定出名代理人")
-	       if ans=vbNo then
-	          settab 6
-	          reg.tfp1_agt_no.focus
-	          exit function
-	       end if
-	   end if   
-	end if
-	
+
+	//出名代理人檢查
+	if (main.chkAgt("apnum","apclass","tfp1_agt_no") == false) return false;
+
 	'2012/10/3增加廢止商標包含部份，因2012/7/1新申請書修改
 	IF reg.R_cappl_name.checked=True then
 		reg.tfzd_cappl_name.value=reg.R_cappl_name.value
@@ -268,7 +103,6 @@ case "DR1"
 	End IF
 	
 	reg.draw_file.value=reg.tfp1_draw_file.value
-	reg.tfzd_agt_no.value=reg.tfp1_agt_no.value
 	if reg.fr1_class_type(0).checked then reg.tfzr_class_type(0).checked=true
 	if reg.fr1_class_type(1).checked then reg.tfzr_class_type(1).checked=true
 	
@@ -296,18 +130,6 @@ case "DR1"
 	end if
 	
 case "DO1"
-	IF reg.fr2_Appl_name.value=empty then
-		msgbox "商標名稱不可空白！！"
-		settab 5
-		reg.fr2_Appl_name.focus
-		exit function
-	End IF
-	'2014/4/22增加檢查是否為雙邊代理查照對象,案件名稱
-	if check_CustWatch("appl_name",reg.fr2_Appl_name.value)=true then 
-		settab 5
-		reg.fr2_Appl_name.focus
-		exit function  
-	end if
 	'2013/12/12複製下一筆，案件名稱及註冊號，如未修改就存檔，資料空白，所以再給一次值
 	reg.tfzd_appl_name.value=reg.fr2_appl_name.value
 	reg.tfzd_issue_no.value=reg.fr2_issue_no.value
@@ -322,20 +144,6 @@ case "DO1"
 		reg.tfp2_seq1.focus 
 		Exit function
 	end if
-	'IF reg.tfy_ar_mark.value = "X" then 
-	'	MsgBox "請款註記不得為大陸進口案 !!", 64, "Sorry!" 
-	'	settab 3
-	'	reg.tfy_ar_mark.focus 
-	'	Exit function
-	'end if
-	If reg.O_O_item1.value <> empty then
-		IF isdate(reg.O_O_item1.value) = false then
-			msgbox "請檢查相關聯案件日期 ，日期格式是否正確!!"
-			settab 5
-			reg.O_O_item1.focus
-			exit function
-		End If
-	End If 	
 	IF reg.O_O_item1.value<>empty or reg.O_O_item2.value<>empty or reg.O_O_item3.value<>empty then
 		reg.tfz2_other_item.value=reg.O_O_item1.value&";"&reg.O_O_item2.value&";"&reg.O_O_item3.value
 	End IF
@@ -363,30 +171,10 @@ case "DO1"
 			exit function
 		End IF
 	End IF
-	'出名代理人檢查
-	apclass_flag="N"
-	for capnum=1 to reg.apnum.value
-		IF left(eval("reg.apclass"& capnum &".value"),1)="C" then
-			apclass_flag="C"	
-		End IF
-	next
-	if apclass_flag="C" then
-	      if check_agtno("C",reg.tfp2_agt_no.value)=true then
-		     settab 5
-		 	 reg.tfp2_agt_no.focus
-		  	 exit function
-		  end if
-	else	  
-	   if trim(reg.tfp2_agt_no.value)<>trim(pagt_no) then
-	       ans=msgbox("出名代理人與案性預設出名代理人不同，是否確定交辦？",vbYesNo+vbdefaultbutton2,"確定出名代理人")
-	       if ans=vbNo then
-	          settab 5
-	          reg.tfp2_agt_no.focus
-	          exit function
-	       end if
-	   end if   
-	end if
-	
+
+	//出名代理人檢查
+	if (main.chkAgt("apnum","apclass","tfp2_agt_no") == false) return false;
+
 	IF reg.O_cappl_name.checked=True then
 		reg.tfzd_cappl_name.value=reg.O_cappl_name.value
 	Else
@@ -419,7 +207,6 @@ case "DO1"
 		reg.tfzd_remark3.value=""
 	End IF
 	reg.draw_file.value=reg.tfp2_draw_file.value					
-	reg.tfzd_agt_no.value=reg.tfp2_agt_no.value		
 	if reg.fr2_class_type(0).checked then reg.tfzr_class_type(0).checked=true
 	if reg.fr2_class_type(1).checked then reg.tfzr_class_type(1).checked=true	
 	'reg.tfzb_seq.value = "null"
@@ -445,28 +232,7 @@ case "DO1"
 		   exit Function
 		End if
 	end if			
-
-	'IF reg.D_remark2.value<>empty then
-	'	if reg.O_cappl_name.checked=false and reg.O_eappl_name.checked=false and reg.O_jappl_name.checked=false and reg.O_draw.checked=false and reg.O_zappl_name.checked=false then
-	'		msgbox "請勾選商標/標章圖樣那一部份違法!!"
-	'		settab 5
-	'		reg.O_cappl_name.focus
-	'		exit function
-	'	End IF
-	'End iF
 case "DI1"
-	IF reg.fr3_Appl_name.value=empty then
-		msgbox "商標名稱不可空白！！"
-		settab 7
-		reg.fr3_Appl_name.focus
-		exit function
-	End IF
-	IF reg.fr3_Appl_name.value=empty then
-		msgbox "商標名稱不可空白！！"
-		settab 7
-		reg.fr3_Appl_name.focus
-		exit function
-	End IF
 	'2013/12/12複製下一筆，案件名稱及註冊號，如未修改就存檔，資料空白，所以再給一次值
 	reg.tfzd_appl_name.value=reg.fr3_appl_name.value
 	reg.tfzd_issue_no.value=reg.fr3_issue_no.value
@@ -481,20 +247,6 @@ case "DI1"
 		reg.tfp3_seq1.focus 
 		Exit function
 	end if
-	'IF reg.tfy_ar_mark.value = "X" then 
-	'	MsgBox "請款註記不得為大陸進口案 !!", 64, "Sorry!" 
-	'	settab 3
-	'	reg.tfy_ar_mark.focus 
-	'	Exit function
-	'end if
-	If reg.I_O_item1.value <> empty then
-		IF isdate(reg.I_O_item1.value) = false then
-			msgbox "請檢查相關聯案件日期 ，日期格式是否正確!!"
-			settab 7
-			reg.I_O_item1.focus
-			exit function
-		End If
-	End If
 	IF reg.I_O_item1.value<>empty or reg.I_O_item2.value<>empty or reg.I_O_item3.value<>empty then
 		reg.tfz3_other_item.value=reg.I_O_item1.value&";"&reg.I_O_item2.value&";"&reg.I_O_item3.value
 	End IF
@@ -522,30 +274,10 @@ case "DI1"
 			exit function
 		End IF
 	End IF
-	'出名代理人檢查
-	apclass_flag="N"
-	for capnum=1 to reg.apnum.value
-		IF left(eval("reg.apclass"& capnum &".value"),1)="C" then
-			apclass_flag="C"	
-		End IF
-	next
-	if apclass_flag="C" then
-	      if check_agtno("C",reg.tfp3_agt_no.value)=true then
-		     settab 7
-		 	 reg.tfp3_agt_no.focus
-		  	 exit function
-		  end if
-	else	  
-	   if trim(reg.tfp3_agt_no.value)<>trim(pagt_no) then
-	       ans=msgbox("出名代理人與案性預設出名代理人不同，是否確定交辦？",vbYesNo+vbdefaultbutton2,"確定出名代理人")
-	       if ans=vbNo then
-	          settab 7
-	          reg.tfp3_agt_no.focus
-	          exit function
-	       end if
-	   end if   
-	end if
-	
+
+	//出名代理人檢查
+	if (main.chkAgt("apnum","apclass","tfp3_agt_no") == false) return false;
+
 	IF reg.I_cappl_name.checked=True then
 		reg.tfzd_cappl_name.value=reg.I_cappl_name.value
 	else
@@ -609,8 +341,7 @@ case "DI1"
 		reg.tfz3_other_item1.value=""
 	End IF
 	reg.draw_file.value=reg.tfp3_draw_file.value					
-	reg.tfzd_agt_no.value=reg.tfp3_agt_no.value		
-	if reg.fr3_class_type(0).checked then reg.tfzr_class_type(0).checked=true
+if reg.fr3_class_type(0).checked then reg.tfzr_class_type(0).checked=true
 	if reg.fr3_class_type(1).checked then reg.tfzr_class_type(1).checked=true	
 	'reg.tfzb_seq.value = "null"
 	'reg.tfzb_seq1.value = "_"
@@ -636,29 +367,6 @@ case "DI1"
 		End if
 	end if
 case else
-	IF reg.tfy_case_stat.value="NN" or reg.tfy_case_stat.value="SN" then
-		IF reg.tfzd_Appl_name.value=empty then
-			msgbox "商標名稱不可空白！！"
-			settab 4
-			reg.tfzd_Appl_name.focus
-			exit function
-		End IF
-		'2014/4/22增加檢查是否為雙邊代理查照對象,案件名稱
-		if check_CustWatch("appl_name",reg.tfzd_Appl_name.value)=true then 
-			settab 4
-			reg.tfzd_Appl_name.focus
-			exit function  
-		end if
-	End IF		
-	IF reg.tfy_case_stat.value="OO" then
-		IF reg.keyseq.value="N" then
-			msgbox "主案件編號變動過，請按[確定]按鈕，重新抓取資料!!!"
-			settab 4
-			gname="reg.btnseq_ok.focus"
-			execute gname
-			exit function
-		End IF	
-	End IF		
 	If reg.tfy_case_stat.value="NN" then
 		'reg.tfzb_seq.value = "null"
 		reg.tfzb_seq.value = reg.New_seq.value
@@ -704,32 +412,10 @@ case else
 		End if
 		Exit function
 	end if
-	'出名代理人檢查
 	if left(reg.tfy_arcase.value,3)<>"DE1" and left(reg.tfy_arcase.value,3)<>"DE2" then
-		apclass_flag="N"
-		for capnum=1 to reg.apnum.value
-			IF left(eval("reg.apclass"& capnum &".value"),1)="C" then
-				apclass_flag="C"	
-			End IF
-		next
-		if apclass_flag="C" then
-		      if check_agtno("C",reg.tfg1_agt_no1.value)=true then
-			     settab 8
-			 	 reg.tfg1_agt_no1.focus
-			  	 exit function
-			  end if
-		else	  
-		   if trim(reg.tfg1_agt_no1.value)<>trim(pagt_no) then
-		       ans=msgbox("出名代理人與案性預設出名代理人不同，是否確定交辦？",vbYesNo+vbdefaultbutton2,"確定出名代理人")
-		       if ans=vbNo then
-		          settab 8
-		          reg.tfg1_agt_no1.focus
-		          exit function
-		       end if
-		   end if   
-		end if
+		//出名代理人檢查
+		if (main.chkAgt("apnum","apclass","tfg1_agt_no1") == false) return false;
 	end if	
-	reg.tfzd_agt_no.value=reg.tfg1_agt_no1.value
 End Select
 '案件內容
 IF left(reg.tfy_arcase.value,3)="DE1" then
@@ -785,30 +471,10 @@ IF left(reg.tfy_arcase.value,3)="DE1" then
 		reg.fr4_tran_remark1.focus
 		exit function
 	End IF
-	'出名代理人檢查
-	apclass_flag="N"
-	for capnum=1 to reg.apnum.value
-		IF left(eval("reg.apclass"& capnum &".value"),1)="C" then
-			apclass_flag="C"	
-		End IF
-	next
-	if apclass_flag="C" then
-	      if check_agtno("C",reg.tfp4_agt_no.value)=true then
-		     settab 9
-		 	 reg.tfp4_agt_no.focus
-		  	 exit function
-		  end if
-	else	  
-	   if trim(reg.tfp4_agt_no.value)<>trim(pagt_no) then
-	       ans=msgbox("出名代理人與案性預設出名代理人不同，是否確定交辦？",vbYesNo+vbdefaultbutton2,"確定出名代理人")
-	       if ans=vbNo then
-	          settab 9
-	          reg.tfp4_agt_no.focus
-	          exit function
-	       end if
-	   end if   
-	end if
-	reg.tfzd_agt_no.value=reg.tfp4_agt_no.value
+
+	//出名代理人檢查
+	if (main.chkAgt("apnum","apclass","tfp4_agt_no") == false) return false;
+
 ElseIF left(reg.tfy_arcase.value,3)="DE2" then
 	
 	IF reg.fr4_remark3(0).checked=false and reg.fr4_remark3(1).checked=false and reg.fr4_remark3(2).checked=false then
@@ -845,49 +511,15 @@ ElseIF left(reg.tfy_arcase.value,3)="DE2" then
 		reg.fr4_tran_remark1.focus
 		exit function
 	End IF
-	'出名代理人檢查
-	apclass_flag="N"
-	for capnum=1 to reg.apnum.value
-		IF left(eval("reg.apclass"& capnum &".value"),1)="C" then
-			apclass_flag="C"	
-		End IF
-	next
-	if apclass_flag="C" then
-	      if check_agtno("C",reg.tfp4_agt_no.value)=true then
-		     settab 9
-		 	 reg.tfp4_agt_no.focus
-		  	 exit function
-		  end if
-	else	  
-	   if trim(reg.tfp4_agt_no.value)<>trim(pagt_no) then
-	       ans=msgbox("出名代理人與案性預設出名代理人不同，是否確定交辦？",vbYesNo+vbdefaultbutton2,"確定出名代理人")
-	       if ans=vbNo then
-	          settab 9
-	          reg.tfp4_agt_no.focus
-	          exit function
-	       end if
-	   end if   
-	end if
-	reg.tfzd_agt_no.value=reg.tfp4_agt_no.value
+
+	//出名代理人檢查
+	if (main.chkAgt("apnum","apclass","tfp4_agt_no") == false) return false;
 End IF
 '***end***
 main.chkEndBack()
-	if reg.tfzy_color(0).checked=true then
-		reg.tfzd_color.value="B"
-	elseif reg.tfzy_color(1).checked=true then
-		reg.tfzd_color.value="C"
-	end if
-	if reg.tfzy_s_mark(0).checked=true then
-		reg.tfzd_s_mark.value=""
-	elseif reg.tfzy_s_mark(1).checked=true then
-		reg.tfzd_s_mark.value="S"
-	elseif reg.tfzy_s_mark(2).checked=true then
-		reg.tfzd_s_mark.value="N"
-	elseif reg.tfzy_s_mark(3).checked=true then
-		reg.tfzd_s_mark.value="M"
-	elseif reg.tfzy_s_mark(4).checked=true then
-		reg.tfzd_s_mark.value="L"
-	end if
+	$("#tfzd_color").val($("input[name='tfzy_color']:checked").val()||"");
+	$("#tfzd_S_Mark").val($("input[name='tfzy_S_Mark']:checked").val()||"");
+	
 	reg.tfzd_pul.value=reg.tfzy_pul.value
 	reg.tfzd_zname_type.value=reg.tfzy_zname_type.value
 	reg.tfzd_prior_country.value=reg.tfzy_prior_country.value
@@ -948,88 +580,12 @@ IF left(reg.tfy_arcase.value,3)="DO1" or left(reg.tfy_arcase.value,3)="DI1" or l
 	   exit function
 	end if
 else	
-	execute "pname=reg.tfzr_class_count.value"	'抓取指定類別總數
-	IF eval(pname)<>empty then
-		'2015/10/21增加檢查商標種類不是M團體標章也不是L證明標章，需點選類別種類及輸入類別
-		if reg.tfzd_s_mark.value<>"M" and reg.tfzd_s_mark.value<>"L" then
-			for z=1 to eval(pname)
-				execute "gname=reg.class1"&z&".value"
-				execute "pname=reg.good_name1"&z&".value"
-				if pname<>empty and gname=empty  then
-					msgbox "請輸入類別!!!"
-					settab 4
-					execute "reg.class1"&z&".focus"
-					exit function
-				end if
-				if gname<>empty and reg.tfzr_class_type(0).checked then
-					if cint(gname) < 0 or cint(gname) > 45 then
-						Msgbox "使用類別"&z&"不符國際分類(001~045)。"
-						settab 4
-						execute "reg.class1"&z&".focus"
-						exit function
-					end if
-				end if
-			next		
-		end if	
-	End IF		
-	'指定類別檢查
-	execute "pname=reg.tfzr_class_count.value"	'抓取指定類別總數
-	'2015/10/21增加檢查商標種類不是M團體標章也不是L證明標章，需點選類別種類及輸入類別
-	if reg.tfzd_s_mark.value<>"M" and reg.tfzd_s_mark.value<>"L" then
-		for z=1 to eval(pname)
-			for j=1 to eval(pname)
-				if z<>j then
-					execute "gname=reg.class1"&z&".value"
-					execute "kname=reg.class1"&j&".value"
-					if gname<>empty  then
-						if gname=kname then
-							Msgbox "商品類別重覆,請重新輸入!!!"
-							settab 4
-							execute "reg.class1"&j&".focus"
-							exit function
-						end if
-					end if
-				end if
-				execute "kname=reg.class1"&j&".value"
-				if kname<>empty and reg.tfzr_class_type(0).checked then
-					if cint(kname) < 0 or cint(kname) > 45 then
-						Msgbox "使用類別"&j&"不符國際分類(001~045)。"
-						settab 4
-						execute "reg.class1"&j&".focus"
-						exit function
-					end if
-				end if
-			next
-		next	
-	end if	
-	'***指定類別數目檢查
-	if reg.tfzr_class_count.value<>empty then
-		kname="reg.tfzr_class_count.value"
-		gname="reg.ctrlcount1.value"
-		class_cnt=eval(kname)
-		ctrlcnt=eval(gname)
-	    if class_cnt <> ctrlcnt then
-			answer=msgbox("指定使用商品類別項目(共 "&eval(kname)&" 類)與輸入指定使用商品(共 "& eval(gname) &" 類)不符，"&chr(13)&chr(13)&"是否確定指定使用商品共 "& eval(gname) &" 類？",vbYesNo+vbdefaultbutton2,"確認商品類別項目")
-			if answer = vbYes then
-				execute "reg.tfzr_class_count.value=" & ctrlcnt
-			else
-				settab 4
-				execute "reg.tfzr_class_count.focus"
-				exit function
-			end if
-		end if
-	end if	
+    //主檔商品類別檢查
+    if (main.chkGood() == false) return false;
 end if	
 
-'****請款註記	
-if reg.tfzb_seq1.value ="M" then
-	reg.tfy_ar_code.value="M"
-Elseif reg.nfy_service.value=0 and reg.nfy_fees.value=0 and reg.nfy_oth_money.value=0 and reg.tfy_ar_mark.value="N" then
-	reg.tfy_ar_code.value="X"
-Else
-	reg.tfy_ar_code.value="N"
-End IF	
-
+    //檢查大陸案請款註記檢查&給值
+    if (main.chkAr() == false) return false;
 
 '****總計案性數
 	if reg.tfy_arcase.value<>empty then
@@ -1046,11 +602,7 @@ End IF
 		reg.tfzd_tcn_mark.disabled = false
 		reg.tfg1_seq.value = reg.tfzb_seq.value
 		reg.tfg1_seq1.value= reg.tfzb_seq1.value		
-'****當無收費標準時，把值清空
-	if reg.anfees.value = "N" then 
-	   reg.nfy_Discount.value =""
-	   reg.tfy_discount_remark.value=""	'2016/5/30增加折扣理由
-	end if   
+   
 	reg.action="Brt11AddB.asp"	
 	reg.submitTask.value = "ADD"
 	If reg.chkTest.checked=True Then reg.target = "ActFrame" Else reg.target = "_self"

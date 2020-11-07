@@ -1,4 +1,20 @@
-﻿//客戶申請人檢查
+﻿//日期格式檢查,抓class=dateField,有輸入則檢查
+main.chkDate = function (tabName) {
+    var rtn = true;
+    $("[id='" + tabName + "'] input.dateField").each(function () {
+        if ($(this).val() != "" && !$.isDate($(this).val())) {
+            $(this).addClass("chkError");
+            settab(tabName);
+            rtn = false;
+        } else {
+            $(this).removeClass("chkError");
+        }
+    });
+
+    return rtn;
+}
+
+//客戶聯絡人檢查
 main.chkCustAtt = function () {
     if ($("#tfy_case_stat").val() != "OO") {//新案
         //2014/4/22增加檢查是否為雙邊代理查照對象,客戶名稱
@@ -19,6 +35,405 @@ main.chkCustAtt = function () {
         $("#tfy_att_sql").focus();
         return false;
     }
+    return true;
+}
+
+//申請人檢查
+main.chkApp = function () {
+    //申請人檢查
+    switch ($("#tfy_Arcase").val()) {
+        case "FC1": case "FC10": case "FC11": case "FC9": case "FC7":
+        case "FC5": case "FCA": case "FCB": case "FCF": case "FCH":
+            //apcust_fc_re1_form
+            if (CInt($("#FC2_apnum").val()) == 0) {
+                alert("請輸入申請人資料！");
+                settab("#apcust");
+                $("#FC2_AP_Add_button").focus();
+                return false;
+            }
+            for (var tapnum = 1; tapnum <= CInt($("#FC2_apnum").val()) ; tapnum++) {
+                if (IsEmpty($("#dbmn1_new_no_" + tapnum).val())) {
+                    alert("申請人編號不得為空白！");
+                    settab("#apcust");
+                    $("#dbmn1_new_no_" + tapnum).focus();
+                    return false;
+                }
+                $("#dbmn1_ap_cname_" + tapnum).val($("#dbmn1_ncname1_" + tapnum).val() + $("#dbmn1_ncname2_" + tapnum).val());
+                $("#dbmn1_ap_ename_" + tapnum).val($("#dbmn1_nename1_" + tapnum).val() + " " + $("#dbmn1_nename2_" + tapnum).val());
+                if ($("#dbmn1_ncname1_" + tapnum).val() != "") {
+                    if (fDataLen($("#dbmn1_ncname1_" + tapnum))) {
+                        settab("#apcust");
+                        $("#dbmn1_ncname1_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#dbmn1_ncname2_" + tapnum).val() != "") {
+                    if (fDataLen($("#dbmn1_ncname2_" + tapnum))) {
+                        settab("#apcust");
+                        $("#dbmn1_ncname2_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#dbmn1_nename1_" + tapnum).val() != "") {
+                    if (fDataLen($("#dbmn1_nename1_" + tapnum))) {
+                        settab("#apcust");
+                        $("#dbmn1_nename1_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#dbmn1_nename2_" + tapnum).val() != "") {
+                    if (fDataLen($("#dbmn1_nename2_" + tapnum))) {
+                        settab("#apcust");
+                        $("#dbmn1_nename2_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#tfy_case_stat").val() != "OO") {//新案
+                    //2014/4/22增加檢查是否為雙邊代理查照對象
+                    if (cust_name_chk($("#dbmn1_ap_cname_" + tapnum).val(), $("#dbmn1_ap_ename_" + tapnum).val())) {
+                        settab("#apcust");
+                        return false;
+                    }
+                    if (aprep_name_chk($("#dbmn1_ncrep_" + tapnum).val(), $("#dbmn1_nerep_" + tapnum).val())) {
+                        settab("#apcust");
+                        return false;
+                    }
+                }
+            }
+            break;
+        case "FC2": case "FC20": case "FC21": case "FC0": case "FC6":
+        case "FC8": case "FCC": case "FCD": case "FCG": case "FCI":
+            //apcust_fc_re_form
+            //2010/10/5增加控制需填寫申請人種類才能存檔
+            if ($("input[name=tfzd_Mark]:checked").length == 0) {
+                alert("請選擇申請人變更種類！");
+                settab("#apcust");
+                $("input[name=tfzd_class_type]").eq(0).focus();
+                return false;
+            }
+            if (CInt($("#FC0_apnum").val()) == 0) {
+                alert("請輸入申請人資料！");
+                settab("#apcust");
+                return false;
+            }
+            for (var tapnum = 1; tapnum <= CInt($("#FC0_apnum").val()) ; tapnum++) {
+                if (IsEmpty($("#dbmn_new_no_" + tapnum).val())) {
+                    alert("申請人編號不得為空白！");
+                    settab("#apcust");
+                    $("#dbmn_new_no_" + tapnum).focus();
+                    return false;
+                }
+                $("#dbmn_ap_cname_" + tapnum).val($("#dbmn_ncname1_" + tapnum).val() + $("#dbmn_ncname2_" + tapnum).val());
+                $("#dbmn_ap_ename_" + tapnum).val($("#dbmn_nename1_" + tapnum).val() + " " + $("#dbmn_nename2_" + tapnum).val());
+                if ($("#dbmn_ncname1_" + tapnum).val() != "") {
+                    if (fDataLen($("#dbmn_ncname1_" + tapnum))) {
+                        settab("#apcust");
+                        $("#dbmn_ncname1_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#dbmn_ncname2_" + tapnum).val() != "") {
+                    if (fDataLen($("#dbmn_ncname2_" + tapnum))) {
+                        settab("#apcust");
+                        $("#dbmn_ncname2_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#dbmn_nename1_" + tapnum).val() != "") {
+                    if (fDataLen($("#dbmn_nename1_" + tapnum))) {
+                        settab("#apcust");
+                        $("#dbmn_nename1_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#dbmn_nename2_" + tapnum).val() != "") {
+                    if (fDataLen($("#dbmn_nename2_" + tapnum))) {
+                        settab("#apcust");
+                        $("#dbmn_nename2_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#tfy_case_stat").val() != "OO") {//新案
+                    //2014/4/22增加檢查是否為雙邊代理查照對象
+                    if (cust_name_chk($("#dbmn_ap_cname_" + tapnum).val(), $("#dbmn_ap_ename_" + tapnum).val())) {
+                        settab("#apcust");
+                        return false;
+                    }
+                    if (aprep_name_chk($("#dbmn_ncrep_" + tapnum).val(), $("#dbmn_nerep_" + tapnum).val())) {
+                        settab("#apcust");
+                        return false;
+                    }
+                }
+            }
+            break;
+        default:
+            //apcust_form
+            if (CInt($("#apnum").val()) == 0) {
+                alert("請輸入申請人資料！");
+                settab("#apcust");
+                $("#AP_Add_button").focus();
+                return false;
+            }
+            for (var tapnum = 1; tapnum <= CInt($("#apnum").val()) ; tapnum++) {
+                if (IsEmpty($("#apcust_no_" + tapnum).val())) {
+                    alert("申請人編號不得為空白！");
+                    settab("#apcust");
+                    $("#apcust_no_" + tapnum).focus();
+                    return false;
+                }
+                $("#ap_cname_" + tapnum).val($("#ap_cname1_" + tapnum).val() + $("#ap_cname2_" + tapnum).val());
+                $("#ap_ename_" + tapnum).val($("#ap_ename1_" + tapnum).val() + " " + $("#ap_ename2_" + tapnum).val());
+                if ($("#ap_cname1_" + tapnum).val() != "") {
+                    if (fDataLen($("#ap_cname1_" + tapnum))) {
+                        settab("#apcust");
+                        $("#ap_cname1_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#ap_cname2_" + tapnum).val() != "") {
+                    if (fDataLen($("#ap_cname2_" + tapnum))) {
+                        settab("#apcust");
+                        $("#ap_cname2_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#ap_ename1_" + tapnum).val() != "") {
+                    if (fDataLen($("#ap_ename1_" + tapnum))) {
+                        settab("#apcust");
+                        $("#ap_ename1_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#ap_ename2_" + tapnum).val() != "") {
+                    if (fDataLen($("#ap_ename2_" + tapnum))) {
+                        settab("#apcust");
+                        $("#ap_ename2_" + tapnum).focus();
+                        return false;
+                    }
+                }
+                if ($("#tfy_case_stat").val() != "OO") {//新案
+                    //2014/4/22增加檢查是否為雙邊代理查照對象
+                    if (cust_name_chk($("#ap_cname_" + tapnum).val(), $("#ap_ename_" + tapnum).val())) {
+                        settab("#apcust");
+                        return false;
+                    }
+                    if (aprep_name_chk($("#ap_crep_" + tapnum).val(), $("#ap_erep_" + tapnum).val())) {
+                        settab("#apcust");
+                        return false;
+                    }
+                }
+            }
+            break;
+    }
+
+    return true;
+}
+
+//商標名稱檢查
+main.chkApplName = function () {
+    switch ($("#tfy_Arcase").val()) {
+        case "DR1":
+            if ($("#fr1_appl_name").val() == "") {
+                alert("商標名稱不可空白！");
+                settab("#tran");
+                $("#fr1_appl_name").focus();
+                return false;
+            }
+            //2014/4/22增加檢查是否為雙邊代理查照對象,案件名稱
+            if (check_CustWatch("appl_name", $("#fr1_appl_name").val()) == true) {
+                settab("#tran");
+                $("#fr1_appl_name").focus();
+                return false;
+            }
+            break;
+        case "DO1":
+            if ($("#fr2_appl_name").val() == "") {
+                alert("商標名稱不可空白！");
+                settab("#tran");
+                $("#fr2_appl_name").focus();
+                return false;
+            }
+            //2014/4/22增加檢查是否為雙邊代理查照對象,案件名稱
+            if (check_CustWatch("appl_name", $("#fr2_appl_name").val()) == true) {
+                settab("#tran");
+                $("#fr2_appl_name").focus();
+                return false;
+            }
+            break;
+        case "DI1":
+            if ($("#fr3_appl_name").val() == "") {
+                alert("商標名稱不可空白！");
+                settab("#tran");
+                $("#fr3_appl_name").focus();
+                return false;
+            }
+            //2014/4/22增加檢查是否為雙邊代理查照對象,案件名稱
+            if (check_CustWatch("appl_name", $("#fr3_appl_name").val()) == true) {
+                settab("#tran");
+                $("#fr3_appl_name").focus();
+                return false;
+            }
+            break;
+        default:
+            if ($("#tfzd_appl_name").val() == "") {
+                alert("商標名稱不可空白！");
+                settab("#dmt");
+                $("#tfzd_appl_name").focus();
+                return false;
+            }
+            if ($("#tfy_case_stat").val() == "NN" || $("#tfy_case_stat").val() == "SN") {
+                //2014/4/22增加檢查是否為雙邊代理查照對象,案件名稱
+                if (check_CustWatch("appl_name", $("#tfzd_appl_name").val()) == true) {
+                    settab("#dmt");
+                    $("#tfzd_appl_name").focus();
+                    return false;
+                }
+            }
+            break;
+    }
+
+    return true;
+}
+
+//必填欄位檢查
+main.chkRequire = function () {
+    //案性檢查
+    if (IsEmpty($("#tfy_Arcase").val())) {
+        alert("客收/請款案性不得為空白！");
+        settab("#case");
+        $("#tfy_Arcase").focus();
+        return false;
+    }
+
+    if (IsEmpty($("#tfy_Ar_mark").val())) {
+        alert("請款註記不得為空白！");
+        settab("#case");
+        $("#tfy_Ar_mark").focus();
+        return false;
+    }
+
+    if (IsEmpty($("#F_tscode").val())) {
+        alert("洽案營洽不得為空白！");
+        settab("#case");
+        $("#F_tscode").focus();
+        return false;
+    }
+
+    //案源代碼檢查
+    if (IsEmpty($("#tfy_source").val())) {
+        alert("案源代碼不得為空白！");
+        settab("#case");
+        $("#tfy_source").focus();
+        return false;
+    }
+
+    //20160910 增加發文方式檢查
+    if (IsEmpty($("#tfy_send_way").val())) {
+        alert("發文方式不得為空白！");
+        settab("#case");
+        $("#tfy_send_way").focus();
+        return false;
+    }
+
+    //特定案性才要檢查
+    if (main.ar_form == "A4") {//延展
+        if (IsEmpty($("#tfzd_issue_no").val())) {
+            alert("註冊號數不得為空白！");
+            settab("#dmt");
+            $("#tfzd_issue_no").focus();
+            return false;
+        }
+    } else if (main.ar_form == "A5") {//分割
+        if (IsEmpty($("#tfzd_apply_date").val())) {
+            alert("分割案：法令規定子案與母案申請日相同，請輸入申請日！");
+            settab("#dmt");
+            $("#tfzd_apply_date").focus();
+            return false;
+        }
+    } else if (main.ar_form == "A6") {//變更
+        if ($("#tfy_Arcase").val().Left(3) == "FC2" || $("#tfy_Arcase").val().Left(3) == "FC0"
+            || $("#tfy_Arcase").val().Left(3) == "FC6" || $("#tfy_Arcase").val().Left(3) == "FC8"
+            || $("#tfy_Arcase").val().Left(3) == "FCC" || $("#tfy_Arcase").val().Left(3) == "FCD"
+            || $("#tfy_Arcase").val().Left(3) == "FCG" || $("#tfy_Arcase").val().Left(3) == "FCI") {
+            if (IsEmpty($("#tfzd_issue_no").val())) {
+                alert("註冊號數不得為空白！");
+                settab("#dmt");
+                $("#tfzd_issue_no").focus();
+                return false;
+            }
+        }
+    } else if (main.ar_form == "A7") {//授權
+        if (IsEmpty($("#tfzd_issue_no").val())) {
+            if (confirm("註冊號數為空白，確定交辦？") == false) {
+                settab("#dmt");
+                $("#tfzd_issue_no").focus();
+                return false;
+            }
+        }
+    } else if (main.ar_form == "A8") {//移轉
+        if (IsEmpty($("#tfzd_issue_no").val()) && IsEmpty($("#tfzd_apply_no").val())) {
+            alert("註冊號數不得為空白！");
+            settab("#dmt");
+            $("#tfzd_issue_no").focus();
+            return false;
+        }
+    } else if (main.ar_form == "A9") {//質權
+        if ($("#tfy_Arcase").val().Left(3) == "FP1") {
+            if (IsEmpty($("#tfg1_debit_money").val())) {
+                alert("債權額度不得為空白！");
+                settab("#tran");
+                $("#tfg1_debit_money").focus();
+                return false;
+            }
+        }else if ($("#tfy_Arcase").val().Left(3) == "FP2") {
+            if (IsEmpty($("#tfg2_term1").val())) {
+                alert("質權消滅日期不得為空白！");
+                settab("#tran");
+                $("#tfg2_term1").focus();
+                return false;
+            }
+        }
+    } else if (main.ar_form == "AA") {//各種證明書
+        if ($("input[name=tfzd_Mark]").eq(0).prop("checked") == true) {
+            if (IsEmpty($("#tfzd_apply_no").val())) {
+                alert("申請號數不可以空白！");
+                settab("#dmt");
+                $("#tfzd_apply_no").focus();
+                return false;
+            }
+        } else if ($("input[name=tfzd_Mark]").eq(1).prop("checked") == true) {
+            if (IsEmpty($("#tfzd_issue_no").val())) {
+                alert("註冊號數不可以空白！");
+                settab("#dmt");
+                $("#tfzd_issue_no").focus();
+                return false;
+            }
+        }
+    } else if (main.ar_form == "AB") {//補(換)發證
+        if (IsEmpty($("#tfzd_issue_no").val())) {
+            alert("註冊號數不得為空白！");
+            settab("#dmt");
+            $("#tfzd_issue_no").focus();
+            return false;
+        }
+    } else if (main.ar_form == "AC") {//閱案
+        if ($("input[name=tfzd_Mark]").eq(0).prop("checked") == true) {
+            if (IsEmpty($("#tfzd_apply_no").val())) {
+                alert("申請號數不可以空白！");
+                settab("#dmt");
+                $("#tfzd_apply_no").focus();
+                return false;
+            }
+        } else if ($("input[name=tfzd_Mark]").eq(1).prop("checked") == true) {
+            if (IsEmpty($("#tfzd_issue_no").val())) {
+                alert("註冊號數不可以空白！");
+                settab("#dmt");
+                $("#tfzd_issue_no").focus();
+                return false;
+            }
+        }
+    }
+
     return true;
 }
 
@@ -170,35 +585,11 @@ main.chkCaseForm = function () {
             if (Date.parse($("#dfy_cust_date").val()) < Date.parse($("#dfy_pr_date").val())) {
                 $("#dfy_pr_date").val($("#dfy_cust_date").val());
             }
-        } else {
-            if ($("#dfy_cust_date").val() != "" && !$.isDate($("#dfy_cust_date").val())) {
-                alert("客戶期限日期格式錯誤，請重新輸入!!");
-                settab("#case");
-                $("#dfy_cust_date").focus();
-                return false;
-            }
-            if ($("#dfy_pr_date").val() != "" && !$.isDate($("#dfy_pr_date").val())) {
-                alert("承辦期限日期格式錯誤，請重新輸入!!");
-                settab("#case");
-                $("#dfy_pr_date").focus();
-                return false;
-            }
         }
-    } else if ($("#dfy_pr_date").val() != "" && !$.isDate($("#dfy_pr_date").val())) {
-        alert("承辦期限日期格式錯誤，請重新輸入!!");
-        settab("#case");
-        $("#dfy_pr_date").focus();
-        return false;
     }
 
     //*****法定期限控制2011/9/26新增,新立案且交辦特定案性輸入法定期限
     if ($("#dfy_last_date").val() != "") {
-        if (!$.isDate($("#dfy_last_date").val())) {
-            alert("法定期限日期格式錯誤，請重新輸入!!");
-            settab("#case");
-            $("#dfy_last_date").focus();
-            return false;
-        }
         if ($("#tfy_case_stat").val() == "OO" || $("#spe_ctrl3").val() == "N") {
             var msg = "提醒您！在此輸入法定期限，系統不會自動管制或檢核程序管制法定期限是否一致，是否確定輸入？";
             if (confirm(msg)) {
@@ -254,6 +645,100 @@ main.chkCaseForm = function () {
         }
     }
 
+    return true;
+}
+
+//新/舊案號
+main.chkNewOld = function () {
+    if ($("#tfy_case_stat").val() == "NN") {
+        //$("#tfzb_seq").val($("#New_seq").val());
+        $("#tfzb_seq1").val($("#New_seq1").val());
+    } else if ($("#tfy_case_stat").val() == "SN") {
+        $("#tfzb_seq").val($("#New_Ass_seq").val());
+        $("#tfzb_seq1").val($("#New_Ass_seq1").val());
+        if (IsEmpty($("#New_Ass_seq").val())) {
+            alert("案件編號不得為空白，請重新輸入");
+            settab("#dmt");
+            $("#New_Ass_seq").focus();
+            return false;
+        }
+        if (IsEmpty($("#New_Ass_seq1").val())) {
+            alert("案件編號副碼不得為空白，請重新輸入");
+            settab("#dmt");
+            $("#New_Ass_seq1").focus();
+            return false;
+        }
+    } else if ($("#tfy_case_stat").val() == "OO") {
+        $("#tfzb_seq").val($("#old_seq").val());
+        $("#tfzb_seq1").val($("#old_seq1").val());
+        if (IsEmpty($("#old_seq").val())) {
+            alert("當案件為舊案時，請輸入『案件編號』及按下『確定』以取得詳細資料!");
+            settab("#dmt");
+            $("#old_seq").focus();
+            return false;
+        }
+    }
+    if ($("#tfy_case_stat").val() == "OO") {
+        if ($("#keyseq").val() == "N") {
+            alert("主案件編號變動過，請按[確定]按鈕，重新抓取資料!!!");
+            settab("#dmt");
+            $("#btnseq_ok").focus();
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//主檔商品類別檢查
+main.chkGood = function () {
+    //*****主檔商品類別檢查
+    var pname = $("#tfzr_class_count").val();//共N類
+    if (pname != "") {
+        //2015/10/21增加檢查商標種類不是M團體標章也不是L證明標章，需點選類別種類及輸入類別
+        if ($("#tfzd_S_Mark").val() != "M" && $("#tfzd_S_Mark").val() != "L") {
+            var inputCount = 0;
+            for (var j = 1; j <= CInt($("#num1").val()) ; j++) {
+                if ($("#good_name1_" + j).val() != "" && $("#class1_" + j).val() == "") {
+                    //有輸入商品名稱,但沒輸入類別
+                    alert("請輸入類別!");
+                    settab("#dmt");
+                    $("#class1_" + j).focus();
+                    return false;
+                }
+                if (br_form.checkclass(j) == false) {//檢查類別範圍0~45
+                    $("#class1_" + j).focus();
+                    return false;
+                }
+                if ($("#class1_" + j).val() != "") {
+                    inputCount++;//實際有輸入才要+
+                }
+            }
+            //檢查指定類別有無重覆
+            var objClass = {};
+            for (var r = 1; r <= CInt($("#num1").val()) ; r++) {
+                var lineTa = $("#class1_" + r).val();
+                if (lineTa != "" && objClass[lineTa]) {
+                    alert("商品類別重覆,請重新輸入!!!");
+                    $("#class1_" + r).focus();
+                    return false;
+                } else {
+                    objClass[lineTa] = { flag: true, idx: r };
+                }
+            }
+        }
+        $("#ctrlcount1").val(inputCount == 0 ? "" : inputCount);
+        if (CInt(pname) != CInt($("#num1").val())) {
+            var answer = "指定使用商品類別項目(共 " + CInt(pname) + " 類)與輸入指定使用商品(共 " + CInt($("#num1").val()) + " 類)不符，\n是否確定指定使用商品共 " + CInt($("#num1").val()) + " 類？";
+            if (answer) {
+                $("#tfzr_class_count").val($("#num1").val());
+            } else {
+                settab("#tran");
+                $("#tfzr_class_count").focus();
+                return false;
+            }
+        }
+    }
     return true;
 }
 
@@ -343,67 +828,92 @@ main.chkEndBack = function () {
     return true;
 }
 
+//出名代理人檢查,num=申請人計數欄位名(ex:apnum),apclass=申請人欄位名(ex:ttg1_apclass),tran_agt_no=交辦畫面的代理人欄位名(ex:ttg1_agt_no)
+main.chkAgt = function (num,apclass, tran_agt_no) {
+    var apclass_flag = "N";
+
+    for (var capnum = 1; capnum <= CInt($("#" + num).val()) ; capnum++) {
+        if ($("#" + apclass + "_" + capnum).val().Left(1) == "C") {
+            //申請人為外國人則為涉外案
+            apclass_flag = "C";
+        }
+    }
+    if (apclass_flag == "C") {
+        //2015/10/21修改抓取cust_code.code_type=Tagt_no and mark=C及用function放置於sub/client_chk_agtno.vbs
+        if (check_agtno("C", $("#" + tran_agt_no).val()) == true) {
+            settab("#tran");
+            $("#" + tran_agt_no).focus();
+            return false;
+        }
+    } else {
+        var pagt_no = $("#tfy_Arcase option:selected").attr("v2");//案性預設出名代理人
+        if (pagt_no == "") {
+            //2015/10/21因應104年度出名代理人修改並改抓取cust_code.code_type=Tagt_no and mark=N預設出名代理人
+            pagt_no = get_tagtno("N").no;
+        }
+
+        if ($("#" + tran_agt_no).val().trim() != pagt_no.trim()) {
+            if (!confirm("出名代理人與案性預設出名代理人不同，是否確定交辦？")) {
+                settab("#tran");
+                $("#" + tran_agt_no).focus();
+                return false;
+            }
+        }
+    }
+    if (tran_agt_no != "tfzd_agt_no") {
+        $("#tfzd_agt_no").val($("#" + tran_agt_no).val());
+    }
+
+    return true;
+}
+
+//檢查大陸案請款註記檢查&給值
+main.chkAr = function () {
+    //大陸案請款註記檢查.請款註記:大陸進口案
+    if ($("#tfzb_seq1").val() == "M" && $("#tfy_Ar_mark").val() != "X") {
+        alert("本案件為大陸案, 請款註記請設定為大陸進口案!!");
+        settab("#case");
+        $("#tfy_Ar_mark").focus();
+        return false;
+    } else if ($("#tfzb_seq1").val() != "M" && $("#tfy_Ar_mark").val() == "X") {
+        alert("請款註記設定為大陸進口案，案件編號副碼請設定為M_大陸案 !!");
+        settab("#tran");
+        if ($("#tfy_case_stat").val() == "NN") {
+            $("#New_seq1").focus();
+        } else if ($("#tfy_case_stat").val() == "OO") {
+            $("#old_seq1").focus();
+        }
+        return false;
+    }
+    //****請款註記給值
+    if ($("#tfzb_seq1").val() == "M") {
+        $("#tfy_ar_code").val("M");
+    } else if ($("#nfy_service").val() == 0 && $("#nfy_fees").val() == 0 && $("#nfy_oth_money").val() == 0 && $("#tfy_Ar_mark").val() == "N") {
+        $("#tfy_ar_code").val("X");
+    } else {
+        $("#tfy_ar_code").val("N");
+    }
+
+    //****當無收費標準時，把值清空
+    if ($("#anfees").val()== "N") {
+        $("#nfy_Discount").val("");
+        $("#tfy_dicount_remark").val("");//2016/5/30增加折扣理由
+    }
+}
+
 //存檔檢查
 main.savechkA3 = function () {
-    //客戶申請人檢查
+    //客戶聯絡人檢查
     if (main.chkCustAtt() == false) return false;
 
     //申請人檢查
-    if ($("#apnum").val() == "0") {
-        alert("請輸入申請人資料！");
-        settab("#apcust");
-        $("#AP_Add_button").focus();
-        return false;
-    }
-    for (var tapnum = 1; tapnum <= CInt($("#apnum").val()) ; tapnum++) {
-        if (IsEmpty($("#apcust_no_" + tapnum).val())) {
-            alert("申請人編號不得為空白！");
-            settab("#apcust");
-            $("#apcust_no_" + tapnum).focus();
-            return false;
-        }
-        $("#ap_cname_" + tapnum).val($("#ap_cname1_" + tapnum).val() + $("#ap_cname2_" + tapnum).val());
-        $("#ap_ename_" + tapnum).val($("#ap_ename1_" + tapnum).val() + " " + $("#ap_ename2_" + tapnum).val());
-        if ($("#ap_cname1_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_cname1_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_cname1_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#ap_cname2_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_cname2_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_cname2_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#ap_ename1_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_ename1_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_ename1_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#ap_ename2_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_ename2_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_ename2_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#tfy_case_stat").val() != "OO") {//新案
-            //2014/4/22增加檢查是否為雙邊代理查照對象
-            if (cust_name_chk($("#ap_cname_" + tapnum).val(), $("#ap_ename_" + tapnum).val())) {
-                settab("#apcust");
-                return false;
-            }
-            if (aprep_name_chk($("#ap_crep_" + tapnum).val(), $("#ap_erep_" + tapnum).val())) {
-                settab("#apcust");
-                return false;
-            }
-        }
-    }
+    if (main.chkApp() == false) return false;
+
+    //日期格式檢查,抓class=dateField,有輸入則檢查
+    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢杳"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢杳"); return false; }
+    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢杳"); return false; }
+
     //接洽內容相關檢查
     if (main.chkCaseForm() == false) return false;
 
@@ -428,108 +938,9 @@ main.savechkA3 = function () {
             return false;
         }
     }
-    if ($("#tfy_case_stat").val() == "OO") {
-        if ($("#keyseq").val() == "N") {
-            alert("主案件編號變動過，請按[確定]按鈕，重新抓取資料!!!");
-            settab("#dmt");
-            $("#btnseq_ok").focus();
-            return false;
-        }
-    }
-    //優先權申請日檢查
-    if ($("#pfzd_prior_date").val() != "" && !$.isDate($("#pfzd_prior_date").val())) {
-        alert("請檢查優先權申請日，日期格式是否正確!!");
-        settab("#dmt");
-        $("#pfzd_prior_date").focus();
-        return false;
-    }
-    //申請日期
-    if ($("#tfzd_apply_date").val() != "" && !$.isDate($("#tfzd_apply_date").val())) {
-        alert("請檢查申請日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_apply_date").focus();
-        return false;
-    }
-    //註冊日期
-    if ($("#tfzd_issue_date").val() != "" && !$.isDate($("#tfzd_issue_date").val())) {
-        alert("請檢查註冊日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_issue_date").focus();
-        return false;
-    }
-    //公告日期
-    if ($("#tfzd_open_date").val() != "" && !$.isDate($("#tfzd_open_date").val())) {
-        alert("請檢查公告日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_open_date").focus();
-        return false;
-    }
-    //結案日期
-    if ($("#tfzd_end_date").val() != "" && !$.isDate($("#tfzd_end_date").val())) {
-        alert("請檢查結案日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_end_date").focus();
-        return false;
-    }
-    //專用期限1
-    if ($("#tfzd_dmt_term1").val() != "" && !$.isDate($("#tfzd_dmt_term1").val())) {
-        alert("請檢查專用期限起日 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_dmt_term1").focus();
-        return false;
-    }
-    //專用期限2
-    if ($("#tfzd_dmt_term2").val() != "" && !$.isDate($("#tfzd_dmt_term2").val())) {
-        alert("請檢查專用期限迄日 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_dmt_term2").focus();
-        return false;
-    }
 
-    if ($("#tfy_case_stat").val() == "NN") {
-        $("#tfzb_seq").val($("#New_seq").val());
-        $("#tfzb_seq1").val($("#New_seq1").val());
-    } else if ($("#tfy_case_stat").val() == "SN") {
-        $("#tfzb_seq").val($("#New_Ass_seq").val());
-        $("#tfzb_seq1").val($("#New_Ass_seq1").val());
-        if (IsEmpty($("#New_Ass_seq").val())) {
-            alert("案件編號不得為空白，請重新輸入");
-            settab("#dmt");
-            $("#New_Ass_seq").focus();
-            return false;
-        }
-        if (IsEmpty($("#New_Ass_seq1").val())) {
-            alert("案件編號副碼不得為空白，請重新輸入");
-            settab("#dmt");
-            $("#New_Ass_seq1").focus();
-            return false;
-        }
-    } else if ($("#tfy_case_stat").val() == "OO") {
-        $("#tfzb_seq").val($("#old_seq").val());
-        $("#tfzb_seq1").val($("#old_seq1").val());
-        if (IsEmpty($("#old_seq").val())) {
-            alert("當案件為舊案時，請輸入『案件編號』及按下『確定』以取得詳細資料!");
-            settab("#dmt");
-            $("#old_seq").focus();
-            return false;
-        }
-    }
-    //大陸案請款註記檢查.請款註記:大陸進口案
-    if ($("#tfzb_seq1").val() == "M" && $("#tfy_Ar_mark").val() != "X") {
-        alert("本案件為大陸案, 請款註記請設定為大陸進口案!!");
-        settab("#case");
-        $("#tfy_Ar_mark").focus();
-        return false;
-    } else if ($("#tfzb_seq1").val() != "M" && $("#tfy_Ar_mark").val() == "X") {
-        alert("請款註記設定為大陸進口案，案件編號副碼請設定為M_大陸案 !!");
-        settab("#tran");
-        if ($("#tfy_case_stat").val() == "NN") {
-            $("#New_seq1").focus();
-        } else if ($("#tfy_case_stat").val() == "OO") {
-            $("#old_seq1").focus();
-        }
-        return false;
-    }
+    //新/舊案號
+    if (main.chkNewOld() == false) return false;
 
     //出名代理人檢查
     var apclass_flag = "N";
@@ -617,14 +1028,8 @@ main.savechkA3 = function () {
     //結案復案檢查
     if (main.chkEndBack() == false) return false;
 
-    //****請款註記	
-    if ($("#tfzb_seq1").val() == "M") {
-        $("#tfy_ar_code").val("M");
-    } else if ($("#nfy_service").val() == 0 && $("#nfy_fees").val() == 0 && $("#nfy_oth_money").val() == 0 && $("#tfy_Ar_mark").val() == "N") {
-        $("#tfy_ar_code").val("X");
-    } else {
-        $("#tfy_ar_code").val("N");
-    }
+    //檢查大陸案請款註記檢查&給值
+    if (main.chkAr() == false) return false;
 
     //****總計案性數
     var nfy_tot_case = 0;
@@ -660,67 +1065,17 @@ main.savechkA3 = function () {
     return true;
 }
 
-
 main.savechkA4 = function () {
-    //客戶申請人檢查
+    //客戶聯絡人檢查
     if (main.chkCustAtt() == false) return false;
 
     //申請人檢查
-    if ($("#apnum").val() == "0") {
-        alert("請輸入申請人資料！");
-        settab("#apcust");
-        $("#AP_Add_button").focus();
-        return false;
-    }
-    for (var tapnum = 1; tapnum <= CInt($("#apnum").val()) ; tapnum++) {
-        if (IsEmpty($("#apcust_no_" + tapnum).val())) {
-            alert("申請人編號不得為空白！");
-            settab("#apcust");
-            $("#apcust_no_" + tapnum).focus();
-            return false;
-        }
-        $("#ap_cname_" + tapnum).val($("#ap_cname1_" + tapnum).val() + $("#ap_cname2_" + tapnum).val());
-        $("#ap_ename_" + tapnum).val($("#ap_ename1_" + tapnum).val() + " " + $("#ap_ename2_" + tapnum).val());
-        if ($("#ap_cname1_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_cname1_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_cname1_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#ap_cname2_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_cname2_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_cname2_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#ap_ename1_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_ename1_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_ename1_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#ap_ename2_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_ename2_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_ename2_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#tfy_case_stat").val() != "OO") {//新案
-            //2014/4/22增加檢查是否為雙邊代理查照對象
-            if (cust_name_chk($("#ap_cname_" + tapnum).val(), $("#ap_ename_" + tapnum).val())) {
-                settab("#apcust");
-                return false;
-            }
-            if (aprep_name_chk($("#ap_crep_" + tapnum).val(), $("#ap_erep_" + tapnum).val())) {
-                settab("#apcust");
-                return false;
-            }
-        }
-    }
+    if (main.chkApp() == false) return false;
+
+    //日期格式檢查,抓class=dateField,有輸入則檢查
+    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢杳"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢杳"); return false; }
+    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢杳"); return false; }
 
     //接洽內容相關檢查
     if (main.chkCaseForm() == false) return false;
@@ -746,108 +1101,9 @@ main.savechkA4 = function () {
             return false;
         }
     }
-    if ($("#tfy_case_stat").val() == "OO") {
-        if ($("#keyseq").val() == "N") {
-            alert("主案件編號變動過，請按[確定]按鈕，重新抓取資料!!!");
-            settab("#dmt");
-            $("#btnseq_ok").focus();
-            return false;
-        }
-    }
-    //優先權申請日檢查
-    if ($("#pfzd_prior_date").val() != "" && !$.isDate($("#pfzd_prior_date").val())) {
-        alert("請檢查優先權申請日，日期格式是否正確!!");
-        settab("#dmt");
-        $("#pfzd_prior_date").focus();
-        return false;
-    }
-    //申請日期
-    if ($("#tfzd_apply_date").val() != "" && !$.isDate($("#tfzd_apply_date").val())) {
-        alert("請檢查申請日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_apply_date").focus();
-        return false;
-    }
-    //註冊日期
-    if ($("#tfzd_issue_date").val() != "" && !$.isDate($("#tfzd_issue_date").val())) {
-        alert("請檢查註冊日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_issue_date").focus();
-        return false;
-    }
-    //公告日期
-    if ($("#tfzd_open_date").val() != "" && !$.isDate($("#tfzd_open_date").val())) {
-        alert("請檢查公告日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_open_date").focus();
-        return false;
-    }
-    //結案日期
-    if ($("#tfzd_end_date").val() != "" && !$.isDate($("#tfzd_end_date").val())) {
-        alert("請檢查結案日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_end_date").focus();
-        return false;
-    }
-    //專用期限1
-    if ($("#tfzd_dmt_term1").val() != "" && !$.isDate($("#tfzd_dmt_term1").val())) {
-        alert("請檢查專用期限起日 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_dmt_term1").focus();
-        return false;
-    }
-    //專用期限2
-    if ($("#tfzd_dmt_term2").val() != "" && !$.isDate($("#tfzd_dmt_term2").val())) {
-        alert("請檢查專用期限迄日 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_dmt_term2").focus();
-        return false;
-    }
 
-    if ($("#tfy_case_stat").val() == "NN") {
-        $("#tfzb_seq").val($("#New_seq").val());
-        $("#tfzb_seq1").val($("#New_seq1").val());
-    } else if ($("#tfy_case_stat").val() == "SN") {
-        $("#tfzb_seq").val($("#New_Ass_seq").val());
-        $("#tfzb_seq1").val($("#New_Ass_seq1").val());
-        if (IsEmpty($("#New_Ass_seq").val())) {
-            alert("案件編號不得為空白，請重新輸入");
-            settab("#dmt");
-            $("#New_Ass_seq").focus();
-            return false;
-        }
-        if (IsEmpty($("#New_Ass_seq1").val())) {
-            alert("案件編號副碼不得為空白，請重新輸入");
-            settab("#dmt");
-            $("#New_Ass_seq1").focus();
-            return false;
-        }
-    } else if ($("#tfy_case_stat").val() == "OO") {
-        $("#tfzb_seq").val($("#old_seq").val());
-        $("#tfzb_seq1").val($("#old_seq1").val());
-        if (IsEmpty($("#old_seq").val())) {
-            alert("當案件為舊案時，請輸入『案件編號』及按下『確定』以取得詳細資料!");
-            settab("#dmt");
-            $("#old_seq").focus();
-            return false;
-        }
-    }
-    //大陸案請款註記檢查.請款註記:大陸進口案
-    if ($("#tfzb_seq1").val() == "M" && $("#tfy_Ar_mark").val() != "X") {
-        alert("本案件為大陸案, 請款註記請設定為大陸進口案!!");
-        settab("#case");
-        $("#tfy_Ar_mark").focus();
-        return false;
-    } else if ($("#tfzb_seq1").val() != "M" && $("#tfy_Ar_mark").val() == "X") {
-        alert("請款註記設定為大陸進口案，案件編號副碼請設定為M_大陸案 !!");
-        settab("#tran");
-        if ($("#tfy_case_stat").val() == "NN") {
-            $("#New_seq1").focus();
-        } else if ($("#tfy_case_stat").val() == "OO") {
-            $("#old_seq1").focus();
-        }
-        return false;
-    }
+    //新/舊案號
+    if (main.chkNewOld() == false) return false;
 
     //出名代理人檢查
     var apclass_flag = "N";
@@ -962,36 +1218,6 @@ main.savechkA4 = function () {
         $("#tfy_dicount_remark").val("");//2016/5/30增加折扣理由
     }
 
-    ////////////////////交辦專用
-    //備註日期
-    if ($("#O_item1").val() != "" && !$.isDate($("#O_item1").val())) {
-        alert("請檢查備註日期 ，日期格式是否正確!!");
-        settab("#tran");
-        $("#O_item1").focus();
-        return false;
-    }
-    //原註冊證核准專用期間
-    if ($("#tfgp_term1").val() != "" && !$.isDate($("#tfgp_term1").val())) {
-        alert("請檢查原註冊證核准專用起日 ，日期格式是否正確!!");
-        settab("#tran");
-        $("#tfgp_term1").focus();
-        return false;
-    }
-    //原註冊證核准專用期間
-    if ($("#tfgp_term2").val() != "" && !$.isDate($("#tfgp_term2").val())) {
-        alert("請檢查原註冊證核准專用迄日 ，日期格式是否正確!!");
-        settab("#tran");
-        $("#tfgp_term2").focus();
-        return false;
-    }
-    //註冊號數
-    if (IsEmpty($("#tfzd_issue_no").val())) {
-        alert("註冊號數不得為空白 ，日期格式是否正確!!");
-        settab("#tran");
-        $("#tfzd_issue_no").focus();
-        return false;
-    }
-
     $("#F_tscode,#tfzd_Tcn_mark").unlock();
     $("#tfgp_seq").val($("#tfzb_seq").val());
     $("#tfgp_seq1").val($("#tfzb_seq1").val());
@@ -1007,7 +1233,7 @@ main.savechkA4 = function () {
     if ($("#tfzd_class_count").val() != "") {
         //2015/10/21增加檢查商標種類不是M團體標章也不是L證明標章，需點選類別種類及輸入類別
         if ($("#tfzd_S_Mark").val() != "M" && $("#tfzd_S_Mark").val() != "L") {
-            if ($("input[id='tfzd_class_type']:checked").length == 0) {
+            if ($("input[name='tfzd_class_type']:checked").length == 0) {
                 alert("請點選類別種類(國際分類或舊類)！！");
                 settab("#tran");
                 $("input[name=tfzd_class_type]").eq(0).focus();
@@ -1109,65 +1335,17 @@ main.savechkA4 = function () {
 }
 
 main.savechkA5 = function () {
-    //客戶申請人檢查
+    //客戶聯絡人檢查
     if (main.chkCustAtt() == false) return false;
 
     //申請人檢查
-    if ($("#apnum").val() == "0") {
-        alert("請輸入申請人資料！");
-        settab("#apcust");
-        $("#AP_Add_button").focus();
-        return false;
-    }
-    for (var tapnum = 1; tapnum <= CInt($("#apnum").val()) ; tapnum++) {
-        if (IsEmpty($("#apcust_no_" + tapnum).val())) {
-            alert("申請人編號不得為空白！");
-            settab("#apcust");
-            $("#apcust_no_" + tapnum).focus();
-            return false;
-        }
-        $("#ap_cname_" + tapnum).val($("#ap_cname1_" + tapnum).val() + $("#ap_cname2_" + tapnum).val());
-        $("#ap_ename_" + tapnum).val($("#ap_ename1_" + tapnum).val() + " " + $("#ap_ename2_" + tapnum).val());
-        if ($("#ap_cname1_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_cname1_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_cname1_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#ap_cname2_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_cname2_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_cname2_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#ap_ename1_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_ename1_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_ename1_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#ap_ename2_" + tapnum).val() != "") {
-            if (fDataLen($("#ap_ename2_" + tapnum))) {
-                settab("#apcust");
-                $("#ap_ename2_" + tapnum).focus();
-                return false;
-            }
-        }
-        if ($("#tfy_case_stat").val() != "OO") {//新案
-            //2014/4/22增加檢查是否為雙邊代理查照對象
-            if (cust_name_chk($("#ap_cname_" + tapnum).val(), $("#ap_ename_" + tapnum).val())) {
-                settab("#apcust");
-                return false;
-            }
-            if (aprep_name_chk($("#ap_crep_" + tapnum).val(), $("#ap_erep_" + tapnum).val())) {
-                settab("#apcust");
-                return false;
-            }
-        }
-    }
+    if (main.chkApp() == false) return false;
+
+    //日期格式檢查,抓class=dateField,有輸入則檢查
+    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢杳"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢杳"); return false; }
+    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢杳"); return false; }
+
     //接洽內容相關檢查
     if (main.chkCaseForm() == false) return false;
 
@@ -1192,108 +1370,9 @@ main.savechkA5 = function () {
             return false;
         }
     }
-    if ($("#tfy_case_stat").val() == "OO") {
-        if ($("#keyseq").val() == "N") {
-            alert("主案件編號變動過，請按[確定]按鈕，重新抓取資料!!!");
-            settab("#dmt");
-            $("#btnseq_ok").focus();
-            return false;
-        }
-    }
-    //優先權申請日檢查
-    if ($("#pfzd_prior_date").val() != "" && !$.isDate($("#pfzd_prior_date").val())) {
-        alert("請檢查優先權申請日，日期格式是否正確!!");
-        settab("#dmt");
-        $("#pfzd_prior_date").focus();
-        return false;
-    }
-    //申請日期
-    if ($("#tfzd_apply_date").val() != "" && !$.isDate($("#tfzd_apply_date").val())) {
-        alert("請檢查申請日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_apply_date").focus();
-        return false;
-    }
-    //註冊日期
-    if ($("#tfzd_issue_date").val() != "" && !$.isDate($("#tfzd_issue_date").val())) {
-        alert("請檢查註冊日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_issue_date").focus();
-        return false;
-    }
-    //公告日期
-    if ($("#tfzd_open_date").val() != "" && !$.isDate($("#tfzd_open_date").val())) {
-        alert("請檢查公告日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_open_date").focus();
-        return false;
-    }
-    //結案日期
-    if ($("#tfzd_end_date").val() != "" && !$.isDate($("#tfzd_end_date").val())) {
-        alert("請檢查結案日期 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_end_date").focus();
-        return false;
-    }
-    //專用期限1
-    if ($("#tfzd_dmt_term1").val() != "" && !$.isDate($("#tfzd_dmt_term1").val())) {
-        alert("請檢查專用期限起日 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_dmt_term1").focus();
-        return false;
-    }
-    //專用期限2
-    if ($("#tfzd_dmt_term2").val() != "" && !$.isDate($("#tfzd_dmt_term2").val())) {
-        alert("請檢查專用期限迄日 ，日期格式是否正確!!");
-        settab("#dmt");
-        $("#tfzd_dmt_term2").focus();
-        return false;
-    }
 
-    if ($("#tfy_case_stat").val() == "NN") {
-        $("#tfzb_seq").val($("#New_seq").val());
-        $("#tfzb_seq1").val($("#New_seq1").val());
-    } else if ($("#tfy_case_stat").val() == "SN") {
-        $("#tfzb_seq").val($("#New_Ass_seq").val());
-        $("#tfzb_seq1").val($("#New_Ass_seq1").val());
-        if (IsEmpty($("#New_Ass_seq").val())) {
-            alert("案件編號不得為空白，請重新輸入");
-            settab("#dmt");
-            $("#New_Ass_seq").focus();
-            return false;
-        }
-        if (IsEmpty($("#New_Ass_seq1").val())) {
-            alert("案件編號副碼不得為空白，請重新輸入");
-            settab("#dmt");
-            $("#New_Ass_seq1").focus();
-            return false;
-        }
-    } else if ($("#tfy_case_stat").val() == "OO") {
-        $("#tfzb_seq").val($("#old_seq").val());
-        $("#tfzb_seq1").val($("#old_seq1").val());
-        if (IsEmpty($("#old_seq").val())) {
-            alert("當案件為舊案時，請輸入『案件編號』及按下『確定』以取得詳細資料!");
-            settab("#dmt");
-            $("#old_seq").focus();
-            return false;
-        }
-    }
-    //大陸案請款註記檢查.請款註記:大陸進口案
-    if ($("#tfzb_seq1").val() == "M" && $("#tfy_Ar_mark").val() != "X") {
-        alert("本案件為大陸案, 請款註記請設定為大陸進口案!!");
-        settab("#case");
-        $("#tfy_Ar_mark").focus();
-        return false;
-    } else if ($("#tfzb_seq1").val() != "M" && $("#tfy_Ar_mark").val() == "X") {
-        alert("請款註記設定為大陸進口案，案件編號副碼請設定為M_大陸案 !!");
-        settab("#tran");
-        if ($("#tfy_case_stat").val() == "NN") {
-            $("#New_seq1").focus();
-        } else if ($("#tfy_case_stat").val() == "OO") {
-            $("#old_seq1").focus();
-        }
-        return false;
-    }
+    //新/舊案號
+    if (main.chkNewOld() == false) return false;
 
     //出名代理人檢查
     var apclass_flag = "N";
@@ -1408,28 +1487,6 @@ main.savechkA5 = function () {
         $("#tfy_dicount_remark").val("");//2016/5/30增加折扣理由
     }
 
-    ////////////////////交辦專用
-    //備註日期
-    if ($("#O_item1").val() != "" && !$.isDate($("#O_item1").val())) {
-        alert("請檢查備註日期 ，日期格式是否正確!!");
-        settab("#tran");
-        $("#O_item1").focus();
-        return false;
-    }
-    //原註冊證核准專用期間
-    if ($("#tfgp_term1").val() != "" && !$.isDate($("#tfgp_term1").val())) {
-        alert("請檢查原註冊證核准專用起日 ，日期格式是否正確!!");
-        settab("#tran");
-        $("#tfgp_term1").focus();
-        return false;
-    }
-    //原註冊證核准專用期間
-    if ($("#tfgp_term2").val() != "" && !$.isDate($("#tfgp_term2").val())) {
-        alert("請檢查原註冊證核准專用迄日 ，日期格式是否正確!!");
-        settab("#tran");
-        $("#tfgp_term2").focus();
-        return false;
-    }
     //註冊號數
     if (IsEmpty($("#tfzd_issue_no").val())) {
         alert("註冊號數不得為空白 ，日期格式是否正確!!");
@@ -1453,7 +1510,7 @@ main.savechkA5 = function () {
     if ($("#tfzd_class_count").val() != "") {
         //2015/10/21增加檢查商標種類不是M團體標章也不是L證明標章，需點選類別種類及輸入類別
         if ($("#tfzd_S_Mark").val() != "M" && $("#tfzd_S_Mark").val() != "L") {
-            if ($("input[id='tfzd_class_type']:checked").length == 0) {
+            if ($("input[name='tfzd_class_type']:checked").length == 0) {
                 alert("請點選類別種類(國際分類或舊類)！！");
                 settab("#tran");
                 $("input[name=tfzd_class_type]").eq(0).focus();
