@@ -174,16 +174,16 @@
 		</td>
 	</tr>
 	<tr>
-		<td class=lightbluetable align=right valign=top><input type="checkbox" name=ttg12_mod_pul_mod_type value="R1"></td>
+		<td class=lightbluetable align=right valign=top><input type="checkbox" id=ttg12_mod_pul_mod_type name=ttg12_mod_pul_mod_type value="R1"></td>
 		<td class=whitetablebg colspan=7>之商標權，應予廢止。</td>
 	</tr>
 	<tr>
-		<td class=lightbluetable align=right valign=top><input type="checkbox" name=ttg13_mod_pul_mod_type value="R2"></td>
+		<td class=lightbluetable align=right valign=top><input type="checkbox" id=ttg13_mod_pul_mod_type name=ttg13_mod_pul_mod_type value="R2"></td>
 		<td class=whitetablebg colspan=7>指定使用於商標法施行細則第<INPUT TYPE=text NAME=ttg13_mod_pul_new_no id=ttg13_mod_pul_new_no SIZE=3 MAXLENGTH=10>條第<INPUT TYPE=text NAME=ttg13_mod_pul_mod_dclass id=ttg13_mod_pul_mod_dclass SIZE=20 MAXLENGTH=20>類商品/服務之商標權應予廢止。</td>
 	</tr>
 
     <tr>
-		<td class=lightbluetable align=right valign=top><input type="checkbox" name=ttg14_mod_pul_mod_type value="R3"></td>
+		<td class=lightbluetable align=right valign=top><input type="checkbox" id=ttg14_mod_pul_mod_type name=ttg14_mod_pul_mod_type value="R3"></td>
 		<td class=whitetablebg colspan=7>指定使用於商標法施行細則第<INPUT TYPE=text NAME=ttg14_mod_pul_new_no id=ttg14_mod_pul_new_no SIZE=3 MAXLENGTH=10>條第<INPUT TYPE=text NAME=ttg14_mod_pul_mod_dclass id=ttg14_mod_pul_mod_dclass SIZE=3 MAXLENGTH=3>類<INPUT TYPE=text NAME=ttg14_mod_pul_ncname1 id=ttg14_mod_pul_ncname1 SIZE=30 MAXLENGTH=50>商品/服務之商標權應予廢止。</td>
 	</tr>
 	<tr>

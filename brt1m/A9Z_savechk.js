@@ -466,6 +466,18 @@ main.chkCaseForm = function () {
         }
     }
 
+    //****總計案性數
+    var nfy_tot_case = 0;
+    if (!IsEmpty($("#tfy_Arcase").val())) {
+        nfy_tot_case += 1;
+    }
+    for (var r = 1; r <= CInt($("#TaCount").val()) ; r++) {
+        if (!IsEmpty($("#nfyi_item_Arcase_" + r).val())) {
+            nfy_tot_case += 1;
+        }
+    }
+    $("#nfy_tot_case").val(nfy_tot_case);
+
     if (IsEmpty($("#tfy_Ar_mark").val())) {
         alert("請款註記不得為空白！");
         settab("#case");
@@ -652,6 +664,7 @@ main.chkCaseForm = function () {
 main.chkNewOld = function () {
     if ($("#tfy_case_stat").val() == "NN") {
         //$("#tfzb_seq").val($("#New_seq").val());
+        $("#tfzb_seq").val("");
         $("#tfzb_seq1").val($("#New_seq1").val());
     } else if ($("#tfy_case_stat").val() == "SN") {
         $("#tfzb_seq").val($("#New_Ass_seq").val());
@@ -825,6 +838,9 @@ main.chkEndBack = function () {
         $("#tfy_back_flag").val("N");
         $("#tfy_back_remark").val("");
     }
+
+    $("#tfzd_end_code").val($("#tfzy_end_code").val());
+
     return true;
 }
 
@@ -1055,7 +1071,6 @@ main.savechkA3 = function () {
     $("#tfzd_Pul").val($("#tfzy_Pul").val());
     $("#tfzd_Zname_type").val($("#tfzy_Zname_type").val());
     $("#tfzd_prior_country").val($("#tfzy_prior_country").val());
-    $("#tfzd_end_code").val($("#tfzy_end_code").val());
 
     $("#F_tscode,#tfzd_Tcn_mark").unlock();
     $("#tfg1_seq").val($("#tfzb_seq").val());
@@ -1227,7 +1242,6 @@ main.savechkA4 = function () {
     $("#tfzd_Pul").val($("#tfzy_Pul").val());
     $("#tfzd_Zname_type").val($("#tfzy_Zname_type").val());
     $("#tfzd_prior_country").val($("#tfzy_prior_country").val());
-    $("#tfzd_end_code").val($("#tfzy_end_code").val());
 
     //指定類別檢查
     if ($("#tfzd_class_count").val() != "") {
@@ -1504,7 +1518,6 @@ main.savechkA5 = function () {
     $("#tfzd_Pul").val($("#tfzy_Pul").val());
     $("#tfzd_Zname_type").val($("#tfzy_Zname_type").val());
     $("#tfzd_prior_country").val($("#tfzy_prior_country").val());
-    $("#tfzd_end_code").val($("#tfzy_end_code").val());
 
     //指定類別檢查
     if ($("#tfzd_class_count").val() != "") {

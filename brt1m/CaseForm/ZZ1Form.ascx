@@ -24,6 +24,8 @@
 
 <div id="div_Form_ZZ1">
 <%=Sys.GetAscxPath(this)%>
+<INPUT TYPE=hidden id=tfzd_mark name=tfzd_mark value="">
+<INPUT TYPE=hidden id=tfzd_remark3 name=tfzd_remark3 value="">
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>壹、代理人(代碼)</strong></td>
