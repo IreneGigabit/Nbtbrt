@@ -61,7 +61,7 @@ function delayNO(low_no, low_no1) {
         $("#ncname111,#ncname121,#fr_appl_name,#fr1_appl_name,#fr2_appl_name,#fr3_appl_name,#fr4_appl_name,#appl_namea_1,#appl_nameb_1,#frf_appl_name,#fbf_appl_name").val("");//商標/標章名稱
         $("#s_marka_1,#s_markb_1").val("");//商標種類
 
-        $("#draw_attach_file").val("");//圖檔檢視
+        $("#draw_attach_file,#Draw_file").val("");//圖檔檢視
         $("#tfzd_Oappl_name").val("");//聲明不專用
         $("#tfzd_Cappl_name").val("");//圖樣中文部份
         $("#tfzd_Eappl_name,#tfzd_eappl_name1,#tfzd_eappl_name2,#tfzd_Zname_type").val("");//圖樣外文部份
@@ -127,7 +127,7 @@ function delayNO(low_no, low_no1) {
         $("#tfzd_apply_no,#O_apply_no").val(oMain.vdmtall[0].apply_no);
         $("#tfzd_issue_no,#O_issue_no").val(oMain.vdmtall[0].issue_no);
         $("#tfzd_appl_name").val(oMain.vdmtall[0].appl_name);
-        $("#draw_attach_file").val(oMain.vdmtall[0].draw_file);//圖檔檢視
+        $("#draw_attach_file,#Draw_file").val(oMain.vdmtall[0].draw_file);//圖檔檢視
 
         $("#tft1_mod_count11,#tft2_mod_count2").val("1");//件數
         $("#new_no11,#fr1_apply_no,#fr_apply_no,#fbf_no").val(oMain.vdmtall[0].apply_no);//申請號數
@@ -351,7 +351,7 @@ function delayNO1(low_no, low_no1) {
         $("#ncname111,#ncname121,#appl_namea_1,#appl_nameb_1").val(oMain.vdmtall[0].appl_name);//商標/標章名稱
         $("#fr_appl_name,#fr1_appl_name,#fr2_appl_name,#fr3_appl_name,#fr4_appl_name,#frf_appl_name,#fbf_appl_name").val(oMain.vdmtall[0].appl_name);//商標/標章名稱
         $("#new_no21,#fr_issue_no,#fr1_issue_no,#fr2_issue_no,#fr3_issue_no,#fr4_issue_no,#issue_nob_1").val(oMain.vdmtall[0].issue_no);//註冊案號
-        $("#draw_attach_file").val(oMain.vdmtall[0].draw_file);//圖檔檢視
+        $("#draw_attach_file,#Draw_file").val(oMain.vdmtall[0].draw_file);//圖檔檢視
         $("#tft1_mod_count11,#tft2_mod_count2").val("1");//件數
 
         $("#tfzd_Oappl_name").val(oMain.vdmtall[0].oappl_name);//聲明不專用

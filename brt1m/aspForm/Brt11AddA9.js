@@ -1,4 +1,4 @@
-main.savechk = function () {
+main.savechkA9 = function () {
     //客戶聯絡人檢查
     if (main.chkCustAtt() == false) return false;
 	
@@ -54,8 +54,5 @@ main.savechk = function () {
 
     $("#F_tscode,#tfzd_Tcn_mark").unlock();
 
-    //reg.action="Brt11AddA9.asp"	
-    //$("#submittask").val("Add");
-    //If reg.chkTest.checked=True Then reg.target = "ActFrame" Else reg.target = "_self"
-    //reg.Submit
+    return true;
 }

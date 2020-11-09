@@ -1,5 +1,6 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
-<%@ Import Namespace = "System.Collections.Generic"%>
+﻿<%@ Page Language="C#" CodePage="65001" %>
+
+<%@ Import Namespace="System.Collections.Generic" %>
 
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
@@ -14,6 +15,8 @@
 
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Dictionary<string, string> ColMap = new Dictionary<string, string>();
+    protected string SQL = "";
+    Sys sfile = new Sys();
 
     protected StringBuilder strOut = new StringBuilder();
 
@@ -35,10 +38,8 @@
     }
 
     private void doUpdateDB() {
-        Sys sfile = new Sys();
         sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
 
-        string SQL = "";
         object objResult = null;
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST")) {
             //******************產生流水號(yyyyMMddnnn);
@@ -49,50 +50,9 @@
             string RSno = String.Format("{0}{1:000}", nowRSno, nowSql + 1);
 
             //寫入case_dmt
-            ColMap.Clear();
-            foreach (var key in Request.Form.Keys) {
-                string colkey = key.ToString().ToLower();
-                string colValue = Request[colkey];
+            insert_case_dmt(conn, RSno);
 
-                //取2~4碼(直接用substr若欄位名稱太短會壞掉)
-                if (colkey.Left(4).Substring(1) == "fy_") {
-                    if (colkey.Left(1) == "p") {
-                        ColMap[colkey.Substring(4)] = Util.dbnull(colValue);
-                    } else if (colkey.Left(1) == "d") {
-                        ColMap[colkey.Substring(4)] = Util.dbnull(colValue);
-                    } else if (colkey.Left(1) == "n") {
-                        ColMap[colkey.Substring(4)] = Util.dbzero(colValue);
-                    } else {
-                        ColMap[colkey.Substring(4)] = Util.dbnull(colValue);
-                    }
-                }
-            }
-            ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
-            ColMap["in_no"] = "'" + RSno + "'";
-            ColMap["seq1"] = Util.dbchar(Request["tfz1_seq1"]);
-            ColMap["in_date"] ="'" + DateTime.Today.ToShortDateString() + "'";
-            ColMap["arcase_type"] = Util.dbchar(Request["code_type"]);
-            ColMap["arcase_class"] = Util.dbchar(Request["prt_code"]);
-            //******折扣請核單
-            if (Request["tfy_discount_chk"] == null) {
-                ColMap["discount_chk"] = "'N'";
-            }
-            //******請款單 
-            if (Request["tfy_ar_chk"] == null) {
-                ColMap["ar_chk"] = "'N'";
-            }
-            if (Request["tfy_ar_chk1"] == null) {
-                ColMap["ar_chk1"] = "'N'";
-            }
-            //****會計檢核2013/9/16增加，不需請款或大陸進口案不在線上請款，不需會計檢核
-            if (Request["tfy_ar_code"] == "X" || Request["tfy_ar_code"] == "M") {
-                ColMap["acc_chk"] = "'X'";
-            }
-            SQL = "insert into case_dmt "+ ColMap.GetInsertSQL();
-            //Response.Write(SQL + "<HR>");
-            conn.ExecuteNonQuery(SQL);
-
-            //*****todo依案性新增內商的案件內容
+            //將檔案更改檔名
             string aa = Request["draw_file1"] ?? "";
             string newfilename = "";
             if (aa != "") {
@@ -107,14 +67,20 @@
                     Sys.RenameFile(strpath + "/" + aa, strpath + "/" + attach_name, true);
             }
 
+            //*****若為新案則新增至案件檔,舊案則不用
             ColMap.Clear();
             foreach (var key in Request.Form.Keys) {
                 string colkey = key.ToString().ToLower();
                 string colValue = Request[colkey];
 
                 //取2~5碼(直接用substr若欄位名稱太短會壞掉)
-                if (colkey.Left(5).Substring(1) == "fz1_") {
-                    if (colkey.Left(1) == "d") {
+                if (colkey.Left(5).Substring(1) == "fzd_"
+                    || colkey.Left(4).Substring(1) == "fzb"
+                    || colkey.Left(4).Substring(1) == "fzp"
+                    ) {
+                    if (colkey.Left(1) == "p") {
+                        ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+                    } else if (colkey.Left(1) == "d") {
                         ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
                     } else if (colkey.Left(1) == "n") {
                         ColMap[colkey.Substring(5)] = Util.dbzero(colValue);
@@ -123,175 +89,149 @@
                     }
                 }
             }
+            if ((Request["ar_form"] ?? "") != "A4") {
+                if ((Request["tfzr_class_count"] ?? "") != "") {
+                    ColMap["class_type"] = Util.dbchar(Request["tfzr_class_type"]);
+                    ColMap["class_count"] = Util.dbchar(Request["tfzr_class_count"]);
+                    ColMap["class"] = Util.dbchar(Request["tfzr_class"]);
+                }
+            }
 
-            //if (Request["tfd1_good_name"] != null) {//證明內容
-            //    ColMap["good_name"] = Util.dbchar(Request["tfd1_good_name"]);
-            //}
-            //if (Request["tf91_good_name"] != null) {//表彰內容
-            //    ColMap["good_name"] = Util.dbchar(Request["tf91_good_name"]);
-            //}
-            ColMap["class_count"] = Util.dbnull(Request["ctrlcount1"]);
             ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
             ColMap["in_no"] = "'" + RSno + "'";
             ColMap["in_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
             ColMap["draw_file"] = Util.dbchar(Sys.Path2Btbrt(newfilename));
             ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
-            SQL = "insert into dmt_temp "+ ColMap.GetInsertSQL();
+            ColMap["case_sqlno"] = "0";
+            ColMap["Mseq1"] = Util.dbnull(Request["tfzb_seq1"]);
+            ColMap["Mseq"] = Util.dbnull(Request["tfzb_seq"]);
+            SQL = "insert into dmt_temp " + ColMap.GetInsertSQL();
             //Response.Write(SQL + "<HR>");
             conn.ExecuteNonQuery(SQL);
 
-
-            //****主委辦案性	
-            ColMap.Clear();
-            ColMap["in_scode"]=Util.dbchar(Request["F_tscode"]);
-            ColMap["in_no"] = "'" + RSno + "'";
-            ColMap["item_sql"]="'0'";
-            ColMap["seq1"]=Util.dbchar(Request["tfz1_seq1"]);
-            ColMap["item_arcase"]=Util.dbchar(Request["tfy_arcase"]);
-            ColMap["item_service"]=Util.dbchar(Request["nfyi_service"]);
-            ColMap["item_fees"]=Util.dbchar(Request["nfyi_fees"]);
-            ColMap["item_count"]="'1'";
-
-            SQL = "insert into caseitem_dmt "+ ColMap.GetInsertSQL();
-            //Response.Write(SQL + "<HR>");
-            conn.ExecuteNonQuery(SQL);
-
-            //****次委辦案性
-            for (int i = 1; i <= Convert.ToInt32("0" + Request["TaCount"]); i++) {
-                if ((Request["nfyi_item_Arcase_" + i] ?? "") != "") {
-                    ColMap.Clear();
-                    ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
-                    ColMap["in_no"] = "'" + RSno + "'";
-                    ColMap["item_sql"] = "'" + i + "'";
-                    ColMap["seq1"] = Util.dbchar(Request["tfz1_seq1"]);
-                    ColMap["item_arcase"] = Util.dbchar(Request["nfyi_item_Arcase_" + i]);
-                    ColMap["item_service"] = Util.dbchar(Request["nfyi_Service_" + i]);
-                    ColMap["item_fees"] = Util.dbchar(Request["nfyi_fees_" + i]);
-                    ColMap["item_count"] = Util.dbchar(Request["nfyi_item_count_" + i]);
-
-                    SQL = "insert into caseitem_dmt " + ColMap.GetInsertSQL();
-                    //Response.Write(SQL + "<HR>");
-                    conn.ExecuteNonQuery(SQL);
-                }
-            }
+            //寫入caseitem_dmt
+            insert_caseitem_dmt(conn, RSno);
 
             //****商品類別
-            for (int i = 1; i <= Convert.ToInt32("0" + Request["num1"]); i++) {
-                if ((Request["class1_" + i] ?? "") != "") {
-                    ColMap.Clear();
-                    ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
-                    ColMap["in_no"] = "'" + RSno + "'";
-                    ColMap["class"] = Util.dbchar(Request["class1_" + i]);
-                    ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code1_" + i]);
-                    ColMap["dmt_goodname"] = Util.dbchar(Request["good_name1_" + i]);
-                    ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count1_" + i]);
-                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
-                    ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+            if ((Request["ar_form"] ?? "") != "A4") {
+                for (int i = 1; i <= Convert.ToInt32("0" + Request["tfzr_class_count"]); i++) {
+                    //2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
+                    if ((Request["class1_" + i] ?? "") != "" || (Request["good_name1_" + i] ?? "") != "") {
+                        ColMap.Clear();
+                        ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+                        ColMap["in_no"] = "'" + RSno + "'";
+                        ColMap["class"] = Util.dbchar(Request["class1_" + i]);
+                        ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code1_" + i]);
+                        ColMap["dmt_goodname"] = Util.dbchar(Request["good_name1_" + i]);
+                        ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count1_" + i]);
+                        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                        ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
-                    SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
-                    //Response.Write(SQL + "<HR>");
-                    conn.ExecuteNonQuery(SQL);
+                        SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
+                        //Response.Write(SQL + "<HR>");
+                        conn.ExecuteNonQuery(SQL);
+                    }
+                }
+            } else {
+                //延展以交辦內容為準
+                for (int i = 1; i <= Convert.ToInt32("0" + Request["tfzd_class_count"]); i++) {
+                    //2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
+                    if ((Request["class2_" + i] ?? "") != "" || (Request["good_name2_" + i] ?? "") != "") {
+                        if ((Request["good_name2_" + i] ?? "") != "") {
+                            ColMap.Clear();
+                            ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+                            ColMap["in_no"] = "'" + RSno + "'";
+                            ColMap["class"] = Util.dbchar(Request["class2_" + i]);
+                            ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code2_" + i]);
+                            ColMap["dmt_goodname"] = Util.dbchar(Request["good_name2_" + i]);
+                            ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count2_" + i]);
+                            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                            ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+
+                            SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
+                            //Response.Write(SQL + "<HR>");
+                            conn.ExecuteNonQuery(SQL);
+                        }
+
+                    }
                 }
             }
 
             //****新增展覽優先權資料
-            for (int i = 1; i <= Convert.ToInt32("0" + Request["shownum"]); i++) {
-                if ((Request["show_date_" + i] ?? "") != "" || (Request["show_name_" + i] ?? "") != "") {
-                    ColMap.Clear();
-                    ColMap["in_no"] = "'" + RSno + "'";
-                    ColMap["case_sqlno"] = "0";
-                    ColMap["show_date"] = Util.dbnull(Request["show_date_" + i]);
-                    ColMap["show_name"] = Util.dbnull(Request["show_name_" + i]);
-                    ColMap["tr_date"] = "getdate()";
-                    ColMap["tr_scode"] = "'" + Session["scode"] + "'";
-
-                    SQL = "insert into casedmt_show " + ColMap.GetInsertSQL();
-                    //Response.Write(SQL + "<HR>");
-                    conn.ExecuteNonQuery(SQL);
-                }
-            }
-
-            //最近立案日
-            SQL = "update custz set dmt_date = '" + DateTime.Today.ToShortDateString() + "' ";
-            SQL += "where cust_area = '" + Request["tfy_cust_area"] + "' ";
-            SQL += "and cust_seq = '" + Request["tfy_cust_seq"] + "'";
-            //Response.Write(SQL + "<HR>");
-            conn.ExecuteNonQuery(SQL);
-
-            //交辦申請人
-            for (int i = 1; i <= Convert.ToInt32("0" + Request["apnum"]); i++) {
+            insert_casedmt_show(conn, RSno);
+                
+            //異動檔
+            if ((Request["ar_form"] ?? "") == "A4") {//延展
                 ColMap.Clear();
-                ColMap["in_no"] = "'" + RSno + "'";
-                ColMap["case_sqlno"] = "0";
-                ColMap["apsqlno"] = Util.dbchar(Request["apsqlno_" + i]);
-                ColMap["Server_flag"] = Util.dbchar(Request["ap_server_flag_" + i]);
-                ColMap["apcust_no"] = Util.dbchar(Request["apcust_no_" + i]);
-                ColMap["ap_cname"] = Util.dbchar(Request["ap_cname_" + i]);
-                ColMap["ap_cname1"] = Util.dbchar(Request["ap_cname1_" + i]);
-                ColMap["ap_cname2"] = Util.dbchar(Request["ap_cname2_" + i]);
-                ColMap["ap_ename"] = Util.dbchar(Request["ap_ename_" + i]);
-                ColMap["ap_ename1"] = Util.dbchar(Request["ap_ename1_" + i]);
-                ColMap["ap_ename2"] = Util.dbchar(Request["ap_ename2_" + i]);
-                ColMap["tran_date"] = "getdate()";
-                ColMap["tran_scode"] = "'" + Session["scode"] + "'";
-                ColMap["ap_fcname"] = Util.dbchar(Request["ap_fcname_" + i]);
-                ColMap["ap_lcname"] = Util.dbchar(Request["ap_lcname_" + i]);
-                ColMap["ap_fename"] = Util.dbchar(Request["ap_fename_" + i]);
-                ColMap["ap_lename"] = Util.dbchar(Request["ap_lename_" + i]);
-                ColMap["ap_sql"] = Util.dbzero(Request["ap_sql_" + i]);
-                ColMap["ap_zip"] = Util.dbchar(Request["ap_zip_" + i]);
-                ColMap["ap_addr1"] = Util.dbchar(Request["ap_addr1_" + i]);
-                ColMap["ap_addr2"] = Util.dbchar(Request["ap_addr2_" + i]);
-                ColMap["ap_eaddr1"] = Util.dbchar(Request["ap_eaddr1_" + i]);
-                ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
-                ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
-                ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+                foreach (var key in Request.Form.Keys) {
+                    string colkey = key.ToString().ToLower();
+                    string colValue = Request[colkey];
 
-                SQL = "insert into dmt_temp_ap " + ColMap.GetInsertSQL();
+                    //取1~4碼
+                    if (colkey.Left(4) == "tfgp") {
+                        if (colkey.Left(1) == "p") {
+                            ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+                        } else if (colkey.Left(1) == "d") {
+                            ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+                        } else {
+                            ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+                        }
+                    }
+                }
+
+                //20161006因電子送件修改備註.2欄都可存檔(用|分隔)
+                if ((Request["O_item"] ?? "") != "") {
+                    string sqlvalue = "";
+                    if ((Request["O_item"] ?? "").IndexOf("1") > -1) {
+                        if ((Request["O_item1"] ?? "") != "" || (Request["O_item2"] ?? "") != "") {
+                            sqlvalue += "1," + Request["O_item1"] + ";" + Request["O_item2"];
+                        }
+                    }
+                    sqlvalue += "|";
+                    if ((Request["O_item"] ?? "").IndexOf("Z") > -1) {
+                        sqlvalue += "Z;ZZ," + Request["O_item2t"];
+                    }
+                    ColMap["other_item"] = Util.dbchar(sqlvalue);
+                } else {
+                    ColMap["other_item"] = "null";
+                }
+
+                ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+                ColMap["in_no"] = "'" + RSno + "'";
+                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+                SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
                 //Response.Write(SQL + "<HR>");
                 conn.ExecuteNonQuery(SQL);
             }
 
-            //*****新增文件上傳
-            //string strpath="/btbrt/" + Session["seBranch"] + "T/"  + Request["attach_path"];
-            string strpath1 = sfile.gbrWebDir + "/" + Request["attach_path"];
-            string fld = Request["uploadfield"] ?? "";
-            for (int k = 1; k <= Convert.ToInt32("0" + Request[fld + "_filenum"]); k++) {
-                string straa = (Request[fld + "_name_" + k] ?? "");//原始檔名
-                if (straa != "") {
-                    string sExt = System.IO.Path.GetExtension(straa);//副檔名
-                    string attach_name = "";//資料庫檔名
-                    string newattach_path = "";//資料庫路徑
-                    //2015/12/29修改，總契約書或委任書不需更換檔名
-                    if ((Request[fld + "_apattach_sqlno_" + k] ?? "") != "") {
-                        attach_name = straa;
-                        newattach_path = Request[fld + "_" + k] ?? "";
-                    } else {
-                        attach_name = RSno + "-" + k + sExt;//重新命名檔名
-                        newattach_path = strpath1 + "/" + attach_name;//存在資料庫路徑
-                        Sys.RenameFile(strpath1 + "/" + straa, strpath1 + "/" + attach_name, false);
-                    }
-                    ColMap.Clear();
-                    ColMap["in_no"] = "'" + RSno + "'";
-                    ColMap["source"] = "'case'";
-                    ColMap["in_date"] = "getdate()";
-                    ColMap["in_scode"] = "'" + Session["scode"] + "'";
-                    ColMap["attach_no"] = "'" + k + "'";
-                    ColMap["attach_path"] = "'" + Sys.Path2Btbrt(newattach_path) + "'";
-                    ColMap["doc_type"] = Util.dbnull(Request["doc_type_" + k]);
-                    ColMap["attach_desc"] = Util.dbnull(Request[fld + "_desc_" + k]);
-                    ColMap["attach_name"] = Util.dbchar(attach_name);
-                    ColMap["source_name"] = Util.dbchar(straa);
-                    ColMap["attach_size"] = Util.dbnull(Request[fld + "_size_" + k]);
-                    ColMap["attach_flag"] = "'A'";
-                    ColMap["attach_branch"] = Util.dbchar(Request[fld + "_branch_" + k]);
-                    ColMap["apattach_sqlno"] = Util.dbchar(Request[fld + "_apattach_sqlno_" + k]);
+            //寫入交辦申請人檔
+            insert_dmt_temp_ap(conn, RSno,"0");
 
-                    SQL = "insert into dmt_attach " + ColMap.GetInsertSQL();
+            //*****新增文件上傳
+            insert_dmt_attach(conn, RSno);
+
+            //*****異動明細
+            if ((Request["ar_form"] ?? "") == "A4") {//延展
+                if ((Request["tfgp_mod_dmt"] ?? "") == "Y") {//變更商標／標章名稱
+                    ColMap.Clear();
+                    ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+                    ColMap["in_no"] = "'" + RSno + "'";
+                    ColMap["mod_field"] = "'mod_dmt'";
+                    ColMap["ncname1"] = Util.dbchar(Request["new_appl_name"]);
+
+                    SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
                 }
             }
+
+            //後續交辦作業，更新營洽官收確認紀錄檔grconf_dmt.job_no
+            upd_grconf_job_no(conn, RSno);
+
+            //更新客戶主檔最近立案日
+            upd_dmt_date(conn, RSno);
+            
             conn.Commit();
             //conn.RollBack();
 
@@ -309,6 +249,232 @@
             if (Request["chkTest"] != "TEST") {
                 strOut.AppendLine("<" + "/script>");
             }
+        }
+    }
+
+    /// <summary>
+    /// 寫入接洽記錄檔(case_dmt)
+    /// </summary>
+    private void insert_case_dmt(DBHelper conn, string RSno) {
+        ColMap.Clear();
+        foreach (var key in Request.Form.Keys) {
+            string colkey = key.ToString().ToLower();
+            string colValue = Request[colkey];
+
+            //取2~4碼(直接用substr若欄位名稱太短會壞掉)
+            if (colkey.Left(4).Substring(1) == "fy_") {
+                if (colkey.Left(1) == "p") {
+                    ColMap[colkey.Substring(4)] = Util.dbnull(colValue);
+                } else if (colkey.Left(1) == "d") {
+                    ColMap[colkey.Substring(4)] = Util.dbnull(colValue);
+                } else if (colkey.Left(1) == "n") {
+                    ColMap[colkey.Substring(4)] = Util.dbzero(colValue);
+                } else {
+                    ColMap[colkey.Substring(4)] = Util.dbnull(colValue);
+                }
+            }
+        }
+
+        ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+        ColMap["in_no"] = "'" + RSno + "'";
+        ColMap["in_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["arcase_type"] = Util.dbchar(Request["code_type"]);
+        ColMap["arcase_class"] = Util.dbchar(Request["prt_code"]);
+        ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
+        ColMap["seq"] = Util.dbchar(Request["tfzb_seq"]);
+        ColMap["grconf_sqlno"] = Util.dbnull(Request["grconf_sqlno"]);
+        //******折扣請核單
+        if (Request["tfy_discount_chk"] == null) {
+            ColMap["discount_chk"] = "'N'";
+        }
+        //******請款單 
+        if (Request["tfy_ar_chk"] == null) {
+            ColMap["ar_chk"] = "'N'";
+        }
+        if (Request["tfy_ar_chk1"] == null) {
+            ColMap["ar_chk1"] = "'N'";
+        }
+        //****會計檢核2013/9/16增加，不需請款或大陸進口案不在線上請款，不需會計檢核
+        if (Request["tfy_ar_code"] == "X" || Request["tfy_ar_code"] == "M") {
+            ColMap["acc_chk"] = "'X'";
+        }
+        SQL = "insert into case_dmt " + ColMap.GetInsertSQL();
+        //Response.Write(SQL + "<HR>");
+        conn.ExecuteNonQuery(SQL);
+    }
+    
+    /// <summary>
+    /// 寫入交辦申請人檔(dmt_temp_ap)
+    /// </summary>
+    private void insert_dmt_temp_ap(DBHelper conn, string RSno, string case_sqlno) {
+        //交辦申請人
+        for (int i = 1; i <= Convert.ToInt32("0" + Request["apnum"]); i++) {
+            ColMap.Clear();
+            ColMap["in_no"] = "'" + RSno + "'";
+            ColMap["case_sqlno"] = case_sqlno;
+            ColMap["apsqlno"] = Util.dbchar(Request["apsqlno_" + i]);
+            ColMap["Server_flag"] = Util.dbchar(Request["ap_server_flag_" + i]);
+            ColMap["apcust_no"] = Util.dbchar(Request["apcust_no_" + i]);
+            ColMap["ap_cname"] = Util.dbchar(Request["ap_cname_" + i]);
+            ColMap["ap_cname1"] = Util.dbchar(Request["ap_cname1_" + i]);
+            ColMap["ap_cname2"] = Util.dbchar(Request["ap_cname2_" + i]);
+            ColMap["ap_ename"] = Util.dbchar(Request["ap_ename_" + i]);
+            ColMap["ap_ename1"] = Util.dbchar(Request["ap_ename1_" + i]);
+            ColMap["ap_ename2"] = Util.dbchar(Request["ap_ename2_" + i]);
+            ColMap["tran_date"] = "getdate()";
+            ColMap["tran_scode"] = "'" + Session["scode"] + "'";
+            ColMap["ap_fcname"] = Util.dbchar(Request["ap_fcname_" + i]);
+            ColMap["ap_lcname"] = Util.dbchar(Request["ap_lcname_" + i]);
+            ColMap["ap_fename"] = Util.dbchar(Request["ap_fename_" + i]);
+            ColMap["ap_lename"] = Util.dbchar(Request["ap_lename_" + i]);
+            ColMap["ap_sql"] = Util.dbzero(Request["ap_sql_" + i]);
+            ColMap["ap_zip"] = Util.dbchar(Request["ap_zip_" + i]);
+            ColMap["ap_addr1"] = Util.dbchar(Request["ap_addr1_" + i]);
+            ColMap["ap_addr2"] = Util.dbchar(Request["ap_addr2_" + i]);
+            ColMap["ap_eaddr1"] = Util.dbchar(Request["ap_eaddr1_" + i]);
+            ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
+            ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
+            ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+
+            SQL = "insert into dmt_temp_ap " + ColMap.GetInsertSQL();
+            //Response.Write(SQL + "<HR>");
+            conn.ExecuteNonQuery(SQL);
+        }
+    }
+    
+    /// <summary>
+    /// 寫入接洽費用檔(caseitem_dmt)
+    /// </summary>
+    private void insert_caseitem_dmt(DBHelper conn, string RSno) {
+        //****主委辦案性	
+        ColMap.Clear();
+        ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+        ColMap["in_no"] = "'" + RSno + "'";
+        ColMap["item_sql"] = "'0'";
+        ColMap["seq"] = Util.dbchar(Request["tfzb_seq"]);
+        ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
+        ColMap["item_arcase"] = Util.dbchar(Request["tfy_arcase"]);
+        ColMap["item_service"] = Util.dbchar(Request["nfyi_service"]);
+        ColMap["item_fees"] = Util.dbchar(Request["nfyi_fees"]);
+        ColMap["item_count"] = "'1'";
+        SQL = "insert into caseitem_dmt " + ColMap.GetInsertSQL();
+        //Response.Write(SQL + "<HR>");
+        conn.ExecuteNonQuery(SQL);
+
+        //****次委辦案性
+        for (int i = 1; i <= Convert.ToInt32("0" + Request["TaCount"]); i++) {
+            if ((Request["nfyi_item_Arcase_" + i] ?? "") != "") {
+                ColMap.Clear();
+                ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+                ColMap["in_no"] = "'" + RSno + "'";
+                ColMap["item_sql"] = "'" + i + "'";
+                ColMap["seq"] = Util.dbchar(Request["tfzb_seq"]);
+                ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
+                ColMap["item_arcase"] = Util.dbchar(Request["nfyi_item_Arcase_" + i]);
+                ColMap["item_service"] = Util.dbchar(Request["nfyi_Service_" + i]);
+                ColMap["item_fees"] = Util.dbchar(Request["nfyi_fees_" + i]);
+                ColMap["item_count"] = Util.dbchar(Request["nfyi_item_count_" + i]);
+
+                SQL = "insert into caseitem_dmt " + ColMap.GetInsertSQL();
+                //Response.Write(SQL + "<HR>");
+                conn.ExecuteNonQuery(SQL);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 寫入展覽會優先權檔(casedmt_show)
+    /// </summary>
+    private void insert_casedmt_show(DBHelper conn, string RSno) {
+        for (int i = 1; i <= Convert.ToInt32("0" + Request["shownum_dmt"]); i++) {
+            if ((Request["show_date_dmt_" + i] ?? "") != "" || (Request["show_name_dmt_" + i] ?? "") != "") {
+                ColMap.Clear();
+                ColMap["in_no"] = "'" + RSno + "'";
+                ColMap["case_sqlno"] = "0";
+                ColMap["show_date"] = Util.dbnull(Request["show_date_dmt_" + i]);
+                ColMap["show_name"] = Util.dbnull(Request["show_name_dmt_" + i]);
+                ColMap["tr_date"] = "getdate()";
+                ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+
+                SQL = "insert into casedmt_show " + ColMap.GetInsertSQL();
+                //Response.Write(SQL + "<HR>");
+                conn.ExecuteNonQuery(SQL);
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 寫入附件記錄檔(dmt_attach)
+    /// </summary>
+    private void insert_dmt_attach(DBHelper conn, string RSno) {
+        //*****新增文件上傳
+        //string strpath="/btbrt/" + Session["seBranch"] + "T/"  + Request["attach_path"];
+        string strpath1 = sfile.gbrWebDir + "/" + Request["attach_path"];
+        string fld = Request["uploadfield"] ?? "";
+        for (int k = 1; k <= Convert.ToInt32("0" + Request[fld + "_filenum"]); k++) {
+            string straa = (Request[fld + "_name_" + k] ?? "");//原始檔名
+            if (straa != "") {
+                string sExt = System.IO.Path.GetExtension(straa);//副檔名
+                string attach_name = "";//資料庫檔名
+                string newattach_path = "";//資料庫路徑
+                //2015/12/29修改，總契約書或委任書不需更換檔名
+                if ((Request[fld + "_apattach_sqlno_" + k] ?? "") != "") {
+                    attach_name = straa;
+                    newattach_path = Request[fld + "_" + k] ?? "";
+                } else {
+                    attach_name = RSno + "-" + k + sExt;//重新命名檔名
+                    newattach_path = strpath1 + "/" + attach_name;//存在資料庫路徑
+                    Sys.RenameFile(strpath1 + "/" + straa, strpath1 + "/" + attach_name, false);
+                }
+                ColMap.Clear();
+                ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
+                ColMap["seq1"] = Util.dbnull(Request["tfzb_seq1"]);
+                ColMap["in_no"] = "'" + RSno + "'";
+                ColMap["source"] = "'case'";
+                ColMap["in_date"] = "getdate()";
+                ColMap["in_scode"] = "'" + Session["scode"] + "'";
+                ColMap["attach_no"] = "'" + k + "'";
+                ColMap["attach_path"] = "'" + Sys.Path2Btbrt(newattach_path) + "'";
+                ColMap["doc_type"] = Util.dbnull(Request["doc_type_" + k]);
+                ColMap["attach_desc"] = Util.dbnull(Request[fld + "_desc_" + k]);
+                ColMap["attach_name"] = Util.dbchar(attach_name);
+                ColMap["source_name"] = Util.dbchar(straa);
+                ColMap["attach_size"] = Util.dbnull(Request[fld + "_size_" + k]);
+                ColMap["attach_flag"] = "'A'";
+                ColMap["attach_branch"] = Util.dbchar(Request[fld + "_branch_" + k]);
+                ColMap["apattach_sqlno"] = Util.dbchar(Request[fld + "_apattach_sqlno_" + k]);
+
+                SQL = "insert into dmt_attach " + ColMap.GetInsertSQL();
+                conn.ExecuteNonQuery(SQL);
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 更新營洽官收確認紀錄檔(grconf_dmt.job_no)
+    /// </summary>
+    private void upd_grconf_job_no(DBHelper conn, string RSno) {
+        //後續交辦作業，更新營洽官收確認紀錄檔grconf_dmt.job_no
+        if ((Request["grconf_sqlno"] ?? "") != "") {
+            SQL = "update grconf_dmt set job_no = '" + RSno + "' ";
+            SQL += "finish_date = getdate() ";
+            SQL += "where grconf_sqlno = '" + Request["grconf_sqlno"] + "' ";
+            //Response.Write(SQL + "<HR>");
+            conn.ExecuteNonQuery(SQL);
+        }
+    }
+    
+    /// <summary>
+    /// 更新客戶主檔最近立案日(custz.dmt_date)
+    /// </summary>
+    private void upd_dmt_date(DBHelper conn, string RSno) {
+        //新案要更新最近立案日
+        if ((Request["tfy_case_stat"] ?? "") == "NN" || (Request["tfy_case_stat"] ?? "") == "SN") {
+            SQL = "update custz set dmt_date = '" + DateTime.Today.ToShortDateString() + "' ";
+            SQL += "where cust_area = '" + Request["tfy_cust_area"] + "' ";
+            SQL += "and cust_seq = '" + Request["tfy_cust_seq"] + "'";
+            //Response.Write(SQL + "<HR>");
+            conn.ExecuteNonQuery(SQL);
         }
     }
 </script>

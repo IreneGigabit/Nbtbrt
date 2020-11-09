@@ -1,4 +1,4 @@
-main.savechk = function () {
+main.savechkA7 = function () {
 	//客戶聯絡人檢查
 	if (main.chkCustAtt() == false) return false;
 	
@@ -175,8 +175,5 @@ main.savechk = function () {
 	$("#tfg1_seq").val($("#tfzb_seq").val());
 	$("#tfg1_seq1").val($("#tfzb_seq1").val());
 
-	//reg.action="Brt11AddA7.asp"
-	//$("#submittask").val("Add");
-	//If reg.chkTest.checked=True Then reg.target = "ActFrame" Else reg.target = "_self"
-	//reg.Submit
+	return true;
 }

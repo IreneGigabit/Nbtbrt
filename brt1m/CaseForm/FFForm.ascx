@@ -46,7 +46,7 @@
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right id=no1 >申請號數：</td>
-		<td class=whitetablebg id=no2 ><input type="text" name="fr_apply_no" id="fr_apply_no" value="" size="20" maxlength="20" onchange="reg.tfzd_apply_no.value=this.value"></TD>
+		<td class=whitetablebg id=no2 ><input type="text" name="fr_apply_no" id="fr_apply_no" class="onoff" value="" size="20" maxlength="20" onchange="reg.tfzd_apply_no.value=this.value"></TD>
 		<td class=lightbluetable align=right id=no3>註冊號數：</td>
 		<td class=whitetablebg id=no4><input type="text" name="fr_issue_no" id="fr_issue_no" class="onoff" value="" size="20" maxlength="20" onchange="reg.tfzd_issue_no.value=this.value"></TD>
 		<td class=lightbluetable align=right >商標名稱：</td>

@@ -326,17 +326,13 @@
         $(".Hide").hide();
     }
 
-    <!--xxinclude virtual="~\brt1m\A9Z_savechk.js" --><!--存檔檢查(main.savechk)xx-->
-    
     //存檔
     function formAddSubmit(){
         $.maskStart();
         var saveflag=main.savechk();
         $.maskStop();
-
         if(!saveflag) return false;
 
-        $("#tfy_case_stat").val("NN");//新案
         $("#submittask").val("Add");
 
         $("select,textarea,input,span").unlock();
@@ -344,7 +340,7 @@
 
         var formData = new FormData($('#reg')[0]);
         $.ajax({
-            url:'<%=HTProgPrefix%>AddA11_Update.aspx',
+            url:'<%=HTProgPrefix%>AddA9Z_Update.aspx',
             type : "POST",
             data : formData,
             contentType: false,
@@ -362,7 +358,7 @@
             }
         });
 
-        //reg.action = "<%=HTProgPrefix%>AddA11_Update.aspx";
+        //reg.action = "<%=HTProgPrefix%>AddA9Z_Update.aspx";
         //if($("#chkTest").prop("checked"))
         //    reg.target = "ActFrame";
         //else
