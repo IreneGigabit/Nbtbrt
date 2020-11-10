@@ -13,163 +13,60 @@ cnn.BeginTrans
 
 	SQLno="SELECT MAX(in_no) FROM case_dmt WHERE (LEFT(in_no, 4) = YEAR(GETDATE()))"
 	
-	sql = "INSERT INTO case_dmt("
+	//寫入case_dmt
+	insert_case_dmt(conn, RSno);
 
+	//寫入dmt_temp
+	insert_dmt_temp(conn, RSno);
 
-	'將檔案更改檔名
-	aa=request("draw_file")
-	if trim(request("tfy_case_stat"))<>"OO"  then
-		if trim(aa) <> empty then
-			'IF ubound(split(trim(request("draw_file")),"\"))=0 then
-			IF ubound(split(trim(request("draw_file")),"/"))=0 then
-				'filesource = server.MapPath(filepath) & "\" & aa 'temp
-				'newfilename = server.MapPath(filepath) & "\" & filename & "." & right(aa,len(aa)-InstrRev(aa,"."))
-				'fso.MoveFile filesource,newfilename
-				'aa=filename & "." & right(aa,len(aa)-InstrRev(aa,"."))
-				'2013/11/26修改可以中文檔名上傳及虛擬路徑
-				strpath="/btbrt/" & session("se_branch") & "T/temp"
-				attach_name = RSno & "." & right(aa,len(aa)-InstrRev(aa,"."))	'重新命名檔名
-				newfilename = strpath & "/" & attach_name	'存在資料庫路徑
-				call renameFile_nobackup(strpath,aa,attach_name)
-			else
-				newfilename = trim(request("draw_file"))
-			End IF
-		else
-			newfilename = ""
-		end if
-	else
-		'IF ubound(split(trim(request("draw_file")),"\"))=0 then
-		IF ubound(split(trim(request("draw_file")),"/"))=0 then
-			aa=trim(request("draw_file"))
-			if trim(aa) <> empty then
-				'filesource = server.MapPath(filepath) & "\" & aa 'temp
-				'newfilename = server.MapPath(filepath) & "\" & filename & "." & right(aa,len(aa)-InstrRev(aa,"."))
-				'fso.MoveFile filesource,newfilename
-				'aa=filename & "." & right(aa,len(aa)-InstrRev(aa,"."))
-				'2013/11/26修改可以中文檔名上傳及虛擬路徑
-				strpath="/btbrt/" & session("se_branch") & "T/temp"
-				attach_name = RSno & "." & right(aa,len(aa)-InstrRev(aa,"."))	'重新命名檔名
-				newfilename = strpath & "/" & attach_name	'存在資料庫路徑
-				call renameFile_nobackup(strpath,aa,attach_name)	
-			else
-				newfilename = ""
-			end if
-		else
-			newfilename = trim(request("draw_file"))
-		End IF
-	end if
-'*****新增案件檔
-			sql = "INSERT INTO dmt_temp("
-			sqlValue = ") VALUES("
-			for each x in request.form
-				if request(x) <> "" then
-					if mid(x,2,3) = "fzd" or mid(x,2,3) = "fzp" or mid(x,2,3) = "fzb" then					
-						select case left(x,1)
-							case "p"
-								sql = sql & mid(x,6) & ","
-								sqlValue = sqlValue & pkStr(request(x),",")
-							case "d"
-								sql = sql & mid(x,6) & ","
-								sqlValue = sqlValue & pkdate(request(x),",")
-							case "n"
-								sql = sql & mid(x,6) & ","
-								sqlValue = sqlValue & request(x) & ","
-							case else
-								sql = sql & mid(x,6) & ","
-								sqlValue = sqlValue & pkStr(request(x),",")
-						end select
-					end if
-				End IF
-			next
-			if request("tfzr_class_count") <> empty then		 
-				sql=sql & "class_type,class_count,class,"
-				sqlValue = sqlvalue & " '" & request("tfzr_class_type") & "','" & Request("tfzr_class_count") & "','"&request("tfzr_class")&"',"
-			end if
+	//寫入接洽費用檔
+	insert_caseitem_dmt(conn, RSno);
 
-			SQL=SQL & "in_scode,in_no,In_date,draw_file,tr_date,tr_scode,"
-			sqlvalue= sqlvalue & " '" & request("F_tscode") & "','" & RSno & "','" & date() & "','" & newfilename & "','" & date() & "','" & session("se_scode") & "',"	
-			SQL3 = left(sql,len(sql)-1) & left(sqlValue,len(sqlValue)-1) & ")"
-			'Response.Write SQL3
-			'Response.End
-			
-			cmd.CommandText=SQL3
-			If Trim(Request("chkTest"))<>Empty Then Response.Write "2=" & SQL3 & "<hr>"
-			cmd.Execute(SQL3)	
+	//寫入商品類別檔
+	insert_casedmt_good(conn, RSno);
 
-'****次委辦案性			
-	sql5 = "INSERT INTO caseitem_dmt (in_scode,in_no,item_sql,seq,seq1,item_arcase,item_service,item_fees,item_count) values"
+	//****新增展覽優先權資料
+	insert_casedmt_show(conn, RSno,"0");
 
-'商品類別	
-	ctrlnum=trim(request("ctrlnum1"))
-	IF trim(Request("tfzr_class_count"))<>empty then
-		for x=1 to ctrlnum
-			if trim(request("class1"&x))<>empty or trim(request("good_name1"&x))<>empty  then '2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
-				SQL6 = "INSERT INTO casedmt_good (in_scode,in_no,class,dmt_grp_code,dmt_goodname,dmt_goodcount,tr_date,tr_scode) values"
-				SQL6=SQL6&"('" & request("F_tscode") & "','" & RSno & "','"&trim(request("class1"&x))&"','"&trim(request("grp_code1"&x))&"'"
-				SQL6=SQL6&",'"&trim(request("good_name1"&x))&"','"&trim(request("good_count1"&x))&"',"
-				SQL6=SQL6&"'" & date() & "','" & session("se_scode") & "')"
-			ELSE
-				SQL6=""
-			End IF
-			IF SQL6<>EMPTY THEN
-				cmd.CommandText=SQL6
-				If Trim(Request("chkTest"))<>Empty Then Response.Write "5=" & SQL6 & "<hr>"
-				cmd.Execute(SQL6)
-			END IF
-		next
-	 End IF
+		//***異動檔
+	if ((Request["ar_form"] ?? "") == "AA") {//各種證明書
+		ColMap.Clear();
+		foreach (var key in Request.Form.Keys) {
+			string colkey = key.ToString().ToLower();
+			string colValue = Request[colkey];
 
-            //****新增展覽優先權資料
-            insert_casedmt_show(conn, RSno);
+			//取2~5碼
+			if (colkey.Left(5).Substring(1) == "fgd"||colkey.Left(5).Substring(1) == "fg3"||colkey.Left(5).Substring(1) == "fg2") {
+				if (colkey.Left(1) == "p") {
+					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+				} else if (colkey.Left(1) == "d") {
+					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+				} else {
+					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+				}
+			}
+		}
 
-'****新增至案件異動檔
-		sql = "INSERT INTO dmt_tran("
-				sqlValue = ") VALUES("
-				for each x in request.form
-					if request(x) <> "" then
-						if mid(x,2,3) = "fgd" or mid(x,2,3) = "fg3" or mid(x,2,3) = "fg2" then
-						select case left(x,1)
-								case "p"
-									sql = sql & mid(x,6) & ","
-									sqlValue = sqlValue & pkStr(request(x),",")
-								case "d"
-									sql = sql & mid(x,6) & ","
-									sqlValue = sqlValue & pkdate(request(x),",")								
-								case else
-									sql = sql & mid(x,6) & ","
-									sqlValue = sqlValue & pkStr(request(x),",")
-						end select
-						end if
-					end if 
-				next
-		if request("O_item1") <> empty or request("O_item2") <> empty or request("O_item21") <> empty then		'***附註 
-			 SQL=SQL & "other_item1,"
-			 sqlvalue = sqlvalue & " '" & Request("O_item1") & ";" & Request("O_item2") & ";" & Request("O_item21")
-			 sqlvalue = sqlvalue & "',"
-		end if	
-
-		if request("O_item3") <> empty or Request("O_item31") <> empty then		'***申請份數 
-			 SQL=SQL & "other_item2,"
-			 sqlvalue = sqlvalue & " '" & Request("O_item3") & ";" & Request("O_item31") 
-			 sqlvalue = sqlvalue & "',"
-		end if	
-
-		if request("O_item4") <> empty or Request("O_item41") <> empty then		'***指定類別
-			 SQL=SQL & "other_item,"
-			 sqlvalue = sqlvalue & " '" & Request("O_item4") & ";" & Request("O_item41") 
-			 sqlvalue = sqlvalue & "',"
-		end if	
-		
-		SQL=SQL & "in_scode, in_no,tr_date,tr_scode,"
-		sqlvalue = sqlvalue & " '" & Request("F_tscode") & "','" & RSno & "','" & date() & "','" & session("se_scode") & "',"	
+		if ((Request["O_item1"] ?? "") != ""||(Request["O_item2"] ?? "") != ""||(Request["O_item21"] ?? "") != "") {//附註
+			ColMap["other_item1"] = Util.dbchar(Request["O_item1"] + ";" + Request["O_item2"]+ ";" + Request["O_item21"]);
+		}
 	
-		SQL3 = left(sql,len(sql)-1) & left(sqlValue,len(sqlValue)-1) & ")"
+		if ((Request["O_item3"] ?? "") != ""||(Request["O_item31"] ?? "") != "") {//申請份數
+			ColMap["other_item2"] = Util.dbchar(Request["O_item3"] + ";" + Request["O_item31"]);
+		}
 
+		if ((Request["O_item4"] ?? "") != ""||(Request["O_item41"] ?? "") != "") {//指定類別
+			ColMap["other_item"] = Util.dbchar(Request["O_item4"] + ";" + Request["O_item41"]);
+		}
 
-	cmd.CommandText=SQL3
-	If Trim(Request("chkTest"))<>Empty Then Response.Write "7=" & SQL3 & "<hr>"
-	cmd.Execute(SQL3)
-	
+		ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+		ColMap["in_no"] = "'" + RSno + "'";
+		ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+		ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+		SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
+		conn.ExecuteNonQuery(SQL);
+	}
+
 	//寫入交辦申請人檔
 	insert_dmt_temp_ap(conn, RSno,"0");	
 

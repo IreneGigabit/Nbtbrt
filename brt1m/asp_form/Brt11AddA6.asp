@@ -12,7 +12,8 @@ conn.BeginTrans
 
 	SQLno="SELECT MAX(in_no) FROM case_dmt WHERE (LEFT(in_no, 4) = YEAR(GETDATE()))"
 
-	sql = "INSERT INTO case_dmt("
+	//寫入case_dmt
+	insert_case_dmt(conn, RSno);
 
 
 if arcase="FC11" or arcase="FC5" or arcase="FC7" or arcase="FCH" then
@@ -814,154 +815,17 @@ elseif arcase="FC21" or arcase="FC6" or arcase="FC8" or arcase="FCI" then
 	End IF
 End IF
 	
-'****次委辦案性			
-	sql5 = "INSERT INTO caseitem_dmt (in_scode,in_no,item_sql,"
+	//寫入接洽費用檔
+	insert_caseitem_dmt(conn, RSno);
 
-	'將檔案更改檔名
-	filepath="/btbrt/" & session("se_branch") & "t/temp"
-	'Response.Write filepath
-	filename = RSno
-	aa=request("draw_file")
-	'Response.Write trim(request("draw_file"))
-	'Response.End
-	
-	if trim(request("tfy_case_stat"))<>"OO"  then
-		if trim(aa) <> empty then
-			'IF ubound(split(trim(request("draw_file")),"\"))=0 then
-			IF ubound(split(trim(request("draw_file")),"/"))=0 then
-				'filesource = server.MapPath(filepath) & "\" & aa 'temp
-				'newfilename = server.MapPath(filepath) & "\" & filename & "." & right(aa,len(aa)-InstrRev(aa,"."))
-				'fso.MoveFile filesource,newfilename
-				'aa=filename & "." & right(aa,len(aa)-InstrRev(aa,"."))
-				'2013/11/26修改可以中文檔名上傳及虛擬路徑
-				strpath="/btbrt/" & session("se_branch") & "T/temp"
-				attach_name = RSno & "." & right(aa,len(aa)-InstrRev(aa,"."))	'重新命名檔名
-				newfilename = strpath & "/" & attach_name	'存在資料庫路徑
-				call renameFile_nobackup(strpath,aa,attach_name)
-			else
-				newfilename = trim(request("draw_file"))
-			End IF
-		else
-			newfilename = ""
-		end if
-	else
-		'IF ubound(split(trim(request("draw_file")),"\"))=0 then
-		IF ubound(split(trim(request("draw_file")),"/"))=0 then
-			aa=trim(request("draw_file"))
-			if trim(aa) <> empty then
-				'filesource = server.MapPath(filepath) & "\" & aa 'temp
-				'newfilename = server.MapPath(filepath) & "\" & filename & "." & right(aa,len(aa)-InstrRev(aa,"."))
-				'fso.MoveFile filesource,newfilename
-				'aa=filename & "." & right(aa,len(aa)-InstrRev(aa,"."))
-				'2013/11/26修改可以中文檔名上傳及虛擬路徑
-				strpath="/btbrt/" & session("se_branch") & "T/temp"
-				attach_name = RSno & "." & right(aa,len(aa)-InstrRev(aa,"."))	'重新命名檔名
-				newfilename = strpath & "/" & attach_name	'存在資料庫路徑
-				call renameFile_nobackup(strpath,aa,attach_name)	
-			else
-				newfilename = ""
-			end if
-		else
-			newfilename = trim(request("draw_file"))
-		End IF
-	end if
-
-	'select case mid(Request("tfy_arcase"),3,1)
-	'		case "2","3","4","5" Num=mid(Request("tfy_arcase"),3,1) 
-	'		case else Num="1"
-	'end select		
-
-	'****新案變更新增至案件主檔	
-			sql = "INSERT INTO dmt_temp("
-			sqlValue = ") VALUES("
-			for each x in request.form
-				if request(x) <> "" then
-					if mid(x,2,3) = "fzd" or mid(x,2,3) = "fzp" then
-						select case left(x,1)
-							case "p"
-								sql = sql & mid(x,6) & ","
-								sqlValue = sqlValue & pkStr(request(x),",")
-							case "d"
-								sql = sql & mid(x,6) & ","
-								sqlValue = sqlValue & pkdate(request(x),",")
-							case "n"
-								sql = sql & mid(x,6) & ","
-								sqlValue = sqlValue & request(x) & ","
-							case else
-								sql = sql & mid(x,6) & ","
-								sqlValue = sqlValue & pkStr(request(x),",")
-						end select
-					end if
-				end if
-			next
-			if arcase<>"FC3" then
-				if request("tfzr_class_count") <> empty then		 
-					sql=sql & "class_type,class_count,class,"
-					sqlValue = sqlvalue & " '" & request("tfzr_class_type") & "','" & Request("tfzr_class_count") & "','"&request("tfzr_class")&"',"
-				end if
-			else
-				if request("tft3_class_count2") <> empty then		 
-					sql=sql & "class_type,class_count,class,"
-					sqlValue = sqlvalue & " '" & request("tft3_class_type2") & "','" & Request("tft3_class_count2") & "','"&request("tft3_class2")&"',"
-				end if
-			end if
-			if trim(request("tfzb_seq"))<> empty then		 
-				sql=sql & "seq,"
-				sqlValue = sqlvalue & " " &request("tfzb_seq") &","
-			end if
-
-			SQL=SQL & "in_scode,in_no,In_date,draw_file,tr_date,tr_scode,seq1,"
-			sqlvalue= sqlvalue & "'" & Request("F_tscode") & "','" & RSno & "','" & date() & "','" & newfilename & "','" & date() & "','" & session("se_scode") & "','" & request("tfzb_seq1") & "',"						  
-			SQL3 = left(sql,len(sql)-1) & left(sqlValue,len(sqlValue)-1) & ")"
-'Response.Write SQL3
-'Response.End
-			If Trim(Request("chkTest"))<>Empty Then Response.Write "22=" & SQL3 & "<hr>"
-			Conn.Execute(SQL3)	
+	//寫入dmt_temp
+	insert_dmt_temp(conn, RSno);
 			
-if arcase<>"FC3" then
-'商品類別	
-	ctrlnum=trim(request("ctrlnum1"))
-	IF trim(Request("tfzr_class_count"))<>empty then
-		for x=1 to ctrlnum
-			if trim(request("class1"&x))<>empty or trim(request("good_name1"&x))<>empty then '2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
-				SQL6 = "INSERT INTO casedmt_good (in_scode,in_no,class,dmt_grp_code,dmt_goodname,dmt_goodcount,tr_date,tr_scode) values"
-				SQL6=SQL6&"('" & request("F_tscode") & "','" & RSno & "','"&trim(request("class1"&x))&"','"&trim(request("grp_code1"&x))&"'"
-				SQL6=SQL6&",'"&trim(request("good_name1"&x))&"','"&trim(request("good_count1"&x))&"',"
-				SQL6=SQL6&"'" & date() & "','" & session("se_scode") & "')"
-			ELSE
-				SQL6=""
-			end if
-				IF SQL6<>EMPTY THEN
-					If Trim(Request("chkTest"))<>Empty Then Response.Write "23=" & SQL6 & "<hr>"
-					Conn.Execute(SQL6)
-				END IF
-		next
-	 End IF
-else
-	ctrlnum=trim(request("ctrlnum32"))
-	IF trim(Request("tft3_class_count2"))<>empty then
-		for x=1 to ctrlnum
-			if trim(request("class32"&x))<>empty or trim(request("good_name32"&x))<>empty then '2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
-				SQL6 = "INSERT INTO casedmt_good (in_scode,in_no,class,dmt_goodname,dmt_goodcount,tr_date,tr_scode) values"
-				SQL6=SQL6&"('" & request("F_tscode") & "','" & RSno & "','"&trim(request("class32"&x))&"'"
-				SQL6=SQL6&",'"&trim(request("good_name32"&x))&"','"&trim(request("good_count32"&x))&"',"
-				SQL6=SQL6&"'" & date() & "','" & session("se_scode") & "')"
-			ELSE
-				SQL6=""
-			end if
-			'Response.Write "SQL6_casedmt_good="&SQL6&"<br><br><br>"
-			'response.end
-			
-				IF SQL6<>EMPTY THEN
-					If Trim(Request("chkTest"))<>Empty Then Response.Write "24=" & SQL6 & "<hr>"
-					Conn.Execute(SQL6)
-				END IF
-		next
-	 End IF
-end if
+	//寫入商品類別檔
+	insert_casedmt_good(conn, RSno);
 
             //****新增展覽優先權資料
-            insert_casedmt_show(conn, RSno);
+            insert_casedmt_show(conn, RSno,"0");
 
 	'*****新增案件變更檔
 	select case left(Request("tfy_arcase"),4)

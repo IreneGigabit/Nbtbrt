@@ -3,208 +3,67 @@
 <%@ Import Namespace="System.Collections.Generic" %>
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
-    protected string HTProgPrefix = "brt11";//程式檔名前綴
-    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
-    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
-    protected int HTProgRight = 0;
-    protected string DebugStr = "";
-    protected string StrFormBtnTop = "";
-    protected string StrFormBtn = "";
-    protected string formFunction = "";
+        protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+        protected string HTProgPrefix = "brt11";//程式檔名前綴
+        protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+        protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
+        protected int HTProgRight = 0;
+        protected string DebugStr = "";
+        protected string StrFormBtnTop = "";
+        protected string StrFormBtn = "";
+        protected string formFunction = "";
+        protected string drawFilename = "";
 
-    protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
-    protected Dictionary<string, string> ColMap = new Dictionary<string, string>();
-    protected string SQL = "";
-    Sys sfile = new Sys();
+        protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
+        protected Dictionary<string, string> ColMap = new Dictionary<string, string>();
+        protected string SQL = "";
+        Sys sfile = new Sys();
 
-    protected StringBuilder strOut = new StringBuilder();
+        protected StringBuilder strOut = new StringBuilder();
 
-    private void Page_Load(System.Object sender, System.EventArgs e) {
-        Response.CacheControl = "no-cache";
-        Response.AddHeader("Pragma", "no-cache");
-        Response.Expires = -1;
+        private void Page_Load(System.Object sender, System.EventArgs e) {
+            Response.CacheControl = "no-cache";
+            Response.AddHeader("Pragma", "no-cache");
+            Response.Expires = -1;
 
-        ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
+            ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
-        TokenN myToken = new TokenN(HTProgCode);
-        HTProgRight = myToken.CheckMe();
-        HTProgCap = myToken.Title;
-        DebugStr = myToken.DebugStr;
-        if (HTProgRight >= 0) {
-            doUpdateDB();
-            this.DataBind();
+            TokenN myToken = new TokenN(HTProgCode);
+            HTProgRight = myToken.CheckMe();
+            HTProgCap = myToken.Title;
+            DebugStr = myToken.DebugStr;
+            if (HTProgRight >= 0) {
+                doUpdateDB();
+                this.DataBind();
+            }
         }
-    }
 
-    private void doUpdateDB() {
-        sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
+        private void doUpdateDB() {
+            sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
 
-        object objResult = null;
-        using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST")) {
-            //******************產生流水號(yyyyMMddnnn);
-            string nowRSno = DateTime.Today.ToString("yyyyMMdd");
-            SQL = "SELECT MAX(in_no) FROM case_dmt WITH(TABLOCKX) WHERE LEFT(in_no, 8) = '" + nowRSno + "'";
-            objResult = conn.ExecuteScalar(SQL);
-            int nowSql = (objResult == DBNull.Value || objResult == null ? 0 : Convert.ToInt32(((string)objResult).Right(3)));
-            string RSno = String.Format("{0}{1:000}", nowRSno, nowSql + 1);
+            object objResult = null;
+            using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST")) {
+                //******************產生流水號(yyyyMMddnnn);
+                string nowRSno = DateTime.Today.ToString("yyyyMMdd");
+                SQL = "SELECT MAX(in_no) FROM case_dmt WITH(TABLOCKX) WHERE LEFT(in_no, 8) = '" + nowRSno + "'";
+                objResult = conn.ExecuteScalar(SQL);
+                int nowSql = (objResult == DBNull.Value || objResult == null ? 0 : Convert.ToInt32(((string)objResult).Right(3)));
+                string RSno = String.Format("{0}{1:000}", nowRSno, nowSql + 1);
 
-            //寫入case_dmt
-            insert_case_dmt(conn, RSno);
+                //寫入case_dmt
+                insert_case_dmt(conn, RSno);
 
-            //將檔案更改檔名
-            string aa = Request["draw_file1"] ?? "";
-            string newfilename = "";
-            if (aa != "") {
-                //2013/11/26修改可以中文檔名上傳及虛擬路徑
-                //string strpath = "/btbrt/" + Session["seBranch"] + "T/temp";
-                string strpath = sfile.gbrWebDir + "/temp";
-                string attach_name = RSno + System.IO.Path.GetExtension(aa);//重新命名檔名
-                newfilename = strpath + "/" + attach_name;//存在資料庫路徑
-                if (aa.IndexOf("/") > -1 || aa.IndexOf("\\") > -1)
-                    Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
-                else
-                    Sys.RenameFile(strpath + "/" + aa, strpath + "/" + attach_name, true);
-            }
+                //寫入dmt_temp
+                insert_dmt_temp(conn, RSno);
 
-            //*****若為新案則新增至案件檔,舊案則不用
-            ColMap.Clear();
-            foreach (var key in Request.Form.Keys) {
-                string colkey = key.ToString().ToLower();
-                string colValue = Request[colkey];
+                //寫入caseitem_dmt
+                insert_caseitem_dmt(conn, RSno);
 
-                //取2~5碼(直接用substr若欄位名稱太短會壞掉)
-                if (colkey.Left(5).Substring(1) == "fzd_"
-                    || colkey.Left(4).Substring(1) == "fzb"
-                    || colkey.Left(4).Substring(1) == "fzp"
-                    ) {
-                    if (colkey.Left(1) == "p") {
-                        ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-                    } else if (colkey.Left(1) == "d") {
-                        ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-                    } else if (colkey.Left(1) == "n") {
-                        ColMap[colkey.Substring(5)] = Util.dbzero(colValue);
-                    } else {
-                        ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-                    }
-                }
-            }
-            if ((Request["ar_form"] ?? "") != "A4") {
-                if ((Request["tfzr_class_count"] ?? "") != "") {
-                    ColMap["class_type"] = Util.dbchar(Request["tfzr_class_type"]);
-                    ColMap["class_count"] = Util.dbchar(Request["tfzr_class_count"]);
-                    ColMap["class"] = Util.dbchar(Request["tfzr_class"]);
-                }
-            }
-
-            ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
-            ColMap["in_no"] = "'" + RSno + "'";
-            ColMap["in_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
-            ColMap["draw_file"] = Util.dbchar(Sys.Path2Btbrt(newfilename));
-            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
-            ColMap["tr_scode"] = "'" + Session["scode"] + "'";
-            ColMap["case_sqlno"] = "0";
-            ColMap["Mseq1"] = Util.dbnull(Request["tfzb_seq1"]);
-            ColMap["Mseq"] = Util.dbnull(Request["tfzb_seq"]);
-            SQL = "insert into dmt_temp " + ColMap.GetInsertSQL();
-            //Response.Write(SQL + "<HR>");
-            conn.ExecuteNonQuery(SQL);
-
-            //寫入caseitem_dmt
-            insert_caseitem_dmt(conn, RSno);
-
-            //****商品類別
-            if ((Request["ar_form"] ?? "") != "A4") {
-                for (int i = 1; i <= Convert.ToInt32("0" + Request["tfzr_class_count"]); i++) {
-                    //2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
-                    if ((Request["class1_" + i] ?? "") != "" || (Request["good_name1_" + i] ?? "") != "") {
-                        ColMap.Clear();
-                        ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
-                        ColMap["in_no"] = "'" + RSno + "'";
-                        ColMap["class"] = Util.dbchar(Request["class1_" + i]);
-                        ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code1_" + i]);
-                        ColMap["dmt_goodname"] = Util.dbchar(Request["good_name1_" + i]);
-                        ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count1_" + i]);
-                        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
-                        ColMap["tr_scode"] = "'" + Session["scode"] + "'";
-
-                        SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
-                        //Response.Write(SQL + "<HR>");
-                        conn.ExecuteNonQuery(SQL);
-                    }
-                }
-            } else {
-                //延展以交辦內容為準
-                for (int i = 1; i <= Convert.ToInt32("0" + Request["tfzd_class_count"]); i++) {
-                    //2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
-                    if ((Request["class2_" + i] ?? "") != "" || (Request["good_name2_" + i] ?? "") != "") {
-                        if ((Request["good_name2_" + i] ?? "") != "") {
-                            ColMap.Clear();
-                            ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
-                            ColMap["in_no"] = "'" + RSno + "'";
-                            ColMap["class"] = Util.dbchar(Request["class2_" + i]);
-                            ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code2_" + i]);
-                            ColMap["dmt_goodname"] = Util.dbchar(Request["good_name2_" + i]);
-                            ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count2_" + i]);
-                            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
-                            ColMap["tr_scode"] = "'" + Session["scode"] + "'";
-
-                            SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
-                            //Response.Write(SQL + "<HR>");
-                            conn.ExecuteNonQuery(SQL);
-                        }
-
-                    }
-                }
-            }
+                //寫入商品類別檔
+	            insert_casedmt_good(conn, RSno);
 
             //****新增展覽優先權資料
             insert_casedmt_show(conn, RSno);
-                
-            //異動檔
-            if ((Request["ar_form"] ?? "") == "A4") {//延展
-                ColMap.Clear();
-                foreach (var key in Request.Form.Keys) {
-                    string colkey = key.ToString().ToLower();
-                    string colValue = Request[colkey];
-
-                    //取1~4碼
-                    if (colkey.Left(4) == "tfgp") {
-                        if (colkey.Left(1) == "p") {
-                            ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-                        } else if (colkey.Left(1) == "d") {
-                            ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-                        } else {
-                            ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-                        }
-                    }
-                }
-
-                //20161006因電子送件修改備註.2欄都可存檔(用|分隔)
-                if ((Request["O_item"] ?? "") != "") {
-                    string sqlvalue = "";
-                    if ((Request["O_item"] ?? "").IndexOf("1") > -1) {
-                        if ((Request["O_item1"] ?? "") != "" || (Request["O_item2"] ?? "") != "") {
-                            sqlvalue += "1," + Request["O_item1"] + ";" + Request["O_item2"];
-                        }
-                    }
-                    sqlvalue += "|";
-                    if ((Request["O_item"] ?? "").IndexOf("Z") > -1) {
-                        sqlvalue += "Z;ZZ," + Request["O_item2t"];
-                    }
-                    ColMap["other_item"] = Util.dbchar(sqlvalue);
-                } else {
-                    ColMap["other_item"] = "null";
-                }
-
-                ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
-                ColMap["in_no"] = "'" + RSno + "'";
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
-                ColMap["tr_scode"] = "'" + Session["scode"] + "'";
-                SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
-                //Response.Write(SQL + "<HR>");
-                conn.ExecuteNonQuery(SQL);
-            }
 
             //寫入交辦申請人檔
             insert_dmt_temp_ap(conn, RSno,"0");
@@ -212,26 +71,12 @@
             //*****新增文件上傳
             insert_dmt_attach(conn, RSno);
 
-            //*****異動明細
-            if ((Request["ar_form"] ?? "") == "A4") {//延展
-                if ((Request["tfgp_mod_dmt"] ?? "") == "Y") {//變更商標／標章名稱
-                    ColMap.Clear();
-                    ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
-                    ColMap["in_no"] = "'" + RSno + "'";
-                    ColMap["mod_field"] = "'mod_dmt'";
-                    ColMap["ncname1"] = Util.dbchar(Request["new_appl_name"]);
-
-                    SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
-                    conn.ExecuteNonQuery(SQL);
-                }
-            }
-
             //後續交辦作業，更新營洽官收確認紀錄檔grconf_dmt.job_no
             upd_grconf_job_no(conn, RSno);
 
             //更新客戶主檔最近立案日
             upd_dmt_date(conn, RSno);
-            
+
             conn.Commit();
             //conn.RollBack();
 
@@ -302,7 +147,70 @@
         //Response.Write(SQL + "<HR>");
         conn.ExecuteNonQuery(SQL);
     }
-    
+
+    /// <summary>
+    /// 寫入接洽記錄主檔檔(dmt_temp)
+    /// </summary>
+    private void insert_dmt_temp(DBHelper conn, string RSno) {
+        //將檔案更改檔名
+        drawFilename = move_file(RSno, "draw_file1");
+
+        //*****若為新案則新增至案件檔,舊案則不用
+        ColMap.Clear();
+        foreach (var key in Request.Form.Keys) {
+            string colkey = key.ToString().ToLower();
+            string colValue = Request[colkey];
+
+            //取2~5碼(直接用substr若欄位名稱太短會壞掉)
+            if (colkey.Left(4).Substring(1) == "fzd"
+                || colkey.Left(4).Substring(1) == "fzb"
+                || colkey.Left(4).Substring(1) == "fzp"
+                ) {
+                if (colkey.Left(1) == "p") {
+                    ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+                } else if (colkey.Left(1) == "d") {
+                    ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+                } else if (colkey.Left(1) == "n") {
+                    ColMap[colkey.Substring(5)] = Util.dbzero(colValue);
+                } else {
+                    ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
+                }
+            }
+        }
+        if ((Request["ar_form"] ?? "") != "A4"&&(Request["tfy_arcase"] ?? "") != "FC3") {
+            if ((Request["tfzr_class_count"] ?? "") != "") {
+                ColMap["class_type"] = Util.dbchar(Request["tfzr_class_type"]);
+                ColMap["class_count"] = Util.dbchar(Request["tfzr_class_count"]);
+                ColMap["class"] = Util.dbchar(Request["tfzr_class"]);
+            }
+        } else {
+            if ((Request["tft3_class_count2"] ?? "") != "") {
+                ColMap["class_type"] = Util.dbchar(Request["tft3_class_type2"]);
+                ColMap["class_count"] = Util.dbchar(Request["tft3_class_count2"]);
+                ColMap["class"] = Util.dbchar(Request["tft3_class2"]);
+            }
+        }
+
+        if ((Request["ar_form"] ?? "") == "B") {
+            if ((Request["tfzb_seq"] ?? "") != "") {
+                ColMap["seq"] = Util.dbchar(Request["tfzb_seq"]);
+            }
+            ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
+        }
+        ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+        ColMap["in_no"] = "'" + RSno + "'";
+        ColMap["in_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["draw_file"] = Util.dbchar(Sys.Path2Btbrt(drawFilename));
+        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+        ColMap["case_sqlno"] = "0";
+        ColMap["Mseq1"] = Util.dbnull(Request["tfzb_seq1"]);
+        ColMap["Mseq"] = Util.dbnull(Request["tfzb_seq"]);
+        SQL = "insert into dmt_temp " + ColMap.GetInsertSQL();
+        //Response.Write(SQL + "<HR>");
+        conn.ExecuteNonQuery(SQL);
+    }
+
     /// <summary>
     /// 寫入交辦申請人檔(dmt_temp_ap)
     /// </summary>
@@ -337,11 +245,10 @@
             ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
 
             SQL = "insert into dmt_temp_ap " + ColMap.GetInsertSQL();
-            //Response.Write(SQL + "<HR>");
             conn.ExecuteNonQuery(SQL);
         }
     }
-    
+
     /// <summary>
     /// 寫入接洽費用檔(caseitem_dmt)
     /// </summary>
@@ -383,14 +290,82 @@
     }
 
     /// <summary>
+    /// 寫入商品類別檔(casedmt_good)
+    /// </summary>
+    private void insert_casedmt_good(DBHelper conn, string RSno) {
+        //****商品類別
+        if ((Request["ar_form"] ?? "") == "A4") {
+            //延展以交辦內容為準
+            for (int i = 1; i <= Convert.ToInt32("0" + Request["tfzd_class_count"]); i++) {
+                //2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
+                if ((Request["class2_" + i] ?? "") != "" || (Request["good_name2_" + i] ?? "") != "") {
+                    if ((Request["good_name2_" + i] ?? "") != "") {
+                        ColMap.Clear();
+                        ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+                        ColMap["in_no"] = "'" + RSno + "'";
+                        ColMap["class"] = Util.dbchar(Request["class2_" + i]);
+                        ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code2_" + i]);
+                        ColMap["dmt_goodname"] = Util.dbchar(Request["good_name2_" + i]);
+                        ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count2_" + i]);
+                        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                        ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+
+                        SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
+                        //Response.Write(SQL + "<HR>");
+                        conn.ExecuteNonQuery(SQL);
+                    }
+                }
+            }
+        }else if((Request["tfy_arcase"] ?? "") == "FC3") {
+
+                        for (int i = 1; i <= Convert.ToInt32("0" + Request["tft3_class_count2"]); i++) {
+                //2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
+                if ((Request["class32_" + i] ?? "") != "" || (Request["good_name32_" + i] ?? "") != "") {
+                    ColMap.Clear();
+                    ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+                    ColMap["in_no"] = "'" + RSno + "'";
+                    ColMap["class"] = Util.dbchar(Request["class32_" + i]);
+                    ColMap["dmt_goodname"] = Util.dbchar(Request["good_name32_" + i]);
+                    ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count32_" + i]);
+                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                    ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+
+                    SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
+                    //Response.Write(SQL + "<HR>");
+                    conn.ExecuteNonQuery(SQL);
+                }
+            }
+        }else {
+            for (int i = 1; i <= Convert.ToInt32("0" + Request["tfzr_class_count"]); i++) {
+                //2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
+                if ((Request["class1_" + i] ?? "") != "" || (Request["good_name1_" + i] ?? "") != "") {
+                    ColMap.Clear();
+                    ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
+                    ColMap["in_no"] = "'" + RSno + "'";
+                    ColMap["class"] = Util.dbchar(Request["class1_" + i]);
+                    ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code1_" + i]);
+                    ColMap["dmt_goodname"] = Util.dbchar(Request["good_name1_" + i]);
+                    ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count1_" + i]);
+                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                    ColMap["tr_scode"] = "'" + Session["scode"] + "'";
+
+                    SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
+                    //Response.Write(SQL + "<HR>");
+                    conn.ExecuteNonQuery(SQL);
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// 寫入展覽會優先權檔(casedmt_show)
     /// </summary>
-    private void insert_casedmt_show(DBHelper conn, string RSno) {
+    private void insert_casedmt_show(DBHelper conn, string RSno, string case_sqlno) {
         for (int i = 1; i <= Convert.ToInt32("0" + Request["shownum_dmt"]); i++) {
             if ((Request["show_date_dmt_" + i] ?? "") != "" || (Request["show_name_dmt_" + i] ?? "") != "") {
                 ColMap.Clear();
                 ColMap["in_no"] = "'" + RSno + "'";
-                ColMap["case_sqlno"] = "0";
+                ColMap["case_sqlno"] = case_sqlno;
                 ColMap["show_date"] = Util.dbnull(Request["show_date_dmt_" + i]);
                 ColMap["show_name"] = Util.dbnull(Request["show_name_dmt_" + i]);
                 ColMap["tr_date"] = "getdate()";
@@ -402,7 +377,7 @@
             }
         }
     }
-    
+
     /// <summary>
     /// 寫入附件記錄檔(dmt_attach)
     /// </summary>
@@ -449,7 +424,7 @@
             }
         }
     }
-    
+
     /// <summary>
     /// 更新營洽官收確認紀錄檔(grconf_dmt.job_no)
     /// </summary>
@@ -463,7 +438,7 @@
             conn.ExecuteNonQuery(SQL);
         }
     }
-    
+
     /// <summary>
     /// 更新客戶主檔最近立案日(custz.dmt_date)
     /// </summary>
@@ -476,6 +451,63 @@
             //Response.Write(SQL + "<HR>");
             conn.ExecuteNonQuery(SQL);
         }
+    }
+
+    /// <summary>
+    /// 將檔案更改檔名
+    /// </summary>
+    private string move_file(string RSno, string fieldName) {
+        string filename = "";
+        fieldName = fieldName.ToLower();
+
+        if ((Request[fieldName] ?? "") == "")
+            return "";
+
+        if (fieldName.Substring(0, 9) == "draw_file") {
+            filename = RSno;
+        } else if (fieldName.Substring(9, 3) == "cla") {//ex:ttg1_mod_class_ncname
+            switch (fieldName.Substring(15)) {
+                case "ncname1": filename = RSno + "-C1"; break;
+                case "ncname2": filename = RSno + "-C2"; break;
+                case "nename1": filename = RSno + "-C3"; break;
+                case "nename2": filename = RSno + "-C4"; break;
+                case "ncrep": filename = RSno + "-C5"; break;
+                case "nerep": filename = RSno + "-C6"; break;
+                case "neaddr1": filename = RSno + "-C7"; break;
+                case "neaddr2": filename = RSno + "-C8"; break;
+                case "neaddr3": filename = RSno + "-C9"; break;
+                case "neaddr4": filename = RSno + "-C10"; break;
+            }
+        } else if (fieldName.Substring(9, 3) == "dmt") {//ex:ttg1_mod_dmt_neaddr1
+            switch (fieldName.Substring(15)) {
+                case "ncname1": filename = RSno + "-O1"; break;
+                case "ncname2": filename = RSno + "-O2"; break;
+                case "nename1": filename = RSno + "-O3"; break;
+                case "nename2": filename = RSno + "-O4"; break;
+                case "ncrep": filename = RSno + "-O5"; break;
+                case "nerep": filename = RSno + "-O6"; break;
+                case "neaddr1": filename = RSno + "-O7"; break;
+                case "neaddr2": filename = RSno + "-O8"; break;
+                case "neaddr3": filename = RSno + "-O9"; break;
+                case "neaddr4": filename = RSno + "-O10"; break;
+            }
+        }
+
+        string aa = Request[fieldName] ?? "";
+        string newfilename = "";
+        if (aa != "") {
+            //2013/11/26修改可以中文檔名上傳及虛擬路徑
+            //string strpath = "/btbrt/" + Session["seBranch"] + "T/temp";
+            string strpath = sfile.gbrWebDir + "/temp";
+            //string attach_name = RSno + System.IO.Path.GetExtension(aa);//重新命名檔名
+            string attach_name = filename + System.IO.Path.GetExtension(aa);//重新命名檔名
+            newfilename = strpath + "/" + attach_name;//存在資料庫路徑
+            if (aa.IndexOf("/") > -1 || aa.IndexOf("\\") > -1)
+                Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
+            else
+                Sys.RenameFile(strpath + "/" + aa, strpath + "/" + attach_name, true);
+        }
+        return newfilename;
     }
 </script>
 
