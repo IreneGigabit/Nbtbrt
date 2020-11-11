@@ -63,7 +63,7 @@
 	            insert_casedmt_good(conn, RSno);
 
             //****新增展覽優先權資料
-            insert_casedmt_show(conn, RSno);
+                insert_casedmt_show(conn, RSno, "0");
 
             //寫入交辦申請人檔
             insert_dmt_temp_ap(conn, RSno,"0");
@@ -207,7 +207,6 @@
         ColMap["Mseq1"] = Util.dbnull(Request["tfzb_seq1"]);
         ColMap["Mseq"] = Util.dbnull(Request["tfzb_seq"]);
         SQL = "insert into dmt_temp " + ColMap.GetInsertSQL();
-        //Response.Write(SQL + "<HR>");
         conn.ExecuteNonQuery(SQL);
     }
 
@@ -463,7 +462,7 @@
         if ((Request[fieldName] ?? "") == "")
             return "";
 
-        if (fieldName.Substring(0, 9) == "draw_file") {
+        if (fieldName.Left(9) == "draw_file") {
             filename = RSno;
         } else if (fieldName.Substring(9, 3) == "cla") {//ex:ttg1_mod_class_ncname
             switch (fieldName.Substring(15)) {
