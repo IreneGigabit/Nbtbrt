@@ -35,15 +35,9 @@ cnn.BeginTrans
 			string colkey = key.ToString().ToLower();
 			string colValue = Request[colkey];
 
-			//¨ú2~5½X
-			if (colkey.Left(5).Substring(1) == "tfg1") {
-				if (colkey.Left(1) == "p") {
-					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-				} else if (colkey.Left(1) == "d") {
-					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-				} else {
-					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-				}
+			//¨ú1~4½X
+			if (colkey.Left(4) == "tfg1") {
+				ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
 			}
 		}
 

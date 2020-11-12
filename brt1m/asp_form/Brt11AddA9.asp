@@ -42,15 +42,9 @@ if ((Request["tfy_arcase"] ?? "") == "FP1"){
 			string colkey = key.ToString().ToLower();
 			string colValue = Request[colkey];
 
-			//取2~5碼
-			if (colkey.Left(5).Substring(1) == save1) {
-				if (colkey.Left(1) == "p") {
-					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-				} else if (colkey.Left(1) == "d") {
-					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-				} else {
-					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-				}
+			//取1~4碼
+			if (colkey.Left(4) == save1) {
+				ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
 			}
 		}
 
@@ -71,7 +65,7 @@ if ((Request["tfy_arcase"] ?? "") == "FP1"){
 
 //*****新增案件異動明細檔,關係人
 	if ((Request["ar_form"] ?? "") == "A9") {//質權
-for (int i = 1; i <= Convert.ToInt32("0" + Request["ft_apnum"]); i++) {
+		for (int i = 1; i <= Convert.ToInt32("0" + Request["ft_apnum"]); i++) {
             ColMap.Clear();
             ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
             ColMap["in_no"] = "'" + RSno + "'";

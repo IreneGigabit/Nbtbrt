@@ -26,27 +26,27 @@ cnn.BeginTrans
 	//*****新增案件變更檔
 	switch ((Request["tfy_arcase"] ?? "").Left(3)) {
 		case "DR1":
-			string mod_class_ncname1=move_file(RSno,Request["ttg1_mod_class_ncname1"),"ttg1_mod_class_ncname1");
-			string mod_class_ncname2=move_file(RSno,Request["ttg1_mod_class_ncname2"),"ttg1_mod_class_ncname2");
-			string mod_class_nename1=move_file(RSno,Request["ttg1_mod_class_nename1"),"ttg1_mod_class_nename1");
-			string mod_class_nename2=move_file(RSno,Request["ttg1_mod_class_nename2"),"ttg1_mod_class_nename2");
-			string mod_class_ncrep=move_file(RSno,Request["ttg1_mod_class_ncrep"),"ttg1_mod_class_ncrep");
-			string mod_class_nerep=move_file(RSno,Request["ttg1_mod_class_nerep"),"ttg1_mod_class_nerep");
-			string mod_class_neaddr1=move_file(RSno,Request["ttg1_mod_class_neaddr1"),"ttg1_mod_class_neaddr1");
-			string mod_class_neaddr2=move_file(RSno,Request["ttg1_mod_class_neaddr2"),"ttg1_mod_class_neaddr2");
-			string mod_class_neaddr3=move_file(RSno,Request["ttg1_mod_class_neaddr3"),"ttg1_mod_class_neaddr3");
-			string mod_class_neaddr4=move_file(RSno,Request["ttg1_mod_class_neaddr4"),"ttg1_mod_class_neaddr4");
+			string mod_class_ncname1=move_file(RSno,Request["ttg1_mod_class_ncname1"],"-C1");
+			string mod_class_ncname2=move_file(RSno,Request["ttg1_mod_class_ncname2"],"-C2");
+			string mod_class_nename1=move_file(RSno,Request["ttg1_mod_class_nename1"],"-C3");
+			string mod_class_nename2=move_file(RSno,Request["ttg1_mod_class_nename2"],"-C4");
+			string mod_class_ncrep=move_file(RSno,Request["ttg1_mod_class_ncrep"],"-C5");
+			string mod_class_nerep=move_file(RSno,Request["ttg1_mod_class_nerep"],"-C6");
+			string mod_class_neaddr1=move_file(RSno,Request["ttg1_mod_class_neaddr1"],"-C7");
+			string mod_class_neaddr2=move_file(RSno,Request["ttg1_mod_class_neaddr2"],"-C8");
+			string mod_class_neaddr3=move_file(RSno,Request["ttg1_mod_class_neaddr3"],"-C9");
+			string mod_class_neaddr4=move_file(RSno,Request["ttg1_mod_class_neaddr4"],"-C10");
 			//--據以異議
-			string mod_dmt_ncname1=move_file(RSno,Request["ttg1_mod_dmt_ncname1"),"ttg1_mod_dmt_ncname1");
-			string mod_dmt_ncname2=move_file(RSno,Request["ttg1_mod_dmt_ncname2"),"ttg1_mod_dmt_ncname2");
-			string mod_dmt_nename1=move_file(RSno,Request["ttg1_mod_dmt_nename1"),"ttg1_mod_dmt_nename1");
-			string mod_dmt_nename2=move_file(RSno,Request["ttg1_mod_dmt_nename2"),"ttg1_mod_dmt_nename2");
-			string mod_dmt_ncrep=move_file(RSno,Request["ttg1_mod_dmt_ncrep"),"ttg1_mod_dmt_ncrep");
-			string mod_dmt_nerep=move_file(RSno,Request["ttg1_mod_dmt_nerep"),"ttg1_mod_dmt_nerep");
-			string mod_dmt_neaddr1=move_file(RSno,Request["ttg1_mod_dmt_neaddr1"),"ttg1_mod_dmt_neaddr1");
-			string mod_dmt_neaddr2=move_file(RSno,Request["ttg1_mod_dmt_neaddr2"),"ttg1_mod_dmt_neaddr2");
-			string mod_dmt_neaddr3=move_file(RSno,Request["ttg1_mod_dmt_neaddr3"),"ttg1_mod_dmt_neaddr3");
-			string mod_dmt_neaddr4=move_file(RSno,Request["ttg1_mod_dmt_neaddr4"),"ttg1_mod_dmt_neaddr4");
+			string mod_dmt_ncname1=move_file(RSno,Request["ttg1_mod_dmt_ncname1"],"-O1");
+			string mod_dmt_ncname2=move_file(RSno,Request["ttg1_mod_dmt_ncname2"],"-O2");
+			string mod_dmt_nename1=move_file(RSno,Request["ttg1_mod_dmt_nename1"],"-O3");
+			string mod_dmt_nename2=move_file(RSno,Request["ttg1_mod_dmt_nename2"],"-O4");
+			string mod_dmt_ncrep=move_file(RSno,Request["ttg1_mod_dmt_ncrep"],"-O5");
+			string mod_dmt_nerep=move_file(RSno,Request["ttg1_mod_dmt_nerep"],"-O6");
+			string mod_dmt_neaddr1=move_file(RSno,Request["ttg1_mod_dmt_neaddr1"],"-O7");
+			string mod_dmt_neaddr2=move_file(RSno,Request["ttg1_mod_dmt_neaddr2"],"-O8");
+			string mod_dmt_neaddr3=move_file(RSno,Request["ttg1_mod_dmt_neaddr3"],"-O9");
+			string mod_dmt_neaddr4=move_file(RSno,Request["ttg1_mod_dmt_neaddr4"],"-O10");
 	
 			ColMap.Clear();
 			foreach (var key in Request.Form.Keys) {
@@ -54,7 +54,7 @@ cnn.BeginTrans
 				string colValue = Request[colkey];
 
 				//取1~4碼
-				if (colkey.Left(4).Substring(1) == "tfz1") {
+				if (colkey.Left(4) == "tfz1") {
 					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
 				}
 			}
@@ -216,16 +216,16 @@ cnn.BeginTrans
 			}
 			break;
 		case "DO1":
-			string mod_dmt_ncname1=move_file(RSno,Request["ttg2_mod_dmt_ncname1"),"ttg2_mod_dmt_ncname1");
-			string mod_dmt_ncname2=move_file(RSno,Request["ttg2_mod_dmt_ncname2"),"ttg2_mod_dmt_ncname2");
-			string mod_dmt_nename1=move_file(RSno,Request["ttg2_mod_dmt_nename1"),"ttg2_mod_dmt_nename1");
-			string mod_dmt_nename2=move_file(RSno,Request["ttg2_mod_dmt_nename2"),"ttg2_mod_dmt_nename2");
-			string mod_dmt_ncrep=move_file(RSno,Request["ttg2_mod_dmt_ncrep"),"ttg2_mod_dmt_ncrep");
-			string mod_dmt_nerep=move_file(RSno,Request["ttg2_mod_dmt_nerep"),"ttg2_mod_dmt_nerep");
-			string mod_dmt_neaddr1=move_file(RSno,Request["ttg2_mod_dmt_neaddr1"),"ttg2_mod_dmt_neaddr1");
-			string mod_dmt_neaddr2=move_file(RSno,Request["ttg2_mod_dmt_neaddr2"),"ttg2_mod_dmt_neaddr2");
-			string mod_dmt_neaddr3=move_file(RSno,Request["ttg2_mod_dmt_neaddr3"),"ttg2_mod_dmt_neaddr3");
-			string mod_dmt_neaddr4=move_file(RSno,Request["ttg2_mod_dmt_neaddr4"),"ttg2_mod_dmt_neaddr4");
+			string mod_dmt_ncname1=move_file(RSno,Request["ttg2_mod_dmt_ncname1"],"-O1");
+			string mod_dmt_ncname2=move_file(RSno,Request["ttg2_mod_dmt_ncname2"],"-O2");
+			string mod_dmt_nename1=move_file(RSno,Request["ttg2_mod_dmt_nename1"],"-O3");
+			string mod_dmt_nename2=move_file(RSno,Request["ttg2_mod_dmt_nename2"],"-O4");
+			string mod_dmt_ncrep=move_file(RSno,Request["ttg2_mod_dmt_ncrep"],"-O5");
+			string mod_dmt_nerep=move_file(RSno,Request["ttg2_mod_dmt_nerep"],"-O6");
+			string mod_dmt_neaddr1=move_file(RSno,Request["ttg2_mod_dmt_neaddr1"],"-O7");
+			string mod_dmt_neaddr2=move_file(RSno,Request["ttg2_mod_dmt_neaddr2"],"-O8");
+			string mod_dmt_neaddr3=move_file(RSno,Request["ttg2_mod_dmt_neaddr3"],"-O9");
+			string mod_dmt_neaddr4=move_file(RSno,Request["ttg2_mod_dmt_neaddr4"],"-O10");
 
 			ColMap.Clear();
 			foreach (var key in Request.Form.Keys) {
@@ -233,7 +233,7 @@ cnn.BeginTrans
 				string colValue = Request[colkey];
 
 				//取1~4碼
-				if (colkey.Left(4).Substring(1) == "tfz2") {
+				if (colkey.Left(4) == "tfz2") {
 					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
 				}
 			}
@@ -370,16 +370,16 @@ cnn.BeginTrans
 			}
 			break;
 		case "DI1":
-			string mod_dmt_ncname1=move_file(RSno,Request["ttg3_mod_dmt_ncname1"),"ttg3_mod_dmt_ncname1");
-			string mod_dmt_ncname2=move_file(RSno,Request["ttg3_mod_dmt_ncname2"),"ttg3_mod_dmt_ncname2");
-			string mod_dmt_nename1=move_file(RSno,Request["ttg3_mod_dmt_nename1"),"ttg3_mod_dmt_nename1");
-			string mod_dmt_nename2=move_file(RSno,Request["ttg3_mod_dmt_nename2"),"ttg3_mod_dmt_nename2");
-			string mod_dmt_ncrep=move_file(RSno,Request["ttg3_mod_dmt_ncrep"),"ttg3_mod_dmt_ncrep");
-			string mod_dmt_nerep=move_file(RSno,Request["ttg3_mod_dmt_nerep"),"ttg3_mod_dmt_nerep");
-			string mod_dmt_neaddr1=move_file(RSno,Request["ttg3_mod_dmt_neaddr1"),"ttg3_mod_dmt_neaddr1");
-			string mod_dmt_neaddr2=move_file(RSno,Request["ttg3_mod_dmt_neaddr2"),"ttg3_mod_dmt_neaddr2");
-			string mod_dmt_neaddr3=move_file(RSno,Request["ttg3_mod_dmt_neaddr3"),"ttg3_mod_dmt_neaddr3");
-			string mod_dmt_neaddr4=move_file(RSno,Request["ttg32_mod_dmt_neaddr4"),"ttg3_mod_dmt_neaddr4");
+			string mod_dmt_ncname1=move_file(RSno,Request["ttg3_mod_dmt_ncname1"],"-O1");
+			string mod_dmt_ncname2=move_file(RSno,Request["ttg3_mod_dmt_ncname2"],"-O2");
+			string mod_dmt_nename1=move_file(RSno,Request["ttg3_mod_dmt_nename1"],"-O3");
+			string mod_dmt_nename2=move_file(RSno,Request["ttg3_mod_dmt_nename2"],"-O4");
+			string mod_dmt_ncrep=move_file(RSno,Request["ttg3_mod_dmt_ncrep"],"-O5");
+			string mod_dmt_nerep=move_file(RSno,Request["ttg3_mod_dmt_nerep"],"-O6");
+			string mod_dmt_neaddr1=move_file(RSno,Request["ttg3_mod_dmt_neaddr1"],"-O7");
+			string mod_dmt_neaddr2=move_file(RSno,Request["ttg3_mod_dmt_neaddr2"],"-O8");
+			string mod_dmt_neaddr3=move_file(RSno,Request["ttg3_mod_dmt_neaddr3"],"-O9");
+			string mod_dmt_neaddr4=move_file(RSno,Request["ttg3_mod_dmt_neaddr4"],"-O10");
 
 			ColMap.Clear();
 			foreach (var key in Request.Form.Keys) {
@@ -387,7 +387,7 @@ cnn.BeginTrans
 				string colValue = Request[colkey];
 
 				//取1~4碼
-				if (colkey.Left(4).Substring(1) == "tfz3") {
+				if (colkey.Left(4) == "tfz3") {
 					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
 				}
 			}

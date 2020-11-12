@@ -36,14 +36,8 @@ cnn.BeginTrans
 			string colValue = Request[colkey];
 
 			//取2~5碼(直接用substr若欄位名稱太短會壞掉)
-			if (colkey.Left(5).Substring(1) == "tfgp") {
-				if (colkey.Left(1) == "p") {
-					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-				} else if (colkey.Left(1) == "d") {
-					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-				} else {
-					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
-				}
+			if (colkey.Left(4) == "tfgp") {
+				ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
 			}
 		}
 

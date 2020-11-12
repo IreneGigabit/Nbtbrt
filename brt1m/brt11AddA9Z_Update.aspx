@@ -153,7 +153,7 @@
     /// </summary>
     private void insert_dmt_temp(DBHelper conn, string RSno) {
         //將檔案更改檔名
-        drawFilename = move_file(RSno, "draw_file1");
+        drawFilename = move_file(RSno, Request["draw_file1"],"");
 
         //*****若為新案則新增至案件檔,舊案則不用
         ColMap.Clear();
@@ -455,44 +455,12 @@
     /// <summary>
     /// 將檔案更改檔名
     /// </summary>
-    private string move_file(string RSno, string fieldName) {
+    private string move_file(string RSno, string drawValue,string suffix) {
         string filename = "";
-        fieldName = fieldName.ToLower();
-
-        if ((Request[fieldName] ?? "") == "")
+        if (drawValue == ""||drawValue==null)
             return "";
-
-        if (fieldName.Left(9) == "draw_file") {
-            filename = RSno;
-        } else if (fieldName.Substring(9, 3) == "cla") {//ex:ttg1_mod_class_ncname
-            switch (fieldName.Substring(15)) {
-                case "ncname1": filename = RSno + "-C1"; break;
-                case "ncname2": filename = RSno + "-C2"; break;
-                case "nename1": filename = RSno + "-C3"; break;
-                case "nename2": filename = RSno + "-C4"; break;
-                case "ncrep": filename = RSno + "-C5"; break;
-                case "nerep": filename = RSno + "-C6"; break;
-                case "neaddr1": filename = RSno + "-C7"; break;
-                case "neaddr2": filename = RSno + "-C8"; break;
-                case "neaddr3": filename = RSno + "-C9"; break;
-                case "neaddr4": filename = RSno + "-C10"; break;
-            }
-        } else if (fieldName.Substring(9, 3) == "dmt") {//ex:ttg1_mod_dmt_neaddr1
-            switch (fieldName.Substring(15)) {
-                case "ncname1": filename = RSno + "-O1"; break;
-                case "ncname2": filename = RSno + "-O2"; break;
-                case "nename1": filename = RSno + "-O3"; break;
-                case "nename2": filename = RSno + "-O4"; break;
-                case "ncrep": filename = RSno + "-O5"; break;
-                case "nerep": filename = RSno + "-O6"; break;
-                case "neaddr1": filename = RSno + "-O7"; break;
-                case "neaddr2": filename = RSno + "-O8"; break;
-                case "neaddr3": filename = RSno + "-O9"; break;
-                case "neaddr4": filename = RSno + "-O10"; break;
-            }
-        }
-
-        string aa = Request[fieldName] ?? "";
+        
+        string aa = drawValue.ToLower();
         string newfilename = "";
         if (aa != "") {
             //2013/11/26修改可以中文檔名上傳及虛擬路徑

@@ -35,8 +35,8 @@ cnn.BeginTrans
 			string colkey = key.ToString().ToLower();
 			string colValue = Request[colkey];
 
-			//¨ú2~5½X
-			if (colkey.Left(5).Substring(1) == "fgd"||colkey.Left(5).Substring(1) == "fg3"||colkey.Left(5).Substring(1) == "fg2") {
+			//¨ú2~4½X
+			if (colkey.Left(4).Substring(1) == "fgd"||colkey.Left(4).Substring(1) == "fg3"||colkey.Left(4).Substring(1) == "fg2") {
 				if (colkey.Left(1) == "p") {
 					ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
 				} else if (colkey.Left(1) == "d") {
