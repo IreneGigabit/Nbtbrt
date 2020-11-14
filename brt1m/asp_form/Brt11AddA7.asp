@@ -16,11 +16,11 @@ cnn.BeginTrans
 
 	//重建暫存檔
 	using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST")) {
-		SQL="delete from dmt_temp_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'"
+		SQL="delete from dmt_temp_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'";
 		conn.ExecuteNonQuery(SQL);
-		SQL="delete from casedmt_good_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'"
+		SQL="delete from casedmt_good_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'";
 		conn.ExecuteNonQuery(SQL);
-		SQL="delete from casedmt_show_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'"
+		SQL="delete from casedmt_show_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'";
 		conn.ExecuteNonQuery(SQL);
 
 		Datatable dt=new Datatable();
@@ -43,24 +43,22 @@ cnn.BeginTrans
 			SQL+=",end_code,dmt_term1,dmt_term2,renewal,seq,seq1,draw_file,class_type ";
 			SQL+=",class_count,class ";
 			SQL+=",'"+Request["F_tscode"]+"','"+Request["F_cust_area"]+"','"+Request["F_cust_seq"]+"','"+(i+1)+"' ";
-			SQL+=",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "','L' ";
+			SQL+=",getdate(),'" + Session["scode"] + "','L' ";
 			SQL+="from dmt_temp where in_no='"+RSno+"' and case_sqlno="+dt.Rows[i]["case_sqlno"]+"";
 			conn.ExecuteNonQuery(SQL);
 
 			SQL = "INSERT INTO casedmt_good_change(in_scode,cust_area,cust_seq,num,class,dmt_grp_code";
 			SQL+=",dmt_goodname,dmt_goodcount,tr_date,tr_scode,mark) ";
 			SQL+="select '"+Request["F_tscode"]+"','"+Request["F_cust_area"]+"','"+Request["F_cust_seq"]+"','"+(i+1)+"'";
-			SQL+=",class,dmt_grp_code,dmt_goodname,dmt_goodcount,'" + DateTime.Today.ToShortDateString() + "'";
-			SQL+=",'"&trim(RKreg("dmt_goodname"))&"','"&trim(RKreg("dmt_goodcount"))&"',"
-			SQL+="'" + Session["scode"] + "','L' "
+			SQL+=",class,dmt_grp_code,dmt_goodname,dmt_goodcount,getdate(),'" + Session["scode"] + "','L' "
 			SQL+="from casedmt_good where in_no='"+RSno+"' and case_sqlno="+dt.Rows[i]["case_sqlno"]+"";
 			conn.ExecuteNonQuery(SQL);
 
 			SQL = "INSERT INTO casedmt_show_change(in_scode,cust_area,cust_seq,num,show_no,show_date";
 			SQL+=",show_name,tr_date,tr_scode,mark) ";
 			SQL+="select '"+Request["F_tscode"]+"','"+Request["F_cust_area"]+"','"+Request["F_cust_seq"]+"','"+(i+1)+"'";
-			SQL+=",ROW_NUMBER() OVER(ORDER BY show_sqlno),show_date,show_name,'" + DateTime.Today.ToShortDateString() + "'";
-			SQL+="'" + Session["scode"] + "','L' "
+			SQL+=",ROW_NUMBER() OVER(ORDER BY show_sqlno),show_date,show_name,getdate()";
+			SQL+=",'" + Session["scode"] + "','L' "
 			SQL+="from casedmt_show where in_no='"+RSno+"' and case_sqlno="+dt.Rows[i]["case_sqlno"]+" order by show_sqlno";
 			conn.ExecuteNonQuery(SQL);
 		}
@@ -206,14 +204,13 @@ cnn.BeginTrans
 		for (int i = 2; i <= Convert.ToInt32("0" + Request["nfy_tot_num"]); i++) {
 			ColMap.Clear();
 			ColMap["in_no"] = "'" + RSno + "'";
-			ColMap["seq"] = Util.dbnull(Request["dseqb_" + i]);
-			ColMap["seq1"] = Util.dbchar(Request["dseq1b_" + i]);
-			ColMap["Cseq"] = Util.dbchar(Request["dseqb_" + i]);
-			ColMap["Cseq1"] = Util.dbchar(Request["dseq1b_" + i]);
-			ColMap["case_stat1"] = ((Request["dseq1b_" + i]??"")!=""?"OO":"NN");
-
-			SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
-			conn.ExecuteNonQuery(SQL);
+			ColMap["seq"] = Util.dbnull(Request["dseqb_"+i]);
+			ColMap["seq1"] = Util.dbnull(Request["dseq1b_" + i]);
+			ColMap["Cseq"] = Util.dbnull(Request["dseqb_" + i]);
+			ColMap["Cseq1"] = Util.dbnull(Request["dseq1b_" + i]);
+			ColMap["case_stat1"] = ((Request["dseqb_"+i]??"")!=""?"OO":"NN");
+			SQL = "insert into case_dmt1 " + ColMap.GetInsertSQL();
+			conn.ExecuteNonQuery(SQL);			
 
 			//抓insert後的流水號
 			SQL = "SELECT SCOPE_IDENTITY() AS Current_Identity";
@@ -236,8 +233,7 @@ cnn.BeginTrans
 					SQL+=",prior_country,ref_no,ref_no1,tcn_ref,tcn_class,tcn_name,tcn_mark ";
 					SQL+=",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
 					SQL+=",end_code,dmt_term1,dmt_term2,renewal,class_type,class_count,class ";
-					SQL+=",seq,seq1,draw_file ";
-					SQL+=",in_scode,cust_area,cust_seq,num,tr_date,tr_scode,mark) ";
+					SQL+=",in_scode,in_no,in_date,draw_file,tr_date,tr_scode,case_sqlno,seq1) ";
 					SQL+="Select s_mark,s_mark2 as ts_mark,pul,"+Util.dbnull(Request["tfzp_apsqlno"])+" ";
 					SQL+=","+Util.dbnull(Request["tfzp_ap_cname"])+","+Util.dbnull(Request["tfzp_ap_cname1"])+" ";
 					SQL+=","+Util.dbnull(Request["tfzp_ap_cname2"])+","+Util.dbnull(Request["tfzp_ap_ename"])+" ";
@@ -249,7 +245,6 @@ cnn.BeginTrans
 					SQL+=",prior_country,ref_no,ref_no1,tcn_ref,tcn_class,tcn_name,tcn_mark ";
 					SQL+=",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
 					SQL+=",end_code,dmt_term1,dmt_term2,renewal,class_type,class_count,class ";
-					SQL+=",in_scode,in_no,in_date,draw_file,tr_date,tr_scode,case_sqlno,seq1 ";
 					SQL+=",'"+Request["F_tscode"]+"','"+RSno+"','"+DateTime.Today.ToShortDateString()+"','"+newfilename+"' ";
 					SQL+=",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "',"+case_sqlno+",'"+Request["dseq1b_"+i])+"' ";
 					SQL+="from dmt_temp_change where in_scode='"+Request["F_tscode"]+"' ";
@@ -263,29 +258,31 @@ cnn.BeginTrans
 				}
 
 				//商品類別
-				SQL = "INSERT INTO casedmt_good(in_scode,in_no,class,dmt_grp_code";
+				SQL = "INSERT INTO casedmt_good(in_scode,in_no,case_sqlno,class,dmt_grp_code";
 				SQL+=",dmt_goodname,dmt_goodcount,tr_date,tr_scode) ";
-				SQL+="select '"+Request["F_tscode"]+"','"+RSno+"',class,dmt_grp_code,dmt_goodname,dmt_goodcount";
-				SQL+=",'" + DateTime.Today.ToShortDateString() + "''" + Session["scode"] + "' "
+				SQL+="select '"+Request["F_tscode"]+"','"+RSno+"',"+case_sqlno+",class,dmt_grp_code,dmt_goodname,dmt_goodcount";
+				SQL+=",getdate(),'" + Session["scode"] + "' "
 				SQL+="from casedmt_good_change where in_scode='"+Request["F_tscode"]+"' ";
 				SQL+="and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' ";
-				SQL+="and num='"+i+"' and mark='L'";
+				SQL+="and num='"+i+"' and mark='L' and (isnull(class,'')<>'' or isnull(dmt_goodname,'')<>'')";
 				conn.ExecuteNonQuery(SQL);
 				
 				//展覽會優先權
 				SQL = "INSERT INTO casedmt_show(in_no,case_sqlno,show_date,show_name,tr_date,tr_scode) ";
-				SQL+="select '"+RSno+"',"+case_sqlno+",show_date,show_name,'" + DateTime.Today.ToShortDateString() + "'";
-				SQL+="'" + Session["scode"] + "' "
-				SQL+="from casedmt_show_change where in_no='"+RSno+"' and case_sqlno="+dt.Rows[i]["case_sqlno"]+" order by show_sqlno";
+				SQL+="select '"+RSno+"',"+case_sqlno+",show_date,show_name,getdate()";
+				SQL+=",'" + Session["scode"] + "' "
+				SQL+="from casedmt_show_change where in_scode='"+Request["F_tscode"]+"' ";
+				SQL+="and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' ";
+				SQL+="and num='"+i+"' and mark='L' order by show_no";
 				conn.ExecuteNonQuery(SQL);
 			}
 		}
 		//清空暫存檔
-		SQL="delete from dmt_temp_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'"
+		SQL="delete from dmt_temp_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'";
 		conn.ExecuteNonQuery(SQL);
-		SQL="delete from casedmt_good_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'"
+		SQL="delete from casedmt_good_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'";
 		conn.ExecuteNonQuery(SQL);
-		SQL="delete from casedmt_show_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'"
+		SQL="delete from casedmt_show_change where in_scode='"+Request["F_tscode"]+"' and cust_area='"+Request["F_cust_area"]+"' and cust_seq='"+Request["F_cust_seq"]+"' and mark='L'";
 		conn.ExecuteNonQuery(SQL);
 	}
 	

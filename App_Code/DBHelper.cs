@@ -52,6 +52,15 @@ public class DBHelper : IDisposable
     }
     #endregion
 
+    #region +void BeginTran()
+    public void BeginTran() {
+        if (this._tran.Connection == null) {
+            this._tran = _conn.BeginTransaction();
+            this._cmd = new SqlCommand("", _conn, _tran);
+        }
+    }
+    #endregion
+
     #region +void Commit()
     public void Commit() {
         if (this._debug) {

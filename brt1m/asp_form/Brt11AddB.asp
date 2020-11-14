@@ -64,7 +64,7 @@ cnn.BeginTrans
 			ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 			ColMap["case_sqlno"] = "0";
 			ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
-			ColMap["seq1"] = Util.dbchar(Request["tfzb_seq"]);
+			ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
 			SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
 			conn.ExecuteNonQuery(SQL);
 
@@ -243,7 +243,7 @@ cnn.BeginTrans
 			ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 			ColMap["case_sqlno"] = "0";
 			ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
-			ColMap["seq1"] = Util.dbchar(Request["tfzb_seq"]);
+			ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
 			SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
 			conn.ExecuteNonQuery(SQL);
 
@@ -397,7 +397,7 @@ cnn.BeginTrans
 			ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 			ColMap["case_sqlno"] = "0";
 			ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
-			ColMap["seq1"] = Util.dbchar(Request["tfzb_seq"]);
+			ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
 			SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
 			conn.ExecuteNonQuery(SQL);
 

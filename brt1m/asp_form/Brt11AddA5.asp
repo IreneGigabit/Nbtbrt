@@ -115,10 +115,10 @@ cnn.BeginTrans
 				//分割後子案之商標種類2
 				string s_mark2="";
 				switch ((Request["tfy_arcase"] ?? "").Substring(2,1)) {
-					case "1":"5":"H": s_mark2="A"; break;
-					case "4":"8":"C":"G": s_mark2="B"; break;
-					case "3":"7":"B":"F": s_mark2="C"; break;
-					case "2":"6":"A":"E": s_mark2="D"; break;
+					case "1":case "5":case "H": s_mark2="A"; break;
+					case "4":case "8":case "C":case "G": s_mark2="B"; break;
+					case "3":case "7":case "B":case "F": s_mark2="C"; break;
+					case "2":case "6":case "A":case "E": s_mark2="D"; break;
 					case "I": s_mark2="E"; break;
 					case "J": s_mark2="F"; break;
 					case "K": s_mark2="G"; break;

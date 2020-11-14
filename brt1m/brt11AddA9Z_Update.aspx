@@ -3,70 +3,70 @@
 <%@ Import Namespace="System.Collections.Generic" %>
 
 <script runat="server">
-        protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
-        protected string HTProgPrefix = "brt11";//程式檔名前綴
-        protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
-        protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
-        protected int HTProgRight = 0;
-        protected string DebugStr = "";
-        protected string StrFormBtnTop = "";
-        protected string StrFormBtn = "";
-        protected string formFunction = "";
-        protected string drawFilename = "";
+    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgPrefix = "brt11";//程式檔名前綴
+    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
+    protected int HTProgRight = 0;
+    protected string DebugStr = "";
+    protected string StrFormBtnTop = "";
+    protected string StrFormBtn = "";
+    protected string formFunction = "";
+    protected string drawFilename = "";
 
-        protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
-        protected Dictionary<string, string> ColMap = new Dictionary<string, string>();
-        protected string SQL = "";
-        Sys sfile = new Sys();
+    protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
+    protected Dictionary<string, string> ColMap = new Dictionary<string, string>();
+    protected string SQL = "";
+    Sys sfile = new Sys();
 
-        protected StringBuilder strOut = new StringBuilder();
+    protected StringBuilder strOut = new StringBuilder();
 
-        private void Page_Load(System.Object sender, System.EventArgs e) {
-            Response.CacheControl = "no-cache";
-            Response.AddHeader("Pragma", "no-cache");
-            Response.Expires = -1;
+    private void Page_Load(System.Object sender, System.EventArgs e) {
+        Response.CacheControl = "no-cache";
+        Response.AddHeader("Pragma", "no-cache");
+        Response.Expires = -1;
 
-            ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
+        ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
-            TokenN myToken = new TokenN(HTProgCode);
-            HTProgRight = myToken.CheckMe();
-            HTProgCap = myToken.Title;
-            DebugStr = myToken.DebugStr;
-            if (HTProgRight >= 0) {
-                doUpdateDB();
-                this.DataBind();
-            }
+        TokenN myToken = new TokenN(HTProgCode);
+        HTProgRight = myToken.CheckMe();
+        HTProgCap = myToken.Title;
+        DebugStr = myToken.DebugStr;
+        if (HTProgRight >= 0) {
+            doUpdateDB();
+            this.DataBind();
         }
+    }
 
-        private void doUpdateDB() {
-            sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
+    private void doUpdateDB() {
+        sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
 
-            object objResult = null;
-            using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST")) {
-                //******************產生流水號(yyyyMMddnnn);
-                string nowRSno = DateTime.Today.ToString("yyyyMMdd");
-                SQL = "SELECT MAX(in_no) FROM case_dmt WITH(TABLOCKX) WHERE LEFT(in_no, 8) = '" + nowRSno + "'";
-                objResult = conn.ExecuteScalar(SQL);
-                int nowSql = (objResult == DBNull.Value || objResult == null ? 0 : Convert.ToInt32(((string)objResult).Right(3)));
-                string RSno = String.Format("{0}{1:000}", nowRSno, nowSql + 1);
+        object objResult = null;
+        using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST")) {
+            //******************產生流水號(yyyyMMddnnn);
+            string nowRSno = DateTime.Today.ToString("yyyyMMdd");
+            SQL = "SELECT MAX(in_no) FROM case_dmt WITH(TABLOCKX) WHERE LEFT(in_no, 8) = '" + nowRSno + "'";
+            objResult = conn.ExecuteScalar(SQL);
+            int nowSql = (objResult == DBNull.Value || objResult == null ? 0 : Convert.ToInt32(((string)objResult).Right(3)));
+            string RSno = String.Format("{0}{1:000}", nowRSno, nowSql + 1);
 
-                //寫入case_dmt
-                insert_case_dmt(conn, RSno);
+            //寫入case_dmt
+            insert_case_dmt(conn, RSno);
 
-                //寫入dmt_temp
-                insert_dmt_temp(conn, RSno);
+            //寫入dmt_temp
+            insert_dmt_temp(conn, RSno);
 
-                //寫入caseitem_dmt
-                insert_caseitem_dmt(conn, RSno);
+            //寫入caseitem_dmt
+            insert_caseitem_dmt(conn, RSno);
 
-                //寫入商品類別檔
-	            insert_casedmt_good(conn, RSno);
+            //寫入商品類別檔
+            insert_casedmt_good(conn, RSno);
 
             //****新增展覽優先權資料
-                insert_casedmt_show(conn, RSno, "0");
+            insert_casedmt_show(conn, RSno, "0");
 
             //寫入交辦申請人檔
-            insert_dmt_temp_ap(conn, RSno,"0");
+            insert_dmt_temp_ap(conn, RSno, "0");//apcust_form
 
             //*****新增文件上傳
             insert_dmt_attach(conn, RSno);
@@ -153,7 +153,7 @@
     /// </summary>
     private void insert_dmt_temp(DBHelper conn, string RSno) {
         //將檔案更改檔名
-        drawFilename = move_file(RSno, Request["draw_file1"],"");
+        drawFilename = move_file(RSno, Request["draw_file1"], "");
 
         //*****若為新案則新增至案件檔,舊案則不用
         ColMap.Clear();
@@ -177,7 +177,7 @@
                 }
             }
         }
-        if ((Request["ar_form"] ?? "") != "A4"&&(Request["tfy_arcase"] ?? "") != "FC3") {
+        if ((Request["ar_form"] ?? "") != "A4" && (Request["tfy_arcase"] ?? "") != "FC3") {
             if ((Request["tfzr_class_count"] ?? "") != "") {
                 ColMap["class_type"] = Util.dbchar(Request["tfzr_class_type"]);
                 ColMap["class_count"] = Util.dbchar(Request["tfzr_class_count"]);
@@ -249,6 +249,82 @@
     }
 
     /// <summary>
+    /// 寫入交辦申請人檔(dmt_temp_ap)(Apcust_FC_RE_form)
+    /// </summary>
+    private void insert_dmt_temp_ap_FC0(DBHelper conn, string RSno, string case_sqlno) {
+        //交辦申請人
+		for (int i = 1; i <= Convert.ToInt32("0" + Request["FC0_apnum"]); i++) {
+			ColMap.Clear();
+			ColMap["in_no"] = "'" + RSno + "'";
+			ColMap["case_sqlno"] = case_sqlno;
+			ColMap["apsqlno"] = Util.dbchar(Request["dbmn_apsqlno_" + i]);
+			ColMap["Server_flag"] = Util.dbchar(Request["fc0_ap_server_flag_" + i]);
+			ColMap["apcust_no"] = Util.dbchar(Request["dbmn_new_no_" + i]);
+			ColMap["ap_cname"] = Util.dbchar(Request["dbmn_ap_cname_" + i]);
+			ColMap["ap_cname1"] = Util.dbchar(Request["dbmn_ncname1_" + i]);
+			ColMap["ap_cname2"] = Util.dbchar(Request["dbmn_ncname2_" + i]);
+			ColMap["ap_ename"] = Util.dbchar(Request["dbmn_ap_ename_" + i]);
+			ColMap["ap_ename1"] = Util.dbchar(Request["dbmn_nename1_" + i]);
+			ColMap["ap_ename2"] = Util.dbchar(Request["dbmn_nename2_" + i]);
+			ColMap["tran_date"] = "getdate()";
+			ColMap["tran_scode"] = "'" + Session["scode"] + "'";
+			ColMap["ap_fcname"] = Util.dbchar(Request["dbmn_fcname_" + i]);
+			ColMap["ap_lcname"] = Util.dbchar(Request["dbmn_lcname_" + i]);
+			ColMap["ap_fename"] = Util.dbchar(Request["dbmn_fename_" + i]);
+			ColMap["ap_lename"] = Util.dbchar(Request["dbmn_lename_" + i]);
+			ColMap["ap_sql"] = Util.dbzero(Request["dbmn_ap_sql_" + i]);
+			ColMap["ap_zip"] = Util.dbchar(Request["dbmn_nzip_" + i]);
+			ColMap["ap_addr1"] = Util.dbchar(Request["dbmn_naddr1_" + i]);
+			ColMap["ap_addr2"] = Util.dbchar(Request["dbmn_naddr2_" + i]);
+			ColMap["ap_eaddr1"] = Util.dbchar(Request["dbmn_neaddr1_" + i]);
+			ColMap["ap_eaddr2"] = Util.dbchar(Request["dbmn_neaddr2_" + i]);
+			ColMap["ap_eaddr3"] = Util.dbchar(Request["dbmn_neaddr3_" + i]);
+			ColMap["ap_eaddr4"] = Util.dbchar(Request["dbmn_neaddr4_" + i]);
+
+			SQL = "insert into dmt_temp_ap " + ColMap.GetInsertSQL();
+			conn.ExecuteNonQuery(SQL);
+		}
+    }
+
+    /// <summary>
+    /// 寫入交辦申請人檔(dmt_temp_ap)(Apcust_FC_RE1_form)
+    /// </summary>
+    private void insert_dmt_temp_ap_FC2(DBHelper conn, string RSno, string case_sqlno) {
+        //交辦申請人
+		for (int i = 1; i <= Convert.ToInt32("0" + Request["FC2_apnum"]); i++) {
+			ColMap.Clear();
+			ColMap["in_no"] = "'" + RSno + "'";
+			ColMap["case_sqlno"] = case_sqlno;
+			ColMap["apsqlno"] = Util.dbchar(Request["dbmn1_apsqlno_" + i]);
+			ColMap["Server_flag"] = Util.dbchar(Request["fc2_ap_server_flag_" + i]);
+			ColMap["apcust_no"] = Util.dbchar(Request["dbmn1_new_no_" + i]);
+			ColMap["ap_cname"] = Util.dbchar(Request["dbmn1_ap_cname_" + i]);
+			ColMap["ap_cname1"] = Util.dbchar(Request["dbmn1_ncname1_" + i]);
+			ColMap["ap_cname2"] = Util.dbchar(Request["dbmn1_ncname2_" + i]);
+			ColMap["ap_ename"] = Util.dbchar(Request["dbmn1_ap_ename_" + i]);
+			ColMap["ap_ename1"] = Util.dbchar(Request["dbmn1_nename1_" + i]);
+			ColMap["ap_ename2"] = Util.dbchar(Request["dbmn1_nename2_" + i]);
+			ColMap["tran_date"] = "getdate()";
+			ColMap["tran_scode"] = "'" + Session["scode"] + "'";
+			ColMap["ap_fcname"] = Util.dbchar(Request["dbmn1_fcname_" + i]);
+			ColMap["ap_lcname"] = Util.dbchar(Request["dbmn1_lcname_" + i]);
+			ColMap["ap_fename"] = Util.dbchar(Request["dbmn1_fename_" + i]);
+			ColMap["ap_lename"] = Util.dbchar(Request["dbmn1_lename_" + i]);
+			ColMap["ap_sql"] = Util.dbzero(Request["dbmn1_ap_sql_" + i]);
+			ColMap["ap_zip"] = Util.dbchar(Request["dbmn1_nzip_" + i]);
+			ColMap["ap_addr1"] = Util.dbchar(Request["dbmn1_naddr1_" + i]);
+			ColMap["ap_addr2"] = Util.dbchar(Request["dbmn1_naddr2_" + i]);
+			ColMap["ap_eaddr1"] = Util.dbchar(Request["dbmn1_neaddr1_" + i]);
+			ColMap["ap_eaddr2"] = Util.dbchar(Request["dbmn1_neaddr2_" + i]);
+			ColMap["ap_eaddr3"] = Util.dbchar(Request["dbmn1_neaddr3_" + i]);
+			ColMap["ap_eaddr4"] = Util.dbchar(Request["dbmn1_neaddr4_" + i]);
+
+			SQL = "insert into dmt_temp_ap " + ColMap.GetInsertSQL();
+			conn.ExecuteNonQuery(SQL);
+		}
+    }
+
+    /// <summary>
     /// 寫入接洽費用檔(caseitem_dmt)
     /// </summary>
     private void insert_caseitem_dmt(DBHelper conn, string RSno) {
@@ -315,9 +391,8 @@
                     }
                 }
             }
-        }else if((Request["tfy_arcase"] ?? "") == "FC3") {
-
-                        for (int i = 1; i <= Convert.ToInt32("0" + Request["tft3_class_count2"]); i++) {
+        } else if ((Request["tfy_arcase"] ?? "") == "FC3") {
+            for (int i = 1; i <= Convert.ToInt32("0" + Request["tft3_class_count2"]); i++) {
                 //2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
                 if ((Request["class32_" + i] ?? "") != "" || (Request["good_name32_" + i] ?? "") != "") {
                     ColMap.Clear();
@@ -334,7 +409,7 @@
                     conn.ExecuteNonQuery(SQL);
                 }
             }
-        }else {
+        } else {
             for (int i = 1; i <= Convert.ToInt32("0" + Request["tfzr_class_count"]); i++) {
                 //2015/10/21增加判斷若有商品也入，因證明標章及團體標章無類別但會有證明內容
                 if ((Request["class1_" + i] ?? "") != "" || (Request["good_name1_" + i] ?? "") != "") {
@@ -455,11 +530,11 @@
     /// <summary>
     /// 將檔案更改檔名
     /// </summary>
-    private string move_file(string RSno, string drawValue,string suffix) {
+    private string move_file(string RSno, string drawValue, string suffix) {
         string filename = "";
-        if (drawValue == ""||drawValue==null)
+        if (drawValue == "" || drawValue == null)
             return "";
-        
+
         string aa = drawValue.ToLower();
         string newfilename = "";
         if (aa != "") {

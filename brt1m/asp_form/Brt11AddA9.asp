@@ -93,7 +93,6 @@ if ((Request["tfy_arcase"] ?? "") == "FP1"){
             ColMap["tran_code"] = "'N'";
 
             SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
-            //Response.Write(SQL + "<HR>");
             conn.ExecuteNonQuery(SQL);
         }	
 	}
