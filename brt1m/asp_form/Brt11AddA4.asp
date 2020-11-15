@@ -35,7 +35,7 @@ cnn.BeginTrans
 			string colkey = key.ToString().ToLower();
 			string colValue = Request[colkey];
 
-			//取2~5碼(直接用substr若欄位名稱太短會壞掉)
+			//取1~4碼
 			if (colkey.Left(4) == "tfgp") {
 				ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
 			}

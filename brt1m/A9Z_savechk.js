@@ -743,7 +743,7 @@ main.chkGood = function () {
         $("#ctrlcount1").val(inputCount == 0 ? "" : inputCount);
         if (CInt(pname) != CInt($("#num1").val())) {
             var answer = "指定使用商品類別項目(共 " + CInt(pname) + " 類)與輸入指定使用商品(共 " + CInt($("#num1").val()) + " 類)不符，\n是否確定指定使用商品共 " + CInt($("#num1").val()) + " 類？";
-            if (answer) {
+            if (confirm(answer)) {
                 $("#tfzr_class_count").val($("#num1").val());
             } else {
                 settab("#tran");
@@ -844,7 +844,7 @@ main.chkEndBack = function () {
     return true;
 }
 
-//出名代理人檢查,num=申請人計數欄位名(ex:apnum),apclass=申請人欄位名(ex:ttg1_apclass),tran_agt_no=交辦畫面的代理人欄位名(ex:ttg1_agt_no)
+//出名代理人檢查,num=申請人計數欄位名,判斷是否為涉外案(ex:apnum),apclass=申請人欄位名(ex:ttg1_apclass),tran_agt_no=交辦畫面的代理人欄位名(ex:ttg1_agt_no)
 main.chkAgt = function (num,apclass, tran_agt_no) {
     var apclass_flag = "N";
 
@@ -992,7 +992,7 @@ main.savechkA4 = function () {
     if (main.chkNewOld() == false) return false;
 
     //出名代理人檢查
-    if (main.chkAgt("apnum", "apclass", "tfzd_agt_no") == false) return false;
+    if (main.chkAgt("apnum", "apclass", "ttg1_agt_no") == false) return false;
 
     //結案復案檢查
     if (main.chkEndBack() == false) return false;
@@ -1056,7 +1056,7 @@ main.savechkA4 = function () {
         $("#ctrlcount2").val(inputCount == 0 ? "" : inputCount);
         if (CInt($("#tfzd_class_count").val()) != CInt($("#num2").val())) {
             var answer = "指定使用商品類別項目(共 " + CInt($("#tfzd_class_count").val()) + " 類)與輸入指定使用商品(共 " + CInt($("#num2").val()) + " 類)不符，\n是否確定指定使用商品共 " + CInt($("#num2").val()) + " 類？";
-            if (answer) {
+            if (confirm(answer)) {
                 $("#tfzd_class_count").val($("#num2").val());
             } else {
                 settab("#tran");
@@ -1180,6 +1180,7 @@ main.savechkA5 = function () {
                     alert("附件二有勾選，請輸入按分割件數之分割申請書副本份數");
                     settab("#tran");
                     $("#ttz1_Z2C").focus();
+                    return false;
                 }
             }
             if ($("#ttz1_Z3").prop("checked") == true) {
@@ -1187,23 +1188,26 @@ main.savechkA5 = function () {
                     alert("附件三有勾選，請輸入分割後之商標註冊申請書正本及其相關文件份數");
                     settab("#tran");
                     $("#ttz1_Z3C").focus();
+                    return false;
                 }
             }
             //***指定類別數目檢查
-            var inputCount = $("[id^='FD2_class_count_'][value!='']").length;//有輸入類別的件數
+            //var inputCount = $("[id^='FD1_class_count_'][value!='']").length;//有輸入類別的件數
+            var inputCount = $("[id^='FD1_class_count_']").filter(function () { return this.value !== ''; }).length;//有輸入類別的件數
             if (inputCount == 0) {
                 alert("有分割件數，但無輸入分割商品/服務類別、名稱、證明內容及標的，請輸入！！！");
                 settab("#tran");
-                $("#FD2_class_count_1").focus();
+                $("#FD1_class_count_1").focus();
                 return false;
             }
 
             if (CInt($("#tot_num1").val()) != 0) {
                 var pname = CInt($("#tot_num1").val());//分割為N件
-                var kname = $("[id^='FD1_class_count_'][value!='']").length;//有輸入類別的件數
+                //var kname = $("[id^='FD1_class_count_'][value!='']").length;//有輸入類別的件數
+                var kname = $("[id^='FD1_class_count_']").filter(function () { return this.value !== ''; }).length;//有輸入類別的件數
                 if (pname != kname) {
                     var answer = "分割件數(共 " + pname + " 類)與輸入分割後類別項目(共 " + kname + " 類)不符，\n是否確定分割後類別項目共 " + kname + " 類？";
-                    if (answer) {
+                    if (confirm(answer)) {
                         $("#tot_num1").val(kname).triggerHandler("change");
                     } else {
                         settab("#tran");
@@ -1215,11 +1219,12 @@ main.savechkA5 = function () {
 
             for (var a = 1; a <= CInt($("#tot_num1").val()) ; a++) {
                 var class_cnt = $("#FD1_class_count_" + a).length;//該分割輸入的共N類
-                var input_cnt = $("[id^='classa_" + a + "_'][value!='']").length;//該分割實際有輸入的類別數量
+                //var input_cnt = $("[id^='classa_" + a + "_'][value!='']").length;//該分割實際有輸入的類別數量
+                var input_cnt = $("[id^='classa_" + a + "_']").filter(function () { return this.value !== ''; }).length;//該分割實際有輸入的類別數量
 
                 if (class_cnt != input_cnt) {
                     var answer = "分割後指定使用商品類別項目" + a + "(共 " + class_cnt + " 類)與輸入指定使用商品(共 " + input_cnt + " 類)不符，\n是否確定指定使用商品共 " + input_cnt + " 類？";
-                    if (answer) {
+                    if (confirm(answer)) {
                         $("#FD1_class_count_" + a).val(input_cnt).triggerHandler("change");
                     } else {
                         settab("#tran");
@@ -1233,7 +1238,7 @@ main.savechkA5 = function () {
                 if ($("input[name='FD1_Marka_" + a + "']:checked").length == 0) {
                     alert("請選擇分割" + NumberToCh(a) + "名稱種類：");
                     settab("#tran");
-                    $("input[name=FD1_Marka_" + a + "']").eq(0).focus();
+                    $("input[name='FD1_Marka_" + a + "']").eq(0).focus();
                     return false;
                 }
 
@@ -1279,10 +1284,12 @@ main.savechkA5 = function () {
                     alert("附件二有勾選，請輸入按分割件數之分割申請書副本份數");
                     settab("#tran");
                     $("#ttz2_Z2C").focus();
+                    return false;
                 }
             }
             //***指定類別數目檢查
-            var inputCount = $("[id^='FD2_class_count_'][value!='']").length;//有輸入類別的件數
+            //var inputCount = $("[id^='FD2_class_count_'][value!='']").length;//有輸入類別的件數
+            var inputCount = $("[id^='FD2_class_count_']").filter(function () { return this.value !== ''; }).length;//有輸入類別的件數
             if (inputCount == 0) {
                 alert("有分割件數，但無輸入分割商品/服務類別、名稱、證明內容及標的，請輸入！！！");
                 settab("#tran");
@@ -1292,10 +1299,11 @@ main.savechkA5 = function () {
 
             if (CInt($("#tot_num2").val()) != 0) {
                 var pname = CInt($("#tot_num2").val());//分割為N件
-                var kname = $("[id^='FD2_class_count_'][value!='']").length;//有輸入類別的件數
+                //var kname = $("[id^='FD2_class_count_'][value!='']").length;//有輸入類別的件數
+                var kname = $("[id^='FD2_class_count_']").filter(function () { return this.value !== ''; }).length;//有輸入類別的件數
                 if (pname != kname) {//有輸入類別的件數
                     var answer = "分割件數(共 " + pname + " 類)與輸入分割後類別項目(共 " + kname + " 類)不符，\n是否確定分割後類別項目共 " + kname + " 類？";
-                    if (answer) {
+                    if (confirm(answer)) {
                         $("#tot_num2").val(kname).triggerHandler("change");
                     } else {
                         settab("#tran");
@@ -1307,11 +1315,12 @@ main.savechkA5 = function () {
 
             for (var a = 1; a <= CInt($("#tot_num2").val()) ; a++) {
                 var class_cnt = $("#FD2_class_count_" + a).length;//該分割輸入的共N類
-                var input_cnt = $("[id^='classb_" + a + "_'][value!='']").length;//該分割實際有輸入的類別數量
+                //var input_cnt = $("[id^='classb_" + a + "_'][value!='']").length;//該分割實際有輸入的類別數量
+                var input_cnt = $("[id^='classb_" + a + "_']").filter(function () { return this.value !== ''; }).length;//該分割實際有輸入的類別數量
 
                 if (class_cnt != input_cnt) {
                     var answer = "分割後指定使用商品類別項目" + a + "(共 " + class_cnt + " 類)與輸入指定使用商品(共 " + input_cnt + " 類)不符，\n是否確定指定使用商品共 " + input_cnt + " 類？";
-                    if (answer) {
+                    if (confirm(answer)) {
                         $("#FD2_class_count_" + a).val(input_cnt).triggerHandler("change");
                     } else {
                         settab("#tran");
@@ -1459,7 +1468,7 @@ main.savechkA6 = function () {
             $("#ctrlcount32").val(inputCount == 0 ? "" : inputCount);
             if (CInt($("#tft3_class_count2").val()) != CInt($("#num32").val())) {
                 var answer = "指定使用商品類別項目(共 " + CInt($("#tft3_class_count2").val()) + " 類)與輸入指定使用商品(共 " + CInt($("#num32").val()) + " 類)不符，\n是否確定指定使用商品共 " + CInt($("#num32").val()) + " 類？";
-                if (answer) {
+                if (confirm(answer)) {
                     $("#tft3_class_count2").val($("#num32").val());
                 } else {
                     settab("#tran");
@@ -1477,11 +1486,12 @@ main.savechkA6 = function () {
         case "FC1": case "FC10": case "FC9": case "FCA": case "FCB": case "FCF":
             if (IsEmpty($("#tft1_mod_count" + f + "1").val()) == false) {
                 var kname = CInt($("#tft1_mod_count" + f + "1").val());//件數
-                var gname = $("[id^='new_no" + f + "'][value!='']").length;//有輸入申請案號的件數
+                //var gname = $("[id^='new_no" + f + "'][value!='']").length;//有輸入申請案號的件數
+                var gname = $("[id^='new_no" + f + "']").filter(function () { return this.value !== ''; }).length;//有輸入申請案號的件數
 
                 if (kname != gname) {
                     var answer = "指定件數(共 " + kname + " 類)與輸入件數(共 " + gname + " 類)不符，\n是否確定指定件數共 " + gname + " 類？";
-                    if (answer) {
+                    if (confirm(answer)) {
                         $("#tft1_mod_count" + f + "1").val(gname).triggerHandler("change");
                     } else {
                         settab("#tran");
@@ -1528,13 +1538,14 @@ main.savechkA6 = function () {
         case "FC3":
             for (var j = 1; j <= 2; j++) {
                 var kname = CInt($("#tft3_class_count" + j).val());//件數
-                var gname = $("[id^='class3" + j + "_'][value!='']").length;//有輸入類別的件數
+                //var gname = $("[id^='class3" + j + "_'][value!='']").length;//有輸入類別的件數
+                var gname = $("[id^='class3" + j + "_']").filter(function () { return this.value !== ''; }).length;//有輸入類別的件數
 
                 if (kname != gname) {
                     var errname = "";
                     if (j == 1) errname = "擬減縮"; else if (j == 2) errname = "減縮後指定";
                     var answer = "商品(服務)名稱指定件數(共 " + kname + " 類)與輸入件數(共 " + gname + " 類)不符，\n是否確定指定件數共 " + gname + " 類？";
-                    if (answer) {
+                    if (confirm(answer)) {
                         $("#tft3_class_count" + j).val(gname).triggerHandler("change");
                     } else {
                         settab("#tran");
@@ -1705,7 +1716,7 @@ main.savechkA6 = function () {
             }
             if (tot_num != ctrlcnt) {
                 var answer = "變更件數(共 " + tot_num + " 類)與包含主要案性輸入件數(共 " + ctrlcnt + " 類)不符，\n是否確定指定件數共 " + ctrlcnt + " 件？";
-                if (answer) {
+                if (confirm(answer)) {
                     $("#tot_num11").val(ctrlcnt).triggerHandler("change");
                 } else {
                     settab("#tran");
@@ -1731,7 +1742,7 @@ main.savechkA6 = function () {
             }
             if (tot_num != ctrlcnt) {
                 var answer = "變更件數(共 " + tot_num + " 類)與包含主要案性輸入件數(共 " + ctrlcnt + " 類)不符，\n是否確定指定件數共 " + ctrlcnt + " 件？";
-                if (answer) {
+                if (confirm(answer)) {
                     $("#tot_num21").val(ctrlcnt).triggerHandler("change");
                 } else {
                     settab("#tran");
@@ -1954,7 +1965,7 @@ main.savechkA7 = function () {
         }
         if (tot_num != ctrlcnt) {
             var answer = title_name + "件數(共 " + tot_num + " 類)與包含主要案性輸入件數(共 " + ctrlcnt + " 類)不符，\n是否確定指定件數共 " + ctrlcnt + " 件？";
-            if (answer) {
+            if (confirm(answer)) {
                 $("#tot_num21").val(ctrlcnt).triggerHandler("change");
             } else {
                 settab("#tran");
@@ -2056,7 +2067,7 @@ main.savechkA8 = function () {
             }
             if (tot_num != ctrlcnt) {
                 var answer = title_name + "件數(共 " + tot_num + " 類)與包含主要案性輸入件數(共 " + ctrlcnt + " 類)不符，\n是否確定指定件數共 " + ctrlcnt + " 件？";
-                if (answer) {
+                if (confirm(answer)) {
                     $("#tot_num21").val(ctrlcnt).triggerHandler("change");
                 } else {
                     settab("#tran");
@@ -2330,7 +2341,7 @@ main.savechkAC = function () {
     if (main.chkNewOld() == false) return false;
 
     //出名代理人檢查
-    if (main.chkAgt("apnum", "apclass", "tfzd_agt_no") == false) return false;
+    if (main.chkAgt("apnum", "apclass", "ttg1_agt_no") == false) return false;
 
     $("#tfzd_color").val($("input[name='tfzy_color']:checked").val() || "");
     $("#tfzd_S_Mark").val($("input[name='tfzy_S_Mark']:checked").val() || "");
@@ -2646,7 +2657,8 @@ main.savechkB = function () {
                 }
                 return false;
             }
-            if ($("#tfy_Arcase").val().Left(3) != "DE1" && $("#tfy_Arcase").val().Left(3) != "DE2") {
+            
+            if ($("#tfy_Arcase").val().Left(3) != "DE1" && $("#tfy_Arcase").val().Left(3) != "DE2") {//聽證
                 //出名代理人檢查
                 if (main.chkAgt("apnum", "apclass", "tfg1_agt_no1") == false) return false;
             }
@@ -2997,7 +3009,7 @@ main.savechkZZ = function () {
     if ($("#tfy_Arcase").val().Left(3) == "FOB") {
         //出名代理人檢查
         if (main.chkAgt("apnum", "apclass", "tfg2_agt_no1") == false) return false;
-    } else if ($("#tfy_Arcase").val().Left(3) == "AD7" || $("#tfy_Arcase").val().Left(3) == "AD8") {
+    } else if ($("#tfy_Arcase").val().Left(3) == "AD7" || $("#tfy_Arcase").val().Left(3) == "AD8") {//聽證
         //出名代理人檢查
         if (main.chkAgt("apnum", "apclass", "tfp4_agt_no") == false) return false;
     } else if ($("#tfy_Arcase").val().Left(3) == "FOF") {

@@ -28,7 +28,7 @@
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>參、代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
-            <input type="text" id="tfzd_agt_no" name="tfzd_agt_no">
+            <!--input type="text" id="tfzd_agt_no" name="tfzd_agt_no"-->
 		    <select id="tfg1_agt_no1" NAME="tfg1_agt_no1"><%#tfg1_agt_no1%></select>
 		</td>
 	</tr>
@@ -74,7 +74,6 @@
 <TABLE id=tabrem4 style="display:none" border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ><strong>附件：請勾註所檢附之文件</strong>
-            <input type="text" id="tfzd_remark1" name="tfzd_remark1">
 		</td>
 	</tr>
 	<tr>

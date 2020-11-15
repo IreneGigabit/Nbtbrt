@@ -38,7 +38,7 @@
 		<td class="lightbluetable" valign="top" ><strong>※、代理人(代碼)</strong></td>
 		<td class="whitetablebg" colspan="7" >
 		    <select id="ttg1_agt_no" NAME="ttg1_agt_no"><%#ttg1_agt_no%></select>
-            <input type="hidden" name="tfzd_agt_no" id="tfzd_agt_no">
+            <!--input type="text" id="tfzd_agt_no" name="tfzd_agt_no"-->
 		</td>
 	</tr>
 	<tr>
@@ -158,12 +158,11 @@
     <tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="COLOR:BLUE" onclick="PMARK(d1attech)">
             <strong><u>附件：</u></strong>
-            <input type=text id="tfzd_remark1" name="tfzd_remark1" value="">
 		</td>
 	</tr>
     <tr class="br_attchstrFD1">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" NAME="ttz1_Z1" value="Z1"  onclick="br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz1_Z1C" NAME="ttz1_Z1C" value="Z1C">附中文譯本)。)</td>
+		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz1_Z1C" NAME="ttz1_Z1C" value="Z1C" onclick="br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)">附中文譯本)。)</td>
 	</tr>
 	<tr class="br_attchstrFD1">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z2" id="ttz1_Z2" value="Z2" onclick="br_form.AttachStr1('.br_attchstrFD1','ttz1_',reg.tfzd_remark1)"></td>
@@ -300,12 +299,12 @@
     //附件
     br_form.AttachStr1 = function (selector, pfld, tar) {
         var strRemark1 = "";
-        $(selector + ":checkbox").each(function (index) {
+        $(selector + " input:checkbox").each(function (index) {
             var $this = $(this);
             if ($this.prop("checked")) {
                 strRemark1 += $this.val()
                 //查有無份數欄位
-                if ($("#" + pfld + $this.val() + "C").length > 0) {
+                if ($("#" + pfld + $this.val() + "C:text").length > 0) {
                     strRemark1 += ";" + $("#" + pfld + $this.val() + "C").val();
                 }
                 else if ($("#" + pfld + $this.val() + "t").length > 0) {

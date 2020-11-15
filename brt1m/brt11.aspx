@@ -154,6 +154,7 @@
                 alert("請輸入客戶編號或客戶名稱!");
                 return false;
             }
+            $("#tfx_seq").val("");
         }
 
         if ($("input[name='kind']:checked").val() == "old") {

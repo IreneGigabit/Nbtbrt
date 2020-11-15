@@ -333,7 +333,7 @@
             //error: function (xhr, status) { main.onError(xhr, status); },
             complete: function (xhr, status) {
                 $("#dialog").html(xhr.responseText);
-                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 800 });
+                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: "90%" });
             }
         });
 

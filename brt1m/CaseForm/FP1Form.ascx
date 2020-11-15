@@ -32,7 +32,7 @@
 		<td class="lightbluetable" valign="top" ><strong>參、代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
 		    <select id="tfg1_agt_no1" NAME="tfg1_agt_no1"><%#tfg1_agt_no1%></select>
-            <input type="text" id="tfzd_agt_no" name="tfzd_agt_no">
+            <!--input type="text" id="tfzd_agt_no" name="tfzd_agt_no"-->
 		</td>
 	</tr>
     <tr>
@@ -204,7 +204,7 @@
 	</tr>
 
 	<tr class='sfont9'>
-		<td colspan=8><input type=text id="tfzd_remark1" name="tfzd_remark1" value="">
+		<td colspan=8>
 		    <!--FP1的交辦內容及附件畫面-->
 		    <TABLE id=tabrem1 border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
 		    <tr>

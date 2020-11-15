@@ -76,7 +76,7 @@
         SQL += "inner join apcust as b on a.cust_area=b.cust_area And a.cust_seq=b.cust_seq ";
         SQL += "where 1=1 ";
         if (tfx_cust_seq != "") {
-            SQL += " AND a.cust_seq=" + tfx_cust_seq;
+            SQL += " AND a.cust_seq='" + tfx_cust_seq+"'";
         }
         if (ReqVal.TryGet("pfx_Cust_name") != "") {
             SQL += " AND b.ap_cname1 like '" + Request["pfx_Cust_name"] + "%'";
@@ -87,7 +87,7 @@
         SQL += " FROM Cust_code";
         SQL += " WHERE Code_type = '" + code_type + "' AND form_name is not null ";
         if (ReqVal.TryGet("kind", "") == "old") {//舊案不可創設申請
-            SQL += "AND remark<>'E11' ";
+            SQL += "AND convert(varchar,remark)<>'E11' ";
         }
         SQL += "order by cust_code";
         conn.DataSet(SQL, ds);

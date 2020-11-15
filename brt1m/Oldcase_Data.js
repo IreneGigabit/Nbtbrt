@@ -164,6 +164,7 @@ function delayNO(low_no, low_no1) {
         $("#pfzd_prior_date").val(dateReviver(oMain.vdmtall[0].prior_date, "yyyy/M/d"));//優先權申請日
         $("#tfzy_prior_country,#tfzd_prior_country").val(oMain.vdmtall[0].prior_country);//優先權首次申請國家
         $("#tfzd_prior_no").val(oMain.vdmtall[0].prior_no);//優先權申請案號
+        $("#tfy_att_sql").val(oMain.vdmtall[0].att_sql);//聯絡人
         $("#tfzd_apply_date").val(dateReviver(oMain.vdmtall[0].apply_date, "yyyy/M/d"));//申請日期
         $("#tfzd_issue_date").val(dateReviver(oMain.vdmtall[0].issue_date, "yyyy/M/d"));//註冊日期
         $("#tfzd_open_date").val(dateReviver(oMain.vdmtall[0].open_date, "yyyy/M/d"));//公告日期
@@ -245,6 +246,8 @@ function delayNO(low_no, low_no1) {
         $("#tfp4_agt_no").val(kagt_no).triggerHandler("change");
         $("#tfzf_agt_no1").val(kagt_no).triggerHandler("change");
         $("#tfg1_agt_no1").val(kagt_no).triggerHandler("change");
+        $("#tfb7_agt_no1").val(kagt_no).triggerHandler("change");
+        $("#tfzf_agt_no1").val(kagt_no).triggerHandler("change");
 
         //結案檢查，提醒是否復案
         if($("#tfzd_end_date").val()!=""||$("#todoend_flag").val()=="Y"){

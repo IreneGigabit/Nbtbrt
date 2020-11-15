@@ -32,7 +32,7 @@
 		<td class="lightbluetable" valign="top" ><strong>※代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
 		    <select id="tfg1_agt_no1" NAME="tfg1_agt_no1"><%#tfg1_agt_no1%></select>
-            <input type="text" id="tfzd_agt_no" name="tfzd_agt_no">
+            <!--input type="text" id="tfzd_agt_no" name="tfzd_agt_no"-->
 		</td>
 	</tr>
 	<tr>
@@ -378,7 +378,7 @@
 		<td class="lightbluetable" colspan="8" valign="top"  STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zAttech)"><strong><span id=tg_attech></span></strong></td>
 	</tr>
 	<tr class=whitetablebg>
-	    <td colspan=8><input type=hidden id="tfzd_remark1" name="tfzd_remark1" value="">
+	    <td colspan=8>
 	    <!--FL1的附件畫面-->
 	    <TABLE id=tabrem1 style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">			
 	    <tr >

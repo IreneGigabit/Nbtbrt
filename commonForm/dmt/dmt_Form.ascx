@@ -81,7 +81,7 @@
 		</td>
 		<td class=lightbluetable align=right>母案本所編號：</td>
 		<td class=whitetablebg colspan=3 >
-			<INPUT TYPE=text NAME="tfzd_ref_no" id="tfzd_ref_no" class="onoff" SIZE=5 MAXLENGTH=5>-<INPUT TYPE=text NAME="tfzd_ref_no1" id="tfzd_ref_no1" SIZE=1 MAXLENGTH=1 value="_">
+			<INPUT TYPE=text NAME="tfzd_ref_no" id="tfzd_ref_no" class="onoff" SIZE=5 MAXLENGTH=5>-<INPUT TYPE=text NAME="tfzd_ref_no1" id="tfzd_ref_no1" class="onoff" SIZE=1 MAXLENGTH=1 value="_">
 			<INPUT TYPE=button Name="but_ref" id="but_ref" onclick="delayNO1(reg.tfzd_ref_no.value,reg.tfzd_ref_no1.value)"  class="bluebutton" value="母案複製">
 			<!-- 程序客收移轉舊案要結案 2006/5/26 -->
 			<input type=hidden name="endflag51" id="endflag51" value="X">
@@ -387,7 +387,7 @@
         $("#dseq1b_1").val($("#New_seq1").val());
     });
     //新案指定編號-副號
-    $("#New_ass_seq1").blur(function () {
+    $("#New_Ass_seq1").blur(function () {
         var this_val=$(this).val();
         if(this_val=="") return false;
         if($("#tfy_case_stat").val()=="SN"){
@@ -401,13 +401,13 @@
     });
     //爭救案-異議、評定、廢止增加新案指定編號功能，輸入副號後檢查
     dmt_form.New_ass_seqB_blur=function(pfldname) {
-        if($("#"+pfldname+"_New_ass_seq").val()=="") return false;
-        if($("#"+pfldname+"_New_ass_seq1").val()=="") return false;
-        $("#"+pfldname+"_New_ass_seq1").val($("#"+pfldname+"_New_ass_seq1").val().toUpperCase());
+        if($("#"+pfldname+"_New_Ass_seq").val()=="") return false;
+        if($("#"+pfldname+"_New_Ass_seq1").val()=="") return false;
+        $("#"+pfldname+"_New_Ass_seq1").val($("#"+pfldname+"_New_Ass_seq1").val().toUpperCase());
         if($("#"+pfldname+"_case_stat").val()=="SN"){
-            if($("#"+pfldname+"_New_ass_seq1").val()=="_"||$("#"+pfldname+"_New_ass_seq1").val()=="Z"||$("#"+pfldname+"_New_ass_seq1").val()=="M"){
+            if($("#"+pfldname+"_New_Ass_seq1").val()=="_"||$("#"+pfldname+"_New_Ass_seq1").val()=="Z"||$("#"+pfldname+"_New_Ass_seq1").val()=="M"){
                 alert("案件副碼不可為 _、Z、M");
-                $("#"+pfldname+"_New_ass_seq1").val().focus();
+                $("#"+pfldname+"_New_Ass_seq1").val().focus();
                 return false;
             }
         }
@@ -416,15 +416,15 @@
     dmt_form.chkseqB = function(pfldname) {
         if ($("#"+pfldname+"_case_stat").val()!="SN") return false;
         //chk案件主檔需有資料
-        if ($("#"+pfldname+"_New_ass_seq").val()!="") {
-            var pseq=$("#"+pfldname+"_New_ass_seq").val();
-            var pseq1=$("#"+pfldname+"_New_ass_seq1").val();
+        if ($("#"+pfldname+"_New_Ass_seq").val()!="") {
+            var pseq=$("#"+pfldname+"_New_Ass_seq").val();
+            var pseq1=$("#"+pfldname+"_New_Ass_seq1").val();
             var url=getRootPath() + "/brt1m/chk_dmt.aspx?fldname="+pfldname+"&p1=Y&p2=A&seq=" +pseq+ "&seq1=" +pseq1;
             scriptByGet("chkB案件主檔",url);
         }
     }
 
-    //商標種類(x:0=案件主檔→交辦內容,x:1=交辦內容→案件主檔)
+    //商標種類連動(x:0=案件主檔→交辦內容,x:1=交辦內容→案件主檔)
     dmt_form.change_mark = function (x,obj) {
         if (x == 1) {
             $("input[name='tfzy_S_Mark'][value='" + $(obj).val() + "']").prop("checked", true);
@@ -432,15 +432,15 @@
                 $("#tfzy_Pul").val("2");
                 dmt_form.tfzd_showmark($("#tfzy_Pul").val());
             }
-        }else{
-            $("input[name='fr3_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='fr2_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='fr1_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='fr4_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='frf_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='fbf_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='fr_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
-            $("input[name='fr11_S_Mark'][value='"+ $("input[name='tfzy_S_Mark']:checked").val()+"']").prop("checked",true);
+        } else {
+            $("input[name='fr3_S_Mark'][value='" + $("input[name='tfzy_S_Mark']:checked").val() + "']").prop("checked", true);
+            $("input[name='fr2_S_Mark'][value='" + $("input[name='tfzy_S_Mark']:checked").val() + "']").prop("checked", true);
+            $("input[name='fr1_S_Mark'][value='" + $("input[name='tfzy_S_Mark']:checked").val() + "']").prop("checked", true);
+            $("input[name='fr4_S_Mark'][value='" + $("input[name='tfzy_S_Mark']:checked").val() + "']").prop("checked", true);
+            $("input[name='frf_S_Mark'][value='" + $("input[name='tfzy_S_Mark']:checked").val() + "']").prop("checked", true);
+            $("input[name='fbf_S_Mark'][value='" + $("input[name='tfzy_S_Mark']:checked").val() + "']").prop("checked", true);
+            $("input[name='fr_S_Mark'][value='" + $("input[name='tfzy_S_Mark']:checked").val() + "']").prop("checked", true);
+            $("input[name='fr11_S_Mark'][value='" + $("input[name='tfzy_S_Mark']:checked").val() + "']").prop("checked", true);
         }
 
         var smark_val=$("input[name='tfzy_S_Mark']:checked").val();

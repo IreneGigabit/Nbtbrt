@@ -30,6 +30,7 @@
 		<td class="lightbluetable" valign="top"><strong>※、代理人(代碼)</strong></td>
 		<td class="whitetablebg" colspan="7" valign="top">
 		    <select id="ttg1_agt_no" NAME="ttg1_agt_no"><%#ttg1_agt_no%></select>
+            <!--input type="text" id="tfzd_agt_no" name="tfzd_agt_no"-->
 		</td>
 	</tr>
 	<tr id="FC1_tr_addagtno" style="display:none">
@@ -115,7 +116,7 @@
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttech)">
-            <strong><u>附件：</u></strong><input type="hidden" name=tfzd_remark1 id=tfzd_remark1>
+            <strong><u>附件：</u></strong>
 		</td>
 	</tr>
 	<tr class="br_attchstrFC1">

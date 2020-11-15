@@ -7,18 +7,32 @@ main.bind=function() {
 
         //無交辦資料則帶基本設定
         $("#in_date").val(Today().format("yyyy/M/d"));
-        //***聯絡人與客戶資料	
-        //$("#F_cust_area").val(jMain.case_main[0].cust_area);
-        //$("#F_cust_seq").val(jMain.case_main[0].cust_seq);
-        $("#F_cust_area").val(jMain.cust[0].cust_area);
-        $("#F_cust_seq").val(jMain.cust[0].cust_seq);
-        $("#btncust_seq").click();
-        //取得客戶聯人清單
-        attent_form.getatt(jMain.cust[0].cust_area, jMain.cust[0].cust_seq);
-        //$("#tfy_att_sql").val(jMain.case_main[0].att_sql);
-        $("#tfy_att_sql").val(jMain.cust[0].att_sql).triggerHandler("change");;
-        //申請人
-        apcust_form.getapp(jMain.cust[0].apcust_no, main.in_no);
+        if (main.seq != "") {//查詢頁面有選舊案
+            $("#tfy_case_stat").val("OO").triggerHandler("change");
+            $("#old_seq").val(main.seq);
+            $("#old_seq1").val(main.seq1);
+            $("#btnseq_ok").click();
+            //客戶
+            $("#F_cust_area").val(main.cust_area);
+            $("#F_cust_seq").val(main.cust_seq);
+            $("#btncust_seq").click();
+            //聯絡人
+            attent_form.getatt($("#tfy_cust_area").val(), $("#tfy_cust_seq").val());
+            $("#tfy_att_sql").val("").triggerHandler("change");
+        } else {
+            //***聯絡人與客戶資料	
+            //$("#F_cust_area").val(jMain.case_main[0].cust_area);
+            //$("#F_cust_seq").val(jMain.case_main[0].cust_seq);
+            $("#F_cust_area").val(jMain.cust[0].cust_area);
+            $("#F_cust_seq").val(jMain.cust[0].cust_seq);
+            $("#btncust_seq").click();
+            //取得客戶聯人清單
+            attent_form.getatt(jMain.cust[0].cust_area, jMain.cust[0].cust_seq);
+            //$("#tfy_att_sql").val(jMain.case_main[0].att_sql);
+            $("#tfy_att_sql").val(jMain.cust[0].att_sql).triggerHandler("change");;
+            //申請人
+            apcust_form.getapp(jMain.cust[0].apcust_no, main.in_no);
+        }
         //收費與接洽事項
         //　洽案營洽
         $("#F_tscode").val(jMain.br_in_scode);

@@ -814,7 +814,7 @@
 
             if (CInt($("#tfz1_class_count").val()) != CInt($("#num1").val())) {
                 var answer = "指定使用商品類別項目(共 " + CInt($("#tfz1_class_count").val()) + " 類)與輸入指定使用商品(共 " + CInt($("#num1").val()) + " 類)不符，\n是否確定指定使用商品共 " + CInt($("#num1").val()) + " 類？";
-                if (answer) {
+                if (confirm(answer)) {
                     $("#tfz1_class_count").val($("#num1").val());
                 } else {
                     settab("#tran");

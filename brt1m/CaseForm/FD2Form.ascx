@@ -159,11 +159,11 @@
 	</tr>
     <tr class="br_attchstrFD2">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z1" NAME="ttz2_Z1" value="Z1"  onclick="br_form.AttachStr1('.br_attchstrFD2', 'ttz2_', reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz2_Z1C" NAME="ttz2_Z1C" value="Z1C">附中文譯本)。)</td>
+		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz2_Z1C" NAME="ttz2_Z1C" value="Z1C" onclick="br_form.AttachStr1('.br_attchstrFD2', 'ttz2_', reg.tfzd_remark1)">附中文譯本)。)</td>
 	</tr>
 	<tr class="br_attchstrFD2">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z2" id="ttz2_Z2" value="Z2" onclick="br_form.AttachStr1('.br_attchstrFD2', 'ttz2_', reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">按分割件數之分割申請書副本<input TYPE="text" NAME="ttz2_Z2C" value="" size="2" onchange="reg.ttz2_Z2.checked=true;br_form.AttachStr1('.br_attchstrFD2','ttz2_',reg.tfzd_remark1)">份。(每份應附商標圖樣5張)</td>
+		<td class="whitetablebg" colspan="7">按分割件數之分割申請書副本<input TYPE="text" id="ttz2_Z2C" NAME="ttz2_Z2C" value="" size="2" onchange="reg.ttz2_Z2.checked=true;br_form.AttachStr1('.br_attchstrFD2','ttz2_',reg.tfzd_remark1)">份。(每份應附商標圖樣5張)</td>
 	</tr>
 	<tr class="br_attchstrFD2">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z4" id="ttz2_Z4" value="Z4" onclick="br_form.AttachStr1('.br_attchstrFD2', 'ttz2_', reg.tfzd_remark1)"></td>

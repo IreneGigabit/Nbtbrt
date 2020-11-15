@@ -157,7 +157,8 @@ function chkRadio(pFieldName, pmsg){
 
 //內商申請號與註冊號之不足位數補0
 function chkgno(pvalue,plen){
-    pvalue=pvalue.trim();//2012/12/12修改，因發現輸入有空白，所以trim掉後補足
+    pvalue = pvalue.trim();//2012/12/12修改，因發現輸入有空白，所以trim掉後補足
+    if (pvalue == "") return "";
     return padLeft(pvalue,plen,"0");//左邊補0
 }
 

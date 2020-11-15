@@ -9,7 +9,7 @@
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
 
-    protected string tfzd_agt_no = "";
+    protected string ttg1_agt_no = "";
     
     private void Page_Load(System.Object sender, System.EventArgs e) {
         PageLayout();   
@@ -18,7 +18,7 @@
     
     private void PageLayout() {
         //代理人
-        tfzd_agt_no = Sys.getAgent().Option("{agt_no}", "{agt_no}_{agt_namefull}", " v1='{agt_name1}' {selected}", true);
+        ttg1_agt_no = Sys.getAgent().Option("{agt_no}", "{agt_no}_{agt_namefull}", " v1='{agt_name1}' {selected}", true);
     }
 </script>
 
@@ -28,7 +28,7 @@
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>參、代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
-		    <select id="tfzd_agt_no" NAME="tfzd_agt_no"><%#tfzd_agt_no%></select>
+		    <select id="ttg1_agt_no" NAME="ttg1_agt_no"><%#ttg1_agt_no%></select>
 		</td>
 	</tr>
 	<tr>
@@ -71,7 +71,6 @@
 	</tr>				
 	<tr>
 	 	<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zAttech)"><strong>伍、<u>附件</u></strong>
-            <input type="text" id="tfzd_remark1" name="tfzd_remark1">
 	 	</td>
 	</tr>	
 	<tr class="br_attchstr">
@@ -126,7 +125,8 @@
         console.log("fv1.br_form.bind");
         if (jMain.case_main.length == 0) {
         } else {
-            $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);//代理人
+            $("#ttg1_agt_no").val(jMain.case_main[0].agt_no);//代理人
+            $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);
             //程序種類
             $("input[name='tfzd_Mark'][value='" + jMain.case_main[0].dmt_mark + "']").prop("checked", true).triggerHandler("click");
             //號數

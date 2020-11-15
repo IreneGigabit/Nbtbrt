@@ -260,8 +260,8 @@
         return dt;
     }
     #endregion
-    
-    #region GetCust 一案多件.子案
+
+    #region GetCaseSql 一案多件.子案
     private DataTable GetCaseSql() {
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
