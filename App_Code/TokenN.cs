@@ -41,7 +41,7 @@ public class TokenN
                     return "<label id=\"labTest\"><input type=\"checkbox\" id=\"chkTest\" name=\"chkTest\" value=\"TEST\" />測試</label>";
                 }
             } else {
-                if ((this.Rights & 256) > 0) {//有prgid就用權限值判斷
+                if ((this.Rights & 512) > 0) {//有prgid就用權限值判斷
                     return "<label id=\"labTest\"><input type=\"checkbox\" id=\"chkTest\" name=\"chkTest\" value=\"TEST\" />測試</label>";
                 }
             }

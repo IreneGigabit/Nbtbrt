@@ -496,7 +496,7 @@ public static partial class Util
     /// <para>使用方法："FCF".IN((new[] { "FC1", "FC10", "FC9", "FCA", "FCB", "FCF" })</para>
     /// </summary>
     public static bool IN(this string s, string[] array) {
-        if (Array.FindIndex(array, t => t.Equals(s, StringComparison.InvariantCultureIgnoreCase)) > 0)//Array.Contains
+        if (Array.FindIndex(array, t => t.Equals(s, StringComparison.InvariantCultureIgnoreCase)) > -1)//Array.Contains
             return true;
         else
             return false;
@@ -509,7 +509,7 @@ public static partial class Util
     /// <para>使用方法："FCF".IN("FC1,FC10,FC9,FCA,FCB,FCF")</para>
     /// </summary>
     public static bool IN(this string s, string arrStr) {
-        if (Array.FindIndex(arrStr.Split(','), t => t.Equals(s, StringComparison.InvariantCultureIgnoreCase)) > 0)//Array.Contains
+        if (Array.FindIndex(arrStr.Split(','), t => t.Equals(s, StringComparison.InvariantCultureIgnoreCase)) > -1)//Array.Contains
             return true;
         else
             return false;

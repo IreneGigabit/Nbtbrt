@@ -248,8 +248,10 @@
             $("#btncase" + fld + nRow).show();//[案件主檔查詢]
             $("#btnQuery" + fld + nRow).show();//[查詢本所編號]
             var objCase = {};
-            for (var r = 2; r <= CInt(nRow) ; r++) {
-                var lineCase = value1 + value2;
+            for (var r = 2; r <= CInt($("#nfy_tot_num").val()) ; r++) {
+                var vdseq = $("#dseq" + fld + r).val();
+                var vdseq1 = $("#dseq1" + fld + r).val();
+                var lineCase = vdseq + vdseq1;
                 if (lineCase != "_" && objCase[lineCase]) {
                     alert("本所編號(" + r + ")重覆,請重新輸入！！");
                     settab("#tran");
@@ -261,19 +263,21 @@
                 } else {
                     objCase[lineCase] = { flag: true, idx: r };
                 }
-            }
 
-            var lname = $("#old_seq").val() + $("#old_seq1").val();
-            var kname = value1 + value2;
-            if (lname != "_" && kname != "_") {
-                if (lname == kname) {
-                    alert("本所編號" + r + "與主要的本所編號重覆,請重新輸入!!!");
-                    settab("#tran");
-                    $("#keydseq" + fld + r).val("N");
-                    $("#btndseq_ok" + fld + r).prop("disabled", false);
-                    $("#dseq" + fld + r).focus();
-                    return false;
+                var lname = $("#old_seq").val() + $("#old_seq1").val();
+                var kname = vdseq + vdseq1;
+                if (lname != "_" && kname != "_") {
+                    if (lname == kname) {
+                        alert("本所編號(" + r + ")與主要的本所編號重覆,請重新輸入!!!");
+                        settab("#tran");
+                        $("#keydseq" + fld + r).val("N");
+                        $("#btndseq_ok" + fld + r).prop("disabled", false);
+                        $("#dseq" + fld + r).focus();
+                        return false;
+                    }
                 }
+                $("#keydseq" + fld + r).val("Y");
+                $("#btndseq_ok" + fld + r).prop("disabled", true);
             }
         }
         if (value1 != "") {
@@ -359,12 +363,11 @@
         $("#dseq" + tot_num).attr("class", "").prop("readonly", false);
         $("#dseq1" + tot_num).attr("class", "").prop("readonly", false);
         $("#btndseq_ok" + tot_num).show();//[確定]
-        $("#case_stat1" + fld + nRow + "OO").prop("checked", true);//舊案
-        if (fld == "a_1" || fld == "b_1") {//是主案
+        $("#case_stat1" + tot_num + "OO").prop("checked", true);//舊案
+        if (tot_num == "a_1" || tot_num == "b_1") {//是主案
             Filereadonly();
         }
-        //***todo
-        window.open("..\brtam\brta21Query.aspx?cust_seq=" + cust_seq + "&tot_num=" + tot_num, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open("brta21Query.aspx?cust_seq=" + cust_seq + "&tot_num=" + tot_num, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
     //[案件主檔查詢]
@@ -595,6 +598,7 @@
     main.changeTagA6 = function (T1, code3, arcase, prt_code, pagt_no) {
         $("#tabap,#FC0_tabap,#FC2_tabap,#FC1_tabap,#tr_tg_arf_fc").hide();
         $("#CTab td.tab[href='#apcust']").html("案件申請人(變更)");
+        $("#tfy_div_arcase").val("");
 
         switch (arcase) {
             case "FC1": case "FC10": case "FC9": case "FCA": case "FCB": case "FCF":

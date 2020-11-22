@@ -199,7 +199,7 @@
     br_form.Add_FC11 = function (arcaseCount) {
         if (arcaseCount > 50) {
             alert("變更案件數不可超過50筆");
-            $("#tot_num11").val("1").focus();
+            $("#tot_num11,#nfy_tot_num").val("1").focus();
             return false;
         }
 
@@ -217,13 +217,13 @@
                     $(".trfc11_" + (nRow + 1) + " input[type=text]").attr("class", "SEdit");
                 }
                 $("#submitTaska_" + (nRow + 1)).val(main.submittask);
-                $("#cnt111").val(nRow + 1);
+                $("#cnt111,#nfy_tot_num").val(nRow + 1);
             }
         } else {
             //要減
             for (var nRow = cnt111; nRow > doCount ; nRow--) {
                 $('.trfc11_' + nRow).remove();
-                $("#cnt111").val(nRow - 1);
+                $("#cnt111,#nfy_tot_num").val(nRow - 1);
             }
         }
     }

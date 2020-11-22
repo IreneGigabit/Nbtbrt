@@ -21,7 +21,7 @@
         SQL += "and a.cg='C' and a.rs='R' AND no_code='N' and a.act_code='_' ";
         
         string value1 = "", value2 = "";
-        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+        using (DBHelper conn = new DBHelper(Conn.btbrt)) {
             using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
                 if (dr.Read()) {
                     value1 = dr.SafeRead("ad", "").Trim();

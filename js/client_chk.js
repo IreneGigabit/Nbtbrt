@@ -66,7 +66,8 @@ function fChkDataLen(pObj,pmsg){
 //check field null:檢查物件值不可為空白
 function chkNull(pFieldName,pObj)
 {
-    if (pObj.value=="") {
+    if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
+    if (pObj.value == "") {
         alert(pFieldName+"必須輸入!!!");
         pObj.focus();
         return true;

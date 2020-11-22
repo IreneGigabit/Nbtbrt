@@ -131,6 +131,7 @@
     main.branch = "<%#Session["SeBranch"]%>";
     main.prgid = "<%#prgid%>";
     main.right = <%#HTProgRight%>;
+    main.submittask = "<%#submitTask%>";
     main.formFunction = "<%#formFunction%>";
     main.ar_form = "<%#ar_form%>";
     main.cust_area = "<%#cust_area%>";
@@ -226,9 +227,7 @@
 </tr>
 </table>
 
-<div id="dialog">
-    <!--iframe id="myIframe" src="about:blank" width="100%" height="97%" style="border:none""></iframe-->
-</div>
+<div id="dialog"></div>
 
 <iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
 </body>
@@ -327,7 +326,7 @@
             processData: false,
             beforeSend:function(xhr){
                 $("#dialog").html("<div align='center'><h1>存檔中...</h1></div>");
-                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 800 });
+                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 800,buttons:[] });
             },
             //success: function (data, status, xhr) { main.onSuccess(data, status, xhr); },
             //error: function (xhr, status) { main.onError(xhr, status); },

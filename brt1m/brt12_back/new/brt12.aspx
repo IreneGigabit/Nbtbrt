@@ -184,7 +184,7 @@
     </div>
 </form>
 
-<div align="center" id="noData" style="display:none">
+<div align="center" class="noData" style="display:none">
 	<font color="red">=== 目前無資料 ===</font>
 </div>
 
@@ -285,9 +285,7 @@
 </div>
 </form>
 
-<div id="dialog">
-    <!--iframe id="myIframe" src="about:blank" width="100%" height="97%" style="border:none""></iframe-->
-</div>
+<div id="dialog"></div>
 </body>
 </html>
 
@@ -324,7 +322,7 @@
     //執行查詢
     function goSearch() {
         window.parent.tt.rows = '100%,0%';
-        $("#divPaging,#noData,#dataList").hide();
+        $("#divPaging,#dataList,.noData,.haveData").hide();
         $("#dataList>tbody tr").remove();
         nRow = 0;
 
@@ -335,18 +333,18 @@
             cache: false,
             data: $("#regPage").serialize(),
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-                var JSONdata = $.parseJSON(json);
-                if (JSONdata.totrow === undefined) {
-                    toastr.error("資料載入失敗（" + JSONdata.msg + "）");
+                if (!isJson(json) || $("#chkTest").prop("checked")) {
+                    $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + json);
+                    $("#dialog").dialog({ title: 'Debug！', modal: true, maxHeight: 500, width: "90%" });
                     return false;
                 }
+                var JSONdata = $.parseJSON(json);
                 //////更新分頁變數
                 var totRow = parseInt(JSONdata.totrow, 10);
                 if (totRow > 0) {
-                    $("#divPaging,#dataList,#divSign").show();
+                    $("#divPaging,#dataList,.haveData,#divSign").show();
                 } else {
-                    $("#noData").show();
+                    $(".noData").show();
                 }
 
                 var nowPage = parseInt(JSONdata.nowpage, 10);

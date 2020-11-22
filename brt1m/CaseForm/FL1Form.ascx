@@ -693,7 +693,7 @@
     br_form.Add_FL1 = function (arcaseCount) {
         if (arcaseCount > 50) {
             alert("變更案件數不可超過50筆");
-            $("#tot_num1").val("1").focus();
+            $("#tot_num1,#nfy_tot_num").val("1").focus();
             return false;
         }
 
@@ -711,13 +711,13 @@
                     $(".trfl1_" + (nRow + 1) + " input[type=text]").attr("class", "SEdit");
                 }
                 $("#submitTaskb_" + (nRow + 1)).val(main.submittask);
-                $("#cnt211").val(nRow + 1);
+                $("#cnt211,#nfy_tot_num").val(nRow + 1);
             }
         } else {
             //要減
             for (var nRow = cnt211; nRow > doCount ; nRow--) {
                 $('.trfl1_' + nRow).remove();
-                $("#cnt211").val(nRow - 1);
+                $("#cnt211,#nfy_tot_num").val(nRow - 1);
             }
         }
     }
@@ -827,7 +827,7 @@
             var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_ap' });
             $.each(tranlist, function (i, item) {
                     //增加一筆
-                    $("#FL_AP_Del_button").click();
+                    $("#FL_AP_Add_button").click();
                     //填資料
                     var nRow = $("#FL_apnum").val();
                     $("#tfr_apcust_no_" + nRow).val(item.old_no);

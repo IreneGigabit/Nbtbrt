@@ -32,6 +32,7 @@
 		<td class="lightbluetable" valign="top" ><strong>參、代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
 		    <select id="tfg1_agt_no1" NAME="tfg1_agt_no1"><%#tfg1_agt_no1%></select>
+		    <input type="text" id="tfg2_agt_no1" name="tfg2_agt_no1">
             <!--input type="text" id="tfzd_agt_no" name="tfzd_agt_no"-->
 		</td>
 	</tr>
@@ -264,16 +265,16 @@
 			    <td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(zAttech)"><strong><u>附件：</u></strong></td>
 		    </tr>
 		    <tr class="br_attchstrFP2">
-			    <td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstrFP2','ttz2',reg.tfzd_remark1)"></td>
-			    <td class="whitetablebg" colspan="7">委任書(<input type="checkbox" name="ttz2_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstrFP2','ttz2',reg.tfzd_remark1)">附中文譯本)。</td>
+			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z2" NAME="ttz2_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstrFP2','ttz2_',reg.tfzd_remark1)"></td>
+			    <td class="whitetablebg" colspan="7">委任書(<input type="checkbox" id="ttz2_Z2C" name="ttz2_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstrFP2', 'ttz2_', reg.tfzd_remark1)">附中文譯本)。</td>
 		    </tr>
 		    <tr class="br_attchstrFP2">
-			    <td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstrFP2','ttz2',reg.tfzd_remark1)"></td>
-			    <td class="whitetablebg" colspan="7">同意塗銷質權契約書或其他證明文件(<input type="checkbox" name="ttz2_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstrFP2','ttz2',reg.tfzd_remark1)">附中文譯本)。</td>
+			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z1" NAME="ttz2_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstrFP2', 'ttz2_', reg.tfzd_remark1)"></td>
+			    <td class="whitetablebg" colspan="7">同意塗銷質權契約書或其他證明文件(<input type="checkbox" id="ttz2_Z1C" name="ttz2_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstrFP2', 'ttz2_', reg.tfzd_remark1)">附中文譯本)。</td>
 		    </tr>
 		    <tr class="br_attchstrFP2">
-			    <td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz2_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstrFP2','ttz2',reg.tfzd_remark1)"></td>
-			    <td class="whitetablebg" colspan="7">其他。<input TYPE="text" NAME="ttz2_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstrFP2','ttz2',reg.tfzd_remark1)"></td>
+			    <td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z9" NAME="ttz2_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstrFP2', 'ttz2_', reg.tfzd_remark1)"></td>
+			    <td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz2_Z9t" NAME="ttz2_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstrFP2','ttz2_',reg.tfzd_remark1)"></td>
 		    </tr>
 		    </table>
 		</td>
@@ -283,9 +284,16 @@
 <INPUT TYPE=text id=tfr1_mod_field NAME=tfr1_mod_field value="mod_ap">
 <INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
+<INPUT TYPE=text id=tfg2_seq NAME=tfg2_seq>
+<INPUT TYPE=text id=tfg2_seq1 NAME=tfg2_seq1>
 
 
 <script language="javascript" type="text/javascript">
+    //代理人連動
+    $("#tfg1_agt_no1").change(function () {
+        $("#tfg2_agt_no1").val($(this).val());
+    });
+
     //申請人種類
     br_form.apcust_role=function(role){
         if( role=="A"){
@@ -401,9 +409,10 @@
         console.log("fp1.br_form.bind");
         if (jMain.case_main.length == 0) {
             $("#FT_AP_Add_button").click();//關係人預設顯示第1筆
+            $("#tfg2_agt_no1").val($("#tfg1_agt_no1").val());//代理人連動
         } else {
             //代理人
-            $("#tfg1_agt_no1").val(jMain.case_main[0].agt_no);
+            $("#tfg1_agt_no1,#tfg2_agt_no1").val(jMain.case_main[0].agt_no);
             $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);
             $("#fr1_issue_no").val(jMain.case_main[0].issue_no);//註冊號
             $("#fr1_appl_name").val(jMain.case_main[0].appl_name);//商標名稱

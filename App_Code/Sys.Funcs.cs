@@ -26,10 +26,10 @@ public partial class Sys
     #region getScode - 抓取組主管所屬營洽
     /// <summary>  
     /// 抓取組主管所屬營洽
-    /// <para>回傳ex：n428','ntest','n873','n1231','n1030','n1350</para>
+    /// <para>回傳ex：'n428','ntest','n873','n1231','n1030','n1350'</para>
     /// </summary>  
     public static string getScode(string branch, string scode) {
-        using (DBHelper conn = new DBHelper(Conn.ODBCDSN, false)) {
+        using (DBHelper conn = new DBHelper(Conn.Sysctrl, false)) {
             string SQL = "select a.grpid,a.scode,b.upgrpid From scode_group a ";
             SQL += "inner join grpid b on a.grpclass=b.grpclass and a.grpid=b.grpid ";
             SQL += "where a.grpclass='" + branch + "' ";
@@ -47,7 +47,7 @@ public partial class Sys
     /// 抓取特殊處理簽核主管
     /// </summary>
     public static DataTable getSignMaster(string se_branch, string se_grpid, string se_scode, string msc_scode) {
-        using (DBHelper cnn = new DBHelper(Conn.ODBCDSN, false)) {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
             string SQL = "SELECT a.master_scode, '商標主管' AS master_type, b.sc_name AS master_scodenm, b.sscode, '1' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.GrpID IN ('T100', 'TA100', 'TB100') AND a.grpclass='" + se_branch + "' AND a.master_scode NOT IN ('" + msc_scode + "')";
             SQL += " UNION";
             SQL += " SELECT a.master_scode, '營洽主管' AS master_type, b.sc_name AS master_scodenm, b.sscode, '2' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.GrpID LIKE '" + se_grpid.Left(2) + "[1-9]%' AND a.grpclass='" + se_branch + "' AND a.master_scode NOT IN ('" + msc_scode + "','" + se_scode + "')";
@@ -303,6 +303,7 @@ public partial class Sys
         //依log檔的prgid欄位名稱判斷(prgid or ud_prgid)
         switch (table.ToLower()) {
             case "case_dmt":
+            case "case_ext":
                 usql = "insert into " + table + "_log(upd_flg,reason,log_date,log_scode," + tfield_str + ")";
                 usql += " SELECT " + Util.dbchar(ud_flag) + ","+Util.dbchar(reason)+",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;

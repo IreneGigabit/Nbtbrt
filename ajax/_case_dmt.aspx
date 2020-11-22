@@ -81,7 +81,7 @@
     private DataTable GetCase() {
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
-            if (submitTask == "Edit" || submitTask == "AddNext") {//編輯/複製下一筆 模式
+            if (submitTask == "Edit" || submitTask == "Show" || submitTask == "AddNext") {//編輯/檢視/複製下一筆 模式
                 //SQL = "Pro_case2 '" + in_no + "'";
                 SQL="SELECT a.*,c.*,g.* ";
                 SQL += ",(SELECT b.coun_c FROM sysctrl.dbo.country b WHERE b.coun_code = a.zname_type and b.markb<>'X') AS nzname ";

@@ -10,7 +10,7 @@
     protected string SQL = "";
 
     protected string tfg1_agt_no1 = "";
-    
+
     private void Page_Load(System.Object sender, System.EventArgs e) {
         PageLayout();   
         this.DataBind();
@@ -28,7 +28,6 @@
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>參、代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
-            <!--input type="text" id="tfzd_agt_no" name="tfzd_agt_no"-->
 		    <select id="tfg1_agt_no1" NAME="tfg1_agt_no1"><%#tfg1_agt_no1%></select>
 		</td>
 	</tr>

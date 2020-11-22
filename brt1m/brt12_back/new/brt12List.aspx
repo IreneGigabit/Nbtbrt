@@ -36,7 +36,7 @@
         Response.Expires = -1;
 
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-        cnn = new DBHelper(Conn.ODBCDSN).Debug(Request["chkTest"] == "TEST");
+        cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
         
         TokenN myToken = new TokenN(HTProgCode);

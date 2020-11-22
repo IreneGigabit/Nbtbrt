@@ -44,7 +44,7 @@
         Response.Expires = -1;
 
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-        cnn = new DBHelper(Conn.ODBCDSN).Debug(Request["chkTest"] == "TEST");
+        cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
 
         ReqVal = Util.GetRequestParam(Context,Request["chkTest"] == "TEST");
         submitTask = Request["submitTask"] ?? "";
@@ -495,9 +495,7 @@
 <%#DebugStr%>
 </form>
 
-<div id="dialog">
-    <!--iframe id="myIframe" src="about:blank" width="100%" height="97%" style="border:none""></iframe-->
-</div>
+<div id="dialog"></div>
 
 </body>
 </html>
@@ -691,7 +689,7 @@
             processData: false,
             beforeSend:function(xhr){
                 $("#dialog").html("<div align='center'><h1>存檔中...</h1></div>");
-                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 800 });
+                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 800,buttons:[] });
             },
             //success: function (data) { main.onSuccess(data); },
             //error: function (xhr, status, errMsg) { main.onError(xhr, status, errMsg); },

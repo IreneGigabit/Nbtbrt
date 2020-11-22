@@ -200,7 +200,7 @@ public partial class Sys
                     } else {
                         attach_name = pin_no + "-" + attach_no + sExt;//重新命名檔名
                         newattach_path = attach_path + "/" + attach_name;//存在資料庫路徑
-                        Sys.RenameFile(attach_path + "/" + straa, attach_path + "/" + attach_name, false);
+                        Sys.RenameFile(attach_path + "/" + straa, attach_path + "/" + attach_name, true);
                     }
 
                     ColMap.Clear();
@@ -253,7 +253,7 @@ public partial class Sys
                         if (straa != old_attach_name) {//畫面上傳檔名與原檔案名稱不一樣，表示上傳新檔案，所以要更名
                             attach_name = pin_no + "-" + attach_no + sExt;//重新命名檔名
                             newattach_path = attach_path + "/" + attach_name;//存在資料庫路徑
-                            Sys.RenameFile(attach_path + "/" + straa, attach_path + "/" + attach_name, false);
+                            Sys.RenameFile(attach_path + "/" + straa, attach_path + "/" + attach_name, true);
                             source_name = straa;
                         }
                     }

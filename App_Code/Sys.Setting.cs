@@ -94,7 +94,7 @@ public partial class Sys
     }
 
     /// <summary>
-    /// 檔案路徑轉換(檢視&複製檔案用)，brbrt→nbtbrt
+    /// 檔案路徑轉換(檢視&amp;複製檔案用)，brbrt→nbtbrt
     /// </summary>
     public static string Path2Nbtbrt(string path) {
         path = path.Replace("/", @"\");
@@ -108,6 +108,7 @@ public partial class Sys
     public static string Path2Btbrt(string path) {
         path = path.Replace(@"\nbtbrt\", @"/btbrt/");
         path = path.Replace(@"/nbtbrt/", @"/btbrt/");
+        path = path.Replace(@"\", "/");
         return path;
     }
 
@@ -197,7 +198,7 @@ public partial class Sys
             eSQL = eSQL + "'" + prgID + "',";
             eSQL = eSQL + "'" + ex.Message.Replace("'", "''") + "',";
             //eSQL = eSQL + "'" + string.Join("\r\n-----\r\n", sqlList.ToArray()).Replace("'", "''") + "',";
-            eSQL = eSQL + "'" + sqlList.Last().Replace("'", "''") + "',";//只記錄最後一個sql
+            eSQL = eSQL + "'" + (sqlList.LastOrDefault()??"").Replace("'", "''") + "',";//只記錄最後一個sql
             eSQL = eSQL + "'" + (ex.StackTrace ?? "").Replace("'", "''") + "')";
 
             SqlCommand cmd = new SqlCommand(eSQL, cn);

@@ -26,7 +26,7 @@
             SQL = "SELECT  rs_code,prt_code,rs_detail,remark ";
             SQL += "FROM code_br WHERE rs_class like 'A1%' And  cr= 'Y' and dept='T' And rs_type='" + code_type + "' AND no_code='N' ";
             SQL += "and getdate() >= beg_date and end_date is null ORDER BY rs_code";
-            tfg1_div_arcase = Util.Option(conn, SQL, "{rs_code}", "{rs_code}--{rs_detail}");
+            tfg1_div_arcase = Util.Option(conn, SQL, "{rs_code}", "{rs_code}---{rs_detail}");
         }
     }
 </script>
@@ -38,7 +38,6 @@
 		<td class="lightbluetable" valign="top" ><strong>※、代理人(代碼)</strong></td>
 		<td class="whitetablebg" colspan="7" >
 		    <select id="ttg1_agt_no" NAME="ttg1_agt_no"><%#ttg1_agt_no%></select>
-            <!--input type="text" id="tfzd_agt_no" name="tfzd_agt_no"-->
 		</td>
 	</tr>
 	<tr>

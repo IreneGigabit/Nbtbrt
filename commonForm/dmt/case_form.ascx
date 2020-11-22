@@ -48,7 +48,7 @@
                     SQL += "and syscode='" + Session["Syscode"] + "' ";
                     SQL += "and roles='sales' ";
                     if (formFunction != "Edit") {
-                        SQL += "and (end_date is null or end_date>convert(date,getDate())) ";
+                        SQL += "and (end_date is null or end_date>'"+DateTime.Today.ToShortDateString()+"') ";
                     }
                     SQL += "order by scode1 ";
                     cnn.DataTable(SQL, dt);

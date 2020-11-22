@@ -151,9 +151,7 @@
     </div>
 </form>
 
-<div id="dialog">
-    <!--iframe id="myIframe" src="about:blank" width="100%" height="97%" style="border:none""></iframe-->
-</div>
+<div id="dialog"></div>
 
 </body>
 </html>

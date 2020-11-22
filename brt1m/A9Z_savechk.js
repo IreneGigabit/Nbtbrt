@@ -1004,7 +1004,12 @@ main.savechkA4 = function () {
 
     $("#tfzd_color").val($("input[name='tfzy_color']:checked").val() || "");
     $("#tfzd_S_Mark").val($("input[name='tfzy_S_Mark']:checked").val() || "");
-    $("#tfzd_Mark").val($("input[name='tfzy_mark']:checked").val());
+    if ($("#tfzy_markY").prop("checked", true)) {//全部延展
+        $("#tfzd_Mark").val("N");
+    } else {
+        $("#tfzd_Mark").val("Y");;//部分延展
+    }
+
     $("#tfzd_Pul").val($("#tfzy_Pul").val());
     $("#tfzd_Zname_type").val($("#tfzy_Zname_type").val());
     $("#tfzd_prior_country").val($("#tfzy_prior_country").val());
@@ -1218,7 +1223,7 @@ main.savechkA5 = function () {
             }
 
             for (var a = 1; a <= CInt($("#tot_num1").val()) ; a++) {
-                var class_cnt = $("#FD1_class_count_" + a).length;//該分割輸入的共N類
+                var class_cnt = $("#FD1_class_count_" + a).val();//該分割輸入的共N類
                 //var input_cnt = $("[id^='classa_" + a + "_'][value!='']").length;//該分割實際有輸入的類別數量
                 var input_cnt = $("[id^='classa_" + a + "_']").filter(function () { return this.value !== ''; }).length;//該分割實際有輸入的類別數量
 
@@ -1314,7 +1319,7 @@ main.savechkA5 = function () {
             }
 
             for (var a = 1; a <= CInt($("#tot_num2").val()) ; a++) {
-                var class_cnt = $("#FD2_class_count_" + a).length;//該分割輸入的共N類
+                var class_cnt = $("#FD2_class_count_" + a).val();//該分割輸入的共N類
                 //var input_cnt = $("[id^='classb_" + a + "_'][value!='']").length;//該分割實際有輸入的類別數量
                 var input_cnt = $("[id^='classb_" + a + "_']").filter(function () { return this.value !== ''; }).length;//該分割實際有輸入的類別數量
 

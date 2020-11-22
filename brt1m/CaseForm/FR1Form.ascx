@@ -10,7 +10,7 @@
     protected string SQL = "";
 
     protected string ttg1_agt_no = "";
-    
+   
     private void Page_Load(System.Object sender, System.EventArgs e) {
         PageLayout();
         this.DataBind();
@@ -52,7 +52,7 @@
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right >商標/標章名稱：</td>
-		<td class=whitetablebg><input type="text" id="fr_appl_name" name="fr_appl_name" class="onoff" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=rthis.value"></TD>
+		<td class=whitetablebg><input type="text" id="fr_appl_name" name="fr_appl_name" class="onoff" value="" size="30" maxlength="100" onchange="reg.tfzd_appl_name.value=this.value"></TD>
 	</tr>
 	<tr style="display:none">
 		<td class="lightbluetable" colspan="2" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Term2)"><strong>肆、<u>原註冊證核准專用期間</u></strong></td>
@@ -91,7 +91,7 @@
 		<td class=whitetablebg>
             <span style="display:none">
                 <input type="checkbox" id="tfzr_mod_apaddr" name="tfzr_mod_apaddr">申請人地址&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="checkbox" id="tfzr_mod_agtaddr" name="tfzr_mod_agtaddr" onclick="chkagttype()">代理人地址&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="checkbox" id="tfzr_mod_agtaddr" name="tfzr_mod_agtaddr" onclick="br_form.chkagttype()">代理人地址&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </span>
 			<input type="checkbox" id="tfzr_mod_pul" name="tfzr_mod_pul">防護商標/標章變更為商標
 		</TD>
@@ -104,9 +104,9 @@
                 <input type="checkbox" name="tfzr_mod_aprep" id="tfzr_mod_aprep">代表人或負責人&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </span>
 			<input type="checkbox" name="tfzr_mod_agt" id="tfzr_mod_agt">代理人&nbsp;&nbsp;&nbsp;代理人異動：
-			<input type="radio" name="tfzr_mod_agttype" value="C" onclick="chkmodagt">變更
-			<input type="radio" name="tfzr_mod_agttype" value="A" onclick="chkmodagt">新增
-			<input type="radio" name="tfzr_mod_agttype" value="D" onclick="chkmodagt">撤銷
+			<input type="radio" name="tfzr_mod_agttype" value="C" onclick="br_form.chkmodagt()">變更
+			<input type="radio" name="tfzr_mod_agttype" value="A" onclick="br_form.chkmodagt()">新增
+			<input type="radio" name="tfzr_mod_agttype" value="D" onclick="br_form.chkmodagt()">撤銷
 		</TD>
 	</tr>
     <tr style="display:none">
@@ -114,7 +114,7 @@
 		<td class=whitetablebg>
             <input type="checkbox" id="tfzr_mod_oth" name="tfzr_mod_oth">申請人印鑑&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="checkbox" id="tfzr_mod_oth1" name="tfzr_mod_oth1">代表人或負責人印鑑&nbsp
-            <input type="checkbox" id="tfzr_mod_oth2" name="tfzr_mod_oth2" onclick="chkagttype()">代理人印鑑
+            <input type="checkbox" id="tfzr_mod_oth2" name="tfzr_mod_oth2" onclick="br_form.chkagttype()">代理人印鑑
 		</TD>
 	</tr>
 	<tr>
@@ -173,7 +173,7 @@
 			        </td>
 		        </tr>
 		        <tr class="fr1_br_class_template_##">
-			        <td class="lightbluetable" align="right">商品群組代碼##：</td>
+			        <td class="lightbluetable" align="right">群組代碼##：</td>
 			        <td class="whitetablebg"><textarea id=grp_code2_## NAME=grp_code2_## ROWS="1" COLS="50"></textarea>(跨群組請以全形「、」作分隔)</td>
 		        </tr>
             </script>
@@ -232,7 +232,7 @@
 	</tr>
 	<tr class="br_attchstr">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttzd_Z9" NAME="ttzd_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttzd_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg">其他證明文件。<input TYPE="text" id="ttzd_Z9t" NAME="ttzd_Z9t" SIZE="50" onchange="br_form.AttachStr('#tabrem4','ttzd_',reg.tfzd_remark1)">
+		<td class="whitetablebg">其他證明文件。<input TYPE="text" id="ttzd_Z9t" NAME="ttzd_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttzd_',reg.tfzd_remark1)">
 			
 		</td>
 	</tr>
@@ -280,6 +280,27 @@
         $("#tfzd_class_count").val(Math.max(CInt($("#tfzd_class_count").val()), nclass.length));//回寫共N類
     }
 
+    //代理人異動
+    $("#tfzr_mod_agt").click(function () {
+        if ($(this).prop("checked") == false) {
+            $("input[name='tfzr_mod_agttype']").prop("checked", false);
+        }
+    });
+
+    //代理人異動種類
+    br_form.chkmodagt=function () {
+        if ($("input[name='tfzr_mod_agttype']:checked").length>0) {
+            $("#tfzr_mod_agt").prop("checked", true);
+        }
+    }
+
+    //代理人地址或印章異動
+    br_form.chkagttype = function () {
+        if ($("#tfzr_mod_agtaddr").prop("cecked") == true || $("#tfzr_mod_oth2").prop("checked") == true) {
+            $("#tfzr_mod_agt").prop("checked", true);
+            $("input[name='tfzr_mod_agttype']").prop("checked", false);
+        }
+    }
 
     //**延展證明標的及內容/表彰組織及會員之會籍
     br_form.CopyStr1 = function (x, y, z) {

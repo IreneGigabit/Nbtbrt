@@ -141,9 +141,9 @@
 	</tr>
 </TABLE>
 </div>
-<INPUT TYPE=hidden id=tfr_mod_field NAME=tfr_mod_field value="mod_ap">
-<INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
-<INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
+<INPUT TYPE=text id=tfr_mod_field NAME=tfr_mod_field value="mod_ap">
+<INPUT TYPE=text id=tfgd_seq NAME=tfgd_seq>
+<INPUT TYPE=text id=tfgd_seq1 NAME=tfgd_seq1>
 
 <script language="javascript" type="text/javascript">
     //程序種類

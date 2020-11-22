@@ -351,7 +351,8 @@
         if(main.prgid=="brt51"&&main.ar_form=="A8"){
             $("#but_end").show();
         }
-        dmt_form.Add_class(1);//預設顯示第1筆
+        //dmt_form.Add_class(1);//預設顯示第1筆
+        $("#tfzr_class_count").val(1).triggerHandler("change");//預設顯示第1筆
     }
 
     //新案(指定編號)
@@ -780,7 +781,7 @@
 
     //查詢主案件編號
     dmt_form.Queryclick = function(cust_seq) {
-        window.open("brta21Query.aspx?cust_seq="+cust_seq ,"myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open("brta21Query.aspx?cust_seq=" + cust_seq, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
         /*$('#dialog')
             .html('<iframe style="border: 0px;" src="brta21Query.aspx?cust_seq='+cust_seq+'" width="100%" height="100%"></iframe>')
             .dialog({autoOpen: true,modal: true,height: 420,width: 650,title: "查詢主案件編號"});*/

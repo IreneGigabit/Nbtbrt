@@ -7,7 +7,7 @@
 <script runat="server">
     protected string HTProgCap = "國內案收文作業-查詢本所編號畫面";//;//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brta21";//程式檔名前綴
-    protected string HTProgCode = "brta21";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = "brta21";//HttpContext.Current.Request["prgid"] ?? "";//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
@@ -35,15 +35,17 @@
         tot_num = (Request["tot_num"] ?? "").Trim();
 
         TokenN myToken = new TokenN(HTProgCode);
-        HTProgRight = myToken.CheckMe();
+        //HTProgRight = myToken.CheckMe();
         //HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
-        if (HTProgRight >= 0) {
-            if (json == "Y") QueryData();
-            
-            PageLayout();
+        //if (HTProgRight >= 0) {
+            if (json == "Y") {
+                QueryData();
+            } else {
+                PageLayout();
+            }
             this.DataBind();
-        }
+        //}
     }
 
     private void PageLayout() {
@@ -431,12 +433,12 @@
             cache: false,
             data: $("#regPage").serialize(),
             success: function (json) {
-                var JSONdata = $.parseJSON(json);
-                if (JSONdata.totrow === undefined) {
-                    toastr.error("資料載入失敗（" + JSONdata.msg + "）");
+                if (!isJson(json) || $("#chkTest").prop("checked")) {
+                    $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + json);
+                    $("#dialog").dialog({ title: 'Debug！', modal: true, maxHeight: 500, width: "90%" });
                     return false;
                 }
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                var JSONdata = $.parseJSON(json);
                 //////更新分頁變數
                 var totRow = parseInt(JSONdata.totrow, 10);
                 if (totRow > 0) {
@@ -531,12 +533,24 @@
         }
     });
     //帶回資料
-    function SeqClick(x1,x2){
-        window.opener.reg.old_seq.value = x1;
-        window.opener.reg.old_seq1.value = x2;
-        window.opener.reg.keyseq.value = "N";
-        window.opener.reg.btnseq_ok.disabled = false;
-        window.opener.reg.old_seq.focus();
+    function SeqClick(x1, x2) {
+        var fld = $("#tot_num").val() || "";
+        if (fld == "" || fld == "a_1" || fld == "b_1") {
+            //window.opener.reg.old_seq.value = x1;
+            //window.opener.reg.old_seq1.value = x2;
+            //window.opener.reg.keyseq.value = "N";
+            //window.opener.reg.btnseq_ok.disabled = false;
+            //window.opener.reg.old_seq.focus();
+            $("#old_seq", opener.document).val(x1);
+            $("#old_seq1", opener.document).val(x2);
+            $("#keyseq", opener.document).val("N");
+            $("#btnseq_ok", opener.document).triggerHandler("click");
+        } else {
+            $("#dseq" + fld, opener.document).val(x1)
+            $("#dseq1" + fld, opener.document).val(x2);
+            $("#keydseq" + fld, opener.document).val("N");
+            $("#btndseq_ok" + fld, opener.document).triggerHandler("click");
+        }
         window.close();
     }
     //[詳細資料]

@@ -43,7 +43,7 @@
                 }
 
                 SQL = "select coun_code,coun_c from country where coun_code='" + dt.Rows[i].SafeRead("ap_country", "") + "' and markb<>'X' order by coun_code ";
-                using (DBHelper cnn = new DBHelper(Conn.ODBCDSN).Debug(false)) {
+                using (DBHelper cnn = new DBHelper(Conn.Sysctrl).Debug(false)) {
                     using (SqlDataReader dr = cnn.ExecuteReader(SQL)) {
                         if (dr.Read()) {
                             dt.Rows[i]["ap_countrynm"] = dr.SafeRead("coun_c", "").Trim();

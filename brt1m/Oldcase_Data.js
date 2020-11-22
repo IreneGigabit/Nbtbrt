@@ -398,10 +398,10 @@ function delayNO1(low_no, low_no1) {
                 if (br_form.Add_classFC3) br_form.Add_classFC3(oMain.dmt_good.length);
                 if (br_form.Add_classFL1) br_form.Add_classFL1(oMain.dmt_good.length);
                 $.each(oMain.dmt_good, function (i, item) {
-                    $("#class1_" + (i + 1)).val(item.class).lock();//第X類
-                    $("#good_count1_" + (i + 1)).val(item.dmt_goodcount).lock();//共N項
-                    $("#grp_code1_" + (i + 1)).val(item.dmt_grp_code).lock();//商品群組代碼
-                    $("#good_name1_" + (i + 1)).val(item.dmt_goodname).lock();//商品名稱
+                    $("#class1_" + (i + 1)).val(item.class);//第X類
+                    $("#good_count1_" + (i + 1)).val(item.dmt_goodcount);//共N項
+                    $("#grp_code1_" + (i + 1)).val(item.dmt_grp_code);//商品群組代碼
+                    $("#good_name1_" + (i + 1)).val(item.dmt_goodname);//商品名稱
                     //fc3
                     $("#class32_" + (i + 1)).val(item.class);//第X類
                     $("#good_name32_" + (i + 1)).val(item.dmt_goodname);//商品名稱

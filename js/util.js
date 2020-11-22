@@ -64,6 +64,16 @@ function getValueStr(selector, symbol) {
     }).get().join(symbol);
 }
 
+//判斷是否為json格式
+function isJson(str) {
+    try {
+        $.parseJSON(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
 /*ajax function(get)*/
 function ajaxByGet(url, param) {
     return $.ajax({

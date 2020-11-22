@@ -136,6 +136,104 @@
 		</table>
 		</td>
 	</tr>
+	<tr>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(c1Rapcust)"><strong>肆、<u>讓與人(原商標權人)</u></strong></td>
+	</tr>
+	<tr>
+		<td class=sfont9 colspan="8">
+		<input type=hidden id=FT_apnum name=FT_apnum value=0><!--進度筆數-->
+		<table border="0" id=FT_tabap class="bluetable" cellspacing="1" cellpadding="1" style="font-size: 9pt" width="100%">
+            <thead>
+		        <TR>
+			        <TD  class=whitetablebg colspan=4 align=right>
+				        <input type=button value ="增加一筆關係人" class="cbutton" id=FT_AP_Add_button name=FT_AP_Add_button>
+				        <input type=button value ="減少一筆關係人" class="cbutton" id=FT_AP_Del_button name=FT_AP_Del_button>
+			        </TD>
+		        </TR>
+            </thead>
+            <tbody></tbody>
+            <script type="text/html" id="ft_role_template">
+	            <TR>
+		            <TD class="lightbluetable role9" align=right title="輸入編號並點選確定，即顯示關係人資料；若無資料，請直接輸入關係人資料。">
+                        <input type=text id='FT_apnum_##' name='FT_apnum_##' class=SEdit readonly size=2 value='##.'>
+                        <span id='span_FT_Apcust_no_##' style='cursor:pointer;color:blue'>關係人統一編號：</span>
+		            </TD>
+		            <TD class=sfont9 colspan="3">
+		                <input TYPE=text ID=tfr_apcust_no_## NAME=tfr_old_no_## SIZE=10 MAXLENGTH=10 onblur="br_form.FT_chkapcust_no(reg.FT_apnum.value,'##','tfr_apcust_no_')">
+		                <input type='button' value='確定' onclick="br_form.getapp1_ft('##')"  id='button_##' name='button_##' title='輸入編號並點選確定，即顯示關係人資料；若無資料，請直接輸入關係人資料。'>
+		            </TD>
+	            </TR>
+                <TR>
+		            <TD class="lightbluetable td_role11" align=right title="輸入關鍵字並點選關係人查詢，即顯示關係人資料清單。">
+                        關係人名稱(中)：
+		            </TD>
+		            <TD class=sfont9 colspan="3">
+		                <input type=hidden id=tfr_ap_cname_##><input type=hidden id=tfr_apsqlno_##>
+		                <INPUT TYPE=text id=tfr_ap_cname1_## name=tfr_ocname1_## SIZE=30 MAXLENGTH=60 alt='『關係人名稱(中)』' onblur='fDataLen(this)'>
+		                <INPUT TYPE=text id=tfr_ap_cname2_## name=tfr_ocname2_## SIZE=30 MAXLENGTH=60 alt='『關係人名稱(中)』' onblur='fDataLen(this)'>
+		                <INPUT type='button' id='butQ_##' name='butQ_##' value='關係人查詢' onclick="apcust_form.cust13query('##', 'tfr_')"  style='cursor:pointer;' title='輸入關鍵字並點選關係人查詢，即顯示關係人資料清單。'>
+		            </TD>
+	            </TR>
+                <TR>
+		            <TD class=lightbluetable align=right>
+                        關係人名稱(英)：
+		            </TD>
+		            <TD class=sfont9 colspan="3">
+		                <INPUT TYPE=text id=tfr_ap_ename1_## name=tfr_oename1_## SIZE=60 MAXLENGTH=60 alt='『關係人名稱(英)』' onblur='fDataLen(this)'><br>
+		                <INPUT TYPE=text id=tfr_ap_ename2_## name=tfr_oename2_## SIZE=60 MAXLENGTH=60 alt='『關係人名稱(英)』' onblur='fDataLen(this)'>
+		            </TD>
+	            </TR>
+                <TR>
+		            <TD class=lightbluetable align=right>
+                        關係人代表人(中)：
+		            </TD>
+		            <TD class=sfont9 colspan="3">
+                        <INPUT TYPE=text id=tfr_ap_crep_## name=tfr_ocrep_## SIZE=40 MAXLENGTH=40 alt='『代表人名稱(中)』' onblur='fDataLen(this)'>
+		            </TD>
+	            </TR>
+                <TR>
+		            <TD class=lightbluetable align=right>
+                        關係人代表人(英)：
+		            </TD>
+		            <TD class=sfont9 colspan="3">
+                        <INPUT TYPE=text id=tfr_ap_erep_## name=tfr_oerep_## SIZE=80 MAXLENGTH=80 alt='『代表人名稱(英)』' onblur='fDataLen(this)'>
+		            </TD>
+	            </TR>
+                <TR>
+		            <TD class=lightbluetable align=right>
+                        關係人地址(中)：
+		            </TD>
+		            <TD class=sfont9 colspan="3">
+		                <INPUT TYPE=text id=tfr_ap_zip_## name=tfr_ozip_## SIZE=8 MAXLENGTH=8 >
+		                <INPUT TYPE=text id=tfr_ap_addr1_## name=tfr_oaddr1_## SIZE=30 MAXLENGTH=60 alt='『地址(中)』' onblur='fDataLen(this)'>
+		                <INPUT TYPE=text id=tfr_ap_addr2_## name=tfr_oaddr2_## SIZE=30 MAXLENGTH=60 alt='『地址(中)』' onblur='fDataLen(this)'>
+		            </TD>
+	            </TR>
+                <TR>
+		            <TD class=lightbluetable align=right>
+                        關係人地址(英)：
+		            </TD>
+		            <TD class=sfont9 colspan="3">
+		                <INPUT TYPE=text id=tfr_ap_eaddr1_## name=tfr_oeaddr1_## SIZE=60 MAXLENGTH=60 alt='『地址(英)』' onblur='fDataLen(this)'><br>
+		                <INPUT TYPE=text id=tfr_ap_eaddr2_## name=tfr_oeaddr2_## SIZE=60 MAXLENGTH=60 alt='『地址(英)』' onblur='fDataLen(this)'><br>
+		                <INPUT TYPE=text id=tfr_ap_eaddr3_## name=tfr_oeaddr3_## SIZE=60 MAXLENGTH=60 alt='『地址(英)』' onblur='fDataLen(this)'><br>
+		                <INPUT TYPE=text id=tfr_ap_eaddr4_## name=tfr_oeaddr4_## SIZE=60 MAXLENGTH=60 alt='『地址(英)』' onblur='fDataLen(this)'>
+		                <INPUT TYPE=hidden id=tfr_apatt_tel0_##>
+		                <INPUT TYPE=hidden id=tfr_apatt_tel_##>
+		                <INPUT TYPE=hidden id=tfr_apatt_tel1_##>
+		                <INPUT TYPE=hidden id=tfr_apatt_zip_##>
+		                <INPUT TYPE=hidden id=tfr_apatt_fax_##>
+		                <INPUT TYPE=hidden id=tfr_apatt_addr1_##>
+		                <INPUT TYPE=hidden id=tfr_apatt_addr2_##>
+		                <INPUT TYPE=hidden id=tfr_apclass_##>
+		                <INPUT TYPE=hidden id=tfr_ap_country_##>
+		            </TD>
+	            </TR>
+            </script>
+		</table>
+		</td>
+	</tr>
+
 	<tr style="display:none">
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(c1Remark1)"><strong>伍、<u>另案一併移轉之防護商標註冊號數</u></strong></td>
 	</tr>
@@ -197,7 +295,7 @@
 	</tr>
 	<tr class="br_attchstr">
 		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">
+		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz1_Z9t" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">
 		</td>
 	</tr>
 	<tr style="display:none">
@@ -219,11 +317,93 @@
 <INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
+    //增加一筆關係人
+    $("#FT_AP_Add_button").click(function () {
+        var nRow = CInt($("#FT_apnum").val()) + 1;
+        //複製樣板
+        var copyStr = $("#ft_role_template").text() || "";
+        copyStr = copyStr.replace(/##/g, nRow);
+
+        $("#FT_tabap>tbody").append("<tr id='tr_ft1_" + nRow + "' class='sfont9'><td><table border='0' class='bluetable' cellspacing='1' cellpadding='2' width='100%'>" + copyStr + "</table></td></tr>");
+        $("#tr_ft1_" + nRow + " .Lock").lock();
+        $("#FT_apnum").val(nRow);
+    });
+
+    //減少一筆關係人
+    $("#FT_AP_Del_button").click(function () {
+        var nRow = CInt($("#FT_apnum").val());
+        $('#tr_ft1_' + nRow).remove();
+        $("#FT_apnum").val(Math.max(0, nRow - 1));
+    });
+
+    //***授權關係人重抓
+    br_form.getapp1_ft = function (nRow) {
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/_apcust.aspx?apcust_no=" + $("#tfr_apcust_no_" + nRow).val(),
+            async: false,
+            cache: false,
+            success: function (json) {
+                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust關係人重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                var apcust_list = $.parseJSON(json);
+                if (apcust_list.length == 0) {
+                    alert("無該關係人編號!!!");
+                    return false;
+                }
+
+                $.each(apcust_list, function (i, item) {
+                    $("#tfr_apclass_" + nRow).val(item.apclass);
+                    $("#tfr_ap_country_" + nRow).val(item.ap_country);
+                    $("#tfr_ap_cname1_" + nRow).val(item.ap_cname1);
+                    $("#tfr_ap_cname2_" + nRow).val(item.ap_cname2);
+                    $("#tfr_ap_ename1_" + nRow).val(item.ap_ename1);
+                    $("#tfr_ap_ename2_" + nRow).val(item.ap_ename2);
+                    $("#tfr_ap_crep_" + nRow).val(item.ap_crep);
+                    $("#tfr_ap_erep_" + nRow).val(item.ap_erep);
+                    $("#tfr_ap_addr1_" + nRow).val(item.ap_addr1);
+                    $("#tfr_ap_addr2_" + nRow).val(item.ap_addr2);
+                    $("#tfr_ap_eaddr1_" + nRow).val(item.ap_eaddr1);
+                    $("#tfr_ap_eaddr2_" + nRow).val(item.ap_eaddr2);
+                    $("#tfr_ap_eaddr3_" + nRow).val(item.ap_eaddr3);
+                    $("#tfr_ap_eaddr4_" + nRow).val(item.ap_eaddr4);
+                    $("#tfr_apatt_zip_" + nRow).val(item.apatt_zip);
+                    $("#tfr_apatt_addr1_" + nRow).val(item.apatt_addr1);
+                    $("#tfr_apatt_addr2_" + nRow).val(item.apatt_addr2);
+                    $("#tfr_apatt_tel0_" + nRow).val(item.apatt_tel0);
+                    $("#tfr_apatt_tel_" + nRow).val(item.apatt_tel);
+                    $("#tfr_apatt_tel1_" + nRow).val(item.apatt_tel1);
+                    $("#tfr_apatt_fax_" + nRow).val(item.apatt_fax);
+                    $("#tfr_apsqlno_" + nRow).val(item.apsqlno);
+                    $("#tfr_ap_zip_" + nRow).val(item.ap_zip);
+                })
+            },
+            error: function (xhr) {
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>關係人資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '關係人資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
+            }
+        });
+    }
+
+    //檢查關係人重覆
+    //papnum=筆數,pfld=檢查重覆的欄位名,ex:apcust_no_,dbmn_new_no_
+    br_form.FT_chkapcust_no = function (papnum, nRow, pfld) {
+        var objAp = {};
+        for (var r = 1; r <= CInt(papnum) ; r++) {
+            var lineAp = $("#" + pfld + "" + r).val();
+            if (lineAp != "" && objAp[lineAp]) {
+                alert("(" + r + ")關係人重覆，請重新輸入！！");
+                $("#" + pfld + nRow).focus();
+            } else {
+                objAp[lineAp] = { flag: true, idx: r };
+            }
+        }
+    }
+
     //*****共N件
     br_form.Add_FT1 = function (arcaseCount) {
         if (arcaseCount > 50) {
             alert("移轉案件數不可超過50筆");
-            $("#tot_num1").val("1").focus();
+            $("#tot_num1,#nfy_tot_num").val("1").focus();
             return false;
         }
 
@@ -241,13 +421,13 @@
                     $(".trft2_" + (nRow + 1) + " input[type=text]").attr("class", "SEdit");
                 }
                 $("#submitTaskb_" + (nRow + 1)).val(main.submittask);
-                $("#cnt211").val(nRow + 1);
+                $("#cnt211,#nfy_tot_num").val(nRow + 1);
             }
         } else {
             //要減
             for (var nRow = cnt211; nRow > doCount ; nRow--) {
                 $('.trft2_' + nRow).remove();
-                $("#cnt211").val(nRow - 1);
+                $("#cnt211,#nfy_tot_num").val(nRow - 1);
             }
         }
     }
@@ -256,6 +436,7 @@
     br_form.bindFT1 = function () {
         console.log("ft1.br_form.bind");
         if (jMain.case_main.length == 0) {
+            $("#FT_AP_Add_button").click();//關係人預設顯示第1筆
             $("#tot_num21,#nfy_tot_num").val("1").triggerHandler("change");
         } else {
             //代理人
@@ -355,6 +536,41 @@
                     }
                 }
             });
+
+            //關係人
+            var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_ap' });
+            $.each(tranlist, function (i, item) {
+                //增加一筆
+                $("#FT_AP_Add_button").click();
+                //填資料
+                var nRow = $("#FT_apnum").val();
+                $("#tfr_apcust_no_" + nRow).val(item.old_no);
+                $("#tfr_ap_cname1_" + nRow).val(item.ocname1);
+                $("#tfr_ap_cname2_" + nRow).val(item.ocname2);
+                $("#tfr_ap_ename1_" + nRow).val(item.oename1);
+                $("#tfr_ap_ename2_" + nRow).val(item.oename2);
+                $("#tfr_ap_crep_" + nRow).val(item.ocrep);
+                $("#tfr_ap_erep_" + nRow).val(item.oerep);
+                $("#tfr_ap_addr1_" + nRow).val(item.oaddr1);
+                $("#tfr_ap_addr2_" + nRow).val(item.oaddr2);
+                $("#tfr_ap_eaddr1_" + nRow).val(item.oeaddr1);
+                $("#tfr_ap_eaddr2_" + nRow).val(item.oeaddr2);
+                $("#tfr_ap_eaddr3_" + nRow).val(item.oeaddr3);
+                $("#tfr_ap_eaddr4_" + nRow).val(item.oeaddr4);
+                $("#tfr_apatt_tel0_" + nRow).val(item.otel0);
+                $("#tfr_apatt_tel_" + nRow).val(item.otel);
+                $("#tfr_apatt_tel1_" + nRow).val(item.otel1);
+                $("#tfr_apatt_fax_" + nRow).val(item.ofax);
+                $("#tfr_ap_zip_" + nRow).val(item.ozip);
+                //$("#tfr_apclass_" + nRow).val(item.oapclass);
+                //$("#tfr_ap_country_" + nRow).val(item.oap_country);
+                //$("#tfr_ap_cname_" + nRow).val(item.naddr1);
+                //$("#tfr_apsqlno_" + nRow).val(item.naddr1);
+            });
+            if (CInt($("#FT_apnum").val()) == 0) {
+                alert("查無此交辦案件之關係人資料!!");
+            }
+
             $("#tfg1_tran_remark1").val(jMain.case_main[0].tran_remark1);//一併設定號數
             $("#tfg1_tran_remark2").val(jMain.case_main[0].tran_remark2);//未一併設定號數
             //附件

@@ -270,7 +270,7 @@
                     } else {
                         attach_name = RSno + "-" + k + sExt;//重新命名檔名
                         newattach_path = strpath1 + "/" + attach_name;//存在資料庫路徑
-                        Sys.RenameFile(strpath1 + "/" + straa, strpath1 + "/" + attach_name, false);
+                        Sys.RenameFile(strpath1 + "/" + straa, strpath1 + "/" + attach_name, true);
                     }
                     ColMap.Clear();
                     ColMap["in_no"] = "'" + RSno + "'";

@@ -52,52 +52,6 @@ hr
 	color: #000088;
 	background-color: #000088;
 }
-.tdbg1
-{
-	font-size: 10pt;
-	font-family: Consolas, 細明體, Arial;
-	color: white;
-	background-color: #aa0000;
-}
-.tdbg0
-{
-	font-size: 10pt;
-	font-family: Consolas, 細明體, Arial;
-	color: white;
-	background-color: #336699;
-}
-.tdbgA
-{
-	font-size: 10pt;
-	font-family: Consolas, 細明體, Arial;
-	color: white;
-	background-color: #aa0000;
-}
-.tdbgI
-{
-	font-size: 10pt;
-	font-family: Consolas, 細明體, Arial;
-	color: white;
-	background-color: #000088;
-}
-.tdbgB
-{
-	font-size: 10pt;
-	font-family: Consolas, 細明體, Arial;
-	color: white;
-	background-color: #336699;
-}
-.tdbg
-{
-	font-size: 10pt;
-	font-family: Consolas, 細明體, Arial;
-	background-color: #ffffcc;
-}
-.text9-white
-{
-    FONT-SIZE: 10pt;
-    COLOR: #ffffff;
-    TEXT-DECORATION: none
 }
 .text9
 {
@@ -128,18 +82,6 @@ hr
     COLOR: #000000;
     BACKGROUND-COLOR: #88ddff
 }
-.lightbluetables
-{
-    FONT-SIZE: 10pt;
-    COLOR: #000000;
-    BACKGROUND-COLOR: #88ddff
-}
-.lightbluetables2
-{
-    FONT-SIZE: 10pt;
-    COLOR: #000000;
-    BACKGROUND-COLOR: #ccffff
-}
 .lightbluetable1
 {
     FONT-SIZE: 10pt;
@@ -149,12 +91,6 @@ hr
     BORDER-LEFT-STYLE: none;
     BACKGROUND-COLOR: #336699;
     BORDER-BOTTOM-STYLE: none
-}
-.lightgreentable
-{
-    FONT-SIZE: 10pt;
-    COLOR: #000000;
-    BACKGROUND-COLOR: #88ffaa
 }
 .query
 {
@@ -166,46 +102,6 @@ hr
 {
     font-size: 10pt;
     background-color: #ffffff;
-}
-.whitetablebgA
-{
-    font-size: 12pt;
-    background-color: #ffffff
-}
-.whitetablebg1
-{
-    font-size: 10pt;
-    background-color: #dddddd
-}
-.whitetablebg2
-{
-    font-size: 10pt;
-    color: black;
-    background-color: #bbffff;
-}
-.yellowtablebg1
-{
-    font-size: 10pt;
-    background-color: #fffacd
-}
-.yellowtablebg
-{
-    font-size: 10pt;
-    background-color: #ffff00
-}
-.redtablebg
-{
-	font-size: 10pt;
-	background-color: #ff0000;
-	color: white;
-}
-.SEdit6
-{
-    BORDER-BOTTOM-STYLE: none;
-    BORDER-RIGHT-STYLE: none;
-    BACKGROUND-COLOR: white;
-    BORDER-TOP-STYLE: none;
-    BORDER-LEFT-STYLE: none
 }
 .SEdit
 {
@@ -243,23 +139,6 @@ hr
 {
     font-size: 10pt;
     color: #000080;
-}
-.English
-{
-    font-size: 10pt;
-    color: #808080;
-}
-.xSunDay
-{
-    font-size: 10pt;
-    color: #000080;
-    background-color: #ffddbb
-}
-.xSatDay
-{
-    font-size: 10pt;
-    color: #000080;
-    background-color: #ffe8e8
 }
 .HeadText
 {
@@ -569,58 +448,6 @@ td.seltab1
     BACKGROUND-COLOR: aliceblue;
     TEXT-ALIGN: right
 }
-.data22
-{
-    FONT-SIZE: 10pt;
-    BACKGROUND-COLOR: #ffff99
-}
-.data33
-{
-}
-.data20
-{
-    BACKGROUND-COLOR: lightgrey
-}
-.data10
-{
-    FONT-SIZE: 10pt;
-    COLOR: dodgerblue;
-    TEXT-INDENT: 8pt;
-    BACKGROUND-COLOR: aliceblue;
-    TEXT-ALIGN: left
-}
-.data14
-{
-    BORDER-RIGHT: lightgrey;
-    BORDER-TOP: lightgrey;
-    FONT-SIZE: 11pt;
-    BORDER-LEFT: lightgrey;
-    COLOR: indigo;
-    TEXT-INDENT: 20pt;
-    BORDER-BOTTOM: lightgrey;
-    BACKGROUND-COLOR: lightcyan;
-    TEXT-ALIGN: left
-}
-.data34
-{
-    BORDER-RIGHT: medium none;
-    BORDER-TOP: medium none;
-    FONT-SIZE: 11pt;
-    BORDER-LEFT: medium none;
-    COLOR: darkblue;
-    BORDER-BOTTOM: medium none;
-    BACKGROUND-COLOR: #ccff66
-}
-.data24
-{
-    BORDER-RIGHT: medium none;
-    BORDER-TOP: medium none;
-    FONT-SIZE: 11pt;
-    BORDER-LEFT: medium none;
-    COLOR: darkslateblue;
-    BORDER-BOTTOM: medium none;
-    BACKGROUND-COLOR: #ffff99
-}
 .bluetable1
 {
     BORDER-RIGHT: lightsteelblue double;
@@ -752,87 +579,11 @@ td.seltab1
     COLOR: slateblue;
     BACKGROUND-COLOR: lavender
 }
-.data31
-{
-    FONT-SIZE: 10pt;
-    COLOR: darkblue;
-    BACKGROUND-COLOR: #ccff99
-}
-.sedit3
-{
-    BORDER-RIGHT: medium none;
-    BORDER-TOP: medium none;
-    BORDER-LEFT: medium none;
-    COLOR: red;
-    BORDER-BOTTOM: medium none
-}
-.bluetext4
-{
-    FONT-SIZE: 10pt;
-    BACKGROUND-COLOR: lightgoldenrodyellow;
-    TEXT-ALIGN: left
-}
-.graytablebg
-{
-    color: black;
-    background-color: #dee;
-}
-.lightbluetable4
-{
-    COLOR: black;
-    BACKGROUND-COLOR: #cccccc
-}
-LEGEND
-{
-	font-size: 10pt;
-	font-family: Consolas, 細明體, Arial;
-	color: white;
-	background-color: #000066;
-}
 TEXTAREA
 {
 	font-size: 10pt;
 	font-family: Consolas, 細明體, Arial;
     white-space: pre-wrap;
-}
-.numeric
-{
-	TEXT-ALIGN: right
-}
-.numericRead
-{
-	TEXT-ALIGN: right;
-    BORDER-BOTTOM-STYLE: none;
-    BORDER-RIGHT-STYLE: none;
-    BACKGROUND-COLOR: white;
-    BORDER-TOP-STYLE: none;
-    BORDER-LEFT-STYLE: none
-}
-.numeric1
-{
-	TEXT-ALIGN: center
-}
-fieldset
-{
-	margin: 2px 5px 0px 5px;
-	padding-top:10px;
-	padding-bottom:10px;
-}
-fieldset.fld2
-{
-	margin: 2px 5px 0px 5px;
-	padding:10px 5px 10px 5px;
-	border-color:#fff;
-}
-legend
-{
-	padding:2px 5px 2px 5px;
-	margin:2px 5px 2px 5px;
-}
-td.hrline
-{
-	height:2px;
-	padding:0px 0px 0px 0px;
 }
 hr.style-one {
     border: 0;
@@ -840,14 +591,8 @@ hr.style-one {
     background: #000080;
 	margin:5px 0px 5px 0px;
 }
-input.dateField {}
-input.dateField1 {}
-span.gl {}
-span.xl 
-{
-	color:red;
-	font-weight: bold;
-}
+
+
 .apcat-bg { background-color: #48a }
 .apcat-fw { background-color: #7af }
 .ap-bg { background-color: #aa8 }
@@ -939,24 +684,26 @@ input[type=button]:disabled,input[type=button][disabled] {
 select:disabled {
     color: #222;
 }
-
+/*
 select option.xxx {
     color: blue;
 }
+*/
 /*
 -webkit-select.xxx {
     color: blue; 
 }*/
-
+/*
 select.xxx::-ms-value {
     color: blue; 
-}
+}*/
 
+/*
 .errlog {
-	/*color:#ff0000;*/
-	color:MEDIUMVIOLETRED;
+	color:#ff0000;
 	font-size: 10pt;
 }
+*/
 
 .enter
 {
