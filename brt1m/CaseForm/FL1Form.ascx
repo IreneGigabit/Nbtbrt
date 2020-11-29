@@ -129,8 +129,8 @@
     <tr>
 		<td class=lightbluetable align=right width="18%"></td>
 		<td class=whitetablebg colspan="7">
-            <input type="radio" name="tfzd_Mark" class="onoff" value="A" onclick="br_form.apcust_role('A')"><span id=markA></span>
-            <input type="radio" name="tfzd_Mark" class="onoff" value="B" onclick="br_form.apcust_role('B')">被授權人<span id=markB></span>
+            <input type="radio" name="tfzd_Mark" value="A" onclick="br_form.apcust_role('A')"><span id=markA></span>
+            <input type="radio" name="tfzd_Mark" value="B" onclick="br_form.apcust_role('B')">被授權人<span id=markB></span>
 		</TD>
 	</tr>
 	<tr>
@@ -195,7 +195,7 @@
                         <span class="span_role">被</span>授權人地址(中)：
 		            </TD>
 		            <TD class=sfont9 colspan="3">
-		                <INPUT TYPE=text id=tfr_ap_zip_## name=tfr_ozip## SIZE=8 MAXLENGTH=8 >
+		                <INPUT TYPE=text id=tfr_ap_zip_## name=tfr_ozip_## SIZE=8 MAXLENGTH=8 >
 		                <INPUT TYPE=text id=tfr_ap_addr1_## name=tfr_oaddr1_## SIZE=30 MAXLENGTH=60 alt='『證照地址(中)』' onblur='fDataLen(this)'>
 		                <INPUT TYPE=text id=tfr_ap_addr2_## name=tfr_oaddr2_## SIZE=30 MAXLENGTH=60 alt='『證照地址(中)』' onblur='fDataLen(this)'>
 		            </TD>
@@ -590,6 +590,29 @@
             }
         });
     }
+
+    //增加一筆再授權關係人
+    $("#FL2_AP_Add_button").click(function () {
+        var nRow = CInt($("#FL2_apnum").val()) + 1;
+        //複製樣板
+        var copyStr = $("#fl2_role_template").text() || "";
+        copyStr = copyStr.replace(/##/g, nRow);
+
+        $("#FL2_tabap>tbody").append("<tr id='tr_fl2_" + nRow + "' class='sfont9'><td><table border='0' class='bluetable' cellspacing='1' cellpadding='2' width='100%'>" + copyStr + "</table></td></tr>");
+        $("#tr_fl2_" + nRow + " .Lock").lock();
+        $("#FL2_apnum").val(nRow);
+
+        //申請人角色顯示授權人或被授權人
+        $("input[name='tfzd_Mark']:checked").triggerHandler("click");
+    });
+
+    //減少一筆再授權關係人
+    $("#FL2_AP_Del_button").click(function () {
+        var nRow = CInt($("#FL2_apnum").val());
+        $('#tr_fl2_' + nRow).remove();
+        $("#FL2_apnum").val(Math.max(0, nRow - 1));
+    });
+
     //***再授權關係人重抓
     br_form.getapp1_fl2 = function (nRow) {
         $.ajax({
@@ -745,15 +768,15 @@
                 $("#dseqb_1,#dseq1b_1").lock();
                 $("input[name=case_stat1b_1]").lock();
             }
-            $("#tot_num21,#nfy_tot_num").val(jMain.case_main[0].tot_num).triggerHandlder("change");
+            $("#tot_num21,#nfy_tot_num").val(jMain.case_main[0].tot_num).triggerHandler("change");
             if (jMain.case_main[0].seq == "0") {
                 $("#dseqb_1").val("");
             } else {
-                $("#dseqb_1").val(item.seq);
+                $("#dseqb_1").val(jMain.case_main[0].seq);
             }
-            $("#dseq1b_1").val(item.seq1);
-            $("#dmseqb_1").val(item.ref_no);
-            $("#dmseq1b_1").val(item.ref_no1);
+            $("#dseq1b_1").val(jMain.case_main[0].seq1);
+            $("#dmseqb_1").val(jMain.case_main[0].ref_no);
+            $("#dmseq1b_1").val(jMain.case_main[0].ref_no1);
             $("#btndseq_okb_1").lock();
             $("#keydseqb_1").val("Y");
             var smark_val = jMain.case_main[0].s_mark;
@@ -772,11 +795,11 @@
             $("#issue_nob_1").val(jMain.case_main[0].issue_no);//註冊號
             $.each(jMain.case_dmt1, function (i, item) {
                 //填資料
-                var nRow = (i + 1);
+                var nRow = (i + 2);//從2開始,第一筆是母案
                 $("#dseqb_" + nRow).val(item.seq);
                 $("#dseq1b_" + nRow).val(item.seq1);
                 if (item.case_stat1 == "NN") {
-                    $("input[name='case_stat1b_" + nRow + "'][value=NN]").prop("checked", true).triggerHandler("click");
+                    $("input[name='case_stat1b_" + nRow + "'][value=NN]").prop("checked", true);//.triggerHandler("click");
                     var smark_val = item.s_mark;
                     if (smark_val == "S") {
                         $("#s_markb_" + nRow).val("92年修正前服務標章");
@@ -800,7 +823,7 @@
                         $("input[name=case_stat1b_" + nRow + " ]").lock();
                     }
                 } else {
-                    $("input[name='case_stat1b_" + nRow + "'][value=OO]").prop("checked", true).triggerHandler("click");
+                    $("input[name='case_stat1b_" + nRow + "'][value=OO]").prop("checked", true);//.triggerHandler("click");
                     $("#btndmt_tempb_" + nRow).hide();
                     if (main.prgid == "brt52") {
                         $("#dseqb_" + nRow).lock();
@@ -821,7 +844,7 @@
                 }
             });
             //申請人種類
-            $("input[name='tfzd_Mark'][value='" + jMain.case_main[0].dmt_mark + "']").prop("checked", true).triggerHandler("click");
+            $("input[name='tfzd_Mark'][value='" + jMain.case_main[0].temp_mark + "']").prop("checked", true).triggerHandler("click");
 
             //關係人
             var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_ap' });
@@ -854,59 +877,63 @@
                     //$("#tfr_apsqlno_" + nRow).val(item.naddr1);
             });
             if (CInt($("#FL_apnum").val()) == 0) {
-                alert("查無此交辦案件之關係人資料!!");
+                alert("查無此交辦案件之關係人資料(1)!!");
             }
 
-            if ($("#tfy_Arcase").val().Left(3) == "FL2" || $("#tfy_Arcase").val().Left(3) == "FL") {
+            /*
+            if ($("#tfy_Arcase").val().Left(3) == "FL2" || $("#tfy_Arcase").val().Left(3) == "FL6") {
                 var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_tap' });
                 $.each(tranlist, function (i, item) {
-                        //增加一筆
-                        $("#FL2_AP_Add_button").click();
-                        //填資料
-                        var nRow = $("#FL2_apnum").val();
-                        $("#tfv_new_no_" + nRow).val(item.new_no);
-                        $("#tfv_ncname1_" + nRow).val(item.ncname1);
-                        $("#tfv_ncname2_" + nRow).val(item.ncname2);
-                        $("#tfv_nename1_" + nRow).val(item.nename1);
-                        $("#tfv_nename2_" + nRow).val(item.nename2);
-                        $("#tfv_ncrep_" + nRow).val(item.ncrep);
-                        $("#tfv_nerep_" + nRow).val(item.nerep);
-                        $("#tfv_naddr1_" + nRow).val(item.naddr1);
-                        $("#tfv_naddr2_" + nRow).val(item.naddr2);
-                        $("#tfv_neaddr1_" + nRow).val(item.neaddr1);
-                        $("#tfv_neaddr2_" + nRow).val(item.neaddr2);
-                        $("#tfv_neaddr3_" + nRow).val(item.neaddr3);
-                        $("#tfv_neaddr4_" + nRow).val(item.neaddr4);
-                        $("#tfv_ntel0_" + nRow).val(item.ntel0);
-                        $("#tfv_ntel_" + nRow).val(item.ntel);
-                        $("#tfv_ntel1_" + nRow).val(item.ntel1);
-                        $("#tfv_nfax" + nRow).val(item.nfax);
+                    //增加一筆
+                    $("#FL2_AP_Add_button").click();
+                    //填資料
+                    var nRow = $("#FL2_apnum").val();
+                    $("#tfv_new_no_" + nRow).val(item.new_no);
+                    $("#tfv_ncname1_" + nRow).val(item.ncname1);
+                    $("#tfv_ncname2_" + nRow).val(item.ncname2);
+                    $("#tfv_nename1_" + nRow).val(item.nename1);
+                    $("#tfv_nename2_" + nRow).val(item.nename2);
+                    $("#tfv_ncrep_" + nRow).val(item.ncrep);
+                    $("#tfv_nerep_" + nRow).val(item.nerep);
+                    $("#tfv_naddr1_" + nRow).val(item.naddr1);
+                    $("#tfv_naddr2_" + nRow).val(item.naddr2);
+                    $("#tfv_neaddr1_" + nRow).val(item.neaddr1);
+                    $("#tfv_neaddr2_" + nRow).val(item.neaddr2);
+                    $("#tfv_neaddr3_" + nRow).val(item.neaddr3);
+                    $("#tfv_neaddr4_" + nRow).val(item.neaddr4);
+                    $("#tfv_ntel0_" + nRow).val(item.ntel0);
+                    $("#tfv_ntel_" + nRow).val(item.ntel);
+                    $("#tfv_ntel1_" + nRow).val(item.ntel1);
+                    $("#tfv_nfax" + nRow).val(item.nfax);
 
-                        $("#tfv_nzip" + nRow).val(item.nzip);
-                        $("#tfv_napclass_" + nRow).val(item.napclass);
-                        $("#tfv_nap_country_" + nRow).val(item.nap_country);
+                    $("#tfv_nzip" + nRow).val(item.nzip);
+                    $("#tfv_napclass_" + nRow).val(item.napclass);
+                    $("#tfv_nap_country_" + nRow).val(item.nap_country);
                 });
                 if (CInt($("#FL2_apnum").val()) == 0) {
-                    alert("查無此交辦案件之關係人資料!!");
+                    alert("查無此交辦案件之關係人資料(2)!!");
                 }
-            }
+            }*/
+
             //授權期間種類
-            $("input[name='tfg1_mod_claim1'][value='"+jMain.case_main[0].mod_claim1+"'").prop("checked",true).triggerHandler("click");
             $("#tfg1_term1").val(dateReviver(jMain.case_main[0].term1, "yyyy/M/d"));//授權起日
             $("#tfg1_term2").val(dateReviver(jMain.case_main[0].term2, "yyyy/M/d"));//授權迄日
-            $("#tfg1_other_item1").val(jMain.case_main[0].other_item1);//授權迄日
+            $("input[name='tfg1_mod_claim1'][value='"+jMain.case_main[0].mod_claim1+"'").prop("checked",true).triggerHandler("click");
+            if(jMain.case_main[0].mod_claim1=="B"){
+                $("#tfg1_term1").val(dateReviver(jMain.case_main[0].term1, "yyyy/M/d"));//授權起日
+            }else if(jMain.case_main[0].mod_claim1=="E"){
+                $("#tfg1_term1").val("");//授權起日
+                $("#fl_term1").val(dateReviver(jMain.case_main[0].term1, "yyyy/M/d"));//授權起日
+                $("#tfg1_other_item1").val(jMain.case_main[0].other_item1);//授權迄日
+            }
+
             $("input[name='tfg1_mod_claim2'][value='"+jMain.case_main[0].mod_claim2+"'").prop("checked",true).triggerHandler("click");//授權性質
             //授權區域
             if (jMain.case_main[0].other_item2 != "") {
-                var other_item2=jMain.case_main[0].other_item2;
-                if (other_item2.indexOf(",") > -1) {
-                    var v_item2=other_item2.split(",");
-                    if (v_item2[0] == "O") {
-                        $("#other_item2O").prop("clicked",true);
-                        $("#other_item2t").val(v_item2[1]);
-                    }
-                } else {
-                    $("input[name='other_item2'][value='"+other_item2+"'").prop("checked",true);
+                var v_item2 = jMain.case_main[0].other_item2.split(",");
+                $("input[name='other_item2'][value='" + v_item2[0] + "'").prop("checked", true);
+                if (v_item2[1] && v_item2[0] == "O") {
+                    $("#other_item2t").val(v_item2[1]);
                 }
             }
 
@@ -933,7 +960,8 @@
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
                     //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttz"+tabid+"_Z9t").val(substr[1]);
                     } else {

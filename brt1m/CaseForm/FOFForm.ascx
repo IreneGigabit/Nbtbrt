@@ -166,5 +166,6 @@
                 $("#" + strmark[0] + "_no").val(strmark[3]);
             }
         }
+        $("#tfzf_agt_no1").triggerHandler("change");
     }
 </script>

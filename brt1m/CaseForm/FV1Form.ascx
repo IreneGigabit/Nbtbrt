@@ -128,13 +128,13 @@
             $("#ttg1_agt_no").val(jMain.case_main[0].agt_no);//代理人
             $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);
             //程序種類
-            $("input[name='tfzd_Mark'][value='" + jMain.case_main[0].dmt_mark + "']").prop("checked", true).triggerHandler("click");
+            $("input[name='tfzd_Mark'][value='" + jMain.case_main[0].temp_mark + "']").prop("checked", true).triggerHandler("click");
             //號數
-            if (jMain.case_main[0].dmt_mark == "A") {
+            if (jMain.case_main[0].temp_mark == "A") {
                 $("#no").val(jMain.case_main[0].apply_no);
-            } else if (jMain.case_main[0].dmt_mark == "I") {
+            } else if (jMain.case_main[0].temp_mark == "I") {
                 $("#no").val(jMain.case_main[0].issue_no);
-            } else if (jMain.case_main[0].dmt_mark == "R") {
+            } else if (jMain.case_main[0].temp_mark == "R") {
                 $("#no").val(jMain.case_main[0].rej_no);
             }
             $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱

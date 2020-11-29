@@ -98,7 +98,7 @@
 		    <INPUT type="checkbox" name="tfop_mod_ap" value="Y" onclick="br_form.Cul_DmtTran('tfop_mod_ap','tfg2_mod_ap')">申請人中文名稱
 		    <INPUT type="checkbox" name="tfop_mod_ap" value="Y" onclick="br_form.Cul_DmtTran('tfop_mod_ap','tfg2_mod_ap')">申請人英文名稱
 		    <INPUT type="checkbox" name=tfop_mod_apaddr value="Y" onclick="br_form.Cul_DmtTran('tfop_mod_apaddr','tfg2_mod_apaddr')">申請人中文地址<INPUT type=hidden name=tfg2_mod_apaddr id=tfg2_mod_apaddr value="">
-		    <INPUT type="checkbox" name=tfop_mod_oth value="Y"><INPUT type=hidden id=tfg2_mod_oth name=tfg2_mod_oth value="">申請人印章
+		    <INPUT type="checkbox" id=tfop_mod_oth name=tfop_mod_oth value="Y"><INPUT type=hidden id=tfg2_mod_oth name=tfg2_mod_oth value="">申請人印章
 		</td>
 	</tr>	
 	<tr>
@@ -107,20 +107,20 @@
 		    <INPUT type="checkbox" name=tfop_mod_apaddr value="Y" onclick="br_form.Cul_DmtTran('tfop_mod_apaddr','tfg2_mod_apaddr')">申請人英文地址
 		    <INPUT type="checkbox" name=tfop_mod_aprep value="Y" onclick="br_form.Cul_DmtTran('tfop_mod_aprep','tfg2_mod_aprep')">代表人中文名稱<INPUT type="hidden" name=tfg2_mod_aprep id=tfg2_mod_aprep value="">
 		    <INPUT type="checkbox" name=tfop_mod_aprep value="Y" onclick="br_form.Cul_DmtTran('tfop_mod_aprep','tfg2_mod_aprep')">代表人英文名稱
-		    <INPUT type="checkbox" name=tfop_mod_oth1 value="Y">代表人印章<INPUT type=hidden name=tfg2_mod_oth1 id=tfg2_mod_oth1 value="">
+		    <INPUT type="checkbox" id=tfop_mod_oth1 name=tfop_mod_oth1 value="Y">代表人印章<INPUT type=hidden name=tfg2_mod_oth1 id=tfg2_mod_oth1 value="">
 		</td>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right ></td>
 		<td class=whitetablebg colspan="7">
-            <input type="checkbox" name=tfop_mod_claim1 value="Y" onclick="br_form.clearmod(2)">選定代表人
+            <input type="checkbox" id=tfop_mod_claim1 name=tfop_mod_claim1 value="Y" onclick="br_form.clearmod(2)">選定代表人
             <INPUT type="hidden" id="tfg2_mod_claim1" name="tfg2_mod_claim1" value=""><input type="hidden" id=ttg2_ncname2 name=ttg2_ncname2 >
 		</td>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right ></td>
 		<td class=whitetablebg colspan="7">
-            <input type="checkbox" name=tfop_mod_dmt value="Y" onclick="br_form.clearmod(1)">變更商標(標章)名稱：<input type="text" id=ttg2_ncname1 name=ttg2_ncname1>
+            <input type="checkbox" id=tfop_mod_dmt name=tfop_mod_dmt value="Y" onclick="br_form.clearmod(1)">變更商標(標章)名稱：<input type="text" id=ttg2_ncname1 name=ttg2_ncname1>
             <INPUT type="hidden" id="tfg2_mod_dmt" name="tfg2_mod_dmt" value="">
 		</td>
 	</tr>
@@ -135,7 +135,7 @@
 	<tr>
 		<td class=lightbluetable align=right ></td>
 		<td class=whitetablebg colspan="7">
-            <input type="checkbox" name=tfop_mod_claim2 value="Y" onclick="br_form.clearmod(3)">質權人名稱、地址、代表人及印章變更
+            <input type="checkbox" id=tfop_mod_claim2 name=tfop_mod_claim2 value="Y" onclick="br_form.clearmod(3)">質權人名稱、地址、代表人及印章變更
             <INPUT type="hidden" name="tfg2_mod_claim2" id="tfg2_mod_claim2" value="">
 		</td>
 	</tr>
@@ -212,7 +212,7 @@
 													<INPUT type="radio" id=O_item22FL1 name=O_item22 value="FL1" onclick="reg.O_item23.value=''">授權案
 													<INPUT type="radio" id=O_item22F11 name=O_item22 value="FI1" onclick="reg.O_item23.value=''">補證案
 													<INPUT type="radio" id=O_item22FR1 name=O_item22 value="FR1" onclick="reg.O_item23.value=''">延展案
-													<INPUT type="radio" id=O_item22ZZ name=O_item22 value="ZZ">其他<input type="text" name="O_item23" value="" size=10 onchange="reg.O_item22(4).checked=true">案
+													<INPUT type="radio" id=O_item22ZZ name=O_item22 value="ZZ">其他<input type="text" name="O_item23" value="" size=10 onchange="$('#O_item22ZZ').prop('checked',true)">案
 		</TD>
 	</tr>	
 </table>
@@ -258,7 +258,7 @@
             return ($(this).prop("checked")==true? "Y":"N");
         });
 
-        $("#"+tar).val().get().join('');
+        $("#" + tar).val(nclass.get().join(''));
     }
 
     //交辦內容綁定
@@ -282,8 +282,8 @@
             $("input[name=fr2_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
             var tranlist_tcnref = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_tcnref' });
             if (tranlist_tcnref.length > 0) {
-                $("#new_no21").val(jMain.case_main[0].new_no);//註冊案號
-                $("#ncname121").val(jMain.case_main[0].ncname1);//商標名稱
+                $("#new_no21").val(tranlist_tcnref[0].new_no);//註冊案號
+                $("#ncname121").val(tranlist_tcnref[0].ncname1);//商標名稱
             }
             //變更事項
             //申請人名稱
@@ -340,7 +340,7 @@
                 }
             }
             //修正使用規範書
-            if (jMain.case_main[0].other_item1 == "Y") {
+            if (jMain.case_main[0].other_item1.Left(1) == "Y") {
                 $("input[name=tfop_oitem1]").prop("checked", true);
                 $("input[name=tfop_oitem1c][value='" + jMain.case_main[0].other_item1.substr(2,1) + "']").prop("checked", true);
             }
@@ -350,7 +350,7 @@
                 $("#tfg2_mod_claim2").val("Y");
             }
             //質權移轉
-            if (jMain.case_main[0].other_item2 == "Y") {
+            if (jMain.case_main[0].other_item2.Left(1) == "Y") {
                 $("input[name=tfop_oitem2]").prop("checked", true);
                 $("input[name=tfop_oitem2c][value='" + jMain.case_main[0].other_item2.substr(2, 1) + "']").prop("checked", true);
             }
@@ -361,7 +361,8 @@
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
                     //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttz2_Z9t").val(substr[1]);
                     } else {

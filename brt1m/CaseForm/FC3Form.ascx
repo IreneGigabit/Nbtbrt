@@ -79,7 +79,7 @@
 			    <td class="whitetablebg" colspan="7" ><input type="text" id=class31_## name=class31_## size=3 maxlength=3 onchange="br_form.count_kindFC3(this,'1')"></td>
 		    </tr>
 		    <tr class="fc3_br_class_template1_##">
-			    <td class="lightbluetable" align="right">商標/服務名稱1：</td>
+			    <td class="lightbluetable" align="right">商標/服務名稱##：</td>
 			    <td class="whitetablebg" colspan="7"><textarea id="good_name31_##" NAME="good_name31_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('good_name31_##','good_count31_##')"></textarea>
 			    <input type="hidden" id=good_count31_## name=good_count31_## size=2>
 			    </td>
@@ -118,7 +118,7 @@
 			    <td class="whitetablebg" colspan="7" ><input type="text" id=class32_## name=class32_## size=3 maxlength=3 onchange="br_form.count_kindFC3(this,'2')"></td>
 		    </tr>
 		    <tr class="fc3_br_class_template2_##">	
-			    <td class="lightbluetable" align="right">商標/服務名稱1：</td>
+			    <td class="lightbluetable" align="right">商標/服務名稱##：</td>
 			    <td class="whitetablebg" colspan="7"><textarea id="good_name32_##" NAME="good_name32_##" ROWS="10" COLS="75" onchange="br_form.good_name_count('good_name32_##','good_count32_##')"></textarea>
 			    <input type="hidden" id=good_count32_## name=good_count32_## size=2>
 			    </td>
@@ -163,7 +163,7 @@
 			<INPUT type="radio" id=O_item32DI1 name=O_item32 value="DI1" onclick="reg.O_item33.value=''">評定案
 			<INPUT type="radio" id=O_item32FI1 name=O_item32 value="FI1" onclick="reg.O_item33.value=''">補證案
 			<INPUT type="radio" id=O_item32FR1 name=O_item32 value="FR1" onclick="reg.O_item33.value=''">延展案
-			<INPUT type="radio" id=O_item32ZZ name=O_item32 value="ZZ">其他<input type="text" id="O_item33" name="O_item33" value="" size=10 onchange="reg.O_item32(4).checked=true">案
+			<INPUT type="radio" id=O_item32ZZ name=O_item32 value="ZZ">其他<input type="text" id="O_item33" name="O_item33" value="" size=10 onchange="$('#O_item32ZZ').prop('checked',true)">案
 		</TD>
 	</tr>
 </table>
@@ -220,17 +220,17 @@
             //代理人
             $("#ttg3_agt_no").val(jMain.case_main[0].agt_no);
             //商標種類
-            $("input[name=fr_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            $("input[name=fr3_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
             $("#fr3_issue_no").val(jMain.case_main[0].issue_no);//註冊號
             $("#fr3_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
             //擬減縮商品
-            var tranlist_dgood = $(jMain.case_tranlist).filter(function (i, n) { return (n.mod_type==='Dgood' && n.mod_field === 'mod_agt') });
+            var tranlist_dgood = $(jMain.case_tranlist).filter(function (i, n) { return (n.mod_type === 'Dgood' && n.mod_field === 'mod_class') });
             if (tranlist_dgood.length > 0) {
                 $("#tft3_class_count1").val(tranlist_dgood.length).triggerHandler("change");//產生筆數
                 $("#tft3_class1").val(tranlist_dgood[0].mod_dclass);
                 $.each(tranlist_dgood, function (i, item) {
                     $("#class31_" + (i + 1)).val(item.new_no).triggerHandler("change");//類別
-                    $("#good_name31_" + (i + 1)).val(item.list_remark).triggerHandler("change");//商標/服務名稱
+                    $("#good_name31_" + (i + 1)).val(item.list_remark);//.triggerHandler("change");//商標/服務名稱
                 });
             }
             //減縮後指定商品
@@ -251,13 +251,21 @@
             if (jMain.case_main[0].remark1 != "") {
                 var arr_remark1 = jMain.case_main[0].remark1.split("|");
                 for (var i = 0; i < arr_remark1.length; i++) {
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttz3_Z9t").val(substr[1]);
                     } else {
                         $("#ttz3_" + arr_remark1[i]).prop("checked", true);
                     }
                 }
+            }
+            //**附註
+            if (jMain.case_tran[0].other_item.indexOf(";") > -1) {
+                var oitem = jMain.case_tran[0].other_item.split(";");
+                $("#O_item31").val(oitem[0]);
+                $("input[name=O_item32][value='" + oitem[1] + "']").prop("checked", true);
+                $("#O_item33").val(oitem[2]);
             }
         }
     }

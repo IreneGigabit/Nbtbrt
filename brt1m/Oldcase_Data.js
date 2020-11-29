@@ -80,12 +80,12 @@ function delayNO(low_no, low_no1) {
         $("#tfzy_end_code,#tfzd_end_code").val("");//結案代碼
         $("#tfzd_dmt_term1,#tfzd_dmt_term2").val("");//專用期限
         $("#tfzd_renewal").val("");//延展次數
-        $("#tfzr_class_count").val("");//類別數
-        $("#tfzr_class").val("");//類別
-        $("#class1_1").val("");
-        $("#good_name1_1").val("");
-        $("#good_count1_1").val("");
-        $("#grp_code1_1").val("");
+        $("#tfzr_class_count,#tfzd_class_count").val("");//類別數
+        $("#tfzr_class,#tfzd_class").val("");//類別
+        $("#class1_1,#class2_1").val("");
+        $("#good_name1_1,#good_name2_1").val("");
+        $("#good_count1_1,#good_count2_1").val("");
+        $("#grp_code1_1,#grp_code2_1").val("");
         alert("該客戶無此案件編號");
         $("#keyseq").val("N");
         $("#btnseq_ok").unlock();//舊案[查詢主案件編號]
@@ -182,18 +182,21 @@ function delayNO(low_no, low_no1) {
         $("#issue_nob_1").val(oMain.vdmtall[0].issue_no);
         $("#keydseqa_1,#keydseqb_1").val("Y");
         $("#btndseq_oka_1,#btndseq_okb_1").lock();//[確定]
-        
-        $("#tfzr_class_count,#tft3_class_count2,#mod_count").val(oMain.vdmtall[0].class_count);//共N類
-        $("#tfzr_class,#tft3_class2,#mod_dclass").val(oMain.vdmtall[0].class);//類別
+
+        $("#tfzr_class_count,#tfzd_class_count,#tft3_class_count2,#mod_count").val(oMain.vdmtall[0].class_count);//共N類
+        $("#tfzr_class,#tfzd_class,#tft3_class2,#mod_dclass").val(oMain.vdmtall[0].class);//類別
+        if (br_form.Add_classFR1) br_form.Add_classFR1(0);
         if (br_form.Add_classFC3) br_form.Add_classFC3(0);
         if (br_form.Add_classFL1) br_form.Add_classFL1(0);
         if (CInt($("#tfzr_class_count").val() == 0)) {
             dmt_form.Add_class(1);//類別預設顯示第1筆
+            if (br_form.Add_classFR1) br_form.Add_classFR1(1);
             if (br_form.Add_classFC3) br_form.Add_classFC3(1);
             if (br_form.Add_classFL1) br_form.Add_classFL1(1);
         } else {
             if (oMain.dmt_good.length > 0) {
                 dmt_form.Add_class(oMain.dmt_good.length);//產生筆數
+                if (br_form.Add_classFR1) br_form.Add_classFR1(oMain.dmt_good.length);
                 if (br_form.Add_classFC3) br_form.Add_classFC3(oMain.dmt_good.length);
                 if (br_form.Add_classFL1) br_form.Add_classFL1(oMain.dmt_good.length);
                 $.each(oMain.dmt_good, function (i, item) {
@@ -201,6 +204,10 @@ function delayNO(low_no, low_no1) {
                     $("#good_count1_" + (i + 1)).val(item.dmt_goodcount).lock();//共N項
                     $("#grp_code1_" + (i + 1)).val(item.dmt_grp_code).lock();//商品群組代碼
                     $("#good_name1_" + (i + 1)).val(item.dmt_goodname).lock();//商品名稱
+                    //fr1
+                    $("#class2_" + (i + 1)).val(item.class);//第X類
+                    $("#good_name2_" + (i + 1)).val(item.dmt_goodname);//商品名稱
+                    $("#good_count2_" + (i + 1)).val(item.dmt_goodcount);//共N項
                     //fc3
                     $("#class32_" + (i + 1)).val(item.class);//第X類
                     $("#good_name32_" + (i + 1)).val(item.dmt_goodname);//商品名稱
@@ -211,14 +218,17 @@ function delayNO(low_no, low_no1) {
                 });
             }
             dmt_form.count_kind(1);//類別串接
-            if (br_form.count_kindFC3) br_form.count_kindFC3(1);//fc3類別串接
+            if (br_form.count_kindFR1) br_form.count_kindFR1(1);//fr1類別串接
+            if (br_form.count_kindFC3) br_form.count_kindFC3(reg.class31_1, 1);//fc3類別串接
             if (br_form.count_kindFL1) br_form.count_kindFL1(1);//fl1類別串接
         }
         var kclass_type = oMain.vdmtall[0].class_type;//案件主檔之類別種類
         var ks_mark2 = oMain.vdmtall[0].s_mark2;//案件主檔之商標種類
         $("input[name='tft3_class_type2'][value='" + kclass_type + "']").prop("checked", true);
         $("input[name='tfzr_class_type'][value='" + kclass_type + "']").prop("checked", true);
-        $("input[name='tfzd_s_mark2'][value='" +ks_mark2 + "']").prop("checked", true);//商標種類2
+        $("input[name='tfzd_class_type']").prop('checked', false);
+        $("input[name='tfzd_class_type'][value='" + kclass_type + "']").prop("checked", true);
+        $("input[name='tfzd_s_mark2'][value='" + ks_mark2 + "']").prop("checked", true);//商標種類2
 
         //展覽會優先權資料
         dmt_form.getshow("dmt");
@@ -384,17 +394,20 @@ function delayNO1(low_no, low_no1) {
         $("#tfzd_dmt_term2").val(dateReviver(oMain.vdmtall[0].term2, "yyyy/M/d"));//專用期限
         $("#tfzd_renewal").val(oMain.vdmtall[0].renewal);//延展次數
 
-        $("#tfzr_class_count,#tft3_class_count2,#mod_count").val(oMain.vdmtall[0].class_count);//共N類
-        $("#tfzr_class,#tft3_class2,#mod_dclass").val(oMain.vdmtall[0].class);//類別
+        $("#tfzr_class_count,#tfzd_class_count,#tft3_class_count2,#mod_count").val(oMain.vdmtall[0].class_count);//共N類
+        $("#tfzr_class,#tfzd_class,#tft3_class2,#mod_dclass").val(oMain.vdmtall[0].class);//類別
+        if (br_form.Add_classFR1) br_form.Add_classFR1(0);
         if (br_form.Add_classFC3) br_form.Add_classFC3(0);
         if (br_form.Add_classFL1) br_form.Add_classFL1(0);
         if (CInt($("#tfzr_class_count").val() == 0)) {
             dmt_form.Add_class(1);//類別預設顯示第1筆
+            if (br_form.Add_classFR1) br_form.Add_classFR1(1);
             if (br_form.Add_classFC3) br_form.Add_classFC3(1);
             if (br_form.Add_classFL1) br_form.Add_classFL1(1);
         } else {
             if (oMain.dmt_good.length > 0) {
                 dmt_form.Add_class(oMain.dmt_good.length);//產生筆數
+                if (br_form.Add_classFR1) br_form.Add_classFR1(oMain.dmt_good.length);
                 if (br_form.Add_classFC3) br_form.Add_classFC3(oMain.dmt_good.length);
                 if (br_form.Add_classFL1) br_form.Add_classFL1(oMain.dmt_good.length);
                 $.each(oMain.dmt_good, function (i, item) {
@@ -402,6 +415,10 @@ function delayNO1(low_no, low_no1) {
                     $("#good_count1_" + (i + 1)).val(item.dmt_goodcount);//共N項
                     $("#grp_code1_" + (i + 1)).val(item.dmt_grp_code);//商品群組代碼
                     $("#good_name1_" + (i + 1)).val(item.dmt_goodname);//商品名稱
+                    //fr1
+                    $("#class2_" + (i + 1)).val(item.class);//第X類
+                    $("#good_name2_" + (i + 1)).val(item.dmt_goodname);//商品名稱
+                    $("#good_count2_" + (i + 1)).val(item.dmt_goodcount);//共N項
                     //fc3
                     $("#class32_" + (i + 1)).val(item.class);//第X類
                     $("#good_name32_" + (i + 1)).val(item.dmt_goodname);//商品名稱
@@ -412,7 +429,8 @@ function delayNO1(low_no, low_no1) {
                 });
             }
             dmt_form.count_kind(1);//類別串接
-            if (br_form.count_kindFC3) br_form.count_kindFC3(1);//fc3類別串接
+            if (br_form.count_kindFR1) br_form.count_kindFR1(1);//fr1類別串接
+            if (br_form.count_kindFC3) br_form.count_kindFC3(reg.class31_1, 1);//fc3類別串接
             if (br_form.count_kindFL1) br_form.count_kindFL1(1);//fl1類別串接
         }
 

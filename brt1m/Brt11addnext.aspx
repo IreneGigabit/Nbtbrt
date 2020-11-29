@@ -30,6 +30,7 @@
     protected string seq = "";
     protected string seq1 = "";
     protected string code_type = "";
+    protected string tscode = "";
     
     private void Page_Unload(System.Object sender, System.EventArgs e) {
     }
@@ -64,6 +65,11 @@
     }
 
     private void PageLayout() {
+        //if ((HTProgRight & 64) == 0){
+        //    F_tscode = Sys.GetSession("scode");
+        //} else {
+        //    F_tscode = "";
+        //}
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -109,6 +115,10 @@
 <INPUT TYPE=hidden name=seq1 value="<%=seq1%>">
 <INPUT TYPE=hidden name=code_type value="<%=code_type%>">
 <INPUT TYPE=hidden name=uploadtype value="case">
+
+<INPUT TYPE=hidden name=fromprg value="addnext">
+<INPUT TYPE=hidden name=tfx_cust_area value="<%=cust_area%>">
+<INPUT TYPE=hidden name=tfx_cust_seq value="<%=cust_seq%>">
 </form>
     <table border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
         <tr>
@@ -158,7 +168,9 @@
     }
 	
     function QueryForm() {
+        //***todo
         reg.action = "Brt11ListA.aspx";
+        //reg.action = "Brt12List.aspx";
         reg.submit();
     }
 </script>

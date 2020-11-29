@@ -144,7 +144,7 @@
 		    <INPUT type="checkbox" name="tfop1_mod_ap" value="Y" onclick="br_form.Cul_DmtTran('tfop1_mod_ap','tfg2_mod_ap')">申請人中文名稱
 		    <INPUT type="checkbox" name="tfop1_mod_ap" value="Y" onclick="br_form.Cul_DmtTran('tfop1_mod_ap','tfg2_mod_ap')">申請人英文名稱
 		    <INPUT type="checkbox" name=tfop1_mod_apaddr value="Y" onclick="br_form.Cul_DmtTran('tfop1_mod_apaddr','tfg2_mod_apaddr')">申請人中文地址
-		    <INPUT type="checkbox" name="tfop1_mod_oth" value="Y" onclick="br_form.Cul_DmtTran('tfop1_mod_oth','tfg2_mod_oth')">申請人印章
+		    <INPUT type="checkbox" id=tfop1_mod_oth name="tfop1_mod_oth" value="Y" onclick="br_form.Cul_DmtTran('tfop1_mod_oth','tfg2_mod_oth')">申請人印章
 		</td>
 	</tr>	
 	<tr>
@@ -153,7 +153,7 @@
 		    <INPUT type="checkbox" name=tfop1_mod_apaddr value="Y" onclick="br_form.Cul_DmtTran('tfop1_mod_apaddr','tfg2_mod_apaddr')">申請人英文地址
 		    <INPUT type="checkbox" name=tfop1_mod_aprep value="Y" onclick="br_form.Cul_DmtTran('tfop1_mod_aprep','tfg2_mod_aprep')">代表人中文名稱
 		    <INPUT type="checkbox" name=tfop1_mod_aprep value="Y" onclick="br_form.Cul_DmtTran('tfop1_mod_aprep','tfg2_mod_aprep')">代表人英文名稱
-		    <INPUT type="checkbox" name=tfop1_mod_oth1 value="Y" onclick="br_form.Cul_DmtTran('tfop1_mod_oth1','tfg2_mod_oth1')">代表人印章
+		    <INPUT type="checkbox" id=tfop1_mod_oth1 name=tfop1_mod_oth1 value="Y" onclick="br_form.Cul_DmtTran('tfop1_mod_oth1','tfg2_mod_oth1')">代表人印章
 		</td>
 	</tr>
 	<tr>
@@ -250,7 +250,7 @@
 													 <INPUT type="radio" id=O_item221FL1 name=O_item221 value="FL1" onclick="reg.O_item231.value=''">授權案
 													 <INPUT type="radio" id=O_item221FI1 name=O_item221 value="FI1" onclick="reg.O_item231.value=''">補證案
 													 <INPUT type="radio" id=O_item221FR1 name=O_item221 value="FR1" onclick="reg.O_item231.value=''">延展案
-													 <INPUT type="radio" id=O_item221ZZ name=O_item221 value="ZZ">其他<input type="text" id="O_item231" name="O_item231" value="" size=10 onchange="reg.O_item221(4).checked=true">案
+													 <INPUT type="radio" id=O_item221ZZ name=O_item221 value="ZZ">其他<input type="text" id="O_item231" name="O_item231" value="" size=10 onchange="$('#O_item221ZZ').prop('checked',true)">案
             </TD>
 		</tr>
 </table>
@@ -294,7 +294,7 @@
             return ($(this).prop("checked") == true ? "Y" : "N");
         });
 
-        $("#" + tar).val().get().join('');
+        $("#" + tar).val(nclass.get().join(''));
     }
 
     //*****共N件
@@ -304,7 +304,7 @@
             $("#tot_num21,#nfy_tot_num").val("1").focus();
             return false;
         }
-
+        
         var doCount = CInt(arcaseCount);//要改為幾筆
         var cnt211 = Math.max(1, CInt($("#cnt211").val()));//目前畫面上有幾筆,最少是1
         if (doCount > cnt211) {//要加
@@ -334,7 +334,8 @@
     br_form.bindFC21 = function () {
         console.log("fc21.br_form.bind");
         if (jMain.case_main.length == 0) {
-            $("#tot_num21,#nfy_tot_num").val("1").triggerHandler("change");
+            //$("#tot_num21,#nfy_tot_num").val("1").triggerHandler("change");
+            br_form.Add_FC21(1);
         } else {
             //代理人
             if (jMain.case_main[0].mod_agt == "Y") {
@@ -352,13 +353,14 @@
                 $("#dseqb_1,#dseq1b_1").lock();
                 $("input[name=case_stat1b_1]").lock();
             }
-            $("#tot_num21,#nfy_tot_num").val(jMain.case_main[0].tot_num).triggerHandler("change");
+            $("#tot_num21,#nfy_tot_num").val(jMain.case_main[0].tot_num);//.triggerHandler("change");
+            br_form.Add_FC21(jMain.case_main[0].tot_num);
             if (jMain.case_main[0].seq == "0") {
                 $("#dseqb_1").val("");
             } else {
-                $("#dseqb_1").val(item.seq);
+                $("#dseqb_1").val(jMain.case_main[0].seq);
             }
-            $("#dseq1b_1").val(item.seq1);
+            $("#dseq1b_1").val(jMain.case_main[0].seq1);
             $("#btndseq_okb_1").lock();
             $("#keydseqb_1").val("Y");
             var smark_val = jMain.case_main[0].s_mark;
@@ -377,11 +379,11 @@
             $("#issue_nob_1").val(jMain.case_main[0].issue_no);//註冊號數
             $.each(jMain.case_dmt1, function (i, item) {
                 //填資料
-                var nRow = (i + 1);
+                var nRow = (i + 2);//從2開始,第一筆是母案
                 $("#dseqb_" + nRow).val(item.seq);
                 $("#dseq1b_" + nRow).val(item.seq1);
                 if (item.case_stat1 == "NN") {
-                    $("input[name='case_stat1b_" + nRow + "'][value=NN]").prop("checked", true).triggerHandler("click");
+                    $("input[name='case_stat1b_" + nRow + "'][value='NN']").prop("checked", true);//.triggerHandler("click");
                     var smark_val = item.s_mark;
                     if (smark_val == "S") {
                         $("#s_markb_" + nRow).val("92年修正前服務標章");
@@ -405,7 +407,7 @@
                         $("input[name=case_stat1b_" + nRow + " ]").lock();
                     }
                 } else {
-                    $("input[name='case_stat1b_" + nRow + "'][value=OO]").prop("checked", true).triggerHandler("click");
+                    $("input[name='case_stat1b_" + nRow + "'][value='OO']").prop("checked", true);//.triggerHandler("click");
                     $("#btndmt_tempb_" + nRow).hide();
                     if (main.prgid == "brt52") {
                         $("#dseqb_" + nRow).lock();
@@ -480,17 +482,17 @@
                 }
             }
             //修正使用規範書
-            if (jMain.case_main[0].other_item1 == "Y") {
+            if (jMain.case_main[0].other_item1.Left(1) == "Y") {
                 $("input[name=tfop1_oitem1]").prop("checked", true);
                 $("input[name=tfop1_oitem1c][value='" + jMain.case_main[0].other_item1.substr(2, 1) + "']").prop("checked", true);
             }
             //質權人名稱、地址、代表人及印章變更
             if (jMain.case_main[0].mod_claim2 == "Y") {
-                $("input[name=tfop_mod_claim2]").prop("checked", true);
+                $("input[name=tfop1_mod_claim2]").prop("checked", true);
                 $("#tfg2_mod_claim2").val("Y");
             }
             //質權移轉
-            if (jMain.case_main[0].other_item2 == "Y") {
+            if (jMain.case_main[0].other_item2.Left(1) == "Y") {
                 $("input[name=tfop1_oitem2]").prop("checked", true);
                 $("input[name=tfop1_oitem2c][value='" + jMain.case_main[0].other_item2.substr(2, 1) + "']").prop("checked", true);
             }
@@ -501,7 +503,8 @@
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
                     //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttz21_Z9t").val(substr[1]);
                     } else {

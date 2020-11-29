@@ -106,7 +106,7 @@
 		    </tr>
 		    <tr>
 			    <td class="lightbluetable" align="right" style="cursor:pointer" title="請輸入類別" width="30%" ><font color=red>分割(<span class="numberCh$$"></span>)</font>類別項目:</td>		
-			    <td class="whitetablebg" width="70%">共<INPUT type="text" id=FD2_class_count_$$ name=FD2_class_count_$$ size=2 maxlength=2 onchange="br_form.Add_class_FD2('$$',this.value)">類
+			    <td class="whitetablebg" width="70%">共<INPUT type="text" id=FD2_class_count_$$ name=FD2_class_count_$$ size=2 maxlength=2 onchange="br_form.Add_classFD2('$$',this.value)">類
 			        <input type=hidden name=FD2_count_$$ id=FD2_count_$$ value="0">
 				    <input type=hidden name=FD2_ctrlcnt_$$ id=FD2_ctrlcnt_$$ value="0">
 				    <input type=hidden name=FD2_cnt_$$ id=FD2_cnt_$$ value="0"><!--目前畫面上有幾筆-->
@@ -138,6 +138,7 @@
 			</td>
 		</tr>
     </script>
+
     <tr>
         <td class="lightbluetable" ROWSPAN=2 STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(d2Tran_remark)"><strong><u>備註：</u></strong></td>
 		<td class=whitetablebg colspan=7>本案於<INPUT type=text id=O_item21 name=O_item21 size=10 class="dateField">(年/月/日)</td>
@@ -185,7 +186,6 @@
             alert("分割案件數不可超過30筆");
             $("#tot_num2").val("1").focus();
             return false;
-
         }
 
         var doCount = Math.max(0, CInt(arcaseCount));//要改為幾筆,最少是0
@@ -197,7 +197,7 @@
                 $("#tdbr_db").append(copyStr);
                 $(".numberCh"+(nRow + 1)).html(NumberToCh(nRow+1));
                 $("#cnt2").val(nRow + 1);
-                br_form.Add_class_FD2(nRow+1,1);//預設一個類別
+                br_form.Add_classFD2(nRow+1,1);//預設一個類別
             }
         } else {
             //要減
@@ -209,7 +209,7 @@
     }
 
     //*****共N類
-    br_form.Add_class_FD2 = function (nSplit, classCount) {
+    br_form.Add_classFD2 = function (nSplit, classCount) {
         if (!IsNumeric(classCount)) {
             alert("分割後類別項目"+nSplit+"：請輸入數值!!");
             settab("#tran");
@@ -302,11 +302,14 @@
             $("#fr2_appl_name").val(jMain.case_main[0].appl_name);//商標／標章名稱
             //商標種類
             $("input[name=fr2_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            //分割後申請案性
+            $("#tfg2_div_arcase").val(jMain.case_main[0].div_arcase);
             //分割件數
             if (main.prgid == "brt52") {
                 $("#tot_num2").lock();
             }
-            $("#tot_num2,#nfy_tot_num").val(jMain.case_main[0].tot_num).triggerHandlder("change");
+            $("#tot_num2,#nfy_tot_num").val(jMain.case_main[0].tot_num);//.triggerHandler("change");
+            br_form.Add_arcaseFD2(jMain.case_main[0].tot_num);
             $.each(jMain.case_sql, function (i, item) {
                 var spl_num = (i + 1);
                 if (main.prgid == "brt52") {
@@ -322,18 +325,17 @@
                 $("input[name='FD2_Markb_" + spl_num + "'][value='" + item.mark + "']").prop('checked', true);
                 //產生分割_類別
                 br_form.Add_classFD2(spl_num, item.class_count);
-                $.each(jMain.case_good, function (i, item) {
-                    var good_num = (i + 1);
-                    if (item.case_sqlno == $("#FD2_case_sqlno_" + spl_num).val()) {
-                        $("#classb_" + spl_num + "_" + good_num).val(item.class);//第X類
-                        $("#FD2_good_countb_" + good_num).val(item.dmt_goodcount);//共N項
-                        $("#FD2_good_nameb_" + good_num).val(item.dmt_goodname);//商品名稱
-                    }
-                });
-                br_form.count_kindFD2(spl_num, 1);////類別串接
+                var sub_good = $(jMain.case_good).filter(function (j, n) { return n.case_sqlno === item.case_sqlno });
+                if (sub_good.length > 0) {
+                    $.each(sub_good, function (ix, it) {
+                        var good_num = (ix + 1);
+                        $("#classb_" + spl_num + "_" + good_num).val(it.class);//第X類
+                        $("#FD2_good_countb_" + spl_num + "_" + good_num).val(it.dmt_goodcount);//共N項
+                        $("#FD2_good_nameb_" + spl_num + "_" + good_num).val(it.dmt_goodname);//商品名稱
+                    });
+                    br_form.count_kindFD2(spl_num, 1);////類別串接
+                }
             });
-            //分割後申請案性
-            $("#tfg2_div_arcase").val(jMain.case_main[0].div_arcase);
             //**備註
             if (jMain.case_tran.length > 0) {
                 if (jMain.case_tran[0].other_item.indexOf(";") > -1) {
@@ -356,8 +358,6 @@
                 }
             }
             //主檔商標種類控制
-            $("#fr_smark2").hide();
-            $("#smark,#fr_smark1,#fr_smark3").show();
             if (main.prgid != "brt52") {
                 $('#tfy_case_stat option:eq(1)').val("").text("");//案件種類
             }

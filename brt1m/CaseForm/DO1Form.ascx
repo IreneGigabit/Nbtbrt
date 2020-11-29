@@ -54,7 +54,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" width="20%" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(O1Appl_name)">
+		<td class="lightbluetable" colspan="8" valign="top" width="20%" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1Appl_name)">
             <strong>壹、<u>異議標的(你要異議的標章)</u></strong>
         </td>
 	</tr>
@@ -81,8 +81,8 @@
 	<tr>
 		<td class=lightbluetable align=right >擬異議之類別種類：</td>
 		<td class=whitetablebg colspan="3">
-			<input type="radio" id=fr2_class_typeI name=fr2_class_type class="onoff" value="int" onclick="reg.tfzr_class_type(0).checked = reg.fr2_class_type(0).checked">國際分類
-			<input type="radio" id=fr2_class_typeO name=fr2_class_type class="onoff" value="old" onclick="reg.tfzr_class_type(1).checked = reg.fr2_class_type(1).checked">舊類
+			<input type="radio" id=fr2_class_typeI name=fr2_class_type class="onoff" value="int" onclick="reg.tfzr_class_typeI.checked = this.checked">國際分類
+			<input type="radio" id=fr2_class_typeO name=fr2_class_type class="onoff" value="old" onclick="reg.tfzr_class_typeO.checked = this.checked">舊類
 		</TD>
 		<td class=lightbluetable align=right width="18%" STYLE="cursor:pointer;COLOR:BLUE" title="請輸入類別，並以逗號分開(例如：001,005,032)。">擬異議之類別：</td>
 		<td class=whitetablebg colspan="3">
@@ -117,7 +117,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(O1Rapcust)">
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1Rapcust)">
             <strong>肆、<u>被異議人：</u></strong>
 		</td>
 	</tr>
@@ -167,7 +167,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(O1New_no)">
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1new_no)">
             <strong>伍、<u>異議聲明：</u></strong>
 		</td>
 	</tr>
@@ -179,19 +179,19 @@
 		</td>
 	</tr>
 	<tr>
-		<td class=lightbluetable align=right valign=top><input type="checkbox" name=ttg22_mod_pul_mod_type value="O1"></td>
+		<td class=lightbluetable align=right valign=top><input type="checkbox" id=ttg22_mod_pul_mod_type name=ttg22_mod_pul_mod_type value="O1"></td>
 		<td class=whitetablebg colspan=7>註冊應予撤銷。</td>
 	</tr>
 	<tr>
-		<td class=lightbluetable align=right valign=top><input type="checkbox" name=ttg23_mod_pul_mod_type value="O2"></td>
+		<td class=lightbluetable align=right valign=top><input type="checkbox" id=ttg23_mod_pul_mod_type name=ttg23_mod_pul_mod_type value="O2"></td>
 		<td class=whitetablebg colspan=7>指定使用於商標法施行細則第<INPUT TYPE=text NAME=ttg23_mod_pul_new_no id=ttg23_mod_pul_new_no SIZE=3 MAXLENGTH=10>條第<INPUT TYPE=text NAME=ttg23_mod_pul_mod_dclass id=ttg23_mod_pul_mod_dclass SIZE=20 MAXLENGTH=20>類商品／服務之註冊應予撤銷。</td>
 	</tr>
 	<tr>
-		<td class=lightbluetable align=right valign=top><input type="checkbox" name=ttg24_mod_pul_mod_type value="O3"></td>
+		<td class=lightbluetable align=right valign=top><input type="checkbox" id=ttg24_mod_pul_mod_type name=ttg24_mod_pul_mod_type value="O3"></td>
 		<td class=whitetablebg colspan=7>指定使用於商標法施行細則第<INPUT TYPE=text NAME=ttg24_mod_pul_new_no id=ttg24_mod_pul_new_no SIZE=3 MAXLENGTH=10>條第<INPUT TYPE=text NAME=ttg24_mod_pul_mod_dclass id=ttg24_mod_pul_mod_dclass SIZE=3 MAXLENGTH=3>類<br><INPUT TYPE=text NAME=ttg24_mod_pul_ncname1 id=ttg24_mod_pul_ncname1 SIZE=170 MAXLENGTH=200><br>商品／服務之註冊應予撤銷。</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(O1Other_item1)"><strong>陸、<u>主張法條及據以異議商標/標章：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1Other_item1)"><strong>陸、<u>主張法條及據以異議商標/標章：</u></strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" valign="top">一、主張法條：</td>
@@ -208,7 +208,7 @@
             <thead>
 		    <tr>	
 			    <td class="lightbluetable" align="right" width="18%">條款項目：</td>
-			    <td class="whitetablebg" colspan="7" >共<input type="text" id=ttg2_mod_tranlist_mod_count name=ttg2_mod_tranlist_mod_count size=2 onchange=br_form.add_button_DO1(this.value)>項
+			    <td class="whitetablebg" colspan="7" >共<input type="text" id=ttg2_mod_aprep_mod_count name=ttg2_mod_aprep_mod_count size=2 onchange=br_form.add_button_DO1(this.value)>項
 				    <input type=hidden id=count21 name=count21 value="0">
 				    <input type=hidden id=ctrlcnt21 name=ctrlcnt21 value="">
 				    <input type=hidden id=cnt21 name=cnt21 value="0"><!--畫面上有幾筆-->
@@ -230,19 +230,19 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(O1Tran_remark1)"><strong>柒、<u>事實及理由：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1tran_remark1)"><strong>柒、<u>事實及理由：</u></strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top"><TEXTAREA rows=9 cols=90 id=tfz2_tran_remark1 name=tfz2_tran_remark1></TEXTAREA></td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(ZAttechD)"><strong>捌、<u>證據(附件)內容：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttechD)"><strong>捌、<u>證據(附件)內容：</u></strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top"><TEXTAREA rows=9 cols=90 id=tfz2_tran_remark2 name=tfz2_tran_remark2></TEXTAREA></td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(O1Other_item)"><strong>玖、<u>相關聯案件：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1Other_item)"><strong>玖、<u>相關聯案件：</u></strong></td>
 	</tr>
 	<TR>
 		<TD class=lightbluetable align=right></TD>
@@ -390,8 +390,7 @@
                 pclass[j]=("000" + pclass[j]).Right(3);//補0
             }
         }
-
-        $("#fr2_class,#tfzr_class").val(pclass.get().join(','));
+        $("#fr2_class,#tfzr_class").val(pclass.join(','));
         $("#fr2_class_count,#tfzr_class_count").val(pclass.length);
     }
 
@@ -420,14 +419,14 @@
         console.log("do1.br_form.bind");
         if (jMain.case_main.length == 0) {
             //案件種類
-            $("#tfp2_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            //$("#tfp2_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
             $("#tfp2_seq").val("");
             $("#tfp2_seq1").val("_");
             $("#DO1_AP_Add_button").click();//被異議人預設顯示第1筆
-            $("#ttg2_mod_tranlist_mod_count").val("1").triggerHandler("change");//條款項目預設顯示第1筆
+            $("#ttg2_mod_aprep_mod_count").val("1").triggerHandler("change");//條款項目預設顯示第1筆
         } else {
             //案件種類
-            $("#tfp2_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            //$("#tfp2_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
             //本所編號
             if ($("#tfy_case_stat").val() == "NN") {
                 $("#tfp2_seq").val(jMain.case_main[0].seq);
@@ -465,23 +464,25 @@
             }
             $("#O_remark3").val(jMain.case_main[0].remark3);
             $("#tfzd_remark3").val(jMain.case_main[0].remark3);
-            //被異議人
-            $.each(jMain.case_tranlist, function (i, item) {
-                if (item.mod_field == "mod_ap") {
-                    //增加一筆
-                    $("#DO1_AP_Add_button").click();
-                    //填資料
-                    var nRow = $("#DO1_apnum").val();
-                    $("#ttg2_mod_ap_ncname1_" + nRow).val(item.ncname1);
-                    $("#ttg2_mod_ap_ncname2_" + nRow).val(item.ncname2);
-                    $("#ttg2_mod_ap_nzip_" + nRow).val(item.nzip);
-                    $("#ttg2_mod_ap_naddr1_" + nRow).val(item.naddr1);
-                    $("#ttg2_mod_ap_naddr2_" + nRow).val(item.naddr2);
-                    $("#ttg2_mod_ap_ncrep_" + nRow).val(item.ncrep);
+            if ($("#tfy_Arcase").val().Left(3) == "DO1") {
+                //被異議人
+                $.each(jMain.case_tranlist, function (i, item) {
+                    if (item.mod_field == "mod_ap") {
+                        //增加一筆
+                        $("#DO1_AP_Add_button").click();
+                        //填資料
+                        var nRow = $("#DO1_apnum").val();
+                        $("#ttg2_mod_ap_ncname1_" + nRow).val(item.ncname1);
+                        $("#ttg2_mod_ap_ncname2_" + nRow).val(item.ncname2);
+                        $("#ttg2_mod_ap_nzip_" + nRow).val(item.nzip);
+                        $("#ttg2_mod_ap_naddr1_" + nRow).val(item.naddr1);
+                        $("#ttg2_mod_ap_naddr2_" + nRow).val(item.naddr2);
+                        $("#ttg2_mod_ap_ncrep_" + nRow).val(item.ncrep);
+                    }
+                });
+                if (CInt($("#DO1_apnum").val()) == 0) {
+                    alert("查無此交辦案件之被異議人資料!!");
                 }
-            });
-            if (CInt($("#DO1_apnum").val()) == 0) {
-                alert("查無此交辦案件之被異議人資料!!");
             }
             //異議聲明
             $.each(jMain.case_tranlist, function (i, item) {

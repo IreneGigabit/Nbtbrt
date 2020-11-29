@@ -118,7 +118,8 @@
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
                     //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttz1_Z9t").val(substr[1]);
                     } else {

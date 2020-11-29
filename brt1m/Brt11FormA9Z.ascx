@@ -49,7 +49,7 @@
             tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FI1Form.ascx"));//補(換)發證
         } else if (ar_form == "AC") {
             tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FV1Form.ascx"));//閲案
-        } else if (ar_form == "B") {
+        } else if (ar_form.Left(1) == "B") {
             tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DO1Form.ascx"));//申請異議
             tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DR1Form.ascx"));//申請廢止
             tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DI1Form.ascx"));//申請評定
@@ -101,6 +101,7 @@
 </table>	
 <input type="text" name=tfzd_remark1 id=tfzd_remark1><!--附件-->
 <input type="text" id="tfzd_agt_no" name="tfzd_agt_no"><!--代理人-->
+<INPUT TYPE="text" id=tfzd_remark3 name=tfzd_remark3 value=""><!--dmt_temp.remark3-->
 
 <script language="javascript" type="text/javascript">
     //**交辦畫面之代理人資料丟到案件主檔
@@ -486,7 +487,7 @@
         }
 
         if (confirm("確定刪除上傳圖檔？")) {
-            var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() +
+            var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file_"+pbtn).val() +
                 "&btnname=butUpload" + pbtn;
             window.open(url, "myWindowOneN", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
             //window.open(url, "myWindowOneN", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
@@ -527,7 +528,10 @@
                 eval("main.changeTag" + main.ar_form + "('" + T1 + "','" + code3 + "','" + arcase + "','" + prt_code + "','" + pagt_no + "')");
                 break;
             default:
-                main.changeTagZZ(T1, code3, arcase, prt_code, pagt_no);
+                if(main.ar_form.Left(1)=="B")
+                    main.changeTagB(T1, code3, arcase, prt_code, pagt_no);
+                else
+                    main.changeTagZZ(T1, code3, arcase, prt_code, pagt_no);
                 break;
         }
 
@@ -573,6 +577,7 @@
 
     main.changeTagA4 = function (T1, code3, arcase, prt_code, pagt_no) {
         $("#div_Form_FR1").show();
+        $("#tabdmt1").hide();//案件主檔類別
     }
 
     //依案性切換要顯示的欄位
@@ -622,7 +627,7 @@
                 break;
             case "FC2": case "FC20": case "FC0": case "FCC": case "FCD": case "FCG":
                 $("#FC0_tabap,#div_Form_FC2").show();
-                $("#smark").hide();
+                $("#smark").show();
                 $("#tabbr2").show();
                 if (arcase == "FCC") {
                     $("#FC2_tr_addagtno").show();//新增代理人
@@ -645,6 +650,7 @@
                 $("#CTab td.tab[href='#apcust']").html("案件申請人");
                 $("#span_FC").html("貳、申請人");
                 $("#smark").show();
+                $("#tabdmt1").hide();//案件主檔類別
                 break;
             case "FC4":
                 $("#tabap,#div_Form_FC4,#tr_tg_arf_fc").show();
@@ -738,7 +744,7 @@
                 $("#mark1,#mark2").hide();
                 $("#term").html("柒、<u>終止授權日期：</u>");
                 $("#tg_term1").html("終止日期");
-                $("#tg_term2").html("起廢止授權");
+                $("#tg_term2").html("起終止授權使用");
                 $("#term1").attr("colspan", 7);
                 $("#term2").hide();
                 $("#td_tm1").attr("rowspan", 1);
@@ -748,14 +754,14 @@
                 $("#span_FL").html("貳、申請人(商標權人)");
                 //授權性質/授權區域/授權商品或服務
                 $("#tr_type,#tr_type1,#tr_area,#tr_area1,#remark,#remark1").hide();
-                $("#tg_attech").html("<u>附件：</u>");
+                $("#tg_attech").html("捌、<u>附件：</u>");
                 break;
             case "FL4":
                 $("#tg_FL1,#tg_FL2").hide();
                 $("#mark1,#mark2").hide();
-                $("#term").html("柒、<u>廢止再授權日期：</u>");
+                $("#term").html("柒、<u>終止再授權日期：</u>");
                 $("#tg_term1").html("終止日期");
-                $("#tg_term2").html("起廢止再授權");
+                $("#tg_term2").html("起終止授權使用");
                 $("#term1").attr("colspan", 7);
                 $("#term2").hide();
                 $("#td_tm1").attr("rowspan", 1);
@@ -765,7 +771,7 @@
                 $("#span_FL").html("參、申請人(授權人)");
                 //授權性質/授權區域/授權商品或服務
                 $("#tr_type,#tr_type1,#tr_area,#tr_area1,#remark,#remark1").hide();
-                $("#tg_attech").html("<u>附件：</u>");
+                $("#tg_attech").html("捌、<u>附件：</u>");
                 break;
         }
     }
@@ -816,11 +822,15 @@
     //依案性切換要顯示的欄位
     main.changeTagB = function (T1, code3, arcase, prt_code, pagt_no) {
         //動態載入form
+        $("#CTab td.tab[href='#dmt']").show();
         if (prt_code == "DO1") {
+            $("#CTab td.tab[href='#dmt']").hide();
             $("#div_Form_DO1").show();
         } else if (prt_code == "DR1") {
+            $("#CTab td.tab[href='#dmt']").hide();
             $("#div_Form_DR1").show();
         } else if (prt_code == "DI1") {
+            $("#CTab td.tab[href='#dmt']").hide();
             $("#div_Form_DI1").show();
         } else if (prt_code == "B5C1") {
             $("#div_Form_B5C1").show();
@@ -1009,8 +1019,37 @@
             if (apcust_form.getappy) apcust_form.getappy(jMain.cust[0].apcust_no, main.in_no);
             //***變更後申請人
             if (apcust_form.getappy1) apcust_form.getappy1(jMain.cust[0].apcust_no, main.in_no);
+            //***申請人種類(apcust_FC_RE_form)
+            $("input[name='tfzd_Mark'][value='" + jMain.case_main[0].mark + "']").prop('checked', true).triggerHandler("click");
+            //***原申請人(apcust_FC_RE1_form)
+            var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_ap' });
+            $.each(tranlist, function (i, item) {
+                //增加一筆
+                $("#FC1_AP_Add_button").click();
+                //填資料
+                var nRow = $("#FC1_apnum").val();
+                $("#dbmo1_old_no_" + nRow).val(item.old_no);
+                $("#dbmo1_ocname1_" + nRow).val(item.ocname1);
+                $("#dbmo1_ocname2_" + nRow).val(item.ocname2);
+                $("#dbmo1_oename1_" + nRow).val(item.oename1);
+                $("#dbmo1_oename2_" + nRow).val(item.oename2);
+                $("#dbmo1_ocrep_" + nRow).val(item.ocrep);
+                $("#dbmo1_oerep_" + nRow).val(item.oerep);
+                $("#dbmo1_oaddr1_" + nRow).val(item.oaddr1);
+                $("#dbmo1_oaddr2_" + nRow).val(item.oaddr2);
+                $("#dbmn1_oeaddr1_" + nRow).val(item.oeaddr1);
+                $("#dbmn1_oeaddr2_" + nRow).val(item.oeaddr2);
+                $("#dbmn1_oeaddr3_" + nRow).val(item.oeaddr3);
+                $("#dbmn1_oeaddr4_" + nRow).val(item.oeaddr4);
+                $("#dbmo1_otel0_" + nRow).val(item.otel0);
+                $("#dbmo1_otel_" + nRow).val(item.otel);
+                $("#dbmo1_otel1_" + nRow).val(item.otel1);
+                $("#dbmo1_ofax_" + nRow).val(item.ofax);
+                $("#dbmo1_ozip_" + nRow).val(item.ozip);
+            });
             //****後續交辦作業序號	
             $("#grconf_sqlno").val(jMain.case_main[0].grconf_sqlno);
+            $("#hgrconf_sqlno").val(jMain.case_main[0].grconf_sqlno);
             //Table(case_dmt)案件主檔
             //接洽費用
             $("tr[id^='tr_ta_']").remove();
@@ -1064,7 +1103,7 @@
             br_form.seq1_conctrl();
 
             //*****契約號碼,2015/12/29修改，增加契約書種類，契約書後補註記及說明
-            $("#contract_type").hide();//***後續案無契約書
+            //$("#contract_type").hide();//***後續案無契約書
             if (jMain.case_main[0].contract_flag == "Y") {
                 $("#tfy_contract_flag").prop('checked', true).triggerHandler("click");
                 $("#tfy_contract_remark").val(jMain.case_main[0].contract_remark);
@@ -1220,10 +1259,10 @@
             $("#tfzd_Draw").val(jMain.case_main[0].draw);//圖形描述
             $("#tfzd_Symbol").val(jMain.case_main[0].symbol);//記號說明
 
-            $("#Draw_file1").val(jMain.case_main[0].draw_file);//*圖檔實際路徑
-            $("#file1").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
+            $("#Draw_file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑
+            $("#file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
             $("#draw_attach_file").val(jMain.case_main[0].draw_file);//*圖檔實際路徑-for編修時記錄原檔名-2013/11/26增加
-            if ($("#Draw_file1").val() != "") {
+            if ($("#Draw_file").val() != "") {
                 $("#butUpload1").prop("disabled", true);
             }
             //圖樣顏色
@@ -1251,7 +1290,7 @@
             //**類別種類
             $("input[name='tfzr_class_type'][value='" + jMain.case_main[0].class_type + "']").prop('checked', true).triggerHandler("click");
             //指定使用商品／服務類別
-            if (jMain.case_good.length > 0) {
+            /*if (jMain.case_good.length > 0) {
                 $("#tfzr_class").val(jMain.case_main[0].class);//*類別
                 $("#tfzr_class_count").val(jMain.case_good.length);//共N類
                 dmt_form.Add_class(jMain.case_good.length);//產生筆數
@@ -1263,6 +1302,18 @@
                         $("#good_name1_" + (i + 1)).val(item.dmt_goodname);//商品名稱
                     }
                 });
+            }*/
+            var d_case_good = $(jMain.case_good).filter(function (j, n) { return n.case_sqlno === 0 });
+            if (d_case_good.length > 0) {
+                $("#tfzr_class").val(jMain.case_main[0].class);//*類別
+                $("#tfzr_class_count").val(d_case_good.length);//共N類
+                dmt_form.Add_class(d_case_good.length);//產生筆數
+                $.each(d_case_good, function (ix, it) {
+                    $("#class1_" + (ix + 1)).val(it.class);//第X類
+                    $("#good_count1_" + (ix + 1)).val(it.dmt_goodcount);//共N項
+                    $("#grp_code1_" + (ix + 1)).val(it.dmt_grp_code);//商品群組代碼
+                    $("#good_name1_" + (ix + 1)).val(it.dmt_goodname);//商品名稱
+                });
             }
             dmt_form.count_kind(1);////類別串接
 
@@ -1271,9 +1322,9 @@
             $("#shownum").val(0);
             $.each(jMain.case_show, function (i, item) {
                 dmt_form.add_show();//展覽優先權增加一筆
-                $("#show_sqlno_" + (i + 1)).val(item.show_sqlno);//流水號
-                $("#show_date_" + (i + 1)).val(dateReviver(item.show_date, "yyyy/M/d"));//展覽會優先權日
-                $("#show_name_" + (i + 1)).val(item.show_name);//展覽會名稱
+                $("#show_sqlno_dmt_" + (i + 1)).val(item.show_sqlno);//流水號
+                $("#show_date_dmt_" + (i + 1)).val(dateReviver(item.show_date, "yyyy/M/d"));//展覽會優先權日
+                $("#show_name_dmt_" + (i + 1)).val(item.show_name);//展覽會名稱
             });
 
             //文件上傳
@@ -1330,7 +1381,11 @@
             br_form.bindFI1();
         } else if (main.ar_form == "AC") {
             br_form.bindFV1();
-        } else if (main.ar_form == "B") {
+        } else if (main.ar_form.Left(1) == "B") {
+            //爭救案-異議、評定、廢止案件種類連動
+            $("#tfp1_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            $("#tfp2_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            $("#tfp3_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
             br_form.bindDO1();
             br_form.bindDR1();
             br_form.bindDI1();

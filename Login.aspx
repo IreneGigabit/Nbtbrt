@@ -30,7 +30,7 @@
 </head>
 <body style="margin:0px;">
 <center>
-<form method="post" name="reg">
+<form method="post" name="reg" onsubmit="formSubmit()">
 <input type="hidden" name="syscode" value="<%=syscode%>" />
 <br><br><br><br><br><br>
 <table border="2" cellspacing="10" cellpadding="1"  style ="border:lightblue double; width:250px;height: 181px">

@@ -52,25 +52,25 @@
 	<tr>
 		<td class=lightbluetable align=right></td>
 		<td class=whitetablebg colspan="7">
-            <input type="checkbox" name="tfzr1_mod_ap">申請人名稱&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="tfzr1_mod_aprep">代表人&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="tfzr1_mod_agt">代理人
+            <input type="checkbox" id="tfzr1_mod_ap" name="tfzr1_mod_ap">申請人名稱&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" id="tfzr1_mod_aprep" name="tfzr1_mod_aprep">代表人&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" id="tfzr1_mod_agt" name="tfzr1_mod_agt">代理人
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right></td>
 		<td class=whitetablebg colspan="7">
-            <input type="checkbox" name="tfzr1_mod_apaddr">申請人地址&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="tfzr1_mod_agtaddr">代理人地址
-			<input type="checkbox" name="tfzr1_mod_claim1">選定代表人
+            <input type="checkbox" id="tfzr1_mod_apaddr" name="tfzr1_mod_apaddr">申請人地址&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" id="tfzr1_mod_agtaddr" name="tfzr1_mod_agtaddr">代理人地址
+			<input type="checkbox" id="tfzr1_mod_claim1" name="tfzr1_mod_claim1">選定代表人
 		</TD>
 	</tr>
 	<tr>
 		<td class=lightbluetable align=right></td>
 		<td class=whitetablebg colspan="7">
-            <input type="checkbox" name="tfzr1_mod_oth">申請人印鑑&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="tfzr1_mod_oth1">代表人印鑑&nbsp;
-            <input type="checkbox" name="tfzr1_mod_oth2">代理人印鑑
+            <input type="checkbox" id="tfzr1_mod_oth" name="tfzr1_mod_oth">申請人印鑑&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" id="tfzr1_mod_oth1" name="tfzr1_mod_oth1">代表人印鑑&nbsp;
+            <input type="checkbox" id="tfzr1_mod_oth2" name="tfzr1_mod_oth2">代理人印鑑
 		</TD>
 	</tr>
 	<tr>
@@ -202,7 +202,7 @@
             $("#tot_num11,#nfy_tot_num").val("1").focus();
             return false;
         }
-
+        
         var doCount = CInt(arcaseCount);//要改為幾筆
         var cnt111 = Math.max(1, CInt($("#cnt111").val()));//目前畫面上有幾筆,最少是1
         if (doCount > cnt111) {//要加
@@ -232,7 +232,8 @@
     br_form.bindFC11 = function () {
         console.log("fc11.br_form.bind");
         if (jMain.case_main.length == 0) {
-            $("#tot_num11,#nfy_tot_num").val("1").triggerHandler("change");
+            $("#tot_num11,#nfy_tot_num").val("1");//.triggerHandler("change");
+            br_form.Add_FC11(1);
         } else {
             //代理人
             $("#ttg11_agt_no").val(jMain.case_main[0].agt_no);
@@ -256,13 +257,14 @@
                 $("#dseqa_1,#dseq1a_1").lock();
                 $("input[name=case_stat1a_1]").lock();
             }
-            $("#tot_num11,#nfy_tot_num").val(jMain.case_main[0].tot_num).triggerHandler("change");
+            $("#tot_num11,#nfy_tot_num").val(jMain.case_main[0].tot_num);//.triggerHandler("change");
+            br_form.Add_FC11(jMain.case_main[0].tot_num);
             if (jMain.case_main[0].seq == "0") {
                 $("#dseqa_1").val("");
             } else {
-                $("#dseqa_1").val(item.seq);
+                $("#dseqa_1").val(jMain.case_main[0].seq);
             }
-            $("#dseq1a_1").val(item.seq1);
+            $("#dseq1a_1").val(jMain.case_main[0].seq1);
             $("#btndseq_oka_1").lock();
             $("#keydseqa_1").val("Y");
             var smark_val = jMain.case_main[0].s_mark;
@@ -281,11 +283,11 @@
             $("#apply_noa_1").val(jMain.case_main[0].apply_no);//申請號數
             $.each(jMain.case_dmt1, function (i, item) {
                 //填資料
-                var nRow = (i + 1);
+                var nRow = (i + 2);//從2開始,第一筆是母案
                 $("#dseqa_" + nRow).val(item.seq);
                 $("#dseq1a_" + nRow).val(item.seq1);
                 if (item.case_stat1 == "NN") {
-                    $("input[name='case_stat1a_" + nRow + "'][value=NN]").prop("checked", true).triggerHandler("click");
+                    $("input[name='case_stat1a_" + nRow + "'][value=NN]").prop("checked", true);//.triggerHandler("click");
                     var smark_val = item.s_mark;
                     if (smark_val == "S") {
                         $("#s_marka_" + nRow).val("92年修正前服務標章");
@@ -309,7 +311,7 @@
                         $("input[name=case_stat1a_" + nRow + " ]").lock();
                     }
                 } else {
-                    $("input[name='case_stat1a_" + nRow + "'][value=OO]").prop("checked", true).triggerHandler("click");
+                    $("input[name='case_stat1a_" + nRow + "'][value=OO]").prop("checked", true);//.triggerHandler("click");
                     $("#btndmt_tempa_" + nRow).hide();
                     if (main.prgid == "brt52") {
                         $("#dseqa_" + nRow).lock();
@@ -336,7 +338,8 @@
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
                     //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttz11_Z9t").val(substr[1]);
                     } else {

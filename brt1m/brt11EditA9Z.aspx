@@ -33,7 +33,6 @@
     protected string code_type = "";
     protected string seq = "";
     protected string seq1 = "";
-    protected string add_arcase = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -52,11 +51,10 @@
         code_type = (Request["code_type"] ?? "").Trim();
         seq = (Request["seq"] ?? "").Trim();
         seq1 = (Request["seq1"] ?? "").Trim();
-        add_arcase = (Request["add_arcase"] ?? "").Trim();
 
         formFunction = (Request["formFunction"] ?? "").Trim();
         if (formFunction == "") {
-            formFunction = "Add";
+            formFunction = "Edit";
         }
 
         TokenN myToken = new TokenN(HTProgCode);
@@ -71,8 +69,16 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Brt11blank\">[聯絡人新增]</a>\n";
-        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Brt11blank\">[申請人新增]</a>\n";
+        if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
+            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Brt11blank\">[聯絡人新增]</a>\n";
+            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Brt11blank\">[申請人新增]</a>\n";
+            if ((Request["cust_seq"] ?? "") != "") {
+                StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Brt11blank\">[案件查詢]</a>\n";
+            }
+            if ((Request["homelist"] ?? "") != "homelist") {
+                StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
+            }
+        }
 
         //申請人欄位畫面
         if (ar_form == "A6") {//變更
@@ -93,7 +99,7 @@
             StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
         } else if (formFunction == "Add") {
             if ((HTProgRight & 4) > 0) {
-                StrFormBtn += "<input type=button value ='新增存檔' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
+                StrFormBtn += "<input type=button value ='新增存檔' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
                 StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
             }
         }
@@ -175,7 +181,7 @@
     <INPUT TYPE="text" id="ar_form" name="ar_form" value="<%=ar_form%>">
     <INPUT TYPE="text" id=prt_code name=prt_code value="<%=prt_code%>">
     <INPUT TYPE="text" id=new_form name=new_form value="<%=new_form%>">
-    <INPUT TYPE="text" id=add_arcase name=add_arcase value="<%=add_arcase%>">
+    <INPUT TYPE="text" id=add_arcase name=add_arcase value="">
     <input type="text" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
@@ -254,7 +260,11 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
+            if($("#prgid").val()!="brt51"){
+                window.parent.tt.rows = "*,2*";
+            }else{
+                window.parent.tt.rows = "0%,100%";
+            }
         }
 
         this_init();
@@ -323,23 +333,28 @@
         $("input.dateField").datepick();
         $(".Lock").lock();
         $(".Hide").hide();
+
+        if($("#submittask").val()!="Edit"){//不是編輯模式全部鎖定
+            $("select,textarea,input,span,button").lock();
+        }
     }
 
     //存檔
-    function formAddSubmit(){
+    function formModSubmit(){
         $.maskStart();
         var saveflag=main.savechk();
         $.maskStop();
+
         if(!saveflag) return false;
 
-        $("#submittask").val("Add");
+        $("#submittask").val("Edit");
 
         $("select,textarea,input,span").unlock();
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
 
         var formData = new FormData($('#reg')[0]);
         $.ajax({
-            url:'<%=HTProgPrefix%>AddA9Z_Update.aspx',
+            url:'<%=HTProgPrefix%>EditA9Z_Update.aspx',
             type : "POST",
             data : formData,
             contentType: false,
@@ -351,13 +366,28 @@
             },
             //success: function (data, status, xhr) { main.onSuccess(data, status, xhr); },
             //error: function (xhr, status) { main.onError(xhr, status); },
+            //complete: function (xhr, status) { main.onComplete(xhr, status); }
             complete: function (xhr, status) {
                 $("#dialog").html(xhr.responseText);
-                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: "90%" });
+                $("#dialog").dialog({
+                    title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
+                    ,buttons: {
+                        確定: function() {
+                            $(this).dialog("close");
+                        }
+                    }
+                    ,close:function(event, ui){
+                        if(status=="success"){
+                            if(!$("#chkTest").prop("checked")){
+                                window.parent.tt.rows="100%,0%";
+                            }
+                        }
+                    }
+                });
             }
         });
 
-        //reg.action = "<%=HTProgPrefix%>AddA9Z_Update.aspx";
+        //reg.action = "<%=HTProgPrefix%>EditA9Z_Update.aspx";
         //if($("#chkTest").prop("checked"))
         //    reg.target = "ActFrame";
         //else

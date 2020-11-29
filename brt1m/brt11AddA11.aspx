@@ -3,8 +3,8 @@
 <%@ Register Src="~/commonForm/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
 <%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
 <%@ Register Src="~/commonForm/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
-<%@ Register Src="~/commonForm/dmt/case_form.ascx" TagPrefix="uc1" TagName="case_form" %>
-<%@ Register Src="~/commonForm/dmt/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
+<%@ Register Src="~/commonForm/dmt_case_form.ascx" TagPrefix="uc1" TagName="dmt_case_form" %>
+<%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
 <%@ Register Src="~/brt1m/Brt11FormA11.ascx" TagPrefix="uc1" TagName="Brt11FormA11" %>
 
 
@@ -101,8 +101,8 @@
         //案件申請人
         apcust_form.Lock = Lock;
         //收費與接洽事項
-        case_form.formFunction = formFunction;
-        case_form.HTProgRight = HTProgRight;
+        dmt_case_form.formFunction = formFunction;
+        dmt_case_form.HTProgRight = HTProgRight;
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -197,8 +197,8 @@
                 <!--include file="../commonForm/apcust_form.ascx"--><!--案件申請人-->
             </div>
             <div class="tabCont" id="#case">
-                <uc1:case_form runat="server" id="case_form" />
-                <!--include file="../commonForm/dmt/case_form.ascx"--><!--收費與接洽事項-->
+                <uc1:dmt_case_form runat="server" id="dmt_case_form" />
+                <!--include file="../commonForm/dmt_case_form.ascx"--><!--收費與接洽事項-->
             </div>
             <div class="tabCont" id="#tran">
                 <uc1:Brt11FormA11 runat="server" ID="Brt11FormA11" />
@@ -206,7 +206,7 @@
             </div>
             <div class="tabCont" id="#upload">
                 <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" />
-                <!--include file="../commonForm/dmt/dmt_upload_Form.ascx"--><!--文件上傳-->
+                <!--include file="../commonForm/dmt_upload_Form.ascx"--><!--文件上傳-->
             </div>
         </td>
     </tr>
@@ -299,9 +299,6 @@
         $(".Lock").lock();
     }
 
-    <!--xxinclude virtual="~\brt1m\A11_bind.js" --><!--資料綁定(main.bind)xx-->
-    <!--xxinclude virtual="~\brt1m\A11_savechk.js" --><!--存檔檢查(main.savechk)xx-->
-    
     //存檔
     function formAddSubmit(){
         $.maskStart();

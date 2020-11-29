@@ -54,7 +54,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" width="20%" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(R1Appl_name)">
+		<td class="lightbluetable" colspan="8" valign="top" width="20%" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Appl_name)">
             <strong>壹、<u>廢止標的(你要廢止的標章)</u></strong>
         </td>
 	</tr>
@@ -81,8 +81,8 @@
 	<tr>
 		<td class=lightbluetable align=right >擬廢止之類別種類：</td>
 		<td class=whitetablebg colspan="3">
-			<input type="radio" id=fr1_class_typeI name=fr1_class_type value="int" class="onoff" onclick="reg.tfzr_class_type(0).checked = reg.fr1_class_type(0).checked">國際分類
-			<input type="radio" id=fr1_class_typeO name=fr1_class_type value="old" class="onoff" onclick="reg.tfzr_class_type(1).checked = reg.fr1_class_type(1).checked">舊類
+			<input type="radio" id=fr1_class_typeI name=fr1_class_type value="int" class="onoff" onclick="reg.tfzr_class_typeI.checked = this.checked">國際分類
+			<input type="radio" id=fr1_class_typeO name=fr1_class_type value="old" class="onoff" onclick="reg.tfzr_class_typeO.checked = this.checked">舊類
 		</TD>
 		<td class=lightbluetable align=right width="18%" STYLE="cursor:pointer;COLOR:BLUE" title="請輸入類別，並以逗號分開(例如：001,005,032)。">擬廢止之類別：</td>
 		<td class=whitetablebg colspan="3">
@@ -112,7 +112,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(O1Rapcust)">
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1Rapcust)">
             <strong>肆、<u>註冊人</u></strong>
 		</td>
 	</tr>
@@ -162,7 +162,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(R1New_no)">
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1new_no)">
             <strong>伍、<u>廢止聲明：</u></strong>
 		</td>
 	</tr>
@@ -187,7 +187,7 @@
 		<td class=whitetablebg colspan=7>指定使用於商標法施行細則第<INPUT TYPE=text NAME=ttg14_mod_pul_new_no id=ttg14_mod_pul_new_no SIZE=3 MAXLENGTH=10>條第<INPUT TYPE=text NAME=ttg14_mod_pul_mod_dclass id=ttg14_mod_pul_mod_dclass SIZE=3 MAXLENGTH=3>類<INPUT TYPE=text NAME=ttg14_mod_pul_ncname1 id=ttg14_mod_pul_ncname1 SIZE=30 MAXLENGTH=50>商品/服務之商標權應予廢止。</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(R1Other_item1)"><strong>陸、<u>主張法條及據以廢止商標／標章：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Other_item1)"><strong>陸、<u>主張法條及據以廢止商標／標章：</u></strong></td>
 	</tr>
 	<TR>
 		<TD class=lightbluetable align=left>一、主張條款：</TD>
@@ -198,7 +198,7 @@
 		<TD class=whitetablebg colspan=7><input TYPE=text NAME=ttg1_mod_claim1_ncname1 id=ttg1_mod_claim1_ncname1 SIZE=30 MAXLENGTH=50 alt="『據以廢止商標／標章』" onblur="fDataLen(this)"></TD>
 	</TR>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(R1Tran_remark1)"><strong>柒、<u>事實及理由：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1tran_remark1)"><strong>柒、<u>事實及理由：</u></strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top"><TEXTAREA rows=9 cols=100 id=tfz1_tran_remark1 name=tfz1_tran_remark1></TEXTAREA></td>
@@ -210,13 +210,13 @@
 		<td class="lightbluetable" colspan="8" valign="top"><TEXTAREA rows=9 cols=100 id=tfz1_tran_remark4 name=tfz1_tran_remark4 ></TEXTAREA></td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(ZAttechD)"><strong>捌、<u>證據(附件)內容：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttechD)"><strong>捌、<u>證據(附件)內容：</u></strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top"><TEXTAREA rows=9 cols=100 id=tfz1_tran_remark2 name=tfz1_tran_remark2></TEXTAREA></td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(R1Other_item)"><strong>玖、<u>相關聯案件：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Other_item)"><strong>玖、<u>相關聯案件：</u></strong></td>
 	</tr>
 	<TR>
 		<TD class=lightbluetable align=right></TD>
@@ -451,7 +451,7 @@
             }
         }
 
-        $("#fr1_class,#tfzr_class").val(pclass.get().join(','));
+        $("#fr1_class,#tfzr_class").val(pclass.join(','));
         $("#fr1_class_count,#tfzr_class_count").val(pclass.length);
     }
 
@@ -460,13 +460,13 @@
         console.log("dr1.br_form.bind");
         if (jMain.case_main.length == 0) {
             //案件種類
-            $("#tfp1_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            //$("#tfp1_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
             $("#tfp1_seq").val("");
             $("#tfp1_seq1").val("_");
             $("#DR1_AP_Add_button").click();//註冊人預設顯示第1筆
         } else {
             //案件種類
-            $("#tfp1_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            //$("#tfp1_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
             //本所編號
             if ($("#tfy_case_stat").val() == "NN") {
                 $("#tfp1_seq").val(jMain.case_main[0].seq);
@@ -504,23 +504,25 @@
             }
             $("#R_remark3").val(jMain.case_main[0].remark3);
             $("#tfzd_remark3").val(jMain.case_main[0].remark3);
-            //註冊人
-            $.each(jMain.case_tranlist, function (i, item) {
-                if (item.mod_field == "mod_ap") {
-                    //增加一筆
-                    $("#DR1_AP_Add_button").click();
-                    //填資料
-                    var nRow = $("#DO1_apnum").val();
-                    $("#ttg1_mod_ap_ncname1_" + nRow).val(item.ncname1);
-                    $("#ttg1_mod_ap_ncname2_" + nRow).val(item.ncname2);
-                    $("#ttg1_mod_ap_nzip_" + nRow).val(item.nzip);
-                    $("#ttg1_mod_ap_naddr1_" + nRow).val(item.naddr1);
-                    $("#ttg1_mod_ap_naddr2_" + nRow).val(item.naddr2);
-                    $("#ttg1_mod_ap_ncrep_" + nRow).val(item.ncrep);
+            if ($("#tfy_Arcase").val().Left(3) == "DR1") {
+                //註冊人
+                $.each(jMain.case_tranlist, function (i, item) {
+                    if (item.mod_field == "mod_ap") {
+                        //增加一筆
+                        $("#DR1_AP_Add_button").click();
+                        //填資料
+                        var nRow = $("#DR1_apnum").val();
+                        $("#ttg1_mod_ap_ncname1_" + nRow).val(item.ncname1);
+                        $("#ttg1_mod_ap_ncname2_" + nRow).val(item.ncname2);
+                        $("#ttg1_mod_ap_nzip_" + nRow).val(item.nzip);
+                        $("#ttg1_mod_ap_naddr1_" + nRow).val(item.naddr1);
+                        $("#ttg1_mod_ap_naddr2_" + nRow).val(item.naddr2);
+                        $("#ttg1_mod_ap_ncrep_" + nRow).val(item.ncrep);
+                    }
+                });
+                if (CInt($("#DR1_apnum").val()) == 0) {
+                    alert("查無此交辦案件之註冊人資料!!");
                 }
-            });
-            if (CInt($("#DR1_apnum").val()) == 0) {
-                alert("查無此交辦案件之註冊人資料!!");
             }
             //廢止聲明
             $.each(jMain.case_tranlist, function (i, item) {
@@ -686,7 +688,6 @@
                     }
                 }
             }
-
         }
     }
 </script>

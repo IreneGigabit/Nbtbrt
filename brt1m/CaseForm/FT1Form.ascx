@@ -113,7 +113,7 @@
 			    <td class="lightbluetable" align="right">母案本所編號##:</td>
 			    <td class="whitetablebg" >
 					<input type=text id=dmseqb_## name=dmseqb_## size=5  maxlength=5 readonly >-<input type=text id=dmseq1b_## name=dmseq1b_## size=1  maxlength=1 value='_' readonly >
-					<input type=button style='display:none' id='but_endb_##' name='but_endb_##' id='but_endb_##' class='redbutton' style='cursor:hand' value='母案結案' onclick=""vbscript:btnendA8click 'dmseqb_##' ,reg.dmseqb_##.value,reg.dmseq1b_##.value"">
+					<input type=button style='display:none' id='but_endb_##' name='but_endb_##' class='redbutton' style='cursor:pointer' value='母案結案' onclick="btnendA8click('dmseqb_##' ,reg.dmseqb_##.value,reg.dmseq1b_##.value)">
 					<input type=text name='endflag51b_##' id='endflag51b_##' value='X'>
 					<input type=text name='end_code51b_##' id='end_code51b_##'>
 					<input type=text name='end_type51b_##' id='end_type51b_##'>
@@ -136,10 +136,10 @@
 		</table>
 		</td>
 	</tr>
-	<tr>
+	<tr style="display:none">
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(c1Rapcust)"><strong>肆、<u>讓與人(原商標權人)</u></strong></td>
 	</tr>
-	<tr>
+	<tr style="display:none">
 		<td class=sfont9 colspan="8">
 		<input type=hidden id=FT_apnum name=FT_apnum value=0><!--進度筆數-->
 		<table border="0" id=FT_tabap class="bluetable" cellspacing="1" cellpadding="1" style="font-size: 9pt" width="100%">
@@ -251,50 +251,50 @@
 		</td>
 	</tr>	
 	<tr class="br_attchstr" style="display:none">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">移轉契約書或其他移轉證明文件(<input type="checkbox" name="ttz1_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中譯本)。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z1" name="ttz1_Z1" value="Z1" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">移轉契約書或其他移轉證明文件(<input type="checkbox" id="ttz1_Z1C" name="ttz1_Z1C" value="Z1C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中譯本)。</td>
 	</tr>
 	<tr class="br_attchstr" style="display:none">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">申請人之代理人委任書(<input type="checkbox" name="ttz1_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中譯本)。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z2" name="ttz1_Z2" value="Z2" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">申請人之代理人委任書(<input type="checkbox" id="ttz1_Z2C" name="ttz1_Z2C" value="Z2C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中譯本)。</td>
 	</tr>
 	<!--2012/7/1新申請書增加，9/6修改-->
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">合意(買賣)移轉：應檢附移轉契約書(<input type="checkbox" name="ttz1_Z3C" value="Z3C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。</td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z3" name="ttz1_Z3" value="Z3" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">合意(買賣)移轉：應檢附移轉契約書(<input type="checkbox" id="ttz1_Z3C" name="ttz1_Z3C" value="Z3C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z4" value="Z4" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z4" name="ttz1_Z4" value="Z4" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">繼承移轉，應檢附下列文件：<br>
 			1.原商標權人死亡證明、原商標權人全戶戶籍謄本(由受讓人具結係全戶謄本)、專用權歸屬證明或其他繼承證明文件(如係外文應另附中文譯本)。<br>
 			2.稽徵機關核發之稅款繳清證明書，或核定免稅證明書，或不計入遺產總額證明書，或同意移轉證明書之副本，或稽徵機關核發之其他證明文件。
 		</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z5" value="Z5" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z5" name="ttz1_Z5" value="Z5" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">贈與移轉，應檢附下列文件：<br>
-			1.贈與契約書(<input type="checkbox" name="ttz1_Z5C" value="Z5C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。<br>
+			1.贈與契約書(<input type="checkbox" id="ttz1_Z5C" name="ttz1_Z5C" value="Z5C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。<br>
 			2.稽徵機關核發之稅款繳清證明書，或核定免稅證明書，或不計入贈與總額證明書，或同意移轉證明書之副本，或稽徵機關核發之其他證明文件。
 		</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z6" value="Z6" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z6" name="ttz1_Z6" value="Z6" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">拍賣移轉：應檢附法院拍定證明影本。
 		</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z7" value="Z7" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">公司合併移轉：應檢附公司合併證明文件(<input type="checkbox" name="ttz1_Z7C" value="Z7C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z7" name="ttz1_Z7" value="Z7" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">公司合併移轉：應檢附公司合併證明文件(<input type="checkbox" id="ttz1_Z7C" name="ttz1_Z7C" value="Z7C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。
 			
 		</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z8" value="Z8" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
-		<td class="whitetablebg" colspan="7">團體標章、團體商標、證明標章移轉：移轉契約書及使用規範書或使用規範書之電子檔光碟片(<input type="checkbox" name="ttz1_Z8C" value="Z8C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z8" name="ttz1_Z8" value="Z8" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="whitetablebg" colspan="7">團體標章、團體商標、證明標章移轉：移轉契約書及使用規範書或使用規範書之電子檔光碟片(<input type="checkbox" id="ttz1_Z8C" name="ttz1_Z8C" value="Z8C" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">附中文譯本)。
 		</td>
 	</tr>
 	<tr class="br_attchstr">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" NAME="ttz1_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz1_Z9" name="ttz1_Z9" value="Z9" onclick="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">其他。<input TYPE="text" id="ttz1_Z9t" NAME="ttz1_Z9t" SIZE="50" onchange="br_form.AttachStr('.br_attchstr','ttz1_',reg.tfzd_remark1)">
 		</td>
 	</tr>
@@ -453,16 +453,16 @@
                 $("#dseqb_1,#dseq1b_1").lock();
                 $("input[name=case_stat1b_1]").lock();
             }
-            $("#tot_num21,#nfy_tot_num").val(jMain.case_main[0].tot_num);
-            br_form.Add_FT1(jMain.case_main[0].tot_num);
+            $("#tot_num21,#nfy_tot_num").val(jMain.case_main[0].tot_num).triggerHandler("change");
+            //br_form.Add_FT1(jMain.case_main[0].tot_num);
             if (jMain.case_main[0].seq == "0") {
                 $("#dseqb_1").val("");
             } else {
-                $("#dseqb_1").val(item.seq);
+                $("#dseqb_1").val(jMain.case_main[0].seq);
             }
-            $("#dseq1b_1").val(item.seq1);
-            $("#dmseqb_1").val(item.ref_no);
-            $("#dmseq1b_1").val(item.ref_no1);
+            $("#dseq1b_1").val(jMain.case_main[0].seq1);
+            $("#dmseqb_1").val(jMain.case_main[0].ref_no);
+            $("#dmseq1b_1").val(jMain.case_main[0].ref_no1);
             $("#btndseq_okb_1").lock();
             $("#keydseqb_1").val("Y");
             var smark_val = $("input[name='tfzy_S_Mark']:checked").val();
@@ -481,16 +481,16 @@
             $("#issue_nob_1").val(jMain.case_main[0].issue_no);//註冊號
             $.each(jMain.case_dmt1, function (i, item) {
                 //填資料
-                var nRow = (i+1);
+                var nRow = (i+2);//從2開始,第一筆是母案
                 $("#dseqb_" + nRow).val(item.seq);
                 $("#dseq1b_" + nRow).val(item.seq1);
                 $("#dmseqb_" + nRow).val(item.cseq);
                 $("#dmseq1b_" + nRow).val(item.cseq1);
-                if (main.prgid = "brt51") {
+                if (main.prgid == "brt51") {
                     $("#but_endb_" + nRow).show();
                 }
                 if (item.case_stat1 == "NN") {
-                    $("input[name='case_stat1b_" + nRow + "'][value=NN]").prop("checked", true).triggerHandler("click");
+                    $("input[name='case_stat1b_" + nRow + "'][value='NN']").prop("checked", true);//.triggerHandler("click");
                     var smark_val = item.s_mark;
                     if (smark_val == "S") {
                         $("#s_markb_" + nRow).val("92年修正前服務標章");
@@ -516,7 +516,7 @@
                         $("input[name=case_stat1b_" + nRow + " ]").lock();
                     }
                 } else {
-                    $("input[name='case_stat1b_" + nRow + "'][value=OO]").prop("checked", true).triggerHandler("click");
+                    $("input[name='case_stat1b_" + nRow + "'][value='OO']").prop("checked", true);//.triggerHandler("click");
                     $("#btndmt_tempb_" + nRow).hide();
                     if (main.prgid == "brt52") {
                         $("#dseqb_" + nRow).lock();
@@ -580,7 +580,8 @@
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
                     //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttz1_Z9t").val(substr[1]);
                     } else {

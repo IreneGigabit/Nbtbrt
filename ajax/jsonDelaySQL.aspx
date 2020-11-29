@@ -71,6 +71,7 @@
                         dt.Rows[i]["dmt_temp_remark3"] = dr.SafeRead("remark3", "");
                     }
                 }
+                dt.Rows[0]["draw_file"] = Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("draw_file", ""));
             }
         }
 

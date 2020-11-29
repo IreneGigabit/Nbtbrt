@@ -97,8 +97,10 @@ public partial class Sys
     /// 檔案路徑轉換(檢視&amp;複製檔案用)，brbrt→nbtbrt
     /// </summary>
     public static string Path2Nbtbrt(string path) {
-        path = path.Replace("/", @"\");
-        path = path.Replace(@"\btbrt\", @"\nbtbrt\");
+        //path = path.Replace("/", @"\");
+        //path = path.Replace(@"\btbrt\", @"\nbtbrt\");
+        path = path.Replace(@"\", @"/");
+        path = path.Replace("/btbrt/", "/nbtbrt/");
         return path;
     }
 

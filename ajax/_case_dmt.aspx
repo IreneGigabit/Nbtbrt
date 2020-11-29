@@ -20,6 +20,7 @@
     protected string cust_area = "";
     protected string cust_seq = "";
     protected string code_type = "";
+    protected string arcase = "";//案性
 
     protected string br_in_scode = "";//交辦單營洽
     protected string br_in_scname = "";//交辦單營洽
@@ -95,6 +96,7 @@
 
                 if (dt.Rows.Count > 0) {
                     code_type = dt.Rows[0].SafeRead("arcase_type", "");
+                    arcase = dt.Rows[0].SafeRead("arcase", "");
                     br_in_scode = dt.Rows[0].SafeRead("in_scode", "");
 
                     if (submitTask == "AddNext") {//圖様改為新檔名
@@ -106,6 +108,7 @@
                             dt.Rows[0]["draw_file"] = strpath1 + "/" + newName;
                         }
                     }
+                    dt.Rows[0]["draw_file"] = Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("draw_file", ""));
 
                     SQL = "select sc_name from sysctrl.dbo.scode where scode='" + br_in_scode + "'";
                     object objResult = conn.ExecuteScalar(SQL);
@@ -213,11 +216,27 @@
             conn.DataTable(SQL, dt);
 
             for (int i = 0; i < dt.Rows.Count; i++) {
-                if (submitTask == "AddNext") {//複製模式,改為新檔名
-                    if (dt.Rows[i].SafeRead("mod_field", "") == "mod_dmt") {
-                        string[] fld = { "ncname1", "ncname2", "nename1", "nename2", "ncrep", "nerep", "neaddr1", "neaddr2", "neaddr3", "neaddr4" };//會存據以異議/評定/廢止商標圖樣的欄位
+                string[] fld = { "ncname1", "ncname2", "nename1", "nename2", "ncrep", "nerep", "neaddr1", "neaddr2", "neaddr3", "neaddr4" };//會存據以異議/評定/廢止商標圖樣的欄位
+                if (dt.Rows[i].SafeRead("mod_field", "") == "mod_dmt" || dt.Rows[i].SafeRead("mod_field", "") == "mod_class") {
+                    if (arcase == "DO1" || arcase == "DR1" || arcase == "DI1") {
+                        if (submitTask == "AddNext") {//複製模式,改為新檔名
+                            foreach (string f in fld) {
+                                System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[i].SafeRead(f, ""))));
+                                string strpath1 = sfile.gbrWebDir + "/temp";
+                                string newName = br_in_scode + "-" + Path.GetFileName(dt.Rows[i].SafeRead(f, ""));
+                                sFi.CopyTo(Server.MapPath(Sys.Path2Nbtbrt(strpath1 + "/" + newName)), true);
+                                dt.Rows[i][f] = strpath1 + "/" + newName;
+                            }
+                        }
                         foreach (string f in fld) {
-                            System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[0].SafeRead(f, ""))));
+                            System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[i].SafeRead(f, ""))));
+                            dt.Rows[i][f] = Sys.Path2Nbtbrt(dt.Rows[i].SafeRead(f, ""));
+                        }
+                    }
+                    /*
+                    if (submitTask == "AddNext") {//複製模式,改為新檔名
+                        foreach (string f in fld) {
+                            System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[i].SafeRead(f, ""))));
                             if (sFi.Exists) {//因會存其他資料,判斷檔案存在則表示為檔案路徑,才可改為新檔名
                                 string strpath1 = sfile.gbrWebDir + "/temp";
                                 string newName = br_in_scode + "-" + Path.GetFileName(dt.Rows[i].SafeRead(f, ""));
@@ -226,6 +245,13 @@
                             }
                         }
                     }
+                    foreach (string f in fld) {
+                        System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[i].SafeRead(f, ""))));
+                        if (sFi.Exists) {//因會存其他資料,判斷檔案存在則表示為檔案路徑,才可改為新檔名
+                            dt.Rows[i][f] = Sys.Path2Nbtbrt(dt.Rows[i].SafeRead(f, ""));
+                        }
+                    }
+                    */
                 }
             }
         }

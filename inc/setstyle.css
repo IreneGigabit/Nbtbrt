@@ -283,6 +283,10 @@ td
     FONT-SIZE: 10pt;
     BACKGROUND-COLOR: white
 }
+input[type=button] {
+    cursor: pointer;
+    padding: 3px 4px 1px 6px;
+}
 .c1button
 {
 	color:white;

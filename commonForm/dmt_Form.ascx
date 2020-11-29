@@ -103,10 +103,10 @@
 				<span id="fr_smark1">
                     <input type="radio" name="tfzy_S_Mark" value="N" onclick="dmt_form.change_mark(0)">團體商標
 				</span>
-				<span id="fr_smark2" style="display:">
+				<span id="fr_smark2">
                     <input type="radio" name="tfzy_S_Mark" value="M" onclick="dmt_form.change_mark(0)">團體標章
 				</span>
-				<span id="fr_smark3" style="display:">
+				<span id="fr_smark3">
                     <input type="radio" name="tfzy_S_Mark" value="L" onclick="dmt_form.change_mark(0)">證明標章
 				</span>
 			</span>
@@ -781,7 +781,7 @@
 
     //查詢主案件編號
     dmt_form.Queryclick = function(cust_seq) {
-        window.open("brta21Query.aspx?cust_seq=" + cust_seq, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open("brta21Query.aspx?cust_seq="+cust_seq ,"myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
         /*$('#dialog')
             .html('<iframe style="border: 0px;" src="brta21Query.aspx?cust_seq='+cust_seq+'" width="100%" height="100%"></iframe>')
             .dialog({autoOpen: true,modal: true,height: 420,width: 650,title: "查詢主案件編號"});*/
@@ -869,7 +869,8 @@
         $("#pfzd_prior_date").lock();//優先權申請日
         $("#tfzy_prior_country").lock();//優先權首次申請國家
         $("#tfzy_end_code").lock();//結案代碼
-        $("#tfzr_class_count").val("").lock();//類別
+        //$("#tfzr_class_count").val("").lock();//類別
+        $("#tfzr_class_count").val(1).lock().triggerHandler("change");//類別預設顯示第1筆
         $("#tfzr_class").val("").lock();
         $("#class1_1").val("").lock();
         $("#good_name1_1").val("").lock();
@@ -898,13 +899,15 @@
         $("#tfzy_Pul").unlock();//正聯防
         $("#Draw_file").val("");//商標圖樣
         $("#butUpload,#btnDelAtt").unlock();
+        $("#tfzd_ref_no1").val("_");//母案複製
         $("#but_ref").show();//母案複製
         $("input[name=tfzy_color]").unlock();//圖樣顏色
         $("#tfzy_Zname_type").unlock();//語文別
         $("#pfzd_prior_date").unlock();//優先權申請日
         $("#tfzy_prior_country").unlock();//優先權首次申請國家
         $("#tfzy_end_code").unlock();//結案代碼
-        $("#tfzr_class_count").val("").unlock();//類別
+        //$("#tfzr_class_count").val("").unlock();//類別
+        $("#tfzr_class_count").val(1).unlock().triggerHandler("change");//類別預設顯示第1筆
         $("#tfzr_class").val("").unlock();
         $("#class1_1").val("").unlock();
         $("#good_name1_1").val("").unlock();

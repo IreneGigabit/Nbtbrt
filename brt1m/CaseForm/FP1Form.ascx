@@ -416,11 +416,13 @@
             $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);
             $("#fr1_issue_no").val(jMain.case_main[0].issue_no);//註冊號
             $("#fr1_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
+            //商標種類
+            $("input[name=fr1_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
             //申請人種類
-            $("input[name=tfzd_Mark][value='" + jMain.case_main[0].dmt_mark + "']").prop("checked", true).triggerHandler("click");
-            if (jMain.case_main[0].dmt_mark == "A") {
+            $("input[name=tfzd_Mark][value='" + jMain.case_main[0].temp_mark + "']").prop("checked", true).triggerHandler("click");
+            if (jMain.case_main[0].temp_mark == "A") {
                 $("#no").val(jMain.case_main[0].apply_no);
-            } else if (jMain.case_main[0].dmt_mark == "I") {
+            } else if (jMain.case_main[0].temp_mark == "I") {
                 $("#no").val(jMain.case_main[0].issue_no);
             }
             //質權人
@@ -480,7 +482,8 @@
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
                     //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttz1_Z9t").val(substr[1]);
                     } else {
@@ -502,7 +505,8 @@
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
                     //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttz2_Z9t").val(substr[1]);
                     } else {

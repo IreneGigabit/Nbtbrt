@@ -132,10 +132,13 @@ public partial class Sys
             //來源跟目的不同時才要搬,否則會出錯
             if (sFi.FullName != dFi.FullName) {
                 if (dFi.Exists && backupFlag) {
-                    dFi.MoveTo(dFi.DirectoryName + "\\" + backup_name);
-                    sFi.MoveTo(dFi.FullName);
+                    dFi.CopyTo(dFi.DirectoryName + "\\" + backup_name,true);
+                    sFi.CopyTo(dFi.FullName,true);
+                    sFi.Delete();
                 } else if (dFi.Exists && !backupFlag) {
                     dFi.Delete();
+                    sFi.MoveTo(dFi.FullName);
+                } else {
                     sFi.MoveTo(dFi.FullName);
                 }
             }

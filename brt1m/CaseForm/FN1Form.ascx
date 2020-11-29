@@ -180,11 +180,11 @@
             //證明書種類
             $("input[name='tfgd_tran_Mark'][value='" + jMain.case_main[0].tran_mark + "']").prop("checked", true);
             //程序種類
-            $("input[name='tfzd_Mark'][value='" + jMain.case_main[0].dmt_mark + "']").prop("checked", true).triggerHandler("click");
+            $("input[name='tfzd_Mark'][value='" + jMain.case_main[0].temp_mark + "']").prop("checked", true).triggerHandler("click");
             //號數
-            if (jMain.case_main[0].dmt_mark == "A") {
+            if (jMain.case_main[0].temp_mark == "A") {
                 $("#no").val(jMain.case_main[0].apply_no);
-            } else if (jMain.case_main[0].dmt_mark == "I") {
+            } else if (jMain.case_main[0].temp_mark == "I") {
                 $("#no").val(jMain.case_main[0].issue_no);
             }
             $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
@@ -221,7 +221,8 @@
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
                     //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttz1_Z9t").val(substr[1]);
                     } else {

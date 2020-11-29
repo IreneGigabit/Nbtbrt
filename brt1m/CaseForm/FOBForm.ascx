@@ -63,7 +63,7 @@
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(foBattech)">
-            <strong>肆、<u>影印內容</u></strong><input TYPE="hidden" NAME="tfg1_other_item" id="tfg1_other_item">
+            <strong>肆、<u>影印內容</u></strong><input TYPE="text" NAME="tfg1_other_item" id="tfg1_other_item">
         </td>
 	</tr>
 	<tr>
@@ -138,11 +138,11 @@
         $("#tfzd_issue_no").val($("#O_issue_no").val());
         $("#tfzd_rej_no").val($("#O_rej_no").val());
         
-        if($("input[name='tfzd_Mark']:checked").val() == "A"){
+        if ($("input[name='fr_mark']:checked").val() == "A") {
             $("#tfzd_apply_no").val($(this).val());
-        }else if($("input[name='tfzd_Mark']:checked").val() == "I"){
+        } else if ($("input[name='fr_mark']:checked").val() == "I") {
             $("#tfzd_issue_no").val($(this).val());
-        }else if($("input[name='tfzd_Mark']:checked").val() == "R"){
+        } else if ($("input[name='fr_mark']:checked").val() == "R") {
             $("#tfzd_rej_no").val($(this).val());
         }
     })
@@ -150,17 +150,10 @@
     //影印內容
     br_form.CopyStr = function (selector, tar, tri) {
         var strRemark1 = "";
-        $(selector + " :checkbox").each(function (index) {
+        $(selector + ":checkbox").each(function (index) {
             var $this = $(this);
             if ($this.prop("checked")) {
-                strRemark1 += $this.val()
-                //其他文件輸入框
-                if ($("#" + pfld + $this.val() + "t").length > 0) {
-                    if ($("#" + pfld + $this.val() + "t").val() != "") {
-                        strRemark1 += "|Z9-" + $("#" + pfld + $this.val() + "t").val() + "-Z9";
-                    }
-                }
-                strRemark1 += "|";
+                strRemark1 += $this.val() + "|";
             }
             var z = tri.value;
             if (z == "P2" || z == "P3" || z == "P4" || z == "P5") {
@@ -180,13 +173,13 @@
         } else {
             $("#tfg2_agt_no1").val(jMain.case_main[0].agt_no);
             //程序種類
-            $("input[name=fr_mark][value='" + jMain.case_main[0].dmt_mark + "']").prop("checked", true).triggerHandler("click");
+            $("input[name=fr_mark][value='" + jMain.case_main[0].temp_mark + "']").prop("checked", true).triggerHandler("click");
             //號數
-            if(jMain.case_main[0].dmt_mark=="A"){
+            if (jMain.case_main[0].temp_mark == "A") {
                 $("#no").val(jMain.case_main[0].apply_no);
-            }else if(jMain.case_main[0].dmt_mark=="I"){
+            } else if (jMain.case_main[0].temp_mark == "I") {
                 $("#no").val(jMain.case_main[0].issue_no);
-            }else if(jMain.case_main[0].dmt_mark=="R"){
+            } else if (jMain.case_main[0].temp_mark == "R") {
                 $("#no").val(jMain.case_main[0].rej_no);
             }
             $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱
@@ -204,12 +197,9 @@
             }
 
             $.each(jMain.case_tranlist, function (i, item) {
-                if (item.mod_field == "other_item"){
-                    if (item.mod_dclass != "") {
-                        $("#" + item.mod_type + "_mod_dclass").val(item.mod_dclass);
-                    } else {
-                        $("#" + item.mod_type + "_mod_dclass").val(item.new_no);
-                    }
+                if (item.mod_field == "other_item") {
+                    $("#" + item.mod_type + "_mod_dclass").val(item.mod_dclass || "");
+                    $("#" + item.mod_type + "_new_no").val(item.new_no || "");
                 }
             });
         }

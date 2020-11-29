@@ -36,7 +36,7 @@
 
     private void doUpdateDB() {
         Sys sfile = new Sys();
-        sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
+        sfile.getFileServer(Sys.GetSession("SeBranch"), prgid);//檔案上傳相關設定
 
         string SQL = "";
         object objResult = null;

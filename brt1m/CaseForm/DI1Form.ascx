@@ -54,7 +54,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" width="20%" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(O1Appl_name)">
+		<td class="lightbluetable" colspan="8" valign="top" width="20%" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1Appl_name)">
             <strong>壹、<u>評定標的（你要評定的標章）</u></strong>
 		</td>
 	</tr>
@@ -81,8 +81,8 @@
 	<tr>
 		<td class=lightbluetable align=right >擬評定之類別種類：</td>
 		<td class=whitetablebg colspan="3">
-			<input type="radio" id=fr3_class_typeI name=fr3_class_type class="onoff" value="int" onclick="reg.tfzr_class_type(0).checked = reg.fr3_class_type(0).checked">國際分類
-			<input type="radio" id=fr3_class_typeO name=fr3_class_type class="onoff" value="old" onclick="reg.tfzr_class_type(1).checked = reg.fr3_class_type(1).checked">舊類
+			<input type="radio" id=fr3_class_typeI name=fr3_class_type class="onoff" value="int" onclick="reg.tfzr_class_typeI.checked = this.checked">國際分類
+			<input type="radio" id=fr3_class_typeO name=fr3_class_type class="onoff" value="old" onclick="reg.tfzr_class_typeO.checked = this.checked">舊類
 		</TD>
 		<td class=lightbluetable align=right width="18%" STYLE="cursor:pointer;COLOR:BLUE" title="請輸入類別，並以逗號分開(例如：001,005,032)。">擬評定之類別：</td>
 		<td class=whitetablebg colspan="3">
@@ -112,7 +112,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(O1Rapcust)">
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1Rapcust)">
             <strong>肆、<u>註冊人</u></strong>
 		</td>
 	</tr>
@@ -162,7 +162,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(I1New_no)">
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(i1new_no)">
             <strong>伍、<u>評定聲明：</u></strong>
 		</td>
 	</tr>
@@ -174,19 +174,19 @@
 		</td>
 	</tr>
     <tr>
-		<td class=lightbluetable align=right valign=top><input type="checkbox" name=ttg32_mod_pul_mod_type value="I1"></td>
+		<td class=lightbluetable align=right valign=top><input type="checkbox" id=ttg32_mod_pul_mod_type name=ttg32_mod_pul_mod_type value="I1"></td>
 		<td class=whitetablebg colspan=7>註冊應予撤銷。</td>
 	</tr>
 	<tr>
-		<td class=lightbluetable align=right valign=top><input type="checkbox" name=ttg33_mod_pul_mod_type value="I2"></td>
+		<td class=lightbluetable align=right valign=top><input type="checkbox" id=ttg33_mod_pul_mod_type name=ttg33_mod_pul_mod_type value="I2"></td>
 		<td class=whitetablebg colspan=7>指定使用於商標法施行細則第<INPUT TYPE=text NAME=ttg33_mod_pul_new_no id=ttg33_mod_pul_new_no SIZE=3 MAXLENGTH=10>條第<INPUT TYPE=text NAME=ttg33_mod_pul_mod_dclass id=ttg33_mod_pul_mod_dclass SIZE=20 MAXLENGTH=20>類商品／服務之註冊應予撤銷。</td>
 	</tr>
 	<tr>
-		<td class=lightbluetable align=right valign=top><input type="checkbox" name=ttg34_mod_pul_mod_type value="I3"></td>
+		<td class=lightbluetable align=right valign=top><input type="checkbox" id=ttg34_mod_pul_mod_type name=ttg34_mod_pul_mod_type value="I3"></td>
 		<td class=whitetablebg colspan=7>指定使用於商標法施行細則第<INPUT TYPE=text NAME=ttg34_mod_pul_new_no id=ttg34_mod_pul_new_no SIZE=3 MAXLENGTH=10>條第<INPUT TYPE=text NAME=ttg34_mod_pul_mod_dclass id=ttg34_mod_pul_mod_dclass SIZE=3 MAXLENGTH=3>類<INPUT TYPE=text NAME=ttg34_mod_pul_ncname1 id=ttg34_mod_pul_ncname1 SIZE=30 MAXLENGTH=50>商品／服務之註冊應予撤銷。</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(I1Other_item1)"><strong>陸、<u>主張法條及據以評定商標/標章：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(i1other_item1)"><strong>陸、<u>主張法條及據以評定商標/標章：</u></strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" valign="top" rowspan=2>一、主張條款：</td>
@@ -229,7 +229,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(I1Tran_remark1)"><strong>柒、<u>事實及理由：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(i1tran_remark1)"><strong>柒、<u>事實及理由：</u></strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top">一、申請評定人具利害關係人身分之事實及理由</td>
@@ -250,18 +250,18 @@
 		<td class="lightbluetable" colspan="8" valign="top"><TEXTAREA rows=9 cols=100 id=tfz3_tran_remark4 name=tfz3_tran_remark4 ></TEXTAREA></td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(ZAttechD)"><strong>捌、<u>證據(附件)內容：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttechD)"><strong>捌、<u>證據(附件)內容：</u></strong></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top"><TEXTAREA rows=9 cols=90 id=tfz3_tran_remark2 name=tfz3_tran_remark2></TEXTAREA></td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(I1Other_item)"><strong>玖、<u>相關聯案件：</u></strong></td>
+		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(i1other_item)"><strong>玖、<u>相關聯案件：</u></strong></td>
 	</tr>
 	<TR>
 		<TD class=lightbluetable align=right></TD>
 		<TD class=whitetablebg colspan=7>
-		本案與<input TYPE=text NAME=I_O_item1 id=I_O_item1 SIZE=10 MAXLENGTH=10 class="dateField">(年/月/日)註冊第<input type="text" name="I_O_item2" SIZE=10>號<input type="text" name="I_O_item3" SIZE=10>案有關
+		本案與<input TYPE=text NAME=I_O_item1 id=I_O_item1 SIZE=10 MAXLENGTH=10 class="dateField">(年/月/日)註冊第<input type="text" id="I_O_item2" name="I_O_item2" SIZE=10>號<input type="text" id="I_O_item3" name="I_O_item3" SIZE=10>案有關
 		<input type="hidden" name="tfz3_other_item" id="tfz3_other_item">
 		</TD>
 	</TR>
@@ -405,7 +405,7 @@
             }
         }
 
-        $("#fr3_class,#tfzr_class").val(pclass.get().join(','));
+        $("#fr3_class,#tfzr_class").val(pclass.join(','));
         $("#fr3_class_count,#tfzr_class_count").val(pclass.length);
     }
 
@@ -434,14 +434,14 @@
         console.log("di1.br_form.bind");
         if (jMain.case_main.length == 0) {
             //案件種類
-            $("#tfp3_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            //$("#tfp3_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
             $("#tfp3_seq").val("");
             $("#tfp3_seq1").val("_");
             $("#DI1_AP_Add_button").click();//註冊人預設顯示第1筆
             $("#ttg3_mod_aprep_mod_count").val("1").triggerHandler("change");//條款項目預設顯示第1筆
         } else {
             //案件種類
-            $("#tfp3_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            //$("#tfp3_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
             //本所編號
             if ($("#tfy_case_stat").val() == "NN") {
                 $("#tfp3_seq").val(jMain.case_main[0].seq);
@@ -479,23 +479,25 @@
             }
             $("#I_remark3").val(jMain.case_main[0].remark3);
             $("#tfzd_remark3").val(jMain.case_main[0].remark3);
-            //註冊人
-            $.each(jMain.case_tranlist, function (i, item) {
-                if (item.mod_field == "mod_ap") {
-                    //增加一筆
-                    $("#DI1_AP_Add_button").click();
-                    //填資料
-                    var nRow = $("#DI1_apnum").val();
-                    $("#ttg3_mod_ap_ncname1_" + nRow).val(item.ncname1);
-                    $("#ttg3_mod_ap_ncname2_" + nRow).val(item.ncname2);
-                    $("#ttg3_mod_ap_nzip_" + nRow).val(item.nzip);
-                    $("#ttg3_mod_ap_naddr1_" + nRow).val(item.naddr1);
-                    $("#ttg3_mod_ap_naddr2_" + nRow).val(item.naddr2);
-                    $("#ttg3_mod_ap_ncrep_" + nRow).val(item.ncrep);
+            if ($("#tfy_Arcase").val().Left(3) == "DI1") {
+                //註冊人
+                $.each(jMain.case_tranlist, function (i, item) {
+                    if (item.mod_field == "mod_ap") {
+                        //增加一筆
+                        $("#DI1_AP_Add_button").click();
+                        //填資料
+                        var nRow = $("#DI1_apnum").val();
+                        $("#ttg3_mod_ap_ncname1_" + nRow).val(item.ncname1);
+                        $("#ttg3_mod_ap_ncname2_" + nRow).val(item.ncname2);
+                        $("#ttg3_mod_ap_nzip_" + nRow).val(item.nzip);
+                        $("#ttg3_mod_ap_naddr1_" + nRow).val(item.naddr1);
+                        $("#ttg3_mod_ap_naddr2_" + nRow).val(item.naddr2);
+                        $("#ttg3_mod_ap_ncrep_" + nRow).val(item.ncrep);
+                    }
+                });
+                if (CInt($("#DI1_apnum").val()) == 0) {
+                    alert("查無此交辦案件之被異議人資料!!");
                 }
-            });
-            if (CInt($("#DI1_apnum").val()) == 0) {
-                alert("查無此交辦案件之被異議人資料!!");
             }
             //評定聲明
             $.each(jMain.case_tranlist, function (i, item) {
@@ -525,22 +527,22 @@
             });
             //主張法條
             if (jMain.case_main[0].other_item1 != "") {
-                var v=jMain.case_main[0].other_item1.split(";");
-                if(v[0]!=""){
-                    var I_item1=v[0].split("|");
-                    for(var i in I_item1){
-                        $("input[name='I_item1'][value='" +I_item1[i] + "']").prop("checked", true);
+                var v = jMain.case_main[0].other_item1.split(";");
+                if (v[0] != "") {
+                    var I_item1 = v[0].split("|");
+                    for (var i in I_item1) {
+                        $("input[name='I_item1'][value='" + I_item1[i] + "']").prop("checked", true);
                     }
                 }
-                if(v[1]!=""){
-                    if(v[1].indexOf("|") > -1){
-                        var I_item2=v[1].split("|");
+                if (v[1] && v[1] != "") {
+                    if (v[1].indexOf("|") > -1) {
+                        var I_item2 = v[1].split("|");
                         $("#I_item2").val(I_item2[0]);
                         $("#I_item2t").val(I_item2[1]);
-                    }else{
-                        if($("input[name='I_item1'][value='O']").prop("checked")==true){
+                    } else {
+                        if ($("input[name='I_item1'][value='O']").prop("checked") == true) {
                             $("#I_item2t").val(v[1]);
-                        }else{
+                        } else {
                             $("#I_item2").val(v[1]);
                         }
                     }

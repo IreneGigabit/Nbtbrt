@@ -434,8 +434,8 @@
             data: $("#regPage").serialize(),
             success: function (json) {
                 if (!isJson(json) || $("#chkTest").prop("checked")) {
-                    $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + json);
-                    $("#dialog").dialog({ title: 'Debug！', modal: true, maxHeight: 500, width: "90%" });
+                    $("#dialogW").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + json);
+                    $("#dialogW").dialog({ title: 'Debug！', modal: true, maxHeight: 500, width: "90%" });
                     return false;
                 }
                 var JSONdata = $.parseJSON(json);
@@ -488,8 +488,8 @@
                 });
             },
             error: function (xhr) {
-                $("#dialog").html("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
+                $("#dialogW").html("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialogW").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
     };

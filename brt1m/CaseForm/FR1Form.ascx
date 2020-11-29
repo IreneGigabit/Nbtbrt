@@ -146,8 +146,8 @@
 		        <tr>	
 			        <td class="lightbluetable" align="right" >類別種類：</td>
 			        <td class="whitetablebg" >
-				        <input type="radio" id=tfzd_class_typeI name=tfzd_class_type class="onoff" value="int">國際分類
-				        <input type="radio" id=tfzd_class_typeO name=tfzd_class_type class="onoff" value="old">舊類
+				        <input type="radio" id=tfzd_class_typeI name=tfzd_class_type value="int">國際分類
+				        <input type="radio" id=tfzd_class_typeO name=tfzd_class_type value="old">舊類
 			        </td>
 		        </tr>
 		        <tr>	
@@ -441,7 +441,7 @@
                 for (var ix in arrItem) {
                     if (arrItem[ix].indexOf(";") > -1) {
                         var oitem = arrItem[ix].split(";");
-                        if (oitem.indexOf(",") > -1) {
+                        if (oitem[0].indexOf(",") > -1) {
                             var oitem1 = oitem[0].split(",");
                             $("input[name=O_item][value='1']").prop("checked", true);
                             $("#O_item1").val(oitem1[1]);
@@ -469,10 +469,10 @@
            
             //延展商標權範圍及內容
             $("#tfzd_mark").val(jMain.case_main[0].temp_mark);
-            if (jMain.case_main[0].temp_mark == "N") {
-                $("#tfzy_markY").prop("checked", true);//全部延展
-            } else {
+            if (jMain.case_main[0].temp_mark == "Y") {
                 $("#tfzy_markN").prop("checked", true);//部分延展
+            } else {
+                $("#tfzy_markY").prop("checked", true);//全部延展
             }
 
             //**類別
@@ -499,7 +499,8 @@
                 for (var i = 0; i < arr_remark1.length; i++) {
                     //var str="Z3|Z9|Z9-具結書正本、讓與人之負責人身份證影本-Z9|";
                     //var str = "Z9-具結書正本、讓與人之負責人身份證影本-Z9";
-                    var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    //var substr = arr_remark1[i].match(/Z9-(\S+)-Z9/);
+                    var substr = arr_remark1[i].match(/Z9-([\s\S]+)-Z9/);
                     if (substr != null) {
                         $("#ttzd_Z9t").val(substr[1]);
                     } else {

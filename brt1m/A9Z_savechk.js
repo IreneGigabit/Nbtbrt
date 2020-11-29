@@ -611,7 +611,7 @@ main.chkCaseForm = function () {
             }
         }
     } else {
-        if ($("#prt_code") == "B" || $("#prt_code") == "ZZ") {
+        if ($("#prt_code").val() == "B" || $("#prt_code").val() == "ZZ") {
             if ($("#tfy_case_stat").val() == "NN" || $("#tfy_case_stat").val() == "SN") {
                 if ($("#spe_ctrl3").val() == "Y") {
                     alert("請輸入法定期限！");
@@ -811,7 +811,7 @@ main.chkEndBack = function () {
         }
         //復案註記檢查
         if ($("#tfy_back_flag").val() == "Y") {
-            if ($("#tfzd_end_date").val() == "" || $("#todoend_flag").val() == "N") {
+            if ($("#tfzd_end_date").val() == "" && $("#todoend_flag").val() == "N") {
                 var answer = "該案件未結案也無結案程序進行中，是否確定仍需勾選復案註記？";
                 if (confirm(answer) == false) {
                     return false;
@@ -1004,10 +1004,10 @@ main.savechkA4 = function () {
 
     $("#tfzd_color").val($("input[name='tfzy_color']:checked").val() || "");
     $("#tfzd_S_Mark").val($("input[name='tfzy_S_Mark']:checked").val() || "");
-    if ($("#tfzy_markY").prop("checked", true)) {//全部延展
+    if ($("#tfzy_markY").prop("checked")==true) {//全部延展
         $("#tfzd_Mark").val("N");
     } else {
-        $("#tfzd_Mark").val("Y");;//部分延展
+        $("#tfzd_Mark").val("Y");//部分延展
     }
 
     $("#tfzd_Pul").val($("#tfzy_Pul").val());
@@ -1715,12 +1715,12 @@ main.savechkA6 = function () {
             var tot_num = CInt($("#tot_num11").val());//共N件
             var ctrlcnt = 0;//有輸入值的件數
             for (var i = 1; i <= CInt($("#tot_num11").val()) ; i++) {
-                if ($("#appl_namea_" + i).val() != "" && $("#dseqa_" + i).val() != "") {
+                if ($("#appl_namea_" + i).val() != "" || $("#dseqa_" + i).val() != "") {
                     ctrlcnt++;
                 }
             }
             if (tot_num != ctrlcnt) {
-                var answer = "變更件數(共 " + tot_num + " 類)與包含主要案性輸入件數(共 " + ctrlcnt + " 類)不符，\n是否確定指定件數共 " + ctrlcnt + " 件？";
+                var answer = "變更件數(共 " + tot_num + " 件)與包含主要案性輸入件數(共 " + ctrlcnt + " 件)不符，\n是否確定指定件數共 " + ctrlcnt + " 件？";
                 if (confirm(answer)) {
                     $("#tot_num11").val(ctrlcnt).triggerHandler("change");
                 } else {
@@ -1741,12 +1741,12 @@ main.savechkA6 = function () {
             var tot_num = CInt($("#tot_num21").val());//共N件
             var ctrlcnt = 0;//有輸入值的件數
             for (var i = 1; i <= CInt($("#tot_num21").val()) ; i++) {
-                if ($("#appl_nameb_" + i).val() != "" && $("#dseqb_" + i).val() != "") {
+                if ($("#appl_nameb_" + i).val() != "" || $("#dseqb_" + i).val() != "") {
                     ctrlcnt++;
                 }
             }
             if (tot_num != ctrlcnt) {
-                var answer = "變更件數(共 " + tot_num + " 類)與包含主要案性輸入件數(共 " + ctrlcnt + " 類)不符，\n是否確定指定件數共 " + ctrlcnt + " 件？";
+                var answer = "變更件數(共 " + tot_num + " 件)與包含主要案性輸入件數(共 " + ctrlcnt + " 件)不符，\n是否確定指定件數共 " + ctrlcnt + " 件？";
                 if (confirm(answer)) {
                     $("#tot_num21").val(ctrlcnt).triggerHandler("change");
                 } else {
@@ -2440,13 +2440,13 @@ main.savechkB = function () {
 
             //2012/10/3增加廢止商標包含部份，因2012/7/1新申請書修改
             $("#tfzd_Cappl_name").val($("input[name='R_cappl_name']:checked").val() || "");
-            $("#tfzd_eappl_name").val($("input[name='R_eappl_name']:checked").val() || "");
+            $("#tfzd_Eappl_name").val($("input[name='R_eappl_name']:checked").val() || "");
             $("#tfzd_jappl_name").val($("input[name='R_jappl_name']:checked").val() || "");
             $("#tfzd_Draw").val($("input[name='R_draw']:checked").val() || "");
             $("#tfzd_zappl_name1").val($("input[name='R_zappl_name1']:checked").val() || "");
-            $("#tfzd_remark3").val($("input[name='R_remark3']:checked").val() || "");
+            $("#tfzd_remark3").val($("#R_remark3").val() || "");
 
-            $("#draw_file").val($("#tfp1_draw_file").val());
+            $("#Draw_file").val($("#tfp1_draw_file").val());
             $("input[name='fr1_class_type']:checked").triggerHandler("click");
             $("#tfy_case_stat").val($("#tfp1_case_stat").val());
             if ($("#tfy_case_stat").val() == "NN") {
@@ -2495,7 +2495,7 @@ main.savechkB = function () {
                 }
             }
             if ($("#ttg23_mod_pul_new_no").val() != "" || $("#ttg23_mod_pul_mod_dclass").val() != "") {
-                if ($("#ttg13_mod_pul_mod_type").prop("checked") == false) {
+                if ($("#ttg23_mod_pul_mod_type").prop("checked") == false) {
                     alert("指定使用於商標法施行細則第" + $("#ttg23_mod_pul_new_no").val() + "條第" + $("#ttg23_mod_pul_mod_dclass").val() + "類商品／服務之註冊應予撤銷有輸入資料，請勾選，如不勾選，請將輸入資料清空！");
                     settab("#tran");
                     $("#ttg23_mod_pul_mod_type").focus();
@@ -2513,13 +2513,13 @@ main.savechkB = function () {
             //出名代理人檢查
             if (main.chkAgt("apnum", "apclass", "tfp2_agt_no") == false) return false;
             $("#tfzd_Cappl_name").val($("input[name='O_cappl_name']:checked").val() || "");
-            $("#tfzd_eappl_name").val($("input[name='O_eappl_name']:checked").val() || "");
+            $("#tfzd_Eappl_name").val($("input[name='O_eappl_name']:checked").val() || "");
             $("#tfzd_jappl_name").val($("input[name='O_jappl_name']:checked").val() || "");
             $("#tfzd_Draw").val($("input[name='O_draw']:checked").val() || "");
             $("#tfzd_zappl_name1").val($("input[name='O_zappl_name1']:checked").val() || "");
-            $("#tfzd_remark3").val($("input[name='O_remark3']:checked").val() || "");
+            $("#tfzd_remark3").val($("#O_remark3").val() || "");
 
-            $("#draw_file").val($("#tfp2_draw_file").val());
+            $("#Draw_file").val($("#tfp2_draw_file").val());
             $("input[name='fr2_class_type']:checked").triggerHandler("click");
             $("#tfy_case_stat").val($("#tfp2_case_stat").val());
             if ($("#tfy_case_stat").val() == "NN") {
@@ -2590,11 +2590,11 @@ main.savechkB = function () {
 
             //2012/10/3增加廢止商標包含部份，因2012/7/1新申請書修改
             $("#tfzd_Cappl_name").val($("input[name='I_cappl_name']:checked").val() || "");
-            $("#tfzd_eappl_name").val($("input[name='I_eappl_name']:checked").val() || "");
+            $("#tfzd_Eappl_name").val($("input[name='I_eappl_name']:checked").val() || "");
             $("#tfzd_jappl_name").val($("input[name='I_jappl_name']:checked").val() || "");
             $("#tfzd_Draw").val($("input[name='I_draw']:checked").val() || "");
             $("#tfzd_zappl_name1").val($("input[name='I_zappl_name1']:checked").val() || "");
-            $("#tfzd_remark3").val($("input[name='I_remark3']:checked").val() || "");
+            $("#tfzd_remark3").val($("#I_remark3").val() || "");
 
             if ($("input[name='I_item1']:checked").length > 0) {
                 //2013/1/24因應商標法修正改為多選
@@ -2616,11 +2616,12 @@ main.savechkB = function () {
                 } else if ($("input[name='I_item1']:eq(2)").prop("checked") == true) {
                     pother_item1 += ";" + $("#I_item2t").val();
                 }
+                $("#tfz3_other_item1").val(pother_item1);
             } else {
                 $("#tfz3_other_item1").val("");
             }
 
-            $("#draw_file").val($("#tfp3_draw_file").val());
+            $("#Draw_file").val($("#tfp3_draw_file").val());
             $("input[name='fr3_class_type']:checked").triggerHandler("click");
             $("#tfy_case_stat").val($("#tfp3_case_stat").val());
             if ($("#tfy_case_stat").val() == "NN") {
@@ -2861,7 +2862,7 @@ main.savechkZZ = function () {
             $("#ttz1_P1").focus();
             return false;
         }
-        $("#tfzd_mark").val($("input[name='fr_Mark']:checked").val() || "");
+        $("#tfzd_mark").val($("input[name='fr_mark']:checked").val() || "");
     }
     if ($("#tfy_Arcase").val().Left(3) == "AD7") {
         if ($("input[name=fr4_remark3]").prop("checked").length == 0) {

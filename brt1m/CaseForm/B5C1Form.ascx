@@ -184,25 +184,28 @@
             //案件種類
             $("input[name=fr4_remark3][value='" + jMain.case_main[0].remark3 + "']").prop("checked", true);
             //申請人種類
-            $("input[name=fr4_Mark][value='" + jMain.case_main[0].dmt_mark + "']").prop("checked", true);
+            $("input[name=fr4_Mark][value='" + jMain.case_main[0].temp_mark + "']").prop("checked", true);
             //出席代表種類
             $("input[name=fr4_tran_mark][value='" + jMain.case_main[0].tran_mark + "']").prop("checked", true);
-            $("#fr4_other_item").val(jMain.case_main[0].other_item2);//指定發言姓名
+            $("#fr4_other_item").val(jMain.case_main[0].other_item);//指定發言姓名
             $("#fr4_other_item1").val(jMain.case_main[0].other_item1);//職稱
             $("#fr4_other_item2").val(jMain.case_main[0].other_item2);//聯絡電話
-            //對造當事人
-            $.each(jMain.case_tranlist, function (i, item) {
-                if (item.mod_field == "mod_client") {
-                    //增加一筆
-                    $("#DE1_AP_Add_button").click();
-                    //填資料
-                    var nRow = $("#DE1_apnum").val();
-                    $("#tfr4_ncname1_" + nRow).val(item.ncname1);
-                    $("#tfr4_naddr1_" + nRow).val(item.naddr1);
+
+            if ($("#tfy_Arcase").val().Left(3) == "DE1"||$("#tfy_Arcase").val().Left(3) == "AD7") {
+                //對造當事人
+                $.each(jMain.case_tranlist, function (i, item) {
+                    if (item.mod_field == "mod_client") {
+                        //增加一筆
+                        $("#DE1_AP_Add_button").click();
+                        //填資料
+                        var nRow = $("#DE1_apnum").val();
+                        $("#tfr4_ncname1_" + nRow).val(item.ncname1);
+                        $("#tfr4_naddr1_" + nRow).val(item.naddr1);
+                    }
+                });
+                if (CInt($("#DE1_apnum").val()) == 0) {
+                    alert("查無此交辦案件之對造當事人資料!!");
                 }
-            });
-            if (CInt($("#DE1_apnum").val()) == 0) {
-                alert("查無此交辦案件之對造當事人資料!!");
             }
             $("#fr4_tran_remark1").val(jMain.case_main[0].tran_remark1);
         }

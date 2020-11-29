@@ -335,11 +335,13 @@
             $("#fr1_appl_name").val(jMain.case_main[0].appl_name);//商標／標章名稱
             //商標種類
             $("input[name=fr1_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
+            //分割後申請案性
+            $("#tfg1_div_arcase").val(jMain.case_main[0].div_arcase);
             //分割件數
             if (main.prgid == "brt52") {
                 $("#tot_num1").lock();
             }
-            $("#tot_num1,#nfy_tot_num").val(jMain.case_main[0].tot_num);
+            $("#tot_num1,#nfy_tot_num").val(jMain.case_main[0].tot_num);//.triggerHandler("change");
             br_form.Add_arcaseFD1(jMain.case_main[0].tot_num);
             $.each(jMain.case_sql, function (i, item) {
                 var spl_num = (i + 1);
@@ -356,18 +358,17 @@
                 $("input[name='FD1_Marka_" + spl_num + "'][value='" + item.mark + "']").prop('checked', true);
                 //產生分割_類別
                 br_form.Add_classFD1(spl_num, item.class_count);
-                $.each(jMain.case_good, function (i, item) {
-                    var good_num = (i + 1);
-                    if (item.case_sqlno == $("#FD1_case_sqlno_" + spl_num).val()) {
-                        $("#classa_" + spl_num + "_" + good_num).val(item.class);//第X類
-                        $("#FD1_good_counta_" + good_num).val(item.dmt_goodcount);//共N項
-                        $("#FD1_good_namea_" + good_num).val(item.dmt_goodname);//商品名稱
-                    }
-                });
-                br_form.count_kindFD1(spl_num,1);////類別串接
+                var sub_good = $(jMain.case_good).filter(function (j, n) { return n.case_sqlno === item.case_sqlno });
+                if (sub_good.length > 0) {
+                    $.each(sub_good, function (ix, it) {
+                        var good_num = (ix + 1);
+                        $("#classa_" + spl_num + "_" + good_num).val(it.class);//第X類
+                        $("#FD1_good_counta_" + spl_num + "_" + good_num).val(it.dmt_goodcount);//共N項
+                        $("#FD1_good_namea_" + spl_num + "_" + good_num).val(it.dmt_goodname);//商品名稱
+                    });
+                    br_form.count_kindFD1(spl_num, 1);////類別串接
+                }
             });
-            //分割後申請案性
-            $("#tfg1_div_arcase").val(jMain.case_main[0].div_arcase);
             //**備註
             if (jMain.case_tran.length > 0) {
                 if (jMain.case_tran[0].other_item.indexOf(";") > -1) {
