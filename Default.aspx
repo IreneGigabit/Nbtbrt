@@ -78,7 +78,7 @@
                         xapcat = dt.Rows[i]["APcatCName"].ToString();
                         xaporder = "";
                         xItemCount = 1;
-                        StrMenus += "<td width=\"87\" align=\"center\" class=\"apcat tab-title\" v1=\"" + xn.ToString() + "\" height=\"17\" valign=\"bottom\">" + xapcat + "</td>\n";
+                        StrMenus += "<td width=\"87\" align=\"center\" class=\"apcat tab-title\" v1=\"" + xn.ToString() + "\" height=\"19\" valign=\"bottom\">" + xapcat + "</td>\n";
                     }
                     if (dt.Rows[i]["APNameC"].ToString() != xapcode)
                     {
