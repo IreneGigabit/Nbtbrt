@@ -148,15 +148,23 @@ hr
 .tab-title
 {
     FONT-SIZE: 10pt;
-    BACKGROUND-IMAGE: url(../images/tab.gif);
-    COLOR: #ffff99;
+    /*BACKGROUND-IMAGE: url(../images/tab.gif);*/
+    /*COLOR: #ffff99;*/
+    COLOR: #222200;
+    font-weight:bold;
+    text-shadow: 0.1em 0.1em 0.2em #dddd99;
 }
 .tab-titleon
 {
     FONT-SIZE: 10pt;
-    BACKGROUND-IMAGE: url(../images/tabon.gif);
+    /*BACKGROUND-IMAGE: url(../images/tabon.gif);*/
     CURSOR: pointer;
-    COLOR: #222200;
+    /*COLOR: #222200;*/
+    COLOR: #ffff99;
+    font-weight:bold;
+    /*text-shadow: -1px 1px 0 #000, 1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000;*/
+    text-shadow: 0.1em 0.1em 0.2em #222200;
+    border-bottom:2px solid;
 }
 .CliMod
 {

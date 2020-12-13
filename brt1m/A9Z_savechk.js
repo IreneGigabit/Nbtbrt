@@ -3,6 +3,7 @@ main.chkDate = function (tabName) {
     var rtn = true;
     $("[id='" + tabName + "'] input.dateField").each(function () {
         if ($(this).val() != "" && !$.isDate($(this).val())) {
+            if ($("#chkTest").prop("checked")) {alert($(this).prop("id"));}
             $(this).addClass("chkError");
             settab(tabName);
             rtn = false;
@@ -926,9 +927,9 @@ main.savechkA3 = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -975,9 +976,9 @@ main.savechkA4 = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -1132,9 +1133,9 @@ main.savechkA5 = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -1408,9 +1409,9 @@ main.savechkA6 = function () {
     }
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -1829,9 +1830,9 @@ main.savechkA7 = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -2009,9 +2010,9 @@ main.savechkA8 = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -2117,9 +2118,9 @@ main.savechkA9 = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -2176,9 +2177,9 @@ main.savechkAA = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -2270,9 +2271,9 @@ main.savechkAB = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -2329,9 +2330,9 @@ main.savechkAC = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -2378,9 +2379,9 @@ main.savechkB = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;
@@ -2408,9 +2409,9 @@ main.savechkB = function () {
                 $("#tfp1_seq1").focus();
                 return false;
             }
-            if ($("#R_O_item1").val() != "" || $("#R_O_item2").val() != "" || $("#R_O_item3").val() != "") {
+            //if ($("#R_O_item1").val() != "" || $("#R_O_item2").val() != "" || $("#R_O_item3").val() != "") {
                 $("#tfz1_other_item").val($("#R_O_item1").val() + ";" + $("#R_O_item2").val() + ";" + $("#R_O_item3").val());
-            }
+            //}
             if ($("#ttg11_mod_pul_new_no").val() != "" || $("#ttg11_mod_pul_ncname1").val() != "") {
                 if ($("input[name='ttg11_mod_pul_mod_type']:checked").length == 0) {
                     alert("第" + $("#ttg11_mod_pul_new_no").val() + "號「" + $("#ttg11_mod_pul_ncname1").val() + "」有輸入資料，請選擇商標或標章，如不選擇，請將輸入資料清空！");
@@ -2483,9 +2484,9 @@ main.savechkB = function () {
                 $("#tfp2_seq1").focus();
                 return false;
             }
-            if ($("#O_O_item1").val() != "" || $("#O_O_item2").val() != "" || $("#O_O_item3").val() != "") {
+            //if ($("#O_O_item1").val() != "" || $("#O_O_item2").val() != "" || $("#O_O_item3").val() != "") {
                 $("#tfz2_other_item").val($("#O_O_item1").val() + ";" + $("#O_O_item2").val() + ";" + $("#O_O_item3").val());
-            }
+            //}
             if ($("#ttg21_mod_pul_new_no").val() != "" || $("#ttg21_mod_pul_ncname1").val() != "") {
                 if ($("input[name='ttg21_mod_pul_mod_type']:checked").length == 0) {
                     alert("第" + $("#ttg21_mod_pul_new_no").val() + "號「" + $("#ttg21_mod_pul_ncname1").val() + "」有輸入資料，請選擇商標或標章，如不選擇，請將輸入資料清空！");
@@ -2557,9 +2558,9 @@ main.savechkB = function () {
                 $("#tfp3_seq1").focus();
                 return false;
             }
-            if ($("#I_O_item1").val() != "" || $("#I_O_item2").val() != "" || $("#I_O_item3").val() != "") {
+            //if ($("#I_O_item1").val() != "" || $("#I_O_item2").val() != "" || $("#I_O_item3").val() != "") {
                 $("#tfz3_other_item").val($("#I_O_item1").val() + ";" + $("#I_O_item2").val() + ";" + $("#I_O_item3").val());
-            }
+            //}
             if ($("#ttg31_mod_pul_new_no").val() != "" || $("#ttg31_mod_pul_ncname1").val() != "") {
                 if ($("input[name='ttg31_mod_pul_mod_type']:checked").length == 0) {
                     alert("第" + $("#ttg31_mod_pul_new_no").val() + "號「" + $("#ttg31_mod_pul_ncname1").val() + "」有輸入資料，請選擇商標或標章，如不選擇，請將輸入資料清空！");
@@ -2826,9 +2827,9 @@ main.savechkZZ = function () {
     if (main.chkApp() == false) return false;
 
     //日期格式檢查,抓class=dateField,有輸入則檢查
-    if (main.chkDate("#case") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#dmt") == false) { alert("日期格式有誤,請檢查"); return false; }
-    if (main.chkDate("#tran") == false) { alert("日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#case") == false) { alert("接洽交辦內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#dmt") == false) { alert("案件主檔內容日期格式有誤,請檢查"); return false; }
+    if (main.chkDate("#tran") == false) { alert("交辦內容日期格式有誤,請檢查"); return false; }
 
     //商標名稱檢查
     if (main.chkApplName() == false) return false;

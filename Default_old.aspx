@@ -67,8 +67,7 @@
                 string xapo = "";
                 //string xpath = "";
 
-                //StrMenus = "<table cellSpacing=\"0\" cellPadding=\"0\" bgColor=\"#5A63BD\" border=\"0\"><tr>\n";
-                StrMenus = "<table cellSpacing=\"0\" cellPadding=\"0\" bgColor=\"\" border=\"0\"><tr>\n";
+                StrMenus = "<table cellSpacing=\"0\" cellPadding=\"0\" bgColor=\"#5A63BD\" border=\"0\"><tr>\n";
                 scriptString = "";
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
@@ -169,8 +168,7 @@
         </tr>
     </table>
     <table cellspacing="0" cellpadding="0" width="100%" border="0">
-        <!--tr style="background-color:#5a63bd"-->
-        <tr style="background:linear-gradient(to bottom, #d4d9f7 5%, #5a63bd 100%);">
+        <tr style="background-color:#5a63bd">
             <td width="30" id="imgSide" style="cursor:pointer;background-size:60% 95%;background-repeat:no-repeat;">
                 <%--<img id="imgSide" style="cursor:pointer;" src="images/x-1.gif" />&nbsp;&nbsp;--%>
             </td>
@@ -217,7 +215,7 @@
             }
         });
         $(document).click(function (e) { $("#oPopBody").hide(); });
-        $(".apcat").mouseover(function (e) { $(this).addClass("tab-titleon").removeClass("tab-title"); $(this).click(); });
+        $(".apcat").mouseover(function (e) { $(this).addClass("tab-titleon").removeClass("tab-title") });
         $(".apcat").mouseout(function (e) { $(this).addClass("tab-title").removeClass("tab-titleon") });
         $(".apcat").click(menuClick);
         $("#oPopBody").mouseleave(function (e) { $(this).hide(); });
@@ -248,6 +246,7 @@
         var menuHeight = 8;
         var menuWidth = 0;
         var menuHtm = "";
+
         for (i = 0 ; i < zmenu.length ; i++) {
             if (zmenu[i].mIdx == mi) {
                 if (zmenu[i].Bar == "Y" && i0 > 0) {
@@ -258,13 +257,10 @@
                 //if (zmenu[i].Name.CodeLength() > maxLen) maxLen = zmenu[i].Name.CodeLength();
                 maxLen = Math.max(zmenu[i].Name.CodeLength(), maxLen)
                 zmenu[i].pTop = menuHeight + 31
-                //menuHtm += "<div style=\"margin: 0px 0px 0px 0px;padding: 2px 1px 1px 1px;color: #000;background-color: #f0f0f0;cursor: pointer;height: 18px;\" " +
-				//	"onmouseover=\"javascript:PopMenuOver(this)\" onmouseout=\"javascript:PopMenuOut(this)\" " +
-				//	"onclick=\"javascript:PopMenuClick(" + i.toString() + ")\">" + zmenu[i].Name + "&nbsp;</div>";
-                menuHtm += "<div style=\"margin: 0px 0px 0px 0px;padding: 2px 1px 1px 1px;color: #000;cursor: pointer;height: 18px;\" " +
-					"onmouseover=\"javascript:PopMenuOver(this,'" + mi + "')\" onmouseout=\"javascript:PopMenuOut(this,'" + mi + "')\" " +
+                menuHtm += "<div style=\"margin: 0px 0px 0px 0px;padding: 2px 1px 1px 1px;color: #000;background-color: #f0f0f0;cursor: pointer;height: 18px;\" " +
+					"onmouseover=\"javascript:PopMenuOver(this)\" onmouseout=\"javascript:PopMenuOut(this)\" " +
 					"onclick=\"javascript:PopMenuClick(" + i.toString() + ")\">" + zmenu[i].Name + "&nbsp;</div>";
-                menuHeight += 18;
+                menuHeight += 22;
                 i0++;
             }
         }
@@ -275,7 +271,6 @@
         $("#oPopBody").css("margin", "0px 0px 0px 0px");
         $("#oPopBody").css("padding", "2px 4px 2px 10px");
         $("#oPopBody").css("background-color", "#f0f0f0");
-        //$("#oPopBody").css("background-color", "#eaf9f5");
         $("#oPopBody").css("font-size", "10pt");
         $("#oPopBody").css("font-family", "微軟正黑體, Verdana, Arial");
         $("#oPopBody").css("border-left", "solid 2px #fff");
@@ -287,30 +282,19 @@
         //$("#oPopBody").css("top", "46px");
         $("#oPopBody").css("top", Math.ceil($("#workfram").offset().top) + "px");
         $("#oPopBody").css("width", menuWidth + "px");
-        //$("#oPopBody").css("heigth", menuHeight + "px");
+        $("#oPopBody").css("heigth", menuHeight + "px");
 
-        var max_menuHeight = document.documentElement.clientHeight-70;
-        //2020/12/09 改成超過螢幕高度就會有捲軸
-        if (menuHeight < max_menuHeight) {
-            $("#oPopBody").height(menuHeight);
-            $("#oPopBody").css("overflowY", "hidden");
-        } else {
-            $("#oPopBody").height(max_menuHeight);
-            $("#oPopBody").css("overflowY", "scroll");
-        }
         $("#oPopBody").show();
         e.stopPropagation();
         return;
     }
 
-    function PopMenuOver(sObj, pV1) {
-        $(".apcat[v1='" + pV1 + "']").addClass("tab-titleon").removeClass("tab-title");
+    function PopMenuOver(sObj) {
         sObj.style.backgroundColor = "#898989";
         sObj.style.color = "#fff";
     }
 
-    function PopMenuOut(sObj, pV1) {
-        $(".apcat[v1='" + pV1 + "']").addClass("tab-title").removeClass("tab-titleon");
+    function PopMenuOut(sObj) {
         sObj.style.backgroundColor = "#f0f0f0";
         sObj.style.color = "#000";
     }

@@ -145,67 +145,6 @@
                             applyOrgPath = dr1.SafeRead("attach_path", "");
                         }
                     }
-
-                    //20201211 增加檢查事務所案號
-                    string seq_line = Get_name("【事務所或申請人案件編號】");
-                    string[] split_seq = seq_line.Split('】');
-                    if (split_seq.Length >= 2) {
-                        string lseq = Request["Branch"] + "T" + Request["seq"] + (Request["seq1"] != "_" ? "-" + Request["seq1"] : "");
-                        if (split_seq[1].IndexOf(lseq, StringComparison.OrdinalIgnoreCase) == -1) {
-                            Response.Write("	errFlag=true;\r\n");
-                            Response.Write("	$('#msg').append('<Font align=left color=\"red\" size=3>案號(<font color=\"black\">" + lseq + "</font>)與申請書填寫案號(<font color=\"black\">" + split_seq[1].Split('(')[0].Trim() + "</font>)不符!!</font><BR>');\r\n");
-                        }
-                    }
-
-                    //20201211 增加申請號/註冊號
-                    string apply_no = "",issue_no="";
-                    SQL = "select * from dmt a where seq = '" + Request["seq"] + "' and seq1 = '" + Request["seq1"] + "' ";
-                    using (SqlDataReader dr1 = conn.ExecuteReader(SQL)) {
-                        if (dr1.Read()) {
-                            apply_no = dr1.SafeRead("apply_no", "").Trim();
-                            issue_no = dr1.SafeRead("issue_no", "").Trim();
-                        }
-                    }
-                    string notype_line = Get_name("【案號類別】");
-                    string[] split_notype = notype_line.Split('】');
-                    if (split_notype.Length >= 2) {
-                        string no_line = Get_name("【案號】");
-                        string[] split_no = no_line.Split('】');
-                        if (split_no.Length >= 2) {
-                            if (split_notype[1].Trim() == "申請案號") {
-                                if (apply_no != split_no[1].Trim()) {
-                                    Response.Write("	errFlag=true;\r\n");
-                                    Response.Write("	$('#msg').append('<Font align=left color=\"red\" size=3>申請書申請案號(<font color=\"black\">" + split_no[1].Trim() + "</font>)與案件主檔(<font color=\"black\">" + apply_no + "</font>)不符!!</font><BR>');\r\n");
-                                }
-                            } else if (split_notype[1].Trim() == "註冊號") {
-                                if (issue_no != split_no[1].Trim()) {
-                                    Response.Write("	errFlag=true;\r\n");
-                                    Response.Write("	$('#msg').append('<Font align=left color=\"red\" size=3>申請書註冊號(<font color=\"black\">" + split_no[1].Trim() + "</font>)與案件主檔(<font color=\"black\">" + issue_no + "</font>)不符!!</font><BR>');\r\n");
-                                }
-                            }
-                        }
-                    } else {
-                        string issue_line = Get_name("【註冊號】");
-                        string apply_line = Get_name("申請案號】");
-                        if (issue_line!="") {
-                            string[] split_no = issue_line.Split('】');
-                            if (split_no.Length >= 2) {
-                                if (issue_no != split_no[1].Trim()) {
-                                    Response.Write("	errFlag=true;\r\n");
-                                    Response.Write("	$('#msg').append('<Font align=left color=\"red\" size=3>申請書註冊號(<font color=\"black\">" + split_no[1].Trim() + "</font>)與案件主檔(<font color=\"black\">" + issue_no + "</font>)不符!!</font><BR>');\r\n");
-                                }
-                            }
-                        } else if (apply_line != "") {
-                            string[] split_no = apply_line.Split('】');
-                            if (split_no.Length >= 2) {
-                                if (apply_no != split_no[1].Trim()) {
-                                    Response.Write("	errFlag=true;\r\n");
-                                    Response.Write("	$('#msg').append('<Font align=left color=\"red\" size=3>申請書申請案號(<font color=\"black\">" + split_no[1].Trim() + "</font>)與案件主檔(<font color=\"black\">" + apply_no + "</font>)不符!!</font><BR>');\r\n");
-                                }
-                            }
-                        }
-                    }
-
                     //20191017 增加申請書增益集版本
                     if (applyOrgPath != "") {
                         if (applyOrgPath.IndexOf(@"/btbrt/") == 0) {//『/btbrt/』開頭要換掉

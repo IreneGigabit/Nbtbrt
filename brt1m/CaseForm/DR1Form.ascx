@@ -28,7 +28,7 @@
 	<tr>			
 		<td class=lightbluetable align=right><strong>案件種類：</strong></td>
 		<td class=whitetablebg colspan=7>
-            <Select name="tfp1_case_stat" id="tfp1_case_stat" onchange="br_form.new_oldcaseB('tfp1')">
+            <Select name="tfp1_case_stat" id="tfp1_case_stat" onchange="br_form.new_oldcaseB('tfp1',true)">
 			<option value="NN">新案</option>
 			<option value="SN">新案(指定編號)</option>
             </Select>
@@ -222,7 +222,7 @@
 		<TD class=lightbluetable align=right></TD>
 		<TD class=whitetablebg colspan=7>
 		本案與<input TYPE=text NAME=R_O_item1 id=R_O_item1 SIZE=10 MAXLENGTH=10 class="dateField">(年/月/日)註冊第<input type="text" id="R_O_item2" name="R_O_item2" SIZE=10>號<input type="text" id="R_O_item3" name="R_O_item3" SIZE=10>案有關
-		<input type="hidden" name="tfz1_other_item" id="tfz1_other_item">
+		<input type="text" name="tfz1_other_item" id="tfz1_other_item">
 		</TD>
 	</TR>
 	<tr>
@@ -246,35 +246,35 @@
 		    1.<input TYPE=text NAME=ttg1_mod_class_ncname1 id=ttg1_mod_class_ncname1 SIZE=50 MAXLENGTH=50 readonly>
 			<input TYPE=hidden NAME=draw_attach_file_ttg1c_1 id=draw_attach_file_ttg1c_1 >
 			<input TYPE=hidden NAME=old_file_ttg1c_1 id=old_file_ttg1c_1 >
-			<input type="button" class="cbutton" id="butUploadttg1c_1" name="butUploadttg1c_1" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_ncname1','ttg1c_1')" >
+			<input type="button" class="cbutton" id="butUploadttg1c_1" name="butUploadttg1c_1" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_ncname1', 'ttg1c_1', '-C1')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1c_mod_class_ncname1', 'ttg1c_1')" >
             <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1c_mod_class_ncname1', 'ttg1c_1')" >
 			<br>
 			2.<input TYPE=text NAME=ttg1_mod_class_ncname2 id=ttg1_mod_class_ncname2 SIZE=50 MAXLENGTH=50 readonly>
 			  <input TYPE=hidden NAME=draw_attach_file_ttg1c_2 id=draw_attach_file_ttg1c_2 >
 			  <input TYPE=hidden NAME=old_file_ttg1c_2 id=old_file_ttg1c_2 >
-			  <input type="button" class="cbutton" id="butUploadttg1c_2" name="butUploadttg1c_2" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_ncname2','ttg1c_2')" >
+			  <input type="button" class="cbutton" id="butUploadttg1c_2" name="butUploadttg1c_2" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_ncname2', 'ttg1c_2', '-C2')" >
 		      <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_class_ncname2','ttg1c_2')" >
               <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_class_ncname2','ttg1c_2')" >
 			  <br>
 			3.<input TYPE=text NAME=ttg1_mod_class_nename1 id=ttg1_mod_class_nename1 SIZE=50 MAXLENGTH=50 readonly>
 			  <input TYPE=hidden NAME=draw_attach_file_ttg1c_3 id=draw_attach_file_ttg1c_3 >
 			  <input TYPE=hidden NAME=old_file_ttg1c_3 id=old_file_ttg1c_3 >
-			  <input type="button" class="cbutton" id="butUploadttg1c_3" name="butUploadttg1c_3" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_nename1','ttg1c_3')" >
+			  <input type="button" class="cbutton" id="butUploadttg1c_3" name="butUploadttg1c_3" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_nename1', 'ttg1c_3', '-C3')" >
 		      <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_class_nename1','ttg1c_3')" >
               <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_class_nename1','ttg1c_3')" >
 			  <br>
 			4.<input TYPE=text NAME=ttg1_mod_class_nename2 id=ttg1_mod_class_nename2 SIZE=50 MAXLENGTH=50 readonly>
 			  <input TYPE=hidden NAME=draw_attach_file_ttg1c_4 id=draw_attach_file_ttg1c_4 >
 			  <input TYPE=hidden NAME=old_file_ttg1c_4 id=old_file_ttg1c_4 >
-			  <input type="button" class="cbutton" id="butUploadttg1c_4" name="butUploadttg1c_4" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_nename2','ttg1c_4')" >
+			  <input type="button" class="cbutton" id="butUploadttg1c_4" name="butUploadttg1c_4" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_nename2', 'ttg1c_4', '-C4')" >
 		      <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_class_nename2','ttg1c_4')" >
               <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_class_nename2','ttg1c_4')" >
 			  <br>
 			5.<input TYPE=text NAME=ttg1_mod_class_ncrep id=ttg1_mod_class_ncrep SIZE=50 MAXLENGTH=50 readonly>
 			  <input TYPE=hidden NAME=draw_attach_file_ttg1c_5 id=draw_attach_file_ttg1c_5 >
 			  <input TYPE=hidden NAME=old_file_ttg1c_5 id=old_file_ttg1c_5 >
-			  <input type="button" class="cbutton" id="butUploadttg1c_5" name="butUploadttg1c_5" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_ncrep','ttg1c_5')" >
+			  <input type="button" class="cbutton" id="butUploadttg1c_5" name="butUploadttg1c_5" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_ncrep', 'ttg1c_5', '-C5')" >
 		      <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_class_ncrep','ttg1c_5')" >
               <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_class_ncrep','ttg1c_5')" >
 			  <br>
@@ -282,7 +282,7 @@
 			6.<input TYPE=text NAME=ttg1_mod_class_nerep id=ttg1_mod_class_nerep SIZE=50 MAXLENGTH=50 readonly>  
 			  <input TYPE=hidden NAME=draw_attach_file_ttg1c_6 id=draw_attach_file_ttg1c_6 >
 			  <input TYPE=hidden NAME=old_file_ttg1c_6 id=old_file_ttg1c_6 >
-			  <input type="button" class="cbutton" id="butUploadttg1c_6" name="butUploadttg1c_6" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_nerep','ttg1c_6')" >
+			  <input type="button" class="cbutton" id="butUploadttg1c_6" name="butUploadttg1c_6" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_nerep', 'ttg1c_6', '-C6')" >
 		      <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_class_nerep','ttg1c_6')" >
               <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_class_nerep','ttg1c_6')" >	
 			<br>
@@ -291,7 +291,7 @@
 			7.<input TYPE=text NAME=ttg1_mod_class_neaddr1 id=ttg1_mod_class_neaddr1 SIZE=50 MAXLENGTH=50 readonly>  
 			  <input TYPE=hidden NAME=draw_attach_file_ttg1c_7 id=draw_attach_file_ttg1c_7 >
 			  <input TYPE=hidden NAME=old_file_ttg1c_7 id=old_file_ttg1c_7 >
-			  <input type="button" class="cbutton" id="butUploadttg1c_7" name="butUploadttg1c_7" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_neaddr1','ttg1c_7')" >
+			  <input type="button" class="cbutton" id="butUploadttg1c_7" name="butUploadttg1c_7" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_neaddr1', 'ttg1c_7', '-C7')" >
 		      <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_class_neaddr1','ttg1c_7')" >
               <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_class_neaddr1','ttg1c_7')" >	
 			<br>
@@ -300,7 +300,7 @@
 			8.<input TYPE=text NAME=ttg1_mod_class_neaddr2 id=ttg1_mod_class_neaddr2 SIZE=50 MAXLENGTH=50 readonly>  
 			  <input TYPE=hidden NAME=draw_attach_file_ttg1c_8 id=draw_attach_file_ttg1c_8 >
 			  <input TYPE=hidden NAME=old_file_ttg1c_8 id=old_file_ttg1c_8 >
-			  <input type="button" class="cbutton" id="butUploadttg1c_8" name="butUploadttg1c_8" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_neaddr2','ttg1c_8')" >
+			  <input type="button" class="cbutton" id="butUploadttg1c_8" name="butUploadttg1c_8" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_neaddr2', 'ttg1c_8', '-C8')" >
 		      <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_class_neaddr2','ttg1c_8')" >
               <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_class_neaddr2','ttg1c_8')" >	
 			<br>
@@ -309,7 +309,7 @@
 			9.<input TYPE=text NAME=ttg1_mod_class_neaddr3 id=ttg1_mod_class_neaddr3 SIZE=50 MAXLENGTH=50 readonly>  
 			  <input TYPE=hidden NAME=draw_attach_file_ttg1c_9 id=draw_attach_file_ttg1c_9 >
 			  <input TYPE=hidden NAME=old_file_ttg1c_9 id=old_file_ttg1c_9 >
-			  <input type="button" class="cbutton" id="butUploadttg1c_9" name="butUploadttg1c_9" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_neaddr3','ttg1c_9')" >
+			  <input type="button" class="cbutton" id="butUploadttg1c_9" name="butUploadttg1c_9" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_neaddr3', 'ttg1c_9', '-C9')" >
 		      <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_class_neaddr3','ttg1c_9')" >
               <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_class_neaddr3','ttg1c_9')" >	
 			<br>
@@ -318,7 +318,7 @@
 			10.<input TYPE=text NAME=ttg1_mod_class_neaddr4 id=ttg1_mod_class_neaddr4 SIZE=50 MAXLENGTH=50 readonly>  
 			  <input TYPE=hidden NAME=draw_attach_file_ttg1c_10 id=draw_attach_file_ttg1c_10 >
 			  <input TYPE=hidden NAME=old_file_ttg1c_10 id=old_file_ttg1c_10 >
-			  <input type="button" class="cbutton" id="butUploadttg1c_10" name="butUploadttg1c_10" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_neaddr4','ttg1c_10')" >
+			  <input type="button" class="cbutton" id="butUploadttg1c_10" name="butUploadttg1c_10" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_class_neaddr4', 'ttg1c_10', '-C10')" >
 		      <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_class_neaddr4','ttg1c_10')" >
               <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_class_neaddr4','ttg1c_10')" >	
 			<br>
@@ -333,34 +333,34 @@
 		1.<input TYPE=text NAME=ttg1_mod_dmt_ncname1 id=ttg1_mod_dmt_ncname1 SIZE=50 MAXLENGTH=50 readonly>
 			<input TYPE=hidden NAME=draw_attach_file_ttg1_1 id=draw_attach_file_ttg1_1 >
 			<input TYPE=hidden NAME=old_file_ttg1_1 id=old_file_ttg1_1 >
-			<input type="button" class="cbutton" id="butUploadttg1_1" name="butUploadttg1_1" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_ncname1','ttg1_1')" >
+			<input type="button" class="cbutton" id="butUploadttg1_1" name="butUploadttg1_1" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_ncname1', 'ttg1_1', '-O1')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_dmt_ncname1','ttg1_1')" >
             <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_dmt_ncname1','ttg1_1')" >
 		<br>
 		2.<input TYPE=text NAME=ttg1_mod_dmt_ncname2 id=ttg1_mod_dmt_ncname2 SIZE=50 MAXLENGTH=50 readonly>
 			<input TYPE=hidden NAME=draw_attach_file_ttg1_2 id=draw_attach_file_ttg1_2 >
 			<input TYPE=hidden NAME=old_file_ttg1_2 id=old_file_ttg1_2 >
-			<input type="button" class="cbutton" id="butUploadttg1_2" name="butUploadttg1_2" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_ncname2','ttg1_2')" >
+			<input type="button" class="cbutton" id="butUploadttg1_2" name="butUploadttg1_2" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_ncname2', 'ttg1_2', '-O2')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_dmt_ncname2','ttg1_2')" >
             <input type="button" class="cbutton"  name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_dmt_ncname2','ttg1_2')" >	
 		<br>
 		3.<input TYPE=text NAME=ttg1_mod_dmt_nename1 id=ttg1_mod_dmt_nename1 SIZE=50 MAXLENGTH=50 readonly>
 			<input TYPE=hidden NAME=draw_attach_file_ttg1_3 id=draw_attach_file_ttg1_3 >
-			<input type="button" class="cbutton" id="butUploadttg1_3" name="butUploadttg1_3" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_nename1','ttg1_3')" >
+			<input type="button" class="cbutton" id="butUploadttg1_3" name="butUploadttg1_3" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_nename1', 'ttg1_3', '-O3')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_dmt_nename1','ttg1_3')" >
             <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_dmt_nename1','ttg1_3')" >	
 		<br>
 		4.<input TYPE=text NAME=ttg1_mod_dmt_nename2 id=ttg1_mod_dmt_nename2 SIZE=50 MAXLENGTH=50 readonly>
 			<input TYPE=hidden NAME=draw_attach_file_ttg1_4 id=draw_attach_file_ttg1_4 >
 			<input TYPE=hidden NAME=old_file_ttg1_4 id=old_file_ttg1_4 >
-			<input type="button" class="cbutton" id="butUploadttg1_4" name="butUploadttg1_4" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_nename2','ttg1_4')" >
+			<input type="button" class="cbutton" id="butUploadttg1_4" name="butUploadttg1_4" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_nename2', 'ttg1_4', '-O4')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_dmt_nename2','ttg1_4')" >
             <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_dmt_nename2','ttg1_4')" >	
 		<br>
 		5.<input TYPE=text NAME=ttg1_mod_dmt_ncrep id=ttg1_mod_dmt_ncrep SIZE=50 MAXLENGTH=50 readonly>
 			<input TYPE=hidden NAME=draw_attach_file_ttg1_5 id=draw_attach_file_ttg1_5 >
 			<input TYPE=hidden NAME=old_file_ttg1_5 id=old_file_ttg1_5 >
-			<input type="button" class="cbutton" id="butUploadttg1_5" name="butUploadttg1_5" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_ncrep','ttg1_5')" >
+			<input type="button" class="cbutton" id="butUploadttg1_5" name="butUploadttg1_5" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_ncrep', 'ttg1_5', '-O5')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_dmt_ncrep','ttg1_5')" >
             <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_dmt_ncrep','ttg1_5')" >
 		<br>
@@ -368,7 +368,7 @@
 		6.<input TYPE=text NAME=ttg1_mod_dmt_nerep id=ttg1_mod_dmt_nerep SIZE=50 MAXLENGTH=50 readonly>  
 			<input TYPE=hidden NAME=draw_attach_file_ttg1_6 id=draw_attach_file_ttg1_6 >
 			<input TYPE=hidden NAME=old_file_ttg1_6 id=old_file_ttg1_6 >
-			<input type="button" class="cbutton" id="butUploadttg1_6" name="butUploadttg1_6" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_nerep','ttg1_6')" >
+			<input type="button" class="cbutton" id="butUploadttg1_6" name="butUploadttg1_6" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_nerep', 'ttg1_6', '-O6')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_dmt_nerep','ttg1_6')" >
             <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_dmt_nerep','ttg1_6')" >	
 		<br>
@@ -377,7 +377,7 @@
 		7.<input TYPE=text NAME=ttg1_mod_dmt_neaddr1 id=ttg1_mod_dmt_neaddr1 SIZE=50 MAXLENGTH=50 readonly>  
 			<input TYPE=hidden NAME=draw_attach_file_ttg1_7 id=draw_attach_file_ttg1_7 >
 			<input TYPE=hidden NAME=old_file_ttg1_7 id=old_file_ttg1_7 >
-			<input type="button" class="cbutton" id="butUploadttg1_7" name="butUploadttg1_7" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_neaddr1','ttg1_7')" >
+			<input type="button" class="cbutton" id="butUploadttg1_7" name="butUploadttg1_7" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_neaddr1', 'ttg1_7', '-O7')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_dmt_neaddr1','ttg1_7')" >
             <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_dmt_neaddr1','ttg1_7')" >	
 		<br>
@@ -386,7 +386,7 @@
 		8.<input TYPE=text NAME=ttg1_mod_dmt_neaddr2 id=ttg1_mod_dmt_neaddr2 SIZE=50 MAXLENGTH=50 readonly>  
 			<input TYPE=hidden NAME=draw_attach_file_ttg1_8 id=draw_attach_file_ttg1_8 >
 			<input TYPE=hidden NAME=old_file_ttg1_8 id=old_file_ttg1_8 >
-			<input type="button" class="cbutton" id="butUploadttg1_8" name="butUploadttg1_8" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_neaddr2','ttg1_8')" >
+			<input type="button" class="cbutton" id="butUploadttg1_8" name="butUploadttg1_8" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_neaddr2', 'ttg1_8', '-O8')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_dmt_neaddr2','ttg1_8')" >
             <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_dmt_neaddr2','ttg1_8')" >	
 		<br>
@@ -395,7 +395,7 @@
 		9.<input TYPE=text NAME=ttg1_mod_dmt_neaddr3 id=ttg1_mod_dmt_neaddr3 SIZE=50 MAXLENGTH=50 readonly>  
 			<input TYPE=hidden NAME=draw_attach_file_ttg1_9 id=draw_attach_file_ttg1_9 >
 			<input TYPE=hidden NAME=old_file_ttg1_9 id=old_file_ttg1_9 >
-			<input type="button" class="cbutton" id="butUploadttg1_9" name="butUploadttg1_9" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_neaddr3','ttg1_9')" >
+			<input type="button" class="cbutton" id="butUploadttg1_9" name="butUploadttg1_9" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_neaddr3', 'ttg1_9', '-O9')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_dmt_neaddr3','ttg1_9')" >
             <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_dmt_neaddr3','ttg1_9')" >	
 		<br>
@@ -404,7 +404,7 @@
 		10.<input TYPE=text NAME=ttg1_mod_dmt_neaddr4 id=ttg1_mod_dmt_neaddr4 SIZE=50 MAXLENGTH=50 readonly>  
 			<input TYPE=hidden NAME=draw_attach_file_ttg1_10 id=draw_attach_file_ttg1_10 >
 			<input TYPE=hidden NAME=old_file_ttg1_10 id=old_file_ttg1_10 >
-			<input type="button" class="cbutton" id="butUploadttg1_10" name="butUploadttg1_10" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_neaddr4','ttg1_10')" >
+			<input type="button" class="cbutton" id="butUploadttg1_10" name="butUploadttg1_10" value="商標圖檔上傳" onclick="br_form.UploadAttach_photo_mod('ttg1_mod_dmt_neaddr4', 'ttg1_10', '-O10')" >
 		    <input type="button" class="redbutton" name="btnDelAtt" value="商標圖檔刪除" onclick="br_form.DelAttach_photo_mod('ttg1_mod_dmt_neaddr4','ttg1_10')" >
             <input type="button" class="cbutton" name="btnDisplay" value="商標圖檔檢視" onclick="br_form.PreviewAttach_photo_mod('ttg1_mod_dmt_neaddr4','ttg1_10')" >	
 		<br>
@@ -460,13 +460,15 @@
         console.log("dr1.br_form.bind");
         if (jMain.case_main.length == 0) {
             //案件種類
-            //$("#tfp1_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            $("#tfp1_case_stat").val($("#tfy_case_stat").val());//.triggerHandler("change");
+            br_form.new_oldcaseB('tfp1', false);
             $("#tfp1_seq").val("");
             $("#tfp1_seq1").val("_");
             $("#DR1_AP_Add_button").click();//註冊人預設顯示第1筆
         } else {
             //案件種類
-            //$("#tfp1_case_stat").val($("#tfy_case_stat").val()).triggerHandler("change");
+            $("#tfp1_case_stat").val($("#tfy_case_stat").val());//.triggerHandler("change");
+            br_form.new_oldcaseB('tfp1', false);
             //本所編號
             if ($("#tfy_case_stat").val() == "NN") {
                 $("#tfp1_seq").val(jMain.case_main[0].seq);
@@ -565,7 +567,7 @@
             $("#tfz1_other_item").val(jMain.case_main[0].other_item);
             if (jMain.case_main[0].other_item != "") {
                 var v = jMain.case_main[0].other_item.split(";");
-                $("#R_O_item1").val(v[0]);
+                if ($.isDate(v[0])) $("#R_O_item1").val(v[0]);
                 $("#R_O_item2").val(v[1]);
                 $("#R_O_item3").val(v[2]);
             }

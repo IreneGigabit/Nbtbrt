@@ -130,7 +130,7 @@ public partial class Sys
                                             , dFi.Extension);
         if (HttpContext.Current.Request["chkTest"] != "TEST") {
             //來源跟目的不同時才要搬,否則會出錯
-            if (sFi.FullName != dFi.FullName) {
+            if (sFi.FullName.ToLower() != dFi.FullName.ToLower()) {
                 if (dFi.Exists && backupFlag) {
                     dFi.CopyTo(dFi.DirectoryName + "\\" + backup_name,true);
                     sFi.CopyTo(dFi.FullName,true);
@@ -143,11 +143,9 @@ public partial class Sys
                 }
             }
         } else {
-            HttpContext.Current.Response.Write("sFi.FullName=" + sFi.FullName + "<BR>");
-            HttpContext.Current.Response.Write("dFi.FullName=" + dFi.FullName + "<BR>");
-            if (sFi.FullName != dFi.FullName) {
-                HttpContext.Current.Response.Write("來源=" + sFi.FullName + "<BR>");
-                HttpContext.Current.Response.Write("目的=" + dFi.FullName + "<BR>");
+            HttpContext.Current.Response.Write("來源=" + sFi.FullName + "<BR>");
+            HttpContext.Current.Response.Write("目的=" + dFi.FullName + "<BR>");
+            if (sFi.FullName.ToLower() != dFi.FullName.ToLower()) {
                 HttpContext.Current.Response.Write("衝突備份=" + dFi.DirectoryName + "\\" + backup_name + "<HR>");
             }
         }

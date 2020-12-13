@@ -12,49 +12,33 @@ cnn.BeginTrans
 //寫入Log檔
 log_table(conn);
 
-strSQL = "delete from caseitem_dmt where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"'"
-cmd.CommandText=strSQL
-If Trim(Request("chkTest"))<>Empty Then Response.Write "1=" & strSQL & "<hr>"
-cmd.Execute(strSQL)
+//SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
+//conn.ExecuteNonQuery(SQL);
 
-stSQL = "delete from casedmt_good where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and case_sqlno=0"
-cmd.CommandText=stSQL
-If Trim(Request("chkTest"))<>Empty Then Response.Write "2=" & stSQL & "<hr>"
-cmd.Execute(stSQL)
+//SQL = "delete from casedmt_good where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"' and case_sqlno=0";
+//conn.ExecuteNonQuery(SQL);
 
-stSQL = "delete from casedmt_show where in_no='"&request("In_no")&"' and case_sqlno=0"
-cmd.CommandText=stSQL
-If Trim(Request("chkTest"))<>Empty Then Response.Write "3=" & stSQL & "<hr>"
-cmd.Execute(stSQL)
+//SQL = "delete from casedmt_show where in_no='"+Request["in_no"]+"' and case_sqlno=0";
+//conn.ExecuteNonQuery(SQL);
 
-stSQL = "delete from dmt_tranlist where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and mod_field='mod_class'"
-cmd.CommandText=stSQL
-If Trim(Request("chkTest"))<>Empty Then Response.Write "4=" & stSQL & "<hr>"
-cmd.Execute(stSQL)
-'刪除case_dmt1
-dsql="delete from case_dmt1 where in_no='" & request("in_no") & "'"
-cmd.CommandText=dsql
-If Trim(Request("chkTest"))<>Empty Then Response.Write "5=" & dSQL & "<hr>"
-cmd.Execute(dsql)
-'刪除子案dmt_temp
-dsql="delete from dmt_temp where in_no='" & request("in_no") & "' and case_sqlno<>0"
-cmd.CommandText=dsql
-If Trim(Request("chkTest"))<>Empty Then Response.Write "6=" & dSQL & "<hr>"
-cmd.Execute(dsql)
-'刪除子案casedmt_good
-dsql="delete from casedmt_good where in_no='" & request("in_no") & "' and case_sqlno<>0"
-cmd.CommandText=dsql
-If Trim(Request("chkTest"))<>Empty Then Response.Write "7=" & dSQL & "<hr>"
-cmd.Execute(dsql)
-'刪除子案casedmt_show
-dsql="delete from casedmt_show where in_no='" & request("in_no") & "' and case_sqlno<>0"
-cmd.CommandText=dsql
-If Trim(Request("chkTest"))<>Empty Then Response.Write "8=" & dSQL & "<hr>"
-cmd.Execute(dsql)
+SQL = "delete from dmt_tranlist where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"' and mod_field='mod_class'";
+conn.ExecuteNonQuery(SQL);
 
-v=split(request("tfy_arcase"),"&")
-arcase=v(0)
-prt_code=v(1)
+//刪除case_dmt1
+SQL="delete from case_dmt1 where in_no='"+Request["in_no"]+"'";
+conn.ExecuteNonQuery(SQL);
+
+//刪除子案dmt_temp
+SQL="delete from dmt_temp where in_no='"+Request["in_no"]+"' and case_sqlno<>0";
+conn.ExecuteNonQuery(SQL);
+
+//刪除子案casedmt_good
+SQL="delete from casedmt_good where in_no='"+Request["in_no"]+"' and case_sqlno<>0";
+conn.ExecuteNonQuery(SQL);
+
+//刪除子案casedmt_show
+SQL="delete from casedmt_show where in_no='"+Request["in_no"]+"' and case_sqlno<>0";
+conn.ExecuteNonQuery(SQL);
 	
 //寫入接洽記錄檔(case_dmt)
 update_case_dmt(conn);
@@ -219,7 +203,7 @@ if ((Request["tfy_arcase"] ?? "") == "FL5" || (Request["tfy_arcase"] ?? "") == "
 			if (objResult2 != null) {
 				string draw_file = objResult2.ToString();
 				//將檔案更改檔名
-				string newfilename = move_file(Request["in_no"], draw_file, "-FC" + i);
+				string newfilename = move_file(draw_file, "-FC" + i,"");
 
 				SQL = "insert into dmt_temp(s_mark,s_mark2,pul,apsqlno,ap_cname,ap_cname1,ap_cname2 ";
 				SQL += ",ap_ename,ap_ename1,ap_ename2,appl_name,cappl_name,eappl_name";
@@ -249,7 +233,7 @@ if ((Request["tfy_arcase"] ?? "") == "FL5" || (Request["tfy_arcase"] ?? "") == "
 
 				//申請人資料畫面Apcust_FC_RE_form.inc
 				//*****申請人檔
-				insert_dmt_temp_ap(conn, Request["in_no"], case_sqlno);
+				insert_dmt_temp_ap(conn, case_sqlno);
 			}
 
 			//商品類別
@@ -284,29 +268,8 @@ if ((Request["tfy_arcase"] ?? "") == "FL5" || (Request["tfy_arcase"] ?? "") == "
 //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
 upd_grconf_job_no(conn);
 
-	'當程序有修改復案或結案註記時通知營洽人員
-	if ucase(prgid)="BRT51" then
-	    nback_flag=request("tfy_back_flag")
-		if request("tfy_back_flag")=empty then nback_flag="N"
-		oback_flag=request("oback_flag")
-		if request("oback_flag")=empty then oback_flag="N"
-		nend_flag=request("tfy_end_flag")
-		if request("tfy_end_flag")=empty then nend_flag="N"
-		oend_flag=request("oend_flag")
-		if request("oend_flag")=empty then oend_flag="N"
-	   	'Response.Write "b1:"&request("oback_flag") & ",b2:"&nback_flag&",e1:"&request("oend_flag") & ",e2:"&nend_flag
-	   	'Response.End
-	   if trim(nback_flag)<>trim(oback_flag) or trim(nend_flag)<> trim(oend_flag) then
-	      Call Sendmail(nback_flag,nend_flag)		        
-	      DoSendMail subject,body	
-	   end if
-	end if
-	
-	If Trim(Request.Form("chkTest"))<>Empty Then
-		cnn.RollbackTrans
-		Response.Write "cnn.RollbackTrans...<br>"
-		Response.End
-	End If
-	cnn.CommitTrans  
+//當程序有修改復案或結案註記時通知營洽人員
+chk_end_back();
+
 End sub '---- doUpdateDB() ----
 %>

@@ -153,9 +153,9 @@
 		        <tr>	
 			        <td class="lightbluetable" align="right">類別項目：</td>
 			        <td class="whitetablebg" >共<input type="text" id=tfzd_class_count name=tfzd_class_count size=2 onchange="br_form.Add_classFR1(this.value)">類
-				        <input type=text id=num2 name=num2 value="0"><!--畫面上有幾筆-->
-				        <input type=text id=ctrlnum2 name=ctrlnum2 value="0">
-				        <input type=text id=ctrlcount2 name=ctrlcount2 value="">
+				        <input type=hidden id=num2 name=num2 value="0"><!--畫面上有幾筆-->
+				        <input type=hidden id=ctrlnum2 name=ctrlnum2 value="0">
+				        <input type=hidden id=ctrlcount2 name=ctrlcount2 value="">
 			        </td>
 		        </tr>
             </thead>

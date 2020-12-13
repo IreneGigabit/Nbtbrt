@@ -169,31 +169,27 @@ function chk_dmt_applyno(pobject,plen){
     var pvalue=pobject.value;
     
     if (chkNum(pvalue,"申請號")) return false;
-    if (fDataLen(pobject)) return false;
+    if (fDataLenX(pvalue, plen, "申請號")) return false;
     var tno=chkgno(pvalue,plen);
     pobject.value=tno;
 }
 
 //檢查註冊號號並補足8碼
 function chk_dmt_issueno(pobject, plen) {
-
     var pvalue = pobject.value;
 
     if (chkNum(pvalue, "註冊號")) return false;
-    if (fDataLen(pobject)) return false;
+    if (fDataLenX(pvalue, plen, "註冊號")) return false;
     var tno = chkgno(pvalue, plen);
     pobject.value = tno;
-
 }
 
 //檢查核駁號並補足7碼
 function chk_dmt_rejno(pobject, plen) {
-
     var pvalue = pobject.value;
 
     if (chkNum(pvalue, "核駁號")) return false;
-    if (fDataLen(pobject)) return false;
+    if (fDataLenX(pvalue, plen, "核駁號")) return false;
     var tno = chkgno(pvalue, plen);
     pobject.value = tno;
-
 }

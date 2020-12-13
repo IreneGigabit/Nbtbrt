@@ -123,7 +123,6 @@
                     objResult = conn.ExecuteScalar(SQL);
                     casefee_oth_money = (objResult == DBNull.Value || objResult == null) ? "0" : objResult.ToString();
                 }
-
             }
         }
         return dt;
@@ -282,6 +281,67 @@
             SQL += "left join dmt_temp t on d.in_no=t.in_no and d.case_sqlno=t.case_sqlno ";
             SQL += "where d.in_no='" + in_no + "' ";
             conn.DataTable(SQL, dt);
+
+            //處理一案多件暫存
+            string mark = "";
+            if (arcase.IN("FC11,FC5,FC7,FCH,FC21,FC6,FC8,FCI")) {
+                mark = "C";
+            } else if (arcase.Left(3).IN("FL5,FL6")) {
+                mark = "L";
+            } else if (arcase == "FT2") {
+                mark = "T"; 
+            }
+            if (mark != "") {
+                //刪除暫存檔
+                SQL = "delete from dmt_temp_change where in_scode='" + br_in_scode + "' and cust_area='" + cust_area + "' and cust_seq='" + cust_seq + "' and mark='" + mark + "'";
+                conn.ExecuteNonQuery(SQL);
+                SQL = "delete from casedmt_good_change where in_scode='" + br_in_scode + "' and cust_area='" + cust_area + "' and cust_seq='" + cust_seq + "' and mark='" + mark + "'";
+                conn.ExecuteNonQuery(SQL);
+                SQL = "delete from casedmt_show_change where in_scode='" + br_in_scode + "' and cust_area='" + cust_area + "' and cust_seq='" + cust_seq + "' and mark='" + mark + "'";
+                conn.ExecuteNonQuery(SQL);
+
+                if (prgid != "brt52") {//不是交辦維護
+                    DataTable dt1 = new DataTable();
+                    SQL = "select * from case_dmt1 where in_no= '" + Request["in_no"] + "'";
+                    conn.DataTable(SQL, dt1);
+                    for (int i = 0; i < dt1.Rows.Count; i++) {
+                        SQL = "insert into dmt_temp_change(s_mark,s_mark2,pul,appl_name,cappl_name,eappl_name";
+                        SQL += ",eappl_name1,eappl_name2,jappl_name,jappl_name1,jappl_name2,zappl_name1 ";
+                        SQL += ",zappl_name2,zname_type,oappl_name,Draw,symbol,color,prior_date,prior_no ";
+                        SQL += ",prior_country,ref_no,ref_no1,tcn_ref,tcn_class,tcn_name,tcn_mark ";
+                        SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
+                        SQL += ",end_code,dmt_term1,dmt_term2,renewal,seq,seq1,draw_file,class_type ";
+                        SQL += ",class_count,class ";
+                        SQL += ",in_scode,cust_area,cust_seq,num,tr_date,tr_scode,mark) ";
+                        SQL += "Select s_mark,s_mark2 as ts_mark,pul,appl_name,cappl_name,eappl_name ";
+                        SQL += ",eappl_name1,eappl_name2,jappl_name,jappl_name1,jappl_name2,zappl_name1 ";
+                        SQL += ",zappl_name2,zname_type,oappl_name,Draw,symbol,color,prior_date,prior_no ";
+                        SQL += ",prior_country,ref_no,ref_no1,tcn_ref,tcn_class,tcn_name,tcn_mark ";
+                        SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
+                        SQL += ",end_code,dmt_term1,dmt_term2,renewal,seq,seq1,draw_file,class_type ";
+                        SQL += ",class_count,class ";
+                        SQL += ",in_scode,cust_area,cust_seq,'" + (i + 1) + "' ";
+                        SQL += ",getdate(),'" + Session["scode"] + "','" + mark + "' ";
+                        SQL += "from dmt_temp where in_no='" + in_no + "' and case_sqlno=" + dt1.Rows[i]["case_sqlno"] + "";
+                        conn.ExecuteNonQuery(SQL);
+
+                        SQL = "INSERT INTO casedmt_good_change(in_scode,cust_area,cust_seq,num,class,dmt_grp_code";
+                        SQL += ",dmt_goodname,dmt_goodcount,tr_date,tr_scode,mark) ";
+                        SQL += "select in_scode,cust_area,cust_seq,'" + (i + 1) + "' ";
+                        SQL += ",class,dmt_grp_code,dmt_goodname,dmt_goodcount,getdate(),'" + Session["scode"] + "','" + mark + "' ";
+                        SQL += "from casedmt_good where in_no='" + in_no + "' and case_sqlno=" + dt1.Rows[i]["case_sqlno"] + "";
+                        conn.ExecuteNonQuery(SQL);
+
+                        SQL = "INSERT INTO casedmt_show_change(in_scode,cust_area,cust_seq,num,show_no,show_date";
+                        SQL += ",show_name,tr_date,tr_scode,mark) ";
+                        SQL += "select in_scode,cust_area,cust_seq,'" + (i + 1) + "' ";
+                        SQL += ",ROW_NUMBER() OVER(ORDER BY show_sqlno),show_date,show_name,getdate()";
+                        SQL += ",'" + Session["scode"] + "','" + mark + "' ";
+                        SQL += "from casedmt_show where in_no='" + in_no + "' and case_sqlno=" + dt1.Rows[i]["case_sqlno"] + " order by show_sqlno";
+                        conn.ExecuteNonQuery(SQL);
+                    }
+                }
+            }
         }
         return dt;
     }

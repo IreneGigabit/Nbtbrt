@@ -445,10 +445,10 @@
 		    <tr>	
 			    <td class="lightbluetable" align="right" title="請輸入類別，並以逗號分開(例如：1,5,32)。">類別項目：</td>
 			    <td class="whitetablebg" colspan="7" >共<input type="text" id=tfz1_class_count name=tfz1_class_count size=2 onchange="br_form.Add_class(this.value)">類
-				    <input type=text id=num1 name=num1 value="0"><!--畫面上有幾筆-->
-				    <input type=text id=ctrlnum1 name=ctrlnum1 value="0">
-				    <input type=text id=ctrlcount1 name=ctrlcount1 value="">
-				    ;<input type="text" id=tfz1_class name=tfz1_class style="width:70%" readonly>
+				    <input type=hidden id=num1 name=num1 value="0"><!--畫面上有幾筆-->
+				    <input type=hidden id=ctrlnum1 name=ctrlnum1 value="0">
+				    <input type=hidden id=ctrlcount1 name=ctrlcount1 value="">
+				    <input type="text" id=tfz1_class name=tfz1_class style="width:70%" readonly>
 			    </td>
 		    </tr>
         </thead>
@@ -681,12 +681,26 @@
         }
 
         if (confirm("確定刪除上傳圖檔？")) {
-            var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() +
-                "&btnname=butUpload1";
-            window.open(url, "myWindowOneN", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            //window.open(url, "myWindowOneN", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            $("#draw_attach_file").val("");
-            $("#Draw_file1").val("");
+            $.ajax({
+                url: getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() + "&btnname=butUpload1",
+                type: 'GET',
+                dataType: "script",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#draw_attach_file").val("");
+                    $("#Draw_file1").val("");
+                },
+                error: function (xhr) {
+                    $("#dialog").html("<a href='" + this.url + "' target='_new'>刪除檔案失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                    $("#dialog").dialog({ title: '刪除檔案失敗！', modal: true, maxHeight: 500, width: "90%" });
+                }
+            });
+
+            //var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() + "&btnname=butUpload1";
+            //window.open(url, "myWindowOneN", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            //$("#draw_attach_file").val("");
+            //$("#Draw_file1").val("");
         }
     }
 

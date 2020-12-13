@@ -70,7 +70,7 @@
                 addAB(conn, RSno);
             } else if (Request["ar_form"] == "AC") {
                 addAC(conn, RSno);
-            } else if (Request["ar_form"] == "B") {
+            } else if (Request["ar_form"].Left(1) == "B") {
                 addB(conn, RSno);
             } else {
                 addZZ(conn, RSno);
@@ -922,7 +922,7 @@
     /// </summary>
     private void addA6(DBHelper conn, string RSno) {
         //重建暫存檔
-        rebuil_change(RSno,"C");
+        //rebuil_change(RSno,"C");
 
         //寫入case_dmt
         insert_case_dmt(conn, RSno);
@@ -946,7 +946,7 @@
 
                 if ((Request["dseqa_" + i] ?? "") == "") {
                     //抓圖檔
-                    SQL = "SELECT draw_file FROM dmt_temp_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and num='" + i + "' ";
+                    SQL = "SELECT draw_file FROM dmt_temp_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and num='" + i + "' and (mark='C' or mark is null) ";
                     object objResult2 = conn.ExecuteScalar(SQL);
                     if (objResult2 != null) {
                         string draw_file = objResult2.ToString();
@@ -976,7 +976,7 @@
                         SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1a_" + i] + "' ";
                         SQL += "from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' ";
                         SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
-                        SQL += "and num='" + i + "'";
+                        SQL += "and num='" + i + "' and (mark='C' or mark is null)";
                         conn.ExecuteNonQuery(SQL);
 
                         //*****新增申請人檔
@@ -990,7 +990,7 @@
                     SQL += ",getdate(),'" + Session["scode"] + "' ";
                     SQL += "from casedmt_good_change where in_scode='" + Request["F_tscode"] + "' ";
                     SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
-                    SQL += "and num='" + i + "' and (isnull(class,'')<>'' or isnull(dmt_goodname,'')<>'')";
+                    SQL += "and num='" + i + "' and (mark='C' or mark is null) and (isnull(class,'')<>'' or isnull(dmt_goodname,'')<>'')";
                     conn.ExecuteNonQuery(SQL);
 
                     //展覽會優先權
@@ -999,17 +999,17 @@
                     SQL += ",'" + Session["scode"] + "' ";
                     SQL += "from casedmt_show_change where in_scode='" + Request["F_tscode"] + "' ";
                     SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
-                    SQL += "and num='" + i + "' order by show_no ";
+                    SQL += "and num='" + i + "' and (mark='C' or mark is null) order by show_no ";
                     conn.ExecuteNonQuery(SQL);
                 }
             }
 
             //清空暫存檔
-            SQL = "delete from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and mark is null";
+            SQL = "delete from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and (mark='C' or mark is null)";
             conn.ExecuteNonQuery(SQL);
-            SQL = "delete from casedmt_good_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and mark is null";
+            SQL = "delete from casedmt_good_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and (mark='C' or mark is null)";
             conn.ExecuteNonQuery(SQL);
-            SQL = "delete from casedmt_show_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and mark is null";
+            SQL = "delete from casedmt_show_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and (mark='C' or mark is null)";
             conn.ExecuteNonQuery(SQL);
         } else if ((Request["tfy_arcase"] ?? "") == "FC21" || (Request["tfy_arcase"] ?? "") == "FC6" || (Request["tfy_arcase"] ?? "") == "FC8" || (Request["tfy_arcase"] ?? "") == "FCI") {
             for (int i = 2; i <= Convert.ToInt32("0" + Request["nfy_tot_num"]); i++) {
@@ -1030,7 +1030,7 @@
 
                 if ((Request["dseqb_" + i] ?? "") == "") {
                     //抓圖檔
-                    SQL = "SELECT draw_file FROM dmt_temp_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and num='" + i + "'";
+                    SQL = "SELECT draw_file FROM dmt_temp_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and num='" + i + "' and (mark='C' or mark is null)";
                     object objResult2 = conn.ExecuteScalar(SQL);
 
                     if (objResult2 != null) {
@@ -1061,7 +1061,7 @@
                         SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
                         SQL += "from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' ";
                         SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
-                        SQL += "and num='" + i + "' ";
+                        SQL += "and num='" + i + "' and (mark='C' or mark is null) ";
                         conn.ExecuteNonQuery(SQL);
 
                         //寫入交辦申請人檔
@@ -1075,7 +1075,7 @@
                     SQL += ",getdate(),'" + Session["scode"] + "' ";
                     SQL += "from casedmt_good_change where in_scode='" + Request["F_tscode"] + "' ";
                     SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
-                    SQL += "and num='" + i + "' and (isnull(class,'')<>'' or isnull(dmt_goodname,'')<>'')";
+                    SQL += "and num='" + i + "' and (mark='C' or mark is null) and (isnull(class,'')<>'' or isnull(dmt_goodname,'')<>'')";
                     conn.ExecuteNonQuery(SQL);
 
                     //展覽會優先權
@@ -1084,17 +1084,17 @@
                     SQL += ",'" + Session["scode"] + "' ";
                     SQL += "from casedmt_show_change where in_scode='" + Request["F_tscode"] + "' ";
                     SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
-                    SQL += "and num='" + i + "' order by show_no ";
+                    SQL += "and num='" + i + "' and (mark='C' or mark is null) order by show_no ";
                     conn.ExecuteNonQuery(SQL);
                 }
             }
 
             //清空暫存檔
-            SQL = "delete from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and mark is null";
+            SQL = "delete from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and (mark='C' or mark is null)";
             conn.ExecuteNonQuery(SQL);
-            SQL = "delete from casedmt_good_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and mark is null";
+            SQL = "delete from casedmt_good_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and (mark='C' or mark is null)";
             conn.ExecuteNonQuery(SQL);
-            SQL = "delete from casedmt_show_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and mark is null";
+            SQL = "delete from casedmt_show_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and (mark='C' or mark is null)";
             conn.ExecuteNonQuery(SQL);
         }
 
@@ -1457,7 +1457,7 @@
     /// </summary>
     private void addA7(DBHelper conn, string RSno) {
         //重建暫存檔
-        rebuil_change(RSno, "L");
+        //rebuil_change(RSno, "L");
 
         //寫入case_dmt
         insert_case_dmt(conn, RSno);
@@ -1692,7 +1692,7 @@
     /// </summary>
     private void addA8(DBHelper conn, string RSno) {
         //重建暫存檔
-        rebuil_change(RSno, "T");
+        //rebuil_change(RSno, "T");
 
         //寫入case_dmt
         insert_case_dmt(conn, RSno);
@@ -2155,6 +2155,7 @@
         //*****新增案件變更檔
         switch ((Request["tfy_arcase"] ?? "").Left(3)) {
             case "DR1":
+                //--變換加附記使用後之商標/標章圖樣
                 string DR1_mod_class_ncname1 = move_file(RSno, Request["ttg1_mod_class_ncname1"], "-C1");
                 string DR1_mod_class_ncname2 = move_file(RSno, Request["ttg1_mod_class_ncname2"], "-C2");
                 string DR1_mod_class_nename1 = move_file(RSno, Request["ttg1_mod_class_nename1"], "-C3");
@@ -2658,7 +2659,7 @@
                     SQL += " values ('" + Request["F_tscode"] + "','" + RSno + "'," + Util.dbchar(Request["fr4_other_item"]) + "";
                     SQL += "," + Util.dbchar(Request["fr4_other_item1"]) + "," + Util.dbchar(Request["fr4_other_item2"]) + "";
                     SQL += "," + Util.dbchar(Request["fr4_tran_remark1"]) + "," + Util.dbchar(Request["fr4_tran_mark"]) + "";
-                    SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'";
+                    SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "',";
                     SQL += Util.dbnull(Request["tfzb_seq"]) + "," + Util.dbchar(Request["tfzb_seq1"]) + ")";
                     conn.ExecuteNonQuery(SQL);
                     //新增對照當事人資料

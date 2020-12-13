@@ -349,7 +349,8 @@
 
         $("#submittask").val("Edit");
 
-        $("select,textarea,input,span").unlock();
+        //$("select,textarea,input,span").unlock();
+        $("input:disabled, select:disabled").unlock();
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
 
         var formData = new FormData($('#reg')[0]);

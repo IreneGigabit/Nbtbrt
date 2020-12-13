@@ -12,67 +12,32 @@ conn.BeginTrans
 //寫入Log檔
 log_table(conn);
 
-strSQL = "delete from  caseitem_dmt where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"'"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "1=" & SQL & "<hr>"
-Conn.Execute(strSQL)
+//SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
+//conn.ExecuteNonQuery(SQL);
 
-stSQL = "delete from casedmt_good where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and case_sqlno=0"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "1=" & SQL & "<hr>"
-Conn.Execute(stSQL)
+//SQL = "delete from casedmt_good where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"' and case_sqlno=0";
+//conn.ExecuteNonQuery(SQL);
 
-stSQL = "delete from casedmt_show where in_no='"&request("In_no")&"' and case_sqlno=0"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "1=" & stSQL & "<hr>"
-conn.Execute(stSQL)
+//SQL = "delete from casedmt_show where in_no='"+Request["in_no"]+"' and case_sqlno=0";
+//conn.ExecuteNonQuery(SQL);
 
-stSQL = "delete from dmt_tranlist where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and mod_field='mod_tcnref'"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "2=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from dmt_tranlist where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and mod_field='mod_ap'"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "3=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from dmt_tranlist where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and mod_field='mod_apaddr'"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "4=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from dmt_tranlist where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and mod_field='mod_aprep'"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "5=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from  dmt_tranlist where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and mod_field='mod_dmt'"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "6=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from dmt_tranlist where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and mod_field='mod_claim1'"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "7=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from dmt_tranlist where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and mod_field='mod_class' and mod_type='Dgood'"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "8=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from dmt_tranlist where in_no='"&request("In_no")&"' and in_scode='"&request("in_scode")&"' and mod_field='mod_agt'"
-If Trim(Request("chkTest"))<>Empty Then Response.Write "9=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from case_dmt1 where in_no='"& request("In_no") &"'" 
-If Trim(Request("chkTest"))<>Empty Then Response.Write "10=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from dmt_temp where in_no='"& request("In_no") &"' and in_scode='"&request("in_scode")&"' and case_sqlno<>0" 
-If Trim(Request("chkTest"))<>Empty Then Response.Write "11=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from casedmt_good where in_no='"& request("In_no") &"' and in_scode='"&request("in_scode")&"' and case_sqlno<>0" 
-If Trim(Request("chkTest"))<>Empty Then Response.Write "12=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
-stSQL = "delete from casedmt_show where in_no='"& request("In_no") &"' and case_sqlno<>0" 
-If Trim(Request("chkTest"))<>Empty Then Response.Write "13=" & stSQL & "<hr>"
-Conn.Execute(stSQL)
+SQL = "delete from dmt_tranlist where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"' and mod_field in('mod_tcnref','mod_ap','mod_apaddr','mod_aprep','mod_dmt','mod_claim1','mod_agt')";
+conn.ExecuteNonQuery(SQL);
 
-v=split(request("tfy_arcase"),"&")
-arcase=v(0)
-prt_code=v(1)
+SQL = "delete from dmt_tranlist where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"' and mod_field='mod_class' and mod_type='Dgood'";
+conn.ExecuteNonQuery(SQL);
 
-select case left(trim(request("tfy_arcase")),4)
-case "FC1&","FC10","FC9&","FCA&","FCB&","FCF&"
-		case_stat=trim(request("tfy_case_stat"))
-Case "FC11","FC5&","FC7&","FCH&"
-		case_stat=trim(request("tfy_case_stat"))
-case else
-		case_stat=trim(request("tfy_case_stat"))
-End Select
+SQL = "delete from case_dmt1 where in_no='"+Request["in_no"]+"'" ;
+conn.ExecuteNonQuery(SQL);
+
+SQL = "delete from dmt_temp where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"' and case_sqlno<>0" ;
+conn.ExecuteNonQuery(SQL);
+
+SQL = "delete from casedmt_good where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"' and case_sqlno<>0" ;
+conn.ExecuteNonQuery(SQL);
+
+SQL = "delete from casedmt_show where in_no='"+Request["in_no"]+"' and case_sqlno<>0" ;
+conn.ExecuteNonQuery(SQL);
 
 //寫入接洽記錄檔
 update_case_dmt(conn);
@@ -101,7 +66,7 @@ if ((Request["tfy_arcase"] ?? "") == "FC11" || (Request["tfy_arcase"] ?? "") == 
 			if (objResult2 != null) {
 				string draw_file = objResult2.ToString();
 				//將檔案更改檔名
-				string newfilename = move_file(Request["In_no"], draw_file, "-FC" + i);
+				string newfilename = move_file(draw_file, "-FC" + i,"");
 
 				SQL = "insert into dmt_temp(s_mark,s_mark2,pul,apsqlno,ap_cname,ap_cname1,ap_cname2 ";
 				SQL += ",ap_ename,ap_ename1,ap_ename2,appl_name,cappl_name,eappl_name";
@@ -130,7 +95,7 @@ if ((Request["tfy_arcase"] ?? "") == "FC11" || (Request["tfy_arcase"] ?? "") == 
 				conn.ExecuteNonQuery(SQL);
 
 				//*****新增申請人檔
-				insert_dmt_temp_ap_FC2(conn, Request["In_no"], case_sqlno);
+				insert_dmt_temp_ap_FC2(conn, case_sqlno);
 			}
 
 			//商品類別
@@ -182,11 +147,10 @@ if ((Request["tfy_arcase"] ?? "") == "FC11" || (Request["tfy_arcase"] ?? "") == 
 			//抓圖檔
 			SQL = "SELECT draw_file FROM dmt_temp_change where in_scode='" + Request["F_tscode"] + "' and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' and num='" + i + "'";
 			object objResult2 = conn.ExecuteScalar(SQL);
-
 			if (objResult2 != null) {
 				string draw_file = objResult2.ToString();
 				//將檔案更改檔名
-				string newfilename = move_file(Request["In_no"], draw_file, "-FC" + i);
+				string newfilename = move_file(draw_file, "-FC" + i,"";
 
 				SQL = "insert into dmt_temp(s_mark,s_mark2,pul,apsqlno,ap_cname,ap_cname1,ap_cname2 ";
 				SQL += ",ap_ename,ap_ename1,ap_ename2,appl_name,cappl_name,eappl_name";
@@ -215,7 +179,7 @@ if ((Request["tfy_arcase"] ?? "") == "FC11" || (Request["tfy_arcase"] ?? "") == 
 				conn.ExecuteNonQuery(SQL);
 
 				//寫入交辦申請人檔
-				insert_dmt_temp_ap_FC0(conn, Request["In_no"], case_sqlno);
+				insert_dmt_temp_ap_FC0(conn, case_sqlno);
 			}
 
 			//商品類別
@@ -260,8 +224,8 @@ insert_casedmt_good(conn);
 //****新增展覽優先權資料
 insert_casedmt_show(conn,"0");
 
-	 'dmt_tran入log
-	'call insert_log_table(conn,"U",tprgid,"dmt_tran","in_no;in_scode",trim(request("in_no"))&";"&trim(request("in_scode")))    
+	//dmt_tran入log
+	//call insert_log_table(conn,"U",tprgid,"dmt_tran","in_no;in_scode",trim(request("in_no"))&";"&trim(request("in_scode")))    
 	string Num="";
 	if ((Request["tfy_arcase"] ?? "").Left(3).IN("FC9,FC1,FC5,FC7,FCA,FCB,FCF,FCH")) {
 		Num="1";
@@ -361,7 +325,7 @@ switch ((Request["tfy_arcase"] ?? "")) {
 			conn.ExecuteNonQuery(SQL);
 		}
 		//*****新增申請人檔
-		insert_dmt_temp_ap_FC2(conn, Request["In_no"], "0");
+		insert_dmt_temp_ap_FC2(conn, "0");
 
 		break;
 	case "FC2": case "FC20": case "FC21": case "FC0": case "FC6": case "FC8": case "FCC": case "FCD": case "FCG": case "FCI":
@@ -502,7 +466,7 @@ switch ((Request["tfy_arcase"] ?? "")) {
 			conn.ExecuteNonQuery(SQL);
 		}
 		//寫入交辦申請人檔
-		insert_dmt_temp_ap_FC0(conn, Request["In_no"], "0");
+		insert_dmt_temp_ap_FC0(conn, "0");
 
 		break;
 	case "FC3":
@@ -527,7 +491,7 @@ switch ((Request["tfy_arcase"] ?? "")) {
 		}	
 
 		//*****新增案件申請人檔
-		insert_dmt_temp_ap(conn, Request["In_no"], "0");
+		insert_dmt_temp_ap(conn, "0");
 		
 		break;
 	case "FC4":
@@ -540,7 +504,7 @@ switch ((Request["tfy_arcase"] ?? "")) {
 			conn.ExecuteNonQuery(SQL);
 		}
 		//*****新增案件申請人檔
-		insert_dmt_temp_ap(conn, Request["In_no"], "0");
+		insert_dmt_temp_ap(conn, "0");
 
 		break;
 }
@@ -551,29 +515,8 @@ Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"]??""));
 //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
 upd_grconf_job_no(conn);
 
-	'當程序有修改復案或結案註記時通知營洽人員
-	if ucase(prgid)="BRT51" then
-	    nback_flag=request("tfy_back_flag")
-		if request("tfy_back_flag")=empty then nback_flag="N"
-		oback_flag=request("oback_flag")
-		if request("oback_flag")=empty then oback_flag="N"
-		nend_flag=request("tfy_end_flag")
-		if request("tfy_end_flag")=empty then nend_flag="N"
-		oend_flag=request("oend_flag")
-		if request("oend_flag")=empty then oend_flag="N"
-	   	'Response.Write "b1:"&request("oback_flag") & ",b2:"&nback_flag&",e1:"&request("oend_flag") & ",e2:"&nend_flag
-	   	'Response.End
-	   if trim(nback_flag)<>trim(oback_flag) or trim(nend_flag)<> trim(oend_flag) then
-	      Call Sendmail(nback_flag,nend_flag)		        
-	      DoSendMail subject,body	
-	   end if
-	end if			
-	
-	If Trim(Request.Form("chkTest"))<>Empty Then
-		conn.RollbackTrans
-		Response.Write "conn.RollbackTrans...<br>"
-		Response.End
-	End If
-	Conn.CommitTrans  
+//當程序有修改復案或結案註記時通知營洽人員
+chk_end_back();
+
 End sub '---- doUpdateDB() ----
 %>

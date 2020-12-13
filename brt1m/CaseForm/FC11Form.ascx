@@ -81,7 +81,7 @@
 			<td class="whitetablebg" colspan="7" >共<input type="text" id=tot_num11 name=tot_num11 size=2 onchange="br_form.Add_FC11(this.value)">件
 				<input type=hidden id=count111 name=count111 value="0">
 				<input type=hidden id=ctrlcnt111 name=ctrlcnt111 value="">
-				<input type=text id=cnt111 name=cnt111 value="0"><!--畫面上有幾筆-->
+				<input type=hidden id=cnt111 name=cnt111 value="0"><!--畫面上有幾筆-->
 				<input type=hidden id=nfy_tot_num name=nfy_tot_num value="0">
 			</td>
 		</tr>

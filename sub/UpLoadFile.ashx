@@ -131,13 +131,13 @@ public class UpLoaded : IHttpHandler, IRequiresSessionState
                 if (fi.Exists) {
                     attach_flag_value = "U";
                     saveFlag = false;
-                    msg = "該檔案已經存在!!\n\n請將該檔案更名，並重新上傳!!⑴";
+                    msg = "該檔案已經存在!!(" + ee + sExt + ")\n\n請將該檔案更名，並重新上傳!!⑴";
                 }
             } else if (type == "photo") {//圖檔判斷
                 if (fi.Exists) {
                     attach_flag_value = "U";
                     saveFlag = false;
-                    msg = "該檔案已經存在!!\n\n請將該檔案更名，並重新上傳!!⑵";
+                    msg = "該檔案已經存在!!(" + ee + sExt + ")\n\n請將該檔案更名，並重新上傳!!⑵";
                 } else {
                     if (original_name == ee) {//編修時檢查上傳檔名與更名檔名是否相同
                         saveFlag = false;
@@ -155,7 +155,7 @@ public class UpLoaded : IHttpHandler, IRequiresSessionState
                 if (fi.Exists) {
                     attach_flag_value = "U";
                     saveFlag = false;
-                    msg = "該檔案已經存在!!\n\n請將該檔案更名，並重新上傳!!⑶";
+                    msg = "該檔案已經存在!!(" + ee + sExt + ")\n\n請將該檔案更名，並重新上傳!!⑶";
                 }
             }
         }

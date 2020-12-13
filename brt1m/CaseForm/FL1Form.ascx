@@ -750,6 +750,7 @@
         console.log("fl1.br_form.bind");
         if (jMain.case_main.length == 0) {
             $("#FL_AP_Add_button").click();//關係人預設顯示第1筆
+            $("#FL2_AP_Add_button").click();//商標權人預設顯示第1筆
             br_form.apcust_role('A');
             br_form.Add_classFL1(1);//類別預設顯示第1筆
             $("#tot_num21,#nfy_tot_num").val("1").triggerHandler("change");
@@ -880,7 +881,6 @@
                 alert("查無此交辦案件之關係人資料(1)!!");
             }
 
-            /*
             if ($("#tfy_Arcase").val().Left(3) == "FL2" || $("#tfy_Arcase").val().Left(3) == "FL6") {
                 var tranlist = $(jMain.case_tranlist).filter(function (i, n) { return n.mod_field === 'mod_tap' });
                 $.each(tranlist, function (i, item) {
@@ -913,7 +913,7 @@
                 if (CInt($("#FL2_apnum").val()) == 0) {
                     alert("查無此交辦案件之關係人資料(2)!!");
                 }
-            }*/
+            }
 
             //授權期間種類
             $("#tfg1_term1").val(dateReviver(jMain.case_main[0].term1, "yyyy/M/d"));//授權起日

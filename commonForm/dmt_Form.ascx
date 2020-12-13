@@ -278,9 +278,9 @@
 				    <td class=lightbluetable align=right>類別：</td>		
 				    <td class=whitetablebg colspan=7>共<input type="text" id=tfzr_class_count name=tfzr_class_count size=2 onchange="dmt_form.Add_class(this.value)">類
                         <input type="text" name=tfzr_class id=tfzr_class style="width:70%" readonly>
-					    <input type=text name=num1 id=num1 value="0"><!--畫面上有幾筆-->
-				        <input type=text name=ctrlnum1 id=ctrlnum1 value="0">
-					    <input type=text name=ctrlcount1 id=ctrlcount1 value="">
+					    <input type=hidden name=num1 id=num1 value="0"><!--畫面上有幾筆-->
+				        <input type=hidden name=ctrlnum1 id=ctrlnum1 value="0">
+					    <input type=hidden name=ctrlcount1 id=ctrlcount1 value="">
 				    </td>
 			    </tr>
             </thead>
@@ -746,12 +746,26 @@
         }
 
         if (confirm("確定刪除上傳圖檔？")) {
-            var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() +
-                "&btnname=butUpload" + pfld;
-            window.open(url, "myWindowOneN", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            //window.open(url, "myWindowOneN", "width=1 height=1 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            $("#draw_attach_file").val("");
-            $("#" + pfile_name).val("");
+            $.ajax({
+                url: getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() + "&btnname=butUpload" + pfld,
+                type: 'GET',
+                dataType: "script",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#draw_attach_file").val("");
+                    $("#" + pfile_name).val("");
+                },
+                error: function (xhr) {
+                    $("#dialog").html("<a href='" + this.url + "' target='_new'>刪除檔案失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                    $("#dialog").dialog({ title: '刪除檔案失敗！', modal: true, maxHeight: 500, width: "90%" });
+                }
+            });
+
+            //var url = getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() + "&btnname=butUpload" + pfld;
+            //window.open(url, "myWindowOneN", "width=700 height=600 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            //$("#draw_attach_file").val("");
+            //$("#" + pfile_name).val("");
         }
     }
 
@@ -848,7 +862,7 @@
     }
 
     //*****將特定欄位disabled
-    function Filereadonly(){
+    function Filereadonly() {
         //$("input[id^='tfzd'],input[name^='tfzd']").lock();
         //$("input[id^='fr'],input[name^='fr']").lock();
         $(".onoff").lock();
@@ -925,7 +939,6 @@
 
     //******新舊案切換控制
     dmt_form.new_oldcase = function () {
-        //function new_oldcase() {
         if ($("#tfy_case_stat").val() == "NN") {//新案
             $("#DelayCase,#CaseNewAssign").hide();//舊案/新案(指定編號)
             $("#CaseNew").show();//新案

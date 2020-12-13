@@ -76,7 +76,7 @@
 		<td class=whitetablebg colspan="7">
 			分割為<input type=text id=tot_num1 name=tot_num1 size="2" maxlength="2" onchange="br_form.Add_arcaseFD1(this.value)">件
 			<input type=hidden id=cnt1 name=cnt1 value="0"><!--畫面上有幾筆-->
-			<input type=text id=nfy_tot_num name=nfy_tot_num value="0">
+			<input type=hidden id=nfy_tot_num name=nfy_tot_num value="0">
 		</TD>
 	</tr>
 	<tr>

@@ -397,17 +397,38 @@
         }
 
         if (confirm("確定刪除上傳檔案？")) {
-            //var tfolder = "\\btbrt\\<%=Session["SeBranch"]%>t\\<%=epath%>";
-            //window.open("/btbrt/sub/del_draw_file.asp?type=doc&folder_name=" + tfolder + "&draw_file=" + file + "&btnname=btn<%=uploadfield%>D_" + nRow + "&form_name=<%=uploadfield%>" + nRow, "myWindowOneN", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            window.open(getRootPath() + "/sub/del_draw_file_new.aspx?type=doc&draw_file=" + file, "myWindowOneN", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            document.getElementById(fld + "_name_" + nRow).value = "";
-            document.getElementById("source_name_" + nRow).value = "";
-            document.getElementById(fld + "_desc_" + nRow).value = "";
-            document.getElementById(fld + "_" + nRow).value = "";
-            document.getElementById(fld + "_size_" + nRow).value = "";
-            document.getElementById("doc_type_" + nRow).value = "";
-            document.getElementById("btn" + fld + "_" + nRow).disabled = false;
-            document.getElementById("attach_flag_" + nRow).value = "D";
+            $.ajax({
+                url: getRootPath() + "/sub/del_draw_file_new.aspx?type=doc&draw_file=" + file,
+                type: 'GET',
+                dataType: "script",
+                async: false,
+                cache: false,
+                success: function(data) {
+                    document.getElementById(fld + "_name_" + nRow).value = "";
+                    document.getElementById("source_name_" + nRow).value = "";
+                    document.getElementById(fld + "_desc_" + nRow).value = "";
+                    document.getElementById(fld + "_" + nRow).value = "";
+                    document.getElementById(fld + "_size_" + nRow).value = "";
+                    document.getElementById("doc_type_" + nRow).value = "";
+                    document.getElementById("btn" + fld + "_" + nRow).disabled = false;
+                    document.getElementById("attach_flag_" + nRow).value = "D";
+                },
+                error: function (xhr) { 
+                    $("#dialog").html("<a href='" + this.url + "' target='_new'>刪除檔案失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
+                    $("#dialog").dialog({ title: '刪除檔案失敗！', modal: true, maxHeight: 500,width: "90%" });
+                }
+            });
+            
+            //window.open(getRootPath() + "/sub/del_draw_file_new.aspx?type=doc&draw_file=" + file, "myWindowOneN", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
+            //document.getElementById(fld + "_name_" + nRow).value = "";
+            //document.getElementById("source_name_" + nRow).value = "";
+            //document.getElementById(fld + "_desc_" + nRow).value = "";
+            //document.getElementById(fld + "_" + nRow).value = "";
+            //document.getElementById(fld + "_size_" + nRow).value = "";
+            //document.getElementById("doc_type_" + nRow).value = "";
+            //document.getElementById("btn" + fld + "_" + nRow).disabled = false;
+            //document.getElementById("attach_flag_" + nRow).value = "D";
+            
         } else {
             document.getElementById(fld + "_desc_" + nRow).focus();
             return false;

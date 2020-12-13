@@ -310,7 +310,8 @@
         $("#tfy_case_stat").val("NN");//新案
         $("#submittask").val("Add");
 
-        $("select,textarea,input,span").unlock();
+        //$("select,textarea,input,span").unlock();
+        $("input:disabled, select:disabled").unlock();
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
 
         var formData = new FormData($('#reg')[0]);
