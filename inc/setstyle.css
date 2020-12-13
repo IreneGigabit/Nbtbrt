@@ -152,7 +152,7 @@ hr
     /*COLOR: #ffff99;*/
     COLOR: #222200;
     font-weight:bold;
-    text-shadow: 0.1em 0.1em 0.2em #dddd99;
+    text-shadow: 0.1em 0.1em 0.2em #ffff99;
 }
 .tab-titleon
 {
@@ -162,9 +162,8 @@ hr
     /*COLOR: #222200;*/
     COLOR: #ffff99;
     font-weight:bold;
-    /*text-shadow: -1px 1px 0 #000, 1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000;*/
     text-shadow: 0.1em 0.1em 0.2em #222200;
-    border-bottom:2px solid;
+    border-bottom:1px solid;
 }
 .CliMod
 {
