@@ -174,8 +174,8 @@
                         if (split_no.Length >= 2) {
                             if (split_notype[1].Trim() == "申請案號") {
                                 if (apply_no != split_no[1].Trim()) {
-                                    Response.Write("	errFlag=true;\r\n");
-                                    Response.Write("	$('#msg').append('<Font align=left color=\"red\" size=3>申請書申請案號(<font color=\"black\">" + split_no[1].Trim() + "</font>)與案件主檔(<font color=\"black\">" + apply_no + "</font>)不符!!</font><BR>');\r\n");
+                                    //Response.Write("	errFlag=true;\r\n");
+                                    //Response.Write("	$('#msg').append('<Font align=left color=\"red\" size=3>申請書申請案號(<font color=\"black\">" + split_no[1].Trim() + "</font>)與案件主檔(<font color=\"black\">" + apply_no + "</font>)不符!!</font><BR>');\r\n");
                                 }
                             } else if (split_notype[1].Trim() == "註冊號") {
                                 if (issue_no != split_no[1].Trim()) {
@@ -199,8 +199,8 @@
                             string[] split_no = apply_line.Split('】');
                             if (split_no.Length >= 2) {
                                 if (apply_no != split_no[1].Trim()) {
-                                    Response.Write("	errFlag=true;\r\n");
-                                    Response.Write("	$('#msg').append('<Font align=left color=\"red\" size=3>申請書申請案號(<font color=\"black\">" + split_no[1].Trim() + "</font>)與案件主檔(<font color=\"black\">" + apply_no + "</font>)不符!!</font><BR>');\r\n");
+                                    //Response.Write("	errFlag=true;\r\n");
+                                    //Response.Write("	$('#msg').append('<Font align=left color=\"red\" size=3>申請書申請案號(<font color=\"black\">" + split_no[1].Trim() + "</font>)與案件主檔(<font color=\"black\">" + apply_no + "</font>)不符!!</font><BR>');\r\n");
                                 }
                             }
                         }

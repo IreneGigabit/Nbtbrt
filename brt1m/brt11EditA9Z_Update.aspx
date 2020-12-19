@@ -547,7 +547,7 @@
                 List<string> strCC = new List<string>();
                 List<string> strBCC = new List<string>();
                 switch (Sys.Host) {
-                    case "web08":
+                    case "web08": case "localhost":
                         strTo.Add(Session["scode"] + "@saint-island.com.tw");
                         Subject = "(web08)" + Subject;
                         break;

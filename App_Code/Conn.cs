@@ -11,7 +11,7 @@ public static class Conn
     /// <summary>
     /// IIS主機名(大寫)
     /// </summary>
-    private static string Host = HttpContext.Current.Request.ServerVariables["HTTP_HOST"].ToString().ToUpper();
+    private static string Host = HttpContext.Current.Request.ServerVariables["HTTP_HOST"].ToString().ToUpper().Split(':')[0];
 
 	/// <summary>
 	/// 案件管理系統
@@ -30,7 +30,7 @@ public static class Conn
 	}
 
     /// <summary>
-    /// 案件管理系統-for 轉案 分案用(指定區所)
+    /// 案件管理系統-for 轉案/分案用(指定區所)
     /// </summary>
     public static string brp(string pBranch) {
         switch (Host) {

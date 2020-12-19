@@ -14,7 +14,7 @@
     protected string SQL = "";
 
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
-    protected Paging page = new Paging(1, 10);
+    protected Paging page = null;
 
     protected string uploadfield = "attach";
     protected string kind = "";

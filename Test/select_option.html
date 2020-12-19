@@ -73,7 +73,7 @@
                 <td align="center">
 
                     <select name=toadd0 id=toadd0>
-                        <option value="" class="xxx">請選擇案性</option>
+                        <option value="" style="color:blue">請選擇案性</option>
 
                         <option value="A0" v1="A1">電子申請</option>
 
@@ -129,18 +129,23 @@
     $(function () {
         //$("select").on("change",function(){
         $("select").change(function () {
-            var _thisSelect2 = $(this);
+            var _this = $(this);
             //alert(_thisSelect2.val());
             //alert($("option:selected", _thisSelect2).attr("class"));
-            _thisSelect2.attr('class', $("option:selected", _thisSelect2).attr("class") || '');
-            //alert($("option:selected", _thisSelect2).css("color"));
+            //_thisSelect2[0].option.Style.color = "green";
+            //$("#sfs option:selected").css("color", "red");
+            //_thisSelect2.attr('class', $("option:selected", _thisSelect2).attr("class") || '');
+            //this.options[this.selectedIndex].style.color = this.options[this.selectedIndex].style.color;
+            console.log($("option", this).css("color"));
+            _this[0].style.color = this.options[this.selectedIndex].style.color;
+            //console.log(this.options[this.selectedIndex].style.color);
             //_thisSelect2.css('color', $("option:selected", _thisSelect2).css("color") || '#000');
             //if (!_thisSelect2.val()) {
             //    _thisSelect2.css('color', 'blue');//請選擇
             //} else {
             //    _thisSelect2.css('color', 'black');
             //}
-        }).change();
+        });
         //});
         //$("select").change();
 

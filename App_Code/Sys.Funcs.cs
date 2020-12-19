@@ -59,7 +59,7 @@ public partial class Sys
             return dt;
         }
     }
-#endregion
+    #endregion
 
     #region getRsType - 國內案目前交辦案性的版本
     /// <summary>  
@@ -155,6 +155,21 @@ public partial class Sys
     }
     #endregion
 
+    #region getEndType - 結案原因
+    /// <summary>  
+    /// 抓取結案原因
+    /// </summary>  
+    public static DataTable getEndType() {
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            string SQL = "SELECT cust_code, code_name FROM cust_code where code_type = 'TEnd_type' ORDER BY sortfld";
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
     #region getTagNo - 抓取現行案件預設出名代理人
     /// <summary>  
     /// 抓取現行案件預設出名代理人
@@ -187,6 +202,7 @@ public partial class Sys
             string SQL = "SELECT agt_no,agt_name1,agt_name2,agt_name3,agt_namefull,''agt_name,''strcomp_name,''selected ";
             SQL += ",treceipt,(select form_name from cust_code where code_type='company' and cust_code=agt.treceipt) as comp_name ";
             SQL += "FROM agt ";
+            SQL += "where branch like '%" + Sys.GetSession("dept") + "%' or branch is null or rtrim(branch) = '' ";
             SQL += "ORDER BY agt_no";
 
             DataTable dt = new DataTable();
@@ -233,6 +249,88 @@ public partial class Sys
     }
     #endregion
 
+    #region getDmtScode - 抓取案件主檔內的營洽(國內案)
+    /// <summary>  
+    /// 抓取案件主檔內的營洽(國內案)
+    /// </summary>  
+    public static DataTable getDmtScode(string branch, string pwh) {
+        string strConn = Conn.btbrt;
+        if (branch == "") Conn.brp(branch);
+        using (DBHelper conn = new DBHelper(strConn, false)) {
+            string SQL = "select distinct a.scode,b.sc_name,b.end_date ";
+            SQL += ",case when b.end_date<getdate() then '*' else '' end star ";
+            SQL += ",case when b.end_date<getdate() then 'red' else '' end color ";
+            SQL += "from dmt a ";
+            SQL += "inner join sysctrl.dbo.scode b on a.scode=b.scode ";
+            SQL += "where (a.end_date is null or a.end_date = '') " + pwh;
+            SQL += "order by a.scode ";
+
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
+    #region getExtScode - 抓取案件主檔內的營洽
+    /// <summary>  
+    /// 抓取案件主檔內的營洽(出口案)
+    /// </summary>  
+    public static DataTable getExtScode(string branch, string pwh) {
+        string strConn = Conn.btbrt;
+        if (branch == "") Conn.brp(branch);
+        using (DBHelper conn = new DBHelper(strConn, false)) {
+            string SQL = "select distinct a.scode,b.sc_name,b.end_date ";
+            SQL += ",case when b.end_date<getdate() then '*' else '' end star ";
+            SQL += ",case when b.end_date<getdate() then 'red' else '' end color ";
+            SQL += "from ext a ";
+            SQL += "inner join sysctrl.dbo.scode b on a.scode=b.scode ";
+            SQL += "where (a.end_date is null or a.end_date = '') " + pwh;
+            SQL += "order by a.scode ";
+
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
+    #region getRoleScode - 抓取指定scole_roles人員
+    /// <summary>  
+    /// 抓取scole_roles人員
+    /// </summary>  
+    public static string getRoleScode(string pSysno, string pDept, string pRoles) {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            string SQL = "select a.scode ";
+            SQL += "from scode_roles a inner join scode b on a.scode=b.scode ";
+            SQL += " where a.syscode='" + pSysno + "' and a.dept='" + pDept + "' and a.roles='" + pRoles + "' ";
+            SQL += " and (b.end_date is null or b.end_date>='" + DateTime.Today.ToShortDateString() + "')";
+            SQL += " order by a.sort ";
+            DataTable dt = new DataTable();
+            cnn.DataTable(SQL, dt);
+            var list = dt.AsEnumerable().Select(r => r.Field<string>("scode")).ToArray();
+            return string.Join(";", list);
+        }
+    }
+    #endregion
+
+    #region getBranchCode - 抓取指定單位代碼
+    /// <summary>  
+    /// 抓取指定單位代碼
+    /// </summary>  
+    public static DataTable getBranchCode() {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            string SQL = "select branch,branchname from branch_code where mark='Y' and showcode='Y' order by sort ";
+            DataTable dt = new DataTable();
+            cnn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
     #region insert_log_table
     /// <summary>
     /// 寫入 Log 檔，適用於 log table 中有 ud_flag、ud_date、ud_scode、prgid 這些欄位者
@@ -243,7 +341,7 @@ public partial class Sys
     /// <param name="pKey_field">key值欄位名稱,用;分隔</param>
     /// <param name="pKey_value">key值欄位值,用;分隔</param>
     /// <param name="reason">log說明</param>
-    public static void insert_log_table(DBHelper conn, string ud_flag, string prgid, string table, string key_field, string key_value,string reason) {
+    public static void insert_log_table(DBHelper conn, string ud_flag, string prgid, string table, string key_field, string key_value, string reason) {
         Dictionary<string, string> pKey = new Dictionary<string, string>();
 
         if (key_field.IndexOf(";") != 0) {
@@ -305,14 +403,14 @@ public partial class Sys
             case "case_dmt":
             case "case_ext":
                 usql = "insert into " + table + "_log(upd_flg,reason,log_date,log_scode," + tfield_str + ")";
-                usql += " SELECT " + Util.dbchar(ud_flag) + ","+Util.dbchar(reason)+",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
+                usql += " SELECT " + Util.dbchar(ud_flag) + "," + Util.dbchar(reason) + ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;
                 usql += " WHERE 1=1 ";
                 usql += wsql;
                 break;
             case "caseitem_dmt":
                 usql = "insert into " + table + "_log(case_dmt_log_sqlno,log_date,log_scode," + tfield_str + ")";
-                usql += " SELECT isnull((select max(sqlno) from case_dmt_log where 1=1 "+wsql+"),0) ";
+                usql += " SELECT isnull((select max(sqlno) from case_dmt_log where 1=1 " + wsql + "),0) ";
                 usql += ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;
                 usql += " WHERE 1=1 ";
@@ -320,7 +418,7 @@ public partial class Sys
                 break;
             case "dmt_temp":
                 usql = "insert into " + table + "_log(case_dmt_log_sqlno,log_date,log_scode," + tfield_str + ")";
-                usql += " SELECT isnull((select max(sqlno) from case_dmt_log where 1=1 "+wsql+"),0) ";
+                usql += " SELECT isnull((select max(sqlno) from case_dmt_log where 1=1 " + wsql + "),0) ";
                 usql += ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;
                 usql += " WHERE 1=1 ";
@@ -336,8 +434,5 @@ public partial class Sys
         }
         conn.ExecuteNonQuery(usql);
     }
-
     #endregion
 }
-
-

@@ -68,7 +68,7 @@
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>案件編號1:</td>
 			    <td class="whitetablebg">
-                    <input type="text" id=dseqb_1 name=dseqb_1 size=5  maxlength=5 onblur="br_form.seqChange('b_1')" readonly class=SEdit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=1  maxlength=1 value="_" onblur="br_form.seqChange('b_1')" readonly class=SEdit>
+                    <input type="text" id=dseqb_1 name=dseqb_1 size=<%=Sys.DmtSeq%> maxlength=<%=Sys.DmtSeq%> onblur="br_form.seqChange('b_1')" readonly class=SEdit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=<%=Sys.DmtSeq1%> maxlength=<%=Sys.DmtSeq1%> value="_" onblur="br_form.seqChange('b_1')" readonly class=SEdit>
                     <input type=button class="cbutton" id="btndseq_okb_1" name="btndseq_okb_1" value ="確定" onclick="delayNO(reg.dseqb_1.value,reg.dseq1b_1.value)">
                     <input type=radio value=NN id="case_stat1b_1NN" name="case_stat1b_1" onclick="br_form.case_stat1_control('NN','b_1')" checked>新案
                     <input type=radio value=OO id="case_stat1b_1OO" name="case_stat1b_1" onclick="br_form.case_stat1_control('OO','b_1')">舊案
@@ -78,7 +78,7 @@
 			    </td>
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>母案本所編號1:</td>
 			    <td class="whitetablebg" >
-                    <input type="text" id=dmseqb_1 name=dmseqb_1 size=5  maxlength=5 readonly class=SEdit>-<input type="text" id=dmseq1b_1 name=dmseq1b_1 size=1  maxlength=1 value="_" readonly class=SEdit>
+                    <input type="text" id=dmseqb_1 name=dmseqb_1 size=<%=Sys.DmtSeq%> maxlength=<%=Sys.DmtSeq%> readonly class=SEdit>-<input type="text" id=dmseq1b_1 name=dmseq1b_1 size=<%=Sys.DmtSeq1%>  maxlength=<%=Sys.DmtSeq1%> value="_" readonly class=SEdit>
 			    </td>
 		    </tr>
 		    <tr>	
@@ -99,7 +99,7 @@
 		    <tr class="trft2_##">
 			    <td class="lightbluetable" align="right">本所編號##:</td>
 			    <td class="whitetablebg"  >
-					<input type=text id=dseqb_## name=dseqb_## size=5  maxlength=5 onblur="br_form.seqChange('b_##')" readonly>-<input type=text id=dseq1b_## name=dseq1b_## size=1  maxlength=1 value='_' onblur="br_form.seqChange('b_##')" readonly >
+					<input type=text id=dseqb_## name=dseqb_## size=<%=Sys.DmtSeq%> maxlength=<%=Sys.DmtSeq%> onblur="br_form.seqChange('b_##')" readonly>-<input type=text id=dseq1b_## name=dseq1b_## size=<%=Sys.DmtSeq1%> maxlength=<%=Sys.DmtSeq1%> value='_' onblur="br_form.seqChange('b_##')" readonly >
 					<input type=button class='cbutton' id='btndseq_okb_##' name='btndseq_okb_##' value ='確定' onclick="br_form.btnseqclick('##','b_')">
 					<input type=radio value=NN checked name='case_stat1b_##' id='case_stat1b_##NN' onclick="br_form.case_stat1_control('NN','b_##')">新案
                     <input type=radio value=OO name='case_stat1b_##' id='case_stat1b_##OO' onclick="br_form.case_stat1_control('OO','b_##')">舊案
@@ -112,7 +112,7 @@
 			    </td>
 			    <td class="lightbluetable" align="right">母案本所編號##:</td>
 			    <td class="whitetablebg" >
-					<input type=text id=dmseqb_## name=dmseqb_## size=5  maxlength=5 readonly >-<input type=text id=dmseq1b_## name=dmseq1b_## size=1  maxlength=1 value='_' readonly >
+					<input type=text id=dmseqb_## name=dmseqb_## size=<%=Sys.DmtSeq%> maxlength=<%=Sys.DmtSeq%> readonly >-<input type=text id=dmseq1b_## name=dmseq1b_## size=<%=Sys.DmtSeq1%>  maxlength=<%=Sys.DmtSeq1%> value='_' readonly >
 					<input type=button style='display:none' id='but_endb_##' name='but_endb_##' class='redbutton' style='cursor:pointer' value='母案結案' onclick="btnendA8click('dmseqb_##' ,reg.dmseqb_##.value,reg.dmseq1b_##.value)">
 					<input type=hidden name='endflag51b_##' id='endflag51b_##' value='X'>
 					<input type=hidden name='end_code51b_##' id='end_code51b_##'>

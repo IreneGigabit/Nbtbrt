@@ -17,7 +17,7 @@
     protected string SQL = "";
 
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
-    protected Paging page = new Paging(1, 10);
+    protected Paging page = null;
     protected string ff = "";
     protected string syscode = "";
     protected string logingrp = "";

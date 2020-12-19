@@ -320,21 +320,21 @@
                         SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
                         SQL += ",end_code,dmt_term1,dmt_term2,renewal,seq,seq1,draw_file,class_type ";
                         SQL += ",class_count,class ";
-                        SQL += ",in_scode,cust_area,cust_seq,'" + (i + 1) + "' ";
+                        SQL += ",'" + br_in_scode + "','" + cust_area + "','" + cust_seq + "','" + (i + 1) + "' ";
                         SQL += ",getdate(),'" + Session["scode"] + "','" + mark + "' ";
                         SQL += "from dmt_temp where in_no='" + in_no + "' and case_sqlno=" + dt1.Rows[i]["case_sqlno"] + "";
                         conn.ExecuteNonQuery(SQL);
 
                         SQL = "INSERT INTO casedmt_good_change(in_scode,cust_area,cust_seq,num,class,dmt_grp_code";
                         SQL += ",dmt_goodname,dmt_goodcount,tr_date,tr_scode,mark) ";
-                        SQL += "select in_scode,cust_area,cust_seq,'" + (i + 1) + "' ";
+                        SQL += "select '" + br_in_scode + "','" + cust_area + "','" + cust_seq + "','" + (i + 1) + "'";
                         SQL += ",class,dmt_grp_code,dmt_goodname,dmt_goodcount,getdate(),'" + Session["scode"] + "','" + mark + "' ";
                         SQL += "from casedmt_good where in_no='" + in_no + "' and case_sqlno=" + dt1.Rows[i]["case_sqlno"] + "";
                         conn.ExecuteNonQuery(SQL);
 
                         SQL = "INSERT INTO casedmt_show_change(in_scode,cust_area,cust_seq,num,show_no,show_date";
                         SQL += ",show_name,tr_date,tr_scode,mark) ";
-                        SQL += "select in_scode,cust_area,cust_seq,'" + (i + 1) + "' ";
+                        SQL += "select '" + br_in_scode + "','" + cust_area + "','" + cust_seq + "','" + (i + 1) + "'";
                         SQL += ",ROW_NUMBER() OVER(ORDER BY show_sqlno),show_date,show_name,getdate()";
                         SQL += ",'" + Session["scode"] + "','" + mark + "' ";
                         SQL += "from casedmt_show where in_no='" + in_no + "' and case_sqlno=" + dt1.Rows[i]["case_sqlno"] + " order by show_sqlno";

@@ -65,7 +65,7 @@ public partial class Sys
     /// </summary>
     public void getFileServer(string pbrBranch, string prgid) {
         switch (Host) {
-            case "web08"://開發環境
+            case "web08": case "localhost"://開發環境
                 gbrFileServerName = "web02";
                 gFileServerName = "web02";
                 break;

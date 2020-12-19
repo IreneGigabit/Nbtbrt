@@ -48,7 +48,7 @@
         //抓取組主管所屬營洽
         sales_scode = Sys.getScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
 
-        if (Sys.Host.Left(3) != "web" && Sys.Host != "localhost") {
+        if (Sys.Host.Left(3) != "web" && Sys.Host.IndexOf("localhost") >-1) {
             feesctrlMail();//規費提列不足管制過期未銷管Email通知主管,正式環境才執行
         }
         
@@ -450,7 +450,7 @@
         }
 
         switch (Sys.Host) {
-            case "web08":
+            case "web08": case "localhost":
                 strFrom = Session["scode"] + "@saint-island.com.tw";
                 strTo.Clear();
                 strTo.Add(Session["scode"] + "@saint-island.com.tw");

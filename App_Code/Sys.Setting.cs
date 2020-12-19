@@ -15,7 +15,19 @@ public partial class Sys
     /// <summary>
     /// IIS主機名(小寫)
     /// </summary>
-    public static string Host = HttpContext.Current.Request.ServerVariables["HTTP_HOST"].ToString().ToLower();
+    public static string Host = HttpContext.Current.Request.ServerVariables["HTTP_HOST"].ToString().ToLower().Split(':')[0];
+
+    /// <summary>
+    /// 國內案案號長度
+    /// </summary>
+    public static string DmtSeq = "5";
+    public static string DmtSeq1 = "1";
+
+    /// <summary>
+    /// 出口案案號長度
+    /// </summary>
+    public static string ExtSeq = "5";
+    public static string ExtSeq1 = "1";
 
     /// <summary>
     /// 聖島人主機
@@ -85,7 +97,7 @@ public partial class Sys
     /// </summary>
     public static string IPODir {
         get {
-            if (Sys.Host.IndexOf("web") > -1) {
+            if (Sys.Host.IndexOf("web") > -1 || Sys.Host.IndexOf("localhost") > -1) {
                 return "/nbtbrt/IPOSend/_商標電子送件區/web02";
             } else {
                 return "/nbtbrt/IPOSend/_商標電子送件區";

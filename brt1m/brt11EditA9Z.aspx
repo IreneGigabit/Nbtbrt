@@ -234,11 +234,11 @@
     </tr>
     </table>
     <br />
-	<INPUT TYPE="text" id=in_scode name=in_scode>
-	<INPUT TYPE="text" id=in_no name=in_no>
-    <INPUT TYPE="text" id=in_date name=in_date size="8">
-    <INPUT TYPE="text" id=tfgp_seq NAME=tfgp_seq>
-    <INPUT TYPE="text" id=tfgp_seq1 NAME=tfgp_seq1>
+	<INPUT TYPE="hidden" id=in_scode name=in_scode>
+	<INPUT TYPE="hidden" id=in_no name=in_no>
+    <INPUT TYPE="hidden" id=in_date name=in_date size="8">
+    <INPUT TYPE="hidden" id=tfgp_seq NAME=tfgp_seq>
+    <INPUT TYPE="hidden" id=tfgp_seq1 NAME=tfgp_seq1>
 
     <%#DebugStr%>
 </form>

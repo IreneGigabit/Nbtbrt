@@ -213,7 +213,7 @@
 		        <TD class=lightbluetable align=right>本所編號：</TD>
 		        <TD class=whitetablebg colspan=3>
 			        <input type="text" id="seq" name="seq" size=6 maxlength=6>-
-			        <input type="text" id="seq1" name="seq1" size=1 maxlength=1>
+			        <input type="text" id="seq1" name="seq1" size=<%=Sys.DmtSeq1%> maxlength=<%=Sys.DmtSeq1%>>
 		        </TD>
 	        </TR>
 	        <TR>

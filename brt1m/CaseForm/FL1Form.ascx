@@ -68,7 +68,7 @@
 		    <tr>	
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>案件編號1:</td>
 			    <td class="whitetablebg" colspan=3>
-                    <input type="text" id=dseqb_1 name=dseqb_1 size=5  maxlength=5 onblur="br_form.seqChange('b_1')" readonly class=SEdit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=1  maxlength=1 value="_" onblur="br_form.seqChange('b_1')" readonly class=SEdit>
+                    <input type="text" id=dseqb_1 name=dseqb_1 size=<%=Sys.DmtSeq%> maxlength=<%=Sys.DmtSeq%> onblur="br_form.seqChange('b_1')" readonly class=SEdit>-<input type="text" id=dseq1b_1 name=dseq1b_1 size=<%=Sys.DmtSeq1%> maxlength=<%=Sys.DmtSeq1%> value="_" onblur="br_form.seqChange('b_1')" readonly class=SEdit>
                     <input type=button class="cbutton" id="btndseq_okb_1" name="btndseq_okb_1" value ="確定" onclick="delayNO(reg.dseqb_1.value,reg.dseq1b_1.value)">
                     <input type=radio value=NN checked id="case_stat1b_1NN" name="case_stat1b_1" onclick="br_form.case_stat1_control('NN','b_1')">新案
                     <input type=radio value=OO id="case_stat1b_1OO" name="case_stat1b_1" onclick="br_form.case_stat1_control('OO','b_1')">舊案
@@ -95,7 +95,7 @@
 		    <tr class="trfl1_##">
 			    <td class="lightbluetable" align="right">本所編號##:</td>
 			    <td class="whitetablebg" colspan=3>
-					<input type=text id=dseqb_## name=dseqb_## size=5  maxlength=5 onblur="br_form.seqChange('b_##')" readonly>-<input type=text id=dseq1b_## name=dseq1b_## size=1  maxlength=1 value='_' onblur="br_form.seqChange('b_##')" readonly >
+					<input type=text id=dseqb_## name=dseqb_## size=<%=Sys.DmtSeq%> maxlength=<%=Sys.DmtSeq%> onblur="br_form.seqChange('b_##')" readonly>-<input type=text id=dseq1b_## name=dseq1b_## size=<%=Sys.DmtSeq1%> maxlength=<%=Sys.DmtSeq1%> value='_' onblur="br_form.seqChange('b_##')" readonly >
 					<input type=button class='cbutton' id='btndseq_okb_##' name='btndseq_okb_##' value ='確定' onclick="br_form.btnseqclick('##','b_')">
 					<input type=radio value=NN checked name='case_stat1b_##' id='case_stat1b_##NN' onclick="br_form.case_stat1_control('NN','b_##')">新案
                     <input type=radio value=OO name='case_stat1b_##' id='case_stat1b_##OO' onclick="br_form.case_stat1_control('OO','b_##')">舊案

@@ -44,7 +44,7 @@
 			</select>
 		</td>
 		<td class=whitetablebg colspan=7 style="display:none" id="ShowNewAssign_tfp1">
-			<INPUT TYPE=text NAME=tfp1_New_Ass_seq id=tfp1_New_Ass_seq SIZE=5 MAXLENGTH=5 onblur="dmt_form.New_ass_seqB_blur('tfp1')">-<INPUT TYPE=text NAME=tfp1_New_Ass_seq1 id=tfp1_New_Ass_seq1 SIZE=1 MAXLENGTH=1 value="" onblur="dmt_form.New_ass_seqB_blur('tfp1')">	
+			<INPUT TYPE=text NAME=tfp1_New_Ass_seq id=tfp1_New_Ass_seq SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%> onblur="dmt_form.New_ass_seqB_blur('tfp1')">-<INPUT TYPE=text NAME=tfp1_New_Ass_seq1 id=tfp1_New_Ass_seq1 SIZE=<%=Sys.DmtSeq1%> MAXLENGTH=<%=Sys.DmtSeq1%> value="" onblur="dmt_form.New_ass_seqB_blur('tfp1')">	
 		</td>
 	</tr>
 	<tr>

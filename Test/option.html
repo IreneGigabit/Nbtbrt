@@ -1,0 +1,38 @@
+<html>
+
+<head>
+	
+	<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+
+	
+</head>
+
+<body>
+
+	<select id="aaa" name="aaa" onchange="change_color(this)" style="color:#000000; font-size:14pt;">
+		<option value="blue" style="color:blue;">blue</option>
+		<option value="red" style="color:red;">red</option>
+		<option value="yellow"style="color:yellow;">yellow</option>
+		<option value="green" style="color:green;">green</option>
+	</select>
+
+</body>
+
+</html>
+
+	<script lang="ja">
+		function change_color(obj) {
+			var now_value = obj.value;
+			var options = obj.options;
+			if (options != null && options.length > 0) {
+				for (var i = 0 ; i < options.length; i++) {
+					if (options[i].value == now_value) {
+						obj.style.color = options[i].style.color;
+						break;
+					}
+				}
+			}
+		}
+change_color(document.getElementById("aaa"));
+
+	</script>

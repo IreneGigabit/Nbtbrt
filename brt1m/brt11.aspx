@@ -105,7 +105,7 @@
                 <TR class="showcustseq">
 		            <TD class=lightbluetable align=right width=40%>本所編號 :</TD>
 		            <TD class=whitetablebg align=left>
-                        <INPUT type=text id="tfx_seq" name="tfx_seq" size="5" maxlength="5">-<INPUT type="text" id="tfx_seq1" name="tfx_seq1" size="1" maxlength="1" value="_">
+                        <INPUT type=text id="tfx_seq" name="tfx_seq" size="<%=Sys.DmtSeq%>" maxlength="<%=Sys.DmtSeq%>">-<INPUT type="text" id="tfx_seq1" name="tfx_seq1" size="<%=Sys.DmtSeq1%>" maxlength="<%=Sys.DmtSeq1%>" value="_">
 		            </TD>
 	            </TR>
             </tbody>

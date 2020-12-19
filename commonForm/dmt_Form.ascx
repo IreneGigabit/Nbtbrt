@@ -42,8 +42,8 @@
 <input type="hidden" name="oback_flag" id="oback_flag">
 <input type="hidden" name="oend_flag" id="oend_flag">
 <input type="hidden" name="todoend_flag" id="todoend_flag" value="N"><!--結案流程進行中，N:無 Y:有-->
-<INPUT type="hidden" name=tfzb_seq id=tfzb_seq style=5 MAXLENGTH=5>
-<INPUT type="hidden" name=tfzb_seq1 id=tfzb_seq1 SIZE=1 MAXLENGTH=1 value="_">
+<INPUT type="hidden" name=tfzb_seq id=tfzb_seq>
+<INPUT type="hidden" name=tfzb_seq1 id=tfzb_seq1 value="_">
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
     <!--2011/1/1結案及復案由營洽自行勾選，全部交辦畫面皆要加畫面欄位，入資料庫值由案件主檔欄位入-->
 	<tr>			
@@ -60,7 +60,7 @@
 		<td class=lightbluetable align=right>主案件編號：</td>
 		<td class=whitetablebg colspan=3>
             <span id=DelayCase><!--舊案-->
-			    <INPUT TYPE=text NAME=old_seq id=old_seq SIZE=5 MAXLENGTH=5 onblur="dmt_form.mainseqChange('old_seq')">-<INPUT TYPE=text NAME=old_seq1 id=old_seq1 SIZE=1 MAXLENGTH=1 value="_" onblur="dmt_form.mainseqChange('old_seq')" style="text-transform:uppercase;">	
+			    <INPUT TYPE=text NAME=old_seq id=old_seq SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%> onblur="dmt_form.mainseqChange('old_seq')">-<INPUT TYPE=text NAME=old_seq1 id=old_seq1 SIZE=<%=Sys.DmtSeq1%> MAXLENGTH=<%=Sys.DmtSeq1%> value="_" onblur="dmt_form.mainseqChange('old_seq')" style="text-transform:uppercase;">	
 			    <INPUT TYPE=button name=btnseq_ok id=btnseq_ok onclick="delayNO(reg.old_seq.value,reg.old_seq1.value)" value="確定">
                 <input type=button class="cbutton" name="Query" id="Query" value ="查詢主案件編號" onclick="dmt_form.Queryclick(reg.F_cust_seq.value)">
 			    <input type=button class="cbutton" name="Qry_step" id="Qry_step" value ="查詢案件進度" onclick="dmt_form.Qstepclick(reg.old_seq.value,reg.old_seq1.value)">
@@ -68,7 +68,7 @@
 			    <input type="text" name=keyseq id=keyseq value="N">
             </span>
             <span id=CaseNew><!--新案-->
-			    <INPUT TYPE=text NAME=New_seq id=New_seq SIZE=5 MAXLENGTH=5 class="SEdit" readonly>-
+			    <INPUT TYPE=text NAME=New_seq id=New_seq SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%> class="SEdit" readonly>-
 			    <select name=New_seq1 id=New_seq1 class="<%#Lock.TryGet("brt51")%>">
 				    <option value="_">一般</option>
 				    <option value="Z">Z_雜卷</option>
@@ -76,12 +76,12 @@
 			    </select>
             </span>
             <span id=CaseNewAssign><!--新案(指定編號)-->
- 			    <INPUT TYPE=text id=New_Ass_seq NAME=New_Ass_seq SIZE=5 MAXLENGTH=5>-<INPUT TYPE=text id=New_Ass_seq1 NAME=New_Ass_seq1 SIZE=1 MAXLENGTH=1 value="" style="text-transform:uppercase;">	
+ 			    <INPUT TYPE=text id=New_Ass_seq NAME=New_Ass_seq SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%>>-<INPUT TYPE=text id=New_Ass_seq1 NAME=New_Ass_seq1 SIZE=<%=Sys.DmtSeq1%> MAXLENGTH=<%=Sys.DmtSeq1%> value="" style="text-transform:uppercase;">	
             </span>
 		</td>
 		<td class=lightbluetable align=right>母案本所編號：</td>
 		<td class=whitetablebg colspan=3 >
-			<INPUT TYPE=text NAME="tfzd_ref_no" id="tfzd_ref_no" class="onoff" SIZE=5 MAXLENGTH=5>-<INPUT TYPE=text NAME="tfzd_ref_no1" id="tfzd_ref_no1" class="onoff" SIZE=1 MAXLENGTH=1 value="_">
+			<INPUT TYPE=text NAME="tfzd_ref_no" id="tfzd_ref_no" class="onoff" SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%>>-<INPUT TYPE=text NAME="tfzd_ref_no1" id="tfzd_ref_no1" class="onoff" SIZE=<%=Sys.DmtSeq1%> MAXLENGTH=<%=Sys.DmtSeq1%> value="_">
 			<INPUT TYPE=button Name="but_ref" id="but_ref" onclick="delayNO1(reg.tfzd_ref_no.value,reg.tfzd_ref_no1.value)"  class="bluebutton" value="母案複製">
 			<!-- 程序客收移轉舊案要結案 2006/5/26 -->
 			<input type=hidden name="endflag51" id="endflag51" value="X">

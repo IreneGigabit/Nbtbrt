@@ -16,7 +16,7 @@
     protected string SQL = "";
 
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
-    protected Paging page = new Paging(1, 10);
+    protected Paging page = null;
     protected string syscode = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {

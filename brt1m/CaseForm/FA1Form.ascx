@@ -38,7 +38,7 @@
 	<tr id="showseq1">
 		<td class=lightbluetable align=right width="10%" >案件編號：</td>
 		<td class=whitetablebg colspan=7>
-			<INPUT TYPE=text id=tfz1_seq NAME=tfz1_seq SIZE=5 MAXLENGTH=5 readonly class="SEdit">-
+			<INPUT TYPE=text id=tfz1_seq NAME=tfz1_seq SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%> readonly class="SEdit">-
 			<select id=tfz1_seq1 name=tfz1_seq1 onchange="br_form.seq1_conctrl()" class="<%=Lock["brt51"]%>">
 			<option value="_">一般</option>
 			<option value="M">M_大陸案</option>

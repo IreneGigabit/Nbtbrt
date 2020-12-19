@@ -330,7 +330,7 @@
 			        <input type="text" name="qryuse_datee" size=11 maxlength=10 value="<%=qryuse_datee%>" class="dateField">
 			        &nbsp;&nbsp;&nbsp;&nbsp;◎本所編號：
 			        <INPUT type="text" name="qryseq" size="20" maxlength="20" value="<%=qryseq%>">-
-			        <INPUT type="text" name="qryseq1" size="1" maxlength="1" value="<%=qryseq1%>">
+			        <INPUT type="text" name="qryseq1" size="<%=Sys.DmtSeq1%>" maxlength="<%=Sys.DmtSeq1%>" value="<%=qryseq1%>">
 			        <input type=button class="cbutton <%#Lock.TryGet("Qdisabled")%>" id="btnseqQ" name="btnseqQ" value="查詢">
 		        </td>
             </TR>
