@@ -130,9 +130,8 @@ function chkNum(pValue, pmsg) {
             alert(pmsg + "必須為數值!!!");
             return true;
         }
-    } else {
-        return false;
     }
+    return false;
 }
 
 function chkNum1(pObj, pmsg) {
@@ -142,9 +141,8 @@ function chkNum1(pObj, pmsg) {
             pObj.focus();
             return true;
         }
-    } else {
-        return false;
     }
+    return false;
 }
 
 function chkRadio(pFieldName, pmsg){
@@ -157,7 +155,7 @@ function chkRadio(pFieldName, pmsg){
 }
 
 //內商申請號與註冊號之不足位數補0
-function chkgno(pvalue,plen){
+function chkgno(pvalue, plen) {
     pvalue = pvalue.trim();//2012/12/12修改，因發現輸入有空白，所以trim掉後補足
     if (pvalue == "") return "";
     return padLeft(pvalue,plen,"0");//左邊補0
@@ -169,7 +167,7 @@ function chk_dmt_applyno(pobject,plen){
     var pvalue=pobject.value;
     
     if (chkNum(pvalue,"申請號")) return false;
-    if (fDataLenX(pvalue, plen, "申請號")) return false;
+    if (fDataLenX(pvalue, plen, "申請號")=="") return false;
     var tno=chkgno(pvalue,plen);
     pobject.value=tno;
 }
@@ -179,7 +177,7 @@ function chk_dmt_issueno(pobject, plen) {
     var pvalue = pobject.value;
 
     if (chkNum(pvalue, "註冊號")) return false;
-    if (fDataLenX(pvalue, plen, "註冊號")) return false;
+    if (fDataLenX(pvalue, plen, "註冊號") == "") return false;
     var tno = chkgno(pvalue, plen);
     pobject.value = tno;
 }
@@ -189,7 +187,7 @@ function chk_dmt_rejno(pobject, plen) {
     var pvalue = pobject.value;
 
     if (chkNum(pvalue, "核駁號")) return false;
-    if (fDataLenX(pvalue, plen, "核駁號")) return false;
+    if (fDataLenX(pvalue, plen, "核駁號") == "") return false;
     var tno = chkgno(pvalue, plen);
     pobject.value = tno;
 }

@@ -104,7 +104,6 @@
         msg = "新增完成！";
         strOut.AppendLine("alert('" + msg + "');");
         if (Request["chkTest"] != "TEST") strOut.AppendLine("window.parent.parent.Etop.goSearch();");
-        if (Request["chkTest"] != "TEST") strOut.AppendLine("window.parent.location.reload();");
     }
 
     private void doUpdate(DBHelper cnn) {

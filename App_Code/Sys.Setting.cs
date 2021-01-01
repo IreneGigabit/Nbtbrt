@@ -20,14 +20,14 @@ public partial class Sys
     /// <summary>
     /// 國內案案號長度
     /// </summary>
-    public static string DmtSeq = "5";
-    public static string DmtSeq1 = "1";
+    public static int DmtSeq = 5;
+    public static int DmtSeq1 = 1;
 
     /// <summary>
     /// 出口案案號長度
     /// </summary>
-    public static string ExtSeq = "5";
-    public static string ExtSeq1 = "1";
+    public static int ExtSeq = 5;
+    public static int ExtSeq1 = 1;
 
     /// <summary>
     /// 聖島人主機

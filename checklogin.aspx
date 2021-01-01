@@ -1,6 +1,8 @@
 ﻿<%@Page Language="C#" CodePage="65001"%>
 <%@Import Namespace = "System.Text"%>
 <%@Import Namespace = "System.Data.SqlClient"%>
+<%@ Import Namespace = "System.Data" %>
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <script runat="server">
 
@@ -69,6 +71,21 @@
                     Session["LoginGrp"] = dr["LoginGrp"].ToString();
                     Session["GrpName"] = dr["GrpName"].ToString();
                     dr.Close();
+
+                    SQL = "select b.grpid,b.grplevel from scode_group a ";
+                    SQL += "inner join grpid b on b.grpclass=a.grpclass and b.grpid=a.grpid ";
+                    SQL += " and (substring(b.grpid,1,1)='" +Session["Dept"] +"' or substring(b.grpid,1,3)='000') ";
+                    SQL += " where a.scode='" + Session["scode"] + "' and a.grpclass='" + Session["SeBranch"] + "' ";
+                    DataTable dt = new DataTable();
+                    conn.DataTable(SQL,dt);
+                    for (int i = 0; i < dt.Rows.Count; i++) {
+                        Session["se_grpid"] = dt.Rows[i].SafeRead("grpid", "");
+                        Session["se_grplevel"] = dt.Rows[i].SafeRead("grplevel", "0");
+                        if (Convert.ToInt32(dt.Rows[i].SafeRead("grplevel", "0")) < Convert.ToInt32(Sys.GetSession("se_grplevel"))) {
+                            Session["se_grpid"] = dt.Rows[i].SafeRead("grpid", "");
+                            Session["se_grplevel"] = dt.Rows[i].SafeRead("grplevel", "0");
+                        }
+                    }
 
                     SQL = "select branchname from branch_code where branch='" + Session["SeBranch"] + "'";
                     Session["SeBranchName"] = conn.ExecuteScalar(SQL) ?? "";

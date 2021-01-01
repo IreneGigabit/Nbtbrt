@@ -89,7 +89,7 @@
         SQL = "select sc_name from scode where scode='" + mSC_code + "'";
         object objResult = cnn.ExecuteScalar(SQL);
         mSC_name = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-        DataTable dtSign = Sys.getSignMaster(Sys.GetSession("SeBranch"), se_Grpid, Sys.GetSession("Scode"), mSC_code);
+        DataTable dtSign = Sys.getSignList(Sys.GetSession("SeBranch"), se_Grpid, Sys.GetSession("Scode"), mSC_code);
         selSign = dtSign.Option("{master_scode}", "{master_type}---{master_scodenm}", false);
 
     }

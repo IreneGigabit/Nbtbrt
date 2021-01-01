@@ -17,6 +17,7 @@
     protected string att_sql = "";
     protected string branch = "";
     protected string type = "";
+    protected string all = "";
 
     DBHelper connbr = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
@@ -29,6 +30,7 @@
         att_sql = (Request["att_sql"] ?? "");
         branch = (Request["branch"] ?? "");
         type = (Request["type"] ?? "");
+        all = (Request["all"] ?? "");
 
         connbr = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         if (type == "brtran") {
@@ -39,10 +41,10 @@
         SQL += "from custz_att ";
         //2014/2/19依李協理2013/12/30Email修改，增加排除離職及職務移轉,只抓取狀態正常或空白
         SQL += "where (att_code like 'N%' or att_code='' or att_code is null) ";
-        SQL += "and (dept='T' or dept is null) ";
-        if (cust_area != "") SQL += " and cust_area='" + cust_area + "'";
-        if (cust_seq != "") SQL += " and cust_seq='" + cust_seq + "'";
-        if (att_sql != "") SQL += " and att_sql='" + att_sql + "'";
+        if (all != "Y") SQL += "and (dept='T' or dept is null) ";
+        if (cust_area != "") SQL += "and cust_area='" + cust_area + "' ";
+        if (cust_seq != "") SQL += "and cust_seq='" + cust_seq + "' ";
+        if (att_sql != "") SQL += "and att_sql='" + att_sql + "' ";
         DataTable dt = new DataTable();
         connbr.DataTable(SQL, dt);
 

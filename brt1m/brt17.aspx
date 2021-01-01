@@ -42,7 +42,7 @@
 
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             //抓取組主管所屬營洽
-            string sales_scode = Sys.getScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
+            string sales_scode = Sys.getTeamScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
 
             //洽案營洽清單
             DataTable dt = new DataTable();
@@ -249,6 +249,7 @@
         $("#tfx_Cust_area").val("<%#Session["sebranch"]%>");
         $("#Sfx_in_date").val((new Date()).format("yyyy/M/1"));
         $("#Efx_in_date").val(Today().format("yyyy/M/d"));
+        $("input.dateField").datepick();
     }
 
     //[查詢]

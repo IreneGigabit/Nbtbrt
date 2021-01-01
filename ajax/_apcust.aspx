@@ -14,14 +14,18 @@
 
     protected string in_no = "";
     protected string apcust_no = "";
+    protected string cust_area = "";
+    protected string cust_seq = "";
 
     protected void Page_Load(object sender, EventArgs e) {
         in_no = (Request["in_no"] ?? "").Trim();
         apcust_no = (Request["apcust_no"] ?? "").Trim();
+        cust_area = (Request["cust_area"] ?? "").Trim();
+        cust_seq = (Request["cust_seq"] ?? "").Trim();
 
         DataTable dt_apcust = new DataTable();
         if (in_no == "") {
-            GetApCust(ref dt_apcust, apcust_no);//申請人檔
+            GetApCust(ref dt_apcust);//申請人檔
         } else {
             GetDmtTempAp(ref dt_apcust, in_no);//交辦申請人檔
         }
@@ -37,11 +41,15 @@
     }
 
     #region GetApCust 申請人檔
-    private void GetApCust(ref DataTable dt, string apcust_no) {
+    private void GetApCust(ref DataTable dt) {
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             SQL = "select *,'N'Server_flag,0 Ap_sql ";
             SQL += "from apcust ";
-            SQL += "where apcust_no='" + apcust_no + "' ";
+            SQL += "where 1=1 ";
+            if (apcust_no != "") SQL += "and apcust_no='" + apcust_no + "' ";
+            if (cust_area != "") SQL += "and cust_area='" + cust_area + "' ";
+            if (cust_seq != "") SQL += "and cust_seq='" + cust_seq + "' ";
+            SQL += "order by apsqlno ";
             conn.DataTable(SQL, dt);
         }
     }
@@ -60,6 +68,7 @@
             SQL += " From dmt_temp_ap as d  ";
             SQL += " inner join apcust as a on d.apsqlno=a.apsqlno ";
             SQL += " Where d.in_no = '" + in_no + "' and d.case_sqlno=0 ";
+            SQL += " order by d.ap_sort,temp_ap_sqlno ";
             conn.DataTable(SQL, dt);
 
             for (int i = 0; i < dt.Rows.Count; i++) {

@@ -46,7 +46,7 @@
         tradeUrl = "http://" + Sys.SIServer + "/Tparea/checklogin.asp?tfx_scode=" + Session["se_scode"] + "&sys_pwd=" + Session["SeSysPwd"] + "&toppage=0&syscode=Tparea&stat=Y";
 
         //抓取組主管所屬營洽
-        sales_scode = Sys.getScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
+        sales_scode = Sys.getTeamScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
 
         if (Sys.Host.Left(3) != "web" && Sys.Host.IndexOf("localhost") >-1) {
             feesctrlMail();//規費提列不足管制過期未銷管Email通知主管,正式環境才執行
@@ -91,7 +91,7 @@
                 conn.DataTable(SQL, dtDmt);
                 for (int i = 0; i < dtDmt.Rows.Count; i++) {
                     //組案號
-                    dtDmt.Rows[i]["fseq"] = dtDmt.Rows[i].SafeRead("Branch", "") + Sys.GetSession("dept") + dtDmt.Rows[i].SafeRead("seq", "");
+                    dtDmt.Rows[i]["fseq"] = dtDmt.Rows[i].SafeRead("Branch", "") + Sys.GetSession("dept").ToUpper() + dtDmt.Rows[i].SafeRead("seq", "");
                     if (dtDmt.Rows[i].SafeRead("seq1", "") != "_" && dtDmt.Rows[i].SafeRead("seq1", "") != "")
                         dtDmt.Rows[i]["fseq"] += "-" + dtDmt.Rows[i].SafeRead("seq1", "");
 
@@ -153,7 +153,7 @@
                 conn.DataTable(SQL, dtGsDmt);
                 for (int i = 0; i < dtGsDmt.Rows.Count; i++) {
                     //組案號
-                    dtGsDmt.Rows[i]["fseq"] = Sys.GetSession("seBranch") + Sys.GetSession("dept") + dtGsDmt.Rows[i].SafeRead("seq", "");
+                    dtGsDmt.Rows[i]["fseq"] = Sys.GetSession("seBranch") + Sys.GetSession("dept").ToUpper() + dtGsDmt.Rows[i].SafeRead("seq", "");
                     if (dtGsDmt.Rows[i].SafeRead("seq1", "") != "_" && dtGsDmt.Rows[i].SafeRead("seq1", "") != "")
                         dtGsDmt.Rows[i]["fseq"] += "-" + dtGsDmt.Rows[i].SafeRead("seq1", "");
 
@@ -200,7 +200,7 @@
                 conn.DataTable(SQL, dtExt);
                 for (int i = 0; i < dtExt.Rows.Count; i++) {
                     //組案號
-                    dtExt.Rows[i]["fseq"] = dtExt.Rows[i].SafeRead("Branch", "") + Sys.GetSession("dept") + "E" + dtExt.Rows[i].SafeRead("seq", "");
+                    dtExt.Rows[i]["fseq"] = dtExt.Rows[i].SafeRead("Branch", "") + Sys.GetSession("dept").ToUpper() + "E" + dtExt.Rows[i].SafeRead("seq", "");
                     if (dtExt.Rows[i].SafeRead("seq1", "") != "_" && dtExt.Rows[i].SafeRead("seq1", "") != "")
                         dtExt.Rows[i]["fseq"] += "-" + dtExt.Rows[i].SafeRead("seq1", "");
 
@@ -276,7 +276,7 @@
                 conn.DataTable(SQL, dtGsExt);
                 for (int i = 0; i < dtGsExt.Rows.Count; i++) {
                     //組案號
-                    dtGsExt.Rows[i]["fseq"] = Sys.GetSession("seBranch") + Sys.GetSession("dept") + "E" + dtGsExt.Rows[i].SafeRead("bseq", "");
+                    dtGsExt.Rows[i]["fseq"] = Sys.GetSession("seBranch") + Sys.GetSession("dept").ToUpper() + "E" + dtGsExt.Rows[i].SafeRead("bseq", "");
                     if (dtGsExt.Rows[i].SafeRead("bseq1", "") != "_" && dtGsExt.Rows[i].SafeRead("bseq1", "") != "")
                         dtGsExt.Rows[i]["fseq"] += "-" + dtGsExt.Rows[i].SafeRead("bseq1", "");
 

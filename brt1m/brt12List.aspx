@@ -24,7 +24,7 @@
     protected string submitTask = "";
 
     protected string nToSelect = "";//特殊處理鎖定
-    protected string nToText = "Lock";//特殊處理指定人員鎖定
+    protected string nToText = "Lock";//特殊處理指定薪號鎖定
     protected string se_Grpid = "";//營洽所屬grpid
     protected string mSC_code = "";//直屬主管
     protected string mSC_name = "";//直屬主管名稱
@@ -66,6 +66,7 @@
         StrFormBtnTop += "<a href=\"javascript:window.history.back()\" >[回上頁]</a>";
 
         //簽核用
+        /*
         SQL = "SELECT GrpID.Master_scode AS Mscode1, GrpID_1.Master_scode AS Mscode2, scode_group.GrpID,scode_group.grptype ";
         SQL += "FROM scode_group ";
         SQL += "INNER JOIN GrpID ON scode_group.GrpClass = GrpID.GrpClass AND scode_group.GrpID = GrpID.GrpID ";
@@ -85,13 +86,22 @@
                 }
             }
         }
+        */
 
+        //簽核用20201229修改邏輯,防自己交辦自己簽
+        if ((HTProgRight & 256) != 0) nToText = "";//特殊簽核指定薪號
+        se_Grpid = Sys.getScodeGrpid(Sys.GetSession("SeBranch"), Request["tscode"]);
+        mSC_code = Sys.getSignMaster(Sys.GetSession("SeBranch"), Request["tscode"]);
+        string mSC_code1 = Sys.getSignMaster(Sys.GetSession("SeBranch"), Request["tscode"],false);
+        if (Request["tscode"] == mSC_code1) {//營洽=直屬主管
+            nToSelect = "Lock";
+        }
+        
         SQL = "select sc_name from scode where scode='" + mSC_code + "'";
         object objResult = cnn.ExecuteScalar(SQL);
         mSC_name = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-        DataTable dtSign = Sys.getSignMaster(Sys.GetSession("SeBranch"), se_Grpid, Sys.GetSession("Scode"), mSC_code);
+        DataTable dtSign = Sys.getSignList(Sys.GetSession("SeBranch"), se_Grpid, Sys.GetSession("Scode"), mSC_code);
         selSign = dtSign.Option("{master_scode}", "{master_type}---{master_scodenm}", false);
-
     }
 
     private void QueryData() {
@@ -322,7 +332,9 @@
 <link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/inc/setstyle.css")%>" />
 <link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.css")%>" />
 <link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/toastr.css")%>" />
+<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.css")%>" />
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-1.12.4.min.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
@@ -382,6 +394,7 @@
 <input type=text id=in_no1 name=in_no1>
 <input type=text id=in_scode1 name=in_scode1>
 <input type=text id=C1 name=C1 value="Y"> 
+<input type=text id=row name=row value="<%#page.pagedTable.Rows.Count%>"> 
 
 <asp:Repeater id="dataRepeater" runat="server">
 <HeaderTemplate>
@@ -677,11 +690,11 @@
                 return false;
             }
         }
-
+        //***todo
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
         var formData = new FormData($('#reg')[0]);
         $.ajax({
-            url:'<%=HTProgPrefix%>_Update.aspx',
+            url:'<%=HTProgPrefix%>_Update.aspx?qs_proid=<%#prgid%>',
             type : "POST",
             data : formData,
             contentType: false,
@@ -691,9 +704,22 @@
                 $("#dialog").html("<div align='center'><h1>存檔中...</h1></div>");
                 $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 800,buttons:[] });
             },
-            //success: function (data) { main.onSuccess(data); },
-            //error: function (xhr, status, errMsg) { main.onError(xhr, status, errMsg); },
-            complete: function (xhr,status) { main.onComplete(xhr,status); }
+            complete: function (xhr, status) {
+                $("#dialog").html(xhr.responseText);
+                $("#dialog").dialog({
+                    title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
+                    ,buttons: {
+                        確定: function() {
+                            $(this).dialog("close");
+                        }
+                    }
+                    ,close:function(event, ui){
+                        if(status=="success"){
+                            window.location.href="<%=HTProgPrefix%>.aspx?prgid=<%#prgid%>"
+                        }
+                    }
+                });
+            }
         });
     }
 </script>

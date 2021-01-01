@@ -46,7 +46,7 @@
 
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             //抓取組主管所屬營洽
-            string sales_scode = Sys.getScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
+            string sales_scode = Sys.getTeamScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
 
             //洽案營洽清單
             DataTable dt = new DataTable();

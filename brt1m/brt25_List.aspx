@@ -75,7 +75,7 @@
         }
 
         //抓取組主管所屬營洽
-        sales_scode = Sys.getScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
+        sales_scode = Sys.getTeamScode(Sys.GetSession("SeBranch"), Sys.GetSession("scode"));
 
         //洽案營洽清單
         DataTable dt = new DataTable();
@@ -439,6 +439,7 @@
         if (window.parent.tt !== undefined) {
             window.parent.tt.rows = "100%,0%";
         }
+        $("input.dateField").datepick();
     }
 
     //[查詢]

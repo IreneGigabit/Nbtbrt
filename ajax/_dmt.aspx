@@ -124,8 +124,11 @@
                     if (dr.SafeRead("con_term", "").Trim() != "") dt.Rows[0]["con_termnm"] = "是";
                 }
             }
-            dt.Rows[0]["dmt_draw"] = Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("dmt_draw", ""));
             dt.Rows[0]["end_codenm"] = getCodeName("ENDCODE", dt.Rows[0].SafeRead("end_code", ""));
+            //brt51客收確認，移轉案傳入結案原因012_已另案移轉
+            if(prgid=="brt51"&&Request["end_type"]!=""){
+                dt.Rows[0]["end_type"] = Request["end_type"].ToString();
+            }
         }
         
         return dt;
@@ -138,6 +141,16 @@
         SQL = "SELECT * FROM ndmt ";
         SQL += " WHERE seq='" + seq + "' and seq1='" + seq1 + "'";
         connbr.DataTable(SQL, dt);
+        
+        if (dt.Rows.Count > 0) {
+            dt.Rows[0]["draw_file"] = Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("draw_file", ""));
+
+            if (prgid == "brta24") {//官收確認
+                dt.Rows[0]["in_no"] = "";
+                dt.Rows[0]["in_scode"] = "";
+            }
+        }
+        
         return dt;
     }
     #endregion
@@ -147,6 +160,11 @@
         DataTable dt = new DataTable();
         SQL = "select * from dmt_good where seq='" + seq + "' and seq1='" + seq1 + "' order by cast(class as int)";
         connbr.DataTable(SQL, dt);
+
+        for (int i = 0; i < dt.Rows.Count; i++) {
+            dt.Rows[i]["class"] = dt.Rows[i].SafeRead("class", "").PadLeft(2, '0');
+        }
+        
         return dt;
     }
     #endregion
@@ -156,6 +174,7 @@
         DataTable dt = new DataTable();
         SQL = "select * from dmt_show where seq='" + seq + "' and seq1='" + seq1 + "' order by show_sqlno";
         connbr.DataTable(SQL, dt);
+
         return dt;
     }
     #endregion
@@ -169,7 +188,7 @@
         SQL += "From dmt_ap a ";
         SQL += "inner join apcust b on a.apsqlno=b.apsqlno ";
         SQL += "WHERE seq='" + seq + "' and seq1='" + seq1 + "' ";
-        SQL += "order by dmt_ap_sqlno";
+        SQL += "order by ap_sort,dmt_ap_sqlno";
 
         connbr.DataTable(SQL, dt);
         return dt;

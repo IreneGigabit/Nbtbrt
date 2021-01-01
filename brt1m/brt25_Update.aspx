@@ -101,8 +101,8 @@
 
                     if (send_acc_mail == "Y") CreateMail(conn);
 
-                    //conn.Commit();
-                    conn.RollBack();
+                    conn.Commit();
+                    //conn.RollBack();
                     strOut.AppendLine("<div align='center'><h1>契約書後補作業-入檔成功</h1></div>");
                 }
             }

@@ -314,7 +314,7 @@ public class IPOReport : OpenXmlHelper {
 		SQL += " INNER JOIN apcust b ON a.apsqlno=b.apsqlno";
 		SQL += " WHERE a.in_no = '" + _in_no + "' ";
 		SQL += " and a.case_sqlno=" + (_case_sqlno == "" ? "0" : _case_sqlno) + " ";
-		SQL += " order by a.server_flag desc,a.temp_ap_sqlno ";
+        SQL += " order by a.ap_sort,a.server_flag desc,a.temp_ap_sqlno ";
 		DataTable dt = new DataTable();
 		_conn.DataTable(SQL, dt);
 

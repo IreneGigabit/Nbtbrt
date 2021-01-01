@@ -120,7 +120,7 @@ public class UpLoaded : IHttpHandler, IRequiresSessionState
                 attach_flag_value = "AR";
             }
             if (fi.Exists) {
-                string File_name_new = String.Format("{0}_{1}{2}", ee, DateTime.Now.ToString("yyyyMMddHHmmss"), sExt);
+                string File_name_new = String.Format("{0}_{1}_{2}{3}", ee, DateTime.Now.ToString("yyyyMMddHHmmss"), Sys.GetSession("scode"), sExt);
                 fi.MoveTo(context.Server.MapPath(file_path + "/" + File_name_new));
                 msg = "此檔案已存在！已覆蓋檔案！";
             }
@@ -147,8 +147,14 @@ public class UpLoaded : IHttpHandler, IRequiresSessionState
                 }
             } else if (type == "brdb_file") {//英文invoice,檔名命名規則：E+branch+dept+ar_no副檔名為使用者上傳
                 if (fi.Exists) {
-                    string File_name_new = String.Format("{0}_{1}{2}", ee, DateTime.Now.ToString("yyyyMMddHHmmss"), sExt);
+                    string File_name_new = String.Format("{0}_{1}_{2}{3}", ee, DateTime.Now.ToString("yyyyMMddHHmmss"), Sys.GetSession("scode"), sExt);
                     fi.MoveTo(context.Server.MapPath(file_path + "/" + File_name_new));
+                }
+            } else if (type == "dmt_photo") {//商標圖檔
+                if (fi.Exists) {
+                    string File_name_new = String.Format("{0}_{1}_{2}{3}", ee, DateTime.Now.ToString("yyyyMMddHHmmss"),Sys.GetSession("scode"), sExt);
+                    fi.MoveTo(context.Server.MapPath(file_path + "/" + File_name_new));
+                    msg = "此檔案已存在！已覆蓋檔案！";
                 }
             } else {
                 //如果存在的話原來的要備份起來,備份規則：檔名_年月日時分秒

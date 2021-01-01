@@ -96,7 +96,6 @@
         var tagt_name="";
         var tselectedindex=$(this)[0].selectedIndex;
         if(tselectedindex>0){
-            //2016/3/17修改，因出名代理人增加顯示代碼，所以抓取A19_後名稱
             //2020/6/19修改，改抓agt.agt_name1,不用文字切割
             tagt_name=$("#tfzf_agt_no1 option:selected").attr("v1");
         }

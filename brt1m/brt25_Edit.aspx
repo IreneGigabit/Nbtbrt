@@ -8,7 +8,7 @@
 
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內案契約書後補作業";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt25";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼

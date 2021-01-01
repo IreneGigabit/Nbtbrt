@@ -152,7 +152,10 @@
     file.onSuccess = function (data) {
         if (data.msg != "") {
             alert(data.msg);
-            return false;
+
+            if (data.msg.indexOf("已覆蓋檔案") == -1) {
+                return false;
+            }
         }
 
         if ("<%=ReqVal.TryGet("form_name")%>".length > 0)

@@ -23,7 +23,7 @@
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
         TokenN myToken = new TokenN(HTProgCode);
-        myToken.CheckMe(false, true);
+        myToken.CheckMe(false);
         if (HTProgRight >= 0) {
             QueryData();
             this.DataBind();

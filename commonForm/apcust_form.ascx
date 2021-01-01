@@ -72,8 +72,12 @@
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>申請人國籍：</TD>
-		<TD class=sfont9 colspan=3>
+		<TD class=sfont9>
             <select id="ap_country_##" name="ap_country_##" class="Lock"><%#ap_country%></select>
+		</TD>
+		<TD class=lightbluetable align=right>排序：</TD>
+		<TD class=sfont9>
+			<input type=text id="ap_sort_##" name="ap_sort_##" size=2 maxlength=2>
 		</TD>
 	</TR>
 	<TR>
@@ -223,6 +227,7 @@
                     $("#apclass_" + nRow).val(item.apclass);
                     $("#apcust_no_" + nRow).val(item.apcust_no);
                     $("#ap_country_" + nRow).val(item.ap_country);
+                    $("#ap_sort_" + nRow).val(item.ap_sort);
                     $("#ap_cname1_" + nRow).val(item.ap_cname1);
                     $("#ap_cname2_" + nRow).val(item.ap_cname2);
                     $("#ap_cname_" + nRow).val(item.ap_cname1 + item.ap_cname2);
