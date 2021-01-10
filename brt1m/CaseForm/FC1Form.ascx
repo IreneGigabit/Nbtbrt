@@ -169,8 +169,8 @@
             $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);
             //商標種類
             $("input[name=fr_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
-            //$("#new_no11").val(jMain.case_main[0].apply_no);//申請案號
-            //$("#ncname111").val(jMain.case_main[0].appl_name);//商標名稱
+            $("#new_no11").val(jMain.case_main[0].apply_no);//申請案號
+            $("#ncname111").val(jMain.case_main[0].appl_name);//商標名稱
             //變更事項
             var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"];
             for (var m in arr_mod) {

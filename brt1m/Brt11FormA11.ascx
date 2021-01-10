@@ -252,7 +252,7 @@
             $("#Fees").val(jMain.case_main[0].p_fees);
             //折扣率
             $("#nfy_Discount").val(jMain.case_main[0].discount);
-            $("#Discount").val(jMain.case_main[0].discount);
+            $("#Discount").val(jMain.case_main[0].discount + "%");
             $("#tfy_dicount_remark").val(jMain.case_main[0].discount_remark);//***折扣理由
 
             //***折扣低於8折顯示折扣理由

@@ -869,7 +869,7 @@ function chkseqdata(low_no, low_no1) {
             }
         },
         error: function (xhr) {
-            $("#dialog").html(xhr.responseText);
+            $("#dialog").html("<a href='" + this.url + "' target='_new'>檢查有無結案進行中失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
             $("#dialog").dialog({ title: '檢查有無結案進行中失敗！', modal: true, maxHeight: 500, width: "90%" });
         }
     });
@@ -898,7 +898,7 @@ function chkcustdata(low_no, low_no1) {
             }
         },
         error: function (xhr) {
-            $("#dialog").html(xhr.responseText);
+            $("#dialog").html("<a href='" + this.url + "' target='_new'>檢查有無結案進行中失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
             $("#dialog").dialog({ title: '檢查有無結案進行中失敗！', modal: true, maxHeight: 500, width: "90%" });
         }
     });

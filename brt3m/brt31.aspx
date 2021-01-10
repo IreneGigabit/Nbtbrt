@@ -7,7 +7,7 @@
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt31";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//程式代碼
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
     protected string StrFormBtnTop = "";
@@ -164,10 +164,9 @@
 </table>
 
 <form id="regPage" name="regPage" method="post">
-    <input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
-    <input type="hidden" id=dept name=dept value=<%=qs_dept%>>
-    <input type="hidden" id=qs_dept name=qs_dept value=<%=qs_dept%>>
-
+    <input type="text" id="prgid" name="prgid" value="<%=prgid%>">
+    <input type="text" id=dept name=dept value=<%=qs_dept%>>
+    <input type="text" id=qs_dept name=qs_dept value=<%=qs_dept%>>
     <div id="id-div-slide">
         <table id="qryForm" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="70%" align="center">	
             <tr>
@@ -263,11 +262,6 @@
             cache: false,
             data: $("#regPage").serialize(),
             success: function (html) {
-                if ($("#chkTest").prop("checked")) {
-                    $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + html);
-                    $("#dialog").dialog({ title: 'Debug！', modal: true, maxHeight: 500, width: "90%" });
-                    return false;
-                }
                 $("#id-div-slide").slideUp("fast");
 
                 $("#divList").html(html);

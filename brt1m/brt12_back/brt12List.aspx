@@ -9,7 +9,7 @@
     protected string HTProgCap = "國內案編修暨交辦作業";// HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt12";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//程式代碼
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
 
@@ -90,7 +90,7 @@
         object objResult = cnn.ExecuteScalar(SQL);
         mSC_name = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
         DataTable dtSign = Sys.getSignList(Sys.GetSession("SeBranch"), se_Grpid, Sys.GetSession("Scode"), mSC_code);
-        selSign = dtSign.Option("{master_scode}", "{master_type}---{master_scodenm}", false);
+        selSign = dtSign.Option("{master_scode}", "{master_type}---{Master_nm}", false);
 
     }
 

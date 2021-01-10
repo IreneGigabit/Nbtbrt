@@ -45,6 +45,15 @@ A
     color: #000088;
     text-decoration: none
 }
+.txtlink:not( :hover )
+{
+    COLOR: darkred;
+}
+.txtlink:hover
+{
+    CURSOR: pointer;
+    COLOR: red;
+}
 a img { border: none; }
 hr
 {

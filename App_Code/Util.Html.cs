@@ -138,35 +138,54 @@ public static partial class Util
 	/// <param name="showEmpty">空白選項的顯示字串</param>
 	/// <returns></returns>
 	public static string Option(this DataTable dt, string valueFormat, string textFormat, string attrFormat, bool showEmpty) {
-		Regex rgx = new Regex("{([^{}]+)}", RegexOptions.IgnoreCase);
-		string rtnStr = "";
+        return Option(dt, valueFormat, textFormat, attrFormat, showEmpty, "");
+    }
+    /// <summary>
+    /// 產生Option字串
+    /// </summary> 
+    /// <param name="valueFormat">option的value格式用{}包住欄位,ex:{scode}</param>
+    /// <param name="textFormat">option的文字格式用{}包住欄位,ex:{scode}_{sc_name}</param>
+    /// <param name="attrFormat">option的attribute格式用{}包住欄位,ex:value1='{scode1}'</param>
+    /// <param name="showEmpty">空白選項的顯示字串</param>
+    /// <param name="selectedCond">預設欄位條件,ex:scode=n1262</param>
+    /// <returns></returns>
+    public static string Option(this DataTable dt, string valueFormat, string textFormat, string attrFormat, bool showEmpty, string selectedCondition) {
+        Regex rgx = new Regex("{([^{}]+)}", RegexOptions.IgnoreCase);
+        string rtnStr = "";
 
-		//處理空白選項
-		if (showEmpty)
-			rtnStr += "<option value='' style='color:blue' selected>請選擇</option>\n";
+        //處理空白選項
+        if (showEmpty)
+            rtnStr += "<option value='' style='color:blue' selected>請選擇</option>\n";
 
-		for (int r = 0; r < dt.Rows.Count; r++) {
-			//處理value
-			string val = valueFormat;
-			foreach (Match match in rgx.Matches(valueFormat)) {
-				val = val.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
-			}
+        for (int r = 0; r < dt.Rows.Count; r++) {
+            //處理selected
+            string selected = "";
+            string[] column = selectedCondition.Split('=');
+            if (dt.Columns.Contains(column[0]) && dt.Rows[r][column[0]].ToString() == column[1]) {
+                selected = " selected";
+            }
 
-			//處理text
-			string txt = textFormat;
-			foreach (Match match in rgx.Matches(textFormat)) {
-				txt = txt.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
-			}
+            //處理value
+            string val = valueFormat;
+            foreach (Match match in rgx.Matches(valueFormat)) {
+                val = val.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
+            }
 
-			//處理attribute
-			string attr = attrFormat;
-			foreach (Match match in rgx.Matches(attrFormat)) {
-				attr = attr.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
-			}
-			rtnStr += "<option value='" + val + "' " + attr + ">" + txt + "</option>\n";
-		}
-		return rtnStr;
-	}
+            //處理text
+            string txt = textFormat;
+            foreach (Match match in rgx.Matches(textFormat)) {
+                txt = txt.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
+            }
+
+            //處理attribute
+            string attr = attrFormat;
+            foreach (Match match in rgx.Matches(attrFormat)) {
+                attr = attr.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
+            }
+            rtnStr += "<option value='" + val + "' " + attr + "" + selected + ">" + txt + "</option>\n";
+        }
+        return rtnStr;
+    }
 	#endregion
 
 	#region 產生Radio字串 +static string Radio(DBHelper)

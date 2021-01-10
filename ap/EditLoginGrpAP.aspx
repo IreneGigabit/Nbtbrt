@@ -7,7 +7,7 @@
     protected string HTProgCap = "編修群組功能權限";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "EditLoginGrpAP";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//程式代碼
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
     protected string Title = "";

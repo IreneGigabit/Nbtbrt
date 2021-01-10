@@ -1129,7 +1129,7 @@
             $("#Fees").val(jMain.case_main[0].p_fees);
             //折扣率
             $("#nfy_Discount").val(jMain.case_main[0].discount);
-            $("#Discount").val(jMain.case_main[0].discount);
+            $("#Discount").val(jMain.case_main[0].discount+"%");
             $("#tfy_dicount_remark").val(jMain.case_main[0].discount_remark);//***折扣理由
 
             //***折扣低於8折顯示折扣理由
@@ -1333,8 +1333,8 @@
             $("#tfzd_rej_no,#O_rej_no").val(jMain.case_main[0].rej_no);//核駁號
             $("#tfzd_end_date").val(dateReviver(jMain.case_main[0].end_date, "yyyy/M/d"));//結案日期
             $("#tfzy_end_code,#tfzd_end_code").val(jMain.case_main[0].end_code);//結案代碼
-            $("#tfzd_dmt_term1").val(dateReviver(jMain.case_main[0].term1, "yyyy/M/d"));//專用期限
-            $("#tfzd_dmt_term2").val(dateReviver(jMain.case_main[0].term2, "yyyy/M/d"));//專用期限
+            $("#tfzd_dmt_term1").val(dateReviver(jMain.case_main[0].dmt_term1, "yyyy/M/d"));//專用期限
+            $("#tfzd_dmt_term2").val(dateReviver(jMain.case_main[0].dmt_term2, "yyyy/M/d"));//專用期限
             $("#tfzd_renewal").val(jMain.case_main[0].renewal);//延展次數
 
             //**類別種類

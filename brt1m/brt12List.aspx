@@ -9,7 +9,7 @@
     protected string HTProgCap = "國內案編修暨交辦作業";// HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt12";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//程式代碼
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
 
@@ -26,6 +26,7 @@
     protected string nToSelect = "";//特殊處理鎖定
     protected string nToText = "Lock";//特殊處理指定薪號鎖定
     protected string se_Grpid = "";//營洽所屬grpid
+    protected string se_Grplevel = "";//營洽所屬grplevel
     protected string mSC_code = "";//直屬主管
     protected string mSC_name = "";//直屬主管名稱
     protected string selSign = "";//特殊簽核清單
@@ -90,7 +91,7 @@
 
         //簽核用20201229修改邏輯,防自己交辦自己簽
         if ((HTProgRight & 256) != 0) nToText = "";//特殊簽核指定薪號
-        se_Grpid = Sys.getScodeGrpid(Sys.GetSession("SeBranch"), Request["tscode"]);
+        Sys.getScodeGrpid(Sys.GetSession("SeBranch"), Request["tscode"],ref se_Grpid,ref se_Grplevel);
         mSC_code = Sys.getSignMaster(Sys.GetSession("SeBranch"), Request["tscode"]);
         string mSC_code1 = Sys.getSignMaster(Sys.GetSession("SeBranch"), Request["tscode"],false);
         if (Request["tscode"] == mSC_code1) {//營洽=直屬主管
@@ -100,8 +101,8 @@
         SQL = "select sc_name from scode where scode='" + mSC_code + "'";
         object objResult = cnn.ExecuteScalar(SQL);
         mSC_name = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-        DataTable dtSign = Sys.getSignList(Sys.GetSession("SeBranch"), se_Grpid, Sys.GetSession("Scode"), mSC_code);
-        selSign = dtSign.Option("{master_scode}", "{master_type}---{master_scodenm}", false);
+        DataTable dtSign = Sys.getSignList(Sys.GetSession("SeBranch"), se_Grpid, Sys.GetSession("Scode"), mSC_code, "grplevel>0");
+        selSign = dtSign.Option("{master_scode}", "{master_type}---{Master_nm}", false);
     }
 
     private void QueryData() {
@@ -198,32 +199,32 @@
             page.pagedTable.Rows[i]["cust_name"] = page.pagedTable.Rows[i].SafeRead("cust_name", "").Left(5);
             page.pagedTable.Rows[i]["fseq"] = page.pagedTable.Rows[i].SafeRead("seq", "") + (page.pagedTable.Rows[i].SafeRead("seq1", "_") != "_" ? "-" + page.pagedTable.Rows[i].SafeRead("seq1", "") : "");
 
-            string new_form = "";//連結的aspx
-            SQL = "SELECT c.remark ";
-            SQL += "FROM Cust_code c ";
-            SQL += "inner join code_br b on b.rs_type=c.Code_type and b.rs_class=c.Cust_code ";
-            //SQL += "WHERE c.form_name is not null ";
-            SQL += "WHERE 1=1 ";
-            SQL += "and b.rs_type='" + page.pagedTable.Rows[i]["arcase_type"] + "' ";
-            SQL += "and b.rs_code='" + page.pagedTable.Rows[i]["arcase"] + "' ";
-            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                if (dr.Read()) {
-                    new_form += dr.SafeRead("remark", "");
-                }/* else {
-                    dr.Close();
-                    SQL = "SELECT c.remark ";
-                    SQL += "FROM Cust_code c ";
-                    SQL += "inner join code_br b on b.rs_type=c.Code_type and left(b.rs_class,1)=c.Cust_code ";
-                    SQL += "WHERE c.form_name is not null ";
-                    SQL += "and b.rs_type='" + page.pagedTable.Rows[i]["arcase_type"] + "' ";
-                    SQL += "and b.rs_code='" + page.pagedTable.Rows[i]["arcase"] + "' ";
-                    using (SqlDataReader dr1 = conn.ExecuteReader(SQL)) {
-                        if (dr1.Read()) {
-                            new_form += dr1.SafeRead("remark", "");
-                        }
-                    }
-                }*/
-            }
+            string new_form = Sys.getCaseDmtAspx(page.pagedTable.Rows[i].SafeRead("arcase_type", ""), page.pagedTable.Rows[i].SafeRead("arcase", ""));//連結的aspx
+            //SQL = "SELECT c.remark ";
+            //SQL += "FROM Cust_code c ";
+            //SQL += "inner join code_br b on b.rs_type=c.Code_type and b.rs_class=c.Cust_code ";
+            ////SQL += "WHERE c.form_name is not null ";
+            //SQL += "WHERE 1=1 ";
+            //SQL += "and b.rs_type='" + page.pagedTable.Rows[i]["arcase_type"] + "' ";
+            //SQL += "and b.rs_code='" + page.pagedTable.Rows[i]["arcase"] + "' ";
+            //using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+            //    if (dr.Read()) {
+            //        new_form = dr.SafeRead("remark", "");
+            //    }/* else {
+            //        dr.Close();
+            //        SQL = "SELECT c.remark ";
+            //        SQL += "FROM Cust_code c ";
+            //        SQL += "inner join code_br b on b.rs_type=c.Code_type and left(b.rs_class,1)=c.Cust_code ";
+            //        SQL += "WHERE c.form_name is not null ";
+            //        SQL += "and b.rs_type='" + page.pagedTable.Rows[i]["arcase_type"] + "' ";
+            //        SQL += "and b.rs_code='" + page.pagedTable.Rows[i]["arcase"] + "' ";
+            //        using (SqlDataReader dr1 = conn.ExecuteReader(SQL)) {
+            //            if (dr1.Read()) {
+            //                new_form += dr1.SafeRead("remark", "");
+            //            }
+            //        }
+            //    }*/
+            //}
             string ar_form = page.pagedTable.Rows[i].SafeRead("ar_form", "");//rs_class
             string prt_name = page.pagedTable.Rows[i].SafeRead("reportp", "");//列印程式
             bool FlagPrint = (prt_name != "" ? true : false);

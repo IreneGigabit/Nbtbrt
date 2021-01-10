@@ -16,7 +16,6 @@
 
         StringBuilder sb = new StringBuilder();
         string strChk = CheckUser();
-        //sb.AppendLine("alert(\"" + Session["Password"] + " !\");");
         if (strChk.Length > 0) {
             sb.AppendLine("alert(\"" + strChk + "\\n" + (Request["tfx_scode"] ?? "") + "\");");
             sb.AppendLine("top.location.href = \"login.aspx\";");
@@ -119,7 +118,7 @@
             Session["Password"] = false;
             Session.Abandon();
 
-            throw new Exception(exMsg, ex);
+            //throw new Exception(exMsg, ex);
         }
         finally
         {

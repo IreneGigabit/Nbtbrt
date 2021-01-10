@@ -110,8 +110,8 @@
         }
 
         if (prgid == "brta78") {
-            emg_scodelist = Sys.getRoleScode(Sys.GetSession("syscode"), "T", "mg_prorm1");//總管處程序組主管
-            emg_scodelist1 = Sys.getRoleScode(Sys.GetSession("syscode"), "T", "mg_pror");//總管處程序組主管
+            emg_scodelist = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), "T", "mg_prorm1");//總管處程序組主管
+            emg_scodelist1 = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), "T", "mg_pror");//總管處程序組主管
         }
 
         //代理人

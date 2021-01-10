@@ -9,7 +9,7 @@
     public int HTProgRight = 0;
 
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//程式代碼
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected string SQL = "";
 
     protected int MaxTaCount = 5;//附屬案性筆數上限

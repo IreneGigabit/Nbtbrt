@@ -10,6 +10,19 @@ using System.Web;
 /// </summary>  
 public partial class Sys
 {
+    #region showLog - 顯示除錯訊息
+    /// <summary>  
+    /// 顯示除錯訊息,有設定在web.config內DebugScode者才會顯示訊息
+    /// </summary>  
+    public static void showLog(string msg) {
+        if (IsDebug()) {
+            //if (HttpContext.Current.Request["chkTest"] == "TEST") {
+                HttpContext.Current.Response.Write(msg + "<hr>");
+            //}
+        }
+    }
+    #endregion
+
     #region getTeamScode - 抓取組主管所屬營洽
     /// <summary>  
     /// 抓取組主管所屬營洽
@@ -45,6 +58,10 @@ public partial class Sys
                 if (dr.Read()) {
                     grpid = dr.SafeRead("grpid","");
                     grplevel = dr.SafeRead("grplevel", "");
+                    if (dr.SafeRead("grpid", "") == "T000x") {//專商經理會抓錯grpid,要寫死
+                        grpid = "zzz";
+                        grplevel = "0";
+                    }
                 }
             }
         }
@@ -63,27 +80,28 @@ public partial class Sys
             if (grpId == "") {
                 SQL = "SELECT '" + grpClass + "' GrpClass,'A000'GrpID,'執委會'GrpName,convert(smallint,-1) GrpLevel,'N' GrpType ";
                 SQL += ",convert(char,null) work_type,''UpgrpID,a.scode Master_scode ";
-                SQL += ",(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,'執委'Remark ";
+                SQL += ",(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,''agent_nm,'執委'master_type ";
                 SQL += ",'Y'chkcode,0 Up_LEVEL,0 processed ";
                 SQL += "from scode_roles a ";
-                SQL += "inner join scode b on a.scode=b.scode ";
                 SQL += "WHERE a.syscode='" + Sys.GetSession("syscode") + "' ";
                 SQL += "and a.dept = '" + Sys.GetSession("dept") + "' ";
                 SQL += "AND a.roles ='chair' ";
             } else if (grpId == "zzz") {
                 SQL = "SELECT '" + grpClass + "' GrpClass,'zzz'GrpID,'專案室'GrpName,convert(smallint,0) GrpLevel,'N' GrpType ";
                 SQL += ",convert(char,null) work_type,'A000'UpgrpID,a.scode Master_scode ";
-                SQL += ",(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,'專商經理'Remark ";
+                SQL += ",(select sc_name from scode where scode=a.scode)Master_nm ";
+                SQL += ",(select a.scode from scode_roles a where a.syscode='" + Sys.GetSession("syscode") + "' and a.dept='" + Sys.GetSession("dept") + "' and a.roles='chair')Agent_scode ";
+                SQL += ",(select s.sc_name from scode_roles a inner join scode s on a.scode=s.scode where a.syscode='" + Sys.GetSession("syscode") + "' and a.dept='" + Sys.GetSession("dept") + "' and a.roles='chair')agent_nm ";
+                SQL += ",'專商經理'master_type ";
                 SQL += ",'Y'chkcode,0 Up_LEVEL,0 processed ";
                 SQL += "from scode_roles a ";
-                SQL += "inner join scode b on a.scode=b.scode ";
                 SQL += "WHERE a.syscode='" + Sys.GetSession("syscode") + "' ";
                 SQL += "and a.dept = '" + Sys.GetSession("dept") + "' ";
                 SQL += "AND a.roles ='manager' ";
             } else {
                 SQL = "SELECT GrpClass,GrpID,GrpName,GrpLevel,GrpType ";
                 SQL += ",work_type,UpgrpID,Master_scode ";
-                SQL += ",(select sc_name from scode s where s.scode=Master_scode)Master_nm,Agent_scode,Remark ";
+                SQL += ",(select sc_name from scode s where s.scode=Master_scode)Master_nm,''Agent_scode,''agent_nm,Remark master_type ";
                 SQL += ",chkcode,0 Up_LEVEL,0 processed ";
                 SQL += "FROM grpid ";
                 SQL += "WHERE GrpClass='" + grpClass + "' and GrpID = '" + grpId + "' ";
@@ -109,27 +127,28 @@ public partial class Sys
                         if (dt.Rows[i]["UpgrpID"].ToString() == "A000") {
                             SQL = "SELECT '" + dt.Rows[i]["GrpClass"] + "' GrpClass,'A000'GrpID,'執委會'GrpName,convert(smallint,-1) GrpLevel,'N' GrpType ";
                             SQL += ",convert(char,null) work_type,''UpgrpID,a.scode Master_scode ";
-                            SQL += ",(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,'執委'Remark ";
+                            SQL += ",(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,''agent_nm,'執委'master_type ";
                             SQL += ",'Y'chkcode," + Up_LEVEL + " Up_LEVEL,0 processed ";
                             SQL += "from scode_roles a ";
-                            SQL += "inner join scode b on a.scode=b.scode ";
                             SQL += "WHERE a.syscode='" + Sys.GetSession("syscode") + "' ";
                             SQL += "and a.dept = '" + Sys.GetSession("dept") + "' ";
                             SQL += "AND a.roles ='chair' ";
                         } else if (dt.Rows[i]["UpgrpID"].ToString() == "zzz") {
                             SQL = "SELECT '" + dt.Rows[i]["GrpClass"] + "' GrpClass,'zzz'GrpID,'專案室'GrpName,convert(smallint,0) GrpLevel,'N' GrpType ";
                             SQL += ",convert(char,null) work_type,'A000'UpgrpID,a.scode Master_scode ";
-                            SQL += ",(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,'專商經理'Remark ";
+                            SQL += ",(select sc_name from scode where scode=a.scode)Master_nm ";
+                            SQL += ",(select a.scode from scode_roles a where a.syscode='" + Sys.GetSession("syscode") + "' and a.dept='" + Sys.GetSession("dept") + "' and a.roles='chair')Agent_scode ";
+                            SQL += ",(select s.sc_name from scode_roles a inner join scode s on a.scode=s.scode where a.syscode='" + Sys.GetSession("syscode") + "' and a.dept='" + Sys.GetSession("dept") + "' and a.roles='chair')agent_nm ";
+                            SQL += ",'專商經理'master_type ";
                             SQL += ",'Y'chkcode," + Up_LEVEL + " Up_LEVEL,0 processed ";
                             SQL += "from scode_roles a ";
-                            SQL += "inner join scode b on a.scode=b.scode ";
                             SQL += "WHERE a.syscode='" + Sys.GetSession("syscode") + "' ";
                             SQL += "and a.dept = '" + Sys.GetSession("dept") + "' ";
                             SQL += "AND a.roles ='manager' ";
                         } else  {
                             SQL = "SELECT e.GrpClass,e.GrpID,e.GrpName,e.GrpLevel,e.GrpType ";
                             SQL += ",e.work_type,e.UpgrpID,e.Master_scode ";
-                            SQL += ",(select sc_name from scode s where s.scode=e.Master_scode)Master_nm,e.Agent_scode,e.Remark ";
+                            SQL += ",(select sc_name from scode s where s.scode=e.Master_scode)Master_nm,''Agent_scode,''agent_nm,e.Remark master_type ";
                             SQL += ",e.chkcode," + Up_LEVEL + " Up_LEVEL,0 processed ";
                             SQL += "FROM grpid e ";
                             SQL += "WHERE e.GrpClass='" + dt.Rows[i]["GrpClass"] + "' ";
@@ -164,27 +183,28 @@ public partial class Sys
             if (grpId == "") {
                 SQL = "SELECT '" + grpClass + "' GrpClass,'A000'GrpID,'執委會'GrpName,convert(smallint,-1) GrpLevel,'N' GrpType ";
                 SQL += ",convert(char,null) work_type,''UpgrpID,a.scode Master_scode ";
-                SQL += ",(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,'執委'Remark ";
+                SQL += ",(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,''agent_nm,'執委'master_type ";
                 SQL += ",'Y'chkcode,0 Up_LEVEL,0 processed ";
                 SQL += "from scode_roles a ";
-                SQL += "inner join scode b on a.scode=b.scode ";
                 SQL += "WHERE a.syscode='" + Sys.GetSession("syscode") + "' ";
                 SQL += "and a.dept = '" + Sys.GetSession("dept") + "' ";
                 SQL += "AND a.roles ='chair' ";
             } else if (grpId == "zzz") {
                 SQL = "SELECT '" + grpClass + "' GrpClass,'zzz'GrpID,'專案室'GrpName,convert(smallint,0) GrpLevel,'N' GrpType ";
                 SQL += ",convert(char,null) work_type,'A000'UpgrpID,a.scode Master_scode ";
-                SQL += ",(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,'專商經理'Remark ";
+                SQL += ",(select sc_name from scode where scode=a.scode)Master_nm ";
+                SQL += ",(select a.scode from scode_roles a where a.syscode='" + Sys.GetSession("syscode") + "' and a.dept='" + Sys.GetSession("dept") + "' and a.roles='chair')Agent_scode ";
+                SQL += ",(select s.sc_name from scode_roles a inner join scode s on a.scode=s.scode where a.syscode='" + Sys.GetSession("syscode") + "' and a.dept='" + Sys.GetSession("dept") + "' and a.roles='chair')agent_nm ";
+                SQL += ",'專商經理'master_type ";
                 SQL += ",'Y'chkcode,0 Up_LEVEL,0 processed ";
                 SQL += "from scode_roles a ";
-                SQL += "inner join scode b on a.scode=b.scode ";
                 SQL += "WHERE a.syscode='" + Sys.GetSession("syscode") + "' ";
                 SQL += "and a.dept = '" + Sys.GetSession("dept") + "' ";
                 SQL += "AND a.roles ='manager' ";
             } else {
                 SQL = "SELECT GrpClass,GrpID,GrpName,GrpLevel,GrpType ";
                 SQL += ",work_type,UpgrpID,Master_scode ";
-                SQL += ",(select sc_name from scode s where s.scode=Master_scode)Master_nm,Agent_scode,Remark ";
+                SQL += ",(select sc_name from scode s where s.scode=Master_scode)Master_nm,''Agent_scode,''agent_nm,Remark master_type ";
                 SQL += ",chkcode,0 Up_LEVEL,0 processed ";
                 SQL += "FROM grpid ";
                 SQL += "WHERE GrpClass='" + grpClass + "' and GrpID = '" + grpId + "' ";
@@ -209,17 +229,19 @@ public partial class Sys
                         if (dt.Rows[i]["GrpID"].ToString() == "A000") {
                             SQL = "SELECT '" + dt.Rows[i]["GrpClass"] + "' GrpClass,'zzz'GrpID,'專案室'GrpName,convert(smallint,0) GrpLevel,'N' GrpType ";
                             SQL += ",convert(char,null) work_type,'A000'UpgrpID,a.scode Master_scode ";
-                            SQL += ",(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,'專商經理'Remark ";
+                            SQL += ",(select sc_name from scode where scode=a.scode)Master_nm ";
+                            SQL += ",(select a.scode from scode_roles a where a.syscode='" + Sys.GetSession("syscode") + "' and a.dept='" + Sys.GetSession("dept") + "' and a.roles='chair')Agent_scode ";
+                            SQL += ",(select s.sc_name from scode_roles a inner join scode s on a.scode=s.scode where a.syscode='" + Sys.GetSession("syscode") + "' and a.dept='" + Sys.GetSession("dept") + "' and a.roles='chair')agent_nm ";
+                            SQL += ",'專商經理'master_type ";
                             SQL += ",'Y'chkcode," + Up_LEVEL + " Up_LEVEL,0 processed ";
                             SQL += "from scode_roles a ";
-                            SQL += "inner join scode b on a.scode=b.scode ";
                             SQL += "WHERE a.syscode='" + Sys.GetSession("syscode") + "' ";
                             SQL += "and a.dept = '" + Sys.GetSession("dept") + "' ";
                             SQL += "AND a.roles ='manager' ";
                         } else {
                             SQL = "SELECT e.GrpClass,e.GrpID,e.GrpName,e.GrpLevel,e.GrpType ";
                             SQL += ",e.work_type,e.UpgrpID,e.Master_scode ";
-                            SQL += ",(select sc_name from scode s where s.scode=e.Master_scode)Master_nm,e.Agent_scode,e.Remark ";
+                            SQL += ",(select sc_name from scode s where s.scode=e.Master_scode)Master_nm,''Agent_scode,''agent_nm,e.Remark master_type";
                             SQL += ",e.chkcode," + Up_LEVEL + " Up_LEVEL,0 processed ";
                             SQL += "FROM grpid e ";
                             SQL += "WHERE e.GrpClass='" + dt.Rows[i]["GrpClass"] + "' ";
@@ -292,18 +314,67 @@ public partial class Sys
     }
     #endregion
 
+    #region getMasterList - 向上抓取所有階層
+    /// <summary>
+    /// 向上抓取所有階層
+    /// </summary>
+    public static DataTable getMasterList(string grpClass, string scode) {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            string se_Grpid = "", se_Grplevel = "";
+            getScodeGrpid(grpClass, scode, ref se_Grpid, ref se_Grplevel);
+
+            return getGrpidUp(grpClass, se_Grpid);
+        }
+    }
+    #endregion
+
     #region getSignList - 抓取特殊處理簽核主管清單
     /// <summary>
     /// 抓取特殊處理簽核主管清單
     /// </summary>
-    public static DataTable getSignList(string se_branch, string se_grpid, string se_scode, string msc_scode) {
+    public static DataTable getSignList(string se_branch, string se_grpid, string se_scode, string msc_scode, string pWhere) {
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
-            string SQL = "SELECT a.master_scode, '商標主管' AS master_type, b.sc_name AS master_scodenm, b.sscode, '1' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.GrpID IN ('T100', 'TA100', 'TB100') AND a.grpclass='" + se_branch + "' AND a.master_scode NOT IN ('" + msc_scode + "','" + se_scode + "')";
-            SQL += " UNION";
-            SQL += " SELECT a.master_scode, '營洽主管' AS master_type, b.sc_name AS master_scodenm, b.sscode, '2' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.GrpID LIKE '" + se_grpid.Left(2) + "[1-9]%' AND a.grpclass='" + se_branch + "' AND a.master_scode NOT IN ('" + msc_scode + "','" + se_scode + "')";
-            SQL += " UNION";
-            SQL += " SELECT a.master_scode, '區所主管' AS master_type, b.sc_name AS master_scodenm, b.sscode, '3' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.Grpid = '000' AND a.grpclass = '" + se_branch + "'";
-            SQL += " ORDER BY sort, sscode";
+            //string SQL = "SELECT a.master_scode, '商標主管' AS master_type, b.sc_name AS Master_nm, b.sscode, '1' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.GrpID IN ('T100', 'TA100', 'TB100') AND a.grpclass='" + se_branch + "' AND a.master_scode NOT IN ('" + msc_scode + "','" + se_scode + "')";
+            //SQL += " UNION";
+            //SQL += " SELECT a.master_scode, '營洽主管' AS master_type, b.sc_name AS Master_nm, b.sscode, '2' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.GrpID LIKE '" + se_grpid.Left(2) + "[1-9]%' AND a.grpclass='" + se_branch + "' AND a.master_scode NOT IN ('" + msc_scode + "','" + se_scode + "')";
+            //SQL += " UNION";
+            //SQL += " SELECT a.master_scode, '區所主管' AS master_type, b.sc_name AS Master_nm, b.sscode, '3' AS sort FROM GrpID AS a INNER JOIN scode AS b ON a.master_scode = b.scode WHERE a.Grpid = '000' AND a.grpclass = '" + se_branch + "'";
+            //SQL += " ORDER BY sort, sscode";
+            string SQL = "select z.*,b.sc_name agent_nm ";
+            SQL += "from( ";
+            SQL += "SELECT a.grpclass,a.GrpID,a.grpName,a.grplevel,a.grptype,a.work_type,a.upgrpid, '2' AS sort ";
+            SQL += ",a.master_scode,(select sc_name from scode where scode=a.master_scode)Master_nm,''agent_scode,'營洽主管' AS master_type,a.chkcode ";
+            SQL += "FROM GrpID AS a ";
+            SQL += "WHERE (a.GrpID like('" + se_grpid.Left(2) + "[1-9]0')) ";
+            SQL += "AND a.grpclass='" + se_branch + "' and (isnull(chkcode,'N') like '%Y%') ";
+            SQL += "AND a.master_scode NOT IN ('" + msc_scode + "','" + se_scode + "') ";
+            SQL += "UNION ";
+            SQL += "SELECT a.grpclass,a.GrpID,a.grpName,a.grplevel,a.grptype,a.work_type,a.upgrpid, '1' AS sort ";
+            SQL += ",a.master_scode,(select sc_name from scode where scode=a.master_scode)Master_nm,''agent_scode,'部門主管' AS master_type,a.chkcode ";
+            SQL += "FROM GrpID AS a ";
+            SQL += "WHERE a.grpclass='" + se_branch + "' and a.GrpID IN ('T000') ";
+            SQL += "AND a.master_scode NOT IN ('" + msc_scode + "','" + se_scode + "') ";
+            SQL += "UNION ";
+            SQL += "SELECT a.grpclass,a.GrpID,a.grpName,a.grplevel,a.grptype,a.work_type,a.upgrpid, '3' AS sort ";
+            SQL += ",a.master_scode,(select sc_name from scode where scode=a.master_scode)Master_nm,''agent_scode,'區所主管' AS master_type,a.chkcode ";
+            SQL += "FROM GrpID AS a ";
+            SQL += "WHERE a.Grpid = '000' AND a.grpclass = '" + se_branch + "' ";
+            SQL += "UNION ";
+            SQL += "SELECT 'N' GrpClass,'zzz'GrpID,'專案室'GrpName,convert(smallint,0) GrpLevel,'N' GrpType,convert(char,null) work_type,'A000'UpgrpID, '4' AS sort ";
+            SQL += ",a.scode Master_scode,(select sc_name from scode where scode=a.scode)Master_nm ";
+            SQL += ",(select a.scode from scode_roles a where a.syscode='" + Sys.GetSession("syscode") + "' and a.dept='" + Sys.GetSession("dept") + "' and a.roles='chair')Agent_scode,'專商經理'master_type ,'Y'chkcode ";
+            SQL += "from scode_roles a ";
+            SQL += "WHERE a.syscode='" + Sys.GetSession("syscode") + "' and a.dept = '" + Sys.GetSession("dept") + "' AND a.roles ='manager' ";
+            SQL += "UNION ";
+            SQL += "SELECT 'N' GrpClass,'A000'GrpID,'執委會'GrpName,convert(smallint,-1) GrpLevel,'N' GrpType,convert(char,null) work_type,''UpgrpID, '5' AS sort ";
+            SQL += ",a.scode Master_scode,(select sc_name from scode where scode=a.scode)Master_nm,''Agent_scode,'執委'master_type,'Y'chkcode ";
+            SQL += "from scode_roles a ";
+            SQL += "WHERE a.syscode='" + Sys.GetSession("syscode") + "' and a.dept = '" + Sys.GetSession("dept") + "' AND a.roles ='chair' ";
+            SQL += ")z ";
+            SQL += "left join scode b on z.agent_scode=b.scode ";
+            if (pWhere != "") SQL += "where " + pWhere;
+            SQL += "ORDER BY sort ";
+
             DataTable dt = new DataTable();
             cnn.DataTable(SQL, dt);
             return dt;
@@ -313,19 +384,32 @@ public partial class Sys
 
     #region getRoleScode - 抓取指定scole_roles人員
     /// <summary>  
+    /// 抓取scole_roles人員字串
+    /// <para>回傳ex：n428;n873;n1350</para>
+    /// </summary>  
+    public static string getRoleScode(string pBranch, string pSysno, string pDept, string pRoles) {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            DataTable dt = getScodeRole(pBranch, pSysno, pDept, pRoles);
+            var list = dt.AsEnumerable().Select(r => r.Field<string>("scode")).ToArray();
+            return string.Join(";", list);
+        }
+    }
+    /// <summary>  
     /// 抓取scole_roles人員
     /// </summary>  
-    public static string getRoleScode(string pSysno, string pDept, string pRoles) {
+    public static DataTable getScodeRole(string pBranch, string pSysno, string pDept, string pRoles) {
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
-            string SQL = "select a.scode ";
+            string SQL = "select a.scode,b.sc_name,a.sort ";
             SQL += "from scode_roles a inner join scode b on a.scode=b.scode ";
-            SQL += " where a.syscode='" + pSysno + "' and a.dept='" + pDept + "' and a.roles='" + pRoles + "' ";
+            SQL += " where a.branch='" + pBranch + "' ";
+            SQL += " and a.syscode='" + pSysno + "' ";
+            SQL += " and a.dept='" + pDept + "' ";
+            SQL += " and a.roles='" + pRoles + "' ";
             SQL += " and (b.end_date is null or b.end_date>='" + DateTime.Today.ToShortDateString() + "')";
             SQL += " order by a.sort ";
             DataTable dt = new DataTable();
             cnn.DataTable(SQL, dt);
-            var list = dt.AsEnumerable().Select(r => r.Field<string>("scode")).ToArray();
-            return string.Join(";", list);
+            return dt;
         }
     }
     #endregion
@@ -365,6 +449,25 @@ public partial class Sys
             string SQL = "select cust_code from cust_code where code_type='ters_type'";
             object objResult = conn.ExecuteScalar(SQL);
             return (objResult == DBNull.Value || objResult == null) ? "TE95" : objResult.ToString();
+        }
+    }
+    #endregion
+
+    #region getCaseAspx - 國內案性對應的交辦畫面aspx
+    /// <summary>  
+    /// 國內案性對應的交辦畫面aspx
+    /// </summary>  
+    public static string getCaseDmtAspx(string rsType,string rsCode) {
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            string SQL = "SELECT c.remark ";
+            SQL += "FROM Cust_code c ";
+            SQL += "inner join code_br b on b.rs_type=c.Code_type and b.rs_class=c.Cust_code ";
+            //SQL += "WHERE c.form_name is not null ";
+            SQL += "WHERE 1=1 ";
+            SQL += "and b.rs_type='" + rsType + "' ";
+            SQL += "and b.rs_code='" + rsCode + "' ";
+            object objResult = conn.ExecuteScalar(SQL);
+            return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
         }
     }
     #endregion

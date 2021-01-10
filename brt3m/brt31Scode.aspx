@@ -42,7 +42,8 @@
         }
 
         if (fld3.Right(2) == "81") {
-            SQL = "select A.IN_scode,d.sc_name from sysctrl.dbo.todolist A ";
+            SQL = "select A.IN_scode,d.sc_name ";
+            SQL += "from sysctrl.dbo.todolist A ";
             SQL += "inner join scode D on a.in_scode = d.scode ";
             SQL += "where a.job_status='NN' and a.job_scode='" + fld1 + "' ";
             SQL += "and a.syscode='" + Session["syscode"] + "' ";
@@ -50,7 +51,8 @@
             SQL += "group by a.in_scode,d.sc_name";
         } else {
             //2010/5/21因應todo_ext/todo_dmt修改
-            SQL = "select A.case_IN_scode as in_scode,d.sc_name from " + tblname + " A ";
+            SQL = "select A.case_IN_scode as in_scode,d.sc_name ";
+            SQL += "from " + tblname + " A ";
             SQL += "inner join scode D on a.case_in_scode = d.scode ";
             SQL += "where a.job_status='NN' and a.job_scode='" + fld1 + "' ";
             SQL += "and a.syscode='" + Session["syscode"] + "' ";

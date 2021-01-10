@@ -20,7 +20,7 @@
 
     protected void Page_Load(object sender, EventArgs e) {
         SQL = Request["SQL"];
-        connbr = Request["connbr"];
+        connbr = Request["connbr"]??"";
 
         if (connbr != "") {
             conn = new DBHelper(Conn.brp(connbr)).Debug(false);

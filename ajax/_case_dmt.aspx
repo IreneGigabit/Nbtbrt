@@ -87,7 +87,7 @@
                 SQL="SELECT a.*,c.*,g.* ";
                 SQL += ",(SELECT b.coun_c FROM sysctrl.dbo.country b WHERE b.coun_code = a.zname_type and b.markb<>'X') AS nzname ";
                 SQL += ",(SELECT c.coun_code+c.coun_cname FROM sysctrl.dbo.ipo_country c WHERE c.ref_coun_code = a.prior_country ) AS ncountry ";
-                SQL += ",a.mark temp_mark,c.mark case_mark ";
+                SQL += ",a.mark temp_mark,c.mark case_mark, C.service + C.fees+ C.oth_money AS othsum ";
                 SQL += " FROM dmt_temp A";
                 SQL += " inner join case_dmt c on a.in_no = c.in_no and a.in_scode = c.in_scode";
                 SQL += " left JOIN dmt_tran G ON C.in_scode = G.in_scode AND C.in_no = G.in_no";
