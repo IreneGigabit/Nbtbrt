@@ -7,20 +7,14 @@
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string HTProgPrefix = "brt31";//程式檔名前綴
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
-    protected string DebugStr = "";
 
     protected string SQL = "";
-    
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Paging page = null;
-
-    protected string StrFormBtnTop = "";
-    protected string StrFormBtn = "";
 
     protected string FormName = "";
     protected string apcode = "";
@@ -54,18 +48,14 @@
         
         if (qs_dept =="t"){
            HTProgCode="brt31";
-           HTProgCap = "國內案主管簽核作業";
            apcode = "'Si04W02','brt31'";//改版後有新舊代碼
         }else{
             HTProgCode="ext34";
-            HTProgCap = "出口案主管簽核作業";
             apcode = "'Si04W06','ext34'";//改版後有新舊代碼
         }
         
         TokenN myToken = new TokenN(HTProgCode);
-        HTProgRight = myToken.CheckMe();
-        HTProgCap = myToken.Title;
-        DebugStr = myToken.DebugStr;
+        myToken.CheckMe(false);
         if (HTProgRight >= 0) {
             PageLayout();
             QueryData();
@@ -74,8 +64,6 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a href="+HTProgPrefix+".aspx?qs_dept="+qs_dept+">[回上一頁]</a>";
-
         if (qs_dept == "t") {
             FormName = "備註:<br>\n";
 			FormName += "1.案件編號前的「<img src=\""+Page.ResolveUrl("~/images/todolist01.jpg")+"\" style=\"cursor:pointer\" align=\"absmiddle\"  border=\"0\">」表示結案/復案。<br>\n";
@@ -416,39 +404,12 @@
     }
 </script>
 
-<html xmlns="http://www.w3.org/1999/xhtml" >
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><%=HTProgCap%></title>
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/inc/setstyle.css")%>" />
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.css")%>" />
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/toastr.css")%>" />
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.css")%>" />
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-1.12.4.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
-</head>
+<div align="center" id="noData" style="display:<%#page.totRow==0?"":"none"%>">
+	<font color="red">=== 目前無資料 ===</font>
+</div>
 
-<body>
-<table cellspacing="1" cellpadding="0" width="98%" border="0" align="center">
-    <tr>
-        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%> <%=HTProgCap%>】</td>
-        <td class="FormLink" valign="top" align="right" nowrap="nowrap">
-            <%#StrFormBtnTop%>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2"><hr class="style-one"/></td>
-    </tr>
-</table>
-
-<form style="margin:0;" id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
-    <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
+<asp:Repeater id="dataRepeater" runat="server" OnItemDataBound="rpt_ItemDataBound">
+<HeaderTemplate>
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
 		    <td colspan=2 align=center>
@@ -472,16 +433,8 @@
 		    </td>
 	    </tr>
     </TABLE>
-    </div>
-</form>
+    <BR>
 
-<div align="center" id="noData" style="display:<%#page.totRow==0?"":"none"%>">
-	<font color="red">=== 目前無資料 ===</font>
-</div>
-
-<form style="margin:0;" id="reg" name="reg" method="post">
-<asp:Repeater id="dataRepeater" runat="server" OnItemDataBound="rpt_ItemDataBound">
-<HeaderTemplate>
     <input type=hidden id="GrpID" name="GrpID" value="<%=job_grpid%>">
     <input type=text id="grplevel" name="grplevel" value="<%=job_grplevel%>">
     <input type=text id="sign_level" name="sign_level" value=""><!--簽准層級-->
@@ -599,36 +552,36 @@
 	</table>
 	<br>
 
-    <table border="0" width="90%" cellspacing="0" cellpadding="0" align="center">
+    <table border="1" width="90%" cellspacing="0" cellpadding="0" align="center">
 		<TR>			
-			<TD align=right>簽核狀態:</TD>
+			<TD class="whitetablebg" align=right>簽核狀態:</TD>
 			<TD align=left>
 					<input type=radio name="signid" value="YY" onclick=tosign() <%#rdoYY%>>簽准
 					<input type=radio name="signid" value="XX" onclick=tosign() <%#rdoXX%>>不准退回
 					<input type=radio name="signid" value="YT" onclick=tosign() <%#rodYT%>>轉上級簽核
-					<input type=hidden name=signidnext id=signidnext>
-					<input type=hidden name=status id=status>
+					<input type=text name=signidnext id=signidnext>
+					<input type=text name=status id=status>
 			</TD>
-			<TD align=right>
+			<TD class="whitetablebg" align=right>
 				<span style="" id="showsign1">
 					程序人員：<select name="prscode" id="prscode"><%#selPrScode%></select>
 				</span>
 			</TD>
-			<TD align=right>
+			<TD class="whitetablebg" align=right>
 				<span style="display:" id="showsign">
 					<span id="spanMaster"><input type=radio name="upsign" value="sMaster"><%#txtSMaster%></span><input type=hidden value="<%=txtSMastercode%>" name="sMastercode" id="sMastercode">
                     <span id="spanManager"><input type=radio name="upsign" value="sManager"><select name="ma_scode" id="ma_scode"><%#selManager%></select></span>
                     <span id="spanAgent"><input type=radio name="upsign" value="sAgent">代理人:<%#txt_agentNm%><input type=hidden value="<%#txt_agentNo%>" name="sAgentcode" id="sAgentcode"><input type=hidden value="S" name=mark id=mark>	</span>
 				</span>
 			</TD>
-			<TD align=right>
+			<TD class="whitetablebg" align=right>
 				<span style="display:" id="showsign2">
 					會計人員：<select name="accscode" id="accscode"><%#selAccScode%></select>
 				</span>
 			</TD>
 		</TR>
 		<TR>
-			<TD align=right>簽核說明:</TD>
+			<TD class="whitetablebg" align=right>簽核說明:</TD>
 			<TD align=left colspan=2><TEXTAREA name=signdetail id=signdetail ROWS=2 COLS=50></TEXTAREA></TD>
 		</TR>
     </table>
@@ -643,68 +596,7 @@
 </FooterTemplate>
 </asp:Repeater>
 
-    <%#DebugStr%>
-</form>
-
-<div id="dialog"></div>
-
-</body>
-</html>
-
 <script language="javascript" type="text/javascript">
-    $(function () {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        }
-
-        $("input[name='signid']:checked").triggerHandler("click");
-        $(".Lock").lock();
-        $("input.dateField").datepick();
-    });
-    //執行查詢
-    function goSearch() {
-        $("#regPage").submit();
-    };
-    //每頁幾筆
-    $("#PerPage").change(function (e) {
-        goSearch();
-    });
-    //指定第幾頁
-    $("#divPaging").on("change", "#GoPage", function (e) {
-        goSearch();
-    });
-    //上下頁
-    $(".pgU,.pgD").click(function (e) {
-        $("#GoPage").val($(this).attr("v1"));
-        goSearch();
-    });
-    //排序
-    $(".setOdr").click(function (e) {
-        //$("#dataList>thead tr .setOdr span").remove();
-        //$(this).append("<span class='odby'>▲</span>");
-        $("#SetOrder").val($(this).attr("v1"));
-        goSearch();
-    });
-    //設定表頭排序圖示
-    function theadOdr() {
-        $(".setOdr").each(function (i) {
-            $(this).remove("span.odby");
-            if ($(this).attr("v1").toLowerCase() == $("#SetOrder").val().toLowerCase()) {
-                $(this).append("<span class='odby'>▲</span>");
-            }
-        });
-    }
-
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
-
-    ///////////////////////////////////////////////////////////////
     //每筆交辦勾選時檢查簽核層級
     //tupload=請核單上傳、tarmark=扣收入註記、tcount=第幾筆、tfees=規費、tcontract=契約書後補註記、sign_level=簽核層級
     function Chkupload(tcount,sign_level) {
@@ -854,11 +746,11 @@
             alert("尚未選定!!");
         }else{
             $(".bsubmit").lock(!$("#chkTest").prop("checked"));
-            var form = $('#reg');
+            var formData = new FormData($('#reg')[0]);
             $.ajax({
-                url:form.attr('action'),
+                url:formData.attr('action'),
                 type : "POST",
-                data : form.serialize(),
+                data : formData,
                 contentType: false,
                 cache: false,
                 processData: false,

@@ -49,6 +49,8 @@
     }
 
     private void PageLayout() {
+        StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>\n";
+        StrFormBtnTop += "<a class=\"imgQry\" href=\"javascript:void(0);\" >[查詢條件]</a>\n";
         if ((HTProgRight & 2) > 0) {
             StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"查　詢\" class=\"cbutton bsubmit\" />\n";
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
@@ -161,11 +163,10 @@
     </tr>
 </table>
 
-<form id="reg" name="reg" method="post">
+<form id="regPage" name="regPage" method="post">
     <input type="text" id="prgid" name="prgid" value="<%=prgid%>">
     <input type="text" id=dept name=dept value=<%=qs_dept%>>
     <input type="text" id=qs_dept name=qs_dept value=<%=qs_dept%>>
-
     <div id="id-div-slide">
         <table id="qryForm" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="70%" align="center">	
             <tr>
@@ -197,14 +198,19 @@
 
         </table>
         <br>
-        <%#DebugStr%>
         <table id="tabBtn" border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
 	        <tr><td width="100%" align="center">
 			    <%#StrFormBtn%>
 	        </td></tr>
         </table>
+
     </div>
+
+    <div id="divList"></div>
+    <%#DebugStr%>
 </form>
+
+<br />
 
 <div id="dialog"></div>
 
@@ -238,15 +244,80 @@
             }
         }
 
-        reg.action = "<%=HTProgPrefix%>_List.aspx";
-        //reg.target = "Eblank";
-        reg.submit();
+        $("#dataList>thead tr .setOdr span").remove();
+        $("#SetOrder").val("");
+
+        goSearch();
     });
 
+    //執行查詢
+    function goSearch() {
+        window.parent.tt.rows = '100%,0%';
+        $("#divPaging,#dataList,.noData,.haveData").hide();
+        nRow = 0;
+        $.ajax({
+            url: "<%#HTProgPrefix%>_List.aspx",
+            type: "post",
+            async: false,
+            cache: false,
+            data: $("#regPage").serialize(),
+            success: function (html) {
+                $("#id-div-slide").slideUp("fast");
+
+                $("#divList").html(html);
+                $("input[name=signid]:checked").triggerHandler("click");
+            },
+            beforeSend: function (jqXHR, settings) {
+                $("#divList").empty();
+                jqXHR.url = settings.url;
+            },
+            error: function (xhr) {
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>資料擷取剖析錯誤！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '資料擷取剖析錯誤！', modal: true, maxHeight: 500, width: 800 });
+                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            }
+        });
+    };
+
+    //每頁幾筆
+    $("#divList").on("change", "#PerPage", function (e) {
+        goSearch();
+    });
+    //指定第幾頁
+    $("#divList").on("change", "#GoPage", function (e) {
+        goSearch();
+    });
+    //上下頁
+    $("#divList").on("click", ".pgU,.pgD", function (e) {
+        $("#GoPage").val($(this).attr("v1"));
+        goSearch();
+    });
+    //排序
+    $("#divList").on("click", ".setOdr", function (e) {
+        $("#dataList>thead tr .setOdr span").remove();
+        $(this).append("<span>▲</span>");
+        $("#SetOrder").val($(this).attr("v1"));
+        goSearch();
+    });
+    //重新整理
+    $(".imgRefresh").click(function (e) {
+        goSearch();
+    });
+    //查詢條件
+    $(".imgQry").click(function (e) { $("#id-div-slide").slideToggle("fast"); });
+    //關閉視窗
+    $(".imgCls").click(function (e) {
+        if (window.parent.tt !== undefined) {
+            window.parent.tt.rows = "100%,0%";
+        } else {
+            window.close();
+        }
+    });
+    //////////////////////
 
     //[重填]
     $("#btnRest").click(function (e) {
-        reg.reset();
+        regPage.reset();
         this_init();
     });
 
