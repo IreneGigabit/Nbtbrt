@@ -96,8 +96,8 @@ function ajaxByPost(url, param) {
     });
 }
 
-/*ajax function(post)*/
-function scriptByGet(titleName,url) {
+/*ajax function(get)*/
+function ajaxScriptByGet(titleName, url) {
     $.ajax({
         url: url,
         type: "get",
@@ -458,7 +458,7 @@ $(function () {
     //若有 ☑測試 預設打勾
     $("#ActFrame").hide();//取消使用ActFrame
     $("#chkTest").click(function (e) {
-        //    $("#ActFrame").showFor($(this).prop("checked"));
+        $("#ActFrame").showFor($(this).prop("checked"));
         $(".bsubmit").prop("disabled", false);
     });
     //$("#chkTest").prop("checked", true).triggerHandler("click");

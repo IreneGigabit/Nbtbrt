@@ -361,7 +361,7 @@
         //chk案件主檔需有資料
         if ($("#New_Ass_seq").val()!="") {
             var url=getRootPath() + "/brt1m/chk_dmt.aspx?p1=Y&p2=A&seq=" +$("#New_Ass_seq").val()+ "&seq1=" +$("#New_Ass_seq1").val();
-            scriptByGet("chk案件主檔",url);
+            ajaxScriptByGet("chk案件主檔", url);
         }
         $("#dseqa_1").val($("#New_Ass_seq").val());
         $("#dseq1a_1").val($("#New_Ass_seq1").val());
@@ -421,7 +421,7 @@
             var pseq=$("#"+pfldname+"_New_Ass_seq").val();
             var pseq1=$("#"+pfldname+"_New_Ass_seq1").val();
             var url=getRootPath() + "/brt1m/chk_dmt.aspx?fldname="+pfldname+"&p1=Y&p2=A&seq=" +pseq+ "&seq1=" +pseq1;
-            scriptByGet("chkB案件主檔",url);
+            ajaxScriptByGet("chkB案件主檔", url);
         }
     }
 

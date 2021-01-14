@@ -182,7 +182,7 @@
         }
         $("#tscode").val($("#scode").val());
 
-        reg.action = "<%=prgid%>List.aspx";
+        reg.action = "<%=prgid%>_List.aspx";
         //reg.target = "Eblank";
         reg.submit();
     });

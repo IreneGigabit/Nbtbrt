@@ -426,7 +426,7 @@
                     "&in_scode=" + pin_scode + "&in_no=" + pin_no + "&case_no=" + pcase_no +"&case_stat=" + pcase_stat +
                     "&cappl_name=" + pappl_name + "&ap_cname1=" + pcust_name + "&arcase=" + parcase + "&seq=" + pseq +
                     "&seq1=" + pseq1 + "&cust_area=" + pcust_areq + "&cust_seq=" + pcust_seq+"&chkTest="+chktest;
-            scriptByGet("刪除接洽記錄", url);
+            ajaxScriptByGet("刪除接洽記錄", url);
         }
     }
 </script>

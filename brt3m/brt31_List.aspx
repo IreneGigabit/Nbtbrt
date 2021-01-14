@@ -483,15 +483,15 @@
 <asp:Repeater id="dataRepeater" runat="server" OnItemDataBound="rpt_ItemDataBound">
 <HeaderTemplate>
     <input type=hidden id="GrpID" name="GrpID" value="<%=job_grpid%>">
-    <input type=text id="grplevel" name="grplevel" value="<%=job_grplevel%>">
-    <input type=text id="sign_level" name="sign_level" value=""><!--簽准層級-->
-    <input type=text id="upload_flag" name="upload_flag" value="N"><!--專案請核單upload_chk=Y需經商標經理簽准-->
-    <input type=text id="armark_flag" name="armark_flag" value="N"><!--扣收入ar_mark=D需經會計檢核-->
-    <input type=text id="armarkT_flag" name="armarkT_flag" value="N"><!--扣收入ar_mark=D且金額>=5000需經商標經理簽准-->
-    <input type=text id="contract_flag" name="contract_flag" value="N"><!--契約書後補contract_flag=Y需經區所主管簽准-->
-    <input type=text id="dis_flag" name="dis_flag" value="N"><!--折扣簽核dis_flag=Y低於8折或低於7折且服務費<=5000需經區所主管簽准-->
-    <input type=text id="disT_flag" name="disT_flag" value="N"><!--折扣簽核disT_flag=Y低於7折或國內案低於7折且服務費>5000需經商標經理簽准-->
-    <input type=text id=row name=row value="<%#page.pagedTable.Rows.Count%>"> 
+    <input type=hidden id="grplevel" name="grplevel" value="<%=job_grplevel%>">
+    <input type=hidden id="sign_level" name="sign_level" value=""><!--簽准層級-->
+    <input type=hidden id="upload_flag" name="upload_flag" value="N"><!--專案請核單upload_chk=Y需經商標經理簽准-->
+    <input type=hidden id="armark_flag" name="armark_flag" value="N"><!--扣收入ar_mark=D需經會計檢核-->
+    <input type=hidden id="armarkT_flag" name="armarkT_flag" value="N"><!--扣收入ar_mark=D且金額>=5000需經商標經理簽准-->
+    <input type=hidden id="contract_flag" name="contract_flag" value="N"><!--契約書後補contract_flag=Y需經區所主管簽准-->
+    <input type=hidden id="dis_flag" name="dis_flag" value="N"><!--折扣簽核dis_flag=Y低於8折或低於7折且服務費<=5000需經區所主管簽准-->
+    <input type=hidden id="disT_flag" name="disT_flag" value="N"><!--折扣簽核disT_flag=Y低於7折或國內案低於7折且服務費>5000需經商標經理簽准-->
+    <input type=hidden id=row name=row value="<%#page.pagedTable.Rows.Count%>"> 
 
     <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%" align="center" id="dataList">
 	    <thead>
@@ -528,16 +528,16 @@
 		                <input type=hidden id="appl_name_<%#(Container.ItemIndex+1)%>" name="appl_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("appl_name")%>">
 		                <input type=hidden id="case_arcase_<%#(Container.ItemIndex+1)%>" name="case_arcase_<%#(Container.ItemIndex+1)%>" value="<%#Eval("arcase")%>">
 		                <input type=hidden id="case_name_<%#(Container.ItemIndex+1)%>" name="case_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("carcase")%>">
-		                <input type=text id="upload_chk_<%#(Container.ItemIndex+1)%>" name="upload_chk_<%#(Container.ItemIndex+1)%>" value="<%#Eval("upload_flag")%>"><!--請核單上傳-->
-		                <input type=text id="armark_flag_<%#(Container.ItemIndex+1)%>" name="armark_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("armark_flag")%>"><!--扣收入註記-->
-		                <input type=text id="armarkT_flag_<%#(Container.ItemIndex+1)%>" name="armarkT_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("armarkT_flag")%>"><!--扣收入註記大於5000-->
-		                <input type=text id="seq_<%#(Container.ItemIndex+1)%>" name="seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq")%>">
-		                <input type=text id="seq1_<%#(Container.ItemIndex+1)%>" name="seq1_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq1")%>">
-		                <input type=text id="country_<%#(Container.ItemIndex+1)%>" name="country_<%#(Container.ItemIndex+1)%>" value="<%#Eval("country")%>">
-		                <input type=text id="fees_<%#(Container.ItemIndex+1)%>" name="fees_<%#(Container.ItemIndex+1)%>" value="<%#Eval("fees")%>"><!--規費-->
-		                <input type=text id="contract_flag_<%#(Container.ItemIndex+1)%>" name="contract_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("contract_flag")%>"><!--契約書後補註記-->
-		                <input type=text id="dis_flag_<%#(Container.ItemIndex+1)%>" name="dis_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("dis_flag")%>">
-		                <input type=text id="disT_flag_<%#(Container.ItemIndex+1)%>" name="disT_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("disT_flag")%>">
+		                <input type=hidden id="upload_chk_<%#(Container.ItemIndex+1)%>" name="upload_chk_<%#(Container.ItemIndex+1)%>" value="<%#Eval("upload_flag")%>"><!--請核單上傳-->
+		                <input type=hidden id="armark_flag_<%#(Container.ItemIndex+1)%>" name="armark_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("armark_flag")%>"><!--扣收入註記-->
+		                <input type=hidden id="armarkT_flag_<%#(Container.ItemIndex+1)%>" name="armarkT_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("armarkT_flag")%>"><!--扣收入註記大於5000-->
+		                <input type=hidden id="seq_<%#(Container.ItemIndex+1)%>" name="seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq")%>">
+		                <input type=hidden id="seq1_<%#(Container.ItemIndex+1)%>" name="seq1_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq1")%>">
+		                <input type=hidden id="country_<%#(Container.ItemIndex+1)%>" name="country_<%#(Container.ItemIndex+1)%>" value="<%#Eval("country")%>">
+		                <input type=hidden id="fees_<%#(Container.ItemIndex+1)%>" name="fees_<%#(Container.ItemIndex+1)%>" value="<%#Eval("fees")%>"><!--規費-->
+		                <input type=hidden id="contract_flag_<%#(Container.ItemIndex+1)%>" name="contract_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("contract_flag")%>"><!--契約書後補註記-->
+		                <input type=hidden id="dis_flag_<%#(Container.ItemIndex+1)%>" name="dis_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("dis_flag")%>">
+		                <input type=hidden id="disT_flag_<%#(Container.ItemIndex+1)%>" name="disT_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("disT_flag")%>">
 		            </td>
 		            <td rowspan=<%#Eval("ctrl_rowspan")%> align="center">
                         <span id="backIcon" runat="server"><img src="<%=Page.ResolveUrl("~/images/back03.jpg")%>"></span>
@@ -705,10 +705,44 @@
     })
 
     ///////////////////////////////////////////////////////////////
+    //查案件扣收入交辦記錄 
+    function markdlist_from_onclick(pseq,pseq1,pcountry,pcase_no){
+        //***todo
+        var url = "/btbrt/brt3m/extform/markdlist_qry.aspx?prgid=<%=HTProgCode%>&seq=" + pseq +"&seq1=" + pseq1 + "&country=" + pcountry +"&case_no="+ pcase_no + "&qs_dept=<%=qs_dept%>";
+        window.open(url,"mymarkdlistwin", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
+    }
+    //查案件扣收入會計檢核記錄
+    function accdchklist_from_onclick(pseq,pseq1,pcountry,pcase_no){
+        //***todo
+        var url = "/btbrt/brt3m/extform/accdchklist_qry.aspx?prgid=<%=HTProgCode%>&seq="+ pseq +"&seq1=" + pseq1 +  "&country=" + pcountry +"&case_no="+pcase_no + "&qs_dept=<%=qs_dept%>";
+        window.open(url,"myaccdchklistwin", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
+    }
+    //個案明細表
+    function accseq_from_onclick(pseq,pseq1,pcountry){
+        //***todo
+        var url = "/btbrt/brt4m/extform/accseqlist_qry.aspx?prgid=<%=HTProgCode%>&seq=" + pseq +"&seq1=" + pseq1 +  "&country=" + pcountry +"&closewin=Y";
+        window.open(url,"myaccseqlistwin", "width=850px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
+    }
+
     //每筆交辦勾選時檢查簽核層級
     //tupload=請核單上傳、tarmark=扣收入註記、tcount=第幾筆、tfees=規費、tcontract=契約書後補註記、sign_level=簽核層級
     function Chkupload(tcount,sign_level) {
-        if ($("#sign_level").val()=="") $("#sign_level").val(sign_level);
+        var tupload=$("#upload_chk_"+tcount).val();
+        var tarmark=$("#armark_flag_"+tcount).val();
+        var tarmarkT=$("#armarkT_flag_"+tcount).val();
+        var tcontract=$("#contract_flag_"+tcount).val();
+        var dis=$("#dis_flag_"+tcount).val();
+        var disT=$("#disT_flag_"+tcount).val();
+
+        if ($("#sign_level").val()=="") {
+            $("#sign_level").val(sign_level);
+            $("#upload_flag").val(tupload);
+            $("#armark_flag").val(tarmark);
+            $("#armarkT_flag").val(tarmarkT);
+            $("#contract_flag").val(tcontract);
+            $("#dis_flag").val(dis);
+            $("#disT_flag").val(disT);
+        }
 
         if($("#C_"+tcount).prop("checked")==true){
             if($("#sign_level").val()!=sign_level){
@@ -719,7 +753,7 @@
                 }else if($("#sign_level").val()=="1"){
                     alert("送簽流程(需經一級主管簽核)不相同無法同時送簽發信，請重新選取！");
                 }else{
-                    alert("送簽流程不相同無法同時送簽發信，請重新選取！");
+                    alert("送簽流程不相同無法同時送簽發信，請重新選取⑴！");
                 }
                 $("#C_"+tcount).prop("checked",false);
                 if ($("input[name^='C_']:checked").length == 0) $("#sign_level").val("");
@@ -727,15 +761,17 @@
             }
         }
 
-        $("#upload_flag").val($("#upload_chk_"+tcount).val());
-        $("#armark_flag").val($("#armark_flag_"+tcount).val());
-        $("#armarkT_flag").val($("#armarkT_flag_"+tcount).val());
-        $("#contract_flag").val($("#contract_flag_"+tcount).val());
-        $("#dis_flag").val($("#dis_flag_"+tcount).val());
-        $("#disT_flag").val($("#disT_flag_"+tcount).val());
+        if($("#upload_flag").val()+$("#armark_flag").val()+$("#armarkT_flag").val()+$("#contract_flag").val()+$("#dis_flag").val()+$("#disT_flag").val()
+            !=tupload+tarmark+tarmarkT+tcontract+dis+disT){
+            alert("送簽流程不相同無法同時送簽發信，請重新選取⑵！");
+            $("#C_"+tcount).prop("checked",false);
+            if ($("input[name^='C_']:checked").length == 0) $("#sign_level").val("");
+            return false;
+        }
 
         if ($("input[name^='C_']:checked").length == 0) $("#sign_level").val("");
     }
+
     //全選
     function checkall(){
         for (var j = 1; j <= CInt($("#row").val()) ; j++) {
@@ -744,24 +780,6 @@
                 $("#C_"+j).click();
             }
         }
-    }
-    //查案件扣收入交辦記錄 
-    function markdlist_from_onclick(pseq,pseq1,pcountry,pcase_no){
-        //**todo
-        var url = "/btbrt/brt3m/extform/markdlist_qry.aspx?prgid=<%=HTProgCode%>&seq=" + pseq +"&seq1=" + pseq1 + "&country=" + pcountry +"&case_no="+ pcase_no + "&qs_dept=<%=qs_dept%>";
-        window.open(url,"mymarkdlistwin", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
-    }
-    //查案件扣收入會計檢核記錄
-    function accdchklist_from_onclick(pseq,pseq1,pcountry,pcase_no){
-        //**todo
-        var url = "/btbrt/brt3m/extform/accdchklist_qry.aspx?prgid=<%=HTProgCode%>&seq="+ pseq +"&seq1=" + pseq1 +  "&country=" + pcountry +"&case_no="+pcase_no + "&qs_dept=<%=qs_dept%>";
-        window.open(url,"myaccdchklistwin", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
-    }
-    //個案明細表
-    function accseq_from_onclick(pseq,pseq1,pcountry){
-        //**todo
-        var url = "/btbrt/brt4m/extform/accseqlist_qry.aspx?prgid=<%=HTProgCode%>&seq=" + pseq +"&seq1=" + pseq1 +  "&country=" + pcountry +"&closewin=Y";
-        window.open(url,"myaccseqlistwin", "width=850px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
     }
 
     function tosign(){
@@ -833,18 +851,22 @@
             }
             $("#status").val("YY");
             $("#signidnext").val($("#prscode").val());//程序
+            $("#mark").val("");//是否給代理人簽核
             reg.action = "<%#HTProgPrefix%>_Update.aspx?qs_dept=<%=qs_dept%>";
         }else if($("input[name=signid][value='XX']").prop("checked")==true){
             reg.action = "<%#HTProgPrefix%>_Update2.aspx?qs_dept=<%=qs_dept%>";
         }else if($("input[name=signid][value='YT']").prop("checked")==true){
             if($("input[name='upsign']:eq(0)").prop("checked")==true){
                 $("#signidnext").val($("#sMastercode").val());//主管
-            }else if($("input[name='upsign']:eq(0)").prop("checked")==true){
+                $("#mark").val("");//是否給代理人簽核
+            }else if($("input[name='upsign']:eq(1)").prop("checked")==true){
                 $("#signidnext").val($("#ma_scode").val());//特殊簽核
-            }else if($("input[name='upsign']:eq(0)").prop("checked")==true){
+            }else if($("input[name='upsign']:eq(2)").prop("checked")==true){
                 $("#signidnext").val($("#sAgentcode").val());//代理人
+                $("#mark").val("S");//是否給代理人簽核
             }else{
                 $("#signidnext").val($("#accscode").val());//會計人員
+                $("#mark").val("");//是否給代理人簽核
             }
             $("#status").val("YT");
             reg.action = "<%#HTProgPrefix%>_Update.aspx?qs_dept=<%=qs_dept%>";
@@ -855,10 +877,11 @@
         }else{
             $(".bsubmit").lock(!$("#chkTest").prop("checked"));
             var form = $('#reg');
+            var formData = new FormData(form[0]);
             $.ajax({
                 url:form.attr('action'),
                 type : "POST",
-                data : form.serialize(),
+                data : formData,//form.serialize(),
                 contentType: false,
                 cache: false,
                 processData: false,

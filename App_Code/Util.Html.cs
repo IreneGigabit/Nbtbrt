@@ -264,31 +264,52 @@ public static partial class Util
 	/// <param name="attrFormat">option的attribute格式用{}包住欄位,ex:value1='{scode1}'</param>
 	/// <returns></returns>
 	public static string Radio(this DataTable dt, string objName, string valueFormat, string textFormat, string attrFormat) {
-		Regex rgx = new Regex("{([^{}]+)}", RegexOptions.IgnoreCase);
-		string rtnStr = "";
-
-		for (int r = 0; r < dt.Rows.Count; r++) {
-			//處理value
-			string val = valueFormat;
-			foreach (Match match in rgx.Matches(valueFormat)) {
-				val = val.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
-			}
-
-			//處理text
-			string txt = textFormat;
-			foreach (Match match in rgx.Matches(textFormat)) {
-				txt = txt.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
-			}
-
-			//處理attribute
-			string attr = attrFormat;
-			foreach (Match match in rgx.Matches(attrFormat)) {
-				attr = attr.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
-			}
-
-			rtnStr += string.Format("<label><input type='radio' id='{0}{1}' name='{0}' value='{1}' {3}>{2}</label>\n", objName, val, txt, attr);
-		}
-		return rtnStr;
+        return Radio(dt, objName, valueFormat, textFormat, attrFormat,0);
 	}
+
+    /// <summary>
+    /// 產生Radio字串
+    /// </summary> 
+    /// <param name="objName">radio的欄位名稱</param>
+    /// <param name="valueFormat">radio的value格式用{}包住欄位,ex:{scode}</param>
+    /// <param name="textFormat">radio的文字格式用{}包住欄位,ex:{scode}_{sc_name}</param>
+    /// <param name="attrFormat">option的attribute格式用{}包住欄位,ex:value1='{scode1}'</param>
+    /// <param name="brCount">每幾個換行,若為0則不換行</param>
+    /// <returns></returns>
+    public static string Radio(this DataTable dt, string objName, string valueFormat, string textFormat, string attrFormat,int brCount) {
+        Regex rgx = new Regex("{([^{}]+)}", RegexOptions.IgnoreCase);
+        string rtnStr = "";
+
+        for (int r = 0; r < dt.Rows.Count; r++) {
+            //處理value
+            string val = valueFormat;
+            foreach (Match match in rgx.Matches(valueFormat)) {
+                val = val.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
+            }
+
+            //處理text
+            string txt = textFormat;
+            foreach (Match match in rgx.Matches(textFormat)) {
+                txt = txt.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
+            }
+
+            //處理attribute
+            string attr = attrFormat;
+            foreach (Match match in rgx.Matches(attrFormat)) {
+                attr = attr.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
+            }
+
+            //處理換行
+            string br = "";
+            if (brCount > 0) {
+                if ((r + 1) % brCount == 0) {
+                    br = "<BR>";
+                }
+            }
+
+            rtnStr += string.Format("<label><input type='radio' id='{0}{1}' name='{0}' value='{1}' {3}>{2}</label>{4}\n", objName, val, txt, attr, br);
+        }
+        return rtnStr;
+    }
 	#endregion
 }

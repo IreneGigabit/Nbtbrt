@@ -339,6 +339,6 @@
         var chktest = ($("#chkTest:checked").val() || "");
 
         var url = getRootPath() + "/brt3m/brt31Scode.aspx?fld1=" + fld1 + "&fld2=" + fld2 + "&fld3=" + fld3 + "&chkTest=" + chktest;
-        scriptByGet("營洽清單", url);
+        ajaxScriptByGet("營洽清單", url);
     }
 </script>

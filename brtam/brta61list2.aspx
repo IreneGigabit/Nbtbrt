@@ -87,7 +87,7 @@
                     , page.pagedTable.Rows[i].SafeRead("seq1", "")
                     , page.pagedTable.Rows[i].SafeRead("country", "")
                     , Sys.GetSession("SeBranch")
-                    , Sys.GetSession("dept").ToUpper());
+                    , Sys.GetSession("dept"));
                 appl_name = page.pagedTable.Rows[i].SafeRead("appl_name", "");
                 sc_name = page.pagedTable.Rows[i].SafeRead("sc_name", "");
                 now_step_grade = page.pagedTable.Rows[i].SafeRead("now_step_grade", "");

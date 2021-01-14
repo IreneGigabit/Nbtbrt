@@ -402,6 +402,7 @@
 
     //承辦期限控制
     case_form.pr_date_control = function (T1) {
+        /*
         $.ajax({
             url: getRootPath() + "/brt1m/pr_date.aspx?Arcase=" + T1,
             type: 'GET',
@@ -413,6 +414,8 @@
                 $("#dialog").dialog({ title: '取得承辦期限控制失敗！', modal: true, maxHeight: 500,width: "90%" });
             }
         });
+        */
+        ajaxScriptByGet("取得承辦期限控制", getRootPath() + "/brt1m/pr_date.aspx?Arcase=" + T1);
     }
 
     //顯示附屬案性(x1:國別:T為國內案,x2:案性代碼,x3:Z1=>附屬案性)

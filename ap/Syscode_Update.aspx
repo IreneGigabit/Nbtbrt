@@ -47,7 +47,13 @@
                 cnn.Commit();
                 //conn.RollBack();
 
-                if (Request["chkTest"] != "TEST") strOut.AppendLine("window.parent.parent.Etop.goSearch();");
+                if (Request["chkTest"] != "TEST") {
+                    strOut.AppendLine("if (window.parent.parent.Etop.goSearch !== undefined) { ");
+                    strOut.AppendLine(" window.parent.parent.Etop.goSearch();");
+                    strOut.AppendLine("}else{");
+                    strOut.AppendLine(" window.parent.document.getElementsByClassName('imgCls')[0].click();");
+                    strOut.AppendLine("}");
+                }
             }
             catch (Exception ex) {
                 cnn.RollBack();

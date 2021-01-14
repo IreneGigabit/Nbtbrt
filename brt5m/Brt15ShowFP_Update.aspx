@@ -1019,8 +1019,8 @@
                 break;
         }
 
-        string fseq = Sys.formatSeq(Request["tfx_seq"], ltfx_seq1, "", Sys.GetSession("seBranch"), Sys.GetSession("dept").ToUpper());
-        string ftran_seq = Sys.formatSeq(Request["tran_seq"], Request["tran_seq1"], "", Request["tran_seq_branch"], Sys.GetSession("dept").ToUpper());
+        string fseq = Sys.formatSeq(Request["tfx_seq"], ltfx_seq1, "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
+        string ftran_seq = Sys.formatSeq(Request["tran_seq"], Request["tran_seq1"], "", Request["tran_seq_branch"], Sys.GetSession("dept"));
 
         string body = "<B>致: 總管處 程序</B><br><br>";
         body += "【通知日期】 : <B>" + DateTime.Today.ToShortDateString() + "</B><br>";
@@ -1065,7 +1065,7 @@
                 break;
         }
         string branchnm = Sys.getCodeName(conn, "sysctrl.dbo.branch_code", "branchname", "where branch='" + Request["tran_seq_branch"] + "'");
-        string ftran_seq = Sys.formatSeq(Request["tran_seq"], Request["tran_seq1"], "", Request["tran_seq_branch"], Sys.GetSession("dept").ToUpper());
+        string ftran_seq = Sys.formatSeq(Request["tran_seq"], Request["tran_seq1"], "", Request["tran_seq_branch"], Sys.GetSession("dept"));
 
         string body = "<B>致: " + branchnm + " 程序</B><br><br>";
         body += "【通知日期】 : <B>" + DateTime.Today.ToShortDateString() + "</B><br>";

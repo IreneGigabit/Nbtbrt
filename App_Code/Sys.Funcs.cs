@@ -401,7 +401,8 @@ public partial class Sys
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
             string SQL = "select a.scode,b.sc_name,a.sort ";
             SQL += "from scode_roles a inner join scode b on a.scode=b.scode ";
-            SQL += " where a.branch='" + pBranch + "' ";
+            SQL += " where 1=1 ";
+            if(pBranch!="") SQL += " and a.branch='" + pBranch + "' ";
             SQL += " and a.syscode='" + pSysno + "' ";
             SQL += " and a.dept='" + pDept + "' ";
             SQL += " and a.roles='" + pRoles + "' ";
@@ -416,11 +417,23 @@ public partial class Sys
 
     #region formatSeq - 組本所編號
     /// <summary>  
-    /// 組本所編號
-    /// </summary>  
+    /// 組本所編號,ex:NT-33333
+    /// </summary>
     public static string formatSeq(string seq, string seq1, string country, string branch, string dept) {
-        string lseq = branch + dept;
+        string lseq = branch + dept.ToUpper();
         lseq += (lseq != "" ? "-" : "") + seq;
+        lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
+        lseq += (country != "" ? (" " + country.ToUpper()) : "");
+        return lseq;
+    }
+    #endregion
+
+    #region formatSeq1 - 組本所編號
+    /// <summary>  
+    /// 組本所編號,ex:NT33333
+    /// </summary>  
+    public static string formatSeq1(string seq, string seq1, string country, string branch, string dept) {
+        string lseq = branch + dept.ToUpper() + seq;
         lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
         return lseq;
@@ -624,6 +637,8 @@ public partial class Sys
     /// <summary>  
     /// 抓取cust_code
     /// </summary>  
+    /// <param name="pwh2">額外條件,ex:Mark='Y'</param>
+    /// <param name="sortField">排序欄位,若未指定則為cust_code</param>
     public static DataTable getCustCode(string code_type, string pwh2, string sortField) {
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
             string SQL = "select cust_code,code_name,form_name,ref_code,remark,mark,mark1 ";
@@ -709,7 +724,7 @@ public partial class Sys
     /// 抓取代碼資料或特定欄位資料(取第一欄第一列)
     /// </summary>  
     public static string getCodeName(DBHelper conn, string table, string column, string where) {
-        string SQL = "select " + column + " from " + column + " " + where;
+        string SQL = "select " + column + " from " + table + " " + where;
         object objResult = conn.ExecuteScalar(SQL);
         return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
     }

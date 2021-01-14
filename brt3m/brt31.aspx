@@ -37,7 +37,7 @@
             HTProgCap = "出口案主管簽核作業";
             apcode = "'Si04W06','ext34'";//改版後有新舊代碼
         }
-    
+
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
@@ -94,14 +94,15 @@
                             }
                         } else {
                             if ((HTProgRight & 128) != 0) {//權限B代理區所主管
-                                if (dt.Rows[i].SafeRead("grpid", "") == "000") {
+                                //if (dt.Rows[i].SafeRead("grpid", "") == "000") {
+                                if (Convert.ToInt32(dt.Rows[i].SafeRead("grplevel", "0")) >=1 ) {
                                     if (dt.Rows[i].SafeRead("job_scode", "") != Sys.GetSession("scode")) {
                                         td_jscode += "<option value='" + dt.Rows[i]["job_scode"] + "'>" + dt.Rows[i]["sc_name"] + "</option>";
                                     }
                                 }
-                            }
-                            if ((HTProgRight & 64) != 0) {//權限A代理部門主管
-                                if (dt.Rows[i].SafeRead("grpid", "") == "T000") {
+                            }else if ((HTProgRight & 64) != 0) {//權限A代理部門主管
+                                //if (dt.Rows[i].SafeRead("grpid", "") == "T000") {
+                                if (Convert.ToInt32(dt.Rows[i].SafeRead("grplevel", "0")) >= 2) {
                                     if (dt.Rows[i].SafeRead("job_scode", "") != Sys.GetSession("scode")) {
                                         td_jscode += "<option value='" + dt.Rows[i]["job_scode"] + "'>" + dt.Rows[i]["sc_name"] + "</option>";
                                     }
@@ -162,9 +163,9 @@
 </table>
 
 <form id="reg" name="reg" method="post">
-    <input type="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <input type="text" id=dept name=dept value=<%=qs_dept%>>
-    <input type="text" id=qs_dept name=qs_dept value=<%=qs_dept%>>
+    <input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <input type="hidden" id=dept name=dept value=<%=qs_dept%>>
+    <input type="hidden" id=qs_dept name=qs_dept value=<%=qs_dept%>>
 
     <div id="id-div-slide">
         <table id="qryForm" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="70%" align="center">	
@@ -268,6 +269,6 @@
         var chktest = ($("#chkTest:checked").val() || "");
 
         var url = getRootPath() + "/brt3m/brt31Scode.aspx?fld1=" + fld1 + "&fld2=" + fld2 + "&fld3=" + fld3 + "&chkTest=" + chktest;
-        scriptByGet("營洽清單", url);
+        ajaxScriptByGet("營洽清單", url);
     }
 </script>
