@@ -78,8 +78,8 @@
                 tot_fees += Convert.ToDecimal(dtRpt.Rows[i].SafeRead("fees", "0"));
             }
             
-            branchRepeater.DataSource = dtRpt;
-            branchRepeater.DataBind();
+            rptRepeater.DataSource = dtRpt;
+            rptRepeater.DataBind();
         }
     }
 </script>
@@ -114,14 +114,14 @@
 			<td width="20%" align=right><a href="javascript:window.print();void(0);">列印</a>日期：<%#DateTime.Today.ToShortDateString()%></td>
 		</tr>
     </table>
-    <asp:Label ID="lblEmpty" runat="server" Visible='<%#bool.Parse((branchRepeater.Items.Count==0).ToString())%>'>
+    <asp:Label ID="lblEmpty" runat="server" Visible='<%#bool.Parse((rptRepeater.Items.Count==0).ToString())%>'>
         <div align="center"><font color="red" size=2>=== 查無資料===</font></div>
     </asp:Label> 
-	<asp:Repeater id="branchRepeater" runat="server" Visible='<%#bool.Parse((branchRepeater.Items.Count>0).ToString())%>'>
+	<asp:Repeater id="rptRepeater" runat="server" Visible='<%#bool.Parse((rptRepeater.Items.Count>0).ToString())%>'>
         <FooterTemplate>
         </FooterTemplate>
         <HeaderTemplate>
-            <table border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%">	
+            <table border=1 width="100%" cellspacing="0" cellpadding="1">	
 		        <tr align="center" height="20" class="lightbluetable" style="font-size:12pt">
 		            <td nowrap>本所編號</td>
 		            <td nowrap>收文日期</td>
@@ -136,7 +136,7 @@
         </HeaderTemplate>
 	    <ItemTemplate>
                 <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
-			        <td nowrap align="center"><%#Eval("fseq")%>
+			        <td nowrap align="center"><%#Eval("fseq")%></td>
 			        <td nowrap align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
 			        <td><%#Eval("rs_code")%><%#Eval("rs_detail")%></td><!--2015/4/13專案室要求，增加顯示收文代碼-->
 			        <td align="left">&nbsp;<%#Eval("cappl_name")%></td>

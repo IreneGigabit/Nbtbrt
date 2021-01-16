@@ -1,0 +1,244 @@
+﻿<%@ Page Language="C#" CodePage="65001"%>
+<%@ Import Namespace = "System.Data" %>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<script runat="server">
+    protected string HTProgCap = "承辦申請書列印";//HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
+    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
+    protected int HTProgRight = 0;
+    protected string DebugStr = "";
+    protected string StrFormBtnTop = "";
+    protected string StrFormBtn = "";
+    protected string SQL = "";
+
+    protected string td_tscode = "";
+    protected string html_arcase = "";
+
+    DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    private void Page_Unload(System.Object sender, System.EventArgs e) {
+        if (conn != null) conn.Dispose();
+        if (cnn != null) cnn.Dispose();
+    }
+
+    private void Page_Load(System.Object sender, System.EventArgs e) {
+        Response.CacheControl = "no-cache";
+        Response.AddHeader("Pragma", "no-cache");
+        Response.Expires = -1;
+
+        conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
+        
+        TokenN myToken = new TokenN(HTProgCode);
+        HTProgRight = myToken.CheckMe();
+        //HTProgCap = myToken.Title;
+        DebugStr = myToken.DebugStr;
+        if (HTProgRight >= 0) {
+            PageLayout();
+            this.DataBind();
+        }
+    }
+
+    private void PageLayout() {
+        if ((HTProgRight & 2) > 0) {
+            StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"查　詢\" class=\"cbutton bsubmit\" />\n";
+            StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
+        }
+
+        //承辦案性
+        DataTable dtCodeBr = Sys.getCodeBr("", "", "").Select("prt_code is not null", "rs_class").CopyToDataTable();
+        html_arcase = dtCodeBr.Option("{RS_code}", "{RS_code}--{RS_detail}");
+
+        //營洽清單
+        DataTable dtscode = new DataTable();
+        SQL = "select scode,sc_name from vscode_type where branch='" + Session["seBranch"] + "' and grpid like '" + Session["Dept"] + "%' and work_type='sales' order by scode";
+        cnn.DataTable(SQL, dtscode);
+        if ((HTProgRight & 64) != 0) {
+            td_tscode = "<select id='Scode' name='Scode'>";
+            td_tscode += dtscode.Option("{scode}", "{scode}_{sc_name}", "", true);
+            td_tscode += "</select>";
+        } else {
+            td_tscode = "<input type='hidden' id='Scode' name='Scode' value='" + Session["scode"] + "'>";
+            td_tscode = "<input type='text' id='ScodeName' name='ScodeName' readonly class='SEdit' value='" + Session["sc_name"] + "'>";
+        }
+
+    }
+</script>
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><%#HTProgCap%></title>
+<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/inc/setstyle.css")%>" />
+<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.css")%>" />
+<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/toastr.css")%>" />
+<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.css")%>" />
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-1.12.4.min.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.min.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
+</head>
+
+<body>
+<table cellspacing="1" cellpadding="0" width="98%" border="0" align="center">
+    <tr>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%#prgid%> <%#HTProgCap%>】</td>
+        <td class="FormLink" valign="top" align="right" nowrap="nowrap">
+            <%#StrFormBtnTop%>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><hr class="style-one"/></td>
+    </tr>
+</table>
+
+<form id="reg" name="reg" method="post">
+    <input type="text" id="prgid" name="prgid" value="<%=prgid%>">
+    <input type="text" id=tfx_in_scode name=tfx_in_scode>
+
+    <div id="id-div-slide">
+        <table id="qryForm" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="90%" align="center">	
+	        <tr>
+		        <td class="lightbluetable" align="right">承辦案性 :</td>
+		        <td class="whitetablebg" align="left">
+                    <select name="tfx_Arcase" id="tfx_Arcase"><%#html_arcase%></select>
+		        </td> 
+	        </tr>
+            <TR>
+                <td class="lightbluetable" align="right">營&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;洽 :</td>
+		        <td class="whitetablebg" align="left"><%#td_tscode%>
+            </TR>
+ 	        <tr>
+		        <td class="lightbluetable" align="right">列印選擇 :</td>
+		        <td class="whitetablebg" align="left">
+                    <input type="radio" name="tfx_new" value="N" checked>尚未列印
+					<input type="radio" name="tfx_new" value="">不設定
+		        </td>
+	        </tr>
+	        <tr>
+		        <td class="lightbluetable" align="right">序號選擇 :</td>
+		        <td class="whitetablebg" align="left">
+			        <input type="radio" name="new" value="in_no" checked>接洽序號
+ 			        <input type="radio" name="new" value="seq_no">本所編號
+ 		        </td>
+	        </tr>
+	        <tr id=sin_no1 style="display:none">
+		        <td class="lightbluetable" align="right">接洽序號 :</td>
+		        <td class="whitetablebg" align="left" colspan="3">
+                    <input type="text" id="sfx_in_no" name="sfx_in_no" size="12" maxlength="12">～<input type="text" id="efx_in_no" name="efx_in_no" size="12" maxlength="12">
+		        </td>
+	        </tr>
+	        <tr id=sin_no2 style="display:none">
+		        <td class="lightbluetable" align="right">本所編號 :</td>
+		        <td class="whitetablebg" align="left" colspan="3">
+                    <input type="text" id="tfx_seq" name="tfx_seq" size="6" maxlength="<%=Sys.DmtSeq%>">-<input type="text" id="tfx_seq1" name="tfx_seq1" size="2" maxlength="<%=Sys.DmtSeq1%>">
+		        </td>
+	        </tr>
+	        <tr>
+		        <td class="lightbluetable" align="right">接洽日期 :</td>
+		        <td class="whitetablebg" align="left" colspan="3">
+		            <input type="text" id="sfx_in_date" name="sfx_in_date" size="10" class="dateField">～
+		            <input type="text" id="efx_in_date" name="efx_in_date" size="10" class="dateField">
+		        </td>
+	        </tr>
+        </table>
+        <br>
+        <%#DebugStr%>
+        <table id="tabBtn" border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
+	        <tr><td width="100%" align="center">
+			    <%#StrFormBtn%>
+	        </td></tr>
+        </table>
+    </div>
+</form>
+
+<div id="dialog"></div>
+
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+</body>
+</html>
+
+
+<script language="javascript" type="text/javascript">
+    $(function () {
+        this_init();
+    });
+
+    function this_init() {
+        if (window.parent.tt !== undefined) {
+            window.parent.tt.rows = "100%,0%";
+        }
+
+        $("input.dateField").datepick();
+
+        $("#Scode").val("<%#Session["scode"]%>");
+        $("#sfx_in_date").val("<%#DateTime.Today.ToString("yyyy/M/1")%>");
+        $("#efx_in_date").val("<%#DateTime.Today.ToShortDateString()%>");
+        $("#tfx_seq1").val("");
+        $("input[name='new']:checked").triggerHandler("click");
+    }
+
+    //[重填]
+    $("#btnRest").click(function (e) {
+        reg.reset();
+        this_init();
+    });
+
+    //////////////////////////////////////////////////////
+    //序號選擇
+    $("input[name='new']").click(function (e) {
+        $("#sin_no1,#sin_no2").hide();
+        if ($(this).val() == "in_no") {
+            $("#tfx_seq1").val("");
+            $("#sin_no1").show();
+        } else if ($(this).val() == "seq_no") {
+            $("#tfx_seq1").val("_");
+            $("#sin_no2").show();
+        }
+    });
+
+    //[查詢]
+    $("#btnSrch").click(function (e) {
+        if ($("input[name='new']:checked").val() == "seq_no") {
+            if ($("#tfx_seq").val() == "") {
+                alert("請輸入本所編號!!!");
+                $("#tfx_seq").focus();
+                return false;
+            }
+        }
+
+        if ($("#sfx_in_no").val() != "") {
+            if (!IsNumeric($("#sfx_in_no").val())) {
+                alert("接洽序號(起)錯誤,請重新輸入!!");
+                $("#sfx_in_no").focus();
+                return false;
+            }
+        }
+
+        if ($("#efx_in_no").val() != "") {
+            if (!IsNumeric($("#efx_in_no").val())) {
+                alert("接洽序號(迄)錯誤,請重新輸入!!");
+                $("#efx_in_no").focus();
+                return false;
+            }
+        }
+
+        if ($("#sfx_in_no").val() != "" && $("#efx_in_no").val() != "") {
+            if (CInt($("#sfx_in_no").val()) > CInt($("#efx_in_no").val())) {
+                alert("接洽序號(起),不得太於接洽序號(迄)");
+                return false;
+            }
+        }
+
+        $("#tfx_in_scode").val($("#Scode").val());
+
+        reg.action = "<%=HTProgPrefix%>_List.aspx";
+        reg.submit();
+    });
+</script>

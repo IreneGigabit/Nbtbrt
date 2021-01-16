@@ -41,7 +41,7 @@
             if ((Request["cust_area"] ?? "") != "" && cgrs != "CS") SQL += " and cust_area='" + Request["cust_area"] + "'";
             if ((Request["scust_seq"] ?? "") != "") SQL += " and cust_seq>='" + Request["scust_seq"] + "'";
             if ((Request["ecust_seq"] ?? "") != "") SQL += " and cust_seq<='" + Request["ecust_seq"] + "'";
-            if ((Request["hprint"] ?? "") == "N" && cgrs != "CS") SQL += " and new='" + Request["hprint"] + "'";
+            if ((Request["hprint"] ?? "") == "N" && cgrs != "CS") SQL += " and isnull(new,'N')='" + Request["hprint"] + "'";
             object objResult = conn.ExecuteScalar(SQL);
             int count = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
             if(count==0){

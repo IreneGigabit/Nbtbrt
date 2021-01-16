@@ -504,12 +504,15 @@ public partial class Sys
     /// </summary>  
     public static DataTable getCodeBr(string rs_type, string rs_class, string submitTask) {
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
-            string SQL = "SELECT rs_code,prt_code,rs_detail,remark FROM code_br ";
-            SQL += "WHERE rs_class like '" + rs_class + "%' And  cr= 'Y' and dept='T' AND no_code='N' ";
+            string SQL = "SELECT rs_class,rs_code,prt_code,rs_detail,remark FROM code_br ";
+            SQL += "WHERE cr= 'Y' and dept='T' AND no_code='N' ";
             if (rs_type != "") {
                 SQL += "And rs_type='" + rs_type + "' ";
             } else {
                 SQL += "And rs_type='" + getRsType() + "' ";
+            }
+            if (rs_class != "") {
+                SQL += "And rs_class like '" + rs_class + "%' ";
             }
             if (submitTask.ToUpper() == "A") {
                 SQL += "and (end_date is null or end_date = '' or end_date > getdate()) ";

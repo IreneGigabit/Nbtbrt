@@ -54,7 +54,7 @@
             if ((Request["sseq"] ?? "") != "") SQL += " and seq>='" + Request["sseq"] + "'";
             if ((Request["eseq"] ?? "") != "") SQL += " and seq<='" + Request["eseq"] + "'";
             if ((Request["seq1"] ?? "") != "") SQL += " and seq1='" + Request["seq1"] + "'";
-            if ((Request["hprint"] ?? "") == "N") SQL += " and new='" + Request["hprint"] + "'";
+            if ((Request["hprint"] ?? "") == "N") SQL += " and isnull(new,'N')='" + Request["hprint"] + "'";
             if ((Request["hscan"] ?? "") != "*" && (Request["hscan"] ?? "") != "") SQL += " and pr_scan='" + Request["hscan"] + "'";
             SQL += " order by rs_no";
 
@@ -135,7 +135,7 @@
                         contact += dt.Rows[i].SafeRead("att_company", "").ToUnicode().Trim() + "\n";
                     } else {
                         if (dt.Rows[i].SafeRead("ap_cname1", "") != "") {
-                            contact +=( dt.Rows[i].SafeRead("ap_cname1", "") + dt.Rows[i].SafeRead("ap_cname2", "")).ToUnicode().Trim() + "\n";
+                            contact += (dt.Rows[i].SafeRead("ap_cname1", "") + dt.Rows[i].SafeRead("ap_cname2", "")).ToUnicode().Trim() + "\n";
                         }
                     }
                     if (dt.Rows[i].SafeRead("att_addr1", "") != "") {
@@ -269,10 +269,18 @@
                         Rpt.NewPage();
                     }
                 }
+
+            }
+
+            Rpt.CopyPageFoot("rpt");//複製頁尾/邊界
+            Rpt.Flush(docFileName);
+
+            //更新為已列印
+            if (updRsNo.Count > 0) {
+                SQL = "update step_dmt set new='Y' where rs_no in('" + string.Join("','", updRsNo.ToArray()) + "')";
+                conn.ExecuteNonQuery(SQL);
+                conn.Commit();
             }
         }
-
-        Rpt.CopyPageFoot("rpt");//複製頁尾/邊界
-        Rpt.Flush(docFileName);
     }
 </script>

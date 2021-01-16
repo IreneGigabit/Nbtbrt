@@ -426,7 +426,10 @@
             var url = "brta" + $("#prtkind").val() + "Print.aspx?sdate=" + $("#sdate").val() + "&edate=" + $("#edate").val() +
                 "&srs_no=" + $("#srs_no").val() + "&ers_no=" + $("#ers_no").val() + "&sseq=" + $("#sseq").val() + "&eseq=" + $("#eseq").val() +
                 "&seq1=" + $("#seq1").val() + "&hprint=" + $("#hprint").val();
-            window.open(url, "myWindowOneN", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no, scrollbars=yes");
+            //window.open(url, "myWindowOneN", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no, scrollbars=yes");
+            $('#dialog')
+            .html('<iframe style="border: 0px;" src="' + url + '" width="100%" height="100%"></iframe>')
+            .dialog({autoOpen: true,modal: true,height: 550,width: 750,title: "列印"});
         }
     });
 </script>
