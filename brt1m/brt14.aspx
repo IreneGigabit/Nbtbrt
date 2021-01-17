@@ -5,8 +5,8 @@
 
 <script runat="server">
     protected string HTProgCap = "承辦申請書列印";//HttpContext.Current.Request["prgname"];//功能名稱
-    protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
-    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgPrefix = "brt14";//HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
+    protected string HTProgCode = "brt14";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
@@ -14,6 +14,7 @@
     protected string StrFormBtn = "";
     protected string SQL = "";
 
+    protected string homelist = "";
     protected string td_tscode = "";
     protected string html_arcase = "";
 
@@ -30,7 +31,10 @@
         Response.Expires = -1;
 
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-        
+        cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
+
+        homelist = (Request["homelist"] ?? "").ToLower();
+     
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         //HTProgCap = myToken.Title;
@@ -42,13 +46,15 @@
     }
 
     private void PageLayout() {
+        //StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>\n";
+        //StrFormBtnTop += "<a class=\"imgQry\" href=\"javascript:void(0);\" >[查詢條件]</a>\n";
         if ((HTProgRight & 2) > 0) {
             StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"查　詢\" class=\"cbutton bsubmit\" />\n";
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
         }
 
         //承辦案性
-        DataTable dtCodeBr = Sys.getCodeBr("", "", "").Select("prt_code is not null", "rs_class").CopyToDataTable();
+        DataTable dtCodeBr = Sys.getCodeBr("", "", "").Select("prt_code is not null", "rs_class,RS_code").CopyToDataTable();
         html_arcase = dtCodeBr.Option("{RS_code}", "{RS_code}--{RS_detail}");
 
         //營洽清單
@@ -57,7 +63,7 @@
         cnn.DataTable(SQL, dtscode);
         if ((HTProgRight & 64) != 0) {
             td_tscode = "<select id='Scode' name='Scode'>";
-            td_tscode += dtscode.Option("{scode}", "{scode}_{sc_name}", "", true);
+            td_tscode += dtscode.Option("{scode}", "{scode}_{sc_name}",true, Sys.GetSession("scode"));
             td_tscode += "</select>";
         } else {
             td_tscode = "<input type='hidden' id='Scode' name='Scode' value='" + Session["scode"] + "'>";
@@ -99,6 +105,7 @@
 </table>
 
 <form id="reg" name="reg" method="post">
+    <input type="text" id="homelist" name="homelist" value="<%=homelist%>">
     <input type="text" id="prgid" name="prgid" value="<%=prgid%>">
     <input type="text" id=tfx_in_scode name=tfx_in_scode>
 
@@ -111,7 +118,7 @@
 		        </td> 
 	        </tr>
             <TR>
-                <td class="lightbluetable" align="right">營&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;洽 :</td>
+                <td class="lightbluetable" align="right">營　　洽 :</td>
 		        <td class="whitetablebg" align="left"><%#td_tscode%>
             </TR>
  	        <tr>
@@ -131,7 +138,8 @@
 	        <tr id=sin_no1 style="display:none">
 		        <td class="lightbluetable" align="right">接洽序號 :</td>
 		        <td class="whitetablebg" align="left" colspan="3">
-                    <input type="text" id="sfx_in_no" name="sfx_in_no" size="12" maxlength="12">～<input type="text" id="efx_in_no" name="efx_in_no" size="12" maxlength="12">
+                    <input type="text" id="sfx_in_no" name="sfx_in_no" size="12" maxlength="12">～
+                    <input type="text" id="efx_in_no" name="efx_in_no" size="12" maxlength="12">
 		        </td>
 	        </tr>
 	        <tr id=sin_no2 style="display:none">
@@ -160,7 +168,6 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
 </body>
 </html>
 
@@ -177,12 +184,13 @@
 
         $("input.dateField").datepick();
 
-        $("#Scode").val("<%#Session["scode"]%>");
         $("#sfx_in_date").val("<%#DateTime.Today.ToString("yyyy/M/1")%>");
         $("#efx_in_date").val("<%#DateTime.Today.ToShortDateString()%>");
         $("#tfx_seq1").val("");
         $("input[name='new']:checked").triggerHandler("click");
     }
+
+    //////////////////////////////////////////////////////
 
     //[重填]
     $("#btnRest").click(function (e) {
@@ -190,7 +198,6 @@
         this_init();
     });
 
-    //////////////////////////////////////////////////////
     //序號選擇
     $("input[name='new']").click(function (e) {
         $("#sin_no1,#sin_no2").hide();

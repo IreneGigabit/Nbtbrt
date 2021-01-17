@@ -121,7 +121,7 @@
             txtSMaster = "商標主管:" + MasterList.Select("grplevel<" + job_grplevel, "up_level")[0]["master_nm"];
             txtSMastercode = MasterList.Select("grplevel<" + job_grplevel, "up_level")[0]["Master_scode"].ToString();
         }
-        selManager = MasterList.Select("grplevel<=0", "up_level").CopyToDataTable().Option("{Master_scode}", "{master_type}--{Master_nm}", false); ;//只抓專案室以上(含)
+        selManager = MasterList.Select("grplevel<=0", "up_level").CopyToDataTable().Option("{Master_scode}", "{master_type}--{Master_nm}", false);//只抓專案室以上(含)
         
         //程序人員
         if (qs_dept == "t") {
@@ -137,7 +137,7 @@
         }
         DataTable dtPrScode = new DataTable();
         cnn.DataTable(SQL, dtPrScode);
-        selPrScode = dtPrScode.Option("{scode}", "{sc_name}", "", false, "grptype=F");
+        selPrScode = dtPrScode.Option("{scode}", "{sc_name}", "", false,"", "grptype=F");
         
         //會計人員
         DataTable dtAccScode = Sys.getScodeRole(Sys.GetSession("SeBranch"), Sys.GetSession("syscode"), Sys.GetSession("dept"), "account");

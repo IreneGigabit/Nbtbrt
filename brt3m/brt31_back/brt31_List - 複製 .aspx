@@ -125,7 +125,7 @@
         }
         DataTable dtPrScode = new DataTable();
         cnn.DataTable(SQL, dtPrScode);
-        selPrScode = dtPrScode.Option("{scode}", "{sc_name}", "", false, "grptype=F");
+        selPrScode = dtPrScode.Option("{scode}", "{sc_name}", "", false,"", "grptype=F");
         
         //會計人員
         DataTable dtAccScode = Sys.getScodeRole(Sys.GetSession("SeBranch"), Sys.GetSession("syscode"), Sys.GetSession("dept"), "account");

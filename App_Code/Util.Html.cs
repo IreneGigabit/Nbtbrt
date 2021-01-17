@@ -117,6 +117,9 @@ public static partial class Util
 	public static string Option(this DataTable dt, string valueFormat, string textFormat) {
 		return Option(dt, valueFormat, textFormat, "", true);
 	}
+    public static string Option(this DataTable dt, string valueFormat, string textFormat, string setValue) {
+        return Option(dt, valueFormat, textFormat, true, setValue);
+    }
 
 	/// <summary>
 	/// 產生Option字串
@@ -128,6 +131,9 @@ public static partial class Util
 	public static string Option(this DataTable dt, string valueFormat, string textFormat, bool showEmpty) {
 		return Option(dt, valueFormat, textFormat, "", showEmpty);
 	}
+    public static string Option(this DataTable dt, string valueFormat, string textFormat, bool showEmpty, string setValue) {
+        return Option(dt, valueFormat, textFormat,"", showEmpty, setValue,"");
+    }
 
 	/// <summary>
 	/// 產生Option字串
@@ -138,7 +144,7 @@ public static partial class Util
 	/// <param name="showEmpty">空白選項的顯示字串</param>
 	/// <returns></returns>
 	public static string Option(this DataTable dt, string valueFormat, string textFormat, string attrFormat, bool showEmpty) {
-        return Option(dt, valueFormat, textFormat, attrFormat, showEmpty, "");
+        return Option(dt, valueFormat, textFormat, attrFormat, showEmpty,"","");
     }
     /// <summary>
     /// 產生Option字串
@@ -147,9 +153,10 @@ public static partial class Util
     /// <param name="textFormat">option的文字格式用{}包住欄位,ex:{scode}_{sc_name}</param>
     /// <param name="attrFormat">option的attribute格式用{}包住欄位,ex:value1='{scode1}'</param>
     /// <param name="showEmpty">空白選項的顯示字串</param>
+    /// <param name="setValue">預設值</param>
     /// <param name="selectedCond">預設欄位條件,ex:scode=n1262</param>
     /// <returns></returns>
-    public static string Option(this DataTable dt, string valueFormat, string textFormat, string attrFormat, bool showEmpty, string selectedCondition) {
+    public static string Option(this DataTable dt, string valueFormat, string textFormat, string attrFormat, bool showEmpty, string setValue, string selectedCondition) {
         Regex rgx = new Regex("{([^{}]+)}", RegexOptions.IgnoreCase);
         string rtnStr = "";
 
@@ -158,11 +165,13 @@ public static partial class Util
             rtnStr += "<option value='' style='color:blue' selected>請選擇</option>\n";
 
         for (int r = 0; r < dt.Rows.Count; r++) {
-            //處理selected
+            //處理預設欄位條件
             string selected = "";
-            string[] column = selectedCondition.Split('=');
-            if (dt.Columns.Contains(column[0]) && dt.Rows[r][column[0]].ToString() == column[1]) {
-                selected = " selected";
+            if (selectedCondition != "") {
+                string[] column = selectedCondition.Split('=');
+                if (dt.Columns.Contains(column[0]) && dt.Rows[r][column[0]].ToString() == column[1]) {
+                    selected = " selected";
+                }
             }
 
             //處理value
@@ -182,7 +191,14 @@ public static partial class Util
             foreach (Match match in rgx.Matches(attrFormat)) {
                 attr = attr.Replace(match.Value, dt.Rows[r][match.Result("$1")].ToString());
             }
-            rtnStr += "<option value='" + val + "' " + attr + "" + selected + ">" + txt + "</option>\n";
+
+            if (selectedCondition != "")
+                rtnStr += "<option value='" + val + "' " + attr + "" + selected + ">" + txt + "</option>\n";
+            else if (string.Compare(val, setValue, true) == 0)
+                rtnStr += "<option value='" + val + "' selected " + attr + ">" + txt + "</option>\n";
+            else
+                rtnStr += "<option value='" + val + "' " + attr + ">" + txt + "</option>\n";
+
         }
         return rtnStr;
     }

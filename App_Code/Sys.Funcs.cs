@@ -420,7 +420,7 @@ public partial class Sys
     /// 組本所編號,ex:NT-33333
     /// </summary>
     public static string formatSeq(string seq, string seq1, string country, string branch, string dept) {
-        string lseq = branch + dept.ToUpper();
+        string lseq = (seq != "" ? branch + dept.ToUpper() + seq : "");
         lseq += (lseq != "" ? "-" : "") + seq;
         lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
@@ -433,7 +433,7 @@ public partial class Sys
     /// 組本所編號,ex:NT33333
     /// </summary>  
     public static string formatSeq1(string seq, string seq1, string country, string branch, string dept) {
-        string lseq = branch + dept.ToUpper() + seq;
+        string lseq = (seq != "" ? branch + dept.ToUpper() + seq : "");
         lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
         return lseq;
