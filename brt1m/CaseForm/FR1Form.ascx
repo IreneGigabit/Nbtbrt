@@ -5,8 +5,8 @@
     //A4延展案交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected string SQL = "";
 
     protected string ttg1_agt_no = "";
@@ -23,7 +23,7 @@
 </script>
 
 <div id="div_Form_FR1">
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>※、代理人</strong></td>
@@ -266,7 +266,9 @@
             if (IsNumeric($("#class2_" + nRow).val())) {
                 var x = ("000" + $("#class2_" + nRow).val()).Right(3);//補0
                 $("#class2_" + nRow).val(x);
-                br_form.checkclass(x);
+                if ($("input[name='tfzd_class_type']:checked").val() == "int") {
+                    br_form.checkclass(x);
+                }
             } else {
                 alert("商品類別請輸入數值!!!");
                 $("#class2_" + nRow).val("");

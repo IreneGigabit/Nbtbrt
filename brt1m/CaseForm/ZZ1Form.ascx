@@ -5,8 +5,8 @@
     //ZZ交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected string SQL = "";
 
     protected string tfg1_agt_no1 = "";
@@ -23,7 +23,7 @@
 </script>
 
 <div id="div_Form_ZZ1">
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <INPUT TYPE=hidden id=tfzd_mark name=tfzd_mark value="">
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
@@ -67,8 +67,8 @@
 </table>
 </div>
 <INPUT TYPE=hidden id=tfr_mod_field NAME=tfr_mod_field value="mod_ap">
-<INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
-<INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
+<INPUT TYPE=hidden id=tfg1_seq NAME=tfg1_seq>
+<INPUT TYPE=hidden id=tfg1_seq1 NAME=tfg1_seq1>
 
 <script language="javascript" type="text/javascript">
     //交辦內容綁定

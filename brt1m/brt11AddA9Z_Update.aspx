@@ -220,7 +220,7 @@
         ColMap["in_no"] = "'" + RSno + "'";
         ColMap["in_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
         ColMap["draw_file"] = Util.dbchar(Sys.Path2Btbrt(drawFilename));
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         ColMap["case_sqlno"] = "0";
         if ((Request["tfy_arcase"] ?? "").Left(3).IN("FD1,FD2,FD3")) {//分割案才寫入母案編號
@@ -402,7 +402,7 @@
                     ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code2_" + i]);
                     ColMap["dmt_goodname"] = Util.dbchar(Request["good_name2_" + i]);
                     ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count2_" + i]);
-                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                    ColMap["tr_date"] = "getdate()";
                     ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                     SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
@@ -420,7 +420,7 @@
                     ColMap["class"] = Util.dbchar(Request["class32_" + i]);
                     ColMap["dmt_goodname"] = Util.dbchar(Request["good_name32_" + i]);
                     ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count32_" + i]);
-                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                    ColMap["tr_date"] = "getdate()";
                     ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                     SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
@@ -439,7 +439,7 @@
                     ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code1_" + i]);
                     ColMap["dmt_goodname"] = Util.dbchar(Request["good_name1_" + i]);
                     ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count1_" + i]);
-                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                    ColMap["tr_date"] = "getdate()";
                     ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                     SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
@@ -683,7 +683,7 @@
 
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         ColMap["in_no"] = "'" + RSno + "'";
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
         conn.ExecuteNonQuery(SQL);
@@ -739,7 +739,7 @@
         }
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         ColMap["in_no"] = "'" + RSno + "'";
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
         ColMap["seq1"] = Util.dbnull(Request["tfzb_seq1"]);
@@ -798,7 +798,7 @@
             if ((Request["tfzd_agt_no"] ?? "") != "") ColMap["agt_no"] = Util.dbchar(Request["tfzd_agt_no"]);
             if ((Request["pfzd_prior_date"] ?? "") != "") ColMap["prior_date"] = Util.dbchar(Request["pfzd_prior_date"]);
             if ((Request["tfzd_prior_no"] ?? "") != "") ColMap["prior_no"] = Util.dbchar(Request["tfzd_prior_no"]);
-            if ((Request["tfzd_prior_country"] ?? "") != "") ColMap["tfzd_prior_country"] = Util.dbchar(Request["tfzd_prior_country"]);
+            if ((Request["tfzd_prior_country"] ?? "") != "") ColMap["prior_country"] = Util.dbchar(Request["tfzd_prior_country"]);
             if ((Request["tfzd_ref_no"] ?? "") != "") ColMap["ref_no"] = Util.dbchar(Request["tfzd_ref_no"]);
             if ((Request["tfzd_ref_no1"] ?? "") != "") ColMap["ref_no1"] = Util.dbchar(Request["tfzd_ref_no1"]);
             if ((Request["tfzb_seq"] ?? "") != "") ColMap["Mseq"] = Util.dbchar(Request["tfzb_seq"]);
@@ -847,7 +847,7 @@
             ColMap["in_no"] = "'" + RSno + "'";
             ColMap["in_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
             ColMap["draw_file"] = Util.dbchar(Sys.Path2Btbrt(drawFilename));
-            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+            ColMap["tr_date"] = "getdate()";
             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
             ColMap["case_sqlno"] = case_sqlno;
 
@@ -866,7 +866,7 @@
                             ColMap["class"] = Util.dbchar(Request["classa_" + x + "_" + p]);
                             ColMap["dmt_goodname"] = Util.dbchar(Request["FD1_good_namea_" + x + "_" + p]);
                             ColMap["dmt_goodcount"] = Util.dbchar(Request["FD1_good_counta_" + x + "_" + p]);
-                            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                            ColMap["tr_date"] = "getdate()";
                             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                             SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
@@ -894,7 +894,7 @@
                             ColMap["class"] = Util.dbchar(Request["classb_" + x + "_" + p]);
                             ColMap["dmt_goodname"] = Util.dbchar(Request["FD2_good_nameb_" + x + "_" + p]);
                             ColMap["dmt_goodcount"] = Util.dbchar(Request["FD2_good_countb_" + x + "_" + p]);
-                            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                            ColMap["tr_date"] = "getdate()";
                             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                             SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
@@ -973,7 +973,7 @@
                         SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
                         SQL += ",end_code,dmt_term1,dmt_term2,renewal,class_type,class_count,class ";
                         SQL += ",'" + Request["F_tscode"] + "','" + RSno + "','" + DateTime.Today.ToShortDateString() + "','" + newfilename + "' ";
-                        SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1a_" + i] + "' ";
+                        SQL += ",getdate(),'" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1a_" + i] + "' ";
                         SQL += "from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' ";
                         SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
                         SQL += "and num='" + i + "' and (mark='C' or mark is null)";
@@ -1058,7 +1058,7 @@
                         SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
                         SQL += ",end_code,dmt_term1,dmt_term2,renewal,class_type,class_count,class ";
                         SQL += ",'" + Request["F_tscode"] + "','" + RSno + "','" + DateTime.Today.ToShortDateString() + "','" + newfilename + "' ";
-                        SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
+                        SQL += ",getdate(),'" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
                         SQL += "from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' ";
                         SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
                         SQL += "and num='" + i + "' and (mark='C' or mark is null) ";
@@ -1125,7 +1125,7 @@
                 }
                 ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
                 ColMap["in_no"] = "'" + RSno + "'";
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
                 ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -1205,7 +1205,7 @@
                 }
                 ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
                 ColMap["in_no"] = "'" + RSno + "'";
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
                 ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -1376,7 +1376,7 @@
                 }
                 ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
                 ColMap["in_no"] = "'" + RSno + "'";
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
                 ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -1420,7 +1420,7 @@
                 }
                 ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
                 ColMap["in_no"] = "'" + RSno + "'";
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
                 ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -1499,7 +1499,7 @@
         }
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         ColMap["in_no"] = "'" + RSno + "'";
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
         conn.ExecuteNonQuery(SQL);
@@ -1640,7 +1640,7 @@
                         SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
                         SQL += ",end_code,dmt_term1,dmt_term2,renewal,class_type,class_count,class ";
                         SQL += ",'" + Request["F_tscode"] + "','" + RSno + "','" + DateTime.Today.ToShortDateString() + "','" + newfilename + "' ";
-                        SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
+                        SQL += ",getdate(),'" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
                         SQL += "from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' ";
                         SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
                         SQL += "and num='" + i + "' and mark='L'";
@@ -1727,7 +1727,7 @@
 
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         ColMap["in_no"] = "'" + RSno + "'";
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
         conn.ExecuteNonQuery(SQL);
@@ -1815,7 +1815,7 @@
                         SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
                         SQL += ",end_code,dmt_term1,dmt_term2,renewal,class_type,class_count,class ";
                         SQL += ",'" + Request["F_tscode"] + "','" + RSno + "','" + DateTime.Today.ToShortDateString() + "','" + newfilename + "' ";
-                        SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
+                        SQL += ",getdate(),'" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
                         SQL += "from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' ";
                         SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
                         SQL += "and num='" + i + "' and mark='T'";
@@ -1907,7 +1907,7 @@
 
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         ColMap["in_no"] = "'" + RSno + "'";
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
         conn.ExecuteNonQuery(SQL);
@@ -2009,7 +2009,7 @@
 
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         ColMap["in_no"] = "'" + RSno + "'";
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
         conn.ExecuteNonQuery(SQL);
@@ -2065,7 +2065,7 @@
 
             ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
             ColMap["in_no"] = "'" + RSno + "'";
-            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+            ColMap["tr_date"] = "getdate()";
             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
             SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
@@ -2120,7 +2120,7 @@
 
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         ColMap["in_no"] = "'" + RSno + "'";
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
         conn.ExecuteNonQuery(SQL);
@@ -2190,7 +2190,7 @@
                 }
                 ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
                 ColMap["in_no"] = "'" + RSno + "'";
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
                 ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -2368,7 +2368,7 @@
                 }
                 ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
                 ColMap["in_no"] = "'" + RSno + "'";
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
                 ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -2521,7 +2521,7 @@
                 }
                 ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
                 ColMap["in_no"] = "'" + RSno + "'";
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
                 ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -2659,7 +2659,7 @@
                     SQL += " values ('" + Request["F_tscode"] + "','" + RSno + "'," + Util.dbchar(Request["fr4_other_item"]) + "";
                     SQL += "," + Util.dbchar(Request["fr4_other_item1"]) + "," + Util.dbchar(Request["fr4_other_item2"]) + "";
                     SQL += "," + Util.dbchar(Request["fr4_tran_remark1"]) + "," + Util.dbchar(Request["fr4_tran_mark"]) + "";
-                    SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "',";
+                    SQL += ",getdate(),'" + Session["scode"] + "',";
                     SQL += Util.dbnull(Request["tfzb_seq"]) + "," + Util.dbchar(Request["tfzb_seq1"]) + ")";
                     conn.ExecuteNonQuery(SQL);
                     //新增對照當事人資料
@@ -2673,13 +2673,13 @@
                     SQL = "INSERT INTO dmt_tran(in_scode,in_no,other_item,other_item1,other_item2,tran_remark1,tr_date,tr_scode,seq,seq1)";
                     SQL += " values ('" + Request["F_tscode"] + "','" + RSno + "'," + Util.dbchar(Request["fr4_other_item"]) + ",";
                     SQL += "" + Util.dbchar(Request["fr4_other_item1"]) + "," + Util.dbchar(Request["fr4_other_item2"]) + ",";
-                    SQL += "" + Util.dbchar(Request["fr4_tran_remark1"]) + ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "',";
+                    SQL += "" + Util.dbchar(Request["fr4_tran_remark1"]) + ",getdate(),'" + Session["scode"] + "',";
                     SQL += Util.dbnull(Request["tfzb_seq"]) + "," + Util.dbchar(Request["tfzb_seq1"]) + ")";
                     conn.ExecuteNonQuery(SQL);
                 } else {
                     SQL = "INSERT INTO dmt_tran(in_scode,in_no,tran_remark1,tr_date,tr_scode,seq,seq1,agt_no1)";
                     SQL += " values ('" + Request["F_tscode"] + "','" + RSno + "'," + Util.dbchar(Request["tfg1_tran_remark1"]) + "";
-                    SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "',";
+                    SQL += ",getdate(),'" + Session["scode"] + "',";
                     SQL += Util.dbnull(Request["tfzb_seq"]) + "," + Util.dbchar(Request["tfzb_seq1"]) + "," + Util.dbnull(Request["tfg1_agt_no1"]) + ")";
                     conn.ExecuteNonQuery(SQL);
                 }
@@ -2726,7 +2726,7 @@
             if ((Request["tfg1_other_item"] ?? "") != "") {
                 SQL = "INSERT INTO dmt_tran(in_scode,in_no,other_item,tr_date,tr_scode,seq,seq1,agt_no1)";
                 SQL += " values (" + Util.dbchar(Request["F_tscode"]) + ",'" + RSno + "'," + Util.dbnull(Request["tfg1_other_item"]);
-                SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'";
+                SQL += ",getdate(),'" + Session["scode"] + "'";
                 SQL += "," + Util.dbnull(Request["tfg1_seq"]) + "," + Util.dbchar(Request["tfg1_seq1"]) + "," + Util.dbchar(Request["tfg1_agt_no1"]) + ")";
                 conn.ExecuteNonQuery(SQL);
             }
@@ -2735,7 +2735,7 @@
             SQL += " values ('" + Request["F_tscode"] + "','" + RSno + "'," + Util.dbchar(Request["fr4_other_item"]) + "";
             SQL += "," + Util.dbchar(Request["fr4_other_item1"]) + "," + Util.dbchar(Request["fr4_other_item2"]) + "";
             SQL += "," + Util.dbchar(Request["fr4_tran_remark1"]) + "," + Util.dbchar(Request["fr4_tran_mark"]) + "";
-            SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'";
+            SQL += ",getdate(),'" + Session["scode"] + "'";
             SQL += "," + Util.dbnull(Request["tfg1_seq"]) + "," + Util.dbchar(Request["tfzb_seq1"]) + ")";
             conn.ExecuteNonQuery(SQL);
 
@@ -2751,7 +2751,7 @@
             SQL = "INSERT INTO dmt_tran(in_scode,in_no,other_item,other_item1,other_item2,tran_remark1,tr_date,tr_scode,seq,seq1)";
             SQL += " values ('" + Request["F_tscode"] + "','" + RSno + "'," + Util.dbchar(Request["fr4_other_item"]) + "";
             SQL += "," + Util.dbchar(Request["fr4_other_item1"]) + "," + Util.dbchar(Request["fr4_other_item2"]) + "";
-            SQL += "," + Util.dbchar(Request["fr4_tran_remark1"]) + ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'";
+            SQL += "," + Util.dbchar(Request["fr4_tran_remark1"]) + ",getdate(),'" + Session["scode"] + "'";
             SQL += "," + Util.dbnull(Request["tfg1_seq"]) + ",'" + Util.dbchar(Request["tfzb_seq1"]) + ")";
             conn.ExecuteNonQuery(SQL);
         } else if ((Request["tfy_arcase"] ?? "").Left(3) == "FOF") {
@@ -2770,14 +2770,14 @@
         } else if ((Request["tfy_arcase"] ?? "").Left(3) == "FW1") {
             SQL = "INSERT INTO dmt_tran(in_scode,in_no,mod_claim1,tran_remark1,tr_date,tr_scode,seq,seq1,agt_no1,other_item)";
             SQL += " values ('" + Request["F_tscode"] + "','" + RSno + "'," + Util.dbchar(Request["tfw1_mod_claim1"]) + "";
-            SQL += "," + Util.dbnull(Request["tfw1_tran_remark1"]) + ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'";
+            SQL += "," + Util.dbnull(Request["tfw1_tran_remark1"]) + ",getdate(),'" + Session["scode"] + "'";
             SQL += "," + Util.dbnull(Request["tfg1_seq"]) + "," + Util.dbchar(Request["tfg1_seq1"]) + "";
             SQL += "," + Util.dbchar(Request["tfg1_agt_no1"]) + "," + Util.dbchar(Request["tfw1_other_item"]) + ")";
             conn.ExecuteNonQuery(SQL);
         } else {
             SQL = "INSERT INTO dmt_tran(in_scode,in_no,tran_remark1,tr_date,tr_scode,seq,seq1,agt_no1)";
             SQL += " values ('" + Request["F_tscode"] + "','" + RSno + "'," + Util.dbnull(Request["tfg1_tran_remark1"]) + "";
-            SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'";
+            SQL += ",getdate(),'" + Session["scode"] + "'";
             SQL += "," + Util.dbnull(Request["tfg1_seq"]) + "," + Util.dbchar(Request["tfg1_seq1"]) + "," + Util.dbchar(Request["tfg1_agt_no1"]) + ")";
             conn.ExecuteNonQuery(SQL);
         }

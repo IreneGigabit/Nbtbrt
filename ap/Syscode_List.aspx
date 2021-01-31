@@ -46,9 +46,9 @@
 	        if (syscode!=""){
                 SQL += " Where C.syscode = '" + syscode + "' ";
 	        }
-            ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder", ""));
-            if (ReqVal.TryGet("qryOrder", "") != "") {
-                SQL += " order by " + ReqVal.TryGet("qryOrder", "");
+            ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder"));
+            if (ReqVal.TryGet("qryOrder") != "") {
+                SQL += " order by " + ReqVal.TryGet("qryOrder");
             } else {
                 SQL += " order by C.classcode,C.syssql";
             }
@@ -120,7 +120,7 @@
 					    <option value="30" <%#page.perPage==30?"selected":""%>>30</option>
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
-                    <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder", "")%>" />
+                    <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
 			    </font>
 		    </td>
 	    </tr>

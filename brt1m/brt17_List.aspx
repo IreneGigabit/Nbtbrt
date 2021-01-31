@@ -59,9 +59,9 @@
                 SQL += "AND a.Arcase ='" + Request["pfx_Arcase"] + "' ";
             }
             SQL += "AND (a.mark='N' or a.mark is null)";
-            ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder", ""));
-            if (ReqVal.TryGet("qryOrder", "") != "") {
-                SQL += " order by " + ReqVal.TryGet("qryOrder", "");
+            ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder"));
+            if (ReqVal.TryGet("qryOrder") != "") {
+                SQL += " order by " + ReqVal.TryGet("qryOrder");
             } else {
                 SQL += " order by a.in_no";
             }

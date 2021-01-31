@@ -65,9 +65,9 @@
             SQL += "LEFT JOIN LoginGrp As E ON E.SYScode = C.SYScode And E.LoginGrp = C.LoginGrp ";
             SQL += "LEFT JOIN SysCode As F ON F.syscode = C.syscode ";
             SQL += "where C.syscode = '" + syscode + "' And C.logingrp = '" + logingrp + "' ";
-            ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder", ""));
-            if (ReqVal.TryGet("qryOrder", "") != "") {
-                SQL += " order by " + ReqVal.TryGet("qryOrder", "");
+            ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder"));
+            if (ReqVal.TryGet("qryOrder") != "") {
+                SQL += " order by " + ReqVal.TryGet("qryOrder");
             } else {
                 SQL += " order by C.syscode,C.scode";
             }
@@ -149,7 +149,7 @@
 					    <option value="30" <%#page.perPage==30?"selected":""%>>30</option>
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
-                    <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder", "")%>" />
+                    <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
 			    </font>
 		    </td>
 	    </tr>

@@ -22,6 +22,8 @@
 
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    protected Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    
     protected string submitTask = "";
     protected string ar_form = "";
     protected string cust_area = "";
@@ -70,10 +72,10 @@
 
     private void PageLayout() {
         if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
-            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Brt11blank\">[聯絡人新增]</a>\n";
-            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Brt11blank\">[申請人新增]</a>\n";
+            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Eblank\">[聯絡人新增]</a>\n";
+            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Eblank\">[申請人新增]</a>\n";
             if ((Request["cust_seq"] ?? "") != "") {
-                StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Brt11blank\">[案件查詢]</a>\n";
+                StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
             }
             if ((Request["homelist"] ?? "") != "homelist") {
                 StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
@@ -105,19 +107,27 @@
         }
     }
 
-    //將共用參數傳給子控制項
+    //將共用參數(鎖定/隱藏)傳給子控制項
     private void ChildBind() {
+        if (prgid.ToLower() == "brt51") {//程序客收確認
+            Lock["brt51"] = "Lock";
+        }
+
         //案件客戶
         cust_form.Lock = Lock;
+        cust_form.Hide = Hide;
         //案件聯絡人
         attent_form.Lock = Lock;
+        attent_form.Hide = Hide;
         //案件申請人
         apcust_form.Lock = Lock;
+        apcust_form.Hide = Hide;
         //收費與接洽事項
         dmt_case_form.formFunction = formFunction;
         dmt_case_form.HTProgRight = HTProgRight;
         //案件內容
         dmt_Form.Lock = Lock;
+        dmt_Form.Hide = Hide;
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -164,8 +174,7 @@
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
-        <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
-        </td>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】</td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <%#StrFormBtnTop%>
         </td>
@@ -173,16 +182,19 @@
     <tr>
         <td colspan="2"><hr class="style-one"/></td>
     </tr>
+    <tr>
+        <td colspan="2"><font color=blue>接洽序號：<span id="t_in_no"></span></font></td>
+    </tr>
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-	<input type="text" id="submittask" name="submittask" value="<%=submitTask%>">
-	<input type="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="text" id="ar_form" name="ar_form" value="<%=ar_form%>">
-    <INPUT TYPE="text" id=prt_code name=prt_code value="<%=prt_code%>">
-    <INPUT TYPE="text" id=new_form name=new_form value="<%=new_form%>">
-    <INPUT TYPE="text" id=add_arcase name=add_arcase value="">
-    <input type="text" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
+	<input type="hidden" id="submittask" name="submittask" value="<%=submitTask%>">
+	<input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <INPUT TYPE="hidden" id="ar_form" name="ar_form" value="<%=ar_form%>">
+    <INPUT TYPE="hidden" id=prt_code name=prt_code value="<%=prt_code%>">
+    <INPUT TYPE="hidden" id=new_form name=new_form value="<%=new_form%>">
+    <INPUT TYPE="hidden" id=add_arcase name=add_arcase value="">
+    <input type="hidden" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
@@ -236,7 +248,7 @@
     <br />
 	<INPUT TYPE="hidden" id=in_scode name=in_scode>
 	<INPUT TYPE="hidden" id=in_no name=in_no>
-    <INPUT TYPE="hidden" id=in_date name=in_date size="8">
+    <INPUT TYPE="hidden" id=in_date name=in_date>
     <INPUT TYPE="hidden" id=tfgp_seq NAME=tfgp_seq>
     <INPUT TYPE="hidden" id=tfgp_seq1 NAME=tfgp_seq1>
 
@@ -291,8 +303,6 @@
     })
 
     function this_init() {
-        dmt_form.new_oldcase();
-
         if(main.ar_form=="A6"){//變更
             $("#CTab td.tab[href='#dmt']").after($("#CTab td.tab[href='#apcust']"));//[案件申請人]移到[案件主檔]後面
         }else{
@@ -316,6 +326,7 @@
                 $("#dialog").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
+        dmt_form.new_oldcase();
 
         //畫面準備
         cust_form.init();//案件客戶
@@ -328,9 +339,9 @@
         settab("#case");//收費與接洽事項
 
         //-----------------
+        $("input.dateField").datepick();
         main.bind();//資料綁定
         //br_form.bind();//交辦內容資料綁定
-        $("input.dateField").datepick();
         $(".Lock").lock();
         $(".Hide").hide();
 
@@ -396,6 +407,4 @@
         //reg.submit();
     }
 </script>
-<script src="CaseForm/Descript.js"></script><!--欄位說明-->
-
-
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/CaseForm/Descript.js")%>"></script><!--欄位說明-->

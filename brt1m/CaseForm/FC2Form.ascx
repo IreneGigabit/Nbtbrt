@@ -5,8 +5,8 @@
     //A6變更案交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected string SQL = "";
 
     protected string ttg2_agt_no = "", FC2_add_agt_no = "";
@@ -24,7 +24,7 @@
 </script>
 
 <div id="div_Form_FC2">
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
     <tr>
 		<td class="lightbluetable" colspan=8 valign="top"><strong>※、代理人(與原註冊之代理人資料有變更者，請於該項資料前框格內打Ｖ註記)</strong></td>

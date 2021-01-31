@@ -167,11 +167,11 @@
             if (window.parent.tt !== undefined) {
                 window.parent.tt.rows = "*,2*";
             }
-            $("#pfx_SYScode").val("<%#RS.TryGet("syscode","")%>");
-            $("#pfx_APcatID").val("<%#RS.TryGet("apcatid","")%>");
-            $("#tfx_APcatCName").val("<%#RS.TryGet("apcatcname","")%>");
-            $("#tfx_APcatEName").val("<%#RS.TryGet("apcatename","")%>");
-            $("#nfx_APseq").val("<%#RS.TryGet("apseq","").ToString()%>");
+            $("#pfx_SYScode").val("<%#RS.TryGet("syscode")%>");
+            $("#pfx_APcatID").val("<%#RS.TryGet("apcatid")%>");
+            $("#tfx_APcatCName").val("<%#RS.TryGet("apcatcname")%>");
+            $("#tfx_APcatEName").val("<%#RS.TryGet("apcatename")%>");
+            $("#nfx_APseq").val("<%#RS.TryGet("apseq")%>");
         } else {
             $("#pfx_SYScode").val("<%#syscode%>");
         }

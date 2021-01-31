@@ -3,20 +3,19 @@
 
 <script runat="server">
     //父控制項傳入的參數
-    public Dictionary<string, string> Lock = new Dictionary<string, string>();
+    public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public int HTProgRight = 0;
     
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
     
-    protected string cust_area = "";
-    protected string cust_seq = "";
+    //protected string cust_area = "";
+    //protected string cust_seq = "";
     
     protected string F_ap_country = "", F_con_code = "", F_dis_type = "", F_pay_type = "";
     
     private void Page_Load(System.Object sender, System.EventArgs e) {
-        cust_area = Request["cust_area"] ?? "";
-        cust_seq = Request["cust_seq"] ?? "";
-
         F_ap_country = Sys.getCountry().Option("{coun_code}", "{coun_code}-{coun_c}");
         F_con_code = Sys.getCustCode("H", "", "cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
         F_dis_type = Sys.getCustCode("Discount", "", "cust_code").Option("{cust_code}", "{cust_code}---{code_name}");
@@ -26,14 +25,14 @@
     }
 </script>
 
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <table border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%">
 <TR>
 	<TD class=lightbluetable align="right">客戶編號：</TD>
 	<TD class=whitetablebg>
 	    <input TYPE="text" id="F_cust_area" name="F_cust_area" size="1" readonly class="SEdit">-
-	    <input TYPE="text" id="F_cust_seq" name="F_cust_seq" size="6" class="<%#Lock.TryGet("Qclass")%>">
-        <input type=button class="greenbutton" name="btncust_seq" id="btncust_seq" value ="確定">
+	    <input TYPE="text" id="F_cust_seq" name="F_cust_seq" size="6" class="<%#Lock.TryGet("Qclass")%><%#Lock.TryGet("brt52")%>">
+        <input type=button id="btncust_seq" name="btncust_seq" value ="確定" class="greenbutton">
 		<input type=hidden id="O_cust_area" name="O_cust_area">
 		<input type=hidden id="O_cust_seq" name="O_cust_seq">
 	</TD>

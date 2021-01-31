@@ -5,13 +5,15 @@
 <script runat="server">
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    public string formFunction = "";
+    public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public int HTProgRight = 0;
+    public string formFunction = "";
 
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected string SQL = "";
 
+    protected string submitTask = "";
     protected int MaxTaCount = 5;//附屬案性筆數上限
     protected string recTitle = Sys.getDefaultTitle();//收據種類預設抬頭
     protected string ar_form = "", code_type = "";
@@ -24,6 +26,7 @@
     private void Page_Load(System.Object sender, System.EventArgs e) {
         ar_form = Request["ar_form"] ?? "";
         code_type = Request["code_type"] ?? "";
+        submitTask = (Request["submitTask"] ?? "").Trim();
         
         PageLayout();
         this.DataBind();
@@ -52,10 +55,10 @@
                     }
                     SQL += "order by scode1 ";
                     cnn.DataTable(SQL, dt);
-                    td_tscode = "<select id='F_tscode' name='F_tscode' class='" + Lock["brt51"] + "'>" + dt.Option("{scode}", "{sc_name}") + "</select>";
+                    td_tscode = "<select id='F_tscode' name='F_tscode' class='" + Lock.TryGet("brt51")+"'>" + dt.Option("{scode}", "{sc_name}") + "</select>";
                 } else {
                     td_tscode = "<input type='text' id='F_tscode' name='F_tscode' readonly class='SEdit' size=5 value='" + Session["se_scode"] + "'>";
-                    td_tscode = "<span='span_tscode'>" + Session["sc_name"] + "</span>";
+                    td_tscode += "<span id='span_tscode'>" + Session["sc_name"] + "</span>";
                 }
             }
             
@@ -108,8 +111,8 @@
     }
 </script>
 
-<%=Sys.GetAscxPath(this)%>
-<input type=text id="spe_ctrl3" name="spe_ctrl3"><!--判斷是否需管制法定期限-->
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
+<input type=hidden id="spe_ctrl3" name="spe_ctrl3"><!--判斷是否需管制法定期限-->
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 <TR>
 	<td class="lightbluetable" align=right>洽案營洽 :</td>
@@ -118,15 +121,15 @@
 </TR>
 <tr id="tr_grconf">
 	<TD class=lightbluetable align=right>對應後續交辦作業序號：</TD>
-	<TD class=whitetablebg colspan=5><input type=text name=hgrconf_sqlno id=hgrconf_sqlno><!--判斷有值表從後續查詢來-->
+	<TD class=whitetablebg colspan=5><input type=hidden name=hgrconf_sqlno id=hgrconf_sqlno><!--判斷有值表從後續查詢來-->
 		<input type=text name=grconf_sqlno id=grconf_sqlno size=10 readonly><input type=button class="cbutton" value="查詢" onclick="case_form.get_attcase('Q')">
 		<input type=button class="cbutton" value="詳細" id=grconf_dtl onclick="case_form.get_attcase('S')">
 	</td>
 </tr>
 <TR id="tr_fees">
 	<TD class=lightbluetable align=left colspan=6><strong>案性及費用：</strong>
-        <input type="button" class="cbutton <%=Lock["brt51"]%>" value="增加請款項目" onclick="case_form.ta_display('Add')">
-        <input type="button" class="cbutton <%=Lock["brt51"]%>" value="減少請款項目" onclick="case_form.ta_display('Del')">
+        <input type="button" class="cbutton <%=Lock.TryGet("brt51")%>" value="增加請款項目" onclick="case_form.ta_display('Add')">
+        <input type="button" class="cbutton <%=Lock.TryGet("brt51")%>" value="減少請款項目" onclick="case_form.ta_display('Del')">
 	</TD>
 </TR>
 <TR>
@@ -134,33 +137,36 @@
 	    <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 		    <TR>
 		        <TD class=lightbluetable align=right width="4%">案&nbsp;&nbsp;&nbsp;&nbsp;性：</TD>
-		        <TD class=whitetablebg width=10%><select id=tfy_Arcase NAME=tfy_Arcase class="<%=Lock["brt51"]%>" onchange="case_form.toArcase('T',this.value ,'Z1')"><%#tfy_Arcase%></SELECT>
+		        <TD class=whitetablebg width=10%>
+                    <select id=tfy_Arcase NAME=tfy_Arcase class="<%=Lock.TryGet("brt51")%> <%=Lock.TryGet("ar_curr")%>" onchange="case_form.toArcase('T',this.value ,'Z1')"><%#tfy_Arcase%></SELECT>
 		        </TD>
 		        <TD class=lightbluetable align=right width=3%>服務費：</TD>
 		        <TD class=whitetablebg  align="left">
                     <INPUT TYPE=text id=nfyi_Service name=nfyi_Service value=0 SIZE=8 maxlength=8 style="text-align:right;">
-                    <INPUT TYPE=text id=Service name=Service>
+                    <INPUT TYPE=hidden id=Service name=Service>
 		        </TD>
 		        <TD class=lightbluetable align=right width=3%>規費：</TD>
-		        <TD class=whitetablebg align="left"><INPUT TYPE=text id=nfyi_Fees name=nfyi_Fees value=0 SIZE=8 maxlength=8 style="text-align:right;" onblur="case_form.summary()">
-                    <INPUT TYPE=text id=Fees name=Fees></TD>
+		        <TD class=whitetablebg align="left">
+                    <INPUT TYPE=text id=nfyi_Fees name=nfyi_Fees value=0 SIZE=8 maxlength=8 style="text-align:right;" onblur="case_form.summary()">
+                    <INPUT TYPE=hidden id=Fees name=Fees>
+		        </TD>
 		    </TR>
             <script type="text/html" id="ta_template"><!--其他費用樣板-->
 	            <tr id=tr_ta_##>
 		            <td class=lightbluetable align=right width="4%">##.其他費用：</td>
 		            <td class=whitetablebg align=left width="10%">
-		                <select id="nfyi_item_Arcase_##" name="nfyi_item_Arcase_##" onchange="case_form.ToFee('T',this.value ,reg.ar_form.value,'##')" class="<%=Lock["brt51"]%>">
+		                <select id="nfyi_item_Arcase_##" name="nfyi_item_Arcase_##" onchange="case_form.ToFee('T',this.value ,reg.ar_form.value,'##')" class="<%=Lock.TryGet("brt51")%>">
                         <%#nfyi_item_Arcase%>
-		                </select> x <input type=text id="nfyi_item_count_##" name="nfyi_item_count_##" size=3 maxlength=3 value="1" onblur="case_form.item_count('##')" class="<%=Lock["brt51"]%>">項
+		                </select> x <input type=text id="nfyi_item_count_##" name="nfyi_item_count_##" size=3 maxlength=3 value="1" onblur="case_form.item_count('##')" class="<%=Lock.TryGet("brt51")%>">項
 		            </td>
 		            <td class=lightbluetable align=right width=4%>服務費：</td>
 		            <td class=whitetablebg align=left width=5%>
-		                <INPUT TYPE=text id=nfyi_Service_## name=nfyi_Service_## SIZE=8 maxlength=8 style="text-align:right;" value="0" onblur="case_form.summary()" class="<%=Lock["brt51"]%>">
+		                <INPUT TYPE=text id=nfyi_Service_## name=nfyi_Service_## SIZE=8 maxlength=8 style="text-align:right;" value="0" onblur="case_form.summary()" class="<%=Lock.TryGet("brt51")%>">
 		                <input type=text id=nfzi_Service_## name=nfzi_Service_##>
 		            </td>
 		            <td class=lightbluetable align=right width=4%>規費：</td>
 		            <td class=whitetablebg align=left width=5%>
-		                <INPUT TYPE=text id=nfyi_fees_## name=nfyi_fees_## SIZE=8 maxlength=8 style="text-align:right;" value="0" onblur="case_form.item_nfyi_fees('##')" class="<%=Lock["brt51"]%>">
+		                <INPUT TYPE=text id=nfyi_fees_## name=nfyi_fees_## SIZE=8 maxlength=8 style="text-align:right;" value="0" onblur="case_form.item_nfyi_fees('##')" class="<%=Lock.TryGet("brt51")%>">
 		                <input type=text id=nfzi_fees_## name=nfzi_fees_##>
 		            </td>
 	            </tr>
@@ -175,13 +181,13 @@
 		    <TR>
 			    <TD class=lightbluetable align=right width="4%">轉帳費用：</TD>
 			    <TD class=whitetablebg width="11%">
-                    <select id=tfy_oth_arcase NAME=tfy_oth_arcase onchange="case_form.ToFee('T',this.value ,reg.ar_form.value,'10')" class="<%=Lock["brt51"]%>"><%#tfy_oth_arcase%></SELECT>
+                    <select id=tfy_oth_arcase NAME=tfy_oth_arcase onchange="case_form.ToFee('T',this.value ,reg.ar_form.value,'10')" class="<%=Lock.TryGet("brt51")%>"><%#tfy_oth_arcase%></SELECT>
 			    </TD>
 			    <TD class=lightbluetable align=right width=4%>轉帳金額：</TD>
-			    <TD class=whitetablebg width=5%><input type="text" id="nfy_oth_money" name="nfy_oth_money" size="8" style="text-align:right;" onblur="case_form.summary()" class="<%=Lock["brt51"]%>"></TD>
+			    <TD class=whitetablebg width=5%><input type="text" id="nfy_oth_money" name="nfy_oth_money" size="8" style="text-align:right;" onblur="case_form.summary()" class="<%=Lock.TryGet("brt51")%>"></TD>
 			    <TD class=lightbluetable align=right width=4%>轉帳單位：</TD>
 			    <TD class=whitetablebg width=5%>
-			        <select id=tfy_oth_code NAME=tfy_oth_code class="<%=Lock["brt51"]%>">
+			        <select id=tfy_oth_code NAME=tfy_oth_code class="<%=Lock.TryGet("brt51")%>">
                         <%#tfy_oth_code%><option value="Z">Z_轉其他人</option>
 			        </SELECT>
 			    </TD>
@@ -190,10 +196,10 @@
 			    <TD class=lightbluetable align=right colspan=2>合計：</TD>
 			    <TD class=whitetablebg colspan=4>
                     <INPUT TYPE=text id=OthSum NAME=OthSum SIZE=7 class="SEdit" readonly>
-            	    <input type="text" id="tot_zservice" name="tot_zservice" value=0>
-				    <input type="text" id="tot_yservice" name="tot_yservice" value=0>
-				    <input type="text" id="oth_money" name="oth_money" value=0>
-				    <input type="text" id="tot_count" name="tot_count" value="">
+            	    <input type="hidden" id="tot_zservice" name="tot_zservice" value=0>
+				    <input type="hidden" id="tot_yservice" name="tot_yservice" value=0>
+				    <input type="hidden" id="oth_money" name="oth_money" value=0>
+				    <input type="hidden" id="tot_count" name="tot_count" value="">
 			    </TD>
 		    </TR>
 		    <TR>
@@ -206,13 +212,13 @@
 		  	    <TD class=whitetablebg align=center colspan=6>
 				    <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width=100%>
 					    <TR>
-					      <td class=lightbluetable2 align=center width=16%>追加服務費</td>
-					      <td class=lightbluetable2 align=center width=16%>追加規費</td>
-					      <td class=lightbluetable2 align=center width=16%>已請款服務費</td>
-					      <td class=lightbluetable2 align=center width=16%>已請款規費</td>
-					      <td class=lightbluetable2 align=center width=16%>已請款次數</td>
-					      <td class=lightbluetable2 align=center width=16%>已支出規費</td>
-					      <td class="lightbluetable2 td_chkar_code" align=center width=16% style="display:none">
+					      <td class=lightbluetable2 align=center>追加服務費</td>
+					      <td class=lightbluetable2 align=center>追加規費</td>
+					      <td class=lightbluetable2 align=center>已請款服務費</td>
+					      <td class=lightbluetable2 align=center>已請款規費</td>
+					      <td class=lightbluetable2 align=center>已請款次數</td>
+					      <td class=lightbluetable2 align=center>已支出規費</td>
+					      <td class="lightbluetable2 td_chkar_code" align=center style="display:none">
                               是否請款完畢
 					      </td>
 					    </TR>
@@ -240,14 +246,14 @@
 <TR>
 	<TD class=lightbluetable align=right>請款註記：</TD>
 	<TD class=whitetablebg>
-        <Select id=tfy_Ar_mark name=tfy_Ar_mark onchange="case_form.special()" class="<%=Lock["brt51"]%>"><%#tfy_Ar_mark%></Select>
+        <Select id=tfy_Ar_mark name=tfy_Ar_mark onchange="case_form.special()" class="<%=Lock.TryGet("brt51")%>"><%#tfy_Ar_mark%></Select>
 	</TD>
 	<TD class=lightbluetable align=right>折扣率：</TD>
 	<TD class="whitetablebg" colspan="3">
-        <input TYPE="text" id="nfy_Discount" name="nfy_Discount">
+        <input TYPE="hidden" id="nfy_Discount" name="nfy_Discount">
         <input TYPE=text id="Discount" name="Discount" class="SEdit" readonly>
         <span style="display:none">
-	        <INPUT TYPE=checkbox id=tfy_discount_chk name=tfy_discount_chk value="Y" class="<%=Lock["brt51"]%>">折扣請核單
+	        <INPUT TYPE=checkbox id=tfy_discount_chk name=tfy_discount_chk value="Y" class="<%=Lock.TryGet("brt51")%>">折扣請核單
         </span>
 		<span id="span_discount_remark" style="display:none">
 			折扣理由：<INPUT TYPE=text NAME="tfy_discount_remark" id="tfy_dicount_remark" SIZE=100 MAXLENGTH=200 alt="『折扣理由』" onblur="fDataLen(this)">
@@ -262,8 +268,8 @@
 	</TD>
 	<TD class=lightbluetable align=right>契約號碼：</TD>
 	<TD class=whitetablebg colspan="3">
-        <input type="text" id="ocontract_no" name="ocontract_no">
-		<input type="text" id="tfy_contract_type" name="tfy_contract_type">
+        <input type="hidden" id="ocontract_no" name="ocontract_no">
+		<input type="hidden" id="tfy_contract_type" name="tfy_contract_type">
         <input type="radio" id="Contract_no_Type_N" name="Contract_no_Type" value="N">
         <INPUT TYPE=text id=tfy_Contract_no name=tfy_Contract_no SIZE=10 MAXLENGTH=10 onchange="$('#Contract_no_Type_N').prop('checked',true).trigger('click');">
         <span id="contract_type">
@@ -280,7 +286,7 @@
 		    +客戶案件委辦書
 	    </span>
 	    <br>
-		<INPUT TYPE=checkbox id=tfy_contract_flag NAME=tfy_contract_flag value="Y" class="<%=Lock["brt51"]%>">契約書相關文件後補，尚缺文件說明：
+		<INPUT TYPE=checkbox id=tfy_contract_flag NAME=tfy_contract_flag value="Y" class="<%=Lock.TryGet("brt51")%>">契約書相關文件後補，尚缺文件說明：
         <input type="text" id="tfy_contract_remark" name="tfy_contract_remark" size=50 maxlength=100 readonly class="SEdit">
 		<span id="ar_chk" style="display:none">
             <INPUT TYPE=checkbox id=tfy_ar_chk NAME=tfy_ar_chk  value="Y">請款單／收據與附本寄發
@@ -301,7 +307,7 @@
 	<TD class=lightbluetable align=right>發文方式：</TD>
 	<TD class=whitetablebg>
         <SELECT id="tfy_send_way" name="tfy_send_way" onchange="case_form.setReceiptType()"><%#tfy_send_way%></select>
-        <input type="text" id="spe_ctrl" name="spe_ctrl">
+        <input type="hidden" id="spe_ctrl" name="spe_ctrl">
 	</TD>
 	<TD class=lightbluetable align=right>官發收據種類：</TD>
 	<TD class=whitetablebg>
@@ -314,7 +320,7 @@
 	<TD class=lightbluetable align=right>收據抬頭：</TD>
 	<TD class=whitetablebg>
 		<select id="tfy_receipt_title" name="tfy_receipt_title"><%#tfy_receipt_title%></select>
-		<input type="text" id="tfy_rectitle_name" name="tfy_rectitle_name">
+		<input type="hidden" id="tfy_rectitle_name" name="tfy_rectitle_name">
 	</TD>
 </tr>
 <TR>
@@ -323,32 +329,18 @@
 	</TD>
 </TR>
 </TABLE>
-<input type=text id="anfees" name="anfees" value=""><!--有無收費標準-->
-<input type=text id="code_type" name="code_type" value="<%#code_type%>">	
-<input type=text id="TaMax" name="TaMax" value="<%=MaxTaCount%>"><!--最他費用最多可用筆數-->
-<input type=text id="TaCount" name="TaCount" value="0">
-<input type=text id="nfy_tot_case" name="nfy_tot_case" value="0"><!--案性數=主案性+請款案性數-->
-<input type=text id="tfy_ar_code" name="tfy_ar_code" value="N">	<!--請款是否開立完畢-->
+<input type=hidden id="anfees" name="anfees" value=""><!--有無收費標準-->
+<input type=hidden id="code_type" name="code_type" value="<%#code_type%>">	
+<input type=hidden id="TaMax" name="TaMax" value="<%=MaxTaCount%>"><!--最他費用最多可用筆數-->
+<input type=hidden id="TaCount" name="TaCount" value="0">
+<input type=hidden id="nfy_tot_case" name="nfy_tot_case" value="0"><!--案性數=主案性+請款案性數-->
+<input type=hidden id="tfy_ar_code" name="tfy_ar_code" value="N">	<!--請款是否開立完畢-->
 
 
 <script language="javascript" type="text/javascript">
     var case_form = {};
     //晝面準備
     case_form.init = function () {
-        //洽案營洽
-        //$("#td_tscode").empty();
-        //if (jMain.salesList[0].input_type == "text") {
-        //    $('#td_tscode').append('<input type="text" id="F_tscode" name="F_tscode" readonly class="SEdit" size=5 value="' + jMain.salesList[0].scode + '">' + jMain.salesList[0].sc_name);
-        //} else {
-        //    $('#td_tscode').append("<select id='F_tscode' name='F_tscode' class='<%=Lock["brt51"]%>'></select>");
-        //    $("#F_tscode").getOption({
-        //        dataList: jMain.salesList,
-        //        valueFormat: "{scode}",
-        //        textFormat: "{sc_name}",
-        //        showEmpty:false
-        //    });
-        //}
-       
         if ($("#ar_form").val() == "A0" || $("#ar_form").val() == "A1") {
             //對應後續交辦作業序號(新申請案不用顯示)
             $("#tr_grconf").hide();
@@ -358,6 +350,11 @@
         if (main.formFunction != "Edit") {
             //不是編輯模式隱藏對應後續交辦作業序號[詳細]
             $("#grconf_dtl").hide();
+        }
+        if (main.formFunction == "Edit") {
+            //是編輯模式顯示原始交辦營洽
+            $("#F_tscode").val(main.br_in_scode);
+            $("#span_tscode").html(main.br_in_scname);
         }
     }
 

@@ -135,7 +135,7 @@
             ColMap["in_no"] = "'" + RSno + "'";
             ColMap["in_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
             ColMap["draw_file"] = Util.dbchar(Sys.Path2Btbrt(newfilename));
-            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+            ColMap["tr_date"] = "getdate()";
             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
             SQL = "insert into dmt_temp "+ ColMap.GetInsertSQL();
             //Response.Write(SQL + "<HR>");
@@ -186,7 +186,7 @@
                     ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code1_" + i]);
                     ColMap["dmt_goodname"] = Util.dbchar(Request["good_name1_" + i]);
                     ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count1_" + i]);
-                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                    ColMap["tr_date"] = "getdate()";
                     ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                     SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();

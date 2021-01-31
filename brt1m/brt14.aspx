@@ -105,9 +105,9 @@
 </table>
 
 <form id="reg" name="reg" method="post">
-    <input type="text" id="homelist" name="homelist" value="<%=homelist%>">
-    <input type="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <input type="text" id=tfx_in_scode name=tfx_in_scode>
+    <input type="hidden" id="homelist" name="homelist" value="<%=homelist%>">
+    <input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <input type="hidden" id=tfx_in_scode name=tfx_in_scode>
 
     <div id="id-div-slide">
         <table id="qryForm" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="90%" align="center">	
@@ -124,15 +124,15 @@
  	        <tr>
 		        <td class="lightbluetable" align="right">列印選擇 :</td>
 		        <td class="whitetablebg" align="left">
-                    <input type="radio" name="tfx_new" value="N" checked>尚未列印
-					<input type="radio" name="tfx_new" value="">不設定
+                    <label><input type="radio" name="tfx_new" value="N" checked>尚未列印</label>
+					<label><input type="radio" name="tfx_new" value="">不設定</label>
 		        </td>
 	        </tr>
 	        <tr>
 		        <td class="lightbluetable" align="right">序號選擇 :</td>
 		        <td class="whitetablebg" align="left">
-			        <input type="radio" name="new" value="in_no" checked>接洽序號
- 			        <input type="radio" name="new" value="seq_no">本所編號
+			        <label><input type="radio" name="new" value="in_no" checked>接洽序號</label>
+ 			        <label><input type="radio" name="new" value="seq_no">本所編號</label>
  		        </td>
 	        </tr>
 	        <tr id=sin_no1 style="display:none">

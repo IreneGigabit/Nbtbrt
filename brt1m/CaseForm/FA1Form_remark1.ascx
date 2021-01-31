@@ -4,7 +4,7 @@
 <script runat="server">
 </script>
 
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <!--附件様版1-->
 <script type="text/html" id="tabbr_remark1_1">
 	<table border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%">

@@ -198,17 +198,17 @@
             if (window.parent.tt !== undefined) {
                 window.parent.tt.rows = "*,2*";
             }
-            $("#pfx_Syscode").val("<%#RS.TryGet("syscode","")%>");
-            $("#pfx_LoginGrp").val("<%#RS.TryGet("LoginGrp","")%>");
-            $("#tfx_GrpName").val("<%#RS.TryGet("GrpName","")%>");
-            $("#tfx_GrpType").val("<%#RS.TryGet("GrpType","")%>");
-            $("#tfx_HomeGif").val("<%#RS.TryGet("HomeGif","")%>");
-            $("#tfx_WorkType").val("<%#RS.TryGet("WorkType","")%>");
-            $("#tfx_remark").val("<%#RS.TryGet("remark","").ToString()%>");
-            $("#dfx_beg_date").val("<%#Util.parseDBDate(RS.TryGet("beg_date","").ToString(),"yyyy/M/d")%>");
-            $("#dfx_end_date").val("<%#Util.parseDBDate(RS.TryGet("end_date","").ToString(),"yyyy/M/d")%>");
-            $("#xxx_tran_date").val("<%#Util.parseDBDate(RS.TryGet("tran_date","").ToString(),"yyyy/M/d")%>");
-            $("#xxx_tran_scode").val("<%#RS.TryGet("tran_scode","").ToString()%>");
+            $("#pfx_Syscode").val("<%#RS.TryGet("syscode")%>");
+            $("#pfx_LoginGrp").val("<%#RS.TryGet("LoginGrp")%>");
+            $("#tfx_GrpName").val("<%#RS.TryGet("GrpName")%>");
+            $("#tfx_GrpType").val("<%#RS.TryGet("GrpType")%>");
+            $("#tfx_HomeGif").val("<%#RS.TryGet("HomeGif")%>");
+            $("#tfx_WorkType").val("<%#RS.TryGet("WorkType")%>");
+            $("#tfx_remark").val("<%#RS.TryGet("remark")%>");
+            $("#dfx_beg_date").val("<%#Util.parseDBDate(RS.TryGet("beg_date"),"yyyy/M/d")%>");
+            $("#dfx_end_date").val("<%#Util.parseDBDate(RS.TryGet("end_date"),"yyyy/M/d")%>");
+            $("#xxx_tran_date").val("<%#Util.parseDBDate(RS.TryGet("tran_date"),"yyyy/M/d")%>");
+            $("#xxx_tran_scode").val("<%#RS.TryGet("tran_scode")%>");
         } else {
             $("#pfx_Syscode").val("<%#syscode%>");
             $("#pfx_LoginGrp").val("<%#LoginGrp%>");

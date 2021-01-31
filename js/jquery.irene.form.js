@@ -16,7 +16,8 @@
 	    return this.each(function () {
 	        if (typeof cond === "undefined" || cond) {//符合條件 或 沒給條件
 	            if ($(this).hasClass("dateField")) {
-	                $(this).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+	                //$(this).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+	                $(this).datepick('destroy');
 	            }
 	            if (this.type == "text" || this.type == "textarea") {
 	                $(this).prop('readonly', true).addClass('SEdit');
@@ -25,7 +26,8 @@
 	            }
 	        }else{
 		        if ($(this).hasClass("dateField")) {
-		            $(this).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+		            //$(this).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+		            $(this).datepick('destroy');
 		        }
 		        $(this).prop('readonly', false).removeClass('SEdit').prop('disabled', false);
 			}
@@ -38,12 +40,14 @@
 		return this.each(function () {
 		    if (typeof cond === "undefined" || cond ) {//符合條件 或 沒給條件
 		        if ($(this).hasClass("dateField")) {
-		            $(this).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+		            //$(this).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+		            $(this).datepick();
 		        }
 		        $(this).prop('readonly', false).removeClass('SEdit').prop('disabled', false);
 		    }else{
 	            if ($(this).hasClass("dateField")) {
-	                $(this).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+	                //$(this).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+	                $(this).datepick();
 	            }
 	            if (this.type == "text" || this.type == "textarea") {
 	                $(this).prop('readonly', true).addClass('SEdit');

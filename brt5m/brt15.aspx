@@ -42,7 +42,6 @@
 
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
            //營洽清單
-            DataTable dt = new DataTable();
             if ((HTProgRight & 64) != 0) {
                 td_tscode = "<select id='tfx_Scode' name='tfx_Scode' >";
                 td_tscode += Sys.getDmtScode("","").Option("{scode}", "{star}{scode}_{sc_name}", "style='color:{color}'", true);

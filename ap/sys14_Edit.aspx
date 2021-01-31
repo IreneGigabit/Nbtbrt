@@ -221,18 +221,18 @@
             if (window.parent.tt !== undefined) {
                 window.parent.tt.rows = "30%,70%";
             }
-            $("#sqlno").val("<%#RS.TryGet("sqlno","")%>");
-            $("#tfx_scode").val("<%#RS.TryGet("scode","")%>");
-            $("#tfx_branch").val("<%#RS.TryGet("branch","")%>");
-            $("#tfx_dept").val("<%#RS.TryGet("dept","")%>");
-            $("input[name='tfx_sysdefault'][value='<%#RS.TryGet("sysdefault","")%>']").prop("checked", true);
-            $("#tfx_syscode").val("<%#RS.TryGet("syscode","")%>").triggerHandler("change");
-            $("#tfx_logingrp").val("<%#RS.TryGet("logingrp","")%>");
-            $("#dfx_beg_date").val("<%#Util.parseDBDate(RS.TryGet("beg_date","").ToString(),"yyyy/M/d")%>");
-            $("#dfx_end_date").val("<%#Util.parseDBDate(RS.TryGet("end_date","").ToString(),"yyyy/M/d")%>");
-            $("#tfx_mark").val("<%#RS.TryGet("mark","")%>");
-            $("#xxx_tran_date").val("<%#Util.parseDBDate(RS.TryGet("tran_date","").ToString(),"yyyy/M/d")%>");
-            $("#xxx_tran_scode").val("<%#RS.TryGet("tran_scode","").ToString()%>");
+            $("#sqlno").val("<%#RS.TryGet("sqlno")%>");
+            $("#tfx_scode").val("<%#RS.TryGet("scode")%>");
+            $("#tfx_branch").val("<%#RS.TryGet("branch")%>");
+            $("#tfx_dept").val("<%#RS.TryGet("dept")%>");
+            $("input[name='tfx_sysdefault'][value='<%#RS.TryGet("sysdefault")%>']").prop("checked", true);
+            $("#tfx_syscode").val("<%#RS.TryGet("syscode")%>").triggerHandler("change");
+            $("#tfx_logingrp").val("<%#RS.TryGet("logingrp")%>");
+            $("#dfx_beg_date").val("<%#Util.parseDBDate(RS.TryGet("beg_date"),"yyyy/M/d")%>");
+            $("#dfx_end_date").val("<%#Util.parseDBDate(RS.TryGet("end_date"),"yyyy/M/d")%>");
+            $("#tfx_mark").val("<%#RS.TryGet("mark")%>");
+            $("#xxx_tran_date").val("<%#Util.parseDBDate(RS.TryGet("tran_date"),"yyyy/M/d")%>");
+            $("#xxx_tran_scode").val("<%#RS.TryGet("tran_scode")%>");
         } else {
             if (window.parent.tt !== undefined) {
                 window.parent.tt.rows = "0%,100%";

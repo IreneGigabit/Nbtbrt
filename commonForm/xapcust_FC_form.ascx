@@ -27,7 +27,7 @@
 </script>
 
 <script type="text/html" id="div_apcust_FC">
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <input type=hidden id=FC_apnum name=FC_apnum value=0><!--筆數-->
 <table border="0" id=FC_tabap class="bluetable" cellspacing="1" cellpadding="2" width="100%">
 	<THEAD>

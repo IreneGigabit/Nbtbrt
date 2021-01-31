@@ -95,6 +95,25 @@ public static class Conn
     }
 
     /// <summary>
+    /// 爭救案件管理系統
+    /// </summary>
+    public static string optK {
+        get {
+            switch (Host) {
+                case "SINN05":
+                case "SIC10":
+                case "SIS10":
+                case "SIK10":
+                    return Sys.getConnString("prod_opt");//正式環境
+                case "WEB10":
+                    return Sys.getConnString("test_opt");//使用者測試環境
+                default:
+                    return Sys.getConnString("dev_opt");//開發環境
+            }
+        }
+    }
+
+    /// <summary>
     /// 雙邊代理查照
     /// </summary>
     public static string sidbs {

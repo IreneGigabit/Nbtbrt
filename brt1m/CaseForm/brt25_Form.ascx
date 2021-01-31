@@ -51,7 +51,7 @@
     }
 </script>
 
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <TABLE id=tab25form style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
 	<TR id="tr_contract">
 		<TD class=lightbluetable align=right>

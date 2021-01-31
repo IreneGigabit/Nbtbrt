@@ -281,8 +281,6 @@
     })
 
     function this_init() {
-        dmt_form.new_oldcase();
-
         if(main.ar_form=="A6"){//變更
             $("#CTab td.tab[href='#dmt']").after($("#CTab td.tab[href='#apcust']"));//[案件申請人]移到[案件主檔]後面
         }else{
@@ -306,6 +304,8 @@
                 $("#dialog").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
+
+        dmt_form.new_oldcase();
 
         //畫面準備
         cust_form.init();//案件客戶

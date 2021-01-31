@@ -86,7 +86,7 @@
         SQL += ";SELECT Cust_code,Code_name,form_name,remark";
         SQL += " FROM Cust_code";
         SQL += " WHERE Code_type = '" + code_type + "' AND form_name is not null ";
-        if (ReqVal.TryGet("kind", "") == "old") {//舊案不可創設申請
+        if (ReqVal.TryGet("kind") == "old") {//舊案不可創設申請
             SQL += "AND convert(varchar,remark)<>'E11' ";
         }
         SQL += "order by cust_code";

@@ -7,8 +7,9 @@
     //新申請案交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected string SQL = "";
 
     protected string tfz1_agt_no="",tfz_country = "";
@@ -19,30 +20,36 @@
     }
     
     private void PageLayout() {
-        if (prgid.ToLower() == "brt51") {//程序客收確認
-            Lock["brt51"] = "Lock";
-        } else {
-            Lock["brt51"] = "";
-        }
-
         //代理人
         tfz1_agt_no = Sys.getAgent().Option("{agt_no}", "{agt_no}_{agt_namefull}", " v1='{agt_name1}' {selected}", true);
         //語文別/國家
         tfz_country = Sys.getCountry().Option("{coun_code}", "{coun_code}-{coun_c}");
+        
+        if (prgid.ToLower() == "brt51") {//程序客收確認
+            Lock["brt51"] = "Lock";
+        }
+        if (prgid.ToLower() == "brt52") {//交辦維護
+            Lock["brt52"] = "Lock";
+            Hide["brt52"] = "Hide";
+        }
     }
 </script>
 
-<%=Sys.GetAscxPath(this)%>
-<INPUT TYPE=text id=tfz1_S_Mark NAME=tfz1_S_Mark value="">
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
+<INPUT TYPE=hidden id=tfz1_S_Mark NAME=tfz1_S_Mark value="">
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr id="showseq1">
 		<td class=lightbluetable align=right width="10%" >案件編號：</td>
 		<td class=whitetablebg colspan=7>
 			<INPUT TYPE=text id=tfz1_seq NAME=tfz1_seq SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%> readonly class="SEdit">-
-			<select id=tfz1_seq1 name=tfz1_seq1 onchange="br_form.seq1_conctrl()" class="<%=Lock["brt51"]%>">
-			<option value="_">一般</option>
-			<option value="M">M_大陸案</option>
-			</select>
+            <%if(Lock.TryGet("brt52")!="Lock"){%>
+			    <select id=tfz1_seq1 name=tfz1_seq1 onchange="br_form.seq1_conctrl()" class="<%#Lock.TryGet("brt51")%>">
+			        <option value="_">一般</option>
+			        <option value="M">M_大陸案</option>
+			    </select>
+            <%}else{%>
+                <INPUT TYPE=text NAME=tfz1_seq1 id=tfz1_seq1 SIZE=<%=Sys.DmtSeq1%> MAXLENGTH=<%=Sys.DmtSeq1%> style="text-transform:uppercase;" class="<%#Lock.TryGet("brt52")%>">	
+            <%}%>
 		</td>
 	</tr>
 	<tr >
@@ -155,7 +162,7 @@
     <tr>
         <td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a5Attech)">
             <strong><u>附件：</u></strong>
-            <input type="text" id="tfz1_remark1" name="tfz1_remark1">
+            <input type="hidden" id="tfz1_remark1" name="tfz1_remark1">
         </td>
     </tr>
     <tr class='sfont9'>
@@ -173,7 +180,7 @@
 		<td class="lightbluetable" STYLE="cursor:pointer;COLOR:BLUE" align=right ID="nAppend" onclick="PMARK(p1Appl_name)">一、<u><span class="txtMark1"></span>名稱：</u></td>
 		<td class="whitetablebg" colspan=7>
             <input TYPE="text" id="tfz1_Appl_name" NAME="tfz1_Appl_name" alt="『商標(標章)名稱』" SIZE="60" MAXLENGTH="100" onblur="appl_name_watch(this)">
-			<input TYPE="text" id="file1" name="file1" value="">
+			<input TYPE="hidden" id="file1" name="file1" value="">
 	        <input TYPE="text" id="Draw_file1" name="Draw_file1" SIZE="50" maxlength="50" readonly>	    
 			<input type="button" class="cbutton" id="butUpload1" name="butUpload1"  value="商標圖檔上傳" onclick="br_form.UploadAttach_photo()" >
 		    <input type="button" class="redbutton" id="btnDelAtt" name="btnDelAtt"  value="商標圖檔刪除" onclick="br_form.DelAttach_photo()" >

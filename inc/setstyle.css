@@ -704,6 +704,9 @@ input[type=button]:disabled,input[type=button][disabled] {
 select:disabled {
     color: #222;
 }
+input[type=text]:disabled {
+    color: #222;
+}
 /*
 select option.xxx {
     color: blue;

@@ -213,6 +213,7 @@ public static partial class Util
         foreach (System.Text.RegularExpressions.Match m
             in System.Text.RegularExpressions.Regex.Matches(str, "&#(?<ncr>\\d+?);"))
             str = str.Replace(m.Value, char.ConvertFromUtf32(int.Parse(m.Groups["ncr"].Value)).ToString());
+            str = HttpUtility.HtmlDecode(str);
         return str;
     }
     #endregion

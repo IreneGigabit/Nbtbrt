@@ -249,7 +249,7 @@
             }
         }
         ColMap["draw_file"] = Util.dbchar(Sys.Path2Btbrt(drawFilename));
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         if ((Request["ar_form"] ?? "") != "A4" && (Request["tfy_arcase"] ?? "") != "FC3") {
             if ((Request["tfzr_class_count"] ?? "") != "") {
@@ -448,7 +448,7 @@
                     ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code2_" + i]);
                     ColMap["dmt_goodname"] = Util.dbchar(Request["good_name2_" + i]);
                     ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count2_" + i]);
-                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                    ColMap["tr_date"] = "getdate()";
                     ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                     SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
@@ -466,7 +466,7 @@
                     ColMap["class"] = Util.dbchar(Request["class32_" + i]);
                     ColMap["dmt_goodname"] = Util.dbchar(Request["good_name32_" + i]);
                     ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count32_" + i]);
-                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                    ColMap["tr_date"] = "getdate()";
                     ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                     SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
@@ -485,7 +485,7 @@
                     ColMap["dmt_grp_code"] = Util.dbchar(Request["grp_code1_" + i]);
                     ColMap["dmt_goodname"] = Util.dbchar(Request["good_name1_" + i]);
                     ColMap["dmt_goodcount"] = Util.dbchar(Request["good_count1_" + i]);
-                    ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                    ColMap["tr_date"] = "getdate()";
                     ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                     SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
@@ -752,7 +752,7 @@
         ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
         ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         SQL = "UPDATE dmt_tran set " + ColMap.GetUpdateSQL();
         SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "'";
@@ -842,7 +842,7 @@
         }
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         ColMap["in_no"] = Util.dbchar(Request["In_no"]);
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
         ColMap["seq1"] = Util.dbnull(Request["tfzb_seq1"]);
@@ -856,7 +856,6 @@
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
-
 
         //件數
         for (int x = 1; x <= Convert.ToInt32("0" + Request["nfy_tot_num"]); x++) {
@@ -898,7 +897,7 @@
             if ((Request["tfzd_agt_no"] ?? "") != "") ColMap["agt_no"] = Util.dbchar(Request["tfzd_agt_no"]);
             if ((Request["pfzd_prior_date"] ?? "") != "") ColMap["prior_date"] = Util.dbchar(Request["pfzd_prior_date"]);
             if ((Request["tfzd_prior_no"] ?? "") != "") ColMap["prior_no"] = Util.dbchar(Request["tfzd_prior_no"]);
-            if ((Request["tfzd_prior_country"] ?? "") != "") ColMap["tfzd_prior_country"] = Util.dbchar(Request["tfzd_prior_country"]);
+            if ((Request["tfzd_prior_country"] ?? "") != "") ColMap["prior_country"] = Util.dbchar(Request["tfzd_prior_country"]);
             if ((Request["tfzd_ref_no"] ?? "") != "") ColMap["ref_no"] = Util.dbchar(Request["tfzd_ref_no"]);
             if ((Request["tfzd_ref_no1"] ?? "") != "") ColMap["ref_no1"] = Util.dbchar(Request["tfzd_ref_no1"]);
             if ((Request["tfzb_seq"] ?? "") != "") ColMap["Mseq"] = Util.dbchar(Request["tfzb_seq"]);
@@ -947,7 +946,7 @@
             ColMap["in_no"] = Util.dbchar(Request["In_no"]);
             ColMap["in_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
             ColMap["draw_file"] = Util.dbchar(Sys.Path2Btbrt(drawFilename));
-            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+            ColMap["tr_date"] = "getdate()";
             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
             ColMap["case_sqlno"] = case_sqlno;
 
@@ -966,7 +965,7 @@
                             ColMap["class"] = Util.dbchar(Request["classa_" + x + "_" + p]);
                             ColMap["dmt_goodname"] = Util.dbchar(Request["FD1_good_namea_" + x + "_" + p]);
                             ColMap["dmt_goodcount"] = Util.dbchar(Request["FD1_good_counta_" + x + "_" + p]);
-                            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                            ColMap["tr_date"] = "getdate()";
                             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                             SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
@@ -994,7 +993,7 @@
                             ColMap["class"] = Util.dbchar(Request["classb_" + x + "_" + p]);
                             ColMap["dmt_goodname"] = Util.dbchar(Request["FD2_good_nameb_" + x + "_" + p]);
                             ColMap["dmt_goodcount"] = Util.dbchar(Request["FD2_good_countb_" + x + "_" + p]);
-                            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                            ColMap["tr_date"] = "getdate()";
                             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
 
                             SQL = "insert into casedmt_good " + ColMap.GetInsertSQL();
@@ -1103,7 +1102,7 @@
                         SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
                         SQL += ",end_code,dmt_term1,dmt_term2,renewal,class_type,class_count,class ";
                         SQL += ",'" + Request["F_tscode"] + "','" + Request["In_no"] + "','" + DateTime.Today.ToShortDateString() + "','" + newfilename + "' ";
-                        SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1a_" + i] + "' ";
+                        SQL += ",getdate(),'" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1a_" + i] + "' ";
                         SQL += "from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' ";
                         SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
                         SQL += "and num='" + i + "' and (mark='C' or mark is null) ";
@@ -1187,7 +1186,7 @@
                         SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
                         SQL += ",end_code,dmt_term1,dmt_term2,renewal,class_type,class_count,class ";
                         SQL += ",'" + Request["F_tscode"] + "','" + Request["In_no"] + "','" + DateTime.Today.ToShortDateString() + "','" + newfilename + "' ";
-                        SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
+                        SQL += ",getdate(),'" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
                         SQL += "from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' ";
                         SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
                         SQL += "and num='" + i + "' and (mark='C' or mark is null) ";
@@ -1295,7 +1294,7 @@
                 ColMap["other_item"] = Util.dbchar(Request["O_item31"] + ";" + Request["O_item32"] + ";" + Request["O_item33"]);
             }
         }
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
         ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -1309,237 +1308,211 @@
             in_scode = Request["in_scode"] ?? "";
         }
 
-        switch ((Request["tfy_arcase"] ?? "")) {
-            case "FC1":
-            case "FC10":
-            case "FC11":
-            case "FC5":
-            case "FC7":
-            case "FC9":
-            case "FCA":
-            case "FCB":
-            case "FCF":
-            case "FCH":
-                //*****變更申請人(原申請人)(apcust_FC_RE1_form)
-                if ((Request["tfg1_mod_ap"] ?? "") == "Y") {
-                    for (int k = 1; k <= Convert.ToInt32("0" + Request["FC1_apnum"]); k++) {
-                        SQL = "insert into dmt_tranlist(in_scode,in_no,mod_field,old_no,ocname1,ocname2,oename1,oename2) values (";
-                        SQL += "'" + in_scode + "'," + Util.dbchar(Request["In_no"]) + ",'mod_ap'";
-                        SQL += "," + Util.dbchar(Request["tft1_old_no_" + k]) + "," + Util.dbchar(Request["tft1_ocname1_" + k]) + "";
-                        SQL += "," + Util.dbchar(Request["tft1_ocname2_" + k]) + "," + Util.dbchar(Request["tft1_oename1_" + k]) + "";
-                        SQL += "," + Util.dbchar(Request["tft1_oename2_" + k]) + ")";
-                        conn.ExecuteNonQuery(SQL);
-                    }
-                }
-                //*****變更註冊申請案號數
-                if ((Request["tfy_arcase"] ?? "").IN("FC1,FC10,FC9,FCA,FCB,FCF")) {
-                    for (int k = 1; k <= Convert.ToInt32("0" + Request["tft1_mod_count11"]); k++) {
-                        SQL = "insert into dmt_tranlist(in_scode,in_no,mod_field,mod_count,new_no,ncname1) values (";
-                        SQL += "'" + in_scode + "'," + Util.dbchar(Request["In_no"]) + ",'mod_tcnref'";
-                        SQL += "," + Util.dbchar(Request["tft1_mod_count11"]) + "," + Util.dbchar(Request["new_no1" + k]) + "";
-                        SQL += "," + Util.dbchar(Request["ncname11" + k]) + ")";
-                        conn.ExecuteNonQuery(SQL);
-                    }
-                }
-                //*****增加代理人	 
-                if ((Request["tfy_arcase"] ?? "") == "FCA") {
-                    SQL = "insert into dmt_tranlist(in_scode,in_no,mod_field,new_no) values (";
-                    SQL += "'" + in_scode + "'," + Util.dbchar(Request["In_no"]) + ",'mod_agt'";
-                    SQL += "," + Util.dbchar(Request["FC1_add_agt_no"]) + ")";
+        if ((Request["tfy_arcase"] ?? "").IN("FC1,FC10,FC11,FC5,FC7,FC9,FCA,FCB,FCF,FCH")) {
+            //*****變更申請人(原申請人)(apcust_FC_RE1_form)
+            if ((Request["tfg1_mod_ap"] ?? "") == "Y") {
+                for (int k = 1; k <= Convert.ToInt32("0" + Request["FC1_apnum"]); k++) {
+                    SQL = "insert into dmt_tranlist(in_scode,in_no,mod_field,old_no,ocname1,ocname2,oename1,oename2) values (";
+                    SQL += "'" + in_scode + "'," + Util.dbchar(Request["In_no"]) + ",'mod_ap'";
+                    SQL += "," + Util.dbchar(Request["tft1_old_no_" + k]) + "," + Util.dbchar(Request["tft1_ocname1_" + k]) + "";
+                    SQL += "," + Util.dbchar(Request["tft1_ocname2_" + k]) + "," + Util.dbchar(Request["tft1_oename1_" + k]) + "";
+                    SQL += "," + Util.dbchar(Request["tft1_oename2_" + k]) + ")";
                     conn.ExecuteNonQuery(SQL);
                 }
-                //*****新增申請人檔
-                insert_dmt_temp_ap_FC2(conn, "0");
-
-                break;
-            case "FC2":
-            case "FC20":
-            case "FC21":
-            case "FC0":
-            case "FC6":
-            case "FC8":
-            case "FCC":
-            case "FCD":
-            case "FCG":
-            case "FCI":
-                //*****變更申請人
-                if ((Request["tfg2_mod_ap"] ?? "") != "NNN") {
-                    for (int i = 1; i <= Convert.ToInt32("0" + Request["FC0_apnum"]); i++) {
-                        ColMap.Clear();
-                        ColMap["in_scode"] = Util.dbchar(in_scode);
-                        ColMap["in_no"] = Util.dbchar(Request["In_no"]);
-                        ColMap["mod_field"] = "'mod_ap'";
-                        ColMap["new_no"] = Util.dbchar(Request["dbmn_new_no_" + i]);
-                        if ((Request["tfg2_mod_ap"] ?? "").Substring(1, 1) == "Y") {
-                            ColMap["ncname1"] = Util.dbchar(Request["dbmn_ncname1_" + i]);
-                            ColMap["ncname2"] = Util.dbchar(Request["dbmn_ncname2_" + i]);
-                        }
-                        if ((Request["tfg2_mod_ap"] ?? "").Substring(2, 1) == "Y") {
-                            ColMap["nename1"] = Util.dbchar(Request["dbmn_nename1_" + i]);
-                            ColMap["nename2"] = Util.dbchar(Request["dbmn_nename2_" + i]);
-                        }
-
-                        SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
-                        conn.ExecuteNonQuery(SQL);
-                    }
+            }
+            //*****變更註冊申請案號數
+            if ((Request["tfy_arcase"] ?? "").IN("FC1,FC10,FC9,FCA,FCB,FCF")) {
+                for (int k = 1; k <= Convert.ToInt32("0" + Request["tft1_mod_count11"]); k++) {
+                    SQL = "insert into dmt_tranlist(in_scode,in_no,mod_field,mod_count,new_no,ncname1) values (";
+                    SQL += "'" + in_scode + "'," + Util.dbchar(Request["In_no"]) + ",'mod_tcnref'";
+                    SQL += "," + Util.dbchar(Request["tft1_mod_count11"]) + "," + Util.dbchar(Request["new_no1" + k]) + "";
+                    SQL += "," + Util.dbchar(Request["ncname11" + k]) + ")";
+                    conn.ExecuteNonQuery(SQL);
                 }
-                //*****變更申請人地址
-                if ((Request["tfg2_mod_apaddr"] ?? "") != "NN") {
-                    for (int i = 1; i <= Convert.ToInt32("0" + Request["FC0_apnum"]); i++) {
-                        ColMap.Clear();
-                        ColMap["in_scode"] = Util.dbchar(in_scode);
-                        ColMap["in_no"] = Util.dbchar(Request["In_no"]);
-                        ColMap["mod_field"] = "'mod_apaddr'";
-                        ColMap["new_no"] = Util.dbchar(Request["dbmn_new_no_" + i]);
-                        if ((Request["tfg2_mod_apaddr"] ?? "").Substring(0, 1) == "Y") {
-                            ColMap["nzip"] = Util.dbchar(Request["dbmn_nzip_" + i]);
-                            ColMap["naddr1"] = Util.dbchar(Request["dbmn_naddr1_" + i]);
-                            ColMap["naddr2"] = Util.dbchar(Request["dbmn_naddr2_" + i]);
-                        }
-                        if ((Request["tfg2_mod_apaddr"] ?? "").Substring(1, 1) == "Y") {
-                            ColMap["neaddr1"] = Util.dbchar(Request["dbmn_neaddr1_" + i]);
-                            ColMap["neaddr2"] = Util.dbchar(Request["dbmn_neaddr2_" + i]);
-                            ColMap["neaddr3"] = Util.dbchar(Request["dbmn_neaddr3_" + i]);
-                            ColMap["neaddr4"] = Util.dbchar(Request["dbmn_neaddr4_" + i]);
-                        }
-
-                        SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
-                        conn.ExecuteNonQuery(SQL);
-                    }
-                }
-                //*****變更代表人
-                if ((Request["tfg2_mod_aprep"] ?? "") != "NN") {
-                    for (int i = 1; i <= Convert.ToInt32("0" + Request["FC0_apnum"]); i++) {
-                        ColMap.Clear();
-                        ColMap["in_scode"] = Util.dbchar(in_scode);
-                        ColMap["in_no"] = Util.dbchar(Request["In_no"]);
-                        ColMap["mod_field"] = "'mod_aprep'";
-                        ColMap["new_no"] = Util.dbchar(Request["dbmn_new_no_" + i]);
-                        if ((Request["tfg2_mod_aprep"] ?? "").Substring(0, 1) == "Y") {
-                            ColMap["ncrep"] = Util.dbchar(Request["dbmn_ncrep_" + i]);
-                        }
-                        if ((Request["tfg2_mod_aprep"] ?? "").Substring(1, 1) == "Y") {
-                            ColMap["nerep"] = Util.dbchar(Request["dbmn_nerep_" + i]);
-                        }
-
-                        SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
-                        conn.ExecuteNonQuery(SQL);
-                    }
-                }
-                //*****其他變更事項1
-                if ((Request["tfg2_mod_dmt"] ?? "") == "Y") {
+            }
+            //*****增加代理人	 
+            if ((Request["tfy_arcase"] ?? "") == "FCA") {
+                SQL = "insert into dmt_tranlist(in_scode,in_no,mod_field,new_no) values (";
+                SQL += "'" + in_scode + "'," + Util.dbchar(Request["In_no"]) + ",'mod_agt'";
+                SQL += "," + Util.dbchar(Request["FC1_add_agt_no"]) + ")";
+                conn.ExecuteNonQuery(SQL);
+            }
+            //*****新增申請人檔
+            insert_dmt_temp_ap_FC2(conn, "0");
+        } else if ((Request["tfy_arcase"] ?? "").IN("FC2,FC20,FC21,FC0,FC6,FC8,FCC,FCD,FCG,FCI")) {
+            //*****變更申請人
+            if ((Request["tfg2_mod_ap"] ?? "") != "NNN") {
+                for (int i = 1; i <= Convert.ToInt32("0" + Request["FC0_apnum"]); i++) {
                     ColMap.Clear();
                     ColMap["in_scode"] = Util.dbchar(in_scode);
                     ColMap["in_no"] = Util.dbchar(Request["In_no"]);
-                    ColMap["mod_field"] = "'mod_dmt'";
-                    if ((Request["tfy_arcase"] ?? "").IN("FC21,FC6,FC8,FCI")) {
-                        ColMap["ncname1"] = Util.dbchar(Request["ttg21_ncname1"]);
-                    } else {
-                        ColMap["ncname1"] = Util.dbchar(Request["ttg2_ncname1"]);
+                    ColMap["mod_field"] = "'mod_ap'";
+                    ColMap["new_no"] = Util.dbchar(Request["dbmn_new_no_" + i]);
+                    if ((Request["tfg2_mod_ap"] ?? "").Substring(1, 1) == "Y") {
+                        ColMap["ncname1"] = Util.dbchar(Request["dbmn_ncname1_" + i]);
+                        ColMap["ncname2"] = Util.dbchar(Request["dbmn_ncname2_" + i]);
                     }
+                    if ((Request["tfg2_mod_ap"] ?? "").Substring(2, 1) == "Y") {
+                        ColMap["nename1"] = Util.dbchar(Request["dbmn_nename1_" + i]);
+                        ColMap["nename2"] = Util.dbchar(Request["dbmn_nename2_" + i]);
+                    }
+
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
                 }
-                //*****其他變更事項2
-                if ((Request["tfg2_mod_claim1"] ?? "") == "Y") {
+            }
+            //*****變更申請人地址
+            if ((Request["tfg2_mod_apaddr"] ?? "") != "NN") {
+                for (int i = 1; i <= Convert.ToInt32("0" + Request["FC0_apnum"]); i++) {
                     ColMap.Clear();
                     ColMap["in_scode"] = Util.dbchar(in_scode);
                     ColMap["in_no"] = Util.dbchar(Request["In_no"]);
-                    ColMap["mod_field"] = "'mod_claim1'";
-                    if ((Request["tfy_arcase"] ?? "").IN("FC21,FC6,FC8,FCI")) {
-                        ColMap["ncname1"] = Util.dbchar(Request["ttg21_ncname2"]);
-                    } else {
-                        ColMap["ncname1"] = Util.dbchar(Request["ttg2_ncname2"]);
+                    ColMap["mod_field"] = "'mod_apaddr'";
+                    ColMap["new_no"] = Util.dbchar(Request["dbmn_new_no_" + i]);
+                    if ((Request["tfg2_mod_apaddr"] ?? "").Substring(0, 1) == "Y") {
+                        ColMap["nzip"] = Util.dbchar(Request["dbmn_nzip_" + i]);
+                        ColMap["naddr1"] = Util.dbchar(Request["dbmn_naddr1_" + i]);
+                        ColMap["naddr2"] = Util.dbchar(Request["dbmn_naddr2_" + i]);
                     }
+                    if ((Request["tfg2_mod_apaddr"] ?? "").Substring(1, 1) == "Y") {
+                        ColMap["neaddr1"] = Util.dbchar(Request["dbmn_neaddr1_" + i]);
+                        ColMap["neaddr2"] = Util.dbchar(Request["dbmn_neaddr2_" + i]);
+                        ColMap["neaddr3"] = Util.dbchar(Request["dbmn_neaddr3_" + i]);
+                        ColMap["neaddr4"] = Util.dbchar(Request["dbmn_neaddr4_" + i]);
+                    }
+
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
                 }
-                //*****變更註冊申請案號數
-                if ((Request["tfy_arcase"] ?? "").IN("FC2,FC20,FC0,FCC,FCD,FCG")) {
-                    if ((Request["tft2_mod_count2"] ?? "") != "") {
+            }
+            //*****變更代表人
+            if ((Request["tfg2_mod_aprep"] ?? "") != "NN") {
+                for (int i = 1; i <= Convert.ToInt32("0" + Request["FC0_apnum"]); i++) {
+                    ColMap.Clear();
+                    ColMap["in_scode"] = Util.dbchar(in_scode);
+                    ColMap["in_no"] = Util.dbchar(Request["In_no"]);
+                    ColMap["mod_field"] = "'mod_aprep'";
+                    ColMap["new_no"] = Util.dbchar(Request["dbmn_new_no_" + i]);
+                    if ((Request["tfg2_mod_aprep"] ?? "").Substring(0, 1) == "Y") {
+                        ColMap["ncrep"] = Util.dbchar(Request["dbmn_ncrep_" + i]);
+                    }
+                    if ((Request["tfg2_mod_aprep"] ?? "").Substring(1, 1) == "Y") {
+                        ColMap["nerep"] = Util.dbchar(Request["dbmn_nerep_" + i]);
+                    }
+
+                    SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
+                    conn.ExecuteNonQuery(SQL);
+                }
+            }
+            //*****其他變更事項1
+            if ((Request["tfg2_mod_dmt"] ?? "") == "Y") {
+                ColMap.Clear();
+                ColMap["in_scode"] = Util.dbchar(in_scode);
+                ColMap["in_no"] = Util.dbchar(Request["In_no"]);
+                ColMap["mod_field"] = "'mod_dmt'";
+                if ((Request["tfy_arcase"] ?? "").IN("FC21,FC6,FC8,FCI")) {
+                    ColMap["ncname1"] = Util.dbchar(Request["ttg21_ncname1"]);
+                } else {
+                    ColMap["ncname1"] = Util.dbchar(Request["ttg2_ncname1"]);
+                }
+                SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
+                conn.ExecuteNonQuery(SQL);
+            }
+            //*****其他變更事項2
+            if ((Request["tfg2_mod_claim1"] ?? "") == "Y") {
+                ColMap.Clear();
+                ColMap["in_scode"] = Util.dbchar(in_scode);
+                ColMap["in_no"] = Util.dbchar(Request["In_no"]);
+                ColMap["mod_field"] = "'mod_claim1'";
+                if ((Request["tfy_arcase"] ?? "").IN("FC21,FC6,FC8,FCI")) {
+                    ColMap["ncname1"] = Util.dbchar(Request["ttg21_ncname2"]);
+                } else {
+                    ColMap["ncname1"] = Util.dbchar(Request["ttg2_ncname2"]);
+                }
+                SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
+                conn.ExecuteNonQuery(SQL);
+            }
+            //*****變更註冊申請案號數
+            if ((Request["tfy_arcase"] ?? "").IN("FC2,FC20,FC0,FCC,FCD,FCG")) {
+                if ((Request["tft2_mod_count2"] ?? "") != "") {
+                    ColMap.Clear();
+                    ColMap["in_scode"] = Util.dbchar(in_scode);
+                    ColMap["in_no"] = Util.dbchar(Request["In_no"]);
+                    ColMap["mod_field"] = "'mod_tcnref'";
+                    ColMap["mod_count"] = Util.dbchar(Request["tft2_mod_count2"]);
+                    ColMap["new_no"] = Util.dbchar(Request["new_no21"]);
+                    ColMap["ncname1"] = Util.dbchar(Request["ncname121"]);
+
+                    SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
+                    conn.ExecuteNonQuery(SQL);
+                }
+            }
+            //'*****變更註冊申請案號數
+            for (int j = 1; j <= 5; j++) {
+                if ((Request["tft2_mod_count2" + j] ?? "") != "") {
+                    for (int i = 1; i <= Convert.ToInt32("0" + Request["tft2_mod_count2" + j]); i++) {
                         ColMap.Clear();
                         ColMap["in_scode"] = Util.dbchar(in_scode);
                         ColMap["in_no"] = Util.dbchar(Request["In_no"]);
                         ColMap["mod_field"] = "'mod_tcnref'";
-                        ColMap["mod_count"] = Util.dbchar(Request["tft2_mod_count2"]);
-                        ColMap["new_no"] = Util.dbchar(Request["new_no21"]);
-                        ColMap["ncname1"] = Util.dbchar(Request["ncname121"]);
+                        ColMap["mod_type"] = Util.dbchar(Request["tft2_mod_type_" + j]);
+                        ColMap["mod_count"] = Util.dbchar(Request["tft2_mod_count2_" + j]);
+                        ColMap["new_no"] = Util.dbchar(Request["new_no2_" + j + "_" + i]);
+                        ColMap["ncname1"] = Util.dbchar(Request["ncname12_" + j + "_" + i]);
 
                         SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                         conn.ExecuteNonQuery(SQL);
                     }
                 }
-                //'*****變更註冊申請案號數
-                for (int j = 1; j <= 5; j++) {
-                    if ((Request["tft2_mod_count2" + j] ?? "") != "") {
-                        for (int i = 1; i <= Convert.ToInt32("0" + Request["tft2_mod_count2" + j]); i++) {
-                            ColMap.Clear();
-                            ColMap["in_scode"] = Util.dbchar(in_scode);
-                            ColMap["in_no"] = Util.dbchar(Request["In_no"]);
-                            ColMap["mod_field"] = "'mod_tcnref'";
-                            ColMap["mod_type"] = Util.dbchar(Request["tft2_mod_type_" + j]);
-                            ColMap["mod_count"] = Util.dbchar(Request["tft2_mod_count2_" + j]);
-                            ColMap["new_no"] = Util.dbchar(Request["new_no2_" + j + "_" + i]);
-                            ColMap["ncname1"] = Util.dbchar(Request["ncname12_" + j + "_" + i]);
+            }
+            //*****新增代理人
+            if ((Request["tfy_arcase"] ?? "") == "FCC") {
+                ColMap.Clear();
+                ColMap["in_scode"] = Util.dbchar(in_scode);
+                ColMap["in_no"] = Util.dbchar(Request["In_no"]);
+                ColMap["mod_field"] = "'mod_agt'";
+                ColMap["new_no"] = Util.dbchar(Request["FC2_add_agt_no"]);
 
-                            SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
-                            conn.ExecuteNonQuery(SQL);
-                        }
+                SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
+                conn.ExecuteNonQuery(SQL);
+            }
+            //寫入交辦申請人檔
+            insert_dmt_temp_ap_FC0(conn, "0");
+        } else if ((Request["tfy_arcase"] ?? "").IN("FC3")) {
+            //*****擬減縮商品(服務名稱)
+            if ((Request["tfg3_mod_class"] ?? "") == "Y") {
+                for (int i = 1; i <= Convert.ToInt32("0" + Request["tft3_class_count1"]); i++) {
+                    if ((Request["class31_" + i] ?? "") != "") {
+                        ColMap.Clear();
+                        ColMap["in_scode"] = Util.dbchar(in_scode);
+                        ColMap["in_no"] = Util.dbchar(Request["In_no"]);
+                        ColMap["mod_field"] = "'mod_class'";
+                        ColMap["mod_type"] = Util.dbchar(Request["tft3_mod_type"]);
+                        ColMap["mod_dclass"] = Util.dbchar(Request["tft3_class1"]);
+                        ColMap["mod_count"] = Util.dbchar(Request["tft3_class_count1"]);
+                        ColMap["new_no"] = Util.dbchar(Request["class31_" + i]);
+                        ColMap["list_remark"] = Util.dbchar(Request["good_name31_" + i]);
+
+                        SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
+                        conn.ExecuteNonQuery(SQL);
                     }
                 }
-                //*****新增代理人
-                if ((Request["tfy_arcase"] ?? "") == "FCC") {
-                    ColMap.Clear();
-                    ColMap["in_scode"] = Util.dbchar(in_scode);
-                    ColMap["in_no"] = Util.dbchar(Request["In_no"]);
-                    ColMap["mod_field"] = "'mod_agt'";
-                    ColMap["new_no"] = Util.dbchar(Request["FC2_add_agt_no"]);
+            }
 
-                    SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
-                    conn.ExecuteNonQuery(SQL);
-                }
-                //寫入交辦申請人檔
-                insert_dmt_temp_ap_FC0(conn, "0");
+            //*****新增案件申請人檔
+            insert_dmt_temp_ap(conn, "0");
 
-                break;
-            case "FC3":
-                //*****擬減縮商品(服務名稱)
-                if ((Request["tfg3_mod_class"] ?? "") == "Y") {
-                    for (int i = 1; i <= Convert.ToInt32("0" + Request["tft3_class_count1"]); i++) {
-                        if ((Request["class31_" + i] ?? "") != "") {
-                            ColMap.Clear();
-                            ColMap["in_scode"] = Util.dbchar(in_scode);
-                            ColMap["in_no"] = Util.dbchar(Request["In_no"]);
-                            ColMap["mod_field"] = "'mod_class'";
-                            ColMap["mod_type"] = Util.dbchar(Request["tft3_mod_type"]);
-                            ColMap["mod_dclass"] = Util.dbchar(Request["tft3_class1"]);
-                            ColMap["mod_count"] = Util.dbchar(Request["tft3_class_count1"]);
-                            ColMap["new_no"] = Util.dbchar(Request["class31_" + i]);
-                            ColMap["list_remark"] = Util.dbchar(Request["good_name31_" + i]);
-
-                            SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
-                            conn.ExecuteNonQuery(SQL);
-                        }
-                    }
-                }
-
-                //*****新增案件申請人檔
-                insert_dmt_temp_ap(conn, "0");
-
-                break;
-            case "FC4":
-                //*****變更註冊申請案號數
-                for (int k = 1; k <= Convert.ToInt32("0" + Request["tft4_mod_count41"]); k++) {
-                    SQL = "insert into dmt_tranlist(in_scode,in_no,mod_field,mod_type,mod_count,new_no,ncname1) values (";
-                    SQL += "'" + in_scode + "','" + Request["in_no"] + "','mod_tcnref'";
-                    SQL += "," + Util.dbchar(Request["tft4_mod_type"]) + "," + Util.dbchar(Request["tft4_mod_count41"]) + "";
-                    SQL += "," + Util.dbchar(Request["new_no41_" + k]) + "," + Util.dbchar(Request["ncname141_" + k]) + ")";
-                    conn.ExecuteNonQuery(SQL);
-                }
-                //*****新增案件申請人檔
-                insert_dmt_temp_ap(conn, "0");
-
-                break;
+        } else if ((Request["tfy_arcase"] ?? "").IN("FC4")) {
+            //*****變更註冊申請案號數
+            for (int k = 1; k <= Convert.ToInt32("0" + Request["tft4_mod_count41"]); k++) {
+                SQL = "insert into dmt_tranlist(in_scode,in_no,mod_field,mod_type,mod_count,new_no,ncname1) values (";
+                SQL += "'" + in_scode + "','" + Request["in_no"] + "','mod_tcnref'";
+                SQL += "," + Util.dbchar(Request["tft4_mod_type"]) + "," + Util.dbchar(Request["tft4_mod_count41"]) + "";
+                SQL += "," + Util.dbchar(Request["new_no41_" + k]) + "," + Util.dbchar(Request["ncname141_" + k]) + ")";
+                conn.ExecuteNonQuery(SQL);
+            }
+            //*****新增案件申請人檔
+            insert_dmt_temp_ap(conn, "0");
         }
 
         //*****文件上傳
@@ -1628,7 +1601,7 @@
                 ColMap["other_item2"] = Util.dbchar(Request["other_item2"]);
             }
         }
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         SQL = "UPDATE dmt_tran set " + ColMap.GetUpdateSQL();
@@ -1776,7 +1749,7 @@
                         SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
                         SQL += ",end_code,dmt_term1,dmt_term2,renewal,class_type,class_count,class ";
                         SQL += ",'" + Request["in_scode"] + "','" + Request["in_no"] + "','" + DateTime.Today.ToShortDateString() + "','" + newfilename + "' ";
-                        SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
+                        SQL += ",getdate(),'" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
                         SQL += "from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' ";
                         SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
                         SQL += "and num='" + i + "' and mark='L'";
@@ -1892,7 +1865,7 @@
             ColMap["other_item"] = Util.dbchar(Request["O_item1"] + ";" + Request["O_item2"]);
         }
 
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         SQL = "UPDATE dmt_tran set " + ColMap.GetUpdateSQL();
@@ -1989,7 +1962,7 @@
                         SQL += ",apply_date,apply_no,issue_date,issue_no,open_date,rej_no,end_date ";
                         SQL += ",end_code,dmt_term1,dmt_term2,renewal,class_type,class_count,class ";
                         SQL += ",'" + Request["in_scode"] + "'," + Util.dbchar(Request["in_no"]) + ",'" + DateTime.Today.ToShortDateString() + "','" + newfilename + "' ";
-                        SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
+                        SQL += ",getdate(),'" + Session["scode"] + "'," + case_sqlno + ",'" + Request["dseq1b_" + i] + "' ";
                         SQL += "from dmt_temp_change where in_scode='" + Request["F_tscode"] + "' ";
                         SQL += "and cust_area='" + Request["F_cust_area"] + "' and cust_seq='" + Request["F_cust_seq"] + "' ";
                         SQL += "and num='" + i + "' and mark='T'";
@@ -2098,7 +2071,7 @@
         ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         ColMap["in_no"] = Util.dbchar(Request["in_no"]);
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
         conn.ExecuteNonQuery(SQL);
@@ -2211,7 +2184,7 @@
             ColMap["other_item"] = Util.dbchar(Request["O_item4"] + ";" + Request["O_item41"]);
         }
 
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
         ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -2285,10 +2258,10 @@
             if ((Request["O_item1"] ?? "") != "" || (Request["O_item2"] ?? "") != "") {//附註
                 ColMap["other_item"] = Util.dbchar(Request["O_item1"] + ";" + Request["O_item2"]);
             }
-            if (Request["tfg1_mod_claim1"] == null) {
+            if (ReqVal.TryGet("tfg1_mod_claim1") == "") {
                 ColMap["mod_claim1"] = "'N'";
             }
-            ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+            ColMap["tr_date"] = "getdate()";
             ColMap["tr_scode"] = "'" + Session["scode"] + "'";
             ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
             ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -2356,7 +2329,7 @@
             }
         }
 
-        ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
         ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
@@ -2452,7 +2425,7 @@
                 ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
                 ColMap["in_scode"] = Util.dbchar(in_scode);
                 ColMap["in_no"] = Util.dbchar(Request["in_no"]);
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
                 SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
@@ -2488,7 +2461,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2505,7 +2478,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2523,7 +2496,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2542,7 +2515,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2560,7 +2533,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_claim1='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_claim1='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2580,7 +2553,7 @@
                     SQL += "," + Util.dbnull(Sys.Path2Btbrt(DR1_mod_class_neaddr3)) + "," + Util.dbnull(Sys.Path2Btbrt(DR1_mod_class_neaddr4)) + ")";
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_class='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_class='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2600,7 +2573,7 @@
                     SQL += "," + Util.dbnull(Sys.Path2Btbrt(DR1_mod_dmt_neaddr3)) + "," + Util.dbnull(Sys.Path2Btbrt(DR1_mod_dmt_neaddr4)) + ")";
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_dmt='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_dmt='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2630,7 +2603,7 @@
                 ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
                 ColMap["in_scode"] = Util.dbchar(in_scode);
                 ColMap["in_no"] = Util.dbchar(Request["in_no"]);
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
                 SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
@@ -2665,7 +2638,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2682,7 +2655,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2701,7 +2674,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2720,7 +2693,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2733,7 +2706,7 @@
                         SQL += "," + Util.dbchar(Request["ttg2_mod_aprep_new_no_" + i]) + ")";
                         conn.ExecuteNonQuery(SQL);
                     }
-                    SQL = "update dmt_tran set mod_aprep='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_aprep='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2745,7 +2718,7 @@
                 || (Request["ttg2_mod_dmt_neaddr3"] ?? "") != "" || (Request["ttg2_mod_dmt_neaddr4"] ?? "") != ""
                 ) {
                     SQL = "INSERT INTO dmt_tranlist(in_scode,in_no,mod_field,ncname1,ncname2,nename1,nename2,ncrep,nerep,neaddr1,neaddr2,neaddr3,neaddr4)";
-                    SQL += "VALUES('" + Request["in_scode"] + "'," + Util.dbchar(Request["in_no"]) + ",'mod_dmt'";
+                    SQL += "VALUES('" + in_scode + "'," + Util.dbchar(Request["in_no"]) + ",'mod_dmt'";
                     SQL += "," + Util.dbnull(Sys.Path2Btbrt(DO1_mod_dmt_ncname1)) + "," + Util.dbnull(Sys.Path2Btbrt(DO1_mod_dmt_ncname2));
                     SQL += "," + Util.dbnull(Sys.Path2Btbrt(DO1_mod_dmt_nename1)) + "," + Util.dbnull(Sys.Path2Btbrt(DO1_mod_dmt_nename2));
                     SQL += "," + Util.dbnull(Sys.Path2Btbrt(DO1_mod_dmt_ncrep)) + "," + Util.dbnull(Sys.Path2Btbrt(DO1_mod_dmt_nerep));
@@ -2753,7 +2726,7 @@
                     SQL += "," + Util.dbnull(Sys.Path2Btbrt(DO1_mod_dmt_neaddr3)) + "," + Util.dbnull(Sys.Path2Btbrt(DO1_mod_dmt_neaddr4)) + ")";
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_dmt='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_dmt='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2783,7 +2756,7 @@
                 ColMap["seq"] = Util.dbnull(Request["tfzb_seq"]);
                 ColMap["in_scode"] = Util.dbchar(in_scode);
                 ColMap["in_no"] = Util.dbchar(Request["in_no"]);
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
                 SQL = "insert into dmt_tran " + ColMap.GetInsertSQL();
@@ -2819,7 +2792,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2836,7 +2809,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2855,7 +2828,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2874,7 +2847,7 @@
                     SQL = "insert into dmt_tranlist " + ColMap.GetInsertSQL();
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_pul='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2887,7 +2860,7 @@
                         SQL += "," + Util.dbchar(Request["ttg3_mod_aprep_new_no_" + i]) + ")";
                         conn.ExecuteNonQuery(SQL);
                     }
-                    SQL = "update dmt_tran set mod_aprep='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_aprep='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2899,7 +2872,7 @@
                 || (Request["ttg3_mod_dmt_neaddr3"] ?? "") != "" || (Request["ttg3_mod_dmt_neaddr4"] ?? "") != ""
                 ) {
                     SQL = "INSERT INTO dmt_tranlist(in_scode,in_no,mod_field,ncname1,ncname2,nename1,nename2,ncrep,nerep,neaddr1,neaddr2,neaddr3,neaddr4)";
-                    SQL += "VALUES('" + Request["in_scode"] + "'," + Util.dbchar(Request["in_no"]) + ",'mod_dmt'";
+                    SQL += "VALUES('" + in_scode + "'," + Util.dbchar(Request["in_no"]) + ",'mod_dmt'";
                     SQL += "," + Util.dbnull(Sys.Path2Btbrt(DI1_mod_dmt_ncname1)) + "," + Util.dbnull(Sys.Path2Btbrt(DI1_mod_dmt_ncname2));
                     SQL += "," + Util.dbnull(Sys.Path2Btbrt(DI1_mod_dmt_nename1)) + "," + Util.dbnull(Sys.Path2Btbrt(DI1_mod_dmt_nename2));
                     SQL += "," + Util.dbnull(Sys.Path2Btbrt(DI1_mod_dmt_ncrep)) + "," + Util.dbnull(Sys.Path2Btbrt(DI1_mod_dmt_nerep));
@@ -2907,7 +2880,7 @@
                     SQL += "," + Util.dbnull(Sys.Path2Btbrt(DI1_mod_dmt_neaddr3)) + "," + Util.dbnull(Sys.Path2Btbrt(DI1_mod_dmt_neaddr4)) + ")";
                     conn.ExecuteNonQuery(SQL);
 
-                    SQL = "update dmt_tran set mod_dmt='Y' where in_scode='" + Request["in_scode"] + "' and in_no = '" + Request["in_no"] + "'";
+                    SQL = "update dmt_tran set mod_dmt='Y' where in_scode='" + in_scode + "' and in_no = '" + Request["in_no"] + "'";
                     conn.ExecuteNonQuery(SQL);
                 }
 
@@ -2921,7 +2894,7 @@
                     SQL += " values ('" + Request["F_tscode"] + "'," + Util.dbchar(Request["in_no"]) + "," + Util.dbchar(Request["fr4_other_item"]) + "";
                     SQL += "," + Util.dbchar(Request["fr4_other_item1"]) + "," + Util.dbchar(Request["fr4_other_item2"]) + "";
                     SQL += "," + Util.dbchar(Request["fr4_tran_remark1"]) + "," + Util.dbchar(Request["fr4_tran_mark"]) + "";
-                    SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "',";
+                    SQL += ",getdate(),'" + Session["scode"] + "',";
                     SQL += Util.dbnull(Request["tfzb_seq"]) + "," + Util.dbchar(Request["tfzb_seq1"]) + ")";
                     conn.ExecuteNonQuery(SQL);
                     //新增對照當事人資料
@@ -2935,13 +2908,13 @@
                     SQL = "INSERT INTO dmt_tran(in_scode,in_no,other_item,other_item1,other_item2,tran_remark1,tr_date,tr_scode,seq,seq1)";
                     SQL += " values ('" + Request["F_tscode"] + "'," + Util.dbchar(Request["in_no"]) + "," + Util.dbchar(Request["fr4_other_item"]) + ",";
                     SQL += "" + Util.dbchar(Request["fr4_other_item1"]) + "," + Util.dbchar(Request["fr4_other_item2"]) + ",";
-                    SQL += "" + Util.dbchar(Request["fr4_tran_remark1"]) + ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "',";
+                    SQL += "" + Util.dbchar(Request["fr4_tran_remark1"]) + ",getdate(),'" + Session["scode"] + "',";
                     SQL += Util.dbnull(Request["tfzb_seq"]) + "," + Util.dbchar(Request["tfzb_seq1"]) + ")";
                     conn.ExecuteNonQuery(SQL);
                 } else {
                     SQL = "INSERT INTO dmt_tran(in_scode,in_no,tran_remark1,tr_date,tr_scode,seq,seq1,agt_no1)";
                     SQL += " values ('" + Request["F_tscode"] + "'," + Util.dbchar(Request["in_no"]) + "," + Util.dbchar(Request["tfg1_tran_remark1"]) + "";
-                    SQL += ",'" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "',";
+                    SQL += ",getdate(),'" + Session["scode"] + "',";
                     SQL += Util.dbnull(Request["tfzb_seq"]) + "," + Util.dbchar(Request["tfzb_seq1"]) + "," + Util.dbnull(Request["tfg1_agt_no1"]) + ")";
                     conn.ExecuteNonQuery(SQL);
                 }

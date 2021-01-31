@@ -3,8 +3,11 @@
 
 <script runat="server">
     //父控制項傳入的參數
-    public Dictionary<string, string> Lock = new Dictionary<string, string>();
-    
+    public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public int HTProgRight = 0;
+
+    protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
 
@@ -20,12 +23,12 @@
         apserver_name = "註記此申請人為應受送達人";
         if (ar_form == "A7" || ar_form == "A8" || ar_form == "B")
             apserver_name = "此申請人為選定代表人";
-        
+
         this.DataBind();
     }
 </script>
 
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <input type=hidden id=apnum name=apnum value=0><!--筆數-->
 <table border="0" id=tabap class="bluetable" cellspacing="1" cellpadding="2" width="100%">
 	<THEAD>
@@ -59,15 +62,15 @@
 		</TD>
 		<TD class=sfont9>
 			<select id="apclass_##" name="apclass_##" class="Lock"><%#apclass%></select>
-            <label><input type="checkbox" id="ap_hserver_flag_##" name="ap_hserver_flag_##" value="Y" onclick="apcust_form.apserver_flag('##','')">註記此申請人為應受送達人
+            <label><input type="checkbox" id="ap_hserver_flag_##" name="ap_hserver_flag_##" value="Y" onclick="apcust_form.apserver_flag('##','')" class="<%#Lock.TryGet("apcust")%>">註記此申請人為應受送達人
             <input type="hidden" id="ap_server_flag_##" name="ap_server_flag_##" value="N"></label>
 		</TD>
 		<TD class=lightbluetable align=right title="輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。">
 			<span id="span_apcust_no_##" style="cursor:pointer;color:blue">申請人編號<br>(統一編號/身份證字號)：</span>
 		</TD>
 		<TD class=sfont9>
-			<input type=text id="apcust_no_##" name="apcust_no_##" size=11 maxlength=10 onblur="apcust_form.chkapcust_no(reg.apnum.value,'##','apcust_no_')">
-		    <input type='button' id='queryap_##' name='queryap_##' value='確定' onclick="apcust_form.getAP('##')" style='cursor:pointer;' title='輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。'>
+			<input type=text id="apcust_no_##" name="apcust_no_##" size=11 maxlength=10 onblur="apcust_form.chkapcust_no(reg.apnum.value,'##','apcust_no_')" class="<%#Lock.TryGet("apcust")%>">
+		    <input type='button' id='queryap_##' name='queryap_##' value='確定' onclick="apcust_form.getAP('##')" class="<%#Lock.TryGet("apcustC")%>" title='輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。'>
 		</TD>
 	</TR>
 	<TR>
@@ -77,7 +80,7 @@
 		</TD>
 		<TD class=lightbluetable align=right>排序：</TD>
 		<TD class=sfont9>
-			<input type=text id="ap_sort_##" name="ap_sort_##" size=2 maxlength=2>
+			<input type=text id="ap_sort_##" name="ap_sort_##" size=2 maxlength=2 class="<%#Lock.TryGet("apcust")%>">
 		</TD>
 	</TR>
 	<TR>
@@ -85,9 +88,9 @@
 		<TD class=sfont9 colspan=3>
             <input type=hidden id="ap_cname_##" name="ap_cname_##">
 		    <input type=hidden id="apsqlno_##" name="apsqlno_##">
-		    <INPUT TYPE=text id="ap_cname1_##" name="ap_cname1_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)"><br>
-		    <INPUT TYPE=text id="ap_cname2_##" name="ap_cname2_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)">
-		    <INPUT type='button' value='申請人查詢' onclick="apcust_form.cust13query('##','')"  style='cursor:pointer;' title='輸入關鍵字並點選申請人查詢，即顯示申請人資料清單。'>
+		    <INPUT TYPE=text id="ap_cname1_##" name="ap_cname1_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)" class="<%#Lock.TryGet("apcust")%>"><br>
+		    <INPUT TYPE=text id="ap_cname2_##" name="ap_cname2_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)" class="<%#Lock.TryGet("apcust")%>">
+		    <INPUT type='button' value='申請人查詢' onclick="apcust_form.cust13query('##','')"  style='cursor:pointer;' class="<%#Hide.TryGet("apcust")%>" title='輸入關鍵字並點選申請人查詢，即顯示申請人資料清單。'>
 		</TD>
 	</TR>
 	<TR>
@@ -109,8 +112,8 @@
 		</TD>
 		<TD class=sfont9 colspan=3>
             <input type=hidden id="ap_ename_##" name="ap_ename_##">
-		    <INPUT TYPE=text id="ap_ename1_##" name="ap_ename1_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)"><br>
-		    <INPUT TYPE=text id="ap_ename2_##" name="ap_ename2_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)">
+		    <INPUT TYPE=text id="ap_ename1_##" name="ap_ename1_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)" class="<%#Lock.TryGet("apcust")%>"><br>
+		    <INPUT TYPE=text id="ap_ename2_##" name="ap_ename2_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)" class="<%#Lock.TryGet("apcust")%>">
 	    </TD>
 	</TR>
 	<TR>

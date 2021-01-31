@@ -5,8 +5,10 @@
     //B爭議案交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public int HTProgRight = 0;
+
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected string SQL = "";
 
     protected string tfp2_agt_no = "";
@@ -19,36 +21,48 @@
     private void PageLayout() {
         //代理人
         tfp2_agt_no = Sys.getAgent().Option("{agt_no}", "{agt_no}_{agt_namefull}", " v1='{agt_name1}' {selected}", true);
+
+        if (prgid.ToLower() == "brt52") {//交辦維護
+            Lock["brt52"] = "Lock";
+            Hide["brt52"] = "Hide";
+        }
     }
 </script>
 
 <div id="div_Form_DO1">
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>			
 		<td class=lightbluetable align=right><strong>案件種類：</strong></td>
 		<td class=whitetablebg colspan=7>
-            <Select name="tfp2_case_stat" id="tfp2_case_stat" onchange="br_form.new_oldcaseB('tfp2',true)">
-			<option value="NN">新案</option>
-			<option value="SN">新案(指定編號)</option>
+            <Select name="tfp2_case_stat" id="tfp2_case_stat" onchange="br_form.new_oldcaseB('tfp2',true)" class="<%#Lock.TryGet("brt52")%>">
+			    <option value="NN">新案</option>
+			    <option value="SN">新案(指定編號)</option>
             </Select>
 		</TD>
 	</tr>
 	<tr  >
 		<td class="lightbluetable" align=right><strong>本所編號：</strong></td>
-		<td class="whitetablebg" colspan="7" id="showseq_tfp2" style="display:none">
-			<input type="text" size="5" name="tfp2_seq" id="tfp2_seq" readonly class="SEdit">-
-			<select name=tfp2_seq1 id=tfp2_seq1 onchange="br_form.seq1_conctrl()">
-				<option value="_">一般</option>
-				<option value="M">M_大陸案</option>
-			</select>
-		</td>
-		<td class=whitetablebg colspan=7 style="display:none" id="ShowNewAssign_tfp2">
-			<INPUT TYPE=text NAME=tfp2_New_Ass_seq id=tfp2_New_Ass_seq SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%> onblur="dmt_form.New_ass_seqB_blur('tfp2')">-<INPUT TYPE=text NAME=tfp2_New_Ass_seq1 id=tfp2_New_Ass_seq1 SIZE=<%=Sys.DmtSeq1%> MAXLENGTH=<%=Sys.DmtSeq1%> value="" onblur="dmt_form.New_ass_seqB_blur('tfp2')">	
+		<td class="whitetablebg" colspan="7">
+            <span id="showseq_tfp2" style="display:none"><!--新案-->
+			    <input type="text" size="<%=Sys.DmtSeq%>" MAXLENGTH=<%=Sys.DmtSeq%> name="tfp2_seq" id="tfp2_seq" readonly class="SEdit">-
+                <%if(Lock.TryGet("brt52")!="Lock"){%>
+			        <select name=tfp2_seq1 id=tfp2_seq1 onchange="br_form.seq1_conctrl()" class="<%#Lock.TryGet("brt52")%>">
+				        <option value="_">一般</option>
+				        <option value="M">M_大陸案</option>
+			        </select>
+                <%}else{%>
+                    <INPUT TYPE=text NAME=tfp2_seq1 id=tfp2_seq1 SIZE=<%=Sys.DmtSeq1%> MAXLENGTH=<%=Sys.DmtSeq1%> style="text-transform:uppercase;" class="<%#Lock.TryGet("brt52")%>">	
+                <%}%>
+            </span>
+            <span id="ShowNewAssign_tfp2" style="display:none"><!--新案(指定編號)-->
+			    <INPUT TYPE=text NAME=tfp2_New_Ass_seq id=tfp2_New_Ass_seq SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%> onblur="dmt_form.New_ass_seqB_blur('tfp2')" class="<%#Lock.TryGet("brt52")%>">-<INPUT TYPE=text NAME=tfp2_New_Ass_seq1 id=tfp2_New_Ass_seq1 SIZE=<%=Sys.DmtSeq1%> MAXLENGTH=<%=Sys.DmtSeq1%> value="" onblur="dmt_form.New_ass_seqB_blur('tfp2')" class="<%#Lock.TryGet("brt52")%>">	
+            </span>
+            <input type=button class="cbutton" name="Qry_step" id="Qry_step" value ="查詢案件進度" onclick="dmt_form.Qstepclick(reg.tfzb_seq.value, reg.tfzb_seq1.value)">
 		</td>
 	</tr>	
 	<tr>
-		<td class="lightbluetable" valign="top" ><strong>※、代理人</strong></td>
+		<td class="lightbluetable" valign="top" align=right><strong>※、代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
 		    <select id="tfp2_agt_no" NAME="tfp2_agt_no" onchange="br_form.copycaseZZ('tfp2_agt_no')"><%#tfp2_agt_no%></select>
 		</td>

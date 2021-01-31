@@ -3,8 +3,11 @@
 
 <script runat="server">
     //父控制項傳入的參數
-    public Dictionary<string, string> Lock = new Dictionary<string, string>();
-    
+    public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public int HTProgRight = 0;
+
+    protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
 
@@ -20,7 +23,7 @@
     }
 </script>
 
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <input type=hidden id=FC0_apnum name=FC0_apnum value=0><!--筆數-->
 <table border="0" id=FC0_tabap class="bluetable" cellspacing="1" cellpadding="2" width="100%">
 	<THEAD>
@@ -36,10 +39,10 @@
                <input type=radio name=tfzd_Mark id=tfzd_MarkC class="onoff" value="C">質權人(請撰擇其一)
             </td>   
         </tr> 
-        <tr>
+        <tr class="<%#Hide.TryGet("apcust")%>">
 			<td class="lightbluetable" align=left colspan=2>二、請填寫申請人各項資料(填寫變更後之正確資料) </td>
 		</tr>   
-	    <TR>
+	    <TR class="<%#Hide.TryGet("apcust")%>">
 		    <TD class="bluetable sfont9" style="border-color:red" colspan=2 align=right>
                 <span id="span_btn_POA">
     			    <input type=button class="greenbutton <%#Lock.TryGet("Qdisabled")%>" value="查詢申請人委任書" onclick="apcust_form.btn_POA('FC0_tabap','dbmn_')">
@@ -61,7 +64,7 @@
 		<TD class=whitetablebg title="輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。">
 		    申請人統一編號：
             <input TYPE=text id=dbmn_new_no_## NAME=dbmn_new_no_## SIZE=11 MAXLENGTH=10 onblur="apcust_form.chkapcust_no(reg.FC0_apnum.value,'##','dbmn_new_no_')">&nbsp;
-		    <input type=button name=queryap value='確定' onclick="apcust_form.getAPy('##')" title='輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。'>(統編/身份證字號)
+		    <input type=button id=queryap_## name=queryap_## value='確定' onclick="apcust_form.getAPy('##')" class="<%#Lock.TryGet("apcustC")%>" title='輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。'>(統編/身份證字號)
 		    <input type='checkbox' id='fc0_ap_hserver_flag_##' name='fc0_ap_hserver_flag_##' value='Y' onclick="apcust_form.apserver_flag('##','fc0_')">註記此申請人為應受送達人
 		    <input type='hidden' id='fc0_ap_server_flag_##' name='fc0_ap_server_flag_##' value='N'>
 		</TD>
@@ -87,8 +90,8 @@
 		<TD class=lightbluetable align=right></TD>
 		<TD class=whitetablebg>
 		    <input type=button class='cbutton <%#Lock.TryGet("QA1disabled")%>' value='查詢' onclick="apcust_form.get_apnameaddr('##','FC0','dbmn_')">申請人名稱(英)：
-		    <INPUT TYPE=text id=dbmn_nename1_## NAME=dbmn_nename1_## SIZE=60 MAXLENGTH=100 alt='『申請人名稱(英)』' onblur="fDataLen(this)">
-		    <INPUT TYPE=text id=dbmn_nename2_## NAME=dbmn_nename2_## SIZE=60 MAXLENGTH=100 alt='『申請人名稱(英)』' onblur="fDataLen(this)">
+		    <INPUT TYPE=text id=dbmn_nename1_## NAME=dbmn_nename1_## SIZE=60 MAXLENGTH=100 alt='『申請人名稱(英)』' onblur="fDataLen(this)" class="<%#Lock.TryGet("apcust")%>">
+		    <INPUT TYPE=text id=dbmn_nename2_## NAME=dbmn_nename2_## SIZE=60 MAXLENGTH=100 alt='『申請人名稱(英)』' onblur="fDataLen(this)" class="<%#Lock.TryGet("apcust")%>">
 		    <input type=hidden id='dbmn_ap_ename_##' name='dbmn_ap_ename_##'>
 		</TD>
 	</TR>

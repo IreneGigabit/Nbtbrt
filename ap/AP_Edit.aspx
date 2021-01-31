@@ -202,19 +202,19 @@
             if (window.parent.tt !== undefined) {
                 window.parent.tt.rows = "*,2*";
             }
-            $("#pfx_SYScode").val("<%#RS.TryGet("syscode","")%>");
-            $("#pfx_APcode").val("<%#RS.TryGet("APcode","")%>");
-            $("#tfx_APnameC").val("<%#RS.TryGet("APnameC","")%>");
-            $("#tfx_APnameE").val("<%#RS.TryGet("APnameE","")%>");
-            $("#tfx_APcat").val("<%#RS.TryGet("APcat","").ToString()%>");
-            $("#tfx_APserver").val("<%#RS.TryGet("APserver","").ToString()%>");
-            $("#tfx_APpath").val("<%#RS.TryGet("APpath","").ToString()%>");
-            $("#tfx_ReMark").val("<%#RS.TryGet("ReMark","").ToString()%>");
-            $("#tfx_APorder").val("<%#RS.TryGet("APorder","").ToString()%>");
-            $("#tfx_APGrpClass").val("<%#RS.TryGet("APGrpClass","").ToString()%>");
-            $("#nfx_end_level").val("<%#RS.TryGet("end_level","").ToString()%>");
-            $("#dfx_beg_date").val("<%#Util.parseDBDate(RS.TryGet("beg_date","").ToString(),"yyyy/M/d")%>");
-            $("#dfx_end_date").val("<%#Util.parseDBDate(RS.TryGet("end_date","").ToString(),"yyyy/M/d")%>");
+            $("#pfx_SYScode").val("<%#RS.TryGet("syscode")%>");
+            $("#pfx_APcode").val("<%#RS.TryGet("APcode")%>");
+            $("#tfx_APnameC").val("<%#RS.TryGet("APnameC")%>");
+            $("#tfx_APnameE").val("<%#RS.TryGet("APnameE")%>");
+            $("#tfx_APcat").val("<%#RS.TryGet("APcat")%>");
+            $("#tfx_APserver").val("<%#RS.TryGet("APserver")%>");
+            $("#tfx_APpath").val("<%#RS.TryGet("APpath")%>");
+            $("#tfx_ReMark").val("<%#RS.TryGet("ReMark")%>");
+            $("#tfx_APorder").val("<%#RS.TryGet("APorder")%>");
+            $("#tfx_APGrpClass").val("<%#RS.TryGet("APGrpClass")%>");
+            $("#nfx_end_level").val("<%#RS.TryGet("end_level")%>");
+            $("#dfx_beg_date").val("<%#Util.parseDBDate(RS.TryGet("beg_date"),"yyyy/M/d")%>");
+            $("#dfx_end_date").val("<%#Util.parseDBDate(RS.TryGet("end_date"),"yyyy/M/d")%>");
         } else {
             $("#pfx_SYScode").val("<%#syscode%>");
             $("#tfx_APcat").val("<%#APcat%>");

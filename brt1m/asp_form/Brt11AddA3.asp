@@ -1,52 +1,37 @@
-<%
-Sub doUpdateDB()
-set cmd=Server.CreateObject("ADODB.command")
-set cnn=Server.CreateObject("ADODB.connection")
-set RSinfo=Server.CreateObject("ADODB.recordset")
-cnn.Open session("btbrtdb")
-cmd.ActiveConnection=cnn
-cnn.BeginTrans	
+<% 
+Sub doUpdateDB(tno,tscode) 
+dim RS
+'SET inforcon = SERVER.CreateObject("ADODB.connecTION")	
+Set RS = Server.Createobject("ADODB.recordset")
+'inforcon.Open session("sinbrt")
+conn.BeginTrans
+'inforcon.BeginTrans	
+tran_sqlno = ""
+ixi = 0
+intflg="N"
 
-//寫入Log檔
-log_table(conn);
+log_table();
 
-//SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
-//conn.ExecuteNonQuery(SQL);
+update_case_dmt();
 
-//SQL = "delete from casedmt_good where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
-//conn.ExecuteNonQuery(SQL);
+upd_grconf_job_no();
 
-//SQL = "delete from casedmt_show where in_no='"+Request["in_no"]+"' and case_sqlno='0'";
-//conn.ExecuteNonQuery(SQL);
+update_dmt_temp();
 
-//寫入接洽記錄檔(case_dmt)
-update_case_dmt(conn);
+insert_casedmt_good();
 
-//寫入接洽記錄主檔(dmt_temp)
-update_dmt_temp(conn);
+insert_casedmt_show("0");
 
-//寫入接洽費用檔(caseitem_dmt)
-insert_caseitem_dmt(conn);
+insert_dmt_temp_ap("0");
 
-//寫入商品類別檔(casedmt_good)
-insert_casedmt_good(conn);
+Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
-//寫入展覽會優先權檔(casedmt_show)
-insert_casedmt_show(conn,"0");
+update_todo();
+	 
+update_dmt();
 
-//申請人入log_table
-//call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
-//寫入交辦申請人檔(dmt_temp_ap)
-insert_dmt_temp_ap(conn,"0");
+update_in_scode();
 
-//*****文件上傳
-Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"]??""));
-
-//更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-upd_grconf_job_no(conn);
-
-//當程序有修改復案或結案註記時通知營洽人員
-chk_end_back();
-  
-End sub '---- doUpdateDB() ----
-%>
+insert_rec_log();
+ 
+End sub '---- doUpdateDB() ----%>

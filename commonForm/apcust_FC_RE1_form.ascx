@@ -3,8 +3,11 @@
 
 <script runat="server">
     //父控制項傳入的參數
-    public Dictionary<string, string> Lock = new Dictionary<string, string>();
-    
+    public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public int HTProgRight = 0;
+
+    protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
 
@@ -20,7 +23,7 @@
     }
 </script>
 
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <input type=hidden id=FC2_apnum name=FC2_apnum value=0><!--筆數-->
 <table border="0" id=FC2_tabap class="bluetable" cellspacing="1" cellpadding="2" width="100%">
 	<THEAD>
@@ -56,8 +59,8 @@
 		    <TD class=whitetablebg title="輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。">
 		        <span id='span_Apcust_no_##' style='cursor:pointer;color:blue'>申請人統一編號：</span>
 		        <input TYPE=text id='dbmn1_new_no_##' NAME='dbmn1_new_no_##' SIZE=11 MAXLENGTH=10 onblur="apcust_form.chkapcust_no(reg.FC2_apnum.value,'##','dbmn1_new_no_')">&nbsp;
-		        <input type='button' value='確定' onclick="apcust_form.getAPy1('##')"  title='輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。'>(統編/身份證字號)
-		    </TD>
+			    <input type='button' id='queryap_##' name='queryap_##' value='確定' onclick="apcust_form.getAPy1('##')" title='輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。'>(統編/身份證字號)
+	    </TD>
 	    </TR>
 	    <TR>
 		    <TD class=lightbluetable align=right></TD>
@@ -87,8 +90,8 @@
 		    <TD class=lightbluetable align=right></TD>
 		    <TD class=whitetablebg>
 		        <input type=button class='cbutton <%#Lock.TryGet("QA1disabled")%>' value='查詢' onclick="apcust_form.get_apnameaddr('##', 'FC2', 'dbmn1_')">申請人名稱(英)：
-		        <INPUT TYPE=text id=dbmn1_nename1_## NAME=dbmn1_nename1_## SIZE=60 MAXLENGTH=100 alt='『申請人名稱(英)』' onblur="fDataLen(this)">
-		        <INPUT TYPE=text id=dbmn1_nename2_## NAME=dbmn1_nename2_## SIZE=60 MAXLENGTH=100 alt='『申請人名稱(英)』' onblur="fDataLen(this)">
+		        <INPUT TYPE=text id=dbmn1_nename1_## NAME=dbmn1_nename1_## SIZE=60 MAXLENGTH=100 alt='『申請人名稱(英)』' onblur="fDataLen(this)" class="<%#Lock.TryGet("apcust")%>">
+		        <INPUT TYPE=text id=dbmn1_nename2_## NAME=dbmn1_nename2_## SIZE=60 MAXLENGTH=100 alt='『申請人名稱(英)』' onblur="fDataLen(this)" class="<%#Lock.TryGet("apcust")%>">
 		        <input type=hidden id='dbmn1_ap_ename_##' name='dbmn1_ap_ename_##'>
 		    </TD>
 	    </TR>

@@ -431,7 +431,6 @@ public class IPOReport : OpenXmlHelper {
 			dt.Rows[0]["agt_name1"] = dt.Rows[0]["agt_name1"].ToString().Trim().Left(1) + "," + dt.Rows[0]["agt_name1"].ToString().Trim().Substring(1);
 			dt.Rows[0]["agt_name2"] = dt.Rows[0]["agt_name2"].ToString().Trim().Left(1) + "," + dt.Rows[0]["agt_name2"].ToString().Trim().Substring(1);
 		}
-
 		this.Agent = dt;
 	}
 	#endregion

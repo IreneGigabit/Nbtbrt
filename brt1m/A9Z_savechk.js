@@ -720,9 +720,11 @@ main.chkGood = function () {
                     $("#class1_" + j).focus();
                     return false;
                 }
-                if (br_form.checkclass(j) == false) {//檢查類別範圍0~45
-                    $("#class1_" + j).focus();
-                    return false;
+                if ($("input[name='tfzr_class_type']:checked").val() == "int") {
+                    if (br_form.checkclass($("#class1_" + j).val()) == false) {//檢查類別範圍0~45
+                        $("#class1_" + j).focus();
+                        return false;
+                    }
                 }
                 if ($("#class1_" + j).val() != "") {
                     inputCount++;//實際有輸入才要+
@@ -1037,10 +1039,12 @@ main.savechkA4 = function () {
                     $("#class2_" + j).focus();
                     return false;
                 }
-                if (br_form.checkclass(j) == false) {//檢查類別範圍0~45
-                    $("#class2_" + j).focus();
-                    settab("#tran");
-                    return false;
+                if ($("input[name='tfzd_class_type']:checked").val() == "int") {
+                    if (br_form.checkclass($("#class2_" + j).val()) == false) {//檢查類別範圍0~45
+                        $("#class2_" + j).focus();
+                        settab("#tran");
+                        return false;
+                    }
                 }
                 if ($("#class2_" + j).val() != "") {
                     inputCount++;//實際有輸入才要+
@@ -1449,10 +1453,12 @@ main.savechkA6 = function () {
                         $("#class32_" + j).focus();
                         return false;
                     }
-                    if (br_form.checkclass(j) == false) {//檢查類別範圍0~45
-                        $("#class32_" + j).focus();
-                        settab("#tran");
-                        return false;
+                    if ($("input[name='tft3_class_type2']:checked").val() == "int") {
+                        if (br_form.checkclass($("#class32_" + j).val()) == false) {//檢查類別範圍0~45
+                            $("#class32_" + j).focus();
+                            settab("#tran");
+                            return false;
+                        }
                     }
                     if ($("#class32_" + j).val() != "") {
                         inputCount++;//實際有輸入才要+
@@ -3031,4 +3037,18 @@ main.savechkZZ = function () {
     }
 
     return true;
+}
+
+//存檔檢查
+main.savechk = function () {
+    //依ar_form執行對應的function
+    switch (main.ar_form) {
+        case "A3": case "A4": case "A5": case "A6": case "A7": case "A8": case "A9": case "AA": case "AB": case "AC": case "B":
+            return eval("main.savechk" + main.ar_form + "()");
+        default:
+            if (main.ar_form.Left(1) == "B")
+                return main.savechkB();
+            else
+                return main.savechkZZ();
+    }
 }

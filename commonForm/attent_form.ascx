@@ -3,8 +3,10 @@
 
 <script runat="server">
     //父控制項傳入的參數
-    public Dictionary<string, string> Lock = new Dictionary<string, string>();
-    
+    public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public int HTProgRight = 0;
+   
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
 
@@ -19,7 +21,7 @@
     }
 </script>
 
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <table border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%">
 	<TR>
 		<td class="lightbluetable" align="right">客戶編號：</td>

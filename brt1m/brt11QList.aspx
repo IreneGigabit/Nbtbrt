@@ -82,8 +82,8 @@
         if (cust_seq != "") {
             SQL += " and a.cust_seq = '" + cust_seq + "'";
         }
-            if (ReqVal.TryGet("SetOrder", "") != "") {
-                SQL += " order by " + ReqVal.TryGet("SetOrder", "");
+            if (ReqVal.TryGet("SetOrder") != "") {
+                SQL += " order by " + ReqVal.TryGet("SetOrder");
             } else {
                 SQL += " order by a.seq,a.seq1";
             }
@@ -160,7 +160,7 @@
                  <option value="30" <%#page.perPage==40?"selected":""%>>40</option>
                  <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
                 </select>
-                <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder", "")%>" />
+                <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
                 </font>
             </td>
         </tr>

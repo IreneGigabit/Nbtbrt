@@ -659,6 +659,30 @@ public partial class Sys
     }
     #endregion
 
+    #region getCaseDmtScode - 抓取交辦檔內的營洽(國內案)
+    /// <summary>  
+    /// 抓取案件主檔內的營洽(國內案)
+    /// </summary>  
+    public static DataTable getCaseDmtScode(string branch, string pwh) {
+        string strConn = Conn.btbrt;
+        if (branch == "") Conn.brp(branch);
+        using (DBHelper conn = new DBHelper(strConn, false)) {
+            string SQL = "select distinct a.in_scode,b.sc_name,b.end_date ";
+            SQL += ",case when b.end_date<getdate() then '*' else '' end star ";
+            SQL += ",case when b.end_date<getdate() then 'red' else '' end color ";
+            SQL += "from case_dmt a ";
+            SQL += "inner join sysctrl.dbo.scode b on a.in_scode=b.scode ";
+            SQL += "where (a.mark='N' or a.mark is null) " + pwh;
+            SQL += "order by a.in_scode ";
+
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
     #region getDmtScode - 抓取案件主檔內的營洽(國內案)
     /// <summary>  
     /// 抓取案件主檔內的營洽(國內案)
@@ -683,7 +707,7 @@ public partial class Sys
     }
     #endregion
 
-    #region getExtScode - 抓取案件主檔內的營洽
+    #region getExtScode - 抓取案件主檔內的營洽(出口案)
     /// <summary>  
     /// 抓取案件主檔內的營洽(出口案)
     /// </summary>  
@@ -795,7 +819,7 @@ public partial class Sys
         //}
 
         foreach (KeyValuePair<string, string> item in pKey) {
-            wsql += string.Format(" and {0} ='{1}' ", item.Key, item.Value);
+            wsql += string.Format(" and {0} ='{1}' ", item.Key, item.Value.Trim());
         }
 
         //依log檔的prgid欄位名稱判斷(prgid or ud_prgid)
@@ -820,6 +844,14 @@ public partial class Sys
             case "dmt_temp":
                 usql = "insert into " + table + "_log(case_dmt_log_sqlno,log_date,log_scode," + tfield_str + ")";
                 usql += " SELECT isnull((select max(sqlno) from case_dmt_log where 1=1 " + wsql + "),0) ";
+                usql += ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
+                usql += " FROM " + table;
+                usql += " WHERE 1=1 ";
+                usql += wsql;
+                break;
+            case "ndmt":
+                usql = "insert into " + table + "_log(dmt_log_sqlno,log_date,log_scode," + tfield_str + ")";
+                usql += " SELECT isnull((select max(sqlno) from dmt_log where 1=1 " + wsql + "),0) ";
                 usql += ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;
                 usql += " WHERE 1=1 ";

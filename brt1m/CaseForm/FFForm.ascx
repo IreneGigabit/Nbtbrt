@@ -5,8 +5,8 @@
     //A3註冊費交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected string SQL = "";
 
     protected string tfg1_agt_no1 = "";
@@ -23,7 +23,7 @@
 </script>
 
 <div id="div_Form_FF">
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>參、代理人</strong></td>
@@ -90,8 +90,8 @@
 </table>
 </div>
 
-<INPUT TYPE=text id=tfg1_seq NAME=tfg1_seq>
-<INPUT TYPE=text id=tfg1_seq1 NAME=tfg1_seq1>
+<INPUT TYPE=hidden id=tfg1_seq NAME=tfg1_seq>
+<INPUT TYPE=hidden id=tfg1_seq1 NAME=tfg1_seq1>
 <script language="javascript" type="text/javascript">
     //交辦內容綁定
     br_form.bindFF = function () {

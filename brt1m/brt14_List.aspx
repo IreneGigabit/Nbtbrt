@@ -7,7 +7,7 @@
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "承辦申請書列印";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgCode = "brt14";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string HTProgPrefix = "brt14";//程式檔名前綴
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -110,7 +110,9 @@
             SQL += " and (a.mark='N' or a.mark is null) And case_sqlno=0 ";
             //因為出席聽證有交辦畫面但是不用有申請書
             SQL += " and a.arcase not in ('DE2','AD8')";
-
+            if (ReqVal.TryGet("qryOrder") != "") {
+                SQL += " order by " + ReqVal.TryGet("qryOrder");
+            }
 
             //Sys.showLog(SQL);
             conn.DataTable(SQL, dt);
@@ -123,7 +125,6 @@
 
             //分頁完再處理其他資料才不會虛耗資源
             for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
-                int ctrl_rowspan = 1;
                 SQL = "Select remark from cust_code where cust_code='__' and code_type='" + page.pagedTable.Rows[i]["arcase_type"] + "'";
                 object objResult = conn.ExecuteScalar(SQL);
                 string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
@@ -167,8 +168,13 @@
         if(row.SafeRead("classp", "")!=""){
             prtUrl=Page.ResolveUrl("~/Report/Print_" + row["classp"] + ".aspx?in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&send_sel=" + row["send_sel"]);
         }else if(row.SafeRead("reportp", "")!=""){//紙本申請書
-            if(row.SafeRead("prt_code", "")!="ZZ"&&row.SafeRead("prt_code", "")!="D9Z"&&row.SafeRead("ar_form", "")!="D3"){
-             prtUrl=Page.ResolveUrl("~/Report-word/Print_" + row["reportp"] + ".asp?in_scode1=" + row["in_scode"] + "&in_no1=" + row["in_no"]);
+            //***todo
+            /*select reportp,classp,* from code_br 
+            where reportp in('FD2','FC11','FC21','FL5','FT1','FP1','FP2','B5C1') --,'FOB'
+            order by rs_class
+             */
+            if (row.SafeRead("prt_code", "")!="ZZ"&&row.SafeRead("prt_code", "")!="D9Z"&&row.SafeRead("ar_form", "")!="D3"){
+                prtUrl = Page.ResolveUrl("~/Report-word/Print_" + row["reportp"] + ".aspx?in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"]);
             }
         }
         return prtUrl;
@@ -226,7 +232,7 @@
 					    <option value="30" <%#page.perPage==30?"selected":""%>>30</option>
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
-                    <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder", "")%>" />
+                    <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
 			    </font>
 		    </td>
 	    </tr>
@@ -297,7 +303,6 @@
             window.parent.tt.rows = "100%,0%";
         }
 
-        $("input[name='signid']:checked").triggerHandler("click");
         $(".Lock").lock();
         $("input.dateField").datepick();
     });

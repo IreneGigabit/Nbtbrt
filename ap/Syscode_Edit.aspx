@@ -222,22 +222,22 @@
             if (window.parent.tt !== undefined) {
                 window.parent.tt.rows = "*,2*";
             }
-            $("#pfx_syscode").val("<%#RS.TryGet("syscode","")%>");
-            $("#tfx_sysnameC").val("<%#RS.TryGet("sysnameC","")%>");
-            $("#tfx_sysnameE").val("<%#RS.TryGet("sysnameE","")%>");
-            $("#tfx_sysserver").val("<%#RS.TryGet("sysserver","")%>");
-            $("#tfx_syspath").val("<%#RS.TryGet("syspath","").ToString()%>");
-            $("#tfx_DataBranch").val("<%#RS.TryGet("DataBranch","")%>");
-            $("#tfx_ClassCode").val("<%#RS.TryGet("ClassCode","")%>");
-            $("#tfx_syssql").val("<%#RS.TryGet("syssql","")%>");
-            $("#tfx_corp_user").val("<%#RS.TryGet("corp_user","")%>");
-            $("#tfx_main_user").val("<%#RS.TryGet("main_user","")%>");
-            $("#tfx_sys_user").val("<%#RS.TryGet("sys_user","")%>");
-            $("#dfx_online_date").val("<%#Util.parseDBDate(RS.TryGet("online_date","").ToString(),"yyyy/M/d")%>");
-            $("#dfx_beg_date").val("<%#Util.parseDBDate(RS.TryGet("beg_date","").ToString(),"yyyy/M/d")%>");
-            $("#dfx_end_date").val("<%#Util.parseDBDate(RS.TryGet("end_date","").ToString(),"yyyy/M/d")%>");
-            $("#tfx_sysremark").val("<%#RS.TryGet("sysremark","")%>");
-            $("#tfx_mark").val("<%#RS.TryGet("mark","")%>");
+            $("#pfx_syscode").val("<%#RS.TryGet("syscode")%>");
+            $("#tfx_sysnameC").val("<%#RS.TryGet("sysnameC")%>");
+            $("#tfx_sysnameE").val("<%#RS.TryGet("sysnameE")%>");
+            $("#tfx_sysserver").val("<%#RS.TryGet("sysserver")%>");
+            $("#tfx_syspath").val("<%#RS.TryGet("syspath").ToString()%>");
+            $("#tfx_DataBranch").val("<%#RS.TryGet("DataBranch")%>");
+            $("#tfx_ClassCode").val("<%#RS.TryGet("ClassCode")%>");
+            $("#tfx_syssql").val("<%#RS.TryGet("syssql")%>");
+            $("#tfx_corp_user").val("<%#RS.TryGet("corp_user")%>");
+            $("#tfx_main_user").val("<%#RS.TryGet("main_user")%>");
+            $("#tfx_sys_user").val("<%#RS.TryGet("sys_user")%>");
+            $("#dfx_online_date").val("<%#Util.parseDBDate(RS.TryGet("online_date"),"yyyy/M/d")%>");
+            $("#dfx_beg_date").val("<%#Util.parseDBDate(RS.TryGet("beg_date"),"yyyy/M/d")%>");
+            $("#dfx_end_date").val("<%#Util.parseDBDate(RS.TryGet("end_date"),"yyyy/M/d")%>");
+            $("#tfx_sysremark").val("<%#RS.TryGet("sysremark")%>");
+            $("#tfx_mark").val("<%#RS.TryGet("mark")%>");
         } else {
             $("#dfx_end_date").val("2079/6/6");
         }

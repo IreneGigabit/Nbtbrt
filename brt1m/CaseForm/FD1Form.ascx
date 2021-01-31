@@ -5,8 +5,8 @@
     //A5分割案交辦內容
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    
-    protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+
+    protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected string SQL = "";
 
     protected string ttg1_agt_no = "", tfg1_div_arcase = "";
@@ -32,7 +32,7 @@
 </script>
 
 <div id="div_Form_FD1">
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="100%">
 	<tr>
 		<td class="lightbluetable" valign="top" ><strong>※、代理人(代碼)</strong></td>
@@ -98,6 +98,12 @@
     <script type="text/html" id="br_da_template"><!--分割樣板-->
 		<TABLE id=tabbDa_$$ border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
         <thead>
+			<tr>
+                <td class=lightbluetable align=right width='30%'><font color=red>分割(<span class="numberCh$$"></span>)</font>本所編號:</td>
+			    <td class=whitetablebg width='70%'>
+                    <INPUT type=text name=FD1_seqa_$$ id=FD1_seqa_$$ readonly class='sedit' size=5>-<INPUT type=text name=FD1_seq1a_$$ id=FD1_seq1a_$$ readonly class='SEdit' size=2>
+                </td>
+			</tr>
 		    <tr>
 			    <td class="lightbluetable" align="right" width="30%" ><font color=red>分割(<span class="numberCh$$"></span>)</font>類別種類:</td>
 			    <td class="whitetablebg" width="70%">

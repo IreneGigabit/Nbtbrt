@@ -96,7 +96,7 @@
                 SQL = "insert into LoginAp (SYScode,LoginGrp,Apcode,Rights,beg_date,end_date,tran_date,tran_scode";
                 SQL += ")values(";
                 SQL += "'" + Request["pfx_syscode"] + "','" + Request["pfx_syscode"] + "admin','" + Request["pfx_APcode"] + "',1023";
-                SQL += ",'" + DateTime.Today.ToShortDateString() + "','2079/6/6','" + DateTime.Today.ToShortDateString() + "','" + Session["scode"] + "')";
+                SQL += ",'" + DateTime.Today.ToShortDateString() + "','2079/6/6',getdate(),'" + Session["scode"] + "')";
                 cnn.ExecuteNonQuery(SQL);
             }
         }

@@ -250,7 +250,7 @@
         ColMap["draw_file"] = Util.dbnull(Sys.Path2Btbrt(draw_file));
         ColMap["symbol"] = Util.dbnull(Request["tfx_symbol"]);
         ColMap["color"] = Util.dbnull(Request["tfx_color"]);
-        ColMap["tran_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tran_date"] = "getdate()";
         ColMap["tran_scode"] = "'" + Session["scode"] + "'";
         SQL += ColMap.GetInsertSQL();
         conn.ExecuteNonQuery(SQL);
@@ -268,7 +268,7 @@
                 ColMap["dmt_goodcount"] = Util.dbnull(Request["tfx_goodcount_" + i]);
                 ColMap["in_scode"] = Util.dbchar(in_scode);
                 ColMap["in_no"] = Util.dbchar(in_no);
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 SQL += ColMap.GetInsertSQL();
                 conn.ExecuteNonQuery(SQL);
@@ -630,7 +630,7 @@
             SQL += " draw_file = " + Util.dbnull(Sys.Path2Btbrt(Request["tfx_draw_file"])) + ",";
             SQL += " symbol = " + Util.dbnull(Request["tfx_symbol"]) + ",";
             SQL += " color = " + Util.dbnull(Request["tfx_color"]) + ",";
-            SQL += " tran_date = '" + DateTime.Today.ToShortDateString() + "',";
+            SQL += " tran_date = getdate(),";
             SQL += " tran_scode = '" + Session["scode"] + "'";
             SQL += " where seq = " + Request["tfx_seq"];
             SQL += "   and seq1 = '" + ltfx_seq1 + "'";
@@ -651,7 +651,7 @@
             ColMap["draw_file"] = Util.dbnull(Sys.Path2Btbrt(Request["tfx_draw_file"]));
             ColMap["symbol"] = Util.dbnull(Request["tfx_symbol"]);
             ColMap["color"] = Util.dbnull(Request["tfx_color"]);
-            ColMap["tran_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+            ColMap["tran_date"] = "getdate()";
             ColMap["tran_scode"] = "'" + Session["scode"] + "'";
             SQL += ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
@@ -687,7 +687,7 @@
         SQL += " dmt_term1 = " + Util.dbnull(Request["tfx_term1"]) + ",";
         SQL += " dmt_term2 = " + Util.dbnull(Request["tfx_term2"]) + ",";
         SQL += " renewal = " + Util.dbnull(Request["tfx_renewal"]) + ",";
-        SQL += " tr_date = '" + DateTime.Today.ToShortDateString() + "',";
+        SQL += " tr_date = getdate(),";
         SQL += " tr_scode = '" + Session["scode"] + "'";
         SQL += " where in_no='" + in_no + "' and in_scode = '" + in_scode + "' ";
         SQL += " and seq=" + Request["tfx_seq"] + " and seq1='" + ltfx_seq1 + "'";
@@ -708,7 +708,7 @@
                 ColMap["dmt_goodcount"] = Util.dbnull(Request["tfx_goodcount_" + i]);
                 ColMap["in_scode"] = Util.dbchar(in_scode);
                 ColMap["in_no"] = Util.dbchar(in_no);
-                ColMap["tr_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tr_date"] = "getdate()";
                 ColMap["tr_scode"] = "'" + Session["scode"] + "'";
                 SQL += ColMap.GetInsertSQL();
                 conn.ExecuteNonQuery(SQL);
@@ -939,7 +939,7 @@
         ColMap["pr_scode"] = Util.dbchar(pr_scode);
         ColMap["new"] = Util.dbchar("X");
         ColMap["tot_num"] = Util.dbchar("1");
-        ColMap["tran_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+        ColMap["tran_date"] = "getdate()";
         ColMap["tran_scode"] = "'" + Session["scode"] + "'";
         ColMap["opt_stat"] = Util.dbchar(opt_stat);
         SQL += ColMap.GetInsertSQL();
@@ -963,7 +963,7 @@
                 ColMap["ctrl_type"] = Util.dbchar(Request["ctrl_type_" + i]);
                 ColMap["ctrl_remark"] = Util.dbnull(Request["ctrl_remark_" + i]);
                 ColMap["ctrl_date"] = Util.dbnull(Request["ctrl_date_" + i]);
-                ColMap["tran_date"] = "'" + DateTime.Today.ToShortDateString() + "'";
+                ColMap["tran_date"] = "getdate()";
                 ColMap["tran_scode"] = "'" + Session["scode"] + "'";
                 SQL += ColMap.GetInsertSQL();
                 conn.ExecuteNonQuery(SQL);

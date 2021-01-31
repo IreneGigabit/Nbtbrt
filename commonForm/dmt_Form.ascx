@@ -5,6 +5,7 @@
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public int HTProgRight = 0;
 
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string SQL = "";
@@ -12,27 +13,21 @@
     protected string tfz_country = "", tfzy_end_code = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
-        PageLayout();
-        this.DataBind();
-    }
-
-    private void PageLayout() {
-        if (prgid.ToLower() == "brt51") {//程序客收確認
-            Lock["brt51"] = "Lock";
-            Hide["brt51"] = "";
-        } else {
-            Lock["brt51"] = "";
-            Hide["brt51"] = "Hide";
-        }
-
         //語文別/國家
         tfz_country = Sys.getCountry().Option("{coun_code}", "{coun_code}-{coun_c}");
         //結案代碼
         tfzy_end_code = Sys.getEndCode().Option("{chrelno}", "{chrelname}");
+
+        Hide["brt51"] = "Hide";
+        if (prgid.ToLower() == "brt51") {//程序客收確認
+            Hide["brt51"] = "";
+        }
+
+        this.DataBind();
     }
 </script>
 
-<%=Sys.GetAscxPath(this)%>
+<%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <input type="hidden" name="branch" id="branch" value=<%=Session["seBranch"]%>>
 <input type="hidden" name="tfy_end_flag" id="tfy_end_flag"><!--結案註記-->
 <input type="hidden" name="tfy_end_type" id="tfy_end_type"><!--結案原因-->
@@ -65,7 +60,7 @@
                 <input type=button class="cbutton" name="Query" id="Query" value ="查詢主案件編號" onclick="dmt_form.Queryclick(reg.F_cust_seq.value)">
 			    <input type=button class="cbutton" name="Qry_step" id="Qry_step" value ="查詢案件進度" onclick="dmt_form.Qstepclick(reg.old_seq.value,reg.old_seq1.value)">
 			    <input type=button class="c1button <%#Hide.TryGet("brt51")%>" name="Upd_seq" id="Upd_seq" value ="案件主檔維護" onclick="dmt_form.Updseqclick(reg.old_seq.value,reg.old_seq1.value)">
-			    <input type="text" name=keyseq id=keyseq value="N">
+			    <input type="hidden" name=keyseq id=keyseq value="N">
             </span>
             <span id=CaseNew><!--新案-->
 			    <INPUT TYPE=text NAME=New_seq id=New_seq SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%> class="SEdit" readonly>-
@@ -110,7 +105,7 @@
                     <input type="radio" name="tfzy_S_Mark" value="L" onclick="dmt_form.change_mark(0)">證明標章
 				</span>
 			</span>
-            <input type="text" id="tfzd_S_Mark" name="tfzd_S_Mark" value="">
+            <input type="hidden" id="tfzd_S_Mark" name="tfzd_S_Mark" value="">
 		</TD>
 	</tr>
 	<tr >
@@ -795,7 +790,7 @@
 
     //查詢主案件編號
     dmt_form.Queryclick = function(cust_seq) {
-        window.open("brta21Query.aspx?cust_seq="+cust_seq ,"myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brt1m/brta21Query.aspx?cust_seq=" + cust_seq, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
         /*$('#dialog')
             .html('<iframe style="border: 0px;" src="brta21Query.aspx?cust_seq='+cust_seq+'" width="100%" height="100%"></iframe>')
             .dialog({autoOpen: true,modal: true,height: 420,width: 650,title: "查詢主案件編號"});*/
@@ -817,14 +812,14 @@
                 from_fld="";
             }
             //***todo
-            window.open("..\brt5m\brt15ShowFP.asp?seq="&value1&"&seq1="&value2 & "&from_fld=" & from_fld & "&submittask=Q&prgid=Brt51&end_type=012","", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
+            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" & value1 & "&seq1=" & value2 & "&from_fld=" & from_fld & "&submittask=Q&prgid=Brt51&end_type=012", "", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
         }
     }
     //案件進度查詢
     dmt_form.Qstepclick = function(pseq,pseq1) {
         if (pseq!=""&&pseq1!=""){
             //***todo
-            window.open("/btbrt/brtam/brta61Edit.asp?submitTask=Q&qtype=A&prgid="+main.prgid+"&closewin=Y&winact=1&aseq=" &pseq& "&aseq1=" &pseq1,"myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+            window.open(getRootPath() + "/brtam/brta61Edit.aspx?submitTask=Q&qtype=A&prgid=" + main.prgid + "&closewin=Y&winact=1&aseq=" & pseq & "&aseq1=" & pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
         }else{
             alert("請先輸入本所編號再執行維護功能!!!");
             return false;
@@ -834,7 +829,7 @@
     dmt_form.Updseqclick = function(pseq,pseq1) {
         if (pseq!=""&&pseq1!=""){
             //***todo
-            window.open("/btbrt/brt5m/brt15ShowFP.asp?seq="&pseq&"&seq1="&pseq1&"&submittask=U&prgid=Brt51&closewin=Y","myWindowOneu", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
+            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" & pseq & "&seq1=" & pseq1 & "&submittask=U&prgid=Brt51&closewin=Y", "myWindowOneu", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
         }else{
             alert("請先輸入本所編號再執行維護功能!!!");
             return false;
@@ -949,7 +944,7 @@
             }else{
                 $("#New_seq").val("");
             }
-            Filecanput();//***todo將特定欄位enabled
+            Filecanput();
             $("#F_cust_seq").unlock();
             $("#btncust_seq").show();
             dmt_form.Add_class(1);//類別預設顯示第1筆
@@ -972,7 +967,7 @@
             $("#DelayCase,#CaseNew").hide();//舊案/新案
             $("#CaseNewAssign").show();//新案(指定編號)
             $("#A9Ztr_endtype,#A9Ztr_backflag").hide();//結案/復案
-            Filecanput();//***todo將特定欄位enabled
+            Filecanput();
             $("#F_cust_seq").unlock();
             $("#btncust_seq").show();
             dmt_form.Add_class(1);//預設顯示第1筆
@@ -1004,7 +999,10 @@
             $("#s_marka_1,#s_markb_1").val("");//商標種類
             $("#appl_namea_1,#appl_nameb_1,#apply_noa_1,#issue_nob_1").val("");//商標/標章名稱/申請號數/註冊號數
             $("#case_stat1a_1OO,#case_stat1b_1OO").prop("checked", true);//新舊案
-            Filereadonly();//***todo將特定欄位disabled
+            if (main.prgid == "brt52")//交辦維護
+                Filecanput();
+            else
+                Filereadonly();
             //***接收舊案檢索資料
             if (main.formFunction == "Edit") {
                 $("#old_seq,#tfzb_seq").val(jMain.case_main[0].seq);

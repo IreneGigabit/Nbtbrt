@@ -82,8 +82,8 @@
                 }
             }
             SQL += " and a.dept='" + dept + "' and a.source='" + source + "'";
-            if (ReqVal.TryGet("SetOrder", "") != "") {
-                SQL += " order by " + ReqVal.TryGet("SetOrder", "");
+            if (ReqVal.TryGet("SetOrder") != "") {
+                SQL += " order by " + ReqVal.TryGet("SetOrder");
             } else {
                 SQL += " order by a.apattach_sqlno";
             }
@@ -203,7 +203,7 @@
                  <option value="30" <%#page.perPage==40?"selected":""%>>40</option>
                  <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
                 </select>
-                <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder", "")%>" />
+                <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
                 </font>
             </td>
         </tr>

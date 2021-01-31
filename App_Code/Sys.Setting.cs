@@ -163,6 +163,13 @@ public partial class Sys
     /// <summary>  
     /// 取得ASCX在伺服器上的路徑
     /// </summary>  
+    public static string GetAscxPath(string path) {
+        if (IsDebug()) {
+            return string.Format("<hr class='style-one'/>{0}<BR>", path);
+        } else {
+            return "";
+        }
+    }
     public static string GetAscxPath(System.Web.UI.Control control) {
         if (IsDebug()) {
             //return string.Format("\\{0}\\{1}.ascx<hr class='style-one'/>", dir, control.GetType().ToString().Replace("ASP.", ""))

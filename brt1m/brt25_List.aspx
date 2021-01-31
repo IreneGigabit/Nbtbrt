@@ -170,9 +170,9 @@
             SQL += " and (t.dowhat like 'contractL%') and t.job_status='NN'";
         }
 
-        ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder", ""));
-        if (ReqVal.TryGet("qryOrder", "") != "") {
-            SQL += " order by " + ReqVal.TryGet("qryOrder", "");
+        ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder"));
+        if (ReqVal.TryGet("qryOrder") != "") {
+            SQL += " order by " + ReqVal.TryGet("qryOrder");
         } else {
             SQL += " order by a.seq,a.seq1";
         }
