@@ -16,23 +16,15 @@
 
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Dictionary<string, string> ColMap = new Dictionary<string, string>();
-
     protected string SQL = "";
     Sys sfile = new Sys();
 
     protected StringBuilder strOut = new StringBuilder();
 
-    DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
-    private void Page_Unload(System.Object sender, System.EventArgs e) {
-        if (conn != null) conn.Dispose();
-    }
-
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
-
-        conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
 
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
@@ -53,29 +45,29 @@
             string in_no = (Request["in_no"]??"");
             //交辦內容欄位畫面
             if (Request["ar_form"] == "A3") {
-                editA3(in_no);
+                editA3(conn, in_no);
             } else if (Request["ar_form"] == "A4") {
-                editA4(in_no);
+                editA4(conn, in_no);
             } else if (Request["ar_form"] == "A5") {
-                editA5(in_no);
+                editA5(conn, in_no);
             } else if (Request["ar_form"] == "A6") {
-                editA6(in_no);
+                editA6(conn, in_no);
             } else if (Request["ar_form"] == "A7") {
-                editA7(in_no);
+                editA7(conn, in_no);
             } else if (Request["ar_form"] == "A8") {
-                editA8(in_no);
+                editA8(conn, in_no);
             } else if (Request["ar_form"] == "A9") {
-                editA9(in_no);
+                editA9(conn, in_no);
             } else if (Request["ar_form"] == "AA") {
-                editAA(in_no);
+                editAA(conn, in_no);
             } else if (Request["ar_form"] == "AB") {
-                editAB(in_no);
+                editAB(conn, in_no);
             } else if (Request["ar_form"] == "AC") {
-                editAC(in_no);
+                editAC(conn, in_no);
             } else if (Request["ar_form"].Left(1) == "B") {
-                editB(in_no);
+                editB(conn, in_no);
             } else {
-                editZZ(in_no);
+                editZZ(conn, in_no);
             }
 
             conn.Commit();
@@ -88,7 +80,7 @@
     /// <summary>
     /// 寫入Log檔
     /// </summary>
-    private void log_table() {
+    private void log_table(DBHelper conn) {
         //入case_dmt_log
         Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "brt12國內案編修暨交辦作業");
         
@@ -106,7 +98,9 @@
         Sys.insert_log_table(conn, "U", prgid, "casedmt_show", "in_no", Request["in_no"], "");
         SQL = "delete from casedmt_show where in_no='"+Request["in_no"]+"'";
         conn.ExecuteNonQuery(SQL);
-        //////////////////////////////
+        
+        //入dmt_temp_log
+        Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
         //刪除子案dmt_temp
         SQL = "delete from dmt_temp where in_no='" + Request["in_no"] + "' and case_sqlno<>0";
         conn.ExecuteNonQuery(SQL);
@@ -130,8 +124,7 @@
     /// <summary>
     /// 寫入接洽記錄檔(case_dmt)
     /// </summary>
-    private void update_case_dmt() {
-        SQL = "UPDATE case_dmt set ";
+    private void update_case_dmt(DBHelper conn) {
         ColMap.Clear();
         foreach (var key in Request.Form.Keys) {
             string colkey = key.ToString().ToLower();
@@ -172,7 +165,7 @@
         }
         //****後續交辦作業序號
         ColMap["grconf_sqlno"] = Util.dbnull(Request["grconf_sqlno"]);
-
+        
         //****會計檢核2013/9/16增加，不需請款或大陸進口案不在線上請款，不需會計檢核
         if (Request["tfy_ar_code"] == "X" || Request["tfy_ar_code"] == "M") {
             ColMap["acc_chk"] = "'X'";
@@ -188,7 +181,7 @@
         ColMap["seq1"] = Util.dbchar(Request["tfzb_seq1"]);
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
 
-        SQL += ColMap.GetUpdateSQL();
+        SQL = "UPDATE case_dmt set " + ColMap.GetUpdateSQL();
         SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "'";
         //Response.Write(SQL + "<HR>");
         conn.ExecuteNonQuery(SQL);
@@ -233,14 +226,10 @@
     /// <summary>
     /// 寫入接洽記錄主檔(dmt_temp)
     /// </summary>
-    private void update_dmt_temp() {
-        //入dmt_temp_log
-        Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
-
+    private void update_dmt_temp(DBHelper conn) {
         //將檔案更改檔名
         drawFilename = move_file(Request["draw_file"], "", Request["file"]);
         //*****若為新案則新增至案件檔,舊案則不用
-        SQL = "UPDATE dmt_temp set ";
         ColMap.Clear();
         foreach (var key in Request.Form.Keys) {
             string colkey = key.ToString().ToLower();
@@ -283,15 +272,15 @@
             ColMap["Mseq"] = Util.dbnull(Request["tfzb_seq"]);
             ColMap["Mseq1"] = Util.dbnull(Request["tfzb_seq1"]);
         }
-        SQL += ColMap.GetUpdateSQL();
-        SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "' and case_sqlno=0";
+        SQL = "UPDATE dmt_temp set " + ColMap.GetUpdateSQL();
+        SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "'";
         conn.ExecuteNonQuery(SQL);
     }
 
     /// <summary>
     /// 寫入交辦申請人檔(dmt_temp_ap)
     /// </summary>
-    private void insert_dmt_temp_ap(string case_sqlno) {
+    private void insert_dmt_temp_ap(DBHelper conn,string case_sqlno) {
         //交辦申請人
         for (int i = 1; i <= Convert.ToInt32("0" + Request["apnum"]); i++) {
             ColMap.Clear();
@@ -329,7 +318,7 @@
     /// <summary>
     /// 寫入交辦申請人檔(dmt_temp_ap)(Apcust_FC_RE_form)
     /// </summary>
-    private void insert_dmt_temp_ap_FC0( string case_sqlno) {
+    private void insert_dmt_temp_ap_FC0(DBHelper conn, string case_sqlno) {
         //交辦申請人
         for (int i = 1; i <= Convert.ToInt32("0" + Request["FC0_apnum"]); i++) {
             ColMap.Clear();
@@ -367,7 +356,7 @@
     /// <summary>
     /// 寫入交辦申請人檔(dmt_temp_ap)(Apcust_FC_RE1_form)
     /// </summary>
-    private void insert_dmt_temp_ap_FC2( string case_sqlno) {
+    private void insert_dmt_temp_ap_FC2(DBHelper conn, string case_sqlno) {
         //交辦申請人
         for (int i = 1; i <= Convert.ToInt32("0" + Request["FC2_apnum"]); i++) {
             ColMap.Clear();
@@ -405,7 +394,7 @@
     /// <summary>
     /// 寫入接洽費用檔(caseitem_dmt)
     /// </summary>
-    private void insert_caseitem_dmt() {
+    private void insert_caseitem_dmt(DBHelper conn) {
         //****主委辦案性	
         ColMap.Clear();
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
@@ -445,7 +434,7 @@
     /// <summary>
     /// 寫入商品類別檔(casedmt_good)
     /// </summary>
-    private void insert_casedmt_good() {
+    private void insert_casedmt_good(DBHelper conn) {
         //****商品類別
         if ((Request["ar_form"] ?? "") == "A4") {
             //延展以交辦內容為準
@@ -510,7 +499,7 @@
     /// <summary>
     /// 寫入展覽會優先權檔(casedmt_show)
     /// </summary>
-    private void insert_casedmt_show( string case_sqlno) {
+    private void insert_casedmt_show(DBHelper conn, string case_sqlno) {
         for (int i = 1; i <= Convert.ToInt32("0" + Request["shownum_dmt"]); i++) {
             if ((Request["show_date_dmt_" + i] ?? "") != "" || (Request["show_name_dmt_" + i] ?? "") != "") {
                 ColMap.Clear();
@@ -531,7 +520,7 @@
     /// <summary>
     /// 更新營洽官收確認紀錄檔(grconf_dmt.job_no)
     /// </summary>
-    private void upd_grconf_job_no() {
+    private void upd_grconf_job_no(DBHelper conn) {
         //後續交辦作業，更新營洽官收確認紀錄檔grconf_dmt.job_no
         if ((Request["grconf_sqlno"] ?? "") != "") {
             SQL = "update grconf_dmt set job_no = '" + Request["in_no"] + "' ";
@@ -659,35 +648,35 @@
     /// <summary>
     /// 註冊費
     /// </summary>
-    private void editA3( string RSno) {
+    private void editA3(DBHelper conn, string RSno) {
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //寫入展覽會優先權檔(casedmt_show)
-        insert_casedmt_show("0");
+        insert_casedmt_show(conn, "0");
 
         //申請人入log_table
         //call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap("0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -696,9 +685,9 @@
     /// <summary>
     /// 延展
     /// </summary>
-    private void editA4( string RSno) {
+    private void editA4(DBHelper conn, string RSno) {
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
         //conn.ExecuteNonQuery(SQL);
@@ -713,19 +702,19 @@
         conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //寫入展覽會優先權檔(casedmt_show)
-        insert_casedmt_show("0");
+        insert_casedmt_show(conn, "0");
 
         //***異動檔
         //dmt_tran入log
@@ -784,13 +773,13 @@
         //申請人入log_table
         //call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap( "0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -799,9 +788,9 @@
     /// <summary>
     /// 分割
     /// </summary>
-    private void editA5( string RSno) {
+    private void editA5(DBHelper conn, string RSno) {
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
         //conn.ExecuteNonQuery(SQL);
@@ -826,19 +815,19 @@
         //conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //寫入展覽會優先權檔(casedmt_show)
-        insert_casedmt_show( "0");
+        insert_casedmt_show(conn, "0");
 
         //***異動檔
         ColMap.Clear();
@@ -863,7 +852,7 @@
         //申請人入log_table
         //call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap( "0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
@@ -989,7 +978,7 @@
                     if ((Request["tfy_div_arcase"] ?? "").Left(3) != "FA9" && (Request["tfy_div_arcase"] ?? "").Left(3) != "FAA"
                     && (Request["tfy_div_arcase"] ?? "").Left(3) != "FAB" && (Request["tfy_div_arcase"] ?? "").Left(3) != "FAC") {
                         //分割子案展覽優先權入檔
-                        insert_casedmt_show( case_sqlno);
+                        insert_casedmt_show(conn, case_sqlno);
                     }
                     break;
                 case "FD2":
@@ -1013,15 +1002,15 @@
                         }
                     }
                     //分割子案展覽優先權入檔
-                    insert_casedmt_show( case_sqlno);
+                    insert_casedmt_show(conn, case_sqlno);
                     break;
             }
             //分割子案申請人入檔	
-            insert_dmt_temp_ap( case_sqlno);
+            insert_dmt_temp_ap(conn, case_sqlno);
         }
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -1030,12 +1019,12 @@
     /// <summary>
     /// 變更
     /// </summary>
-    private void editA6( string RSno) {
+    private void editA6(DBHelper conn, string RSno) {
         //重建暫存檔
         //rebuil_change("C");
 
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
         //conn.ExecuteNonQuery(SQL);
@@ -1065,7 +1054,7 @@
         //conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔
-        update_case_dmt();
+        update_case_dmt(conn);
 
         if ((Request["tfy_arcase"] ?? "") == "FC11" || (Request["tfy_arcase"] ?? "") == "FC5" || (Request["tfy_arcase"] ?? "") == "FC7" || (Request["tfy_arcase"] ?? "") == "FCH") {
             for (int i = 2; i <= Convert.ToInt32("0" + Request["nfy_tot_num"]); i++) {
@@ -1120,7 +1109,7 @@
                         conn.ExecuteNonQuery(SQL);
 
                         //*****新增申請人檔
-                        insert_dmt_temp_ap_FC2( case_sqlno);
+                        insert_dmt_temp_ap_FC2(conn, case_sqlno);
                     }
 
                     //商品類別
@@ -1204,7 +1193,7 @@
                         conn.ExecuteNonQuery(SQL);
 
                         //寫入交辦申請人檔
-                        insert_dmt_temp_ap_FC0( case_sqlno);
+                        insert_dmt_temp_ap_FC0(conn, case_sqlno);
                     }
 
                     //商品類別
@@ -1238,18 +1227,19 @@
         }
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //****新增展覽優先權資料
-        insert_casedmt_show( "0");
+        insert_casedmt_show(conn, "0");
 
         //dmt_tran入log
+        //call insert_log_table(conn,"U",tprgid,"dmt_tran","in_no;in_scode",trim(request("in_no"))&";"&trim(request("in_scode")))    
         string Num = "";
         if ((Request["tfy_arcase"] ?? "").Left(3).IN("FC9,FC1,FC5,FC7,FCA,FCB,FCF,FCH")) {
             Num = "1";
@@ -1348,7 +1338,7 @@
                 conn.ExecuteNonQuery(SQL);
             }
             //*****新增申請人檔
-            insert_dmt_temp_ap_FC2( "0");
+            insert_dmt_temp_ap_FC2(conn, "0");
         } else if ((Request["tfy_arcase"] ?? "").IN("FC2,FC20,FC21,FC0,FC6,FC8,FCC,FCD,FCG,FCI")) {
             //*****變更申請人
             if ((Request["tfg2_mod_ap"] ?? "") != "NNN") {
@@ -1487,7 +1477,7 @@
                 conn.ExecuteNonQuery(SQL);
             }
             //寫入交辦申請人檔
-            insert_dmt_temp_ap_FC0( "0");
+            insert_dmt_temp_ap_FC0(conn, "0");
         } else if ((Request["tfy_arcase"] ?? "").IN("FC3")) {
             //*****擬減縮商品(服務名稱)
             if ((Request["tfg3_mod_class"] ?? "") == "Y") {
@@ -1510,7 +1500,7 @@
             }
 
             //*****新增案件申請人檔
-            insert_dmt_temp_ap( "0");
+            insert_dmt_temp_ap(conn, "0");
 
         } else if ((Request["tfy_arcase"] ?? "").IN("FC4")) {
             //*****變更註冊申請案號數
@@ -1522,14 +1512,14 @@
                 conn.ExecuteNonQuery(SQL);
             }
             //*****新增案件申請人檔
-            insert_dmt_temp_ap( "0");
+            insert_dmt_temp_ap(conn, "0");
         }
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -1538,12 +1528,12 @@
     /// <summary>
     /// 授權
     /// </summary>
-    private void editA7( string RSno) {
+    private void editA7(DBHelper conn, string RSno) {
         //重建暫存檔
         //rebuil_change("L");
         
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
         //conn.ExecuteNonQuery(SQL);
@@ -1574,19 +1564,19 @@
         //conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //寫入展覽會優先權檔(casedmt_show)
-        insert_casedmt_show( "0");
+        insert_casedmt_show(conn, "0");
 
         //'dmt_tran入log
         //'call insert_log_table(cnn,"U",tprgid,"dmt_tran","in_no;in_scode",trim(request("in_no"))&";"&trim(request("in_scode"))) 
@@ -1707,7 +1697,7 @@
         }
 
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap( "0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
@@ -1767,7 +1757,7 @@
 
                         //申請人資料畫面Apcust_FC_RE_form.inc
                         //*****申請人檔
-                        insert_dmt_temp_ap( case_sqlno);
+                        insert_dmt_temp_ap(conn, case_sqlno);
                     }
 
                     //商品類別
@@ -1800,7 +1790,7 @@
         }
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -1809,12 +1799,12 @@
     /// <summary>
     /// 移轉
     /// </summary>
-    private void editA8( string RSno) {
+    private void editA8(DBHelper conn, string RSno) {
         //重建暫存檔
         //rebuil_change("T");
         
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"' ";
         //conn.ExecuteNonQuery(SQL);
@@ -1842,19 +1832,19 @@
         //conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //寫入展覽會優先權檔(casedmt_show)
-        insert_casedmt_show( "0");
+        insert_casedmt_show(conn, "0");
 
 
         //*****移轉檔	
@@ -1920,7 +1910,7 @@
         //申請人入log_table
         //call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap( "0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
@@ -1980,7 +1970,7 @@
 
                         //申請人資料畫面Apcust_FC_RE_form.inc
                         //*****申請人檔
-                        insert_dmt_temp_ap( case_sqlno);
+                        insert_dmt_temp_ap(conn, case_sqlno);
                     }
 
                     //商品類別
@@ -2012,7 +2002,7 @@
         }
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -2021,9 +2011,9 @@
     /// <summary>
     /// 質權
     /// </summary>
-    private void editA9( string RSno) {
+    private void editA9(DBHelper conn, string RSno) {
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
         //conn.ExecuteNonQuery(SQL);
@@ -2041,19 +2031,19 @@
         conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //寫入展覽會優先權檔(casedmt_show)
-        insert_casedmt_show( "0");
+        insert_casedmt_show(conn, "0");
 
         string save1 = "";
         if ((Request["tfy_arcase"] ?? "") == "FP1") {
@@ -2121,13 +2111,13 @@
         //申請人入log_table
         //call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap( "0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -2136,9 +2126,9 @@
     /// <summary>
     /// 質權
     /// </summary>
-    private void editAA( string RSno) {
+    private void editAA(DBHelper conn, string RSno) {
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
         //conn.ExecuteNonQuery(SQL);
@@ -2150,19 +2140,19 @@
         //conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //寫入展覽會優先權檔(casedmt_show)
-        insert_casedmt_show( "0");
+        insert_casedmt_show(conn, "0");
 
         //dmt_tran入log
         //call insert_log_table(cnn,"U",tprgid,"dmt_tran","in_no;in_scode",trim(request("in_no"))&";"&trim(request("in_scode"))) 
@@ -2206,13 +2196,13 @@
         //申請人入log_table
         //call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap( "0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -2221,9 +2211,9 @@
     /// <summary>
     /// 補(換)發證
     /// </summary>
-    private void editAB( string RSno) {
+    private void editAB(DBHelper conn, string RSno) {
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
         //conn.ExecuteNonQuery(SQL);
@@ -2235,19 +2225,19 @@
         //conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //寫入展覽會優先權檔(casedmt_show)
-        insert_casedmt_show( "0");
+        insert_casedmt_show(conn, "0");
 
         //*****補換註冊檔
         //dmt_tran入log
@@ -2284,13 +2274,13 @@
         //申請人入log_table
         //call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap( "0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -2299,9 +2289,9 @@
     /// <summary>
     /// 閱案
     /// </summary>
-    private void editAC( string RSno) {
+    private void editAC(DBHelper conn, string RSno) {
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
         //conn.ExecuteNonQuery(SQL);
@@ -2310,16 +2300,16 @@
         //conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //*****補換註冊檔
         //dmt_tran入log
@@ -2351,13 +2341,13 @@
         //申請人入log_table
         //call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap( "0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -2366,9 +2356,9 @@
     /// <summary>
     /// 爭議案
     /// </summary>
-    private void editB( string RSno) {
+    private void editB(DBHelper conn, string RSno) {
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'";
         //conn.ExecuteNonQuery(SQL);
@@ -2383,13 +2373,13 @@
         conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         string in_scode = Request["F_tscode"] ?? "";
         if (prgid == "brt52") {
@@ -2897,7 +2887,7 @@
                 break;
             default:
                 //寫入商品類別檔(casedmt_good)
-                insert_casedmt_good();
+                insert_casedmt_good(conn);
 
                 if ((Request["tfy_arcase"] ?? "").Left(3) == "DE1") {
                     SQL = "INSERT INTO dmt_tran(in_scode,in_no,other_item,other_item1,other_item2,tran_remark1,tran_mark,tr_date,tr_scode,seq,seq1)";
@@ -2935,13 +2925,13 @@
         //申請人入log_table
         //call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap( "0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
@@ -2950,9 +2940,9 @@
     /// <summary>
     /// 其他
     /// </summary>
-    private void editZZ(string RSno) {
+    private void editZZ(DBHelper conn, string RSno) {
         //寫入Log檔
-        log_table();
+        log_table(conn);
 
         //SQL = "delete from caseitem_dmt where in_no='"+Request["in_no"]+"' and in_scode='"+Request["in_scode"]+"'"
         //conn.ExecuteNonQuery(SQL);
@@ -2967,19 +2957,19 @@
         conn.ExecuteNonQuery(SQL);
 
         //寫入接洽記錄檔(case_dmt)
-        update_case_dmt();
+        update_case_dmt(conn);
 
         //寫入接洽記錄主檔(dmt_temp)
-        update_dmt_temp();
+        update_dmt_temp(conn);
 
         //寫入接洽費用檔(caseitem_dmt)
-        insert_caseitem_dmt();
+        insert_caseitem_dmt(conn);
 
         //寫入商品類別檔(casedmt_good)
-        insert_casedmt_good();
+        insert_casedmt_good(conn);
 
         //寫入展覽會優先權檔(casedmt_show)
-        insert_casedmt_show("0");
+        insert_casedmt_show(conn, "0");
 
         //***異動檔
         //dmt_tran入log
@@ -3098,13 +3088,13 @@
         //申請人入log_table
         //call insert_log_table(cnn,"U",tprgid,"dmt_temp_ap","in_no;case_sqlno",trim(request("in_no"))&";0")
         //寫入交辦申請人檔(dmt_temp_ap)
-        insert_dmt_temp_ap("0");
+        insert_dmt_temp_ap(conn, "0");
 
         //*****文件上傳
         Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
         //更新營洽官收確認紀錄檔(grconf_dmt.job_no)
-        upd_grconf_job_no();
+        upd_grconf_job_no(conn);
 
         //當程序有修改復案或結案註記時通知營洽人員
         chk_end_back();
