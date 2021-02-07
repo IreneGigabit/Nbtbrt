@@ -61,8 +61,8 @@
 		    <tr>
 			    <td class="lightbluetable" align="right" width="23%">此次<span id="sp_titlecnt">授權</span>總件數：</td>
 			    <td class="whitetablebg"  colspan=3>共<input type="text" id=tot_num21 name=tot_num21 size=2 onchange="br_form.Add_FL1(this.value)" >件
-				    <input type=text id=cnt211 name=cnt211 value="0"><!--畫面上有幾筆-->
-				    <input type=text id=nfy_tot_num name=nfy_tot_num value="0">
+				    <input type=hidden id=cnt211 name=cnt211 value="0"><!--畫面上有幾筆-->
+				    <input type=hidden id=nfy_tot_num name=nfy_tot_num value="0">
 			    </td>
 		    </tr>
 		    <tr>	
@@ -74,7 +74,7 @@
                     <input type=radio value=OO id="case_stat1b_1OO" name="case_stat1b_1" onclick="br_form.case_stat1_control('OO','b_1')">舊案
                     <input type=button class="cbutton" id="btnQueryb_1" name="btnQueryb_1" value ="查詢主案件編號" onclick="br_form.btnQueryclick('b_1',reg.F_cust_seq.value)">
                     <input type=button class="cbutton" id="btncaseb_1" name="btncaseb_1"  value ="案件主檔查詢" onclick="br_form.btncaseclick('b_1')">
-			　       <input type="text" id=keydseqb_1 name=keydseqb_1 value="N">
+			　       <input type="hidden" id=keydseqb_1 name=keydseqb_1 value="N">
 			    </td>
 		    </tr>
 		    <tr>	
@@ -102,9 +102,9 @@
 					<input type=button class='cbutton' id='btnQueryb_##' name='btnQueryb_##' value ='查詢本所編號' onclick="br_form.btnQueryclick('b_##', reg.F_cust_seq.value)">
 					<input type=button class='cbutton' id=btncaseb_## name=btncaseb_##  value ='案件主檔查詢' onclick="br_form.btncaseclick('b_##')">
 					<input type=button class=cbutton id=btndmt_tempb_## name=btndmt_tempb_##  value ='案件主檔新增' onclick="br_form.btndmt_tempclick('b_##')">
-					<input type=text id=keydseqb_## name=keydseqb_##>
-					<input type=text id=case_sqlnob_## name=case_sqlnob_##>
-					<input type=text id=submitTaskb_## name=submitTaskb_##>
+					<input type=hidden id=keydseqb_## name=keydseqb_##>
+					<input type=hidden id=case_sqlnob_## name=case_sqlnob_##>
+					<input type=hidden id=submitTaskb_## name=submitTaskb_##>
 			    </td>
 		    </tr>
 		    <tr class="trfl1_##">

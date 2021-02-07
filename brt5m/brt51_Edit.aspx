@@ -1,15 +1,9 @@
 ﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
-<%@ Register Src="~/brt5m/brtform/brt52cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
-<%@ Register Src="~/brt5m/brtform/brt52attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
-<%@ Register Src="~/brt5m/brtform/brt52apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
-<%@ Register Src="~/brt5m/brtform/brt52dmt_case_form.ascx" TagPrefix="uc1" TagName="dmt_case_form" %>
-<%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
-<%@ Register Src="~/brt5m/Brt52FormA11.ascx" TagPrefix="uc1" TagName="Brt52FormA11" %>
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
-    protected string HTProgPrefix = "brt52";//程式檔名前綴
+    protected string HTProgCap = "國內案客收確認作業";//HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgPrefix = "brt51";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
@@ -26,6 +20,7 @@
     protected string ar_form = "";
     protected string cust_area = "";
     protected string cust_seq = "";
+    protected string in_scode = "";
     protected string in_no = "";
     protected string prt_code = "";
     protected string new_form = "";
@@ -33,6 +28,7 @@
     protected string code_type = "";
     protected string seq = "";
     protected string seq1 = "";
+    protected string code = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -44,6 +40,7 @@
         ar_form = (Request["ar_form"] ?? "").Trim();
         cust_area = (Request["cust_area"] ?? "").Trim();
         cust_seq = (Request["cust_seq"] ?? "").Trim();
+        in_scode = (Request["in_scode"] ?? "").Trim();
         in_no = (Request["in_no"] ?? "").Trim();
         prt_code = (Request["prt_code"] ?? "").Trim();
         new_form = (Request["new_form"] ?? "").Trim();
@@ -51,6 +48,7 @@
         code_type = (Request["code_type"] ?? "").Trim();
         seq = (Request["seq"] ?? "").Trim();
         seq1 = (Request["seq1"] ?? "").Trim();
+        code = (Request["code"] ?? "").Trim();
 
         formFunction = (Request["formFunction"] ?? "").Trim();
         if (formFunction == "") {
@@ -59,7 +57,7 @@
         
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
-        HTProgCap = myToken.Title;
+        HTProgCap = myToken.Title.Replace("收文", "<font color=blue>收文</font>");
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
             PageLayout();
@@ -69,59 +67,38 @@
     }
 
     private void PageLayout() {
-        if ((HTProgRight & 8) > 0||(HTProgRight & 16) > 0) {
+        if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
             StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Eblank\">[聯絡人新增]</a>\n";
             StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Eblank\">[申請人新增]</a>\n";
-            if((Request["cust_seq"]??"")!=""){
+            if ((Request["cust_seq"] ?? "") != "") {
                 StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
             }
-            if((Request["homelist"]??"")!="homelist"){
+            if ((Request["homelist"] ?? "") != "homelist") {
                 StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
             }
         }
 
         if (formFunction == "Edit") {
             if ((HTProgRight & 8) > 0) {
-                StrFormBtn += "<input type=button value ='編修交辦資料存檔' class='cbutton bsubmit' onclick='formModSubmit(1)'>\n";
-                StrFormBtn += "<input type=button value ='編修交辦暨案件主檔資料存檔' class='c1button bsubmit' onclick='formModSubmit(2)'>\n";
+                if (prgid == "brt51") {//客收確認
+                    StrFormBtn += "<input type=button value ='資料確認無誤' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
+                    StrFormBtn += "<input type=button value ='資料有誤退回營洽' class='c1button bsubmit' onclick='formModSubmit2()'>\n";
+                } else {
+                    StrFormBtn += "<input type=button value ='編修存檔' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
+                }
             }
+
             StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
+        } else if (formFunction == "Add") {
+            if ((HTProgRight & 4) > 0) {
+                StrFormBtn += "<input type=button value ='新增存檔' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
+                StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
+            }
         }
     }
 
     //將共用參數傳給子控制項
     private void ChildBind() {
-        if (prgid.ToLower() == "brt52") {//交辦維護
-            Lock["brt52"] = "Lock";
-            Hide["brt52"] = "Hide";
-        }
-
-        if ((ReqVal.TryGet("ar_code") == "N" || ReqVal.TryGet("ar_code") == "M" || ReqVal.TryGet("ar_code") == "X")
-            && (ReqVal.TryGet("ar_service") == "0" && ReqVal.TryGet("ar_fees") == "0")
-            && (ReqVal.TryGet("mark") == "N" || ReqVal.TryGet("mark") == "")) {
-            Hide["apcust"] = "";
-            Lock["apcustC"] = "";
-            Lock["apcust"] = "";
-        } else {
-            Hide["apcust"] = "Hide";
-            Lock["apcustC"] = "Lock";
-            Lock["apcust"] = "Lock";
-            if ((HTProgRight & 256) > 0) {//權限C才可改
-                Lock["apcustC"] = "";
-            }
-        }
-        
-        //案件客戶
-        cust_form.Lock = Lock;
-        //案件聯絡人
-        attent_form.Lock = Lock;
-        //案件申請人
-        apcust_form.Lock = Lock;
-        //收費與接洽事項
-        dmt_case_form.Lock = Lock;
-        dmt_case_form.Hide = Hide;
-        dmt_case_form.formFunction = formFunction;
-        dmt_case_form.HTProgRight = HTProgRight;
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -165,8 +142,7 @@
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
-        <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
-        </td>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】</td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <%#StrFormBtnTop%>
         </td>
@@ -175,9 +151,7 @@
         <td colspan="2"><hr class="style-one"/></td>
     </tr>
     <tr>
-        <td colspan="2">
-            <font color=blue>接洽序號：<span id="t_in_no"></span> 本所編號：<span id="t_seq"></span> 交辦單號：<span id="t_case_no"></span></font> <span style="color:darkred"" id="t_ar_curr"></span>
-        </td>
+        <td colspan="2"><font color=blue>接洽序號：<span id="t_in_no"></span></font></td>
     </tr>
 </table>
 <br>
@@ -209,27 +183,21 @@
     <tr>
         <td>
             <div class="tabCont" id="#cust">
-                <uc1:cust_form runat="server" ID="cust_form" />
-                <!--include file="../brt5m/brtform/brt52cust_form.ascx"--><!--案件客戶-->
+                <!--include file="../brt1m/brtform/cust_form.ascx"--><!--案件客戶-->
             </div>
             <div class="tabCont" id="#attent">
-                <uc1:attent_form runat="server" ID="attent_form" />
-                <!--include file="../brt5m/brtform/brt52attent_form.ascx"--><!--案件聯絡人-->
+                <!--include file="../brt1m/brtform/attent_form.ascx"--><!--案件聯絡人-->
             </div>
             <div class="tabCont" id="#apcust">
-                <uc1:apcust_form runat="server" ID="apcust_form" />
-                <!--include file="../brt5m/brtform/brt52apcust_form.ascx"--><!--案件申請人-->
+                <!--include file="../brt1m/brtform/apcust_form.ascx"--><!--案件申請人-->
             </div>
             <div class="tabCont" id="#case">
-                <uc1:dmt_case_form runat="server" id="dmt_case_form" />
-                <!--include file="../brt5m/brtform/brt52dmt_case_form.ascx"--><!--收費與接洽事項-->
+                <!--include file="../brt1m/brtform/dmt_case_form.ascx"--><!--收費與接洽事項-->
             </div>
             <div class="tabCont" id="#tran">
-                <uc1:Brt52FormA11 runat="server" ID="Brt52FormA11" />
-                <!--include file="../brt5m/Brt52FormA11.ascx"--><!--交辦內容-->
+                <!--include file="../brt1m/Brt11FormA11.ascx"--><!--交辦內容-->
             </div>
             <div class="tabCont" id="#upload">
-                <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" />
                 <!--include file="../commonForm/dmt_upload_Form.ascx"--><!--文件上傳-->
             </div>
         </td>
@@ -239,6 +207,10 @@
 	<INPUT TYPE="hidden" id=in_scode name=in_scode>
 	<INPUT TYPE="hidden" id=in_no name=in_no>
     <INPUT TYPE="hidden" id=in_date name=in_date>
+    <%if (prgid == "brt51"){%>
+     <br>
+	 <div style="color:blue;text-align:center">退回營洽說明：<textarea name="back_remark" id="back_remark" cols=50 rows=2></textarea></div><br><br>
+    <%}%>
 
     <%#DebugStr%>
 </form>
@@ -333,14 +305,7 @@
     }
     
     //存檔
-    function formModSubmit(p){
-        $("#Update_dmt").val("");
-        if(p==2){
-            if (!confirm("是否確定編修交辦暨案件主檔資料?"))
-                return false;
-            $("#Update_dmt").val("dmt");//判斷是否要更新案件主檔
-        }
-
+    function formModSubmit(){
         $.maskStart();
         var saveflag=main.savechk();
         $.maskStop();
@@ -355,21 +320,54 @@
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
 
         var formData = new FormData($('#reg')[0]);
-        $.ajax({
-            url:'<%=HTProgPrefix%>EditA11_Update.aspx',
-            type : "POST",
-            data : formData,
-            contentType: false,
-            cache: false,
-            processData: false,
-            beforeSend:function(xhr){
-                $("#dialog").html("<div align='center'><h1>存檔中...</h1></div>");
-                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 800,buttons:[] });
-            },
-            //success: function (data, status, xhr) { main.onSuccess(data, status, xhr); },
-            //error: function (xhr, status) { main.onError(xhr, status); },
-            //complete: function (xhr, status) { main.onComplete(xhr, status); }
-            complete: function (xhr, status) {
+        ajaxByForm("<%=HTProgPrefix%>EditA9Z_Update.aspx",formData)
+        .complete(function( xhr, status ) {
+            $("#dialog").html(xhr.responseText);
+            $("#dialog").dialog({
+                title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
+                ,buttons: {
+                    確定: function() {
+                        $(this).dialog("close");
+                    }
+                }
+                ,close:function(event, ui){
+                    if(status=="success"){
+                        if(!$("#chkTest").prop("checked")){
+                            if (main.prgid == "brt51")
+                                window.parent.tt.rows="0%,100%";
+                            else
+                                window.parent.tt.rows="100%,0%";
+                        }
+
+                        if (main.prgid == "brt51"){
+                            window.parent.Eblank.location.href=getRootPath() +"/brt5m/Brt51_Edit.aspx?prgid=brt51&submittask=A&in_scode=<%=in_scode%>&in_no=<%=in_no%>&cust_area=<%=cust_area%>&cust_seq=<%=cust_seq%>&code=<%=code%>";
+                        }
+                    }
+                }
+            });
+        });
+
+        //reg.action = "<%=HTProgPrefix%>EditA11_Update.aspx";
+        //if($("#chkTest").prop("checked"))
+        //    reg.target = "ActFrame";
+        //else
+        //    reg.target = "_self";
+        //reg.submit();
+    }
+
+    //退回營洽
+    function formModSubmit2(){
+        if ($("#back_remark").val()==""){
+            alert("請輸入退回說明！");
+            return false;
+        }
+        if(confirm("是否確定退回營洽!!!")){
+            $("input:disabled, select:disabled").unlock();
+            $(".bsubmit").lock(!$("#chkTest").prop("checked"));
+
+            var formData = new FormData($('#reg')[0]);
+            ajaxByForm(getRootPath() +"/brt5m/Brt51_Update3.aspx",formData)
+            .complete(function( xhr, status ) {
                 $("#dialog").html(xhr.responseText);
                 $("#dialog").dialog({
                     title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
@@ -383,18 +381,12 @@
                             if(!$("#chkTest").prop("checked")){
                                 window.parent.tt.rows="100%,0%";
                             }
+                            window.parent.Etop.location.href= getRootPath() +'/brt5m/brt51_list.aspx?prgid=brt51';
                         }
                     }
                 });
-            }
-        });
-
-        //reg.action = "<%=HTProgPrefix%>EditA11_Update.aspx";
-        //if($("#chkTest").prop("checked"))
-        //    reg.target = "ActFrame";
-        //else
-        //    reg.target = "_self";
-        //reg.submit();
+            });
+        }
     }
 </script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/brtform/CaseForm/Descript.js")%>"></script><!--欄位說明-->

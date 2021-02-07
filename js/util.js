@@ -85,6 +85,22 @@ function ajaxByGet(url, param) {
     });
 }
 
+/*ajax function(submit form)*/
+function ajaxByForm(url, param) {
+    return $.ajax({
+        url: url,
+        type: "post",
+        data: param,
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function (xhr) {
+            $("#dialog").html("<div align='center'><h1>存檔中...</h1></div>");
+            $("#dialog").dialog({ title: '存檔訊息', modal: true, maxHeight: 500, width: 800, buttons: [] });
+        },
+    });
+}
+
 /*ajax function(post)*/
 function ajaxByPost(url, param) {
     return $.ajax({

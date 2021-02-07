@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
-<%@ Register Src="~/commonForm/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
-<%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
-<%@ Register Src="~/commonForm/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
-<%@ Register Src="~/commonForm/dmt_case_form.ascx" TagPrefix="uc1" TagName="dmt_case_form" %>
+<%@ Register Src="~/brt1m/brtform/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
+<%@ Register Src="~/brt1m/brtform/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
+<%@ Register Src="~/brt1m/brtform/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
+<%@ Register Src="~/brt1m/brtform/dmt_case_form.ascx" TagPrefix="uc1" TagName="dmt_case_form" %>
 <%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
 <%@ Register Src="~/brt1m/Brt11FormA11.ascx" TagPrefix="uc1" TagName="Brt11FormA11" %>
 
@@ -26,6 +26,7 @@
     protected string ar_form = "";
     protected string cust_area = "";
     protected string cust_seq = "";
+    protected string in_scode = "";
     protected string in_no = "";
     protected string prt_code = "";
     protected string new_form = "";
@@ -33,6 +34,7 @@
     protected string code_type = "";
     protected string seq = "";
     protected string seq1 = "";
+    protected string code = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -44,6 +46,7 @@
         ar_form = (Request["ar_form"] ?? "").Trim();
         cust_area = (Request["cust_area"] ?? "").Trim();
         cust_seq = (Request["cust_seq"] ?? "").Trim();
+        in_scode = (Request["in_scode"] ?? "").Trim();
         in_no = (Request["in_no"] ?? "").Trim();
         prt_code = (Request["prt_code"] ?? "").Trim();
         new_form = (Request["new_form"] ?? "").Trim();
@@ -51,6 +54,7 @@
         code_type = (Request["code_type"] ?? "").Trim();
         seq = (Request["seq"] ?? "").Trim();
         seq1 = (Request["seq1"] ?? "").Trim();
+        code = (Request["code"] ?? "").Trim();
 
         formFunction = (Request["formFunction"] ?? "").Trim();
         if (formFunction == "") {
@@ -84,7 +88,7 @@
             if ((HTProgRight & 8) > 0) {
                 if (prgid == "brt51") {//客收確認
                     StrFormBtn += "<input type=button value ='資料確認無誤' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
-                    StrFormBtn += "<input type=button value ='資料有誤退回營洽' class='cbutton bsubmit' onclick='formModSubmit2()'>\n";
+                    StrFormBtn += "<input type=button value ='資料有誤退回營洽' class='c1button bsubmit' onclick='formModSubmit2()'>\n";
                 } else {
                     StrFormBtn += "<input type=button value ='編修存檔' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
                 }
@@ -200,19 +204,19 @@
         <td>
             <div class="tabCont" id="#cust">
                 <uc1:cust_form runat="server" ID="cust_form" />
-                <!--include file="../commonForm/cust_form.ascx"--><!--案件客戶-->
+                <!--include file="../brt1m/brtform/cust_form.ascx"--><!--案件客戶-->
             </div>
             <div class="tabCont" id="#attent">
                 <uc1:attent_form runat="server" ID="attent_form" />
-                <!--include file="../commonForm/attent_form.ascx"--><!--案件聯絡人-->
+                <!--include file="../brt1m/brtform/attent_form.ascx"--><!--案件聯絡人-->
             </div>
             <div class="tabCont" id="#apcust">
                 <uc1:apcust_form runat="server" ID="apcust_form" />
-                <!--include file="../commonForm/apcust_form.ascx"--><!--案件申請人-->
+                <!--include file="../brt1m/brtform/apcust_form.ascx"--><!--案件申請人-->
             </div>
             <div class="tabCont" id="#case">
                 <uc1:dmt_case_form runat="server" id="dmt_case_form" />
-                <!--include file="../commonForm/dmt_case_form.ascx"--><!--收費與接洽事項-->
+                <!--include file="../brt1m/brtform/dmt_case_form.ascx"--><!--收費與接洽事項-->
             </div>
             <div class="tabCont" id="#tran">
                 <uc1:Brt11FormA11 runat="server" ID="Brt11FormA11" />
@@ -229,6 +233,10 @@
 	<INPUT TYPE="hidden" id=in_scode name=in_scode>
 	<INPUT TYPE="hidden" id=in_no name=in_no>
     <INPUT TYPE="hidden" id=in_date name=in_date>
+    <%if (prgid == "brt51"){%>
+     <br>
+	 <div style="color:blue;text-align:center">退回營洽說明：<textarea name="back_remark" id="back_remark" cols=50 rows=2></textarea></div><br><br>
+    <%}%>
 
     <%#DebugStr%>
 </form>
@@ -338,21 +346,54 @@
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
 
         var formData = new FormData($('#reg')[0]);
-        $.ajax({
-            url:'<%=HTProgPrefix%>EditA11_Update.aspx',
-            type : "POST",
-            data : formData,
-            contentType: false,
-            cache: false,
-            processData: false,
-            beforeSend:function(xhr){
-                $("#dialog").html("<div align='center'><h1>存檔中...</h1></div>");
-                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 800,buttons:[] });
-            },
-            //success: function (data, status, xhr) { main.onSuccess(data, status, xhr); },
-            //error: function (xhr, status) { main.onError(xhr, status); },
-            //complete: function (xhr, status) { main.onComplete(xhr, status); }
-            complete: function (xhr, status) {
+        ajaxByForm("<%=HTProgPrefix%>EditA9Z_Update.aspx",formData)
+        .complete(function( xhr, status ) {
+            $("#dialog").html(xhr.responseText);
+            $("#dialog").dialog({
+                title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
+                ,buttons: {
+                    確定: function() {
+                        $(this).dialog("close");
+                    }
+                }
+                ,close:function(event, ui){
+                    if(status=="success"){
+                        if(!$("#chkTest").prop("checked")){
+                            if (main.prgid == "brt51")
+                                window.parent.tt.rows="0%,100%";
+                            else
+                                window.parent.tt.rows="100%,0%";
+                        }
+
+                        if (main.prgid == "brt51"){
+                            window.parent.Eblank.location.href=getRootPath() +"/brt5m/Brt51_Edit.aspx?prgid=brt51&submittask=A&in_scode=<%=in_scode%>&in_no=<%=in_no%>&cust_area=<%=cust_area%>&cust_seq=<%=cust_seq%>&code=<%=code%>";
+                        }
+                    }
+                }
+            });
+        });
+
+        //reg.action = "<%=HTProgPrefix%>EditA11_Update.aspx";
+        //if($("#chkTest").prop("checked"))
+        //    reg.target = "ActFrame";
+        //else
+        //    reg.target = "_self";
+        //reg.submit();
+    }
+
+    //退回營洽
+    function formModSubmit2(){
+        if ($("#back_remark").val()==""){
+            alert("請輸入退回說明！");
+            return false;
+        }
+        if(confirm("是否確定退回營洽!!!")){
+            $("input:disabled, select:disabled").unlock();
+            $(".bsubmit").lock(!$("#chkTest").prop("checked"));
+
+            var formData = new FormData($('#reg')[0]);
+            ajaxByForm(getRootPath() +"/brt5m/Brt51_Update3.aspx",formData)
+            .complete(function( xhr, status ) {
                 $("#dialog").html(xhr.responseText);
                 $("#dialog").dialog({
                     title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
@@ -366,18 +407,12 @@
                             if(!$("#chkTest").prop("checked")){
                                 window.parent.tt.rows="100%,0%";
                             }
+                            window.parent.Etop.location.href= getRootPath() +'/brt5m/brt51_list.aspx?prgid=brt51';
                         }
                     }
                 });
-            }
-        });
-
-        //reg.action = "<%=HTProgPrefix%>EditA11_Update.aspx";
-        //if($("#chkTest").prop("checked"))
-        //    reg.target = "ActFrame";
-        //else
-        //    reg.target = "_self";
-        //reg.submit();
+            });
+        }
     }
 </script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/CaseForm/Descript.js")%>"></script><!--欄位說明-->
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/brtform/CaseForm/Descript.js")%>"></script><!--欄位說明-->

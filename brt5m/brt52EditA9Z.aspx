@@ -84,8 +84,8 @@
 
         //申請人欄位畫面
         if (ar_form == "A6") {//變更
-            apcustHolder.Controls.Add(LoadControl("~/CommonForm/apcust_FC_RE_form.ascx"));
-            apcustHolder.Controls.Add(LoadControl("~/CommonForm/apcust_FC_RE1_form.ascx"));
+            apcustHolder.Controls.Add(LoadControl("~/brt5m/brtform/brt52apcust_FC_RE_form.ascx"));
+            apcustHolder.Controls.Add(LoadControl("~/brt5m/brtform/brt52apcust_FC_RE1_form.ascx"));
         }
 
         if (formFunction == "Edit") {
@@ -424,4 +424,4 @@
         //reg.submit();
     }
 </script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/CaseForm/Descript.js")%>"></script><!--欄位說明-->
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/brtform/CaseForm/Descript.js")%>"></script><!--欄位說明-->

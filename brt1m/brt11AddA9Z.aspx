@@ -1,10 +1,10 @@
 ﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
-<%@ Register Src="~/commonForm/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
-<%@ Register Src="~/commonForm/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
-<%@ Register Src="~/commonForm/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
-<%@ Register Src="~/commonForm/dmt_case_form.ascx" TagPrefix="uc1" TagName="dmt_case_form" %>
-<%@ Register Src="~/commonForm/dmt_Form.ascx" TagPrefix="uc1" TagName="dmt_Form" %>
+<%@ Register Src="~/brt1m/brtform/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
+<%@ Register Src="~/brt1m/brtform/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
+<%@ Register Src="~/brt1m/brtform/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
+<%@ Register Src="~/brt1m/brtform/dmt_case_form.ascx" TagPrefix="uc1" TagName="dmt_case_form" %>
+<%@ Register Src="~/brt1m/brtform/dmt_Form.ascx" TagPrefix="uc1" TagName="dmt_Form" %>
 <%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
 <%@ Register Src="~/brt1m/Brt11FormA9Z.ascx" TagPrefix="uc1" TagName="Brt11FormA9Z" %>
 
@@ -76,8 +76,8 @@
 
         //申請人欄位畫面
         if (ar_form == "A6") {//變更
-            apcustHolder.Controls.Add(LoadControl("~/CommonForm/apcust_FC_RE_form.ascx"));
-            apcustHolder.Controls.Add(LoadControl("~/CommonForm/apcust_FC_RE1_form.ascx"));
+            apcustHolder.Controls.Add(LoadControl("~/brt1m/brtform/apcust_FC_RE_form.ascx"));
+            apcustHolder.Controls.Add(LoadControl("~/brt1m/brtform/apcust_FC_RE1_form.ascx"));
         }
 
         if (formFunction == "Edit") {
@@ -198,24 +198,24 @@
         <td>
             <div class="tabCont" id="#cust">
                 <uc1:cust_form runat="server" ID="cust_form" />
-                <!--include file="../commonForm/cust_form.ascx"--><!--案件客戶-->
+                <!--include file="../brt1m/brtform/cust_form.ascx"--><!--案件客戶-->
             </div>
             <div class="tabCont" id="#attent">
                 <uc1:attent_form runat="server" ID="attent_form" />
-                <!--include file="../commonForm/attent_form.ascx"--><!--案件聯絡人-->
+                <!--include file="../brt1m/brtform/attent_form.ascx"--><!--案件聯絡人-->
             </div>
             <div class="tabCont" id="#apcust">
                 <uc1:apcust_form runat="server" ID="apcust_form" />
-                <!--include file="../commonForm/apcust_form.ascx"--><!--案件申請人-->
+                <!--include file="../brt1m/brtform/apcust_form.ascx"--><!--案件申請人-->
                 <asp:PlaceHolder ID="apcustHolder" runat="server"></asp:PlaceHolder>
             </div>
             <div class="tabCont" id="#case">
                 <uc1:dmt_case_form runat="server" id="dmt_case_form" />
-                <!--include file="../commonForm/dmt_case_form.ascx"--><!--收費與接洽事項-->
+                <!--include file="../brt1m/brtform/dmt_case_form.ascx"--><!--收費與接洽事項-->
             </div>
             <div class="tabCont" id="#dmt">
                 <uc1:dmt_Form runat="server" id="dmt_Form" />
-                <!--include file="../commonForm/dmt_Form.ascx"--><!--案件主檔-->
+                <!--include file="../brt1m/brtform/dmt_Form.ascx"--><!--案件主檔-->
             </div>
             <div class="tabCont" id="#tran">
                 <uc1:Brt11FormA9Z runat="server" ID="Brt11FormA9Z" />
@@ -223,6 +223,7 @@
             </div>
             <div class="tabCont" id="#upload">
                 <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" />
+                <!--include file="../commonForm/dmt_upload_Form.ascx"--><!--文件上傳-->
             </div>
         </td>
     </tr>
@@ -339,23 +340,10 @@
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
 
         var formData = new FormData($('#reg')[0]);
-        $.ajax({
-            url:'<%=HTProgPrefix%>AddA9Z_Update.aspx',
-            type : "POST",
-            data : formData,
-            contentType: false,
-            cache: false,
-            processData: false,
-            beforeSend:function(xhr){
-                $("#dialog").html("<div align='center'><h1>存檔中...</h1></div>");
-                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 800,buttons:[] });
-            },
-            //success: function (data, status, xhr) { main.onSuccess(data, status, xhr); },
-            //error: function (xhr, status) { main.onError(xhr, status); },
-            complete: function (xhr, status) {
-                $("#dialog").html(xhr.responseText);
-                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: "90%" });
-            }
+        ajaxByForm("<%=HTProgPrefix%>AddA9Z_Update.aspx",formData)
+        .complete(function( xhr, status ) {
+            $("#dialog").html(xhr.responseText);
+            $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: "90%" });
         });
 
         //reg.action = "<%=HTProgPrefix%>AddA9Z_Update.aspx";
@@ -366,6 +354,6 @@
         //reg.submit();
     }
 </script>
-<script src="CaseForm/Descript.js"></script><!--欄位說明-->
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/brtform/CaseForm/Descript.js")%>"></script><!--欄位說明-->
 
 

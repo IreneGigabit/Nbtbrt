@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" ClassName="FA1Form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
-<%@ Register Src="~/brt1m/CaseForm/FA1Form_remark1.ascx" TagPrefix="uc1" TagName="FA1Form_remark1" %>
+<%@ Register Src="~/brt1m/brtform/CaseForm/FA1Form_remark1.ascx" TagPrefix="uc1" TagName="FA1Form_remark1" %>
 
 
 <script runat="server">

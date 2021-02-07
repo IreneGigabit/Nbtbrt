@@ -20,13 +20,16 @@
 
     protected string SQL = "";
     Sys sfile = new Sys();
+    
     protected int ixi = 0;
     protected string intflg = "N";
     protected string inttran_flag = "N";
     protected string lapnum = "", field_ap = "", ofield_ap = "";//申請人欄位
-    protected int subX=1;//子案入檔從第N筆開始
+    protected int subX = 1;//子案入檔從第N筆開始入檔
 
     protected StringBuilder strOut = new StringBuilder();
+    
+    protected string logReason = "brt52國內案交辦資料維護作業";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     DBHelper connm = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
@@ -50,81 +53,76 @@
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
-            doUpdateDB();
+            try {
+                doUpdateDB();
+                //conn.Commit();
+                conn.RollBack();
+                strOut.AppendLine("<div align='center'><h1>資料更新成功</h1></div>");
+            }
+            catch (Exception ex) {
+                conn.RollBack();
+                Sys.errorLog(ex, conn.exeSQL, prgid);
+                //strOut.AppendLine("<div align='center'><h1>資料更新失敗("+ex.Message+")</h1></div>");
+                throw;
+            }
             this.DataBind();
         }
     }
 
     private void doUpdateDB() {
         sfile.getFileServer(Sys.GetSession("SeBranch"), prgid);//檔案上傳相關設定
-        try {
-            string in_no = (Request["in_no"] ?? "");
-            //申請人欄位
-            if ((Request["tfy_arcase"] ?? "").IN("FC1,FC10,FC11,FC5,FC7,FC9,FCA,FCB,FCF,FCH")) {
-                lapnum = "0" + Request["fc2_apnum"];
-                field_ap = "dbmn1_new_no_";
-                ofield_ap = "dbmn1_o_apcust_no_";
-            } else if ((Request["tfy_arcase"] ?? "").IN("FC2,FC20,FC21,FC6,FC8,FC0,FCC,FCD,FCG,FCI")) {
-                lapnum = "0" + Request["fc0_apnum"];
-                field_ap = "dbmn_new_no_";
-                ofield_ap = "dbmn_o_apcust_no_";
-            } else {
-                lapnum = "0" + Request["apnum"];
-                field_ap = "apcust_no_";
-                ofield_ap = "o_apcust_no_";
-            }
-
-            //子案入檔從第N筆開始
-            if (Request["ar_form"] == "A5") {
-                subX = 1;
-            } else if (Request["ar_form"] == "A6") {
-                subX = 2;
-            } else if (Request["ar_form"] == "A7") {
-                subX = 2;
-            } else if (Request["ar_form"] == "A8") {
-                subX = 2;
-            }
-
-            //交辦內容欄位畫面
-            if (Request["ar_form"] == "A3") {
-                editA3();
-            } else if (Request["ar_form"] == "A4") {
-                editA4();
-            } else if (Request["ar_form"] == "A5") {
-                editA5();
-            } else if (Request["ar_form"] == "A6") {
-                editA6();
-            } else if (Request["ar_form"] == "A7") {
-                editA7();
-            } else if (Request["ar_form"] == "A8") {
-                editA8();
-            } else if (Request["ar_form"] == "A9") {
-                editA9();
-            } else if (Request["ar_form"] == "AA") {
-                editAA();
-            } else if (Request["ar_form"] == "AB") {
-                editAB();
-            } else if (Request["ar_form"] == "AC") {
-                editAC();
-            } else if (Request["ar_form"].Left(1) == "B") {
-                editB();
-            } else {
-                editZZ();
-            }
-
-            conn.Commit();
-            //conn.RollBack();
-
-            strOut.AppendLine("<div align='center'><h1>資料更新成功</h1></div>");
+        string in_no = (Request["in_no"] ?? "");
+        //申請人欄位
+        if ((Request["tfy_arcase"] ?? "").IN("FC1,FC10,FC11,FC5,FC7,FC9,FCA,FCB,FCF,FCH")) {
+            lapnum = "0" + Request["fc2_apnum"];
+            field_ap = "dbmn1_new_no_";
+            ofield_ap = "dbmn1_o_apcust_no_";
+        } else if ((Request["tfy_arcase"] ?? "").IN("FC2,FC20,FC21,FC6,FC8,FC0,FCC,FCD,FCG,FCI")) {
+            lapnum = "0" + Request["fc0_apnum"];
+            field_ap = "dbmn_new_no_";
+            ofield_ap = "dbmn_o_apcust_no_";
+        } else {
+            lapnum = "0" + Request["apnum"];
+            field_ap = "apcust_no_";
+            ofield_ap = "o_apcust_no_";
         }
-        catch (Exception ex) {
-            conn.RollBack();
-            Sys.errorLog(ex, conn.exeSQL, prgid);
-            //strOut.AppendLine("<div align='center'><h1>資料更新失敗("+ex.Message+")</h1></div>");
-            throw;
+
+        //子案入檔從第N筆開始
+        if (Request["ar_form"] == "A5") {
+            subX = 1;
+        } else if (Request["ar_form"] == "A6") {
+            subX = 2;
+        } else if (Request["ar_form"] == "A7") {
+            subX = 2;
+        } else if (Request["ar_form"] == "A8") {
+            subX = 2;
         }
-        finally {
-            conn.Dispose();
+
+        //交辦內容欄位畫面
+        if (Request["ar_form"] == "A3") {
+            editA3();
+        } else if (Request["ar_form"] == "A4") {
+            editA4();
+        } else if (Request["ar_form"] == "A5") {
+            editA5();
+        } else if (Request["ar_form"] == "A6") {
+            editA6();
+        } else if (Request["ar_form"] == "A7") {
+            editA7();
+        } else if (Request["ar_form"] == "A8") {
+            editA8();
+        } else if (Request["ar_form"] == "A9") {
+            editA9();
+        } else if (Request["ar_form"] == "AA") {
+            editAA();
+        } else if (Request["ar_form"] == "AB") {
+            editAB();
+        } else if (Request["ar_form"] == "AC") {
+            editAC();
+        } else if (Request["ar_form"].Left(1) == "B") {
+            editB();
+        } else {
+            editZZ();
         }
     }
     
@@ -139,12 +137,12 @@
             || ReqVal.TryGet("o_cust_seq") != ReqVal.TryGet("F_cust_seq")
             || ReqVal.TryGet("oatt_sql") != ReqVal.TryGet("tfy_att_sql")
             ) {
-                Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "Brt52國內案交辦資料維護作業");
-                Sys.insert_log_table(conn, "U", prgid, "caseitem_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "");
-                Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+                Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
+                Sys.insert_log_table(conn, "U", prgid, "caseitem_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
+                Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
             if (ReqVal.TryGet("update_dmt") == "dmt") {
-                Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], "Brt52國內案交辦資料維護作業");
-                Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], "Brt52國內案交辦資料維護作業");
+                Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], logReason);
+                Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], logReason);
             }
             intcasetran_brt();
             intflg = "Y";
@@ -152,12 +150,12 @@
 
         if (ReqVal.TryGet("tseq1") != "M" && intflg == "N" && ReqVal.TryGet("xar_curr") == "0") {
             if (ReqVal.TryGet("tfy_ar_code") != ReqVal.TryGet("ochkar_code")) {
-                Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "Brt52國內案交辦資料維護作業");
-                Sys.insert_log_table(conn, "U", prgid, "caseitem_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "");
-                Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+                Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
+                Sys.insert_log_table(conn, "U", prgid, "caseitem_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
+                Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
                 if (ReqVal.TryGet("update_dmt") == "dmt") {
-                    Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], "Brt52國內案交辦資料維護作業");
-                    Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], "Brt52國內案交辦資料維護作業");
+                    Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], logReason);
+                    Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], logReason);
                 }
                 intcasetran_brt();
                 intflg = "Y";
@@ -206,33 +204,33 @@
 
 
         //商品入log_table
-        Sys.insert_log_table(conn, "U", prgid, "casedmt_good", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "casedmt_good", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         SQL = "delete from casedmt_good where in_no='" + Request["in_no"] + "' and in_scode='" + Request["in_scode"] + "'";
         conn.ExecuteNonQuery(SQL);
 
         //展覽優先權入log_table
-        Sys.insert_log_table(conn, "U", prgid, "casedmt_show", "in_no;case_sqlno", Request["in_no"] + ";0", "");
+        Sys.insert_log_table(conn, "U", prgid, "casedmt_show", "in_no;case_sqlno", Request["in_no"] + ";0", logReason);
         SQL = "delete from casedmt_show where in_no='" + Request["in_no"] + "' and case_sqlno=0";
         conn.ExecuteNonQuery(SQL);
 
         //異動檔入dmt_tran_log//改在各form
-        //Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        //Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         //SQL = "delete from dmt_tran where in_no='" + Request["in_no"] + "' and in_scode='" + Request["in_scode"] + "'";
         //conn.ExecuteNonQuery(SQL);
 
         //異動明細檔入dmt_tranlist_log
-        Sys.insert_log_table(conn, "U", prgid, "dmt_tranlist", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tranlist", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         SQL = "delete from dmt_tranlist where in_no='" + Request["in_no"] + "' and in_scode='" + Request["in_scode"] + "'";
         conn.ExecuteNonQuery(SQL);
 
         if (ReqVal.TryGet("update_dmt") == "dmt") {
             //商品入log_table(主案)
-            Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], "");
+            Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], logReason);
             SQL = "delete from dmt_good where seq='" + Request["tfzb_seq"] + "' and seq1='" + Request["tfzb_seq1"] + "'";
             conn.ExecuteNonQuery(SQL);
 
             //展覽優先權入log_table(主案)
-            Sys.insert_log_table(conn, "U", prgid, "dmt_show", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], "");
+            Sys.insert_log_table(conn, "U", prgid, "dmt_show", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], logReason);
             SQL = "delete from dmt_show where seq='" + Request["tfzb_seq"] + "' and seq1='" + Request["tfzb_seq1"] + "'";
             conn.ExecuteNonQuery(SQL);
 
@@ -241,13 +239,13 @@
                 SQL = "delete from dmt_good ";
                 switch (ReqVal.TryGet("tfy_arcase")) {
                     case "FD1":
-                        Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["FD1_seqa_" + x] + ";" + Request["FD1_seq1a_" + x], "");
+                        Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["FD1_seqa_" + x] + ";" + Request["FD1_seq1a_" + x], logReason);
                         SQL += " where seq='" + Request["FD1_seqa_" + x] + "' and seq1='" + Request["FD1_seq1a_" + x] + "'";
                         conn.ExecuteNonQuery(SQL);
                         break;
                     case "FD2":
                     case "FD3":
-                        Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["FD2_seqb_" + x] + ";" + Request["FD2_seq1b_" + x], "");
+                        Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["FD2_seqb_" + x] + ";" + Request["FD2_seq1b_" + x], logReason);
                         SQL += " where seq='" + Request["FD2_seqb_" + x] + "' and seq1='" + Request["FD2_seq1b_" + x] + "'";
                         conn.ExecuteNonQuery(SQL);
                         break;
@@ -257,13 +255,13 @@
                 SQL = "delete from dmt_show ";
                 switch (ReqVal.TryGet("tfy_arcase")) {
                     case "FD1":
-                        Sys.insert_log_table(conn, "U", prgid, "dmt_show", "seq;seq1", Request["FD1_seqa_" + x] + ";" + Request["FD1_seq1a_" + x], "");
+                        Sys.insert_log_table(conn, "U", prgid, "dmt_show", "seq;seq1", Request["FD1_seqa_" + x] + ";" + Request["FD1_seq1a_" + x], logReason);
                         SQL += " where seq='" + Request["FD1_seqa_" + x] + "' and seq1='" + Request["FD1_seq1a_" + x] + "'";
                         conn.ExecuteNonQuery(SQL);
                         break;
                     case "FD2":
                     case "FD3":
-                        Sys.insert_log_table(conn, "U", prgid, "dmt_show", "seq;seq1", Request["FD2_seqb_" + x] + ";" + Request["FD2_seq1b_" + x], "");
+                        Sys.insert_log_table(conn, "U", prgid, "dmt_show", "seq;seq1", Request["FD2_seqb_" + x] + ";" + Request["FD2_seq1b_" + x], logReason);
                         SQL += " where seq='" + Request["FD2_seqb_" + x] + "' and seq1='" + Request["FD2_seq1b_" + x] + "'";
                         conn.ExecuteNonQuery(SQL);
                         break;
@@ -365,7 +363,7 @@
     private void update_case_dmt() {
         if (intflg == "N") {
             //入case_dmt_log
-            Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "brt52國內案交辦維護作業");
+            Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
         }
         SQL = "UPDATE case_dmt SET ";
         ColMap.Clear();
@@ -443,7 +441,7 @@
     private void update_dmt_temp() {
         if (intflg == "N") {
             //入dmt_temp_log 
-            Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+            Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         }
 
         string aa = Request["draw_file"] ?? "";
@@ -592,7 +590,7 @@
     /// </summary>
     private void insert_dmt_temp_ap() {
         //申請人入log_table
-        Sys.insert_log_table(conn, "U", prgid, "dmt_temp_ap", "in_no", Request["in_no"] , "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_temp_ap", "in_no", Request["in_no"] , logReason);
         SQL = "delete from dmt_temp_ap where in_no='" + Request["in_no"] + "' and case_sqlno=0";
         conn.ExecuteNonQuery(SQL);
 
@@ -617,6 +615,8 @@
                 if (Request["case_stat1b_" + x] == "NN") {
                     insert_dmt_temp_ap0(Request["case_sqlnob_" + x]);
                 }
+            } else if ((Request["tfy_arcase"] ?? "").IN("FT2")) {
+                    insert_dmt_temp_ap0(Request["case_sqlnob_" + x]);
             }
         }
     }
@@ -664,6 +664,7 @@
     private void insert_dmt_temp_ap_FC0( string case_sqlno) {
         //交辦申請人
         for (int i = 1; i <= Convert.ToInt32("0" + Request["FC0_apnum"]); i++) {
+            SQL = "insert into dmt_temp_ap ";
             ColMap.Clear();
             ColMap["in_no"] = Util.dbchar(Request["in_no"]);
             ColMap["case_sqlno"] = case_sqlno;
@@ -691,7 +692,7 @@
             ColMap["ap_eaddr3"] = Util.dbchar(Request["dbmn_neaddr3_" + i]);
             ColMap["ap_eaddr4"] = Util.dbchar(Request["dbmn_neaddr4_" + i]);
 
-            SQL = "insert into dmt_temp_ap " + ColMap.GetInsertSQL();
+            SQL += ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
         }
     }
@@ -702,6 +703,7 @@
     private void insert_dmt_temp_ap_FC2( string case_sqlno) {
         //交辦申請人
         for (int i = 1; i <= Convert.ToInt32("0" + Request["FC2_apnum"]); i++) {
+            SQL = "insert into dmt_temp_ap ";
             ColMap.Clear();
             ColMap["in_no"] = Util.dbchar(Request["in_no"]);
             ColMap["case_sqlno"] = case_sqlno;
@@ -728,7 +730,7 @@
             ColMap["ap_eaddr2"] = Util.dbchar(Request["dbmn1_neaddr2_" + i]);
             ColMap["ap_eaddr3"] = Util.dbchar(Request["dbmn1_neaddr3_" + i]);
             ColMap["ap_eaddr4"] = Util.dbchar(Request["dbmn1_neaddr4_" + i]);
-            SQL = "insert into dmt_temp_ap " + ColMap.GetInsertSQL();
+            SQL += ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
         }
     }
@@ -738,6 +740,7 @@
     /// </summary>
     private void insert_caseitem_dmt() {
         //****主委辦案性	
+        SQL = "insert into caseitem_dmt ";
         ColMap.Clear();
         ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
         ColMap["in_no"] = Util.dbchar(Request["in_no"]);
@@ -748,13 +751,13 @@
         ColMap["item_service"] = Util.dbchar(Request["nfyi_service"]);
         ColMap["item_fees"] = Util.dbchar(Request["nfyi_fees"]);
         ColMap["item_count"] = "'1'";
-        SQL = "insert into caseitem_dmt " + ColMap.GetInsertSQL();
-        //Response.Write(SQL + "<HR>");
+        SQL += ColMap.GetInsertSQL();
         conn.ExecuteNonQuery(SQL);
 
         //****次委辦案性
         for (int i = 1; i <= Convert.ToInt32("0" + Request["TaCount"]); i++) {
             if ((Request["nfyi_item_Arcase_" + i] ?? "") != "") {
+                SQL = "insert into caseitem_dmt ";
                 ColMap.Clear();
                 ColMap["in_scode"] = Util.dbchar(Request["F_tscode"]);
                 ColMap["in_no"] = Util.dbchar(Request["in_no"]);
@@ -765,9 +768,7 @@
                 ColMap["item_service"] = Util.dbchar(Request["nfyi_Service_" + i]);
                 ColMap["item_fees"] = Util.dbchar(Request["nfyi_fees_" + i]);
                 ColMap["item_count"] = Util.dbchar(Request["nfyi_item_count_" + i]);
-
-                SQL = "insert into caseitem_dmt " + ColMap.GetInsertSQL();
-                //Response.Write(SQL + "<HR>");
+                SQL += ColMap.GetInsertSQL();
                 conn.ExecuteNonQuery(SQL);
             }
         }
@@ -1119,7 +1120,7 @@
             //國內商標案件主檔dmt
             if (intflg == "N") {
                 //dmt入log檔
-                Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], "Brt52國內交辦資料維護");
+                Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], logReason);
             }
 
             SQL = "UPDATE dmt SET ";
@@ -1230,7 +1231,7 @@
             } else if ((Request["tfy_arcase"] ?? "").IN("FC11,FC5,FC7,FCH")) {
                 for (int x = subX; x <= Convert.ToInt32("0" + Request["nfy_tot_num"]); x++) {
                     //dmt入log檔
-                    Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["dseqa_" + x] + ";" + Request["dseq1a_" + x], "Brt52國內交辦資料維護");
+                    Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["dseqa_" + x] + ";" + Request["dseq1a_" + x], logReason);
                     SQL = "UPDATE dmt SET ";
                     ColMap.Clear();
                     ColMap["scode"] = Util.dbnull(Request["F_tscode"]);
@@ -1243,7 +1244,7 @@
             } else if ((Request["tfy_arcase"] ?? "").IN("FT2,FL5,FL6,FC21,FC6,FC8,FCI")) {
                 for (int x = subX; x <= Convert.ToInt32("0" + Request["nfy_tot_num"]); x++) {
                     //dmt入log檔
-                    Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x], "Brt52國內交辦資料維護");
+                    Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x], logReason);
                     SQL = "UPDATE dmt SET ";
                     ColMap.Clear();
                     ColMap["scode"] = Util.dbnull(Request["F_tscode"]);
@@ -1257,7 +1258,7 @@
 
             //國內商標案件主檔ndmt
             if (intflg == "N") {
-                Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], "");
+                Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], logReason);
             }
             SQL = "UPDATE ndmt SET ";
             ColMap.Clear();
@@ -1289,9 +1290,9 @@
                 for (int x = subX; x <= Convert.ToInt32("0" + Request["nfy_tot_num"]); x++) {
                     //dmt入log檔
                     if ((Request["tfy_arcase"] ?? "").IN("FD1")) {
-                        Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["FD1_seqa_" + x] + ";" + Request["FD1_seq1a_" + x], "Brt52國內交辦資料維護");
+                        Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["FD1_seqa_" + x] + ";" + Request["FD1_seq1a_" + x], logReason);
                     } else if ((Request["tfy_arcase"] ?? "").IN("FD2,FD3")) {
-                        Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["FD2_seqb_" + x] + ";" + Request["FD2_seq1b_" + x], "Brt52國內交辦資料維護");
+                        Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["FD2_seqb_" + x] + ";" + Request["FD2_seq1b_" + x], logReason);
                     }
 
                     SQL = "UPDATE ndmt SET ";
@@ -1324,7 +1325,7 @@
             } else if ((Request["tfy_arcase"] ?? "").IN("FC11,FC5,FC7,FCH")) {
                 for (int x = subX; x <= Convert.ToInt32("0" + Request["nfy_tot_num"]); x++) {
                     //dmt入log檔
-                    Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["dseqa_" + x] + ";" + Request["dseq1a_" + x], "Brt52國內交辦資料維護");
+                    Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["dseqa_" + x] + ";" + Request["dseq1a_" + x], logReason);
                     SQL = "UPDATE ndmt SET ";
                     ColMap.Clear();
                     ColMap["in_scode"] = Util.dbnull(Request["F_tscode"]);
@@ -1336,7 +1337,7 @@
             } else if ((Request["tfy_arcase"] ?? "").IN("FT2,FL5,FL6,FC21,FC6,FC8,FCI")) {
                 for (int x = subX; x <= Convert.ToInt32("0" + Request["nfy_tot_num"]); x++) {
                     //ndmt入log檔
-                    Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x], "");
+                    Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x], logReason);
                     SQL = "UPDATE ndmt SET ";
                     ColMap.Clear();
                     ColMap["in_scode"] = Util.dbnull(Request["F_tscode"]);
@@ -1469,7 +1470,7 @@
             } else if ((Request["tfy_arcase"] ?? "").IN("FC11,FC5,FC7,FCH")) {
                 for (int x = subX; x <= Convert.ToInt32("0" + Request["nfy_tot_num"]); x++) {
                     //dmt入log檔
-                    Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["dseqa_" + x] + ";" + Request["dseq1a_" + x], "Brt52國內交辦資料維護");
+                    Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["dseqa_" + x] + ";" + Request["dseq1a_" + x], logReason);
                     SQL = "UPDATE dmt_good SET ";
                     ColMap.Clear();
                     ColMap["in_scode"] = Util.dbnull(Request["F_tscode"]);
@@ -1481,7 +1482,7 @@
             } else if ((Request["tfy_arcase"] ?? "").IN("FT2,FL5,FL6,FC21,FC6,FC8,FCI")) {
                 for (int x = subX; x <= Convert.ToInt32("0" + Request["nfy_tot_num"]); x++) {
                     //ndmt入log檔
-                    Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x], "Brt52國內交辦資料維護");
+                    Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x], logReason);
                     SQL = "UPDATE dmt_good SET ";
                     ColMap.Clear();
                     ColMap["in_scode"] = Util.dbnull(Request["F_tscode"]);
@@ -1523,7 +1524,7 @@
     /// </summary>
     private void insert_dmt_ap() {
         //案件主檔申請人log_table(主案)
-        Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"] + ";" + Session["seBranch"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"] + ";" + Session["seBranch"], logReason);
         SQL = "Delete dmt_ap where seq='" + Request["tfzb_seq"] + "' and seq1='" + Request["tfzb_seq1"] + "' and branch='" + Session["seBranch"] + "'";
         conn.ExecuteNonQuery(SQL);
         for (int i = 1; i <= Convert.ToInt32(lapnum); i++) {
@@ -1582,13 +1583,13 @@
             if ((Request["ar_form"] ?? "") == "A5") {
                 switch ((Request["tfy_arcase"] ?? "").Left(3)) {
                     case "FD1":
-                        Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["FD1_seqa_" + x] + ";" + Request["FD1_seq1a_" + x] + ";" + Session["seBranch"], "");
+                        Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["FD1_seqa_" + x] + ";" + Request["FD1_seq1a_" + x] + ";" + Session["seBranch"], logReason);
                         SQL = "Delete dmt_ap where seq='" + Request["FD1_seqa_" + x] + "' and seq1='" + Request["FD1_seq1a_" + x] + "' and branch='" + Session["seBranch"] + "'";
                         conn.ExecuteNonQuery(SQL);
                         break;
                     case "FD2":
                     case "FD3":
-                        Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["FD2_seqb_" + x] + ";" + Request["FD2_seq1b_" + x] + ";" + Session["seBranch"], "");
+                        Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["FD2_seqb_" + x] + ";" + Request["FD2_seq1b_" + x] + ";" + Session["seBranch"], logReason);
                         SQL = "Delete dmt_ap where seq='" + Request["FD2_seqb_" + x] + "' and seq1='" + Request["FD2_seq1b_" + x] + "' and branch='" + Session["seBranch"] + "'";
                         conn.ExecuteNonQuery(SQL);
                         break;
@@ -1619,7 +1620,7 @@
                     conn.ExecuteNonQuery(SQL);
                 }
             } else if ((Request["tfy_arcase"] ?? "").IN("FC11,FC5,FC7,FCH")) {
-                Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqa_" + x] + ";" + Request["dseq1a_" + x] + ";" + Session["seBranch"], "");
+                Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqa_" + x] + ";" + Request["dseq1a_" + x] + ";" + Session["seBranch"], logReason);
                 SQL = "Delete dmt_ap where seq='" + Request["dseqa_" + x] + "' and seq1='" + Request["dseq1a_" + x] + "' and branch='" + Session["seBranch"] + "'";
                 conn.ExecuteNonQuery(SQL);
                 for (int i = 1; i <= Convert.ToInt32(lapnum); i++) {
@@ -1651,7 +1652,7 @@
                     conn.ExecuteNonQuery(SQL);
                 }
             } else if ((Request["tfy_arcase"] ?? "").IN("FT2,FC21,FC6,FC8,FCI")) {
-                Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x] + ";" + Session["seBranch"], "");
+                Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x] + ";" + Session["seBranch"], logReason);
                 SQL = "Delete dmt_ap where seq='" + Request["dseqb_" + x] + "' and seq1='" + Request["dseq1b_" + x] + "' and branch='" + Session["seBranch"] + "'";
                 conn.ExecuteNonQuery(SQL);
                 for (int i = 1; i <= Convert.ToInt32(lapnum); i++) {
@@ -1684,7 +1685,7 @@
                 }
             } else if ((Request["tfy_arcase"] ?? "").IN("FL5,FL6")) {
                 if (Request["case_stat1b_" + x] == "NN") {
-                    Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x] + ";" + Session["seBranch"], "");
+                    Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x] + ";" + Session["seBranch"], logReason);
                     SQL = "Delete dmt_ap where seq='" + Request["dseqb_" + x] + "' and seq1='" + Request["dseq1b_" + x] + "' and branch='" + Session["seBranch"] + "'";
                     conn.ExecuteNonQuery(SQL);
                     for (int i = 1; i <= Convert.ToInt32(lapnum); i++) {
@@ -1721,7 +1722,7 @@
 
         /////////////////////////////////////////////////////////////////////
         //案件主檔申請人log_table(主案)
-        Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"] + ";" + Session["seBranch"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"] + ";" + Session["seBranch"], logReason);
         SQL = "Delete dmt_ap where seq='" + Request["tfzb_seq"] + "' and seq1='" + Request["tfzb_seq1"] + "' and branch='" + Session["seBranch"] + "'";
         conn.ExecuteNonQuery(SQL);
         if ((Request["tfy_arcase"] ?? "").IN("FC1,FC10,FC11,FC5,FC7,FC9,FCA,FCB,FCF,FCH")) {
@@ -1736,33 +1737,33 @@
         for (int x = subX; x <= Convert.ToInt32("0" + Request["nfy_tot_num"]); x++) {
             if ((Request["ar_form"] ?? "") == "A5") {
                 if ((Request["tfy_arcase"] ?? "").Left(3) == "FD1") {
-                    Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["FD1_seqa_" + x] + ";" + Request["FD1_seq1a_" + x] + ";" + Session["seBranch"], "");
+                    Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["FD1_seqa_" + x] + ";" + Request["FD1_seq1a_" + x] + ";" + Session["seBranch"], logReason);
                     SQL = "Delete dmt_ap where seq='" + Request["FD1_seqa_" + x] + "' and seq1='" + Request["FD1_seq1a_" + x] + "' and branch='" + Session["seBranch"] + "'";
                     conn.ExecuteNonQuery(SQL);
 
                     insert_dmt_ap_FC2(Request["FD1_seqa_" + x], Request["FD1_seq1a_" + x]);
                 } else if ((Request["tfy_arcase"] ?? "").Left(3).IN("FD2,FD3")) {
-                    Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["FD2_seqb_" + x] + ";" + Request["FD2_seq1b_" + x] + ";" + Session["seBranch"], "");
+                    Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["FD2_seqb_" + x] + ";" + Request["FD2_seq1b_" + x] + ";" + Session["seBranch"], logReason);
                     SQL = "Delete dmt_ap where seq='" + Request["FD2_seqb_" + x] + "' and seq1='" + Request["FD2_seq1b_" + x] + "' and branch='" + Session["seBranch"] + "'";
                     conn.ExecuteNonQuery(SQL);
 
                     insert_dmt_ap_FC2(Request["FD2_seqb_" + x], Request["FD2_seq1b_" + x]);
                 }
             } else if ((Request["tfy_arcase"] ?? "").IN("FC11,FC5,FC7,FCH")) {
-                Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqa_" + x] + ";" + Request["dseq1a_" + x] + ";" + Session["seBranch"], "");
+                Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqa_" + x] + ";" + Request["dseq1a_" + x] + ";" + Session["seBranch"], logReason);
                 SQL = "Delete dmt_ap where seq='" + Request["dseqa_" + x] + "' and seq1='" + Request["dseq1a_" + x] + "' and branch='" + Session["seBranch"] + "'";
                 conn.ExecuteNonQuery(SQL);
 
                 insert_dmt_ap_FC2(Request["dseqa_" + x], Request["dseq1a_" + x]);
             } else if ((Request["tfy_arcase"] ?? "").IN("FT2,FC21,FC6,FC8,FCI")) {
-                Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x] + ";" + Session["seBranch"], "");
+                Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x] + ";" + Session["seBranch"], logReason);
                 SQL = "Delete dmt_ap where seq='" + Request["dseqb_" + x] + "' and seq1='" + Request["dseq1b_" + x] + "' and branch='" + Session["seBranch"] + "'";
                 conn.ExecuteNonQuery(SQL);
 
                 insert_dmt_ap_FC0(Request["dseqb_" + x], Request["dseq1b_" + x]);
             } else if ((Request["tfy_arcase"] ?? "").IN("FL5,FL6")) {
                 if (Request["case_stat1b_" + x] == "NN") {
-                    Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x] + ";" + Session["seBranch"], "");
+                    Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["dseqb_" + x] + ";" + Request["dseq1b_" + x] + ";" + Session["seBranch"], logReason);
                     SQL = "Delete dmt_ap where seq='" + Request["dseqb_" + x] + "' and seq1='" + Request["dseq1b_" + x] + "' and branch='" + Session["seBranch"] + "'";
                     conn.ExecuteNonQuery(SQL);
 
@@ -1988,7 +1989,7 @@
 
         //***異動檔
         //dmt_tran入log
-        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         //***異動檔
         SQL = "UPDATE dmt_tran set ";
         ColMap.Clear();
@@ -2069,7 +2070,7 @@
 
         //***異動檔
         //dmt_tran入log
-        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         SQL = "delete from dmt_tran where in_no='" + Request["in_no"] + "' and in_scode='" + Request["in_scode"] + "'";
         conn.ExecuteNonQuery(SQL);
 
@@ -2108,7 +2109,7 @@
     /// <summary>
     /// 變更
     /// </summary>
-    private void editA6( ) {
+    private void editA6() {
         log_table();
 
         update_case_dmt();
@@ -2134,7 +2135,7 @@
 
         //商標案件異動檔	  
         //dmt_tran入log
-        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
 
         SQL = "UPDATE dmt_tran set ";
         ColMap.Clear();
@@ -2366,7 +2367,6 @@
                 conn.ExecuteNonQuery(SQL);
             }
         } else if ((Request["tfy_arcase"] ?? "").IN("FC3")) {
-
             //*****擬減縮商品(服務名稱)
             if ((Request["tfg3_mod_class"] ?? "") == "Y") {
                 for (int i = 1; i <= Convert.ToInt32("0" + Request["tft3_class_count1"]); i++) {
@@ -2413,30 +2413,30 @@
     /// <summary>
     /// 授權
     /// </summary>
-    private void editA7( ) {
-log_table();
+    private void editA7() {
+        log_table();
 
-update_case_dmt();
+        update_case_dmt();
 
-upd_grconf_job_no();
+        upd_grconf_job_no();
 
-update_dmt_temp();
+        update_dmt_temp();
 
-insert_casedmt_good();
+        insert_casedmt_good();
 
-insert_casedmt_show("0");
+        insert_casedmt_show("0");
 
-//*****移轉檔	
-	//dmt_tran入log
-	Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], ""); 	
-	SQL = "UPDATE dmt_tran set ";
-	        ColMap.Clear();
+        //*****移轉檔	
+        //dmt_tran入log
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
+        SQL = "UPDATE dmt_tran set ";
+        ColMap.Clear();
         foreach (var key in Request.Form.Keys) {
             string colkey = key.ToString().ToLower();
             string colValue = Request[colkey];
 
             //取1~4碼
-            if (colkey.Left(4) == "tfg1"&&colkey!="tfg1_seq") {
+            if (colkey.Left(4) == "tfg1" && colkey != "tfg1_seq") {
                 ColMap[colkey.Substring(5)] = Util.dbnull(colValue);
             }
         }
@@ -2456,10 +2456,10 @@ insert_casedmt_show("0");
         SQL += ColMap.GetUpdateSQL();
         SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "'";
         conn.ExecuteNonQuery(SQL);
-	
-//*****新增案件異動明細檔，關係人資料
+
+        //*****新增案件異動明細檔，關係人資料
         for (int i = 1; i <= Convert.ToInt32("0" + Request["fl_apnum"]); i++) {
-			SQL = "insert into dmt_tranlist ";
+            SQL = "insert into dmt_tranlist ";
             ColMap.Clear();
             ColMap["in_scode"] = Util.dbchar(Request["in_scode"]);
             ColMap["in_no"] = Util.dbchar(Request["in_no"]);
@@ -2510,7 +2510,7 @@ insert_casedmt_show("0");
             }
             //商標權人資料
             for (int i = 1; i <= Convert.ToInt32("0" + Request["fl2_apnum"]); i++) {
-				SQL = "insert into dmt_tranlist ";
+                SQL = "insert into dmt_tranlist ";
                 ColMap.Clear();
                 ColMap["in_scode"] = Util.dbchar(Request["in_scode"]);
                 ColMap["in_no"] = Util.dbchar(Request["in_no"]);
@@ -2541,39 +2541,39 @@ insert_casedmt_show("0");
             }
         }
 
-insert_dmt_temp_ap();
+        insert_dmt_temp_ap();
 
-Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
+        Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
-update_todo();
-   	
-update_dmt();
+        update_todo();
 
-update_in_scode();
+        update_dmt();
 
-insert_rec_log();
+        update_in_scode();
+
+        insert_rec_log();
     }
     
     /// <summary>
     /// 移轉
     /// </summary>
-    private void editA8( ) {
-log_table();
+    private void editA8() {
+        log_table();
 
-update_case_dmt();
+        update_case_dmt();
 
-upd_grconf_job_no();
+        upd_grconf_job_no();
 
-update_dmt_temp();
+        update_dmt_temp();
 
-insert_casedmt_good();
+        insert_casedmt_good();
 
-insert_casedmt_show("0");
+        insert_casedmt_show("0");
 
-//*****移轉檔
-	//dmt_tran入log
-	Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");	
-	 SQL = "UPDATE dmt_tran set ";
+        //*****移轉檔
+        //dmt_tran入log
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
+        SQL = "UPDATE dmt_tran set ";
         ColMap.Clear();
         foreach (var key in Request.Form.Keys) {
             string colkey = key.ToString().ToLower();
@@ -2596,9 +2596,9 @@ insert_casedmt_show("0");
         SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "'";
         conn.ExecuteNonQuery(SQL);
 
-//'*****申請人與關係人
+        //'*****申請人與關係人
         for (int i = 1; i <= Convert.ToInt32("0" + Request["ft_apnum"]); i++) {
-			SQL = "insert into dmt_tranlist ";
+            SQL = "insert into dmt_tranlist ";
             ColMap.Clear();
             ColMap["in_scode"] = Util.dbchar(Request["in_scode"]);
             ColMap["in_no"] = Util.dbchar(Request["in_no"]);
@@ -2626,35 +2626,35 @@ insert_casedmt_show("0");
             conn.ExecuteNonQuery(SQL);
         }
 
-insert_dmt_temp_ap();
+        insert_dmt_temp_ap();
 
-Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
+        Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
-update_dmt();
+        update_dmt();
 
-update_in_scode();
+        update_in_scode();
 
-insert_rec_log();
+        insert_rec_log();
     }
     
     /// <summary>
     /// 質權
     /// </summary>
-    private void editA9( ) {
-log_table();
+    private void editA9() {
+        log_table();
 
-update_case_dmt();
+        update_case_dmt();
 
-upd_grconf_job_no();
+        upd_grconf_job_no();
 
-update_dmt_temp();
-	
-insert_casedmt_good();
+        update_dmt_temp();
 
-insert_casedmt_show("0");
+        insert_casedmt_good();
+
+        insert_casedmt_show("0");
 
         //異動檔入dmt_tran_log//改在各form
-        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         SQL = "delete from dmt_tran where in_no='" + Request["in_no"] + "' and in_scode='" + Request["in_scode"] + "'";
         conn.ExecuteNonQuery(SQL);
 
@@ -2666,8 +2666,8 @@ insert_casedmt_show("0");
         }
 
         //***異動檔
-         SQL = "insert into dmt_tran " ;
-		 ColMap.Clear();
+        SQL = "insert into dmt_tran ";
+        ColMap.Clear();
         foreach (var key in Request.Form.Keys) {
             string colkey = key.ToString().ToLower();
             string colValue = Request[colkey];
@@ -2688,12 +2688,12 @@ insert_casedmt_show("0");
         ColMap["tr_date"] = "getdate()";
         ColMap["tr_scode"] = "'" + Session["scode"] + "'";
         SQL += ColMap.GetInsertSQL();
-        conn.ExecuteNonQuery(SQL);	 
+        conn.ExecuteNonQuery(SQL);
 
         //*****新增案件異動明細檔,關係人
         for (int i = 1; i <= Convert.ToInt32("0" + Request["ft_apnum"]); i++) {
-          SQL = "insert into dmt_tranlist " ;
-           ColMap.Clear();
+            SQL = "insert into dmt_tranlist ";
+            ColMap.Clear();
             ColMap["in_scode"] = Util.dbchar(Request["in_scode"]);
             ColMap["in_no"] = Util.dbchar(Request["in_no"]);
             ColMap["mod_field"] = "'mod_ap'";
@@ -2721,44 +2721,44 @@ insert_casedmt_show("0");
 
             SQL += ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
-        }		
-  
-insert_dmt_temp_ap();
+        }
 
-Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
+        insert_dmt_temp_ap();
 
-update_todo();
+        Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
-update_dmt();
+        update_todo();
 
-update_in_scode();
+        update_dmt();
 
-insert_rec_log();
+        update_in_scode();
+
+        insert_rec_log();
     }
     
     /// <summary>
     /// 質權
     /// </summary>
-    private void editAA( ) {
-log_table();
+    private void editAA() {
+        log_table();
 
-update_case_dmt();
+        update_case_dmt();
 
-upd_grconf_job_no();
+        upd_grconf_job_no();
 
-update_dmt_temp();
+        update_dmt_temp();
 
-insert_casedmt_good();
+        insert_casedmt_good();
 
-insert_casedmt_show("0");
+        insert_casedmt_show("0");
 
-insert_dmt_temp_ap();
+        insert_dmt_temp_ap();
 
 
-//異動檔	
-	//dmt_tran入log
-	Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
-	SQL = "UPDATE dmt_tran set ";
+        //異動檔	
+        //dmt_tran入log
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
+        SQL = "UPDATE dmt_tran set ";
         ColMap.Clear();
         foreach (var key in Request.Form.Keys) {
             string colkey = key.ToString().ToLower();
@@ -2794,21 +2794,21 @@ insert_dmt_temp_ap();
         conn.ExecuteNonQuery(SQL);
 
 
-Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
+        Sys.updmt_attach_forcase(Context, conn, prgid, (Request["in_no"] ?? ""));
 
-update_todo();
-	   	  
-update_dmt();
+        update_todo();
 
-update_in_scode();
+        update_dmt();
 
-insert_rec_log();
+        update_in_scode();
+
+        insert_rec_log();
     }
     
     /// <summary>
     /// 補(換)發證
     /// </summary>
-    private void editAB( ) {
+    private void editAB() {
         log_table();
 
         update_case_dmt();
@@ -2825,7 +2825,7 @@ insert_rec_log();
 
         //*****補換註冊檔
         //dmt_tran入log
-        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         SQL = "UPDATE dmt_tran set ";
         ColMap.Clear();
         foreach (var key in Request.Form.Keys) {
@@ -2865,7 +2865,7 @@ insert_rec_log();
     /// <summary>
     /// 閱案
     /// </summary>
-    private void editAC( ) {
+    private void editAC() {
         log_table();
 
         update_case_dmt();
@@ -2880,7 +2880,7 @@ insert_rec_log();
 
         //*****補換註冊檔
         //dmt_tran入log
-        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
 
         SQL = "UPDATE dmt_tran set ";
         ColMap.Clear();
@@ -2929,7 +2929,7 @@ insert_rec_log();
 
 
         //異動檔入dmt_tran_log
-        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         SQL = "delete from dmt_tran where in_no='" + Request["in_no"] + "' and in_scode='" + Request["in_scode"] + "'";
         conn.ExecuteNonQuery(SQL);
 
@@ -3362,7 +3362,7 @@ insert_rec_log();
                 }
 
                 if ((Request["ttg33_mod_pul_new_no"] ?? "") != "" || (Request["ttg33_mod_pul_mod_dclass"] ?? "") != ""
-|| (Request["ttg33_mod_pul_mod_type"] ?? "") != "") {
+                || (Request["ttg33_mod_pul_mod_type"] ?? "") != "") {
                     SQL = "insert into dmt_tranlist ";
                     ColMap.Clear();
                     ColMap["in_scode"] = Util.dbchar(in_scode);
@@ -3501,7 +3501,7 @@ insert_rec_log();
         insert_dmt_temp_ap();
 
         //異動檔入dmt_tran_log
-        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_tran", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
 
         if ((Request["tfy_arcase"] ?? "").Left(3) == "AD7") {
             SQL = "UPDATE dmt_tran set ";

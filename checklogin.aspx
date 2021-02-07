@@ -17,9 +17,10 @@
         StringBuilder sb = new StringBuilder();
         string strChk = CheckUser();
         if (strChk.Length > 0) {
-            sb.AppendLine("alert(\"" + strChk + "\\n" + (Request["tfx_scode"] ?? "") + "\");");
+            //sb.AppendLine("alert(\"" + strChk + Request["tfx_scode"] + "\");");
             sb.AppendLine("top.location.href = \"login.aspx\";");
         } else if (exMsg.Length == 0) {
+            //sb.AppendLine("alert(\"" + Request["tfx_scode"] + "\");");
             sb.AppendLine("top.location.href = \"Default.aspx\";");
         }
 

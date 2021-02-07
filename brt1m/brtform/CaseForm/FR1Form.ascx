@@ -67,17 +67,17 @@
 	<tr>
 		<td class="lightbluetable" colspan="2" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(r1Term1)">
             <strong>肆、<u>變更事項</u></strong>
-		    <input type="text" id="tfgp_mod_ap" name="tfgp_mod_ap" size="2">
-		    <input type="text" id="tfgp_mod_aprep" name="tfgp_mod_aprep" size="2">
-		    <input type="text" id="tfgp_mod_agt" name="tfgp_mod_agt" size="2">
-		    <input type="text" id="tfgp_mod_apaddr" name="tfgp_mod_apaddr" size="2">
-		    <input type="text" id="tfgp_mod_agtaddr" name="tfgp_mod_agtaddr" size="2">
-		    <input type="text" id="tfgp_mod_pul" name="tfgp_mod_pul" size="2">
-		    <input type="text" id="tfgp_mod_oth" name="tfgp_mod_oth" size="2">
-		    <input type="text" id="tfgp_mod_oth1" name="tfgp_mod_oth1" size="2">
-		    <input type="text" id="tfgp_mod_oth2" name="tfgp_mod_oth2" size="2">
-		    <input type="text" id="tfgp_mod_dmt" name="tfgp_mod_dmt" size="2">
-		    <input type="text" id="tfgp_mod_agttype" name="tfgp_mod_agttype" size="2">
+		    <input type="hidden" id="tfgp_mod_ap" name="tfgp_mod_ap" size="2">
+		    <input type="hidden" id="tfgp_mod_aprep" name="tfgp_mod_aprep" size="2">
+		    <input type="hidden" id="tfgp_mod_agt" name="tfgp_mod_agt" size="2">
+		    <input type="hidden" id="tfgp_mod_apaddr" name="tfgp_mod_apaddr" size="2">
+		    <input type="hidden" id="tfgp_mod_agtaddr" name="tfgp_mod_agtaddr" size="2">
+		    <input type="hidden" id="tfgp_mod_pul" name="tfgp_mod_pul" size="2">
+		    <input type="hidden" id="tfgp_mod_oth" name="tfgp_mod_oth" size="2">
+		    <input type="hidden" id="tfgp_mod_oth1" name="tfgp_mod_oth1" size="2">
+		    <input type="hidden" id="tfgp_mod_oth2" name="tfgp_mod_oth2" size="2">
+		    <input type="hidden" id="tfgp_mod_dmt" name="tfgp_mod_dmt" size="2">
+		    <input type="hidden" id="tfgp_mod_agttype" name="tfgp_mod_agttype" size="2">
 		</td>
 	</tr>
 	<tr>

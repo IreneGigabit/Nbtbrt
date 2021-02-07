@@ -98,7 +98,7 @@
     <script type="text/html" id="br_da_template"><!--分割樣板-->
 		<TABLE id=tabbDa_$$ border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
         <thead>
-			<tr>
+			<tr class="brt11hide">
                 <td class=lightbluetable align=right width='30%'><font color=red>分割(<span class="numberCh$$"></span>)</font>本所編號:</td>
 			    <td class=whitetablebg width='70%'>
                     <INPUT type=text name=FD1_seqa_$$ id=FD1_seqa_$$ readonly class='sedit' size=5>-<INPUT type=text name=FD1_seq1a_$$ id=FD1_seq1a_$$ readonly class='SEdit' size=2>
@@ -402,6 +402,10 @@
             if (main.prgid != "brt52") {
                 $('#tfy_case_stat option:eq(1)').val("").text("");//案件種類
             }
+        }
+
+        if (main.prgid.Left(4) == "brt1") {//營洽交辦/編修時不顯示分割案號
+            $(".brt11hide").hide();
         }
     }
 </script>

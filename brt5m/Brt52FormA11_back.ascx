@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" ClassName="Brt52FormA11_back" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
-<%@ Register Src="~/brt1m/CaseForm/FA1Form.ascx" TagPrefix="uc1" TagName="FA1Form" %>
+<%@ Register Src="~/brt1m/brtform/CaseForm/FA1Form.ascx" TagPrefix="uc1" TagName="FA1Form" %>
 
 
 <script runat="server">

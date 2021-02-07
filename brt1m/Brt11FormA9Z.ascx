@@ -24,43 +24,43 @@
 
         //交辦內容欄位畫面
         if (ar_form == "A3") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FFForm.ascx"));//註冊費
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FFForm.ascx"));//註冊費
         } else if (ar_form == "A4") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FR1Form.ascx"));//延展
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FR1Form.ascx"));//延展
         } else if (ar_form == "A5") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FD1Form.ascx"));//分割
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FD2Form.ascx"));//分割
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FD1Form.ascx"));//分割
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FD2Form.ascx"));//分割
         } else if (ar_form == "A6") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FC1Form.ascx"));//變更
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FC11Form.ascx"));//變更
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FC2Form.ascx"));//變更
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FC21Form.ascx"));//變更
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FC3Form.ascx"));//變更
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FC4Form.ascx"));//變更
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FC1Form.ascx"));//變更
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FC11Form.ascx"));//變更
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FC2Form.ascx"));//變更
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FC21Form.ascx"));//變更
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FC3Form.ascx"));//變更
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FC4Form.ascx"));//變更
         } else if (ar_form == "A7") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FL1Form.ascx"));//授權
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FL1Form.ascx"));//授權
         } else if (ar_form == "A8") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FT1Form.ascx"));//移轉
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FT1Form.ascx"));//移轉
         } else if (ar_form == "A9") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FP1Form.ascx"));//質權
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FP1Form.ascx"));//質權
         } else if (ar_form == "AA") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FN1Form.ascx"));//各種證明書
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FN1Form.ascx"));//各種證明書
         } else if (ar_form == "AB") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FI1Form.ascx"));//補(換)發證
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FI1Form.ascx"));//補(換)發證
         } else if (ar_form == "AC") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FV1Form.ascx"));//閲案
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FV1Form.ascx"));//閲案
         } else if (ar_form.Left(1) == "B") {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DO1Form.ascx"));//申請異議
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DR1Form.ascx"));//申請廢止
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/DI1Form.ascx"));//申請評定
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/BZZ1Form.ascx"));//無申請書之交辦內容案
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/B5C1Form.ascx"));//聽證
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/DO1Form.ascx"));//申請異議
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/DR1Form.ascx"));//申請廢止
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/DI1Form.ascx"));//申請評定
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/BZZ1Form.ascx"));//無申請書之交辦內容案
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/B5C1Form.ascx"));//聽證
         } else {
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/ZZ1Form.ascx"));
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FOBForm.ascx"));
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/B5C1Form.ascx"));
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FOFForm.ascx"));
-            tranHolder.Controls.Add(LoadControl("~/brt1m/CaseForm/FB7Form.ascx"));
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/ZZ1Form.ascx"));
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FOBForm.ascx"));
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/B5C1Form.ascx"));
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FOFForm.ascx"));
+            tranHolder.Controls.Add(LoadControl("~/brt1m/brtform/CaseForm/FB7Form.ascx"));
         }
     }
 </script>

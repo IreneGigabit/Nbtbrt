@@ -15,20 +15,24 @@
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Dictionary<string, string> ColMap = new Dictionary<string, string>();
 
+    
+    protected string SQL = "";
+
+    protected StringBuilder strOut = new StringBuilder();
+
+    protected string logReason = "brt52國內案交辦資料維護作業";
+
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
     }
-
-    protected StringBuilder strOut = new StringBuilder();
-    protected string SQL = "";
-
+    
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
-        conn = new DBHelper(Conn.btbrt).Debug(false);
+        conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
 
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
@@ -38,8 +42,6 @@
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
             try {
-                conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-
                 doUpdateDB();
                 //conn.Commit();
                 conn.RollBack();
@@ -50,9 +52,6 @@
                 Sys.errorLog(ex, conn.exeSQL, prgid);
                 //strOut.AppendLine("<div align='center'><h1>資料更新失敗("+ex.Message+")</h1></div>");
                 throw;
-            }
-            finally {
-                conn.Dispose();
             }
             this.DataBind();
         }
@@ -110,7 +109,6 @@
         SQL = "SELECT SCOPE_IDENTITY() AS Current_Identity";
         string maxtrancase_sqlno_log = (conn.ExecuteScalar(SQL) ?? "").ToString();
 
-
         SQL = "UPDATE case_dmt set trancase_sqlno='" + maxtrancase_sqlno_log + "'";
         SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + ReqVal.TryGet("in_no").Trim() + "'";
         conn.ExecuteNonQuery(SQL);
@@ -160,12 +158,12 @@
             || ReqVal.TryGet("o_cust_seq") != ReqVal.TryGet("F_cust_seq")
             || ReqVal.TryGet("oatt_sql") != ReqVal.TryGet("tfy_att_sql")
             ) {
-                Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "Brt52國內案交辦資料維護作業");
-                Sys.insert_log_table(conn, "U", prgid, "caseitem_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "");
-                Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+                Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
+                Sys.insert_log_table(conn, "U", prgid, "caseitem_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
+                Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
             if (ReqVal.TryGet("update_dmt") == "dmt") {
-                Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], "Brt52國內案交辦資料維護作業");
-                Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], "Brt52國內案交辦資料維護作業");
+                Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], logReason);
+                Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], logReason);
             }
             intcasetran_brt();
             intflg = "Y";
@@ -173,12 +171,12 @@
 
         if (ReqVal.TryGet("tseq1") != "M" && intflg == "N" && ReqVal.TryGet("xar_curr") == "0") {
             if (ReqVal.TryGet("tfy_ar_code") != ReqVal.TryGet("ochkar_code")) {
-                Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "Brt52國內案交辦資料維護作業");
-                Sys.insert_log_table(conn, "U", prgid, "caseitem_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "");
-                Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+                Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
+                Sys.insert_log_table(conn, "U", prgid, "caseitem_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
+                Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
                 if (ReqVal.TryGet("update_dmt") == "dmt") {
-                    Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], "Brt52國內案交辦資料維護作業");
-                    Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], "Brt52國內案交辦資料維護作業");
+                    Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], logReason);
+                    Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tseq"] + ";" + Request["tseq1"], logReason);
                 }
                 intcasetran_brt();
                 intflg = "Y";
@@ -228,30 +226,30 @@
         }
 
         //商品入log_table
-        Sys.insert_log_table(conn, "U", prgid, "casedmt_good", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+        Sys.insert_log_table(conn, "U", prgid, "casedmt_good", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         SQL = "delete from casedmt_good where in_no='" + Request["in_no"] + "' and in_scode='" + Request["in_scode"] + "'";
         conn.ExecuteNonQuery(SQL);
 
         //展覽優先權入log_table
-        Sys.insert_log_table(conn, "U", prgid, "casedmt_show", "in_no;case_sqlno", Request["in_no"] + ";0", "");
+        Sys.insert_log_table(conn, "U", prgid, "casedmt_show", "in_no;case_sqlno", Request["in_no"] + ";0", logReason);
         SQL = "delete from casedmt_show where in_no='" + Request["in_no"] + "' and case_sqlno=0";
         conn.ExecuteNonQuery(SQL);
 
         if (ReqVal.TryGet("update_dmt") == "dmt") {
             //商品入log_table
-            Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], "");
+            Sys.insert_log_table(conn, "U", prgid, "dmt_good", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], logReason);
             SQL = "delete from dmt_good where seq='" + Request["tfz1_seq"] + "' and seq1='" + Request["tfz1_seq1"] + "'";
             conn.ExecuteNonQuery(SQL);
 
             //展覽優先權入log_table
-            Sys.insert_log_table(conn, "U", prgid, "dmt_show", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], "");
+            Sys.insert_log_table(conn, "U", prgid, "dmt_show", "seq;seq1", Request["tfzb_seq"] + ";" + Request["tfzb_seq1"], logReason);
             SQL = "delete from dmt_show where seq='" + Request["tfz1_seq"] + "' and seq1='" + Request["tfz1_seq1"] + "'";
             conn.ExecuteNonQuery(SQL);
         }
         
         if (intflg == "N") {
             //入case_dmt_log
-            Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "brt52國內案交辦維護作業");
+            Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
         }
         SQL = "UPDATE case_dmt SET ";
         ColMap.Clear();
@@ -271,7 +269,7 @@
 
         if (intflg == "N") {
             //入dmt_temp_log 
-            Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], "");
+            Sys.insert_log_table(conn, "U", prgid, "dmt_temp", "in_no;in_scode", Request["in_no"] + ";" + Request["in_scode"], logReason);
         }
         string aa = Request["draw_file1"] ?? "";
         SQL = "UPDATE dmt_temp SET ";
@@ -334,7 +332,7 @@
         }
 
         //申請人入log_table
-        Sys.insert_log_table(conn, "U", prgid, "dmt_temp_ap", "in_no;case_sqlno", Request["in_no"] + ";0", "");
+        Sys.insert_log_table(conn, "U", prgid, "dmt_temp_ap", "in_no;case_sqlno", Request["in_no"] + ";0", logReason);
         SQL = "Delete dmt_temp_ap where in_no='" + Request["in_no"] + "' and case_sqlno=0";
         conn.ExecuteNonQuery(SQL);
 
@@ -378,7 +376,7 @@
             //國內商標案件主檔dmt
             if (intflg == "N") {
                 //dmt入log檔
-                Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tfz1_seq"] + ";" + Request["tfz1_seq1"], "Brt52國內交辦資料維護");
+                Sys.insert_log_table(conn, "U", prgid, "dmt", "seq;seq1", Request["tfz1_seq"] + ";" + Request["tfz1_seq1"], logReason);
             }
 
             SQL = "UPDATE dmt SET ";
@@ -402,7 +400,7 @@
 
             //國內商標案件主檔ndmt
             if (intflg == "N") {
-                Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tfz1_seq"] + ";" + Request["tfz1_seq1"], "");
+                Sys.insert_log_table(conn, "U", prgid, "ndmt", "seq;seq1", Request["tfz1_seq"] + ";" + Request["tfz1_seq1"], logReason);
             }
             SQL = "UPDATE ndmt SET ";
             ColMap.Clear();
@@ -466,7 +464,7 @@
             }
 
             //案件主檔申請人log_table
-            Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["tfz1_seq"] + ";" + Request["tfz1_seq1"] + ";" + Session["seBranch"], "");
+            Sys.insert_log_table(conn, "U", prgid, "dmt_ap", "seq;seq1;branch", Request["tfz1_seq"] + ";" + Request["tfz1_seq1"] + ";" + Session["seBranch"], logReason);
             SQL = "Delete dmt_ap where seq='" + Request["tfz1_seq"] + "' and seq1='" + Request["tfz1_seq1"] + "' and branch='" + Session["seBranch"] + "'";
             conn.ExecuteNonQuery(SQL);
             for (int i = 1; i <= Convert.ToInt32("0" + Request["apnum"]); i++) {

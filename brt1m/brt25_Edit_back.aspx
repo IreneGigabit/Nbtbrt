@@ -4,7 +4,7 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Import Namespace = "Newtonsoft.Json"%>
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
-<%@ Register Src="~/brt1m/CaseForm/brt25_Form.ascx" TagPrefix="uc1" TagName="brt25_Form" %>
+<%@ Register Src="~/brt1m/brtform/brt25_Form.ascx" TagPrefix="uc1" TagName="brt25_Form" %>
 
 
 <script runat="server">

@@ -95,8 +95,8 @@ public class OpenXmlHelper
             //List<OpenXmlElement> child = outDoc.MainDocumentPart.Document.Body.ChildElements.TakeWhile(d => d.GetType() != typeof(SectionProperties)).ToList();
             //child.ForEach(c => c.Remove());
         } else {
-            outDoc.MainDocumentPart.Document.Body.RemoveAllChildren<SdtElement>();
-            outDoc.MainDocumentPart.Document.Body.RemoveAllChildren<Paragraph>();
+            //outDoc.MainDocumentPart.Document.Body.RemoveAllChildren<SdtElement>();
+            //outDoc.MainDocumentPart.Document.Body.RemoveAllChildren<Paragraph>();
         }
 
 		outBody = outDoc.MainDocumentPart.Document.Body;
