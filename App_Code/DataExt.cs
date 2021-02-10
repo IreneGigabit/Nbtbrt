@@ -623,7 +623,7 @@ public static class DataExt
     public static string TryGet<TKey, TValue>(this Dictionary<TKey, TValue> input, TKey key) {
         TValue val;
         if (input.TryGetValue(key, out val)) {
-            return val.ToString();
+            return val.ToString().Trim();
         }
 
         return "";

@@ -73,7 +73,7 @@
         SQL += ",b.class, a.arcase, a.ar_mark, ISNULL(a.discount, 0) AS discount, d.cust_name ";
         SQL += ",a.case_num, a.stat_code, a.cust_area, a.cust_seq,a.case_no,a.ar_service,a.ar_fees,a.ar_code,a.ar_curr,a.mark ";
         SQL += ",(SELECT ChRelName FROM Relation WHERE ChRelType ='scode' AND chrelno = a.stat_code) AS Nstat_code ";
-        SQL += ",f.rs_class as Ar_form,f.prt_code,f.mark AS codemark,f.Rs_detail as CArcase,e.sc_name ";
+        SQL += ",f.rs_class as Ar_form,f.prt_code,f.mark AS codemark,f.Rs_detail as CArcase,e.sc_name,c.sqlno ";
         SQL += ",''link_remark,''fcust_name,''fseq,''fappl_name,''urlasp,''step_grade ";
         SQL += " FROM case_dmt a ";
         SQL += " INNER JOIN dmt_temp b ON a.in_scode = b.in_scode AND a.in_no = b.in_no and b.case_sqlno=0 ";
@@ -151,6 +151,7 @@
         //urlasp += "&ar_curr=" + row["ar_curr"];
         //urlasp += "&step_grade=" + row["step_grade"];
         urlasp += "&homelist=" + Request["homelist"];
+        urlasp += "&code=" + row["sqlno"];//todo.sqlno
         urlasp += "&uploadtype=case";
         urlasp += "&submittask=Edit";
         
@@ -271,6 +272,16 @@
 <FooterTemplate>
 	    </tbody>
     </table>
+    <BR>
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+		<tr class="FormName"><td>
+			<div align="left">
+			備註:<br>
+			<!--1.註記有顯示「說明」，表示主管簽核時有輸入簽核說明，可點選「說明」查詢內容。-->
+			1.註記顯示之「簽核」，可點選查詢簽核流程。
+			</div>
+		</td></tr>
+	</table>
 </FooterTemplate>
 </asp:Repeater>
 

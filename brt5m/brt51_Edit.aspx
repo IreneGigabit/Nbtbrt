@@ -1,5 +1,13 @@
 ﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
+<%@ Import Namespace = "System.Data"%>
+<%@ Import Namespace = "System.Data.SqlClient"%>
+<%@ Import Namespace = "Newtonsoft.Json"%>
+<%@ Import Namespace = "Newtonsoft.Json.Linq"%>
+<%@ Register Src="~/commonForm/dmt_CR_Form.ascx" TagPrefix="uc1" TagName="dmt_CR_Form" %>
+<%@ Register Src="~/commonForm/dmt_ctrl_Form.ascx" TagPrefix="uc1" TagName="dmt_ctrl_Form" %>
+
+
 
 <script runat="server">
     protected string HTProgCap = "國內案客收確認作業";//HttpContext.Current.Request["prgname"];//功能名稱
@@ -15,51 +23,47 @@
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     protected Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    
+
+    protected string SQL = "";
+    protected string json = "";
+
     protected string submitTask = "";
-    protected string ar_form = "";
-    protected string cust_area = "";
-    protected string cust_seq = "";
-    protected string in_scode = "";
-    protected string in_no = "";
-    protected string prt_code = "";
-    protected string new_form = "";
-    protected string case_stat = "";
-    protected string code_type = "";
-    protected string seq = "";
-    protected string seq1 = "";
-    protected string code = "";
+    protected string cgrs = "CR";
+    //protected string code = "";//todo.sqlno
+    //protected string in_scode = "";
+    //protected string in_no = "";
+    //protected string cust_area = "";
+    //protected string cust_seq = "";
+    //protected string endflag51 = "";
+    //protected string end_date51 = "";
+    //protected string end_code51 = "";
+    //protected string end_type51 = "";
+    //protected string end_remark51 = "";
+    //protected string seqend_flag = "";
+
+    DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    private void Page_Unload(System.Object sender, System.EventArgs e) {
+        if (conn != null) conn.Dispose();
+    }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
+        conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
-        submitTask = (Request["submittask"] ?? "").Trim();
-        ar_form = (Request["ar_form"] ?? "").Trim();
-        cust_area = (Request["cust_area"] ?? "").Trim();
-        cust_seq = (Request["cust_seq"] ?? "").Trim();
-        in_scode = (Request["in_scode"] ?? "").Trim();
-        in_no = (Request["in_no"] ?? "").Trim();
-        prt_code = (Request["prt_code"] ?? "").Trim();
-        new_form = (Request["new_form"] ?? "").Trim();
-        case_stat = (Request["case_stat"] ?? "").Trim();
-        code_type = (Request["code_type"] ?? "").Trim();
-        seq = (Request["seq"] ?? "").Trim();
-        seq1 = (Request["seq1"] ?? "").Trim();
-        code = (Request["code"] ?? "").Trim();
 
-        formFunction = (Request["formFunction"] ?? "").Trim();
-        if (formFunction == "") {
-            formFunction = "Edit";
-        }
+        json = ReqVal.TryGet("json").ToUpper();
+        submitTask = ReqVal.TryGet("submittask").ToUpper();
         
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title.Replace("收文", "<font color=blue>收文</font>");
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
+            if (json == "Y") QueryData();
+            
             PageLayout();
             ChildBind();
             this.DataBind();
@@ -68,30 +72,23 @@
 
     private void PageLayout() {
         if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
-            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Eblank\">[聯絡人新增]</a>\n";
-            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Eblank\">[申請人新增]</a>\n";
-            if ((Request["cust_seq"] ?? "") != "") {
-                StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
-            }
-            if ((Request["homelist"] ?? "") != "homelist") {
+            if (cgrs == "CR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta4m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";//***todo
+            if (cgrs == "GR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta41m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";//***todo
+            StrFormBtnTop += "<font style=\"cursor: pointer;color:darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"Help_Click()\">[說明]</font>";//***todo
+
+            if (submitTask == "A" || (Request["closewin"] ?? "") == "Y") {
                 StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
             }
         }
 
-        if (formFunction == "Edit") {
-            if ((HTProgRight & 8) > 0) {
-                if (prgid == "brt51") {//客收確認
-                    StrFormBtn += "<input type=button value ='資料確認無誤' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
-                    StrFormBtn += "<input type=button value ='資料有誤退回營洽' class='c1button bsubmit' onclick='formModSubmit2()'>\n";
-                } else {
-                    StrFormBtn += "<input type=button value ='編修存檔' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
+        if (submitTask != "Q") {
+            if ((HTProgRight & 4) > 0 || (HTProgRight & 8) > 0 || (HTProgRight & 16) > 0 || (HTProgRight & 64) > 0) {
+                if (((HTProgRight & 4) > 0 && submitTask == "A") || ((HTProgRight & 8) > 0 && submitTask == "U") || ((HTProgRight & 64) > 0 && submitTask == "U")) {
+                    StrFormBtn += "<input type=button value ='存　檔' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
                 }
-            }
-
-            StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
-        } else if (formFunction == "Add") {
-            if ((HTProgRight & 4) > 0) {
-                StrFormBtn += "<input type=button value ='新增存檔' class='cbutton bsubmit' onclick='formModSubmit()'>\n";
+                if (((HTProgRight & 16) > 0 && submitTask == "D")) {
+                    StrFormBtn += "<input type=button value ='刪　除' class='cbutton bsubmit' onclick='formDelSubmit()'>\n";
+                }
                 StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
             }
         }
@@ -100,6 +97,210 @@
     //將共用參數傳給子控制項
     private void ChildBind() {
     }
+
+    private void QueryData() {
+        Dictionary<string, string> crmain = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        crmain["seq"] = ReqVal.TryGet("seq");
+        crmain["seq1"] = ReqVal.TryGet("seq1");
+        crmain["in_scode"] = ReqVal.TryGet("in_scode");
+        crmain["in_no"] = ReqVal.TryGet("in_no");
+        crmain["code"] = ReqVal.TryGet("code");
+        crmain["cust_area"] = ReqVal.TryGet("cust_area");
+        crmain["cust_seq"] = ReqVal.TryGet("cust_seq");
+        crmain["endflag51"] = ReqVal.TryGet("endflag51");
+        crmain["end_date51"] = ReqVal.TryGet("end_date51");
+        crmain["end_code51"] = ReqVal.TryGet("end_code51");
+        crmain["end_type51"] = ReqVal.TryGet("end_type51");
+        crmain["end_remark51"] = ReqVal.TryGet("end_remark51");
+        crmain["seqend_flag"] = ReqVal.TryGet("seqend_flag");
+
+        crmain["seq1"] = ReqVal.TryGet("seq1");
+        crmain["step_date"] = DateTime.Today.ToShortDateString();
+        crmain["cg"] = "C";
+        crmain["rs"] = "R";
+        crmain["cgrs"] = cgrs;
+        crmain["send_cl"] = "1";
+        crmain["act_code"] = "_";
+
+        string spe_ctrl3 = "N";
+        string send_way = "";
+        SQL = "select a.*,b.mark as codemark,c.dmt_term1,c.dmt_term2 ";
+	    SQL+="from case_dmt a inner join code_br b on b.dept='T' and b.cr='Y' and b.rs_type=a.arcase_type and b.rs_code=a.arcase ";
+	    SQL+="inner join dmt_temp c on a.in_scode=c.in_scode and a.in_no=c.in_no ";
+	    SQL+="where a.in_scode ='" +Request["in_scode"]+ "' and a.in_no = '" +Request["in_no"]+ "'";
+        DataTable dt = new DataTable();
+        conn.DataTable(SQL,dt);
+        if (dt.Rows.Count > 0) {
+            if (dt.Rows[0].SafeRead("seq", "") != "") {
+                crmain["seq"] = dt.Rows[0].SafeRead("seq", "");
+                crmain["seq1"] = dt.Rows[0].SafeRead("seq1", "");
+                send_way = dt.Rows[0].SafeRead("send_way", "");//收文方式改由營洽登錄帶入值
+                crmain["receipt_type"] = dt.Rows[0].SafeRead("receipt_type", "");
+                crmain["receipt_title"] = dt.Rows[0].SafeRead("receipt_title", "B");//預設空白
+            }
+            //收文代碼
+            crmain["codemark"] = dt.Rows[0].SafeRead("codemark", "");//收文代碼備註：B爭救案
+            crmain["dmt_term1"] = dt.Rows[0].GetDateTimeString("dmt_term1", "yyyy/M/d");//專用期限起日check非創申案有期限者提醒需註記註冊費繳費狀態
+            crmain["dmt_term2"] = dt.Rows[0].GetDateTimeString("dmt_term2", "yyyy/M/d");//專用期限迄日
+            crmain["cust_date"] = dt.Rows[0].GetDateTimeString("cust_date", "yyyy/M/d");//客戶期限
+            crmain["pr_date"] = dt.Rows[0].GetDateTimeString("pr_date", "yyyy/M/d");//承辦期限
+            crmain["case_last_date"] = dt.Rows[0].GetDateTimeString("last_date", "yyyy/M/d");//營洽輸入法定期限
+
+            SQL = " select rs_type,rs_class,rs_code,rs_detail,case_stat,case_stat_name,spe_ctrl ";
+            SQL += "from vcode_act ";
+            SQL += "where rs_code = '" + dt.Rows[0].SafeRead("arcase", "") + "' and act_code = '_' ";
+            SQL += "and rs_type = '" + dt.Rows[0].SafeRead("arcase_type", "") + "'";
+            SQL += "and cg = 'C' and rs = 'R'";
+            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+                if (dr.Read()) {
+                    crmain["rs_type"] = dr.SafeRead("rs_type", "");
+                    crmain["rs_class"] = dr.SafeRead("rs_class", "");
+                    crmain["rs_code"] = dr.SafeRead("rs_code", "");
+                    crmain["rs_detail"] = dr.SafeRead("rs_detail", "");
+                    crmain["case_stat"] = dr.SafeRead("case_stat", "");
+                    crmain["case_statnm"] = dr.SafeRead("case_stat_name", "");
+
+                    if (dr.SafeRead("back_flag", "") == "Y") {
+                        crmain["rs_detail"] = crmain["rs_detail"] + "(請復案)";
+                    }
+                    if (dr.SafeRead("end_flag", "") == "Y") {
+                        crmain["rs_detail"] = crmain["rs_detail"] + "(請結案)";
+                    }
+
+                    string[] spe_ctrl = dr.SafeRead("spe_ctrl", "").Split(',');//抓取案性控制
+                    if (spe_ctrl.Length >= 3) spe_ctrl3 = (spe_ctrl[2] == "" ? "N" : spe_ctrl[2]);//是否只為爭救案
+                    if (spe_ctrl.Length >= 4 && send_way == "") send_way = spe_ctrl[3];//抓取案性控制之發文方式,(若營洽登錄沒值才帶入案性設定)
+                }
+            }
+        }
+        if (send_way == "") send_way = "M";//發文方式若無給M_親送
+        crmain["spe_ctrl3"] = spe_ctrl3;
+        crmain["send_way"] = send_way;
+        
+        //進度序號
+        SQL = "select isnull(step_grade,0)+1 from dmt where seq = '" + crmain["seq"] + "' and seq1 = '" + crmain["seq1"] + "'";
+        object objResult = conn.ExecuteScalar(SQL);
+        int nstep_grade = (objResult == DBNull.Value || objResult == null) ? 1 : Convert.ToInt32(objResult);
+        crmain["step_grade"] = nstep_grade.ToString();
+
+        var settings = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.None,
+            ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
+            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
+        };
+
+        Response.Write(JsonConvert.SerializeObject(crmain, settings).ToUnicode() + "\n");
+        Response.End();
+    }
+
+    /*
+    private void QueryData() {
+        Dictionary<string, string> crmain = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        crmain["seq"] = ReqVal.TryGet("seq");
+        crmain["seq1"] = ReqVal.TryGet("seq1");
+        crmain["in_scode"] = ReqVal.TryGet("in_scode");
+        crmain["in_no"] = ReqVal.TryGet("in_no");
+        crmain["code"] = ReqVal.TryGet("code");
+        crmain["cust_area"] = ReqVal.TryGet("cust_area");
+        crmain["cust_seq"] = ReqVal.TryGet("cust_seq");
+        crmain["endflag51"] = ReqVal.TryGet("endflag51");
+        crmain["end_date51"] = ReqVal.TryGet("end_date51");
+        crmain["end_code51"] = ReqVal.TryGet("end_code51");
+        crmain["end_type51"] = ReqVal.TryGet("end_type51");
+        crmain["end_remark51"] = ReqVal.TryGet("end_remark51");
+        crmain["seqend_flag"] = ReqVal.TryGet("seqend_flag");
+
+        DataTable stepDt = new DataTable();
+        //只取得table結構.不抓資料for收文form
+        SQL = "select *,''cgrs,'' case_stat,''case_statnm ";
+        SQL += "from step_dmt where 1=0";
+        conn.DataTable(SQL, stepDt);
+        DataRow row = stepDt.NewRow();
+        row["seq1"] = ReqVal.TryGet("seq1");
+        row["step_date"] = DateTime.Today.ToShortDateString();
+        row["cg"] = "C";
+        row["rs"] = "R";
+        row["cgrs"] = cgrs;
+        row["send_cl"] = "1";
+        row["act_code"] = "_";
+        stepDt.Rows.Add(row);
+
+        string spe_ctrl3 = "N";
+        string send_way = "";
+
+        SQL = "select a.*,b.mark as codemark,c.dmt_term1,c.dmt_term2 ";
+        SQL += "from case_dmt a inner join code_br b on b.dept='T' and b.cr='Y' and b.rs_type=a.arcase_type and b.rs_code=a.arcase ";
+        SQL += "inner join dmt_temp c on a.in_scode=c.in_scode and a.in_no=c.in_no ";
+        SQL += "where a.in_scode ='" + Request["in_scode"] + "' and a.in_no = '" + Request["in_no"] + "'";
+        DataTable dt = new DataTable();
+        conn.DataTable(SQL, dt);
+        if (dt.Rows.Count > 0) {
+            if (dt.Rows[0].SafeRead("seq", "") != "") {
+                crmain["seq"] = dt.Rows[0].SafeRead("seq", "");
+                crmain["seq1"] = dt.Rows[0].SafeRead("seq1", "");
+                send_way = dt.Rows[0].SafeRead("send_way", "");//收文方式改由營洽登錄帶入值
+                stepDt.Rows[0]["receipt_type"] = dt.Rows[0].SafeRead("receipt_type", "");
+                stepDt.Rows[0]["receipt_title"] = dt.Rows[0].SafeRead("receipt_title", "B");//預設空白
+            }
+            //收文代碼
+            crmain["codemark"] = dt.Rows[0].SafeRead("codemark", "");//收文代碼備註：B爭救案
+            crmain["dmt_term1"] = dt.Rows[0].GetDateTimeString("dmt_term1", "yyyy/M/d");//專用期限起日check非創申案有期限者提醒需註記註冊費繳費狀態
+            crmain["dmt_term2"] = dt.Rows[0].GetDateTimeString("dmt_term2", "yyyy/M/d");//專用期限迄日
+            crmain["cust_date"] = dt.Rows[0].GetDateTimeString("cust_date", "yyyy/M/d");//客戶期限
+            crmain["pr_date"] = dt.Rows[0].GetDateTimeString("pr_date", "yyyy/M/d");//承辦期限
+            crmain["case_last_date"] = dt.Rows[0].GetDateTimeString("last_date", "yyyy/M/d");//營洽輸入法定期限
+
+            SQL = " select rs_type,rs_class,rs_code,rs_detail,case_stat,case_stat_name,spe_ctrl ";
+            SQL += "from vcode_act ";
+            SQL += "where rs_code = '" + dt.Rows[0].SafeRead("arcase", "") + "' and act_code = '_' ";
+            SQL += "and rs_type = '" + dt.Rows[0].SafeRead("arcase_type", "") + "'";
+            SQL += "and cg = 'C' and rs = 'R'";
+            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+                if (dr.Read()) {
+                    stepDt.Rows[0]["rs_type"] = dr.SafeRead("rs_type", "");
+                    stepDt.Rows[0]["rs_class"] = dr.SafeRead("rs_class", "");
+                    stepDt.Rows[0]["rs_code"] = dr.SafeRead("rs_code", "");
+                    stepDt.Rows[0]["rs_detail"] = dr.SafeRead("rs_detail", "");
+                    stepDt.Rows[0]["case_stat"] = dr.SafeRead("case_stat", "");
+                    stepDt.Rows[0]["case_statnm"] = dr.SafeRead("case_stat_name", "");
+
+                    if (dr.SafeRead("back_flag", "") == "Y") {
+                        stepDt.Rows[0]["rs_detail"] = row["rs_detail"] + "(請復案)";
+                    }
+                    if (dr.SafeRead("end_flag", "") == "Y") {
+                        stepDt.Rows[0]["rs_detail"] = row["rs_detail"] + "(請結案)";
+                    }
+
+                    string[] spe_ctrl = dr.SafeRead("spe_ctrl", "").Split(',');//抓取案性控制
+                    if (spe_ctrl.Length >= 3) spe_ctrl3 = (spe_ctrl[2] == "" ? "N" : spe_ctrl[2]);//是否只為爭救案
+                    if (spe_ctrl.Length >= 4 && send_way == "") send_way = spe_ctrl[3];//抓取案性控制之發文方式,(若營洽登錄沒值才帶入案性設定)
+                }
+            }
+        }
+        if (send_way == "") send_way = "M";//發文方式若無給M_親送
+        crmain["spe_ctrl3"] = spe_ctrl3;
+        stepDt.Rows[0]["send_way"] = send_way;
+
+        //進度序號
+        SQL = "select isnull(step_grade,0)+1 from dmt where seq = '" + crmain["seq"] + "' and seq1 = '" + crmain["seq1"] + "'";
+        object objResult = conn.ExecuteScalar(SQL);
+        int nstep_grade = (objResult == DBNull.Value || objResult == null) ? 1 : Convert.ToInt32(objResult);
+        stepDt.Rows[0]["step_grade"] = nstep_grade;
+
+        var settings = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.None,
+            ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
+            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
+        };
+
+        Response.Write("{");
+        Response.Write("\"cr_main\":" + JsonConvert.SerializeObject(crmain, settings).ToUnicode() + "\n");
+        Response.Write(",\"step_dmt\":" + JsonConvert.SerializeObject(stepDt, settings).ToUnicode() + "\n");
+        Response.Write("}");
+        Response.End();
+    }*/
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
@@ -118,25 +319,25 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_agtno.js")%>"></script><!--檢查輸入出名代理人是否與預設出名代理人相同-->
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_doctype.js")%>"></script><!--檢查契約書種類與上傳文件-->
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_custwatch.js")%>"></script><!--檢查是否為雙邊代理查照對象-->
 </head>
 <script language="javascript" type="text/javascript">
     var main = {};
-    main.branch = "<%#Session["SeBranch"]%>";
     main.prgid = "<%#prgid%>";
     main.right = <%#HTProgRight%>;
     main.submittask = "<%#submitTask%>";
-    main.formFunction = "<%#formFunction%>";
-    main.ar_form = "<%#ar_form%>";
-    main.cust_area = "<%#cust_area%>";
-    main.cust_seq = "<%#cust_seq%>";
-    main.in_no = "<%#in_no%>";
-    main.code_type = "<%#code_type%>";
-    main.seq = "<%#seq%>";
-    main.seq1 = "<%#seq1%>";
-    jMain = {};
+    main.code = "<%#ReqVal.TryGet("code")%>";
+    main.in_no = "<%#ReqVal.TryGet("in_no")%>";
+    main.in_scode = "<%#ReqVal.TryGet("in_scode")%>";
+    main.cust_area = "<%#ReqVal.TryGet("cust_area")%>";
+    main.cust_seq = "<%#ReqVal.TryGet("cust_seq")%>";
+    main.endflag51 = "<%#ReqVal.TryGet("endflag51")%>";
+    main.end_date51 = "<%#ReqVal.TryGet("end_date51")%>";
+    main.end_code51 = "<%#ReqVal.TryGet("end_code51")%>";
+    main.end_type51 = "<%#ReqVal.TryGet("end_type51")%>";
+    main.end_remark51 = "<%#ReqVal.TryGet("end_remark51")%>";
+    main.seqend_flag = "<%#ReqVal.TryGet("seqend_flag")%>";
+    main.change = "<%#ReqVal.TryGet("change")%>";//異動簽核狀態
+    jMain={};
 </script>
 
 <body>
@@ -150,67 +351,28 @@
     <tr>
         <td colspan="2"><hr class="style-one"/></td>
     </tr>
-    <tr>
-        <td colspan="2"><font color=blue>接洽序號：<span id="t_in_no"></span></font></td>
-    </tr>
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-	<input type="hidden" id="submittask" name="submittask" value="<%=submitTask%>">
-	<input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="hidden" id="ar_form" name="ar_form" value="<%=ar_form%>">
-    <INPUT TYPE="hidden" id=prt_code name=prt_code value="<%=prt_code%>">
-    <INPUT TYPE="hidden" id=new_form name=new_form value="<%=new_form%>">
-    <INPUT TYPE="hidden" id=add_arcase name=add_arcase value="">
-    <INPUT TYPE="hidden" id=tfy_case_stat name=tfy_case_stat value="<%=case_stat%>"><!--案件狀態-->
-    <input type="hidden" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
-
-    <table cellspacing="1" cellpadding="0" width="98%" border="0">
-    <tr>
-        <td>
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr id="CTab">
-                <td class="tab" href="#cust">案件客戶</td>
-                <td class="tab" href="#attent">案件聯絡人</td>
-                <td class="tab" href="#apcust">案件申請人</td>
-                <td class="tab" href="#case">收費與接洽事項</td>
-                <td class="tab" href="#tran">交辦內容</td>
-                <td class="tab" href="#upload">文件上傳</td>
-            </tr>
-        </table>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <div class="tabCont" id="#cust">
-                <!--include file="../brt1m/brtform/cust_form.ascx"--><!--案件客戶-->
-            </div>
-            <div class="tabCont" id="#attent">
-                <!--include file="../brt1m/brtform/attent_form.ascx"--><!--案件聯絡人-->
-            </div>
-            <div class="tabCont" id="#apcust">
-                <!--include file="../brt1m/brtform/apcust_form.ascx"--><!--案件申請人-->
-            </div>
-            <div class="tabCont" id="#case">
-                <!--include file="../brt1m/brtform/dmt_case_form.ascx"--><!--收費與接洽事項-->
-            </div>
-            <div class="tabCont" id="#tran">
-                <!--include file="../brt1m/Brt11FormA11.ascx"--><!--交辦內容-->
-            </div>
-            <div class="tabCont" id="#upload">
-                <!--include file="../commonForm/dmt_upload_Form.ascx"--><!--文件上傳-->
-            </div>
-        </td>
-    </tr>
-    </table>
-    <br />
-	<INPUT TYPE="hidden" id=in_scode name=in_scode>
-	<INPUT TYPE="hidden" id=in_no name=in_no>
-    <INPUT TYPE="hidden" id=in_date name=in_date>
-    <%if (prgid == "brt51"){%>
-     <br>
-	 <div style="color:blue;text-align:center">退回營洽說明：<textarea name="back_remark" id="back_remark" cols=50 rows=2></textarea></div><br><br>
-    <%}%>
+    <INPUT TYPE="text" id=submittask name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="text" id=prgid name=prgid value="<%=prgid%>">
+    <input type="text" id=codemark name=codemark>
+    <input type="text" id=dmt_term1 name=dmt_term1>
+    <input type="text" id=dmt_term2 name=dmt_term2>
+    <input type="text" id=endflag51 name=endflag51>
+    <input type="text" id=end_date51 name=end_date51>
+    <input type="text" id=end_code51 name=end_code51>
+    <input type="text" id=end_type51 name=end_type51>
+    <input type="text" id=end_remark51 name=end_remark51>
+    <input type="text" id=seqend_flag name=seqend_flag><!--結案註記-->
+    <input type="text" id=case_last_date name=case_last_date><!--營洽輸入法定期限-->
+    <input type="text" id=spe_ctrl3 name=spe_ctrl3><!--Y:案性需管制法定期限-->
+    <input type="text" id=seq name=seq>
+    <input type="text" id=seq1 name=seq1>
+     <center>
+         <uc1:dmt_CR_Form runat="server" ID="dmt_CR_Form" /><!--~/commonForm/dmt_CR_Form.ascx-->
+         <uc1:dmt_ctrl_Form runat="server" ID="dmt_ctrl_Form" /><!--~/commonForm/dmt_ctrl_Form.ascx-->
+     </center>
 
     <%#DebugStr%>
 </form>
@@ -263,18 +425,14 @@
     })
 
     function this_init() {
-        //console.log("this_init");
-        //-----------------
-        //取得交辦資料
         $.ajax({
+            url: "brt51_Edit.aspx?json=Y&<%=Request.QueryString%>",
             type: "get",
-            url: getRootPath() + "/ajax/_case_dmt.aspx?prgid=" + main.prgid + "&right=" + main.right + "&formfunction=" + main.formFunction + "&submittask=" + $("#submittask").val() +
-                "&cust_area=" + main.cust_area + "&cust_seq=" + main.cust_seq + "&in_no=" + main.in_no + "&code_type=" + main.code_type,
             async: false,
             cache: false,
             success: function (json) {
-                //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                //if ($("#chkTest").prop("checked")) 
+                toastr.info("<a href='" + this.url + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 jMain = $.parseJSON(json);
             },
             error: function (xhr) {
@@ -284,26 +442,139 @@
         });
 
         //畫面準備
-        cust_form.init();//案件客戶
-        attent_form.init();//案件聯絡人
-        apcust_form.init();//案件申請人
-        case_form.init();//收費與接洽事項
-        //br_form.init();//交辦內容
-        upload_form.init();//文件上傳
-        settab("#case");//收費與接洽事項
+        cr_form.init();//收文form
 
         //-----------------
         $("input.dateField").datepick();
         main.bind();//資料綁定
-        br_form.bind();//交辦內容資料綁定
+        cr_form.bind();//資料綁定
         $(".Lock").lock();
         $(".Hide").hide();
 
-        if($("#submittask").val()!="Edit"){//不是編輯模式全部鎖定
-            $("select,textarea,input,span,button").lock();
+        //顯示爭救案交辦欄位
+        if ($("#codemark").val()=="B"){
+            document.all.show_optstat.style.display=""
+            //2013/11/5修改，爭救案性預設帶官收法定期限
+            if(CInt($("#nstep_grade"))!=1){
+                $("#btnqrygrlastdate").show();//顯示[查官收未銷法定期限按鈕]
+                ctrl_form.Add_button.click();
+                $("#ctrl_type_"+$("#ctrlnum").val()).val("A1");
+            }
+        }
+        //顯示註冊費繳費狀態，當非創申案立新案
+        if(main.submittask=="A"){
+            if(CInt($("#nstep_grade"))==1){
+                if ($("#hrs_class").val()!="A1"){
+                    $("#show_paytimes").show();
+                }
+            }else{
+                if($("#seqend_flag").val()=="Y"){//2010/10/6修改為結案註記有勾選結案才顯示
+                    $("#show_endstat").show();
+                }else{
+                    $("input[name='end_stat']").prop("checked",false);
+                }
+            }
         }
     }
     
+    main.bind = function () {
+        $("#codemark").val(jMain.codemark);
+        $("#dmt_term1").val(jMain.dmt_term1);
+        $("#dmt_term2").val(jMain.dmt_term2);
+        $("#endflag51").val(jMain.endflag51);
+        $("#end_date51").val(jMain.end_date51);
+        $("#end_code51").val(jMain.end_code51);
+        $("#end_type51").val(jMain.end_type51);
+        $("#end_remark51").val(jMain.end_remark51);
+        $("#seqend_flag").val(jMain.seqend_flag);
+        $("#case_last_date").val(jMain.last_date);
+        $("#spe_ctrl3").val(jMain.spe_ctrl3);
+        $("#seq").val(jMain.seq);
+        $("#seq1").val(jMain.seq1);
+        //cr_form
+        $("#rs_type").val(jMain.rs_type);//結構分類
+        $("#rs_type").triggerHandler("change");
+        $("#code").val(jMain.code);
+        $("#in_no").val(jMain.in_no);
+        $("#in_scode").val(jMain.in_scode);
+        $("#change").val(jMain.change);
+        $("#cust_area1").val(jMain.cust_area);
+        $("#cust_seq1").val(jMain.cust_seq);
+        $("#rs_no").val(jMain.rs_no);
+        $("#nstep_grade").val(jMain.step_grade);
+        $("#cgrs").val(jMain.cgrs);
+        $("#step_date").val(jMain.step_date);
+        $("#receive_no").val(jMain.receive_no);
+        $("#hrs_class,#rs_class").val(jMain.rs_class);
+        $("#rs_class").triggerHandler("change");
+        $("#hrs_code,#rs_code").val(jMain.rs_code);
+        $("#rs_code").triggerHandler("change");
+        $("#hact_code,#act_code").val(jMain.act_code);
+        $("#act_code").triggerHandler("change");
+        $("#ocase_stat,#ncase_stat").val(jMain.case_stat);
+        $("#ncase_statnm").val(jMain.case_statnm);
+        $("#rs_detail").val(jMain.rs_detail);
+        $("#doc_detail").val(jMain.doc_detail);
+        $("#old_receipt_type,#receipt_type").val(jMain.receipt_type);
+        $("#old_receipt_title,#receipt_title").val(jMain.receipt_title);
+        $("#old_send_way,#send_way").val(jMain.send_way);
+        $("#send_sel").val(jMain.send_sel);
+        if (main.submittask == "A") {
+            $("input[name='opt_stat'][value='N']").prop("checked", true);//需交辦
+            $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
+        }
+        $("input[name='opt_stat'][value='" + jMain.opt_stat + "']").prop("checked", true);
+    }
+    /*
+    main.bind = function () {
+        $("#codemark").val(jMain.cr_main.codemark);
+        $("#dmt_term1").val(jMain.cr_main.dmt_term1);
+        $("#dmt_term2").val(jMain.cr_main.dmt_term2);
+        $("#endflag51").val(jMain.cr_main.endflag51);
+        $("#end_date51").val(jMain.cr_main.end_date51);
+        $("#end_code51").val(jMain.cr_main.end_code51);
+        $("#end_type51").val(jMain.cr_main.end_type51);
+        $("#end_remark51").val(jMain.cr_main.end_remark51);
+        $("#seqend_flag").val(jMain.cr_main.seqend_flag);
+        $("#case_last_date").val(jMain.cr_main.last_date);
+        $("#spe_ctrl3").val(jMain.cr_main.spe_ctrl3);
+        $("#seq").val(jMain.cr_main.seq);
+        $("#seq1").val(jMain.cr_main.seq1);
+        //cr_form
+        $("#rs_type").val(jMain.step_dmt[0].rs_type);//結構分類
+        $("#rs_type").triggerHandler("change");
+        $("#code").val(jMain.cr_main.code);
+        $("#in_no").val(jMain.cr_main.in_no);
+        $("#in_scode").val(jMain.cr_main.in_scode);
+        $("#change").val(jMain.cr_main.change);
+        $("#cust_area1").val(jMain.cr_main.cust_area);
+        $("#cust_seq1").val(jMain.cr_main.cust_seq);
+        $("#rs_no").val(jMain.step_dmt[0].rs_no);
+        $("#nstep_grade").val(jMain.step_dmt[0].step_grade);
+        $("#cgrs").val(jMain.step_dmt[0].cgrs);
+        $("#step_date").val(dateReviver(jMain.step_dmt[0].step_date,'yyyy/M/d'));
+        $("#receive_no").val(jMain.step_dmt[0].receive_no);
+        $("#hrs_class,#rs_class").val(jMain.step_dmt[0].rs_class);
+        $("#rs_class").triggerHandler("change");
+        $("#hrs_code,#rs_code").val(jMain.step_dmt[0].rs_code);
+        $("#rs_code").triggerHandler("change");
+        $("#hact_code,#act_code").val(jMain.step_dmt[0].act_code);
+        $("#act_code").triggerHandler("change");
+        $("#ocase_stat,#ncase_stat").val(jMain.step_dmt[0].case_stat);
+        $("#ncase_statnm").val(jMain.step_dmt[0].case_statnm);
+        $("#rs_detail").val(jMain.step_dmt[0].rs_detail);
+        $("#doc_detail").val(jMain.step_dmt[0].doc_detail);
+        $("#old_receipt_type,#receipt_type").val(jMain.step_dmt[0].receipt_type);
+        $("#old_receipt_title,#receipt_title").val(jMain.step_dmt[0].receipt_title);
+        $("#old_send_way,#send_way").val(jMain.step_dmt[0].send_way);
+        $("#send_sel").val(jMain.step_dmt[0].send_sel);
+        if (main.submittask == "A") {
+            $("input[name='opt_stat'][value='N']").prop("checked", true);//需交辦
+            $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
+        }
+        $("input[name='opt_stat'][value='" + jMain.step_dmt[0].opt_stat + "']").prop("checked", true);
+    }*/
+
     //存檔
     function formModSubmit(){
         $.maskStart();
@@ -340,7 +611,7 @@
                         }
 
                         if (main.prgid == "brt51"){
-                            window.parent.Eblank.location.href=getRootPath() +"/brt5m/Brt51_Edit.aspx?prgid=brt51&submittask=A&in_scode=<%=in_scode%>&in_no=<%=in_no%>&cust_area=<%=cust_area%>&cust_seq=<%=cust_seq%>&code=<%=code%>";
+                            window.parent.Eblank.location.href=getRootPath() +"/brt5m/Brt51_Edit.aspx?prgid=brt51&submittask=A&in_scode="+main.in_scode;
                         }
                     }
                 }
@@ -388,5 +659,10 @@
             });
         }
     }
+
+    function Help_Click(){
+        window.open(getRootPath() + "/brtam/國內案發收文系統操作手冊.htm","","width=700, height=500, top=50, left=50, toolbar=no, menubar=no, location=no, directories=no, resizeable=no, status=no, scrollbars=yes");
+    }
 </script>
+
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/brtform/CaseForm/Descript.js")%>"></script><!--欄位說明-->
