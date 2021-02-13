@@ -313,21 +313,4 @@
             }
         }
     }
-
-    //檔案說明
-    cr_form.getfiledoc = function (nRow) {
-        var fld = $("#uploadfield").val();
-        if ($("#doc_type_" + nRow).val() == "") {
-            $("#doc_type_mark_" + nRow).val("");
-            return false;
-        }
-
-        var dname = $("#" + fld + "_desc_" + nRow).val().trim();
-        if (dname != "") dname += "、";
-        dname += $("#doc_type_" + nRow + " :selected").text();
-        $("#" + fld + "_desc_" + nRow).val(dname);
-
-        //抓取文件種類之mark1說明，for電子送件copy時用原始檔名或更名
-        $("#doc_type_mark_" + nRow).val($("#doc_type_" + nRow + " :selected").attr("v1"));
-    }
 </script>

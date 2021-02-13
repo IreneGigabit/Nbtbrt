@@ -325,11 +325,17 @@
     main.prgid = "<%#prgid%>";
     main.right = <%#HTProgRight%>;
     main.submittask = "<%#submitTask%>";
+    main.code = "<%#ReqVal.TryGet("code")%>";
     main.in_no = "<%#ReqVal.TryGet("in_no")%>";
     main.in_scode = "<%#ReqVal.TryGet("in_scode")%>";
     main.cust_area = "<%#ReqVal.TryGet("cust_area")%>";
     main.cust_seq = "<%#ReqVal.TryGet("cust_seq")%>";
-    main.code = "<%#ReqVal.TryGet("code")%>";//todo.sqlno
+    main.endflag51 = "<%#ReqVal.TryGet("endflag51")%>";
+    main.end_date51 = "<%#ReqVal.TryGet("end_date51")%>";
+    main.end_code51 = "<%#ReqVal.TryGet("end_code51")%>";
+    main.end_type51 = "<%#ReqVal.TryGet("end_type51")%>";
+    main.end_remark51 = "<%#ReqVal.TryGet("end_remark51")%>";
+    main.seqend_flag = "<%#ReqVal.TryGet("seqend_flag")%>";
     main.change = "<%#ReqVal.TryGet("change")%>";//異動簽核狀態
     jMain={};
 </script>
@@ -353,19 +359,17 @@
     <input type="text" id=codemark name=codemark>
     <input type="text" id=dmt_term1 name=dmt_term1>
     <input type="text" id=dmt_term2 name=dmt_term2>
-    <input type="text" id=endflag51 name=endflag51 value="<%=Request["endflag51"]%>">
-    <input type="text" id=end_date51 name=end_date51 value="<%=Request["end_date51"]%>">
-    <input type="text" id=end_code51 name=end_code51 value="<%=Request["end_code51"]%>">
-    <input type="text" id=end_type51 name=end_type51 value="<%=Request["end_type51"]%>">
-    <input type="text" id=end_remark51 name=end_remark51 value="<%=Request["end_remark51"]%>">
-    <input type="text" id=seqend_flag name=seqend_flag value="<%=Request["seqend_flag"]%>"><!--結案註記-->
+    <input type="text" id=endflag51 name=endflag51>
+    <input type="text" id=end_date51 name=end_date51>
+    <input type="text" id=end_code51 name=end_code51>
+    <input type="text" id=end_type51 name=end_type51>
+    <input type="text" id=end_remark51 name=end_remark51>
+    <input type="text" id=seqend_flag name=seqend_flag><!--結案註記-->
     <input type="text" id=case_last_date name=case_last_date><!--營洽輸入法定期限-->
     <input type="text" id=spe_ctrl3 name=spe_ctrl3><!--Y:案性需管制法定期限-->
     <input type="text" id=seq name=seq>
     <input type="text" id=seq1 name=seq1>
-    <input type="text" id="cust_area" name="cust_area">
-    <input type="text" id="cust_seq" name="cust_seq">
-    <center>
+     <center>
          <uc1:dmt_CR_Form runat="server" ID="dmt_CR_Form" /><!--~/commonForm/dmt_CR_Form.ascx-->
          <uc1:dmt_ctrl_Form runat="server" ID="dmt_ctrl_Form" /><!--~/commonForm/dmt_ctrl_Form.ascx-->
      </center>
@@ -421,15 +425,14 @@
     })
 
     function this_init() {
-        //取得交辦資料
         $.ajax({
+            url: "brt51_Edit.aspx?json=Y&<%=Request.QueryString%>",
             type: "get",
-            url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
             async: false,
             cache: false,
             success: function (json) {
-                //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                //if ($("#chkTest").prop("checked")) 
+                toastr.info("<a href='" + this.url + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 jMain = $.parseJSON(json);
             },
             error: function (xhr) {
@@ -460,7 +463,7 @@
         }
         //顯示註冊費繳費狀態，當非創申案立新案
         if(main.submittask=="A"){
-            if(CInt($("#nstep_grade").val())==1){
+            if(CInt($("#nstep_grade"))==1){
                 if ($("#hrs_class").val()!="A1"){
                     $("#show_paytimes").show();
                 }
@@ -475,46 +478,52 @@
     }
     
     main.bind = function () {
-        $("#codemark").val(jMain.case_main[0].codemark);
-        $("#dmt_term1").val(jMain.case_main[0].dmt_term1);
-        $("#dmt_term2").val(jMain.case_main[0].dmt_term2);
-        $("#case_last_date").val(jMain.case_main[0].last_date);
-        $("#seq").val(jMain.case_main[0].seq);
-        $("#seq1").val(jMain.case_main[0].seq1);
-        $("#spe_ctrl3").val(jMain.step_cr.spe_ctrl3);
+        $("#codemark").val(jMain.codemark);
+        $("#dmt_term1").val(jMain.dmt_term1);
+        $("#dmt_term2").val(jMain.dmt_term2);
+        $("#endflag51").val(jMain.endflag51);
+        $("#end_date51").val(jMain.end_date51);
+        $("#end_code51").val(jMain.end_code51);
+        $("#end_type51").val(jMain.end_type51);
+        $("#end_remark51").val(jMain.end_remark51);
+        $("#seqend_flag").val(jMain.seqend_flag);
+        $("#case_last_date").val(jMain.last_date);
+        $("#spe_ctrl3").val(jMain.spe_ctrl3);
+        $("#seq").val(jMain.seq);
+        $("#seq1").val(jMain.seq1);
         //cr_form
-        $("#rs_type").val(jMain.step_cr.rs_type);//結構分類
+        $("#rs_type").val(jMain.rs_type);//結構分類
         $("#rs_type").triggerHandler("change");
-        $("#code").val(main.code);
-        $("#in_no").val(jMain.case_main[0].in_no);
-        $("#in_scode").val(jMain.case_main[0].in_scode);
-        $("#change").val(main.change);
-        $("#cust_area1").val(main.cust_area);
-        $("#cust_seq1").val(main.cust_seq);
-        $("#rs_no").val(jMain.step_cr.rs_no);
-        $("#nstep_grade").val(jMain.step_cr.step_grade);
-        $("#cgrs").val(jMain.step_cr.cgrs);
-        $("#step_date").val(jMain.step_cr.step_date);
-        $("#receive_no").val(jMain.step_cr.receive_no);
-        $("#hrs_class,#rs_class").val(jMain.step_cr.rs_class);
+        $("#code").val(jMain.code);
+        $("#in_no").val(jMain.in_no);
+        $("#in_scode").val(jMain.in_scode);
+        $("#change").val(jMain.change);
+        $("#cust_area1").val(jMain.cust_area);
+        $("#cust_seq1").val(jMain.cust_seq);
+        $("#rs_no").val(jMain.rs_no);
+        $("#nstep_grade").val(jMain.step_grade);
+        $("#cgrs").val(jMain.cgrs);
+        $("#step_date").val(jMain.step_date);
+        $("#receive_no").val(jMain.receive_no);
+        $("#hrs_class,#rs_class").val(jMain.rs_class);
         $("#rs_class").triggerHandler("change");
-        $("#hrs_code,#rs_code").val(jMain.step_cr.rs_code);
+        $("#hrs_code,#rs_code").val(jMain.rs_code);
         $("#rs_code").triggerHandler("change");
-        $("#hact_code,#act_code").val(jMain.step_cr.act_code);
+        $("#hact_code,#act_code").val(jMain.act_code);
         $("#act_code").triggerHandler("change");
-        $("#ocase_stat,#ncase_stat").val(jMain.step_cr.case_stat);
-        $("#ncase_statnm").val(jMain.step_cr.case_statnm);
-        $("#rs_detail").val(jMain.step_cr.rs_detail);
-        $("#doc_detail").val(jMain.step_cr.doc_detail);
-        $("#old_receipt_type,#receipt_type").val(jMain.case_main[0].receipt_type);
-        $("#old_receipt_title,#receipt_title").val(jMain.case_main[0].receipt_title);
-        $("#old_send_way,#send_way").val(jMain.case_main[0].send_way);
-        $("#send_sel").val(jMain.step_cr.send_sel);
+        $("#ocase_stat,#ncase_stat").val(jMain.case_stat);
+        $("#ncase_statnm").val(jMain.case_statnm);
+        $("#rs_detail").val(jMain.rs_detail);
+        $("#doc_detail").val(jMain.doc_detail);
+        $("#old_receipt_type,#receipt_type").val(jMain.receipt_type);
+        $("#old_receipt_title,#receipt_title").val(jMain.receipt_title);
+        $("#old_send_way,#send_way").val(jMain.send_way);
+        $("#send_sel").val(jMain.send_sel);
         if (main.submittask == "A") {
             $("input[name='opt_stat'][value='N']").prop("checked", true);//需交辦
             $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
         }
-        $("input[name='opt_stat'][value='" + jMain.step_cr.opt_stat + "']").prop("checked", true);
+        $("input[name='opt_stat'][value='" + jMain.opt_stat + "']").prop("checked", true);
     }
     /*
     main.bind = function () {
