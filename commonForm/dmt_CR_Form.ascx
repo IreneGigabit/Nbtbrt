@@ -186,6 +186,7 @@
 </table>
 <input type="text" name=tot_num id=tot_num value=0><!--一案多件筆數-->
 <TABLE id=tabar1 style="display:none" border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
+    <thead>
 	<TR>
 		<TD class=whitetablebg colspan=7><span id="span_seqdesc">此次變更本所編號：</span></TD>
 	</TR>
@@ -193,16 +194,38 @@
 		<TD></TD><TD class="rs_code_FD">本所編號</TD><td>商標種類</TD><TD>類別</TD><TD>商標/案件名稱</TD>
 		<TD><span id="span_no">申請號</span></TD>
 	</TR>
+    </thead>
+    <tbody></tbody>
+    <script type="text/html" id="cr_ar1_template"><!--一案多件樣板-->
+	    <tr id=tr_cr_##>
+		    <td class=whitetablebg align=center>
+	            ##.
+		    </td>
+		    <td class="whitetablebg rs_code_FD" align=center>
+		        <input type=text size=5 id=dseq_## name=dseq_## class='sedit' readonly>
+		        -<input type=text size=1 id=dseq1A_## name=dseq1A_## class='sedit' readonly value='_' >
+		        <input type=hidden name=hrs_no_## id=hrs_no_##>
+		    </td>
+		    <td class=whitetablebg align=center>
+	            <input type=text id='s_mark_##' name=s_mark_## style='text-align:left;' readonly class='SEdit'>
+		    </td>
+		    <td class=whitetablebg align=center>
+	            <input type=text id=dclass_## name=dclass_## style='text-align:left;' readonly class='SEdit'>
+		    </td>
+		    <td class=whitetablebg align=center>
+		        <input type=text id=appl_name_## name=appl_name_## style='text-align:left;' readonly class='SEdit'>
+		    </td>
+		    <td class=whitetablebg align=center>
+		        <input type=text id=dref_no_## name=dref_no_## style='text-align:center;' readonly class='SEdit'>
+		    </td>
+	    </tr>
+    </script>
 </table>
 
 <script language="javascript" type="text/javascript">
     var cr_form = {};
 
     cr_form.init = function () {
-    }
-
-    cr_form.bind = function () {
-        if ($("#rs_code").val().Left(2) == "FD") $(".rs_code_FD").hide();
     }
 
     //依rs_type帶結構分類
@@ -256,61 +279,91 @@
         ChkDate($(this)[0]);
     });
 
-    //[增加一筆]
-    cr_form.appendFile = function () {
-        var fld = $("#uploadfield").val();
-
-        if (main.prgid == "brt62" && main.submittask == "A") {//文件上傳作業
-            if ($("#step_grade").val() == "0" && $("#" + fld + "_filenum").val() == "0") {
-                var ans = confirm("對應進度0，是否確定將文件上傳至進度0？若不是進度0，請先點選「否」再點選「查詢」以重新選取對應進度後再上傳");
-                if (ans == false) {
-                    $("#btnquery").focus();
-                    return false;
-                }
-            }
-        }
-
-        var nRow = CInt($("#" + fld + "_filenum").val()) + 1;//畫面顯示NO
-        $("#maxattach_no").val(CInt($("#maxattach_no").val()) + 1);//table+畫面顯示 NO
+    //一案多件/分割 增加一筆子案
+    cr_form.add_sub = function () {
+        var nRow = CInt($("#tot_num").val()) + 1;
         //複製樣板
-        //$("#tabfile" + fld + ">tfoot").each(function (i) {
-        //    var strLine1 = $(this).html().replace(/##/g, nRow);
-        //    $("#tabfile" + fld + ">tbody").append(strLine1);
-        //});
-        var copyStr = $("#tabfile" + fld + ">#upload_template").text() || "";
+        var copyStr = $("#cr_ar1_template").text() || "";
         copyStr = copyStr.replace(/##/g, nRow);
-        $("#tabfile" + fld + ">tbody").append(copyStr);
-        $("#" + fld + "_filenum").val(nRow);
-        $("#attach_no_" + nRow).val($("#maxattach_no").val());//dmt_attach.attach_no
-
-        if ($("#prgid").val() == "brta38") {
-            $("#span_source_" + nRow).show();//原始檔名
-        }
-        if ($("#uploadsource").val() == "CASE") {
-            $("#span_branch_" + nRow).show();//交辦專案室
-        } else {
-            //不是發文畫面會出錯,增加判斷
-            if (document.getElementsByName("cgrs").length > 0 && document.getElementById("cgrs").value == "GS") {
-                $("#span_edoc_" + nRow).show();//電子送件文件檔
-            }
-        }
+        $("#tabar1 tbody").append(copyStr);
+        $("#tot_num").val(nRow);
+        $(".dateField", $('#tr_cr_' + nRow)).datepick();
     }
 
-    //[減少一筆]
-    cr_form.deleteFile = function () {
-        var fld = $("#uploadfield").val();
-        var tfilenum = CInt($("#" + fld + "_filenum").val());//畫面顯示NO
-        if (tfilenum > 0) {
-            if ($("#" + fld + "_name_" + tfilenum).val() == "") {
-                $(".tr_brattach_" + tfilenum).remove();
-                $("#" + fld + "_filenum").val(Math.max(0, tfilenum - 1));
-            } else {
-                //檔案已存在要刪除
-                if (cr_form.DelAttach(tfilenum) == true) {
-                    //先不刪除,而是使用隱藏方式
-                    $(".tr_brattach_" + tfilenum).hide();
-                }
-            }
+    //一案多件時取得子案本所編號
+    cr_form.getdseq = function () {
+        //案性為一案多件時, 要顯示 sub seq 的畫面
+        $("#tabar1").show();
+        if ($("#rs_code").val() == "FC11" || $("#rs_code").val() == "FC5" || $("#rs_code").val() == "FC7" || $("#rs_code").val() == "FCH") {
+            $("#span_no").html("申請號");
+        } else if ($("#rs_code").val() == "FC21" || $("#rs_code").val() == "FC6" || $("#rs_code").val() == "FC8" || $("#hrs_code").val() == "FCI"
+             || $("#hrs_code").val() == "FT2" || $("#hrs_code").val() == "FL5" || $("#hrs_code").val() == "FL6") {
+            $("#span_no").html("註冊號");
         }
+
+        if ($("#rs_code").val() == "FT2") {
+            $("#span_seqdesc").html("此次移轉本所編號：");
+        } else if ($("#rs_code").val() == "FL5") {
+            $("#span_seqdesc").html("此次授權本所編號：");
+        } else if ($("#rs_code").val() == "FL6") {
+            $("#span_seqdesc").html("此次再授權本所編號：");
+        } else {
+            $("#span_seqdesc").html("此次變更本所編號：");
+        }
+
+        //產生母案案號
+        cr_form.add_sub();
+        var spl_num =1;
+        $("#dseq_" + spl_num).val(jMain.case_main[0].seq);
+        $("#s_mark_" + spl_num).val(jMain.case_main[0].s_marknm);
+        $("#dclass_" + spl_num).val(jMain.case_main[0].class);
+        $("#appl_name_" + spl_num).val(jMain.case_main[0].appl_name);
+        if ($("#hrs_cod.").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
+            $("#dref_no_" + spl_num).val(jMain.case_main[0].apply_no);
+        } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
+            $("#dref_no_" + spl_num).val(jMain.case_main[0].issue_no);
+        }
+
+        $.each(jMain.case_dmt1, function (i, item) {
+            //產生一案多件子案案號
+            cr_form.add_sub();
+            var spl_num = (i + 2);//1是母案,從2開始
+            $("#dseq_" + spl_num).val(item.seq);
+            $("#s_mark_" + spl_num).val(item.s_marknm);
+            $("#dclass_" + spl_num).val(item.class);
+            $("#appl_name_" + spl_num).val(item.appl_name);
+            if ($("#hrs_cod.").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
+                $("#dref_no_" + spl_num).val(item.apply_no);
+            } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
+                $("#dref_no_" + spl_num).val(item.issue_no);
+            }
+        });
+    }
+
+    //分割時取得子案本所編號
+    cr_form.getdseq1 = function () {
+        //案性為一案多件時, 要顯示 sub seq 的畫面
+        $("#tabar1").show();
+        if ($("#rs_code").val() == "FD1") {
+            $("#span_no").html("申請號");
+        } else if ($("#rs_code").val() == "FD2" || $("#rs_code").val() == "FD3") {
+            $("#span_no").html("註冊號");
+        }
+        $("#span_seqdesc").html("此次分割案件資料：");
+
+        $.each(jMain.dmt_temp1, function (i, item) {
+            //產生分割子案案號
+            cr_form.add_sub();
+            var spl_num = (i + 1);
+            $("#dseq_" + spl_num).val(item.seq);
+            $("#s_mark_" + spl_num).val(item.s_marknm);
+            $("#dclass_" + spl_num).val(item.class);
+            $("#appl_name_" + spl_num).val(item.appl_name);
+            if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
+                $("#dref_no_" + spl_num).val(item.apply_no);
+            } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
+                $("#dref_no_" + spl_num).val(item.issue_no);
+            }
+        });
     }
 </script>

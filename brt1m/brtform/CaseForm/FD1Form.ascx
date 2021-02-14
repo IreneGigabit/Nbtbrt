@@ -349,7 +349,7 @@
             }
             $("#tot_num1,#nfy_tot_num").val(jMain.case_main[0].tot_num);//.triggerHandler("change");
             br_form.Add_arcaseFD1(jMain.case_main[0].tot_num);
-            $.each(jMain.case_sql, function (i, item) {
+            $.each(jMain.dmt_temp1, function (i, item) {
                 var spl_num = (i + 1);
                 if (main.prgid == "brt52") {
                     $("#FD1_seqa_" + spl_num).val(item.seq);

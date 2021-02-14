@@ -267,18 +267,7 @@
             $("#dseq1a_1").val(jMain.case_main[0].seq1);
             $("#btndseq_oka_1").lock();
             $("#keydseqa_1").val("Y");
-            var smark_val = jMain.case_main[0].s_mark;
-            if (smark_val == "S") {
-                $("#s_marka_1").val("92年修正前服務標章");
-            } else if (smark_val == "N") {
-                $("#s_marka_1").val("團體商標");
-            } else if (smark_val == "M") {
-                $("#s_marka_1").val("團體標章");
-            } else if (smark_val == "L") {
-                $("#s_marka_1").val("證明標章");
-            } else {
-                $("#s_marka_1").val("商標");
-            }
+            $("#s_marka_1").val(jMain.case_main[0].s_marknm);//商標種類
             $("#appl_namea_1").val(jMain.case_main[0].appl_name);//商標名稱
             $("#apply_noa_1").val(jMain.case_main[0].apply_no);//申請號數
             $.each(jMain.case_dmt1, function (i, item) {

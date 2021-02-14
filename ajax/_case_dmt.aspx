@@ -27,7 +27,7 @@
     protected string casefee_oth_money = "";//轉帳金額合計抓收費標準
     protected string seq = "";
     protected string seq1 = "";
-    
+
     DataTable dtCaseMain=new DataTable();
     DataTable dtCaseItem=new DataTable();//交辦費用.案性
     DataTable dtCaseGood=new DataTable();//商品類別
@@ -39,7 +39,7 @@
     DataTable dtCaseDmt1=new DataTable();//一案多件.case_dmt1子案
     DataTable dtCaseTemp1=new DataTable();//一案多件.dmt_temp子案
     DataTable dtDmt=new DataTable();//案件主檔
-     
+
     Sys sfile = new Sys();
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
@@ -80,7 +80,7 @@
         Response.Write(",\"case_tranlist\":" + JsonConvert.SerializeObject(GetCaseTranlist(ref dtCaseTranlist), settings).ToUnicode() + "\n");//異動明細檔
         Response.Write(",\"cust\":" + JsonConvert.SerializeObject(GetCust(ref dtCust), settings).ToUnicode() + "\n");//客戶主檔資料
         Response.Write(",\"case_dmt1\":" + JsonConvert.SerializeObject(GetCaseDmt1(ref dtCaseDmt1), settings).ToUnicode() + "\n");//一案多件.case_dmt1子案
-        Response.Write(",\"case_sql\":" + JsonConvert.SerializeObject(GetCaseSql(ref dtCaseTemp1), settings).ToUnicode() + "\n");//一案多件.dmt_temp子案
+        Response.Write(",\"dmt_temp1\":" + JsonConvert.SerializeObject(GetCaseSql(ref dtCaseTemp1), settings).ToUnicode() + "\n");//一案多件(分割).dmt_temp子案
         Response.Write(",\"casefee_oth_money\":" + JsonConvert.SerializeObject(casefee_oth_money, settings).ToUnicode() + "\n");
         Response.Write(",\"br_in_scode\":" + JsonConvert.SerializeObject(br_in_scode, settings).ToUnicode() + "\n");
         Response.Write(",\"br_in_scname\":" + JsonConvert.SerializeObject(br_in_scname, settings).ToUnicode() + "\n");
@@ -98,6 +98,7 @@
         SQL += ",(SELECT b.coun_c FROM sysctrl.dbo.country b WHERE b.coun_code = a.zname_type and b.markb<>'X') AS nzname ";
         SQL += ",(SELECT c.coun_code+c.coun_cname FROM sysctrl.dbo.ipo_country c WHERE c.ref_coun_code = a.prior_country ) AS ncountry ";
         SQL += ",a.mark temp_mark,c.mark case_mark, C.service + C.fees+ C.oth_money AS othsum,b.mark as codemark ";
+        SQL += ",''s_marknm ";
         SQL += " FROM dmt_temp A ";
         SQL += " inner join case_dmt c on a.in_no = c.in_no and a.in_scode = c.in_scode ";
         SQL += " inner join code_br b on c.arcase_type=b.rs_type and c.arcase=b.rs_code and b.dept='T' and b.cr='Y' ";
@@ -122,6 +123,20 @@
                 }
             }
             dt.Rows[0]["draw_file"] = Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("draw_file", ""));
+
+            if (dt.Rows[0].SafeRead("s_mark", "") == "S") {
+                dt.Rows[0]["s_marknm"] = "服務";
+            } else if (dt.Rows[0].SafeRead("s_mark", "") == "L") {
+                dt.Rows[0]["s_marknm"] = "證明";
+            } else if (dt.Rows[0].SafeRead("s_mark", "") == "M") {
+                dt.Rows[0]["s_marknm"] = "團體標章";
+            } else if (dt.Rows[0].SafeRead("s_mark", "") == "N") {
+                dt.Rows[0]["s_marknm"] = "團體商標";
+            } else if (dt.Rows[0].SafeRead("s_mark", "") == "K") {
+                dt.Rows[0]["s_marknm"] = "產地證明標章";
+            } else {
+                dt.Rows[0]["s_marknm"] = "商標";
+            }
 
             SQL = "select sc_name from sysctrl.dbo.scode where scode='" + br_in_scode + "'";
             object objResult = conn.ExecuteScalar(SQL);
@@ -156,7 +171,7 @@
 
     #region GetCaseGood 商品類別
     private DataTable GetCaseGood(ref DataTable dt) {
-        SQL = "select * from  casedmt_good where in_no= '" + in_no + "' and in_scode='" + br_in_scode + "' order by cast(class as int)";
+        SQL = "select * from casedmt_good where in_no= '" + in_no + "' and in_scode='" + br_in_scode + "' order by cast(class as int)";
         conn.DataTable(SQL, dt);
         return dt;
     }
@@ -198,8 +213,8 @@
 
     #region GetCaseTran 異動檔
     private DataTable GetCaseTran(ref DataTable dt) {
-            SQL = "select * from dmt_tran where in_no= '"  + in_no + "' and in_scode='" + br_in_scode +"'";
-            conn.DataTable(SQL, dt);
+        SQL = "select * from dmt_tran where in_no= '"  + in_no + "' and in_scode='" + br_in_scode +"'";
+        conn.DataTable(SQL, dt);
         return dt;
     }
     #endregion
@@ -338,8 +353,23 @@
 
     #region GetCaseSql 一案多件.dmt_temp子案
     private DataTable GetCaseSql(ref DataTable dt) {
-        SQL = "Select * from dmt_temp where in_no='" + in_no + "' and in_scode='" + br_in_scode + "' and case_sqlno<>0";
+        SQL = "Select *,''s_marknm from dmt_temp where in_no='" + in_no + "' and in_scode='" + br_in_scode + "' and case_sqlno<>0 order by case_sqlno";
         conn.DataTable(SQL, dt);
+        for (int i = 0; i < dt.Rows.Count; i++) {
+            if (dt.Rows[i].SafeRead("s_mark", "") == "S") {
+                dt.Rows[i]["s_marknm"] = "服務";
+            } else if (dt.Rows[i].SafeRead("s_mark", "") == "L") {
+                dt.Rows[i]["s_marknm"] = "證明";
+            } else if (dt.Rows[i].SafeRead("s_mark", "") == "M") {
+                dt.Rows[i]["s_marknm"] = "團體標章";
+            } else if (dt.Rows[i].SafeRead("s_mark", "") == "N") {
+                dt.Rows[i]["s_marknm"] = "團體商標";
+            } else if (dt.Rows[i].SafeRead("s_mark", "") == "K") {
+                dt.Rows[i]["s_marknm"] = "產地證明標章";
+            } else {
+                dt.Rows[i]["s_marknm"] = "商標";
+            }
+        }
         return dt;
     }
     #endregion

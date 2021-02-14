@@ -39,14 +39,7 @@
     }
 
     private void PageLayout() {
-        if (submitTask != "Q" && submitTask!= "D") {
-            if (submitTask == "A" || prgid == "brta24" || prgid == "brta38") {//國內案官收確認作業//國內案官發確認作業
-                Hide["res_button"] = "show";//減少一筆管制
-            }
-            if (prgid != "brt51" && prgid != "brta22" && prgid != "brta78") {//國內案客戶收文確認//國內案客戶收文作業//國內案確認轉案作業
-                Hide["btndis"] = "show";//進度查詢及銷管制
-            }
-        }else{
+        if (submitTask == "Q" || submitTask== "D") {
             Lock["Qdisabled"] ="Lock";
         }
     }
@@ -89,29 +82,29 @@
 <input type=hidden id=ctrlnum name=ctrlnum value=0><!--進度筆數-->
 <TABLE id=tabctrl style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
     <thead>
-	    <%if (submitTask!="Q" && submitTask!="D") { %>
+	    <%if (submitTask != "Q" && submitTask != "D") { %>
 	        <TR class=whitetablebg align=center id="ctrl_line1">
 		        <TD colspan=7>
 			        <input type=button value ="增加一筆管制" class="cbutton" id=Add_button name=Add_button onclick="ctrl_form.add_ctrl()">
-			        <%if (submitTask == "A" || prgid == "brta24" || prgid == "brta38"){%><!--國內案官收確認作業//國內案官發確認作業-->
+			        <%if (submitTask == "A" || prgid == "brta24" || prgid == "brta38") {%><!--國內案官收確認作業//國內案官發確認作業-->
 				        <input type=button value ="減少一筆管制" class="cbutton" id=res_button name=res_button onclick="ctrl_form.del_ctrl()">
 			        <%}%>
 			        <input type="hidden" name="rsqlno" id="rsqlno">
 			        <%if (prgid != "brt51" && prgid != "brta22" && prgid != "brta78") {%><!--國內案客戶收文確認//國內案客戶收文作業//國內案確認轉案作業-->
 			            <input type=button class="c1button" id="btndis" name="btndis" value ="進度查詢及銷管制">
 			        <%}%>
-			        <input type="button" class="c1button" value="查官收未銷法定期限" onclick="vbscript:queryjob" style="display:none" id="btnqrygrlastdate">
+			        <input type="button" class="c1button" value="查官收未銷法定期限" onclick="queryjob()" style="display:none" id="btnqrygrlastdate">
 		        </TD>
 	        </TR>
-	    <%}else{%>
+	    <%} else {%>
 	        <TR class=whitetablebg align=center id="ctrl_line2">
 		        <TD align=center colspan=7 class=lightbluetable1><font color=white>管&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;制&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;資&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;料</font></TD>
 	        </TR>
 	    <%}%>
 	    <TR align=center class=lightbluetable>
 		    <TD></TD><TD>管制種類</TD><TD>管制日期</TD><TD>說明</TD>
-            <%if (submitTask=="U" || submitTask=="D" || submitTask=="Q" ){%><TD>銷管日期</TD><TD>銷管進度</TD><%}%>
-            <%if ((submitTask=="U" || submitTask=="D") && prgid!="brta34" && prgid!="brta38"){%><TD>刪除</TD><%}%><!--國內案本所發文作業//國內案官發確認作業-->
+            <%if (submitTask == "U" || submitTask == "D" || submitTask == "Q") {%><TD>銷管日期</TD><TD>銷管進度</TD><%}%>
+            <%if ((submitTask == "U" || submitTask == "D") && prgid != "brta34" && prgid != "brta38") {%><TD>刪除</TD><%}%><!--國內案本所發文作業//國內案官發確認作業-->
 	    </TR>
     </thead>
     <tbody></tbody>
@@ -135,8 +128,9 @@
 		<td class=whitetablebg align=center>
 	        <input type=hidden id='octrl_remark_##' name='octrl_remark_##'>
 	        <input type=text id='ctrl_remark_##' name='ctrl_remark_##' class="dateField" size=30 maxlength=60>
-            <label><input type=checkbox id='brctrl_mgt_##' name='brctrl_mgt_##' value='Y'>需總管處代管期限</label>
+            <label class="brta78"><input type=checkbox id='brctrl_mgt_##' name='brctrl_mgt_##' value='Y'>需總管處代管期限</label>
 		</td>
+        <%if (submitTask == "U" || submitTask == "D" || submitTask == "Q") {%>
 		<td class=whitetablebg align=center>
 		    <input type=hidden id='oresp_date_##' name='oresp_date_##'>
 		    <input type=text id='resp_date_##' name='resp_date_##' style='text-align:center;' class=SEdit readonly size=10>
@@ -145,9 +139,12 @@
 		    <input type=hidden id='oresp_grade_##' name='oresp_grade_##'>
 		    <input type=text id='resp_grade_##' name='resp_grade_##' style='text-align:center;' class=SEdit readonly size=4>
 		</td>
+        <%}%>
+        <%if ((submitTask=="U" || submitTask=="D") && prgid!="brta34" && prgid!="brta38"){%>
 		<td class=whitetablebg align=center>
-            <input type=checkbox id='delchk_##' name='delchk_##' onclick="delchk_click('##')">
+            <input type=checkbox id='delchk_##' name='delchk_##' value="true">
 		</td>
+        <%}%>
 	</tr>
 </script>
 </TABLE>
@@ -163,12 +160,16 @@
             $("#ctrl_line1").hide();
             $("#ctrl_line2").show();
         }
-    }
 
-    ctrl_form.bind = function () {
-        if ($("#rs_code").val().Left(2) == "FD") $(".rs_code_FD").hide();
+        if (main.prgid == "brta78") {//轉案
+            $(".brta78").show();
+        } else {
+            $(".brta78").hide();
+        }
+        if (main.prgid == "brta24") {//國內案官收確認作業
+            $(".brta24").lock();
+        }
     }
-
 
     //管制期限增加一筆
     ctrl_form.add_ctrl = function () {
@@ -195,6 +196,33 @@
         $("#ctrlnum").val(Math.max(0, nRow - 1));
     }
 
+    //設定欄位開關
+    function ctrl_line_lock(nRow) {
+        if ($("#resp_date_" + nRow).val() != "") {
+            $("#io_flg_" + nRow).val("N");//該筆資料不可修改 & 不用入檔
+            $("#ctrl_type_" + nRow).lock();
+            $("#ctrl_date_" + nRow).lock();
+            $("#ctrl_remark_" + nRow).lock();
+            if ("<%=submitTask%>" == "U" || "<%=submitTask%>" == "D") {
+                $("#delchk_").lock();
+            }
+        } else {
+            $("#io_flg_" + nRow).val("Y");
+            if ("<%=prgid%>" == "brta24") {
+                $("#delchk_").lock();
+            }
+        }
+        if ("<%=submitTask%>" == "U" || "<%=submitTask%>" == "D") {
+            $("#delchk_").lock();
+        }
+        if ("<%=submitTask%>" == "U" || "<%=prgid%>" == "brta34") {//本發作業
+            $("#delchk_").lock();
+            $("#ctrl_type_" + nRow).lock();
+            $("#ctrl_date_" + nRow).lock();
+            $("#ctrl_remark_" + nRow).lock();
+        }
+    }
+
     function ctrl_date_blur(nRow) {
         ChkDate($("#ctrl_date_"+nRow)[0]);
         var tctrl_date=$("#ctrl_date_"+nRow).val();
@@ -203,5 +231,54 @@
             alert("管制日期不可小於今天!!!");
             $("#ctrl_date_"+nRow).focus();
         }
+    }
+
+    //[進度查詢及銷管制]
+    $("#btndis").click(function (e) {
+        //***todo
+        var tlink = getRootPath() + "/brtam/brta21disEdit.aspx?branch=<%=Session["seBranch"]%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&rsqlno=" + $("#rsqlno").val() + "&step_grade=" + $("#nstep_grade").val();
+        //本發只能進度查詢
+        if ("<%=prgid%>" == "brta34") {
+            tlink += "&qtype=R&submitTask=Q";
+        } else {
+            if ("<%=submitTask%>" == "A") {
+                tlink += "&qtype=N&submitTask=A";
+            } else if ("<%=submitTask%>" == "U") {
+                if ("<%=prgid%>" == "brta24" || "<%=prgid%>" == "brta38") {
+                    //官收確認或官發確認之進度銷管同新增
+                    tlink += "&qtype=N&submitTask=A";
+                } else {
+                    tlink += "&qtype=R&submitTask=U";
+                }
+            } else if ("<%=submitTask%>" == "D") {
+                tlink += "&qtype=R&submitTask=D";
+            } else if ("<%=submitTask%>" == "Q") {
+                tlink += "&qtype=R&submitTask=Q";
+            } else if ("<%=submitTask%>" == "R") {//20160901 增加[退回]功能(R)
+                tlink += "&qtype=R&submitTask=Q";
+            }
+        }
+
+        window.open(tlink, "", "width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+    });
+
+    //[查官收未銷法定期限]
+    function queryjob() {
+        if (($("#seq").val() || "") == "") {
+            alert("無案件編號，無法查詢!!");
+            return false;
+        }
+
+        var pseqnum = 0;
+        for (var n = 1; n <= CInt($("#ctrlnum").val()) ; n++) {
+            if ($("#ctrl_type_" + n).val() == "A1") {
+                pseqnum = n;
+                break;
+            }
+        }
+
+        //***todo
+        var tlink = getRootPath() + "/brt6m/brt62_steplist.aspx?seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&step_grade=" + $("#nstep_grade").val() + "&ctrl_type=A1&prgid=<%=prgid%>&seqnum=" + pseqnum;
+        window.open(tlink, "mywindowN", "width=700,height=480,toolbar=yes,menubar=yes,resizable=yes,scrollbars=yes,status=0,top=50,left=80");
     }
 </script>

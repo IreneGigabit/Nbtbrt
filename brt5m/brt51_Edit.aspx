@@ -440,38 +440,13 @@
 
         //畫面準備
         cr_form.init();//收文form
+        ctrl_form.init();//管制期限form
 
         //-----------------
         $("input.dateField").datepick();
         main.bind();//資料綁定
-        cr_form.bind();//資料綁定
         $(".Lock").lock();
         $(".Hide").hide();
-
-        //顯示爭救案交辦欄位
-        if ($("#codemark").val()=="B"){
-            document.all.show_optstat.style.display=""
-            //2013/11/5修改，爭救案性預設帶官收法定期限
-            if(CInt($("#nstep_grade"))!=1){
-                $("#btnqrygrlastdate").show();//顯示[查官收未銷法定期限按鈕]
-                ctrl_form.Add_button.click();
-                $("#ctrl_type_"+$("#ctrlnum").val()).val("A1");
-            }
-        }
-        //顯示註冊費繳費狀態，當非創申案立新案
-        if(main.submittask=="A"){
-            if(CInt($("#nstep_grade").val())==1){
-                if ($("#hrs_class").val()!="A1"){
-                    $("#show_paytimes").show();
-                }
-            }else{
-                if($("#seqend_flag").val()=="Y"){//2010/10/6修改為結案註記有勾選結案才顯示
-                    $("#show_endstat").show();
-                }else{
-                    $("input[name='end_stat']").prop("checked",false);
-                }
-            }
-        }
     }
     
     main.bind = function () {
@@ -515,6 +490,43 @@
             $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
         }
         $("input[name='opt_stat'][value='" + jMain.step_cr.opt_stat + "']").prop("checked", true);
+        
+        //顯示爭救案交辦欄位
+        if ($("#codemark").val()=="B"){
+            document.all.show_optstat.style.display=""
+            //2013/11/5修改，爭救案性預設帶官收法定期限
+            if(CInt($("#nstep_grade"))!=1){
+                $("#btnqrygrlastdate").show();//顯示[查官收未銷法定期限按鈕]
+                ctrl_form.Add_button.click();
+                $("#ctrl_type_"+$("#ctrlnum").val()).val("A1");
+                getgrlast_date();
+            }
+        }
+        //顯示註冊費繳費狀態，當非創申案立新案
+        if(main.submittask=="A"){
+            if(CInt($("#nstep_grade").val())==1){
+                if ($("#hrs_class").val()!="A1"){
+                    $("#show_paytimes").show();
+                }
+            }else{
+                if($("#seqend_flag").val()=="Y"){//2010/10/6修改為結案註記有勾選結案才顯示
+                    $("#show_endstat").show();
+                }else{
+                    $("input[name='end_stat']").prop("checked",false);
+                }
+            }
+        }
+
+        if(main.submittask=="A"){
+            if($("#hrs_code").val()=="FC11"||$("#hrs_code").val()=="FC21"||$("#hrs_code").val()=="FC6"||$("#hrs_code").val()=="FC7"||$("#hrs_code").val()=="FC8"||$("#hrs_code").val()=="FC5"
+                ||$("#hrs_code").val()=="FCI"||$("#hrs_code").val()=="FCH"||$("#hrs_code").val()=="FT2"||$("#hrs_code").val()=="FL5"||$("#hrs_code").val()=="FL6"){
+                getdseq();//一案多件
+            }
+            if($("#hrs_code").val().Left(2)=="FD"){
+                getdseq1();//分割
+            }
+	        getCtrl();
+        }
     }
     /*
     main.bind = function () {
