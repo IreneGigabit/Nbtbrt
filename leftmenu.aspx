@@ -455,14 +455,12 @@
                 strTo.Clear();
                 strTo.Add(Session["scode"] + "@saint-island.com.tw");
                 strCC.Clear();
-                subject = "(測試信)" + subject;
                 break;
             case "web10":
                 strFrom = "administrator@saint-island.com.tw";
                 strTo.Clear();
                 strTo.Add(Session["scode"] + "@saint-island.com.tw");
                 strCC.Clear();
-                subject = "(測試信)" + subject;
                 break;
             default:
                 strFrom = "administrator@saint-island.com.tw";

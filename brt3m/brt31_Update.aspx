@@ -235,12 +235,10 @@
                 case "web08":
                 case "localhost":
                     strTo.Add(Session["scode"] + "@saint-island.com.tw");
-                    Subject = "(" + Sys.Host + "測試)" + Subject;
                     break;
                 case "web10":
                     strTo.Add(Session["scode"] + "@saint-island.com.tw");
                     strBCC.Add("m1583@saint-island.com.tw");
-                    Subject = "(" + Sys.Host + "測試)" + Subject;
                     break;
                 default:
                     strTo.Add(Request["signidnext"] + "@saint-island.com.tw");

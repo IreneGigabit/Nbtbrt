@@ -421,7 +421,6 @@ public partial class Sys
     /// </summary>
     public static string formatSeq(string seq, string seq1, string country, string branch, string dept) {
         string lseq = (seq != "" ? branch + dept.ToUpper() + seq : "");
-        lseq += (lseq != "" ? "-" : "") + seq;
         lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
         return lseq;

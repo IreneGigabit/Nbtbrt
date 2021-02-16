@@ -688,8 +688,8 @@
                     if(status=="success"){
                         if(!$("#chkTest").prop("checked")){
                             window.parent.tt.rows="100%,0%";
+                            window.parent.Etop.location.href= getRootPath() +'/brt5m/brt51_list.aspx?prgid=brt51';
                         }
-                        window.parent.Etop.location.href= getRootPath() +'/brt5m/brt51_list.aspx?prgid=brt51';
                     }
                 }
             });

@@ -219,7 +219,7 @@ public partial class Sys
             eSQL = eSQL + "'" + prgID + "',";
             eSQL = eSQL + "'" + ex.Message.Replace("'", "''") + "',";
             //eSQL = eSQL + "'" + string.Join("\r\n-----\r\n", sqlList.ToArray()).Replace("'", "''") + "',";
-            eSQL = eSQL + "'" + (sqlList.LastOrDefault()??"").Replace("'", "''") + "',";//只記錄最後一個sql
+            eSQL = eSQL + "'" + (sqlList.LastOrDefault() ?? "").Replace("'", "''") + "',";//只記錄最後一個sql
             eSQL = eSQL + "'" + (ex.StackTrace ?? "").Replace("'", "''") + "')";
 
             SqlCommand cmd = new SqlCommand(eSQL, cn);
@@ -246,29 +246,33 @@ public partial class Sys
         MailMessage MailMsg = new MailMessage();
         MailMsg.From = new MailAddress(SendFrom);//寄件者
         foreach (string to in SendTo)//收件者
-		{
+        {
             if (!string.IsNullOrEmpty(to)) {
                 MailMsg.To.Add(new MailAddress(to));
             }
         }
         foreach (string cc in SendCC)//副本
-		{
+        {
             if (!string.IsNullOrEmpty(cc)) {
                 MailMsg.CC.Add(new MailAddress(cc));
             }
         }
         foreach (string bcc in SendBCC)//密件副本
-		{
+        {
             if (!string.IsNullOrEmpty(bcc)) {
                 MailMsg.Bcc.Add(new MailAddress(bcc));
             }
         }
         foreach (string[] attach in SendAttach)//附件
-		{
+        {
             if (!string.IsNullOrEmpty(attach[0])) {
                 MemoryStream ms1 = new MemoryStream(File.ReadAllBytes(attach[0]));
                 MailMsg.Attachments.Add(new Attachment(ms1, attach[1]));
             }
+        }
+
+        if (Sys.Host == "localhost" || Sys.Host == "web08" || Sys.Host == "web10") {
+            Subject = "(" + Sys.Host + "測試)" + Subject;
         }
 
         MailMsg.Subject = Subject;//主旨

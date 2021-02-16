@@ -941,11 +941,9 @@
                 switch (Sys.Host) {
                     case "web08": case "localhost":
                         strTo.Add(Session["scode"] + "@saint-island.com.tw");
-                        Subject = "(web08)" + Subject;
                         break;
                     case "web10":
                         strTo.Add(Session["scode"] + "@saint-island.com.tw");
-                        Subject = "(web10)" + Subject;
                         break;
                     default:
                         strTo.Add(Request["in_scode"] + "@saint-island.com.tw");

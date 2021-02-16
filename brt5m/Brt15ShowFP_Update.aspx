@@ -1006,12 +1006,10 @@
             case "web08":
             case "localhost":
                 strTo.Add(Session["scode"] + "@saint-island.com.tw");
-                Subject = "(" + Sys.Host + "測試)" + Subject;
                 break;
             case "web10":
                 strTo.Add("s687@saint-island.com.tw");
                 strTo.Add("m1583@saint-island.com.tw");
-                Subject = "(" + Sys.Host + "測試)" + Subject;
                 break;
             default:
                 strTo = ReqVal.TryGet("emg_scodelist").Split(';').Where(p => p != "").Select(o => o + "@saint-island.com.tw").ToList();
@@ -1045,12 +1043,10 @@
             case "web08":
             case "localhost":
                 strTo.Add(Session["scode"] + "@saint-island.com.tw");
-                Subject = "(" + Sys.Host + "測試)" + Subject;
                 break;
             case "web10":
                 strTo.Add("s687@saint-island.com.tw");
                 strTo.Add("m1583@saint-island.com.tw");
-                Subject = "(" + Sys.Host + "測試)" + Subject;
                 break;
             default:
                 strTo.Add(job_scode + "@saint-island.com.tw");
