@@ -115,7 +115,7 @@ public partial class Sys
 
     #region RenameFile - 檔案重新命名
     /// <summary>
-    /// 檔案重新命名
+    /// 檔案重新命名(傳入虛擬路徑)
     /// </summary>
     /// <param name="srcFile">原始路徑(虛擬路徑)</param>
     /// <param name="dstFile">目的路徑(虛擬路徑)</param>

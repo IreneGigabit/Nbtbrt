@@ -150,8 +150,8 @@
 	    <TR id="show_endstat" style="display:none">
 		    <TD class=lightbluetable align=right><font color=darkblue>結案處理：</font></TD>
 		    <TD class=whitetablebg colspan=5>
-			    <input type=radio name="end_stat" value="B61" class="<%=Lock.TryGet("Qdisabled")%>" onclick="vbscript: end_stat_onclick">送會計確認
-			    <input type=radio name="end_stat" value="B6" class="<%=Lock.TryGet("Qdisabled")%>" onclick="vbscript: end_stat_onclick">待結案處理				
+			    <input type=radio name="end_stat" value="B61" class="<%=Lock.TryGet("Qdisabled")%>" onclick="cr_form.end_stat()">送會計確認
+			    <input type=radio name="end_stat" value="B6" class="<%=Lock.TryGet("Qdisabled")%>" onclick="cr_form.end_stat()">待結案處理
 		    </TD>
 	    </tr>
 	<%}%>
@@ -204,7 +204,7 @@
 		    <td class="whitetablebg rs_code_FD" align=center>
 		        <input type=text size=5 id=dseq_## name=dseq_## class='sedit' readonly>
 		        -<input type=text size=1 id=dseq1A_## name=dseq1A_## class='sedit' readonly value='_' >
-		        <input type=hidden name=hrs_no_## id=hrs_no_##>
+		        <input type=text name=hrs_no_## id=hrs_no_##>
 		    </td>
 		    <td class=whitetablebg align=center>
 	            <input type=text id='s_mark_##' name=s_mark_## style='text-align:left;' readonly class='SEdit'>
@@ -315,10 +315,11 @@
         cr_form.add_sub();
         var spl_num =1;
         $("#dseq_" + spl_num).val(jMain.case_main[0].seq);
+        $("#dseq1A_" + spl_num).val(jMain.case_main[0].seq1);
         $("#s_mark_" + spl_num).val(jMain.case_main[0].s_marknm);
         $("#dclass_" + spl_num).val(jMain.case_main[0].class);
         $("#appl_name_" + spl_num).val(jMain.case_main[0].appl_name);
-        if ($("#hrs_cod.").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
+        if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
             $("#dref_no_" + spl_num).val(jMain.case_main[0].apply_no);
         } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
             $("#dref_no_" + spl_num).val(jMain.case_main[0].issue_no);
@@ -329,15 +330,20 @@
             cr_form.add_sub();
             var spl_num = (i + 2);//1是母案,從2開始
             $("#dseq_" + spl_num).val(item.seq);
-            $("#s_mark_" + spl_num).val(item.s_marknm);
-            $("#dclass_" + spl_num).val(item.class);
-            $("#appl_name_" + spl_num).val(item.appl_name);
-            if ($("#hrs_cod.").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
-                $("#dref_no_" + spl_num).val(item.apply_no);
-            } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
-                $("#dref_no_" + spl_num).val(item.issue_no);
-            }
+            $("#dseq1A_" + spl_num).val(item.seq1);
+            $.each(item.get_dmt, function (x, xitem) {
+                $("#s_mark_" + spl_num).val(xitem.s_marknm);
+                $("#dclass_" + spl_num).val(xitem.class);
+                $("#appl_name_" + spl_num).val(xitem.appl_name);
+                if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
+                    $("#dref_no_" + spl_num).val(xitem.apply_no);
+                } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
+                    $("#dref_no_" + spl_num).val(xitem.issue_no);
+                }
+            });
         });
+
+        $(".rs_code_FD").show();
     }
 
     //分割時取得子案本所編號
@@ -365,5 +371,120 @@
                 $("#dref_no_" + spl_num).val(item.issue_no);
             }
         });
+
+        $(".rs_code_FD").hide();
+    }
+
+    //產生預設期限
+    cr_form.getCtrl = function () {
+        if(jMain.case_main[0].cust_date!=""){
+            //新增客戶期限
+            ctrl_form.add_ctrl();
+            $("#ctrl_type_"+$("#ctrlnum").val()).val("A2");
+            $("#ctrl_date_"+$("#ctrlnum").val()).val(dateReviver(jMain.case_main[0].cust_date,'yyyy/M/d'));
+        }
+        if(jMain.case_main[0].pr_date!=""){
+            //新增承辦期限
+            ctrl_form.add_ctrl();
+            $("#ctrl_type_"+$("#ctrlnum").val()).val("B2");
+            $("#ctrl_date_"+$("#ctrlnum").val()).val(dateReviver(jMain.case_main[0].pr_date,'yyyy/M/d'));
+        }
+        //2010/10/6修改為結案註記有勾選結案才顯示
+        if($("#seqend_flag").val()=="Y"){
+            //新增結案完成期限
+            ctrl_form.add_ctrl();
+            $("#ctrl_type_"+$("#ctrlnum").val()).val("B61");
+            $("#ctrl_date_"+$("#ctrlnum").val()).val(Today().addMonths(3).format("yyyy/M/d"));
+            $("#ctrl_remark_"+$("#ctrlnum").val()).val("程序確認結案暨掃描完成期限");
+        }
+	
+        //取得案性管制設定
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/json_act_sqlno.aspx?cgrs=" + $("#cgrs").val()+ "&rs_class=" + $("#rs_class").val()+"&rs_code=" + $("#rs_code").val()+"&act_code=" + $("#act_code").val(),
+            async: false,
+            cache: false,
+            success: function (json) {
+                var jCtrl = $.parseJSON(json);
+                $.each(jCtrl, function (i, item) {
+                    if(item.sqlflg=="A"&&item.ctrl_type!="A2"&&item.ctrl_type!="B2"){
+                        $("#act_sqlno").val(item.ctrl_sqlno);
+                        ctrl_form.add_ctrl();
+                        $("#ctrl_type_"+$("#ctrlnum").val()).val(item.ctrl_type);//管制種類
+                        $("#ctrl_remark_"+$("#ctrlnum").val()).val(item.ctrl_remark);//管制內容
+                        var days=0;//管制天數
+                        if(item.ad=="A"){//日期基礎:A:加，D:減 
+                            days=CInt(item.days);
+                        }else{
+                            days=CInt(item.days)*-1;
+                        }
+                        var days2=0;//管制天數
+                        if(item.ad2=="A"){//日期基礎:A:加，D:減 
+                            days2=CInt(item.days2);
+                        }else{
+                            days2=CInt(item.days2)*-1;
+                        }
+                       
+                        var md=item.md;//管制性質
+                        var md2=item.md2;//管制性質
+                        var date_ctrl=$("#"+item.date_name).val()||"";//基準日期欄位
+                        if(date_ctrl==""){
+                            alert("管制天數之基準日期未輸入, 請輸入!!");
+                            $("#act_sqlno").val("");
+                            $("#"+item.date_name).focus();
+                        }
+
+                        var Cdate_ctrl=CDate(date_ctrl);
+                        if(md.toUpperCase()=="D"){
+                            Cdate_ctrl=Cdate_ctrl.addDays(days);
+                        }else if(md.toUpperCase()=="M"){
+                            Cdate_ctrl=Cdate_ctrl.addMonths(days);
+                        }else if(md.toUpperCase()=="Y"){
+                            Cdate_ctrl=Cdate_ctrl.addYears(days);
+                        }
+
+                        if(item.ad2!=""){
+                            if(md2.toUpperCase()=="D"){
+                                Cdate_ctrl=Cdate_ctrl.addDays(days2);
+                            }else if(md2.toUpperCase()=="M"){
+                                Cdate_ctrl=Cdate_ctrl.addMonths(days2);
+                            }else if(md2.toUpperCase()=="Y"){
+                                Cdate_ctrl=Cdate_ctrl.addYears(days2);
+                            }
+                        }
+
+                        $("#ctrl_date_"+$("#ctrlnum").val()).val(Cdate_ctrl.format("yyyy/M/d"));//管制日期
+                        $("#ncase_stat").val(item.case_stat);
+                        $("#ncase_statnm").val(item.case_statnm);
+                    }
+                })
+            },
+            error: function (xhr) {
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>案性管制載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '案性管制載入失敗！', modal: true, maxHeight: 500, width: "90%" });
+            }
+        });
+    }
+
+    //結案處理
+    cr_form.end_stat = function () {
+        if ($("input[name='end_stat']:eq(0)").prop("checked") == true) {//送會計確認
+            alert("修改管制種類為結案完成期限，請檢查！");
+            for (var k = 1; k <= CInt($("#ctrlnum").val()) ; k++) {
+                if ($("#ctrl_type_" + k).val() == "B6") {
+                    $("#ctrl_type_" + k).val("B61");
+                    $("#ctrl_date_" + k).val(Today().addMonths(3).format("yyyy/M/d"));
+                    $("#ctrl_remark_" + k).val("程序確認結案暨掃描完成期限");
+                }
+            }
+        } else {//待結案處理
+            alert("修改管制種類為結案期限，請檢查！");
+            if ($("#ctrl_type_" + k).val() == "B61") {
+                $("#ctrl_type_" + k).val("B6");
+                $("#ctrl_date_" + k).val(Today().addMonths(1).format("yyyy/M/d"));
+                $("#ctrl_remark_" + k).val("結案處理期限");
+            }
+
+        }
     }
 </script>

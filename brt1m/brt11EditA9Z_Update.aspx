@@ -45,8 +45,8 @@
         if (HTProgRight >= 0) {
             try {
                 doUpdateDB();
-                //conn.Commit();
-                conn.RollBack();
+                conn.Commit();
+                //conn.RollBack();
 
                 if (prgid == "brt51")
                     strOut.AppendLine("<div align='center'><h1>資料更新成功, 請繼續執行客戶收文!!</h1></div>");

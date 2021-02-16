@@ -790,18 +790,7 @@
                 $("#dseq1b_" + nRow).val(item.seq1);
                 if (item.case_stat1 == "NN") {
                     $("input[name='case_stat1b_" + nRow + "'][value=NN]").prop("checked", true);//.triggerHandler("click");
-                    var smark_val = item.s_mark;
-                    if (smark_val == "S") {
-                        $("#s_markb_" + nRow).val("92年修正前服務標章");
-                    } else if (smark_val == "N") {
-                        $("#s_markb_" + nRow).val("團體商標");
-                    } else if (smark_val == "M") {
-                        $("#s_markb_" + nRow).val("團體標章");
-                    } else if (smark_val == "L") {
-                        $("#s_markb_" + nRow).val("證明標章");
-                    } else {
-                        $("#s_markb_" + nRow).val("商標");
-                    }
+                    $("#s_markb_" + nRow).val(item.s_marknm);
                     $("#appl_nameb_" + nRow).val(item.appl_name);
                     $("#issue_nob_" + nRow).val(item.issue_no);
                     $("#btndmt_tempb_" + nRow).val("案件主檔編修").show();

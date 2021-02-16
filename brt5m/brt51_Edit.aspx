@@ -520,81 +520,161 @@
         if(main.submittask=="A"){
             if($("#hrs_code").val()=="FC11"||$("#hrs_code").val()=="FC21"||$("#hrs_code").val()=="FC6"||$("#hrs_code").val()=="FC7"||$("#hrs_code").val()=="FC8"||$("#hrs_code").val()=="FC5"
                 ||$("#hrs_code").val()=="FCI"||$("#hrs_code").val()=="FCH"||$("#hrs_code").val()=="FT2"||$("#hrs_code").val()=="FL5"||$("#hrs_code").val()=="FL6"){
-                getdseq();//一案多件
+                cr_form.getdseq();//一案多件
             }
             if($("#hrs_code").val().Left(2)=="FD"){
-                getdseq1();//分割
+                cr_form.getdseq1();//分割
             }
-	        getCtrl();
+            cr_form.getCtrl();
         }
     }
-    /*
-    main.bind = function () {
-        $("#codemark").val(jMain.cr_main.codemark);
-        $("#dmt_term1").val(jMain.cr_main.dmt_term1);
-        $("#dmt_term2").val(jMain.cr_main.dmt_term2);
-        $("#endflag51").val(jMain.cr_main.endflag51);
-        $("#end_date51").val(jMain.cr_main.end_date51);
-        $("#end_code51").val(jMain.cr_main.end_code51);
-        $("#end_type51").val(jMain.cr_main.end_type51);
-        $("#end_remark51").val(jMain.cr_main.end_remark51);
-        $("#seqend_flag").val(jMain.cr_main.seqend_flag);
-        $("#case_last_date").val(jMain.cr_main.last_date);
-        $("#spe_ctrl3").val(jMain.cr_main.spe_ctrl3);
-        $("#seq").val(jMain.cr_main.seq);
-        $("#seq1").val(jMain.cr_main.seq1);
-        //cr_form
-        $("#rs_type").val(jMain.step_dmt[0].rs_type);//結構分類
-        $("#rs_type").triggerHandler("change");
-        $("#code").val(jMain.cr_main.code);
-        $("#in_no").val(jMain.cr_main.in_no);
-        $("#in_scode").val(jMain.cr_main.in_scode);
-        $("#change").val(jMain.cr_main.change);
-        $("#cust_area1").val(jMain.cr_main.cust_area);
-        $("#cust_seq1").val(jMain.cr_main.cust_seq);
-        $("#rs_no").val(jMain.step_dmt[0].rs_no);
-        $("#nstep_grade").val(jMain.step_dmt[0].step_grade);
-        $("#cgrs").val(jMain.step_dmt[0].cgrs);
-        $("#step_date").val(dateReviver(jMain.step_dmt[0].step_date,'yyyy/M/d'));
-        $("#receive_no").val(jMain.step_dmt[0].receive_no);
-        $("#hrs_class,#rs_class").val(jMain.step_dmt[0].rs_class);
-        $("#rs_class").triggerHandler("change");
-        $("#hrs_code,#rs_code").val(jMain.step_dmt[0].rs_code);
-        $("#rs_code").triggerHandler("change");
-        $("#hact_code,#act_code").val(jMain.step_dmt[0].act_code);
-        $("#act_code").triggerHandler("change");
-        $("#ocase_stat,#ncase_stat").val(jMain.step_dmt[0].case_stat);
-        $("#ncase_statnm").val(jMain.step_dmt[0].case_statnm);
-        $("#rs_detail").val(jMain.step_dmt[0].rs_detail);
-        $("#doc_detail").val(jMain.step_dmt[0].doc_detail);
-        $("#old_receipt_type,#receipt_type").val(jMain.step_dmt[0].receipt_type);
-        $("#old_receipt_title,#receipt_title").val(jMain.step_dmt[0].receipt_title);
-        $("#old_send_way,#send_way").val(jMain.step_dmt[0].send_way);
-        $("#send_sel").val(jMain.step_dmt[0].send_sel);
-        if (main.submittask == "A") {
-            $("input[name='opt_stat'][value='N']").prop("checked", true);//需交辦
-            $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
-        }
-        $("input[name='opt_stat'][value='" + jMain.step_dmt[0].opt_stat + "']").prop("checked", true);
-    }*/
+
+    function Help_Click(){
+        window.open(getRootPath() + "/brtam/國內案發收文系統操作手冊.htm","","width=700, height=500, top=50, left=50, toolbar=no, menubar=no, location=no, directories=no, resizeable=no, status=no, scrollbars=yes");
+    }
+
+    function getgrlast_date(){
+        //抓取官收最小法定期限A1
+        var searchSql="Select min(a.ctrl_date) as last_date,a.step_grade,a.rs_no ";
+        searchSql+= " from ctrl_dmt a ";
+        searchSql+= " inner join step_dmt b on a.rs_no=b.rs_no and b.cg='G' and b.rs='R' ";
+        searchSql+= " where a.seq='"+$("#seq").val()+"' and a.seq1='"+$("#seq1").val()+ "' and a.ctrl_type='A1'";
+        searchSql+= " group by a.step_grade,a.rs_no ";
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/JsonGetSqlData.aspx",
+            data: { sql: searchSql },
+            async: false,
+            cache: false,
+            success: function (json) {
+                var JSONdata = $.parseJSON(json);
+                if (JSONdata.length > 0) {
+                    var plast_date=dateReviver(JSONdata[0].last_date,'yyyy/M/d');
+                    $("#ctrl_step_grade_"+$("#ctrlnum").val()).val(JSONdata[0].step_grade);
+                    $("#ctrl_rs_no_"+$("#ctrlnum").val()).val(JSONdata[0].rs_no);
+                    if(plast_date==""){
+                        alert("無本筆案件編號：" +$("#seq").val()+ "-" +$("#seq1").val()+ "之官收法定期限資料，請檢查！");
+                    }else{
+                        $("#ctrl_date_"+$("#ctrlnum").val()).val(plast_date);
+                        $("#ctrl_date_"+$("#ctrlnum")).lock();
+                    }
+                }else{
+                    alert("本筆案件編號：" +$("#seq").val()+ "-"+$("#seq1").val()+ "無官收法定期限資料，請檢查！");
+                }
+            }
+        });
+    }
+
 
     //存檔
-    function formModSubmit(){
-        $.maskStart();
-        var saveflag=main.savechk();
-        $.maskStop();
+    function formAddSubmit(){
+        if (main.submittask=="A"||main.submittask=="U"){
+            if (chkNull("收文日期", reg.step_date)) return false;
+            if (chkNull("案性代碼", reg.rs_code)) return false;
+            if (chkNull("處理事項", reg.act_code)) return false;
 
-        if(!saveflag) return false;
+            //check交辦爭救案需管制一筆法定期限,2011/9/27檢查新立案且要管制法定期限案性，程序輸入期限需與營洽相同
+            if(($("#codemark").val()=="B"&&$("input[name='opt_stat']:eq(0)").prop("checked") == true)
+                ||($("#nstep_grade").val()=="1"&&$("#spe_ctrl3").val()=="Y")){
+                var ctrl_flag="N";
+                for (var n = 1; n <= CInt($("#ctrlnum").val()) ;n++) {
+                    var ctrl_type= $("#ctrl_type_" + n).val();
+                    var ctrl_date= $("#ctrl_date_" + n).val();
+                    if(ctrl_type=="A1"){
+                        ctrl_flag="Y";
+                        if(ctrl_date==""){
+                            alert("請輸入管制日期！！");
+                            $("#ctrl_date_" + n).focus();
+                            return false;
+                        }else{
+                            if($("#nstep_grade").val()=="1"&&$("#spe_ctrl3").val()=="Y"){
+                                if(CDate($("#case_last_date").val())!=CDate(ctrl_date)){
+                                    alert("輸入法定期限("+ctrl_date + ")與營洽輸入法定期限(" + $("#case_last_date").val() + ")不同，請檢查！若確定營洽輸入有誤，煩請返回前一編修作業述明原因並退回營洽修改。");
+                                    $("#ctrl_date_" + n).focus();
+                                    return false;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
 
-        $("#tfy_case_stat").val("NN");//新案
-        $("#submittask").val("Edit");
+                if(ctrl_flag=="N"){
+                    if($("#codemark").val()=="B"){
+                        alert("交辦爭救案需管制一筆法定期限，請增加一筆管制！");
+                    }else{
+                        alert("交辦此案性需管制一筆法定期限，請增加一筆管制！");
+                    }
+                    return false;
+                }
+            }
 
+            //check非創申案立新案且有輸入專用期限者，提醒程序要輸入註冊費繳納狀態
+            if (main.submittask=="A"){
+                if($("#nstep_grade").val()=="1"&&$("#hrs_class").val()!="A1"){
+                    if($("#dmt_term1").val()!=""&&$("#dmt_term2").val()!=""){
+                        if($("#pay_times").val()==""){
+                            var answer=confirm("註冊費繳納狀態未輸入，確定存檔?(註：一案多件子案件系統不會一併修改，如需修改請至案件主檔維護)");
+                            if(answer==false){
+                                $("#pay_times").focus();
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                if($("#pr_scode").val()==""){
+                    alert("案件需至承辦執行後續作業，請選擇承辦人員！");
+                    $("#pr_scode").focus();
+                    return false;
+                }
+            }
+            
+            //檢查交辦結案需管制結案期限或結案完成期限
+            if($("#seqend_flag").val()=="Y"){//2010/10/6修改為結案註記有勾選結案才檢查
+                var ctrl_flag="N";
+                for (var n = 1; n <= CInt($("#ctrlnum").val()) ;n++) {
+                    var ctrl_type= $("#ctrl_type_" + n).val();
+                    var ctrl_date= $("#ctrl_date_" + n).val();
+                    if (($("input[name='end_stat']:eq(0)").prop("checked") == true&&ctrl_type=="B61")//送會計確認
+                        ||($("input[name='end_stat']:eq(1)").prop("checked") == true&&ctrl_type=="B6")//待結案處理
+                        ) {
+                        ctrl_flag="Y";
+                        if(ctrl_date==""){
+                            alert("請輸入管制日期！！");
+                            $("#ctrl_date_" + n).focus();
+                            return false;
+                        }
+                        break;
+                    }
+                }
+
+                if(ctrl_flag=="N"){
+                    alert("交辦結案需管制一筆結案期限，送會計確認請增加一筆結案完成期限管制、待結案處理請增加一筆結案期限管制！");
+                    return false;
+                }
+            }
+        }
+
+        //20160923 增加檢查發文方式
+        if($("#send_way").val()==""){
+            alert("請選擇發文方式！");
+            return false;
+        }
+        if($("#send_way").val()!=$("#old_send_way").val()){
+            var answer=confirm("您選擇的發文方式與營洽交辦不同，確定存檔?");
+            if(answer==false){
+                $("#send_way").focus();
+                return false;
+            }
+        }
+	
         //$("select,textarea,input,span").unlock();
         $("input:disabled, select:disabled").unlock();
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
 
         var formData = new FormData($('#reg')[0]);
-        ajaxByForm("<%=HTProgPrefix%>EditA9Z_Update.aspx",formData)
+        ajaxByForm("Brt51_Update1.aspx",formData)
         .complete(function( xhr, status ) {
             $("#dialog").html(xhr.responseText);
             $("#dialog").dialog({
@@ -607,65 +687,13 @@
                 ,close:function(event, ui){
                     if(status=="success"){
                         if(!$("#chkTest").prop("checked")){
-                            if (main.prgid == "brt51")
-                                window.parent.tt.rows="0%,100%";
-                            else
-                                window.parent.tt.rows="100%,0%";
+                            window.parent.tt.rows="100%,0%";
                         }
-
-                        if (main.prgid == "brt51"){
-                            window.parent.Eblank.location.href=getRootPath() +"/brt5m/Brt51_Edit.aspx?prgid=brt51&submittask=A&in_scode="+main.in_scode;
-                        }
+                        window.parent.Etop.location.href= getRootPath() +'/brt5m/brt51_list.aspx?prgid=brt51';
                     }
                 }
             });
         });
-
-        //reg.action = "<%=HTProgPrefix%>EditA11_Update.aspx";
-        //if($("#chkTest").prop("checked"))
-        //    reg.target = "ActFrame";
-        //else
-        //    reg.target = "_self";
-        //reg.submit();
-    }
-
-    //退回營洽
-    function formModSubmit2(){
-        if ($("#back_remark").val()==""){
-            alert("請輸入退回說明！");
-            return false;
-        }
-        if(confirm("是否確定退回營洽!!!")){
-            $("input:disabled, select:disabled").unlock();
-            $(".bsubmit").lock(!$("#chkTest").prop("checked"));
-
-            var formData = new FormData($('#reg')[0]);
-            ajaxByForm(getRootPath() +"/brt5m/Brt51_Update3.aspx",formData)
-            .complete(function( xhr, status ) {
-                $("#dialog").html(xhr.responseText);
-                $("#dialog").dialog({
-                    title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
-                    ,buttons: {
-                        確定: function() {
-                            $(this).dialog("close");
-                        }
-                    }
-                    ,close:function(event, ui){
-                        if(status=="success"){
-                            if(!$("#chkTest").prop("checked")){
-                                window.parent.tt.rows="100%,0%";
-                            }
-                            window.parent.Etop.location.href= getRootPath() +'/brt5m/brt51_list.aspx?prgid=brt51';
-                        }
-                    }
-                });
-            });
-        }
-    }
-
-    function Help_Click(){
-        window.open(getRootPath() + "/brtam/國內案發收文系統操作手冊.htm","","width=700, height=500, top=50, left=50, toolbar=no, menubar=no, location=no, directories=no, resizeable=no, status=no, scrollbars=yes");
     }
 </script>
 
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/brtform/CaseForm/Descript.js")%>"></script><!--欄位說明-->

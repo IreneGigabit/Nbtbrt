@@ -310,6 +310,16 @@ Date.prototype.addMonths = function (months) {
 }
 //#end region
 
+//#region Date.prototype.addYears
+//js日期加上 X 年
+//var today = new Date();
+//today.addYears(7);
+Date.prototype.addYears = function (years) {
+    this.setDate(this.getFullYear() + years);
+    return this;
+}
+//#end region
+
 /*將數值轉換貨幣表示法
 n:取到小數第幾位
 x:幾位一撇

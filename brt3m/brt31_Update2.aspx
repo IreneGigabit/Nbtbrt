@@ -81,8 +81,8 @@
                     else
                         strOut.AppendLine("<div align='center'><h1>" + msg + "</h1></div>");
                 }
-                //conn.Commit();
-                conn.RollBack();
+                conn.Commit();
+                //conn.RollBack();
             }
             catch (Exception ex) {
                 conn.RollBack();
