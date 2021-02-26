@@ -47,6 +47,35 @@ public class Paging
         exeSQL = ExeSQL;
     }
 
+    /// <summary>
+    /// 取得分頁後的DataTable(使用T-SQL)
+    /// </summary>
+    public void GetPagedTable(DBHelper conn, string mainSQL) {
+        /*如果筆數太大就要用sql分頁,語法:
+        SELECT TOP 每頁筆數 * FROM (
+            SELECT ROW_NUMBER() OVER (ORDER BY id) AS RowNumber,* FROM table1
+        ) as A WHERE RowNumber > 每頁筆數*(第幾頁-1) 
+        */
+        //先算總筆數
+        string SQL = "SELECT COUNT(*) AS cnt FROM ("+mainSQL+") as xx";
+        object objResult = conn.ExecuteScalar(SQL);
+        totRow = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
+
+        totPage = Convert.ToInt32(Math.Ceiling((double)totRow / (double)perPage));//總頁數
+        nowPage = Math.Min(nowPage, (int)totPage);
+        
+        //抓取分頁後資料
+        string strFormat = " SELECT TOP {0} * ";
+        strFormat += "FROM (  {2}  ) as xx ";
+        strFormat += "WHERE RowNumber > {0}*({1}-1)  ";
+
+        SQL = string.Format(strFormat, perPage, nowPage, mainSQL);
+        exeSQL = SQL;
+        
+        pagedTable = new DataTable();
+        conn.DataTable(SQL, pagedTable);
+    }
+
     public void GetPagedTable(DataTable dataTable) {
         totRow = dataTable.Rows.Count;//總筆數
         totPage = Convert.ToInt32(Math.Ceiling((double)totRow / (double)perPage));//總頁數

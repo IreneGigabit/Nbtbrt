@@ -1038,33 +1038,34 @@
             //檢查有無結案進行中
             bool chkflag = false;
             SQL = "select * from todo_dmt where seq=" + Request["tfzb_seq"] + " and seq1='" + Request["tfzb_seq1"] + "' and job_status='NN' and dowhat like '%END%' ";
-            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                while (dr.Read()) {
-                    chkflag = true;
-                    //銷管結案期限
-                    SQL = "insert into resp_dmt(sqlno,rs_no,branch,seq,seq1,step_grade,resp_grade,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_type,resp_remark,tran_date,tran_scode) ";
-                    SQL += "select sqlno,rs_no,branch,seq,seq1,step_grade,0,ctrl_type,ctrl_remark,ctrl_date,'" + DateTime.Today.ToShortDateString() + "','','復案取消結案',getdate(),'" + Session["scode"] + "' ";
-                    SQL += "from ctrl_dmt where sqlno in(";
-                    SQL += "select sqlno from ctrl_dmt where seq=" + Request["tfzb_seq"] + " and seq1='" + Request["tfzb_seq1"] + "' and step_grade='" + dr["step_grade"] + "' andc ctrl_type in ('B6','B61') ";
-                    SQL += ")";
-                    conn.ExecuteNonQuery(SQL);
+            DataTable dr = new DataTable();
+            conn.DataTable(SQL, dr);
 
-                    SQL = "delete from ctrl_dmt where sqlno in(";
-                    SQL += "select sqlno from ctrl_dmt where seq=" + Request["tfzb_seq"] + " and seq1='" + Request["tfzb_seq1"] + "' and step_grade='" + dr["step_grade"] + "' andc ctrl_type in ('B6','B61') ";
-                    SQL += ")";
-                    conn.ExecuteNonQuery(SQL);
+            for (int n = 0; n < dr.Rows.Count; n++) {
+                chkflag = true;
+                //銷管結案期限
+                SQL = "insert into resp_dmt(sqlno,rs_no,branch,seq,seq1,step_grade,resp_grade,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_type,resp_remark,tran_date,tran_scode) ";
+                SQL += "select sqlno,rs_no,branch,seq,seq1,step_grade,0,ctrl_type,ctrl_remark,ctrl_date,'" + DateTime.Today.ToShortDateString() + "','','復案取消結案',getdate(),'" + Session["scode"] + "' ";
+                SQL += "from ctrl_dmt where sqlno in(";
+                SQL += "select sqlno from ctrl_dmt where seq=" + Request["tfzb_seq"] + " and seq1='" + Request["tfzb_seq1"] + "' and step_grade='" + dr.Rows[n]["step_grade"] + "' and ctrl_type in ('B6','B61') ";
+                SQL += ")";
+                conn.ExecuteNonQuery(SQL);
 
-                    //更新結案流程狀態
-                    SQL = "update todo_dmt set job_status = 'XX' ";
-                    SQL += " ,approve_scode = '" + Session["scode"] + "' ";
-                    SQL += " ,approve_desc = '復案取消結案流程'";
-                    SQL += " ,resp_date=getdate() ";
-                    SQL += " where sqlno in(";
-                    SQL += "select sqlno from ctrl_dmt where seq=" + Request["tfzb_seq"] + " and seq1='" + Request["tfzb_seq1"] + "' and step_grade='" + dr["step_grade"] + "' andc ctrl_type in ('B6','B61') ";
-                    SQL += ")";
-                    conn.ExecuteNonQuery(SQL);
-                }
+                SQL = "delete from ctrl_dmt where sqlno in(";
+                SQL += "select sqlno from ctrl_dmt where seq=" + Request["tfzb_seq"] + " and seq1='" + Request["tfzb_seq1"] + "' and step_grade='" + dr.Rows[n]["step_grade"] + "' and ctrl_type in ('B6','B61') ";
+                SQL += ")";
+                conn.ExecuteNonQuery(SQL);
             }
+
+            //更新結案流程狀態
+            SQL = "update todo_dmt set job_status = 'XX' ";
+            SQL += " ,approve_scode = '" + Session["scode"] + "' ";
+            SQL += " ,approve_desc = '復案取消結案流程'";
+            SQL += " ,resp_date=getdate() ";
+            SQL += " where sqlno in(";
+            SQL += "select sqlno from todo_dmt where seq=" + Request["tfzb_seq"] + " and seq1='" + Request["tfzb_seq1"] + "' and job_status='NN' and dowhat like '%END%' ";
+            SQL += ")";
+            conn.ExecuteNonQuery(SQL);
 
             //復案註記且已結案完成(無結案進行中)要通知總管處
             if (chkflag == false) {

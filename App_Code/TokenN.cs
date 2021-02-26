@@ -31,14 +31,13 @@ public class TokenN
     public bool A { get; set; }//保留A
     public bool B { get; set; }//保留B
     public bool C { get; set; }//保留C
-    public bool Debug { get; set; }//除錯
+    public bool Debug { get; set; }//有無除錯權限
 
-    //public bool Debug { get; set; }//有無除錯權限
     public string DebugStr {//☑測試
         get {
-            if (this.APcode == "") {//沒有prgid就用Sys.IsDebug判斷
+            if (this.APcode == "" || this.APcode == null) {//沒有prgid就用Sys.IsDebug判斷
                 if (Sys.IsDebug()) {
-                    return "<label id=\"labTest\"><input type=\"checkbox\" id=\"chkTest\" name=\"chkTest\" value=\"TEST\" />測試</label>";
+                    return "<label id=\"labTest\"><input type=\"checkbox\" id=\"chkTest\" name=\"chkTest\" value=\"TEST\" />測試1</label>";
                 }
             } else {
                 if ((this.Rights & 512) > 0) {//有prgid就用權限值判斷
@@ -47,6 +46,19 @@ public class TokenN
             }
             return "";
         }
+    }
+
+    public string DebugMsg(string msg) {//除錯訊息
+        if (this.APcode == "") {//沒有prgid就用Sys.IsDebug判斷
+            if (Sys.IsDebug()) {
+                return msg;
+            }
+        } else {
+            if ((this.Rights & 512) > 0) {//有prgid就用權限值判斷
+                return msg;
+            }
+        }
+        return "";
     }
 
     public TokenN()

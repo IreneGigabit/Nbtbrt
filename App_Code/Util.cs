@@ -362,8 +362,8 @@ public static partial class Util
             if (debug) {
                 context.Response.Write(string.Format("{0}:{1}<br>\n", key, col[key.ToString()]));
             }
-            //dict[key.ToString()] = col[key.ToString()].ToBig5().Trim();
-            dict[key.ToString()] = col[key.ToString()].Trim();
+            //dict[key.ToString()] = col[key.ToString()].ToBig5().TrimEnd();
+            dict[key.ToString()] = col[key.ToString()].TrimEnd();
         }
 
         col = context.Request.QueryString;//get,如果get跟post有同名參數.Request["xxx"]會抓到Get值
@@ -371,8 +371,8 @@ public static partial class Util
             if (debug) {
                 context.Response.Write(string.Format("{0}:{1}<br>\n", key, col[key.ToString()]));
             }
-            //dict[key.ToString()] = col[key.ToString()].ToBig5().Trim();
-            dict[key.ToString()] = col[key.ToString()].Trim();
+            //dict[key.ToString()] = col[key.ToString()].ToBig5().TrimEnd();
+            dict[key.ToString()] = col[key.ToString()].TrimEnd();
         }
         if (debug) context.Response.Write("<HR>\n");
 
@@ -516,4 +516,19 @@ public static partial class Util
             return false;
     }
     #endregion
+
+    #region 取得正確可供預覽的路徑及檔案(虛擬路徑)
+    /// <summary>
+    /// 取得正確可供預覽的路徑及檔案(虛擬路徑)
+    /// </summary>
+    public static string GetUrlStr(this string s) {
+        if (s.IndexOf("http://", StringComparison.OrdinalIgnoreCase) > -1) {
+            string url = System.Text.RegularExpressions.Regex.Replace(s, "http://", "");
+            return "http://" + System.IO.Path.GetDirectoryName(url) + "/" + Uri.EscapeDataString(System.IO.Path.GetFileName(url));
+        } else {
+            return System.IO.Path.GetDirectoryName(s) + "/" + Uri.EscapeDataString(System.IO.Path.GetFileName(s));
+        }
+    }
+    #endregion
+
 }

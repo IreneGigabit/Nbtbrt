@@ -153,7 +153,7 @@
         //處理分頁
         int nowPage = Convert.ToInt32(Request["GoPage"] ?? "1"); //第幾頁
         int PerPageSize = Convert.ToInt32(Request["PerPage"] ?? "30"); //每頁筆數
-        page = new Paging(nowPage, PerPageSize, string.Join(";", conn.exeSQL.ToArray()));
+        page = new Paging(nowPage, PerPageSize, SQL);
         page.GetPagedTable(dt);
 
         //分頁完再處理其他資料才不會虛耗資源
@@ -694,33 +694,24 @@
         //***todo
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
         var formData = new FormData($('#reg')[0]);
-        $.ajax({
-            url:'<%=HTProgPrefix%>_Update.aspx?qs_proid=<%#prgid%>',
-            type : "POST",
-            data : formData,
-            contentType: false,
-            cache: false,
-            processData: false,
-            beforeSend:function(xhr){
-                $("#dialog").html("<div align='center'><h1>存檔中...</h1></div>");
-                $("#dialog").dialog({ title: '存檔訊息', modal: true,maxHeight: 500,width: 800,buttons:[] });
-            },
-            complete: function (xhr, status) {
-                $("#dialog").html(xhr.responseText);
-                $("#dialog").dialog({
-                    title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
-                    ,buttons: {
-                        確定: function() {
-                            $(this).dialog("close");
-                        }
+        ajaxByForm("<%=HTProgPrefix%>_Update.aspx?qs_proid=<%#prgid%>",formData)
+        .complete(function( xhr, status ) {
+            $("#dialog").html(xhr.responseText);
+            $("#dialog").dialog({
+                title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
+                ,buttons: {
+                    確定: function() {
+                        $(this).dialog("close");
                     }
-                    ,close:function(event, ui){
-                        if(status=="success"){
+                }
+                ,close:function(event, ui){
+                    if(status=="success"){
+                        if(!$("#chkTest").prop("checked")){
                             window.location.href="<%=HTProgPrefix%>.aspx?prgid=<%#prgid%>"
                         }
                     }
-                });
-            }
+                }
+            });
         });
     }
 </script>

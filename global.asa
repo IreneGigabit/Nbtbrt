@@ -1,0 +1,53 @@
+﻿<SCRIPT LANGUAGE=VBScript RUNAT=Server>
+
+'You can add special event handlers in this file that will get run automatically when
+'special Active Server Pages events occur. To create these handlers, just create a
+'subroutine with a name from the list below that corresponds to the event you want to
+'use. For example, to create an event handler for Session_OnStart, you would put the
+'following code into this file (without the comments):
+
+'Sub Session_OnStart
+'**Put your code here **
+'End Sub
+
+'EventName              Description
+'Session_OnStart        Runs the first time a user runs any page in your application
+'Session_OnEnd          Runs when a user's session times out or quits your application
+'Application_OnStart    Runs once when the first page of your application is run for the first time by any user
+'Application_OnEnd      Runs once when the web server shuts down
+
+Sub Session_OnStart()
+	if Request.ServerVariables("SERVER_NAME")="sinn05" then
+        session("se_branch")="N"
+		Session("btbrtdb")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sindbs;Data Source=sinn05;"
+		Session("sysctrl")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sysctrl;Data Source=sinn05;"
+	elseif Request.ServerVariables("SERVER_NAME")="sic10" then
+        session("se_branch")="C"
+		Session("btbrtdb")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sicdbs;Data Source=sic10;"
+		Session("sysctrl")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sysctrl;Data Source=sic10;"
+	elseif Request.ServerVariables("SERVER_NAME")="sis10" then
+        session("se_branch")="S"
+		Session("btbrtdb")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sisdbs;Data Source=sis10;"
+		Session("sysctrl")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sysctrl;Data Source=sis10;"
+	elseif Request.ServerVariables("SERVER_NAME")="sik10" then
+        session("se_branch")="K"
+		Session("btbrtdb")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sikdbs;Data Source=sik10;"
+		Session("sysctrl")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sysctrl;Data Source=sik10;"
+	else
+        session("se_branch")="N"
+		Session("btbrtdb")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sindbs;Data Source=web08;"
+		Session("sysctrl")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sysctrl;Data Source=web08;"
+	end if	
+    session.Timeout = 120
+End Sub
+
+Sub Session_OnEnd()
+    Session("pwd") = false
+End Sub
+
+</SCRIPT>
+
+<SCRIPT LANGUAGE=VBScript RUNAT=Server>
+Sub Application_OnStart
+End Sub
+</SCRIPT>

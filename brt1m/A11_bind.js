@@ -147,7 +147,7 @@ main.bind = function () {
         $("#tfy_Remark").val(jMain.case_main[0].remark);
         //20160910增加發文方式欄位
         case_form.setSendWay($("#tfy_Arcase").val());
-        $("#tfy_send_way").val(jMain.case_main[0].send_way)
+        $("#tfy_send_way").val(jMain.case_main[0].send_way);
         //20180221增加電子收據欄位
         $("#tfy_receipt_type").val(jMain.case_main[0].receipt_type);
         $("#tfy_receipt_title").val(jMain.case_main[0].receipt_title);

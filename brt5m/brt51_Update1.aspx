@@ -13,7 +13,7 @@
 
     protected string submitTask = "";
     protected string SQL = "";
-    protected object objResult = "";
+    protected object objResult = null;
 
     protected string logReason = "Brt51國內案客收確認作業";
     protected string wheresqlA = "";
@@ -362,8 +362,10 @@
             cseq1 = seq1;
         }
 
+        Sys.showLog("***子案(" + (dt.Rows.Count-1) + ")***");
         //從1開始,0是母案
         for (int n = 1; n < dt.Rows.Count; n++) {
+            Sys.showLog("*-----**" + n + "**-----*");
             string lstep_grade = "1";
             //後來結論是變更申請人也不產生新案 所以都不會有 NA 的狀況了!!!)
             if (arcase.IN("FC11,FC21,FC5,FC6,FC7,FC8,FCH,FCI,FT2,FL5,FL6")) {
@@ -447,7 +449,6 @@
             //分割案可能是 NN(新案) 或 OO(舊案) 但分割子案入檔均相同
             if (arcase.Left(2) == "FD") {
                 seq1 = getSeq1(seq);
-                Response.Write(seq1+"<HR>");
 
                 //更新case_dmt案件編號
                 SQL = "update case_dmt1 set seq =" + seq + ",seq1='" + seq1 + "' where in_no = '" + Min_no + "'";
@@ -503,11 +504,12 @@
         string cChars = "123456789ABDEFGHIJKLNOPQRSTUVWXY";//可用的副碼依順序取用,不含C、M、Z
         SQL = "select max(seq1) as seq1 from dmt where seq ='" + pseq + "' and seq1 not in ('_','C','M','Z') ";
         objResult = conn.ExecuteScalar(SQL);
-        string seq1 = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-        int cinx = cChars.IndexOf("seq1") + 1;//取得新副碼的charindex
+        string seq1 = (objResult == DBNull.Value || objResult == null) ? "_" : objResult.ToString();
+        int cinx = cChars.IndexOf(seq1) + 1;//取得新副碼的charindex
         if (cinx > 31) {
-            strOut.AppendLine("<div align='center'><h1>本所編號取得有誤, 請通知系統人員！</h1></div>");
-            Response.End();
+            //strOut.AppendLine("<div align='center'><h1>本所編號取得有誤(達上限), 請通知系統人員！</h1></div>");
+            //Response.End();
+            throw new Exception("本所編號取得有誤(達上限), 請通知系統人員！");
         } else {
             seq1 = cChars[cinx].ToString();
         }
@@ -516,35 +518,11 @@
         objResult = conn.ExecuteScalar(SQL);
         int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
         if (cnt != 0) {
-            strOut.AppendLine("<div align='center'><h1>本所編號取得有誤, 請通知系統人員！</h1></div>");
-            Response.End();
+            //strOut.AppendLine("<div align='center'><h1>本所編號取得有誤(已存在), 請通知系統人員！</h1></div>");
+            //Response.End();
+            throw new Exception("本所編號取得有誤(已存在), 請通知系統人員！");
         }
         return seq1;
-    }
-
-    private string move_file(string RSno, string drawValue, string suffix) {
-        Sys sfile = new Sys();
-        sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
-
-        if (drawValue.Trim() == "" || drawValue == null)
-            return "";
-
-        string aa = drawValue.ToLower();
-        string newfilename = "";
-        if (aa != "") {
-            //2013/11/26修改可以中文檔名上傳及虛擬路徑
-            //string strpath = "/btbrt/" + Session["seBranch"] + "T/temp";
-            string strpath = sfile.gbrWebDir + "/temp";
-            //string attach_name = RSno + System.IO.Path.GetExtension(aa);//重新命名檔名
-            //string attach_name = filename + System.IO.Path.GetExtension(aa);//重新命名檔名
-            string attach_name = RSno + suffix + System.IO.Path.GetExtension(aa);//重新命名檔名
-            newfilename = strpath + "/" + attach_name;//存在資料庫路徑
-            if (aa.IndexOf("/") > -1 || aa.IndexOf("\\") > -1)
-                Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
-            else
-                Sys.RenameFile(strpath + "/" + aa, strpath + "/" + attach_name, true);
-        }
-        return newfilename;
     }
 
     /// <summary>
@@ -613,7 +591,7 @@
 
             SQL = "select * from dmt where seq = " + seq + " and seq1 = '" + seq1 + "'";
             using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                if (dr.Read()) {
+                if (!dr.Read()) {
                     dr.Close();
                     SQL = "insert into dmt ";
                     ColMap.Clear();
@@ -651,8 +629,8 @@
                     }
                     ColMap["prior_no"] = Util.dbnull(dt.Rows[0].SafeRead("prior_no", ""));
                     ColMap["prior_country"] = Util.dbnull(dt.Rows[0].SafeRead("prior_country", ""));
-                    ColMap["term1"] = Util.dbnull(dt.Rows[0].SafeRead("dmt_term1", ""));
-                    ColMap["term2"] = Util.dbnull(dt.Rows[0].SafeRead("dmt_term2", ""));
+                    ColMap["term1"] = Util.dbnull(dt.Rows[0].GetDateTimeString("dmt_term1", "yyyy/M/d"));
+                    ColMap["term2"] = Util.dbnull(dt.Rows[0].GetDateTimeString("dmt_term2", "yyyy/M/d"));
                     ColMap["tcn_ref"] = Util.dbnull(dt.Rows[0].SafeRead("tcn_ref", ""));
                     ColMap["tcn_class"] = Util.dbnull(dt.Rows[0].SafeRead("tcn_class", ""));
                     ColMap["tcn_name"] = Util.dbnull(dt.Rows[0].SafeRead("tcn_name", ""));
@@ -666,10 +644,10 @@
                         ColMap["mseq1"] = Util.dbnull(dt.Rows[0].SafeRead("ref_no1", ""));
                     }
                     if (insflag == "I") {
-                        ColMap["pay_times"] = Util.dbchar(seq1);
-                        ColMap["pay_date"] = Util.dbchar(seq1);
+                        ColMap["pay_times"] = Util.dbnull(ReqVal.TryGet("pay_times"));
+                        ColMap["pay_date"] = Util.dbnull(ReqVal.TryGet("pay_date"));
                     }
-                    ColMap["end_date"] = Util.dbnull(dt.Rows[0].SafeRead("end_date", ""));
+                    ColMap["end_date"] = Util.dbnull(dt.Rows[0].GetDateTimeString("end_date", "yyyy/M/d"));
                     ColMap["end_code"] = Util.dbnull(dt.Rows[0].SafeRead("end_code", ""));
                     ColMap["renewal"] = Util.dbzero(dt.Rows[0].SafeRead("renewal", ""));
                     ColMap["scode"] = Util.dbnull(dt.Rows[0].SafeRead("in_scode", ""));
@@ -717,8 +695,8 @@
                     }
                     ColMap["prior_no"] = Util.dbnull(dt.Rows[0].SafeRead("prior_no", ""));
                     ColMap["prior_country"] = Util.dbnull(dt.Rows[0].SafeRead("prior_country", ""));
-                    ColMap["term1"] = Util.dbnull(dt.Rows[0].SafeRead("dmt_term1", ""));
-                    ColMap["term2"] = Util.dbnull(dt.Rows[0].SafeRead("dmt_term2", ""));
+                    ColMap["term1"] = Util.dbnull(dt.Rows[0].GetDateTimeString("dmt_term1", "yyyy/M/d"));
+                    ColMap["term2"] = Util.dbnull(dt.Rows[0].GetDateTimeString("dmt_term2", "yyyy/M/d"));
                     ColMap["tcn_ref"] = Util.dbnull(dt.Rows[0].SafeRead("tcn_ref", ""));
                     ColMap["tcn_class"] = Util.dbnull(dt.Rows[0].SafeRead("tcn_class", ""));
                     ColMap["tcn_name"] = Util.dbnull(dt.Rows[0].SafeRead("tcn_name", ""));
@@ -975,7 +953,7 @@
 
             SQL = "select * from dmt where seq = " + cseq + " and seq1 = '" + cseq1 + "'";
             using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                if (dr.Read()) {
+                if (!dr.Read()) {
                     SQL = "insert into dmt ";
                     ColMap.Clear();
                     ColMap["seq"] = Util.dbnull(seq);
@@ -1012,15 +990,15 @@
                     }
                     ColMap["prior_no"] = Util.dbnull(dr.SafeRead("prior_no", ""));
                     ColMap["prior_country"] = Util.dbnull(dr.SafeRead("prior_country", ""));
-                    ColMap["term1"] = Util.dbnull(dr.SafeRead("term1", ""));
-                    ColMap["term2"] = Util.dbnull(dr.SafeRead("term2", ""));
+                    ColMap["term1"] = Util.dbnull(dr.GetDateTimeString("term1", "yyyy/M/d"));
+                    ColMap["term2"] = Util.dbnull(dr.GetDateTimeString("term2", "yyyy/M/d"));
                     ColMap["tcn_ref"] = Util.dbnull(dr.SafeRead("tcn_ref", ""));
                     ColMap["tcn_class"] = Util.dbnull(dr.SafeRead("tcn_class", ""));
                     ColMap["tcn_name"] = Util.dbnull(dr.SafeRead("tcn_name", ""));
                     ColMap["tcn_mark"] = Util.dbnull(dr.SafeRead("tcn_mark", ""));
                     ColMap["mseq"] = Util.dbnull(dr.SafeRead("mseq", ""));
                     ColMap["mseq1"] = Util.dbnull(dr.SafeRead("mseq1", ""));
-                    ColMap["end_date"] = Util.dbnull(dr.SafeRead("end_date", ""));
+                    ColMap["end_date"] = Util.dbnull(dr.GetDateTimeString("end_date", "yyyy/M/d"));
                     ColMap["end_code"] = Util.dbnull(dr.SafeRead("end_code", ""));
                     ColMap["renewal"] = Util.dbzero(dr.SafeRead("renewal", ""));
                     ColMap["scode"] = Util.dbnull(Mscode);
@@ -1103,48 +1081,48 @@
                     SQL += ",b.ap_eaddr1 as ap_ap_eaddr1,b.ap_eaddr2 as ap_ap_eaddr2,b.ap_eaddr3 as ap_ap_eaddr3,b.ap_eaddr4 as ap_ap_eaddr4 ";
                     SQL += "from dmt_temp_ap a left outer join apcust b on a.apsqlno=b.apsqlno ";
                     SQL += " where a.in_no='" + Min_no + "' and a.case_sqlno = 0";
-                    using (SqlDataReader dr2 = conn.ExecuteReader(SQL)) {
-                        if (dr2.HasRows) {
-                            Sys.insert_log_table(conn, "U", HTProgCode, "dmt_ap", "seq;seq1", seq + ";" + seq1, logReason);
-                            SQL = "delete from dmt_ap where seq=" + seq + " and seq1='" + seq1 + "'";
-                            conn.ExecuteNonQuery(SQL);
-                            while (dr2.Read()) {
-                                //因交辦案件申請人先前無中英文地址，當無申請人序號，則依申請人檔資料顯示
-                                //若申請人序號>=0，則以交辦案件申請人為準
-                                string ap_sql = dr2.SafeRead("ap_sql", "");
-                                string ap_zip = dr2.SafeRead("ap_zip", "");
-                                string ap_addr1 = dr2.SafeRead("ap_addr1", "");
-                                string ap_addr2 = dr2.SafeRead("ap_addr2", "");
-                                string ap_eaddr1 = dr2.SafeRead("ap_eaddr1", "");
-                                string ap_eaddr2 = dr2.SafeRead("ap_eaddr2", "");
-                                string ap_eaddr3 = dr2.SafeRead("ap_eaddr3", "");
-                                string ap_eaddr4 = dr2.SafeRead("ap_eaddr4", "");
-                                if (ap_sql == "") {
-                                    ap_zip = dr2.SafeRead("ap_ap_zip", "");
-                                    ap_addr1 = dr2.SafeRead("ap_ap_addr1", "");
-                                    ap_addr2 = dr2.SafeRead("ap_ap_addr2", "");
-                                    ap_eaddr1 = dr2.SafeRead("ap_ap_eaddr1", "");
-                                    ap_eaddr2 = dr2.SafeRead("ap_ap_eaddr2", "");
-                                    ap_eaddr3 = dr2.SafeRead("ap_ap_eddr3", "");
-                                    ap_eaddr4 = dr2.SafeRead("ap_ap_eddr4", "");
-                                }
+                    DataTable dr2 = new DataTable();
+                    conn.DataTable(SQL, dr2);
 
-                                SQL = "insert into dmt_ap (branch,seq,seq1,apsqlno,server_flag,apcust_no,ap_cname,ap_ename,tran_date,tran_scode,ap_fcname,ap_lcname,ap_fename,ap_lename,ap_sql,ap_zip,ap_addr1,ap_addr2,ap_eaddr1,ap_eaddr2,ap_eaddr3,ap_eaddr4) values (";
-                                SQL += "'" + Session["seBranch"] + "'," + seq + ",'" + seq1 + "'," + Util.dbnull(dr2.SafeRead("apsqlno", "")) + "," + Util.dbchar(dr2.SafeRead("server_flag", "")) + "";
-                                SQL += "," + Util.dbchar(dr2.SafeRead("apcust_no", "")) + "," + Util.dbchar(dr2.SafeRead("ap_cname", "")) + "," + Util.dbchar(dr2.SafeRead("ap_ename", "")) + ",getdate(),'" + Session["scode"] + "'";
-                                SQL += "," + Util.dbchar(dr2.SafeRead("ap_fcname", "")) + "," + Util.dbchar(dr2.SafeRead("ap_lcname", "")) + "," + Util.dbchar(dr2.SafeRead("ap_fename", "")) + "," + Util.dbchar(dr2.SafeRead("ap_lename", "")) + "";
-                                SQL += "," + Util.dbzero(ap_sql) + "," + Util.dbchar(ap_zip) + "," + Util.dbchar(ap_addr1) + "," + Util.dbchar(ap_addr2) + "";
-                                SQL += "," + Util.dbchar(ap_eaddr1) + "," + Util.dbchar(ap_eaddr2) + "," + Util.dbchar(ap_eaddr3) + "," + Util.dbchar(ap_eaddr4) + ")";
-                                conn.ExecuteNonQuery(SQL);
+                    if (dr2.Rows.Count > 0) {
+                        Sys.insert_log_table(conn, "U", HTProgCode, "dmt_ap", "seq;seq1", seq + ";" + seq1, logReason);
+                        SQL = "delete from dmt_ap where seq=" + seq + " and seq1='" + seq1 + "'";
+                        conn.ExecuteNonQuery(SQL);
+                        for (int n = 0; n < dr2.Rows.Count; n++) {
+                            //因交辦案件申請人先前無中英文地址，當無申請人序號，則依申請人檔資料顯示
+                            //若申請人序號>=0，則以交辦案件申請人為準
+                            string ap_sql = dr2.Rows[n].SafeRead("ap_sql", "");
+                            string ap_zip = dr2.Rows[n].SafeRead("ap_zip", "");
+                            string ap_addr1 = dr2.Rows[n].SafeRead("ap_addr1", "");
+                            string ap_addr2 = dr2.Rows[n].SafeRead("ap_addr2", "");
+                            string ap_eaddr1 = dr2.Rows[n].SafeRead("ap_eaddr1", "");
+                            string ap_eaddr2 = dr2.Rows[n].SafeRead("ap_eaddr2", "");
+                            string ap_eaddr3 = dr2.Rows[n].SafeRead("ap_eaddr3", "");
+                            string ap_eaddr4 = dr2.Rows[n].SafeRead("ap_eaddr4", "");
+                            if (ap_sql == "") {
+                                ap_zip = dr2.Rows[n].SafeRead("ap_ap_zip", "");
+                                ap_addr1 = dr2.Rows[n].SafeRead("ap_ap_addr1", "");
+                                ap_addr2 = dr2.Rows[n].SafeRead("ap_ap_addr2", "");
+                                ap_eaddr1 = dr2.Rows[n].SafeRead("ap_ap_eaddr1", "");
+                                ap_eaddr2 = dr2.Rows[n].SafeRead("ap_ap_eaddr2", "");
+                                ap_eaddr3 = dr2.Rows[n].SafeRead("ap_ap_eddr3", "");
+                                ap_eaddr4 = dr2.Rows[n].SafeRead("ap_ap_eddr4", "");
                             }
-                        } else {
-                            dr2.Close();
-                            upddmtap = true;
-                            SQL = "select apcust_no from apcust where apsqlno = '" + RTreg.Rows[0].SafeRead("apsqlno", "") + "'";
-                            using (SqlDataReader dr3 = conn.ExecuteReader(SQL)) {
-                                if (dr3.Read()) {
-                                    lapcust_no = dr3.SafeRead("apcust_no", "");
-                                }
+
+                            SQL = "insert into dmt_ap (branch,seq,seq1,apsqlno,server_flag,apcust_no,ap_cname,ap_ename,tran_date,tran_scode,ap_fcname,ap_lcname,ap_fename,ap_lename,ap_sql,ap_zip,ap_addr1,ap_addr2,ap_eaddr1,ap_eaddr2,ap_eaddr3,ap_eaddr4) values (";
+                            SQL += "'" + Session["seBranch"] + "'," + seq + ",'" + seq1 + "'," + Util.dbnull(dr2.Rows[n].SafeRead("apsqlno", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("server_flag", "")) + "";
+                            SQL += "," + Util.dbchar(dr2.Rows[n].SafeRead("apcust_no", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_cname", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_ename", "")) + ",getdate(),'" + Session["scode"] + "'";
+                            SQL += "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_fcname", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_lcname", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_fename", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_lename", "")) + "";
+                            SQL += "," + Util.dbzero(ap_sql) + "," + Util.dbchar(ap_zip) + "," + Util.dbchar(ap_addr1) + "," + Util.dbchar(ap_addr2) + "";
+                            SQL += "," + Util.dbchar(ap_eaddr1) + "," + Util.dbchar(ap_eaddr2) + "," + Util.dbchar(ap_eaddr3) + "," + Util.dbchar(ap_eaddr4) + ")";
+                            conn.ExecuteNonQuery(SQL);
+                        }
+                    } else {
+                        upddmtap = true;
+                        SQL = "select apcust_no from apcust where apsqlno = '" + RTreg.Rows[0].SafeRead("apsqlno", "") + "'";
+                        using (SqlDataReader dr3 = conn.ExecuteReader(SQL)) {
+                            if (dr3.Read()) {
+                                lapcust_no = dr3.SafeRead("apcust_no", "");
                             }
                         }
                     }
@@ -1155,8 +1133,8 @@
             Sys.insert_log_table(conn, "U", HTProgCode, "dmt", "seq;seq1", seq + ";" + seq1, logReason + "舊案修改");
             SQL = "update dmt set ";
             ColMap.Clear();
-            ColMap["s_mark"] = Util.dbchar(RTreg.Rows[0].SafeRead("s_mark", ""));
-            ColMap["pul"] = Util.dbchar(RTreg.Rows[0].SafeRead("pul", ""));
+            ColMap["s_mark"] = Util.dbnull(RTreg.Rows[0].SafeRead("s_mark", ""));
+            ColMap["pul"] = Util.dbnull(RTreg.Rows[0].SafeRead("pul", ""));
             ColMap["class"] = Util.dbnull(RTreg.Rows[0].SafeRead("class", ""));
             ColMap["class_count"] = Util.dbzero(RTreg.Rows[0].SafeRead("class_count", ""));
             if (ncname1 != "") {
@@ -1186,8 +1164,8 @@
             }
             ColMap["prior_no"] = Util.dbnull(RTreg.Rows[0].SafeRead("prior_no", ""));
             ColMap["prior_country"] = Util.dbnull(RTreg.Rows[0].SafeRead("prior_country", ""));
-            ColMap["term1"] = Util.dbnull(RTreg.Rows[0].SafeRead("dmt_term1", ""));
-            ColMap["term2"] = Util.dbnull(RTreg.Rows[0].SafeRead("dmt_term2", ""));
+            ColMap["term1"] = Util.dbnull(RTreg.Rows[0].GetDateTimeString("dmt_term1", "yyyy/M/d"));
+            ColMap["term2"] = Util.dbnull(RTreg.Rows[0].GetDateTimeString("dmt_term2", "yyyy/M/d"));
             ColMap["tcn_ref"] = Util.dbnull(RTreg.Rows[0].SafeRead("tcn_ref", ""));
             ColMap["tcn_class"] = Util.dbnull(RTreg.Rows[0].SafeRead("tcn_class", ""));
             ColMap["tcn_name"] = Util.dbnull(RTreg.Rows[0].SafeRead("tcn_name", ""));
@@ -1263,7 +1241,7 @@
             }
 
             //2011/2/14復案註記，結案進行中取消結案流程並銷管結案期限
-            if (ReqVal.TryGet("back_flag").Trim() == "Y") {
+            if (RTreg.Rows[0].SafeRead("back_flag","").Trim() == "Y") {
                 update_tododmt_end(seq, seq1);
             }
         }
@@ -1341,7 +1319,7 @@
             }
 
             //2011/2/14復案註記，結案進行中取消結案流程並銷管結案期限
-            if (ReqVal.TryGet("back_flag").Trim() == "Y") {
+            if (RTreg.Rows[0].SafeRead("back_flag","").Trim() == "Y") {
                 update_tododmt_end(seq, seq1);
             }
         }
@@ -1466,7 +1444,7 @@
             conn.ExecuteNonQuery(SQL);
 
             //2011/2/14復案註記，結案進行中取消結案流程並銷管結案期限
-            if (ReqVal.TryGet("back_flag").Trim() == "Y") {
+            if (RTreg.Rows[0].SafeRead("back_flag","").Trim() == "Y") {
                 update_tododmt_end(seq, seq1);
             }
         }
@@ -1478,32 +1456,33 @@
     private void update_tododmt_end(string pseq, string pseq1) {
         //檢查有無結案進行中
         SQL = "select * from todo_dmt where seq=" + pseq + " and seq1='" + pseq1 + "' and job_status='NN' and dowhat like '%END%' ";
-        using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-            while (dr.Read()) {
-                //銷管結案期限
-                SQL = "insert into resp_dmt(sqlno,rs_no,branch,seq,seq1,step_grade,resp_grade,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_type,resp_remark,tran_date,tran_scode) ";
-                SQL += "select sqlno,rs_no,branch,seq,seq1,step_grade,0,ctrl_type,ctrl_remark,ctrl_date,'" + DateTime.Today.ToShortDateString() + "','','復案取消結案',getdate(),'" + Session["scode"] + "' ";
-                SQL += "from ctrl_dmt where sqlno in(";
-                SQL += "select sqlno from ctrl_dmt where seq=" + pseq + " and seq1='" + pseq1 + "' and step_grade='" + dr["step_grade"] + "' andc ctrl_type in ('B6','B61') ";
-                SQL += ")";
-                conn.ExecuteNonQuery(SQL);
+        DataTable dr = new DataTable();
+        conn.DataTable(SQL, dr);
 
-                SQL = "delete from ctrl_dmt where sqlno in(";
-                SQL += "select sqlno from ctrl_dmt where seq=" + pseq + " and seq1='" + pseq1 + "' and step_grade='" + dr["step_grade"] + "' andc ctrl_type in ('B6','B61') ";
-                SQL += ")";
-                conn.ExecuteNonQuery(SQL);
-
-                //更新結案流程狀態
-                SQL = "update todo_dmt set job_status = 'XX' ";
-                SQL += " ,approve_scode = '" + Session["scode"] + "' ";
-                SQL += " ,approve_desc = '復案取消結案流程'";
-                SQL += " ,resp_date=getdate() ";
-                SQL += " where sqlno in(";
-                SQL += "select sqlno from ctrl_dmt where seq=" + pseq + " and seq1='" + pseq1 + "' and step_grade='" + dr["step_grade"] + "' andc ctrl_type in ('B6','B61') ";
-                SQL += ")";
-                conn.ExecuteNonQuery(SQL);
-            }
+        for (int n = 0; n < dr.Rows.Count; n++) {
+            //銷管結案期限
+            SQL = "insert into resp_dmt(sqlno,rs_no,branch,seq,seq1,step_grade,resp_grade,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_type,resp_remark,tran_date,tran_scode) ";
+            SQL += "select sqlno,rs_no,branch,seq,seq1,step_grade,0,ctrl_type,ctrl_remark,ctrl_date,'" + DateTime.Today.ToShortDateString() + "','','復案取消結案',getdate(),'" + Session["scode"] + "' ";
+            SQL += "from ctrl_dmt where sqlno in(";
+            SQL += "select sqlno from ctrl_dmt where seq=" + pseq + " and seq1='" + pseq1 + "' and step_grade='" + dr.Rows[n]["step_grade"] + "' and ctrl_type in ('B6','B61') ";
+            SQL += ")";
+            conn.ExecuteNonQuery(SQL);
+            
+            SQL = "delete from ctrl_dmt where sqlno in(";
+            SQL += "select sqlno from ctrl_dmt where seq=" + pseq + " and seq1='" + pseq1 + "' and step_grade='" + dr.Rows[n]["step_grade"] + "' and ctrl_type in ('B6','B61') ";
+            SQL += ")";
+            conn.ExecuteNonQuery(SQL);
         }
+
+        //更新結案流程狀態
+        SQL = "update todo_dmt set job_status = 'XX' ";
+        SQL += " ,approve_scode = '" + Session["scode"] + "' ";
+        SQL += " ,approve_desc = '復案取消結案流程'";
+        SQL += " ,resp_date=getdate() ";
+        SQL += " where sqlno in(";
+        SQL += "select sqlno from todo_dmt where seq=" + pseq + " and seq1='" + pseq1 + "' and job_status='NN' and dowhat like '%END%' ";
+        SQL += ")";
+        conn.ExecuteNonQuery(SQL);
     }
 
     /// <summary>
@@ -1573,7 +1552,7 @@
         SQL += "," + Util.dbnull(ReqVal.TryGet("rs_detail")) + "," + Util.dbnull(ReqVal.TryGet("doc_detail")) + "";
         SQL += "," + Util.dbnull(ReqVal.TryGet("receive_no")) + ",'" + pr_status + "'," + Util.dbnull(pr_scode) + "";
         SQL += ",'" + case_no + "','N'," + tot_num + ",getdate(),'" + Session["scode"] + "','" + opt_stat + "'," + Util.dbnull(ReqVal.TryGet("send_way")) + ")";
-        //conn.ExecuteNonQuery(SQL);
+        conn.ExecuteNonQuery(SQL);
 
         //抓insert後的流水號
         SQL = "SELECT SCOPE_IDENTITY() AS Current_Identity";

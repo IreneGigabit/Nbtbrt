@@ -202,7 +202,6 @@
             alert("分割案件數不可超過30筆");
             $("#tot_num1").val("1").focus();
             return false;
-
         }
 
         var doCount = Math.max(0, CInt(arcaseCount));//要改為幾筆,最少是0
@@ -222,6 +221,12 @@
                 $('#tabbDa_' + nRow).remove();
                 $("#cnt1").val(nRow - 1);
             }
+        }
+
+        if (main.prgid.Left(4) == "brt1" || main.prgid == "brt51") {//營洽交辦/編修/客收確認時不顯示分割案號
+            $(".brt11hide").hide();
+        } else {
+            $(".brt11hide").show();
         }
     }
 
@@ -402,10 +407,6 @@
             if (main.prgid != "brt52") {
                 $('#tfy_case_stat option:eq(1)').val("").text("");//案件種類
             }
-        }
-
-        if (main.prgid.Left(4) == "brt1") {//營洽交辦/編修時不顯示分割案號
-            $(".brt11hide").hide();
         }
     }
 </script>

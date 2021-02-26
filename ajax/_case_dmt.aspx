@@ -488,10 +488,10 @@
                     cr_form["case_stat"] = dr.SafeRead("case_stat", "");
                     cr_form["case_statnm"] = dr.SafeRead("case_stat_name", "");
 
-                    if (dr.SafeRead("back_flag", "") == "Y") {
+                    if (dtCaseMain.Rows[0].SafeRead("back_flag", "") == "Y") {
                         cr_form["rs_detail"] += "(請復案)";
                     }
-                    if (dr.SafeRead("end_flag", "") == "Y") {
+                    if (dtCaseMain.Rows[0].SafeRead("end_flag", "") == "Y") {
                         cr_form["rs_detail"] += "(請結案)";
                     }
 

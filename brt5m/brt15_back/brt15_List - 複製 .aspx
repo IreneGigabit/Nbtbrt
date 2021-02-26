@@ -93,7 +93,7 @@
             //處理分頁
             int nowPage = Convert.ToInt32(Request["GoPage"] ?? "1"); //第幾頁
             int PerPageSize = Convert.ToInt32(Request["PerPage"] ?? "10"); //每頁筆數
-            Paging page = new Paging(nowPage, PerPageSize, string.Join(";", conn.exeSQL.ToArray()));
+            Paging page = new Paging(nowPage, PerPageSize, SQL);
             page.GetPagedTable(dt);
 
             //分頁完再處理其他資料才不會虛耗資源

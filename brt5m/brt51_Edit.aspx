@@ -25,7 +25,6 @@
     protected Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
     protected string SQL = "";
-    protected string json = "";
 
     protected string submitTask = "";
     protected string cgrs = "CR";
@@ -54,7 +53,6 @@
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
-        json = ReqVal.TryGet("json").ToUpper();
         submitTask = ReqVal.TryGet("submittask").ToUpper();
         
         TokenN myToken = new TokenN(HTProgCode);
@@ -62,7 +60,6 @@
         HTProgCap = myToken.Title.Replace("收文", "<font color=blue>收文</font>");
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
-            if (json == "Y") QueryData();
             
             PageLayout();
             ChildBind();
@@ -98,209 +95,6 @@
     private void ChildBind() {
     }
 
-    private void QueryData() {
-        Dictionary<string, string> crmain = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        crmain["seq"] = ReqVal.TryGet("seq");
-        crmain["seq1"] = ReqVal.TryGet("seq1");
-        crmain["in_scode"] = ReqVal.TryGet("in_scode");
-        crmain["in_no"] = ReqVal.TryGet("in_no");
-        crmain["code"] = ReqVal.TryGet("code");
-        crmain["cust_area"] = ReqVal.TryGet("cust_area");
-        crmain["cust_seq"] = ReqVal.TryGet("cust_seq");
-        crmain["endflag51"] = ReqVal.TryGet("endflag51");
-        crmain["end_date51"] = ReqVal.TryGet("end_date51");
-        crmain["end_code51"] = ReqVal.TryGet("end_code51");
-        crmain["end_type51"] = ReqVal.TryGet("end_type51");
-        crmain["end_remark51"] = ReqVal.TryGet("end_remark51");
-        crmain["seqend_flag"] = ReqVal.TryGet("seqend_flag");
-
-        crmain["seq1"] = ReqVal.TryGet("seq1");
-        crmain["step_date"] = DateTime.Today.ToShortDateString();
-        crmain["cg"] = "C";
-        crmain["rs"] = "R";
-        crmain["cgrs"] = cgrs;
-        crmain["send_cl"] = "1";
-        crmain["act_code"] = "_";
-
-        string spe_ctrl3 = "N";
-        string send_way = "";
-        SQL = "select a.*,b.mark as codemark,c.dmt_term1,c.dmt_term2 ";
-	    SQL+="from case_dmt a inner join code_br b on b.dept='T' and b.cr='Y' and b.rs_type=a.arcase_type and b.rs_code=a.arcase ";
-	    SQL+="inner join dmt_temp c on a.in_scode=c.in_scode and a.in_no=c.in_no ";
-	    SQL+="where a.in_scode ='" +Request["in_scode"]+ "' and a.in_no = '" +Request["in_no"]+ "'";
-        DataTable dt = new DataTable();
-        conn.DataTable(SQL,dt);
-        if (dt.Rows.Count > 0) {
-            if (dt.Rows[0].SafeRead("seq", "") != "") {
-                crmain["seq"] = dt.Rows[0].SafeRead("seq", "");
-                crmain["seq1"] = dt.Rows[0].SafeRead("seq1", "");
-                send_way = dt.Rows[0].SafeRead("send_way", "");//收文方式改由營洽登錄帶入值
-                crmain["receipt_type"] = dt.Rows[0].SafeRead("receipt_type", "");
-                crmain["receipt_title"] = dt.Rows[0].SafeRead("receipt_title", "B");//預設空白
-            }
-            //收文代碼
-            crmain["codemark"] = dt.Rows[0].SafeRead("codemark", "");//收文代碼備註：B爭救案
-            crmain["dmt_term1"] = dt.Rows[0].GetDateTimeString("dmt_term1", "yyyy/M/d");//專用期限起日check非創申案有期限者提醒需註記註冊費繳費狀態
-            crmain["dmt_term2"] = dt.Rows[0].GetDateTimeString("dmt_term2", "yyyy/M/d");//專用期限迄日
-            crmain["cust_date"] = dt.Rows[0].GetDateTimeString("cust_date", "yyyy/M/d");//客戶期限
-            crmain["pr_date"] = dt.Rows[0].GetDateTimeString("pr_date", "yyyy/M/d");//承辦期限
-            crmain["case_last_date"] = dt.Rows[0].GetDateTimeString("last_date", "yyyy/M/d");//營洽輸入法定期限
-
-            SQL = " select rs_type,rs_class,rs_code,rs_detail,case_stat,case_stat_name,spe_ctrl ";
-            SQL += "from vcode_act ";
-            SQL += "where rs_code = '" + dt.Rows[0].SafeRead("arcase", "") + "' and act_code = '_' ";
-            SQL += "and rs_type = '" + dt.Rows[0].SafeRead("arcase_type", "") + "'";
-            SQL += "and cg = 'C' and rs = 'R'";
-            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                if (dr.Read()) {
-                    crmain["rs_type"] = dr.SafeRead("rs_type", "");
-                    crmain["rs_class"] = dr.SafeRead("rs_class", "");
-                    crmain["rs_code"] = dr.SafeRead("rs_code", "");
-                    crmain["rs_detail"] = dr.SafeRead("rs_detail", "");
-                    crmain["case_stat"] = dr.SafeRead("case_stat", "");
-                    crmain["case_statnm"] = dr.SafeRead("case_stat_name", "");
-
-                    if (dr.SafeRead("back_flag", "") == "Y") {
-                        crmain["rs_detail"] = crmain["rs_detail"] + "(請復案)";
-                    }
-                    if (dr.SafeRead("end_flag", "") == "Y") {
-                        crmain["rs_detail"] = crmain["rs_detail"] + "(請結案)";
-                    }
-
-                    string[] spe_ctrl = dr.SafeRead("spe_ctrl", "").Split(',');//抓取案性控制
-                    if (spe_ctrl.Length >= 3) spe_ctrl3 = (spe_ctrl[2] == "" ? "N" : spe_ctrl[2]);//是否只為爭救案
-                    if (spe_ctrl.Length >= 4 && send_way == "") send_way = spe_ctrl[3];//抓取案性控制之發文方式,(若營洽登錄沒值才帶入案性設定)
-                }
-            }
-        }
-        if (send_way == "") send_way = "M";//發文方式若無給M_親送
-        crmain["spe_ctrl3"] = spe_ctrl3;
-        crmain["send_way"] = send_way;
-        
-        //進度序號
-        SQL = "select isnull(step_grade,0)+1 from dmt where seq = '" + crmain["seq"] + "' and seq1 = '" + crmain["seq1"] + "'";
-        object objResult = conn.ExecuteScalar(SQL);
-        int nstep_grade = (objResult == DBNull.Value || objResult == null) ? 1 : Convert.ToInt32(objResult);
-        crmain["step_grade"] = nstep_grade.ToString();
-
-        var settings = new JsonSerializerSettings()
-        {
-            Formatting = Formatting.None,
-            ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
-            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
-        };
-
-        Response.Write(JsonConvert.SerializeObject(crmain, settings).ToUnicode() + "\n");
-        Response.End();
-    }
-
-    /*
-    private void QueryData() {
-        Dictionary<string, string> crmain = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        crmain["seq"] = ReqVal.TryGet("seq");
-        crmain["seq1"] = ReqVal.TryGet("seq1");
-        crmain["in_scode"] = ReqVal.TryGet("in_scode");
-        crmain["in_no"] = ReqVal.TryGet("in_no");
-        crmain["code"] = ReqVal.TryGet("code");
-        crmain["cust_area"] = ReqVal.TryGet("cust_area");
-        crmain["cust_seq"] = ReqVal.TryGet("cust_seq");
-        crmain["endflag51"] = ReqVal.TryGet("endflag51");
-        crmain["end_date51"] = ReqVal.TryGet("end_date51");
-        crmain["end_code51"] = ReqVal.TryGet("end_code51");
-        crmain["end_type51"] = ReqVal.TryGet("end_type51");
-        crmain["end_remark51"] = ReqVal.TryGet("end_remark51");
-        crmain["seqend_flag"] = ReqVal.TryGet("seqend_flag");
-
-        DataTable stepDt = new DataTable();
-        //只取得table結構.不抓資料for收文form
-        SQL = "select *,''cgrs,'' case_stat,''case_statnm ";
-        SQL += "from step_dmt where 1=0";
-        conn.DataTable(SQL, stepDt);
-        DataRow row = stepDt.NewRow();
-        row["seq1"] = ReqVal.TryGet("seq1");
-        row["step_date"] = DateTime.Today.ToShortDateString();
-        row["cg"] = "C";
-        row["rs"] = "R";
-        row["cgrs"] = cgrs;
-        row["send_cl"] = "1";
-        row["act_code"] = "_";
-        stepDt.Rows.Add(row);
-
-        string spe_ctrl3 = "N";
-        string send_way = "";
-
-        SQL = "select a.*,b.mark as codemark,c.dmt_term1,c.dmt_term2 ";
-        SQL += "from case_dmt a inner join code_br b on b.dept='T' and b.cr='Y' and b.rs_type=a.arcase_type and b.rs_code=a.arcase ";
-        SQL += "inner join dmt_temp c on a.in_scode=c.in_scode and a.in_no=c.in_no ";
-        SQL += "where a.in_scode ='" + Request["in_scode"] + "' and a.in_no = '" + Request["in_no"] + "'";
-        DataTable dt = new DataTable();
-        conn.DataTable(SQL, dt);
-        if (dt.Rows.Count > 0) {
-            if (dt.Rows[0].SafeRead("seq", "") != "") {
-                crmain["seq"] = dt.Rows[0].SafeRead("seq", "");
-                crmain["seq1"] = dt.Rows[0].SafeRead("seq1", "");
-                send_way = dt.Rows[0].SafeRead("send_way", "");//收文方式改由營洽登錄帶入值
-                stepDt.Rows[0]["receipt_type"] = dt.Rows[0].SafeRead("receipt_type", "");
-                stepDt.Rows[0]["receipt_title"] = dt.Rows[0].SafeRead("receipt_title", "B");//預設空白
-            }
-            //收文代碼
-            crmain["codemark"] = dt.Rows[0].SafeRead("codemark", "");//收文代碼備註：B爭救案
-            crmain["dmt_term1"] = dt.Rows[0].GetDateTimeString("dmt_term1", "yyyy/M/d");//專用期限起日check非創申案有期限者提醒需註記註冊費繳費狀態
-            crmain["dmt_term2"] = dt.Rows[0].GetDateTimeString("dmt_term2", "yyyy/M/d");//專用期限迄日
-            crmain["cust_date"] = dt.Rows[0].GetDateTimeString("cust_date", "yyyy/M/d");//客戶期限
-            crmain["pr_date"] = dt.Rows[0].GetDateTimeString("pr_date", "yyyy/M/d");//承辦期限
-            crmain["case_last_date"] = dt.Rows[0].GetDateTimeString("last_date", "yyyy/M/d");//營洽輸入法定期限
-
-            SQL = " select rs_type,rs_class,rs_code,rs_detail,case_stat,case_stat_name,spe_ctrl ";
-            SQL += "from vcode_act ";
-            SQL += "where rs_code = '" + dt.Rows[0].SafeRead("arcase", "") + "' and act_code = '_' ";
-            SQL += "and rs_type = '" + dt.Rows[0].SafeRead("arcase_type", "") + "'";
-            SQL += "and cg = 'C' and rs = 'R'";
-            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                if (dr.Read()) {
-                    stepDt.Rows[0]["rs_type"] = dr.SafeRead("rs_type", "");
-                    stepDt.Rows[0]["rs_class"] = dr.SafeRead("rs_class", "");
-                    stepDt.Rows[0]["rs_code"] = dr.SafeRead("rs_code", "");
-                    stepDt.Rows[0]["rs_detail"] = dr.SafeRead("rs_detail", "");
-                    stepDt.Rows[0]["case_stat"] = dr.SafeRead("case_stat", "");
-                    stepDt.Rows[0]["case_statnm"] = dr.SafeRead("case_stat_name", "");
-
-                    if (dr.SafeRead("back_flag", "") == "Y") {
-                        stepDt.Rows[0]["rs_detail"] = row["rs_detail"] + "(請復案)";
-                    }
-                    if (dr.SafeRead("end_flag", "") == "Y") {
-                        stepDt.Rows[0]["rs_detail"] = row["rs_detail"] + "(請結案)";
-                    }
-
-                    string[] spe_ctrl = dr.SafeRead("spe_ctrl", "").Split(',');//抓取案性控制
-                    if (spe_ctrl.Length >= 3) spe_ctrl3 = (spe_ctrl[2] == "" ? "N" : spe_ctrl[2]);//是否只為爭救案
-                    if (spe_ctrl.Length >= 4 && send_way == "") send_way = spe_ctrl[3];//抓取案性控制之發文方式,(若營洽登錄沒值才帶入案性設定)
-                }
-            }
-        }
-        if (send_way == "") send_way = "M";//發文方式若無給M_親送
-        crmain["spe_ctrl3"] = spe_ctrl3;
-        stepDt.Rows[0]["send_way"] = send_way;
-
-        //進度序號
-        SQL = "select isnull(step_grade,0)+1 from dmt where seq = '" + crmain["seq"] + "' and seq1 = '" + crmain["seq1"] + "'";
-        object objResult = conn.ExecuteScalar(SQL);
-        int nstep_grade = (objResult == DBNull.Value || objResult == null) ? 1 : Convert.ToInt32(objResult);
-        stepDt.Rows[0]["step_grade"] = nstep_grade;
-
-        var settings = new JsonSerializerSettings()
-        {
-            Formatting = Formatting.None,
-            ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
-            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
-        };
-
-        Response.Write("{");
-        Response.Write("\"cr_main\":" + JsonConvert.SerializeObject(crmain, settings).ToUnicode() + "\n");
-        Response.Write(",\"step_dmt\":" + JsonConvert.SerializeObject(stepDt, settings).ToUnicode() + "\n");
-        Response.Write("}");
-        Response.End();
-    }*/
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
@@ -451,8 +245,8 @@
     
     main.bind = function () {
         $("#codemark").val(jMain.case_main[0].codemark);
-        $("#dmt_term1").val(jMain.case_main[0].dmt_term1);
-        $("#dmt_term2").val(jMain.case_main[0].dmt_term2);
+        $("#dmt_term1").val(dateReviver(jMain.case_main[0].dmt_term1,'yyyy/M/d'));
+        $("#dmt_term2").val(dateReviver(jMain.case_main[0].dmt_term2,'yyyy/M/d'));
         $("#case_last_date").val(jMain.case_main[0].last_date);
         $("#seq").val(jMain.case_main[0].seq);
         $("#seq1").val(jMain.case_main[0].seq1);
@@ -464,8 +258,8 @@
         $("#in_no").val(jMain.case_main[0].in_no);
         $("#in_scode").val(jMain.case_main[0].in_scode);
         $("#change").val(main.change);
-        $("#cust_area1").val(main.cust_area);
-        $("#cust_seq1").val(main.cust_seq);
+        $("#cust_area,#cust_area1").val(main.cust_area);
+        $("#cust_seq,#cust_seq1").val(main.cust_seq);
         $("#rs_no").val(jMain.step_cr.rs_no);
         $("#nstep_grade").val(jMain.step_cr.step_grade);
         $("#cgrs").val(jMain.step_cr.cgrs);
@@ -490,6 +284,17 @@
             $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
         }
         $("input[name='opt_stat'][value='" + jMain.step_cr.opt_stat + "']").prop("checked", true);
+
+        if(main.submittask=="A"){
+            if($("#hrs_code").val()=="FC11"||$("#hrs_code").val()=="FC21"||$("#hrs_code").val()=="FC6"||$("#hrs_code").val()=="FC7"||$("#hrs_code").val()=="FC8"||$("#hrs_code").val()=="FC5"
+                ||$("#hrs_code").val()=="FCI"||$("#hrs_code").val()=="FCH"||$("#hrs_code").val()=="FT2"||$("#hrs_code").val()=="FL5"||$("#hrs_code").val()=="FL6"){
+                cr_form.getdseq();//一案多件
+            }
+            if($("#hrs_code").val().Left(2)=="FD"){
+                cr_form.getdseq1();//分割
+            }
+            cr_form.getCtrl();
+        }
         
         //顯示爭救案交辦欄位
         if ($("#codemark").val()=="B"){
@@ -497,7 +302,7 @@
             //2013/11/5修改，爭救案性預設帶官收法定期限
             if(CInt($("#nstep_grade"))!=1){
                 $("#btnqrygrlastdate").show();//顯示[查官收未銷法定期限按鈕]
-                ctrl_form.Add_button.click();
+                ctrl_form.add_ctrl();
                 $("#ctrl_type_"+$("#ctrlnum").val()).val("A1");
                 getgrlast_date();
             }
@@ -515,17 +320,6 @@
                     $("input[name='end_stat']").prop("checked",false);
                 }
             }
-        }
-
-        if(main.submittask=="A"){
-            if($("#hrs_code").val()=="FC11"||$("#hrs_code").val()=="FC21"||$("#hrs_code").val()=="FC6"||$("#hrs_code").val()=="FC7"||$("#hrs_code").val()=="FC8"||$("#hrs_code").val()=="FC5"
-                ||$("#hrs_code").val()=="FCI"||$("#hrs_code").val()=="FCH"||$("#hrs_code").val()=="FT2"||$("#hrs_code").val()=="FL5"||$("#hrs_code").val()=="FL6"){
-                cr_form.getdseq();//一案多件
-            }
-            if($("#hrs_code").val().Left(2)=="FD"){
-                cr_form.getdseq1();//分割
-            }
-            cr_form.getCtrl();
         }
     }
 
@@ -564,7 +358,6 @@
             }
         });
     }
-
 
     //存檔
     function formAddSubmit(){

@@ -18,8 +18,8 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
-        //syscode = Sys.getAppSetting("Sysmenu");
-        syscode = Sys.GetSession("Syscode");
+        syscode = Sys.Sysmenu;//Sys.getAppSetting("Sysmenu");
+        //syscode = Sys.GetSession("Syscode");
         if ((Request["Syscode"] ?? "") != "") syscode = Request["Syscode"];
 
         TokenN myToken = new TokenN(HTProgCode);

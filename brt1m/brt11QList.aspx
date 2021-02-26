@@ -63,25 +63,25 @@
     private void QueryData() {
         using (DBHelper conn = new DBHelper(Conn.btbrt, false).Debug(Request["chkTest"] == "TEST")) {
             SQL = "select a.seq,a.seq1,a.cappl_name as appl_name,a.cust_area,a.cust_seq,a.apply_no,a.ap_cname1 ";
-	   SQL += ",a.step_date,a.rs_detail,c.grconf_sqlno,c.step_grade,''fseq ";
-       SQL += " from vstep_dmt a ";
-       SQL += " inner join grconf_dmt c on a.seq=c.seq and a.seq1=c.seq1 and a.step_grade=c.step_grade ";
-       SQL += " where c.job_type='case' ";
-        if (qrytype=="Q"){
-           SQL +=  " and (c.job_no is null or c.job_no='') ";
-        }
-        if (qrytype=="S" ){
-           SQL +=  " and c.grconf_sqlno=" + grconf_sqlno;
-        }
-        if (seq !="" ){
-	        SQL +=  " and a.seq like '" + seq + "%'";
-        }
-        if (seq1 !="" ){
-	        SQL +=  " and a.seq1 like '" + seq1 + "%'";
-        }
-        if (cust_seq != "") {
-            SQL += " and a.cust_seq = '" + cust_seq + "'";
-        }
+            SQL += ",a.step_date,a.rs_detail,c.grconf_sqlno,c.step_grade,''fseq ";
+            SQL += " from vstep_dmt a ";
+            SQL += " inner join grconf_dmt c on a.seq=c.seq and a.seq1=c.seq1 and a.step_grade=c.step_grade ";
+            SQL += " where c.job_type='case' ";
+            if (qrytype == "Q") {
+                SQL += " and (c.job_no is null or c.job_no='') ";
+            }
+            if (qrytype == "S") {
+                SQL += " and c.grconf_sqlno=" + grconf_sqlno;
+            }
+            if (seq != "") {
+                SQL += " and a.seq like '" + seq + "%'";
+            }
+            if (seq1 != "") {
+                SQL += " and a.seq1 like '" + seq1 + "%'";
+            }
+            if (cust_seq != "") {
+                SQL += " and a.cust_seq = '" + cust_seq + "'";
+            }
             if (ReqVal.TryGet("SetOrder") != "") {
                 SQL += " order by " + ReqVal.TryGet("SetOrder");
             } else {
@@ -94,7 +94,7 @@
             //處理分頁
             int nowPage = Convert.ToInt32(Request["GoPage"] ?? "1"); //第幾頁
             int PerPageSize = Convert.ToInt32(Request["PerPage"] ?? "10"); //每頁筆數
-            page = new Paging(nowPage, PerPageSize, string.Join(";", conn.exeSQL.ToArray()));
+            page = new Paging(nowPage, PerPageSize, SQL);
             page.GetPagedTable(dt);
 
             //分頁完再處理其他資料才不會虛耗資源

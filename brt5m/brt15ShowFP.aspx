@@ -757,7 +757,11 @@
         if (window.parent.tt !== undefined) {
             window.parent.tt.rows = "100%,0%";
         } else {
-            window.close();
+            if (window.parent.$('.ui-dialog-content:visible').length>0){
+                window.parent.$('.ui-dialog-content:visible').dialog('destroy').empty();
+            }else{
+                window.close();
+            }
         }
     })
 

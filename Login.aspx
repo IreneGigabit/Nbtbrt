@@ -70,24 +70,24 @@ function init_form() {
 }
 
 function formSubmit() {
-    //if (chkNull("帳號", reg.tfx_scode)) {
-    //    return false;
-    //}
-    //
-    //if (chkNull("密碼", reg.tfx_sys_password)) {
-    //    return false;
-    //}
-    var errmsg = "";
-    errmsg += chkNull2("帳號", reg.tfx_scode);
-    errmsg += chkNull2("密碼", reg.tfx_sys_password);
-    if (errmsg!="") {
-        //toastr.clear();
-        toastr.error(errmsg);
-    }else{
+    if (chkNull("帳號", reg.tfx_scode)) {
+        return false;
+    }
+    
+    if (chkNull("密碼", reg.tfx_sys_password)) {
+        return false;
+    }
+    //var errmsg = "";
+    //errmsg += chkNull2("帳號", reg.tfx_scode);
+    //errmsg += chkNull2("密碼", reg.tfx_sys_password);
+    //if (errmsg!="") {
+    //    //toastr.clear();
+    //    toastr.error(errmsg);
+    //}else{
         reg.target = "_top";
         reg.action = "checklogin.aspx";
         reg.submit();
-    }
+    //}
 }
 
 document.body.onkeydown = function(e){

@@ -204,6 +204,103 @@ public static partial class Util
     }
 	#endregion
 
+    #region 產生Option字串 +static string Option(DataRow)
+    /// <summary>
+    /// 產生Option字串(內建「請選擇」)
+    /// </summary> 
+    /// <param name="valueFormat">option的value格式用{}包住欄位,ex:{scode}</param>
+    /// <param name="textFormat">option的文字格式用{}包住欄位,ex:{scode}_{sc_name}</param>
+    /// <returns></returns>
+    public static string Option(this DataRow[] dr, string valueFormat, string textFormat) {
+        return Option(dr, valueFormat, textFormat, "", true);
+    }
+    public static string Option(this DataRow[] dr, string valueFormat, string textFormat, string setValue) {
+        return Option(dr, valueFormat, textFormat, true, setValue);
+    }
+
+    /// <summary>
+    /// 產生Option字串
+    /// </summary> 
+    /// <param name="valueFormat">option的value格式用{}包住欄位,ex:{scode}</param>
+    /// <param name="textFormat">option的文字格式用{}包住欄位,ex:{scode}_{sc_name}</param>
+    /// <param name="showEmpty">空白選項的顯示字串</param>
+    /// <returns></returns>
+    public static string Option(this DataRow[] dr, string valueFormat, string textFormat, bool showEmpty) {
+        return Option(dr, valueFormat, textFormat, "", showEmpty);
+    }
+    public static string Option(this DataRow[] dr, string valueFormat, string textFormat, bool showEmpty, string setValue) {
+        return Option(dr, valueFormat, textFormat, "", showEmpty, setValue, "");
+    }
+
+    /// <summary>
+    /// 產生Option字串
+    /// </summary> 
+    /// <param name="valueFormat">option的value格式用{}包住欄位,ex:{scode}</param>
+    /// <param name="textFormat">option的文字格式用{}包住欄位,ex:{scode}_{sc_name}</param>
+    /// <param name="attrFormat">option的attribute格式用{}包住欄位,ex:value1='{scode1}'</param>
+    /// <param name="showEmpty">空白選項的顯示字串</param>
+    /// <returns></returns>
+    public static string Option(this DataRow[] dr, string valueFormat, string textFormat, string attrFormat, bool showEmpty) {
+        return Option(dr, valueFormat, textFormat, attrFormat, showEmpty, "", "");
+    }
+    /// <summary>
+    /// 產生Option字串
+    /// </summary> 
+    /// <param name="valueFormat">option的value格式用{}包住欄位,ex:{scode}</param>
+    /// <param name="textFormat">option的文字格式用{}包住欄位,ex:{scode}_{sc_name}</param>
+    /// <param name="attrFormat">option的attribute格式用{}包住欄位,ex:value1='{scode1}'</param>
+    /// <param name="showEmpty">空白選項的顯示字串</param>
+    /// <param name="setValue">預設值</param>
+    /// <param name="selectedCond">預設欄位條件,ex:scode=n1262</param>
+    /// <returns></returns>
+    public static string Option(this DataRow[] dr, string valueFormat, string textFormat, string attrFormat, bool showEmpty, string setValue, string selectedCondition) {
+        Regex rgx = new Regex("{([^{}]+)}", RegexOptions.IgnoreCase);
+        string rtnStr = "";
+
+        //處理空白選項
+        if (showEmpty)
+            rtnStr += "<option value='' style='color:blue' selected>請選擇</option>\n";
+
+        for (int r = 0; r < dr.Length; r++) {
+            //處理預設欄位條件
+            string selected = "";
+            if (selectedCondition != "") {
+                string[] column = selectedCondition.Split('=');
+                if (dr[r].Table.Columns.Contains(column[0]) && dr[r][column[0]].ToString() == column[1]) {
+                    selected = " selected";
+                }
+            }
+
+            //處理value
+            string val = valueFormat;
+            foreach (Match match in rgx.Matches(valueFormat)) {
+                val = val.Replace(match.Value, dr[r][match.Result("$1")].ToString());
+            }
+
+            //處理text
+            string txt = textFormat;
+            foreach (Match match in rgx.Matches(textFormat)) {
+                txt = txt.Replace(match.Value, dr[r][match.Result("$1")].ToString());
+            }
+
+            //處理attribute
+            string attr = attrFormat;
+            foreach (Match match in rgx.Matches(attrFormat)) {
+                attr = attr.Replace(match.Value,dr[r][match.Result("$1")].ToString());
+            }
+
+            if (selectedCondition != "")
+                rtnStr += "<option value='" + val + "' " + attr + "" + selected + ">" + txt + "</option>\n";
+            else if (string.Compare(val, setValue, true) == 0)
+                rtnStr += "<option value='" + val + "' selected " + attr + ">" + txt + "</option>\n";
+            else
+                rtnStr += "<option value='" + val + "' " + attr + ">" + txt + "</option>\n";
+
+        }
+        return rtnStr;
+    }
+    #endregion
+
 	#region 產生Radio字串 +static string Radio(DBHelper)
 	/// <summary>
 	/// 產生Radio字串

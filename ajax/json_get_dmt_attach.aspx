@@ -54,7 +54,7 @@
             SQL = "select *,battach_sqlno as attach_sqlno,0 as step_grade,'' as attach_branch,'' as tran_scode,null as tran_date";
             SQL += ",'' as in_no,'' as case_no,'' as doc_type_mark,'' as old_branch,'' as attach_flagtran,0 as tran_sqlno,'' as apattach_sqlno ";
             SQL += " from bdmt_attach_temp ";
-            SQL += " where seq = " + seq + " and seq1 = '" + seq1 + "' and source='" + source + "' and attach_flag<>'D' ";
+            SQL += " where seq = '" + seq + "' and seq1 = '" + seq1 + "' and source='" + source + "' and attach_flag<>'D' ";
             if (att_sqlno != "") {
                 SQL += " and temp_sqlno='" + att_sqlno + "'";
             }
@@ -62,7 +62,7 @@
         } else {//附件檔
             SQL = "select *,(select mark1 from cust_code where code_type='Tdoc' and cust_code=dmt_attach.doc_type) as doc_type_mark,'' as old_branch ";
             SQL += " from dmt_attach ";
-            SQL += " where seq = " + seq + " and seq1 = '" + seq1 + "' and source='" + source + "' and attach_flag<>'D' ";
+            SQL += " where seq = '" + seq + "' and seq1 = '" + seq1 + "' and source='" + source + "' and attach_flag<>'D' ";
             if (step_grade != "") {
                 SQL += " and step_grade=" + step_grade;
             }

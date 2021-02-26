@@ -295,38 +295,6 @@
             $("select,textarea,input,span").lock();
         }
 
-        //console.log("this_init");
-        //-----------------
-        //取得契約書資料
-        //$.ajax({
-        //    type: "get",
-        //    url: getRootPath() + "/ajax/_case_dmt.aspx?prgid=" + main.prgid + "&right=" + main.right + "&formfunction=" + main.formFunction + "&submittask=" + $("#submittask").val() +
-        //        "&cust_area=" + main.cust_area + "&cust_seq=" + main.cust_seq + "&in_no=" + main.in_no + "&code_type=" + main.code_type,
-        //    async: false,
-        //    cache: false,
-        //    success: function (json) {
-        //        //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-        //        toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-        //        jMain = $.parseJSON(json);
-        //    },
-        //    error: function (xhr) {
-        //        $("#dialog").html("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-        //        $("#dialog").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
-        //    }
-        //});
-
-        //畫面準備
-        //cust_form.init();//案件客戶
-        //attent_form.init();//案件聯絡人
-        //apcust_form.init();//案件申請人
-        //case_form.init();//收費與接洽事項
-        ////br_form.init();//交辦內容
-        //upload_form.init();//文件上傳
-        //settab("#case");//收費與接洽事項
-        //
-        ////-----------------
-        //main.bind();//資料綁定
-        //br_form.bind();//交辦內容資料綁定
         $("input.dateField").datepick();
         $(".Lock").lock();
     }

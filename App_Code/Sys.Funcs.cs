@@ -68,6 +68,30 @@ public partial class Sys
     }
     #endregion
 
+    #region getGrpidMaster - 抓指定單位主管
+    /// <summary>
+    /// 抓指定單位主管
+    /// </summary>
+    /// <param name="grpid">所屬grpid</param>
+    /// <param name="master_scode">該單位主管</param>
+    /// <param name="master_scname">譹單位主管名稱</param>
+    public static void getGrpidMaster(string grpClass, ref string grpid, ref string master_scode,ref string master_scname) {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            string SQL = "select grpid,master_scode,sc_name ";
+            SQL += "from grpid g ";
+            SQL += "inner join scode s on g.master_scode=s.scode ";
+            SQL += "WHERE grpclass = '" + grpClass + "' and grpid='" + grpid + "' ";
+            using (SqlDataReader dr = cnn.ExecuteReader(SQL)) {
+                if (dr.Read()) {
+                    grpid = dr.SafeRead("grpid", "");
+                    master_scode = dr.SafeRead("master_scode", "");
+                    master_scname = dr.SafeRead("sc_name", "");
+                }
+            }
+        }
+    }
+    #endregion
+
     #region getGrpidUp - 依grpid向上抓取組織
     /// <summary>
     /// 依grpid向上抓取組織
@@ -420,7 +444,8 @@ public partial class Sys
     /// 組本所編號,ex:NT-33333
     /// </summary>
     public static string formatSeq(string seq, string seq1, string country, string branch, string dept) {
-        string lseq = (seq != "" ? branch + dept.ToUpper() + seq : "");
+        string lseq = (seq != "" ? branch + dept.ToUpper() : "");
+        lseq += (lseq != "" ? "-" : "") + seq;
         lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
         return lseq;
@@ -587,6 +612,49 @@ public partial class Sys
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
 
+            return dt;
+        }
+    }
+    #endregion
+
+    #region getCodeBrAgent - 抓取案性代理人
+    /// <summary>  
+    /// 抓取案性代理人
+    /// </summary>  
+    public static DataTable getCodeBrAgent(string rs_type,string rs_code,string cgrs,string submitTask) {
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            //現行案件預設出名代理人
+            string tagt_no = getTagNo("N").Rows[0].SafeRead("cust_code", "");
+
+            string SQL = "select rs_class,mark,isnull(remark,'" + tagt_no + "') as rsagtno ";
+            SQL += ",(select agt_name from agt where agt_no=isnull(code_br.remark,'" + tagt_no + "')) as rsagtnm ";
+            SQL +=",(select treceipt from agt where agt_no=isnull(code_br.remark,'" + tagt_no + "')) as receipt ";
+            SQL +=",(select agt_name from agt where agt_no='" + tagt_no + "') as pagt_name ";
+            SQL +=",(select treceipt from agt where agt_no='" + tagt_no + "') as preceipt ";
+            SQL +=" from code_br where dept='" + Sys.GetSession("dept") + "'";
+            SQL +=" and " + cgrs + "='Y'";
+            if (submitTask.ToUpper() == "A") {
+                SQL += "and (end_date is null or end_date = '' or end_date > getdate()) ";
+            }
+            if (rs_code != "") {
+                SQL += "And rs_code ='" + rs_code + "' ";
+            }
+            if (rs_type != "") {
+                SQL += "And rs_type='" + rs_type + "' ";
+            } else {
+                SQL += "And rs_type='" + getRsType() + "' ";
+            }
+            SQL += " ORDER BY rs_class";
+            
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
+            for (int i = 0; i < dt.Rows.Count; i++) {
+                if (dt.Rows[i].SafeRead("rsagtno", "") == "") {
+                    dt.Rows[i]["rsagtno"] = tagt_no;
+                    dt.Rows[i]["rsagtnm"] = dt.Rows[i].SafeRead("pagt_name", "");
+                    dt.Rows[i]["receipt"] = dt.Rows[i].SafeRead("preceipt", "");
+                }
+            }
             return dt;
         }
     }

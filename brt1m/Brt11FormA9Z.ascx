@@ -290,7 +290,6 @@
                 async: false,
                 cache: false,
                 success: function (json) {
-                    //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                     var dmt_list = $.parseJSON(json);
                     if (dmt_list.length > 0) {
                         var backflag_fldname = "A9Z";

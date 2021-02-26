@@ -8,6 +8,7 @@ using System.Text;
 using System.IO;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Text.RegularExpressions;
 
 //檔案上傳相關設定 & function
 public partial class Sys
@@ -59,6 +60,70 @@ public partial class Sys
         getFileServer(pbrBranch, "");
     }
 
+    /// <summary>
+    /// 電子送件總管處檔案目錄
+    /// </summary>
+    public static string IPODir {
+        get {
+            return "/nbtbrt/IPOSendT";//由iis虛擬目錄設定正式/測試路徑
+
+            //if (Sys.Host.IndexOf("web") > -1 || Sys.Host.IndexOf("localhost") > -1) {
+            //    return "/nbtbrt/IPOSendT/_商標電子送件區/web02";
+            //} else {
+            //    return "/nbtbrt/IPOSendT/_商標電子送件區";
+            //}
+        }
+    }
+
+    #region Path2Nbtbrt - 檔案路徑轉換(檢視＆複製檔案用)，brbrt→nbtbrt
+    /// <summary>
+    /// 檔案路徑轉換(檢視＆複製檔案用)，brbrt→nbtbrt
+    /// </summary>
+    public static string Path2Nbtbrt(string path) {
+        //path = path.Replace("/", @"\");
+        //path = path.Replace(@"\btbrt\", @"\nbtbrt\");
+        path = path.Replace(@"\", @"/");
+        path = path.Replace("/btbrt/", "/nbtbrt/");
+        path = Regex.Replace(path, "D:/Data/document/", "/nbtbrt/", RegexOptions.IgnoreCase);
+        return path;
+    }
+    #endregion
+
+    #region Path2Btbrt - 檔案路徑轉換(寫入DB用)，nbtbrt→brbrt
+    /// <summary>
+    /// 檔案路徑轉換(寫入DB用)，nbtbrt→brbrt
+    /// </summary>
+    public static string Path2Btbrt(string path) {
+        path = path.Replace(@"\nbtbrt\", @"/btbrt/");
+        path = path.Replace(@"/nbtbrt/", @"/btbrt/");
+        path = path.Replace(@"\", "/");
+        return path;
+    }
+    #endregion
+
+    #region Path2Opt - 檔案路徑轉換(寫入DB用)，nopt→opt
+    /// <summary>
+    /// 檔案路徑轉換(寫入DB用)，nopt→opt
+    /// </summary>
+    public static string Path2Opt(string path) {
+        path = path.Replace(@"\nopt\", @"/opt/");
+        path = path.Replace(@"/nopt/", @"/opt/");
+        path = path.Replace(@"\", "/");
+        return path;
+    }
+    #endregion
+
+    #region Path2Nopt - 檔案路徑轉換(檢視＆複製檔案用)，opt→nopt
+    /// <summary>
+    /// 檔案路徑轉換(檢視＆複製檔案用)，opt→nopt
+    /// </summary>
+    public static string Path2Nopt(string path) {
+        path = path.Replace(@"\", @"/");
+        path = path.Replace("/opt/", "/nopt/");
+        return path;
+    }
+    #endregion
+
     #region getFileServer - 取得server name設定
     /// <summary>
     /// 取得server name設定
@@ -102,14 +167,22 @@ public partial class Sys
     /// <summary>
     /// 檢查目錄是否存在,若不存在則建立
     /// </summary>
-    /// <param name="strSite">虛擬路徑根目錄 ex./nbtbrt/NT</param>
-    /// <param name="strFolder">虛擬路徑 ex.temp/N/3/23/55</param>
-    public static void CreateFolder(string strSite, string strFolder) {
-        string fullFolder = strSite + "/" + strFolder;
-        if (!System.IO.Directory.Exists(HttpContext.Current.Server.MapPath(fullFolder))) {
+    /// <param name="strFolder">虛擬路徑 ex./nbtbrt/NT/temp/N/3/23/55</param>
+    public static void CreateFolder(string strFolder) {
+        if (!System.IO.Directory.Exists(HttpContext.Current.Server.MapPath(strFolder))) {
             //新增資料夾
-            System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath(fullFolder));
+            System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath(strFolder));
         }
+    }
+    #endregion
+
+    #region CheckFile - 檢查檔案是否存在
+    /// <summary>
+    /// 檢查檔案是否存在
+    /// </summary>
+    /// <param name="strFath">虛擬路徑 ex./btbrt/Nt/doc/case/20111003015-6.doc</param>
+    public static bool CheckFile(string strFath) {
+        return File.Exists(HttpContext.Current.Server.MapPath(strFath));
     }
     #endregion
 

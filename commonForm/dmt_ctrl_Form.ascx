@@ -79,7 +79,7 @@
 </script>
 
 <%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
-<input type=text id=ctrlnum name=ctrlnum value=0><!--進度筆數-->
+<input type=hidden id=ctrlnum name=ctrlnum value=0><!--進度筆數-->
 <TABLE id=tabctrl style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
     <thead>
 	    <%if (submitTask != "Q" && submitTask != "D") { %>
@@ -89,7 +89,7 @@
 			        <%if (submitTask == "A" || prgid == "brta24" || prgid == "brta38") {%><!--國內案官收確認作業//國內案官發確認作業-->
 				        <input type=button value ="減少一筆管制" class="cbutton" id=res_button name=res_button onclick="ctrl_form.del_ctrl()">
 			        <%}%>
-			        <input type="text" name="rsqlno" id="rsqlno">
+			        <input type="hidden" name="rsqlno" id="rsqlno">
 			        <%if (prgid != "brt51" && prgid != "brta22" && prgid != "brta78") {%><!--國內案客戶收文確認//國內案客戶收文作業//國內案確認轉案作業-->
 			            <input type=button class="c1button" id="btndis" name="btndis" value ="進度查詢及銷管制">
 			        <%}%>
@@ -111,32 +111,32 @@
     <script type="text/html" id="ctrl_template"><!--管制期限樣板-->
 	<tr id=tr_ctrl_##>
 		<td class=whitetablebg align=center>
-	        <input type=text id='io_flg_##' name='io_flg_##' value=Y>
-	        <input type=text id='ctrl_step_grade_##' name='ctrl_step_grade_##'><!--客收之對應官收法定期限進度序號-->
-	        <input type=text id='ctrl_rs_no_##' name='ctrl_rs_no_##'><!--客收之對應官收法定期限收文字號-->
-	        <input type=text id='sqlno_##' name='sqlno_##'>
+	        <input type=hidden id='io_flg_##' name='io_flg_##' value=Y>
+	        <input type=hidden id='ctrl_step_grade_##' name='ctrl_step_grade_##'><!--客收之對應官收法定期限進度序號-->
+	        <input type=hidden id='ctrl_rs_no_##' name='ctrl_rs_no_##'><!--客收之對應官收法定期限收文字號-->
+	        <input type=hidden id='sqlno_##' name='sqlno_##'>
 	        <input type=text id='ctrlnum_##' name='ctrlnum_##' class=SEdit readonly size=2 value='##'>.
 		</td>
 		<td class=whitetablebg align=center>
-	        <input type=text id='octrl_type_##' name='octrl_type_##'>
+	        <input type=hidden id='octrl_type_##' name='octrl_type_##'>
 	        <select id=ctrl_type_## name=ctrl_type_## class="<%=Lock.TryGet("Qdisabled")%>"><%=html_ctrl%></select>
 		</td>
 		<td class=whitetablebg align=center>
-	        <input type=text id='octrl_date_##' name='octrl_date_##'>
+	        <input type=hidden id='octrl_date_##' name='octrl_date_##'>
 	        <input type=text size=10 maxlength=10 id=ctrl_date_## name=ctrl_date_## onblur="ctrl_date_blur('##')" class="dateField <%=Lock.TryGet("Qdisabled")%>">
 		</td>
 		<td class=whitetablebg align=center>
-	        <input type=text id='octrl_remark_##' name='octrl_remark_##'>
+	        <input type=hidden id='octrl_remark_##' name='octrl_remark_##'>
 	        <input type=text id='ctrl_remark_##' name='ctrl_remark_##' class="dateField" size=30 maxlength=60>
             <label class="brta78"><input type=checkbox id='brctrl_mgt_##' name='brctrl_mgt_##' value='Y'>需總管處代管期限</label>
 		</td>
         <%if (submitTask == "U" || submitTask == "D" || submitTask == "Q") {%>
 		<td class=whitetablebg align=center>
-		    <input type=text id='oresp_date_##' name='oresp_date_##'>
+		    <input type=hidden id='oresp_date_##' name='oresp_date_##'>
 		    <input type=text id='resp_date_##' name='resp_date_##' style='text-align:center;' class=SEdit readonly size=10>
 		</td>
 		<td class=whitetablebg align=center>
-		    <input type=text id='oresp_grade_##' name='oresp_grade_##'>
+		    <input type=hidden id='oresp_grade_##' name='oresp_grade_##'>
 		    <input type=text id='resp_grade_##' name='resp_grade_##' style='text-align:center;' class=SEdit readonly size=4>
 		</td>
         <%}%>
@@ -226,7 +226,6 @@
     }
 
     function ctrl_date_blur(nRow) {
-        ChkDate($("#ctrl_date_"+nRow)[0]);
         var tctrl_date=$("#ctrl_date_"+nRow).val();
         if (tctrl_date=="") return false;
         if(CDate(tctrl_date)<Today()){

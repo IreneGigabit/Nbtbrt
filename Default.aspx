@@ -90,11 +90,17 @@
                         scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Name = \"" + dt.Rows[i]["APNameC"].ToString()  + "\";\n";
 
                         //scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"" + dt.Rows[i]["APpath"].ToString() + "?prgid=" + dt.Rows[i]["APcode"].ToString() + "\";\n";
-                        scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"http://" + dt.Rows[i]["APserver"].ToString() + "/" + dt.Rows[i]["APpath"].ToString() +
-                                                                                    "?prgid=" + dt.Rows[i]["APcode"].ToString() +
-                                                                                    "&prgname=" + Server.UrlEncode(dt.Rows[i]["APNameC"].ToString()) +
-                                                                                    dt.Rows[i]["ReMark"].ToString() + "\";\n";
-
+                        if (Sys.Host == "localhost") {
+                            scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"http://" + Sys.Host + "/" + dt.Rows[i]["APpath"].ToString() +
+                                                                                        "?prgid=" + dt.Rows[i]["APcode"].ToString() +
+                                                                                        "&prgname=" + Server.UrlEncode(dt.Rows[i]["APNameC"].ToString()) +
+                                                                                        dt.Rows[i]["ReMark"].ToString() + "\";\n";
+                        } else {
+                            scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"http://" + dt.Rows[i]["APserver"].ToString() + "/" + dt.Rows[i]["APpath"].ToString() +
+                                                                                 "?prgid=" + dt.Rows[i]["APcode"].ToString() +
+                                                                                 "&prgname=" + Server.UrlEncode(dt.Rows[i]["APNameC"].ToString()) +
+                                                                                 dt.Rows[i]["ReMark"].ToString() + "\";\n";
+                        }
                         xapo = dt.Rows[i]["APorder"].ToString().Substring(0, 1);
                         if (xapo != xaporder)
                         {
@@ -221,7 +227,7 @@
         $(".apcat").mouseout(function (e) { $(this).addClass("tab-title").removeClass("tab-titleon") });
         $(".apcat").click(menuClick);
         $("#oPopBody").mouseleave(function (e) { $(this).hide(); });
-        $("#goweb").change(gosite);
+        //$("#goweb").change(gosite);
         $("#imgSide").css("background-image", "url(images/x-2.gif)");
         
         $(window).load(setIframe);
@@ -253,7 +259,7 @@
                 if (zmenu[i].Bar == "Y" && i0 > 0) {
                     //menuHtm += "<hr style=\"height: 1px; color: #a0a0a0; background-color: #a0a0a0\" />";
                     menuHtm += "<hr class=\"style-one\"/>";
-                    menuHeight += 15;
+                    menuHeight += 10;
                 }
                 //if (zmenu[i].Name.CodeLength() > maxLen) maxLen = zmenu[i].Name.CodeLength();
                 maxLen = Math.max(zmenu[i].Name.CodeLength(), maxLen)
@@ -264,7 +270,7 @@
                 menuHtm += "<div style=\"margin: 0px 0px 0px 0px;padding: 2px 1px 1px 1px;color: #000;cursor: pointer;height: 18px;\" " +
 					"onmouseover=\"javascript:PopMenuOver(this,'" + mi + "')\" onmouseout=\"javascript:PopMenuOut(this,'" + mi + "')\" " +
 					"onclick=\"javascript:PopMenuClick(" + i.toString() + ")\">" + zmenu[i].Name + "&nbsp;</div>";
-                menuHeight += 18;
+                menuHeight += 20;
                 i0++;
             }
         }
@@ -273,7 +279,7 @@
         mLeft = pos.left + 1 + menuWidth;
 
         $("#oPopBody").css("margin", "0px 0px 0px 0px");
-        $("#oPopBody").css("padding", "2px 4px 2px 10px");
+        $("#oPopBody").css("padding", "2px 4px 2px 8px");
         $("#oPopBody").css("background-color", "#f0f0f0");
         //$("#oPopBody").css("background-color", "#eaf9f5");
         $("#oPopBody").css("font-size", "10pt");

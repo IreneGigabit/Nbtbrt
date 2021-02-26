@@ -212,6 +212,12 @@
                 $("#cnt2").val(nRow - 1);
             }
         }
+
+        if (main.prgid.Left(4) == "brt1"||main.prgid=="brt51") {//營洽交辦/編修/客收確認時不顯示分割案號
+            $(".brt11hide").hide();
+        } else {
+            $(".brt11hide").show();
+        }
     }
 
     //*****共N類
@@ -367,10 +373,6 @@
             if (main.prgid != "brt52") {
                 $('#tfy_case_stat option:eq(1)').val("").text("");//案件種類
             }
-        }
-
-        if (main.prgid.Left(4) == "brt1") {//營洽交辦/編修時不顯示分割案號
-            $(".brt11hide").hide();
         }
     }
 </script>

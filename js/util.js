@@ -414,6 +414,18 @@ function showBlockUI(param) {
     });
 }
 
+//串接明細欄位
+function getJoinValue(selector) {
+    return "\f" + $(selector).map(function () {
+        $this = $(this);
+        if ($this.prop("type") == "checkbox") {
+            return $(this).prop("checked") ? $this.val() : "";
+        } else {
+            return $this.val();
+        }
+    }).get().join('\f');//\f是換頁鍵Chr(12)
+}
+
 //靜態函式
 (function ($) {
     //#region $.maskStart 顯示遮罩

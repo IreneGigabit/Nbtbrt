@@ -46,6 +46,34 @@ public partial class Sys
     }
 
     /// <summary>
+    /// 總收發IIS主機
+    /// </summary>
+    public static string MG_IIS {
+        get {
+            if (Host == "web10") return "web01";
+            if (Host == "web08") return "web02";
+            switch (Host.Substring(0, 1)) {
+                case "w":
+                case "b":
+                case "l": return Host;
+                default: return "sin32";
+            }
+        }
+    }
+
+    /// <summary>
+    /// 爭救案IIS主機
+    /// </summary>
+    public static string Opt_IIS {
+        get {
+            if (Sys.Host.IndexOf("web") == -1)
+                return "sik10";//正式環境
+            else
+                return Host;//開發環境
+        }
+    }
+
+   /// <summary>
     /// menu/權限使用的syscode
     /// </summary>
     public static string Sysmenu {
@@ -90,40 +118,6 @@ public partial class Sys
         if (pBranch.ToUpper() == "S") rtnStr = "台南所";
         if (pBranch.ToUpper() == "K") rtnStr = "高雄所";
         return rtnStr;
-    }
-
-    /// <summary>
-    /// 電子送件總管處檔案目錄
-    /// </summary>
-    public static string IPODir {
-        get {
-            if (Sys.Host.IndexOf("web") > -1 || Sys.Host.IndexOf("localhost") > -1) {
-                return "/nbtbrt/IPOSend/_商標電子送件區/web02";
-            } else {
-                return "/nbtbrt/IPOSend/_商標電子送件區";
-            }
-        }
-    }
-
-    /// <summary>
-    /// 檔案路徑轉換(檢視&amp;複製檔案用)，brbrt→nbtbrt
-    /// </summary>
-    public static string Path2Nbtbrt(string path) {
-        //path = path.Replace("/", @"\");
-        //path = path.Replace(@"\btbrt\", @"\nbtbrt\");
-        path = path.Replace(@"\", @"/");
-        path = path.Replace("/btbrt/", "/nbtbrt/");
-        return path;
-    }
-
-    /// <summary>
-    /// 檔案路徑轉換(寫入DB用)，nbtbrt→brbrt
-    /// </summary>
-    public static string Path2Btbrt(string path) {
-        path = path.Replace(@"\nbtbrt\", @"/btbrt/");
-        path = path.Replace(@"/nbtbrt/", @"/btbrt/");
-        path = path.Replace(@"\", "/");
-        return path;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -189,8 +183,9 @@ public partial class Sys
     }
 
     public static bool IsDebug() {
-        bool b = (Sys.getAppSetting("DebugScode").ToLower().IndexOf(GetSession("scode").ToLower()) > -1);
-        return b;
+        if (GetSession("scode").ToLower() == "") 
+            return false;
+        return (Sys.getAppSetting("DebugScode").ToLower().IndexOf(GetSession("scode").ToLower()) > -1);
     }
 
     public static string getConnString(string parameter) {
@@ -214,7 +209,6 @@ public partial class Sys
             eSQL = eSQL + "getdate(),";
             //eSQL = eSQL + "'" + (GetSession("scode") == "" ? GetSessionID() : GetSession("scode")) + "',";
             eSQL = eSQL + "'" + (GetSession("scode") == "" ? HttpContext.Current.Request.UserHostName : GetSession("scode")) + "',";
-            //eSQL = eSQL + "'" + (Sys.getAppSetting("Sysmenu") == "" ? GetRootDir().Replace("/", "") : Sys.getAppSetting("Sysmenu")) + "',";
             eSQL = eSQL + "'" + (Sys.Sysmenu == "" ? GetRootDir().Replace("/", "") : Sys.Sysmenu) + "',";
             eSQL = eSQL + "'" + prgID + "',";
             eSQL = eSQL + "'" + ex.Message.Replace("'", "''") + "',";

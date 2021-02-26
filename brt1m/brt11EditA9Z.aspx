@@ -59,7 +59,7 @@
         code = (Request["code"] ?? "").Trim();
 
         formFunction = (Request["formFunction"] ?? "").Trim();
-        if (formFunction == "") {
+        if (submitTask != "Show" && formFunction == "") {
             formFunction = "Edit";
         }
 
@@ -81,9 +81,9 @@
             if ((Request["cust_seq"] ?? "") != "") {
                 StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
             }
-            if ((Request["homelist"] ?? "") != "homelist") {
-                StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
-            }
+        }
+        if ((Request["homelist"] ?? "") != "homelist") {
+            StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
         }
 
         //申請人欄位畫面
@@ -109,6 +109,39 @@
                 StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
             }
         }
+
+        //if (submitTask == "Show") {
+            //if(prgid=="brt63"){//爭救案交辦用
+	        //    StrFormBtn += "<p>\n";
+	        //    StrFormBtn += "<table id=tabar border=0 width='80%' cellspacing='1' cellpadding='1' class='bluetable'>\n";
+	        //    StrFormBtn += "<tr>\n";
+		    //    StrFormBtn += "    <td class='lightbluetable' align='right'>承辦處理說明：</td>\n";
+		    //    StrFormBtn += "    <td class='whitetablebg' align='left'>\n";
+			//    StrFormBtn += "        <textarea name='job_remark' rows='5' cols='65' ></textarea>\n";
+		    //    StrFormBtn += "    </td>\n";
+	        //    StrFormBtn += "</tr>\n";
+	        //    StrFormBtn += "</table><br>\n";
+	        //    StrFormBtn += "<table border='0' width='100%' cellspacing='0' cellpadding='0'>\n";
+	        //    StrFormBtn += " <tr><td width='100%'>\n";
+	        //    StrFormBtn += "   <p align='center'>\n";
+            //    if ((HTProgRight & 8) > 0) {
+			//	    StrFormBtn += "<input type=button value ='爭救案件交辦' class='cbutton' style='cursor:hand' onClick='formOptSubmit()' id=btnSubmit name=btnSubmit>\n";
+			//    }
+	        //    StrFormBtn += " </td></tr>\n";
+	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=brt18_seq value='"+Request["seq"]+"'>\n";
+	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=brt18_seq1 value='"+Request["seq1"]+"'>\n";
+	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=Case_no value='"+Request["case_no"]+"'>\n";
+	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=step_grade value='"+Request["step_grade"]+"'>\n";
+	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=step_date value='"+Request["step_date"]+"'>\n";
+	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=brt18_rs_no value='"+Request["rs_no"]+"'>\n";
+	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=brt18_prgid value='"+Request["prgid"]+"'>\n";
+	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=todo_sqlno value='"+Request["todo_sqlno"]+"'>\n";//承辦交辦發文todo_dmt.sqlno
+	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=contract_flag value='"+Request["contract_flag"]+"'>\n";//契約書後補註記，N不需後補或後補已完成，Y尚需後補
+	        //    StrFormBtn += "</table>\n";
+            //}else if(prgid=="brt1a"){//爭救案交辦專案室抽件作業
+            //    
+            //}
+        //}
     }
 
     //將共用參數(鎖定/隱藏)傳給子控制項
@@ -256,9 +289,31 @@
     <INPUT TYPE="hidden" id=in_date name=in_date>
     <INPUT TYPE="hidden" id=tfgp_seq NAME=tfgp_seq>
     <INPUT TYPE="hidden" id=tfgp_seq1 NAME=tfgp_seq1>
-    <%if (prgid == "brt51"){%>
-     <br>
-	 <div style="color:blue;text-align:center">退回營洽說明：<textarea name="back_remark" id="back_remark" cols=50 rows=2></textarea></div><br><br>
+    <%if (prgid == "brt51"){%><!--客收確認-->
+        <br>
+	    <div style="color:blue;text-align:center">退回營洽說明：<textarea name="back_remark" id="back_remark" cols=50 rows=2></textarea></div><br><br>
+    <%}else if(prgid=="brt63"){%><!--承辦交辦作業[專案室發文]-->
+        <br>
+	    <INPUT TYPE=hidden NAME=brt18_seq value="<%=Request["seq"]%>">
+	    <INPUT TYPE=hidden NAME=brt18_seq1 value="<%=Request["seq1"]%>">
+	    <INPUT TYPE=hidden NAME=Case_no value="<%=Request["case_no"]%>">
+	    <INPUT TYPE=hidden NAME=step_grade value="<%=Request["step_grade"]%>">
+	    <INPUT TYPE=hidden NAME=step_date value="<%=Request["step_date"]%>">
+	    <INPUT TYPE=hidden NAME=brt18_rs_no value="<%=Request["rs_no"]%>">
+	    <INPUT TYPE=hidden NAME=brt18_prgid value="<%=Request["prgid"]%>">
+	    <INPUT TYPE=hidden NAME=todo_sqlno value="<%=Request["todo_sqlno"]%>"><!--承辦交辦發文todo_dmt.sqlno-->
+	    <INPUT TYPE=hidden NAME=contract_flag value="<%=Request["contract_flag"]%>"><!--契約書後補註記，N不需後補或後補已完成，Y尚需後補-->
+	    <table id=tabar border=0 width="80%" cellspacing="1" cellpadding="1" class="bluetable" align="center">
+		    <tr>
+		    <td class="lightbluetable" align="right">承辦處理說明：</td>
+		    <td class="whitetablebg" align="left">	
+			    <textarea id="job_remark" name="job_remark" rows="5" cols="65" ></textarea>
+		    </td>
+	    </tr>
+	    </table><br>
+		<%if ((HTProgRight & 8) > 0) {%>
+			<div style="color:blue;text-align:center"><input type=button value ="爭救案件交辦" class="cbutton" onclick="formOptSubmit()" id=btnSubmit name=btnSubmit></div>
+		<%}%>
     <%}%>
 
     <%#DebugStr%>
@@ -357,6 +412,10 @@
         if($("#submittask").val()!="Edit"){//不是編輯模式全部鎖定
             $("select,textarea,input,span,button").lock();
         }
+        
+        if($("#prgid").val()=="brt63"){//爭救案交辦用
+            $("#btnSubmit,#job_remark").unlock();
+        }
     }
 
     //存檔
@@ -394,7 +453,7 @@
                         }
 
                         if (main.prgid == "brt51"){
-                            window.parent.Eblank.location.href=getRootPath() +"/brt5m/Brt51_Edit.aspx?prgid=brt51&submittask=A&in_scode=<%=in_scode%>&in_no=<%=in_no%>&cust_area=<%=cust_area%>&cust_seq=<%=cust_seq%>&code=<%=code%>";
+                            window.parent.Eblank.location.href=getRootPath() +"/brt5m/Brt51_Edit.aspx?prgid=brt51&submittask=A&in_scode=<%=in_scode%>&in_no=<%=in_no%>&cust_area=<%=cust_area%>&cust_seq=<%=cust_seq%>&code=<%=code%>&endflag51="+$("#endflag51").val()+"&end_date51="+$("#end_date51").val()+"&end_code51="+$("#end_code51").val()+"&end_type51="+$("#end_type51").val()+"&end_remark51="+$("#end_remark51").val();
                         }
                     }
                 }
