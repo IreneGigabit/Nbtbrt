@@ -1233,7 +1233,7 @@
         if ($("#show_date_" + pno).val() != "") {
             var sdate = CDate($("#show_date_" + pno).val());
             var today = Today();
-            if (sdate > today) {
+            if (sdate.getTime() > today.getTime()) {
                 alert("展覽優先權日期不可大於系統日期!!");
                 $("#show_date_" + pno).focus();
             }

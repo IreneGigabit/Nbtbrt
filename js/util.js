@@ -248,6 +248,7 @@ function IsEmpty(n) {
 }
 //end region
 
+//比較日期時要加.getTime(),ex: Today.getTime()==CDate("2021/3/2").getTime()
 function Today() {
     var td = new Date();
     td.setHours(0, 0, 0, 0);
@@ -255,8 +256,10 @@ function Today() {
 }
 //#region CDate
 //vbscript CDate Convertion
+//比較日期時要加.getTime(),ex: CDate("2021/3/2").getTime()==CDate("2021/3/2").getTime()
 function CDate(Str) {
     return new Date(Str.replace(/-/g, "/"));
+    //return Date.parse(Str.replace(/-/g, "/"));
 }
 //end region
 

@@ -1,112 +1,97 @@
 (function ($) {
-    //#region labelfor 把radio/checkbox加上labelfor
-    $.fn.labelfor = function () {
-        var selectedObjects = this;
-        $(selectedObjects).each(function () {
-            var input = $(this);
-            if (input.type == "radio" || input.type == "checkbox") {
-                if ($(input).attr("id") != "") {
-                    $(input).next("label").attr("for", $(input).attr("id"));
-                }
-            }
-        });
-        return selectedObjects;
-    }
-    //#endregion
+	//#region labelfor 把radio/checkbox加上labelfor
+	$.fn.labelfor = function () {
+		return this.each(function () {
+			if (this.type == "radio" || this.type == "checkbox") {
+				if ($(this).attr("id") != "") {
+					$(this).next("label").attr("for", $(this).attr("id"));
+				}
+			}
+		});
+	}
+	//#endregion
 
-    //#region lock 指定唯讀模式
-    $.fn.lock = function (cond) {
-        var selectedObjects = this;
-        $(selectedObjects).each(function () {
-            var input = $(this);
-            if (typeof cond === "undefined" || cond) {//符合條件 或 沒給條件
-                if ($(input).hasClass("dateField")) {
-                    //$(input).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
-                    $(input).datepick('destroy');
-                }
-                if (this.type == "text" || this.type == "textarea") {
-                    $(input).prop('readonly', true).addClass('SEdit');
-                } else {
-                    $(input).prop('disabled', true);
-                }
-            } else {
-                if ($(input).hasClass("dateField")) {
-                    //$(input).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
-                    $(input).datepick('destroy');
-                }
-                $(input).prop('readonly', false).removeClass('SEdit').prop('disabled', false);
-            }
-        });
-        return selectedObjects;
-    }
+	//#region lock 指定唯讀模式
+	$.fn.lock = function (cond) {
+	    return this.each(function () {
+	        if (typeof cond === "undefined" || cond) {//符合條件 或 沒給條件
+	            if ($(this).hasClass("dateField")) {
+	                //$(this).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+	                $(this).datepick('destroy');
+	            }
+	            if (this.type == "text" || this.type == "textarea") {
+	                $(this).prop('readonly', true).addClass('SEdit');
+	            } else {
+	                $(this).prop('disabled', true);
+	            }
+	        }else{
+		        if ($(this).hasClass("dateField")) {
+		            //$(this).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+		            $(this).datepick('destroy');
+		        }
+		        $(this).prop('readonly', false).removeClass('SEdit').prop('disabled', false);
+			}
+		});
+	}
 	//#endregion
 
     //#region unlock 指定解鎖模式
 	$.fn.unlock = function (cond) {
-	    var selectedObjects = this;
-	    $(selectedObjects).each(function () {
-	        var input = $(this);
-	        if (typeof cond === "undefined" || cond) {//符合條件 或 沒給條件
-	            if ($(input).hasClass("dateField")) {
-	                //$(input).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
-	                $(input).datepick();
+		return this.each(function () {
+		    if (typeof cond === "undefined" || cond ) {//符合條件 或 沒給條件
+		        if ($(this).hasClass("dateField")) {
+		            //$(this).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+		            $(this).datepick();
 		        }
-	            $(input).prop('readonly', false).removeClass('SEdit').prop('disabled', false);
+		        $(this).prop('readonly', false).removeClass('SEdit').prop('disabled', false);
 		    }else{
-	            if ($(input).hasClass("dateField")) {
-	                //$(input).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
-	                $(input).datepick();
+	            if ($(this).hasClass("dateField")) {
+	                //$(this).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+	                $(this).datepick();
 	            }
-	            if (input.type == "text" || input.type == "textarea") {
-	                $(input).prop('readonly', true).addClass('SEdit');
+	            if (this.type == "text" || this.type == "textarea") {
+	                $(this).prop('readonly', true).addClass('SEdit');
 	            } else {
-	                $(input).prop('disabled', true);
+	                $(this).prop('disabled', true);
 	            }
 			}
 		});
-	    return selectedObjects;
 	}
 	//#endregion
 
     //#region hideFor 指定隱藏模式
 	$.fn.hideFor = function (cond) {
-	    var selectedObjects = this;
-	    $(selectedObjects).each(function () {
-	        var input = $(this);
+	    return this.each(function () {
 	        if (typeof cond === "undefined" || cond) {//符合條件 或 沒給條件
-	            if ($(input).hasClass("dateField")) {
-	                $(input).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+	            if ($(this).hasClass("dateField")) {
+	                $(this).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
 	            }
-	            $(input).hide();
+	            $(this).hide();
 	        } else {
-	            if ($(input).hasClass("dateField")) {
-	                $(input).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+	            if ($(this).hasClass("dateField")) {
+	                $(this).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
 	            }
-	            $(input).show();
+	            $(this).show();
 	        }
 	    });
-	    return selectedObjects;
 	}
     //#endregion
 
     //#region showFor 指定顯示模式
 	$.fn.showFor = function (cond) {
-	    var selectedObjects = this;
-	    $(selectedObjects).each(function () {
-	        var input = $(this);
+	    return this.each(function () {
 	        if (typeof cond === "undefined" || cond) {//符合條件 或 沒給條件
-	            if ($(input).hasClass("dateField")) {
-	                $(input).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+	            if ($(this).hasClass("dateField")) {
+	                $(this).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
 	            }
-	            $(input).show();
+	            $(this).show();
 	        } else {
-	            if ($(input).hasClass("dateField")) {
-	                $(input).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+	            if ($(this).hasClass("dateField")) {
+	                $(this).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
 	            }
-	            $(input).hide();
+	            $(this).hide();
 	        }
 	    });
-	    return selectedObjects;
 	}
     //#endregion
 

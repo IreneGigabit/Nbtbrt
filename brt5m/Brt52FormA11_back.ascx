@@ -167,7 +167,7 @@
     main.bind = function () {
         //console.log("main.bind");
         if (jMain.case_main.length == 0) {
-            $("select,textarea,input,span,button").lock();//抓不到資料就全部鎖定
+            $("select,textarea,input,button").lock();//抓不到資料就全部鎖定
         } else {
             //標題
             $("#t_in_no").html(jMain.case_main[0].in_scode+"-"+jMain.case_main[0].in_no);

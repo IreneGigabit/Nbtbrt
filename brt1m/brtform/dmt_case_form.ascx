@@ -300,7 +300,10 @@
     <TD class=lightbluetable align=right>承辦期限：</TD>
     <TD class=whitetablebg align=left><INPUT type=text id=dfy_pr_date NAME=dfy_pr_date SIZE=10 class="dateField"></TD>
     <TD class=lightbluetable align=right>法定期限：</TD>
-    <TD class=whitetablebg align=left><INPUT type=text id=dfy_last_date NAME=dfy_last_date SIZE=10 class="dateField"></TD>
+    <TD class=whitetablebg align=left>
+        <INPUT type=text id=dfy_last_date NAME=dfy_last_date SIZE=10 class="dateField">
+		<span style="color:red;display:none;" id="span_step_last_date">客收法定期限：<INPUT type=text id=step_last_date NAME=step_last_date SIZE=10 class="SEdit" readonly></span>
+    </TD>
 
 </TR>
 <TR id=tr_send_way>

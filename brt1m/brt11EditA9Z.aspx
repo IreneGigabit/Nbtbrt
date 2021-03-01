@@ -109,39 +109,6 @@
                 StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
             }
         }
-
-        //if (submitTask == "Show") {
-            //if(prgid=="brt63"){//爭救案交辦用
-	        //    StrFormBtn += "<p>\n";
-	        //    StrFormBtn += "<table id=tabar border=0 width='80%' cellspacing='1' cellpadding='1' class='bluetable'>\n";
-	        //    StrFormBtn += "<tr>\n";
-		    //    StrFormBtn += "    <td class='lightbluetable' align='right'>承辦處理說明：</td>\n";
-		    //    StrFormBtn += "    <td class='whitetablebg' align='left'>\n";
-			//    StrFormBtn += "        <textarea name='job_remark' rows='5' cols='65' ></textarea>\n";
-		    //    StrFormBtn += "    </td>\n";
-	        //    StrFormBtn += "</tr>\n";
-	        //    StrFormBtn += "</table><br>\n";
-	        //    StrFormBtn += "<table border='0' width='100%' cellspacing='0' cellpadding='0'>\n";
-	        //    StrFormBtn += " <tr><td width='100%'>\n";
-	        //    StrFormBtn += "   <p align='center'>\n";
-            //    if ((HTProgRight & 8) > 0) {
-			//	    StrFormBtn += "<input type=button value ='爭救案件交辦' class='cbutton' style='cursor:hand' onClick='formOptSubmit()' id=btnSubmit name=btnSubmit>\n";
-			//    }
-	        //    StrFormBtn += " </td></tr>\n";
-	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=brt18_seq value='"+Request["seq"]+"'>\n";
-	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=brt18_seq1 value='"+Request["seq1"]+"'>\n";
-	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=Case_no value='"+Request["case_no"]+"'>\n";
-	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=step_grade value='"+Request["step_grade"]+"'>\n";
-	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=step_date value='"+Request["step_date"]+"'>\n";
-	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=brt18_rs_no value='"+Request["rs_no"]+"'>\n";
-	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=brt18_prgid value='"+Request["prgid"]+"'>\n";
-	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=todo_sqlno value='"+Request["todo_sqlno"]+"'>\n";//承辦交辦發文todo_dmt.sqlno
-	        //    StrFormBtn += " <INPUT TYPE=hidden NAME=contract_flag value='"+Request["contract_flag"]+"'>\n";//契約書後補註記，N不需後補或後補已完成，Y尚需後補
-	        //    StrFormBtn += "</table>\n";
-            //}else if(prgid=="brt1a"){//爭救案交辦專案室抽件作業
-            //    
-            //}
-        //}
     }
 
     //將共用參數(鎖定/隱藏)傳給子控制項
@@ -410,10 +377,18 @@
         $(".Hide").hide();
 
         if($("#submittask").val()!="Edit"){//不是編輯模式全部鎖定
-            $("select,textarea,input,span,button").lock();
+            if($("#prgid").val()=="brt63"){
+                //爭救案交辦文件上傳不鎖
+                $(".tabCont[id!='#upload'] select,.tabCont[id!='#upload'] textarea,.tabCont[id!='#upload'] input,.tabCont[id!='#upload'] button").lock();
+            }else{
+                $("select,textarea,input,button").lock();
+            }
         }
         
         if($("#prgid").val()=="brt63"){//爭救案交辦用
+            $("#span_step_last_date").show();//客收法定期限
+            $("#step_last_date").val("<%=Request["ctrl_date"]%>");
+            $("#dfy_last_date").unlock();
             $("#btnSubmit,#job_remark").unlock();
         }
     }
@@ -500,6 +475,62 @@
                 });
             });
         }
+    }
+
+    function formOptSubmit(){
+        if($("#dfy_last_date").val()==""){//法定期限
+            if($("#step_last_date").val()!=""){
+                alert("將依客收法定期限(" +$("#step_last_date").val()+ ")交辦專案室！");
+                $("#dfy_last_date").val($("#step_last_date").val());
+            }else{
+                alert("此筆客收無管制法定期限，請先管制法定期限，再執行交辦專案室發文作業!!");
+                settab("#case");//收費與接洽事項
+                $("#dfy_last_date").focus();
+                return false;
+            }
+        }
+
+        if(CDate($('#step_last_date').val()).getTime()!=CDate($('#dfy_last_date').val()).getTime()){
+            var ans=confirm("客收管制法定期限(" +$('#step_last_date').val()+ ")與營洽交辦法定期限(" +$('#dfy_last_date').val()+ ")不同，是否確定依客收法定期限交辦專案室？");
+            if(ans==true){
+                $("#dfy_last_date").val($("#step_last_date").val());
+            }else{
+                settab("#case");//收費與接洽事項
+                $("#dfy_last_date").focus();
+                return false;
+            }
+        }
+
+        //2016/4/26依2016/4/7李協理Email要求增加提醒，契約書後補
+        if ($("#contract_flag").val()=="Y"){
+            msgbox("◎請儘速後補契約書，以利爭議組發文；倘於爭議組承辦完成官發前未後補，請mail進行簽核。");
+        }
+		
+        //reg.btnSubmit.disabled=true
+        //reg.action="../Brt18Update.aspx"	
+        //reg.submitTask.value = "UPDATE"
+        //reg.Submit
+
+        var formData = new FormData($('#reg')[0]);
+        ajaxByForm( getRootPath() + "/brt6m/Brt63_UpdateOpt.aspx",formData)
+        .complete(function( xhr, status ) {
+            $("#dialog").html(xhr.responseText);
+            $("#dialog").dialog({
+                title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
+                ,buttons: {
+                    確定: function() {
+                        $(this).dialog("close");
+                    }
+                }
+                ,close:function(event, ui){
+                    if(status=="success"){
+                        if(!$("#chkTest").prop("checked")){
+                            window.parent.Etop.goSearch();
+                        }
+                    }
+                }
+            });
+        });
     }
 </script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/brtform/CaseForm/Descript.js")%>"></script><!--欄位說明-->

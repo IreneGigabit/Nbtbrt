@@ -228,7 +228,7 @@
     function ctrl_date_blur(nRow) {
         var tctrl_date=$("#ctrl_date_"+nRow).val();
         if (tctrl_date=="") return false;
-        if(CDate(tctrl_date)<Today()){
+        if (CDate(tctrl_date).getTime() < Today().getTime()) {
             alert("管制日期不可小於今天!!!");
             $("#ctrl_date_"+nRow).focus();
         }

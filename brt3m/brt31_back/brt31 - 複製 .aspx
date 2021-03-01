@@ -238,7 +238,7 @@
         if (ChkDate($("#edate")[0])) return false;
 
         if ($("#sdate").val() != "" && $("#edate").val() != "") {
-            if (CDate($("#sdate").val()) > CDate($("#edate").val())) {
+            if (CDate($("#sdate").val()).getTime() > CDate($("#edate").val()).getTime()) {
                 alert("起日不得大於迄日!!");
                 return false;
             }

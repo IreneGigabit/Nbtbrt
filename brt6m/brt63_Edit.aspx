@@ -11,7 +11,7 @@
 
 <script runat="server">
     protected string HTProgCap = "國內案客收確認作業";//HttpContext.Current.Request["prgname"];//功能名稱
-    protected string HTProgPrefix = "brt51";//程式檔名前綴
+    protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
@@ -50,6 +50,7 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
+        
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
@@ -68,6 +69,24 @@
     }
 
     private void PageLayout() {
+        if (submitTask == "") submitTask = "A";
+        if (prgid == "brt63") {
+            HTProgCap = "國內案承辦<font color=blue>交辦發文</font>作業";
+        } else if (prgid == "brta38") {
+            HTProgCap = "國內案程序<font color=blue>官方發文</font>作業";
+        }
+        if (submitTask == "A") {
+            if (ReqVal.TryGet("taks") == "pr" || ReqVal.TryGet("taks") == "prsave") {
+                HTProgCap += "-<font color=blue>新增</font>";
+            } else {
+                HTProgCap += "-<font color=blue>不需發文</font>";
+            }
+        }
+        if (submitTask == "U") HTProgCap += "-<font color=blue>確認</font>";
+        if (submitTask == "Q") HTProgCap += "-<font color=blue>查詢</font>";
+        if (submitTask == "D") HTProgCap += "-<font color=blue>刪除</font>";
+        if (submitTask == "R") HTProgCap += "-<font color=blue>退回</font>";//20160901 增加[退回]功能(R)
+
         if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
             if (cgrs == "CR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta4m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";//***todo
             if (cgrs == "GR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta41m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";//***todo
@@ -88,6 +107,21 @@
                 }
                 StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
             }
+        }
+
+
+        if ((HTProgRight & 4) > 0 || (HTProgRight & 8) > 0 || (HTProgRight & 16) > 0 || (HTProgRight & 64) > 0 || (HTProgRight & 128) > 0) {
+            if (((HTProgRight & 8) > 0 && submitTask == "R") || ((HTProgRight & 64) > 0 && submitTask == "R")) {
+                StrFormBtn += "<input type=button id='button1' value ='退　回' class='redbutton' onClick='formRejectSubmit()'>\n";
+            }
+            if (((HTProgRight & 4) > 0 && submitTask == "A") || ((HTProgRight & 8) > 0 && submitTask == "U") || ((HTProgRight & 64) > 0 && submitTask == "U")) {
+                //20161212官發確認時增加電子申請書word檢查
+                if (prgid == "brta38") {
+                    StrFormBtn += "<input type=button value ='電子申請附件檢查' class='c1button' onClick='chkAttach()'>\n";
+                }
+                StrFormBtn += "<input type=button value ='確　認' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
+            }
+            StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
         }
     }
 

@@ -54,7 +54,7 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a href=\"商標電子申請書製作操作說明.doc\" target=\"_blank\">[電子申請書製作操作說明]</a>";
+        StrFormBtnTop += "<a href=\"商標電子申請書製作操作說明.docx\" target=\"_blank\">[電子申請書製作操作說明]</a>";
         StrFormBtnTop += "<a href=\"區所商標電子申請承辦作業.pptx\" target=\"_blank\">[電子送件承辦操作說明]</a>";
         StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>";
 
@@ -302,6 +302,7 @@
             todo_link += "&seq=" + row["seq"];
             todo_link += "&seq1=" + row["seq1"];
             todo_link += "&case_no=" + row["case_no"];
+            todo_link += "&ctrl_date=" + row.GetDateTimeString("ctrl_date", "yyyy/M/d");
             todo_link += "&step_grade=" + row["step_grade"];
             todo_link += "&step_date=" + row.GetDateTimeString("step_date","yyyy/M/d");
             todo_link += "&contract_flag=" + row["contract_flag"];
@@ -812,7 +813,7 @@
 			    <div align="left">
                     備註:<br>
                     1.作業中「<font color="red">規費已支出</font>」表示該筆已官方發文！<br>
-                    2.電子送件所連結的[電子申請書]及[基本資料表]已由系統產生html檔，請依<a href="商標電子申請書製作操作說明.doc" target="_blank">[電子申請書製作操作說明]</a>產製pdf檔。<br>
+                    2.電子送件所連結的[電子申請書]及[基本資料表]已由系統產生html檔，請依<a href="商標電子申請書製作操作說明.docx" target="_blank">[電子申請書製作操作說明]</a>產製pdf檔。<br>
                     3.電子送件所需pdf檔完成後，請依<a href="區所商標電子申請承辦作業.pptx" target="_blank">[電子送件承辦操作說明]</a>上傳至系統。<br>
                     4.電子申請書的收據抬頭預設抓取第一位申請人的中文名稱，若有共同申請且需修改為另一位申請人，則請承辦自行於「收據抬頭」修改；<br>
                       另智慧局有限制收據抬頭欄位字數為50字(2015/9/2更新1.8.2版)，因此系統將只擷取前50個字顯示，承辦請再檢查，確認「收據抬頭」內容無誤後再產生電子申請書。<br>
@@ -1039,7 +1040,7 @@
                 //20180525增加檢查發文日期/總發文日期不可小於系統日
                 var sdate = CDate($('#step_date_'+pno).val());
                 var mdate = CDate($('#mp_date_'+pno).val());
-                if(sdate< Today() || mdate<Today()){
+                if(sdate.getTime()< Today().getTime() || mdate.getTime()<Today().getTime()){
                     cancelChk(pno);
                     msg+="第"+pno+"筆 發文日期或總發文日期不可小於系統日！\n";
                 }

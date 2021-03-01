@@ -355,7 +355,7 @@
         $(".Hide").hide();
 
         if($("#submittask").val()!="Edit"){//不是編輯模式全部鎖定
-            $("select,textarea,input,span,button").lock();
+            $("select,textarea,input,button").lock();
         }
     }
 

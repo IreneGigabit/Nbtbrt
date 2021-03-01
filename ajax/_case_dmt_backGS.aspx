@@ -11,7 +11,6 @@
 
 <script runat="server">
     protected string SQL = "";
-    protected object objResult = null;
 
     protected int right = 0;
     protected string prgid = "";
@@ -28,7 +27,6 @@
     protected string casefee_oth_money = "";//轉帳金額合計抓收費標準
     protected string seq = "";
     protected string seq1 = "";
-    protected string case_no = "";
 
     DataTable dtCaseMain=new DataTable();
     DataTable dtCaseItem=new DataTable();//交辦費用.案性
@@ -40,9 +38,7 @@
     DataTable dtCust=new DataTable();//客戶主檔資料
     DataTable dtCaseDmt1=new DataTable();//一案多件.case_dmt1子案
     DataTable dtCaseTemp1=new DataTable();//一案多件.dmt_temp子案
-    DataTable dtDmt = new DataTable();//案件主檔
-    DataTable dtStepDmtCR = new DataTable();//對應客收進度
-    DataTable dtAttCaseDmt = new DataTable();//對應交辦發文檔
+    DataTable dtDmt=new DataTable();//案件主檔
 
     Sys sfile = new Sys();
 
@@ -89,8 +85,6 @@
         Response.Write(",\"br_in_scode\":" + JsonConvert.SerializeObject(br_in_scode, settings).ToUnicode() + "\n");
         Response.Write(",\"br_in_scname\":" + JsonConvert.SerializeObject(br_in_scname, settings).ToUnicode() + "\n");
         Response.Write(",\"step_cr\":" + JsonConvert.SerializeObject(AddCR(), settings).ToUnicode() + "\n");//交辦客收預設值
-        Response.Write(",\"step_dmt_cr\":" + JsonConvert.SerializeObject(GetStepCR(ref dtStepDmtCR), settings).ToUnicode() + "\n");//對應客收進度
-        Response.Write(",\"attcase_dmt\":" + JsonConvert.SerializeObject(GetAttCaseDmt(ref dtAttCaseDmt), settings).ToUnicode() + "\n");//對應交辦發文檔
         Response.Write("}");
 
         //Response.Write(JsonConvert.SerializeObject(dt, settings).ToUnicode());
@@ -115,7 +109,6 @@
         if (dt.Rows.Count > 0) {
             seq = dt.Rows[0].SafeRead("seq", "");
             seq1 = dt.Rows[0].SafeRead("seq1", "");
-            case_no = dt.Rows[0].SafeRead("case_no", "");
             code_type = dt.Rows[0].SafeRead("arcase_type", "");
             arcase = dt.Rows[0].SafeRead("arcase", "");
             br_in_scode = dt.Rows[0].SafeRead("in_scode", "");
@@ -518,61 +511,4 @@
     }
     #endregion
 
-    #region GetStepCR 對應客收進度
-    private DataTable GetStepCR(ref DataTable dt) {
-        SQL = "select * from step_dmt where seq='" + seq + "' and seq1='" + seq1 + "' and case_no='"+ case_no +"' and cg='C' and rs='R'";
-        conn.DataTable(SQL, dt);
-        for (int i = 0; i < dt.Rows.Count; i++) {
-        }
-        return dt;
-    }
-    #endregion
-
-
-    #region GetAttCaseDmt 對應交辦發文檔
-    private DataTable GetAttCaseDmt(ref DataTable dt) {
-        SQL = "select *,''rs_class_name,''rs_code_name,''act_code_name,''ncase_stat,''ncase_statnm,''rs_agt_nonm,''markb ";
-        SQL += "from attcase_dmt where in_no='" + in_no + "'";
-        conn.DataTable(SQL, dt);
-        for (int i = 0; i < dt.Rows.Count; i++) {
-            //取得結構分類、代碼、處理事項名稱
-            SQL = "select code_name from cust_code where code_type='" + dt.Rows[i]["rs_type"] + "' and cust_code='" + dt.Rows[i]["rs_class"] + "'";
-            objResult = conn.ExecuteScalar(SQL);
-            dt.Rows[i]["rs_class_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-
-            SQL = "select rs_detail from code_br where rs_type='" + dt.Rows[i]["rs_type"] + "' and rs_code='" + dt.Rows[i]["rs_code"] + "' and gs='Y' ";
-            dt.Rows[i]["rs_class_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-
-            SQL = "select code_name from cust_code where code_type='tact_code' and cust_code='" + dt.Rows[i]["act_code"] + "'";
-            dt.Rows[i]["act_code_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-
-            //取得案件狀態
-            SQL = "select a.cust_code,a.code_name from cust_code a inner join vcode_act b on a.cust_code = b.case_stat ";
-            SQL += " where a.code_type='tcase_stat'";
-            SQL += "   and b.dept='" + Session["dept"] + "' and b.cg='G' and b.rs='S'";
-            SQL += "   and b.rs_class='" + dt.Rows[i]["rs_class"] + "'";
-            SQL += "   and b.rs_code='" + dt.Rows[i]["rs_code"] + "'";
-            SQL += "   and b.act_code='" + dt.Rows[i]["act_code"] + "'";
-            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                if (dr.Read()) {
-                    dt.Rows[i]["ncase_stat"] = dr.SafeRead("cust_code", "");
-                    dt.Rows[i]["ncase_statnm"] = dr.SafeRead("code_name", "");
-                }
-            }
-
-            //取得發文出名代理人
-            SQL = "select treceipt,agt_name from agt where agt_no='" + dt.Rows[i]["rs_agt_no"] + "'";
-            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                if (dr.Read()) {
-                    dt.Rows[i]["rs_agt_nonm"] = dr.SafeRead("treceipt", "") + "_" + dr.SafeRead("agt_name", "");
-                }
-            }
-
-            //取得案性mark
-            SQL = "select mark from code_br where dept='T' and rs_type='" + dt.Rows[i]["rs_type"] + "' and rs_class='" + dt.Rows[i]["rs_class"] + "' and rs_code='" + dt.Rows[i]["rs_code"] + "' and gs='Y'";
-            dt.Rows[i]["markb"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-        }
-        return dt;
-    }
-    #endregion
 </script>

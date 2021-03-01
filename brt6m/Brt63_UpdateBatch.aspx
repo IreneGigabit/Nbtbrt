@@ -141,9 +141,9 @@
 
                         //再抓一次交辦流水號,防止多個視窗同時存檔
                         string Getatt_sqlno = "0";
-                        SQL = "select att_sqlno,0 ord from attcase_dmt where in_no='" + arr_in_no[i] + "' and todo_sqlno='" + todo_sqlno + "' and sign_stat='SN' ";
+                        SQL = "select att_sqlno,0 ord from attcase_dmt where in_no='" + arr_in_no[i] + "' and sign_stat='SN' ";
                         SQL += "union all ";
-                        SQL += "select att_sqlno,1 ord from attcase_dmt where in_no='" + arr_in_no[i] + "' and todo_sqlno='" + todo_sqlno + "' and sign_stat='NN' ";
+                        SQL += "select att_sqlno,1 ord from attcase_dmt where in_no='" + arr_in_no[i] + "' and sign_stat='NN' ";
                         SQL += "order by ord ";
                         using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
                             if (dr.Read()) {
