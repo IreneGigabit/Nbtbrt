@@ -437,7 +437,8 @@
         console.log("ft1.br_form.bind");
         if (jMain.case_main.length == 0) {
             $("#FT_AP_Add_button").click();//關係人預設顯示第1筆
-            $("#tot_num21,#nfy_tot_num").val("1").triggerHandler("change");
+            $("#tot_num21").val("1").triggerHandler("change");
+            $("#nfy_tot_num").val("1").triggerHandler("change");
         } else {
             //代理人
             $("#tfg1_agt_no1").val(jMain.case_main[0].agt_no);

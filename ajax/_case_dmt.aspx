@@ -88,9 +88,11 @@
         Response.Write(",\"casefee_oth_money\":" + JsonConvert.SerializeObject(casefee_oth_money, settings).ToUnicode() + "\n");
         Response.Write(",\"br_in_scode\":" + JsonConvert.SerializeObject(br_in_scode, settings).ToUnicode() + "\n");
         Response.Write(",\"br_in_scname\":" + JsonConvert.SerializeObject(br_in_scname, settings).ToUnicode() + "\n");
+        Response.Write(",\"dmt\":" + JsonConvert.SerializeObject(GetDmt(ref dtDmt), settings).ToUnicode() + "\n");//案件主檔
         Response.Write(",\"step_cr\":" + JsonConvert.SerializeObject(AddCR(), settings).ToUnicode() + "\n");//交辦客收預設值
         Response.Write(",\"step_dmt_cr\":" + JsonConvert.SerializeObject(GetStepCR(ref dtStepDmtCR), settings).ToUnicode() + "\n");//對應客收進度
         Response.Write(",\"attcase_dmt\":" + JsonConvert.SerializeObject(GetAttCaseDmt(ref dtAttCaseDmt), settings).ToUnicode() + "\n");//對應交辦發文檔
+        Response.Write(",\"step_gs\":" + JsonConvert.SerializeObject(AddGS(), settings).ToUnicode() + "\n");//交辦官發預設值
         Response.Write("}");
 
         //Response.Write(JsonConvert.SerializeObject(dt, settings).ToUnicode());
@@ -104,7 +106,7 @@
         SQL += ",(SELECT b.coun_c FROM sysctrl.dbo.country b WHERE b.coun_code = a.zname_type and b.markb<>'X') AS nzname ";
         SQL += ",(SELECT c.coun_code+c.coun_cname FROM sysctrl.dbo.ipo_country c WHERE c.ref_coun_code = a.prior_country ) AS ncountry ";
         SQL += ",a.mark temp_mark,c.mark case_mark, C.service + C.fees+ C.oth_money AS othsum,b.mark as codemark ";
-        SQL += ",''s_marknm ";
+        SQL += ",''s_marknm,''fseq,c.contract_flag ncontract_flag ";
         SQL += " FROM dmt_temp A ";
         SQL += " inner join case_dmt c on a.in_no = c.in_no and a.in_scode = c.in_scode ";
         SQL += " inner join code_br b on c.arcase_type=b.rs_type and c.arcase=b.rs_code and b.dept='T' and b.cr='Y' ";
@@ -130,6 +132,11 @@
                 }
             }
             dt.Rows[0]["draw_file"] = Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("draw_file", ""));
+
+            dt.Rows[0]["fseq"] = Sys.formatSeq(dt.Rows[0].SafeRead("seq", ""), dt.Rows[0].SafeRead("seq1", ""), "", Sys.GetSession("SeBranch"), Sys.GetSession("dept"));
+            if (dt.Rows[0].SafeRead("contract_flag_date", "") != "") {//若已有契約書後補完成日，則表契約書已後補
+                dt.Rows[0]["ncontract_flag"] = "N";
+            }
 
             if (dt.Rows[0].SafeRead("s_mark", "") == "S") {
                 dt.Rows[0]["s_marknm"] = "服務";
@@ -276,6 +283,9 @@
 
     #region GetCust 客戶主檔資料
     private DataTable GetCust(ref DataTable dt) {
+        dt = Sys.GetVCustlist(conn, "", cust_area, cust_seq);
+        return dt;
+        /*
         SQL = "SELECT * ";
         SQL += ",(select min(att_sql) from custz_att c where B.cust_area = C.cust_area AND B.cust_seq = C.cust_seq and (dept='T' or dept is null) )att_sql ";
         SQL += " FROM vcustlist b ";
@@ -283,6 +293,7 @@
         SQL += "and cust_seq='" + cust_seq + "'";
         conn.DataTable(SQL, dt);
         return dt;
+        */
     }
     #endregion
 
@@ -450,34 +461,93 @@
     }
     #endregion
 
+    #region GetDmt 案件主檔
+    private DataTable GetDmt(ref DataTable dt) {
+        dt = Sys.GetDmt(conn, seq, seq1);
+        return dt;
+
+        //SQL = "Select *,''s_marknm,''custname,''ap_apcust_no,''dmtap_cname,''arcasenm,''now_arcasenm,''now_rsclass ";
+        //SQL += "from dmt where seq='" + seq + "' and seq1='" + seq1 + "'";
+        //conn.DataTable(SQL, dt);
+        //object objResult = null;
+        //for (int i = 0; i < dt.Rows.Count; i++) {
+        //    if (dt.Rows[i].SafeRead("s_mark", "") == "S") {
+        //        dt.Rows[i]["s_marknm"] = "服務";
+        //    } else if (dt.Rows[i].SafeRead("s_mark", "") == "L") {
+        //        dt.Rows[i]["s_marknm"] = "證明";
+        //    } else if (dt.Rows[i].SafeRead("s_mark", "") == "M") {
+        //        dt.Rows[i]["s_marknm"] = "團體標章";
+        //    } else if (dt.Rows[i].SafeRead("s_mark", "") == "N") {
+        //        dt.Rows[i]["s_marknm"] = "團體商標";
+        //    } else if (dt.Rows[i].SafeRead("s_mark", "") == "K") {
+        //        dt.Rows[i]["s_marknm"] = "產地證明標章";
+        //    } else {
+        //        dt.Rows[i]["s_marknm"] = "商標";
+        //    }
+        //
+        //    SQL = "select isnull(ap_cname1,'')+isnull(ap_cname2,'')custname from apcust ";
+        //    SQL += "where cust_area = '" + dt.Rows[i]["cust_area"] + "' and cust_seq='" + dt.Rows[i]["cust_seq"] + "'";
+        //    objResult = conn.ExecuteScalar(SQL);
+        //    string custname = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+        //    dt.Rows[i]["custname"] = custname;
+        //
+        //    SQL = "select apcust_no from apcust where apsqlno='" + dt.Rows[i]["apsqlno"] + "'";
+        //    objResult = conn.ExecuteScalar(SQL);
+        //    string apcust_no = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+        //    dt.Rows[i]["ap_apcust_no"] = apcust_no;
+        //
+        //    SQL = "select apcust_no,ap_cname from dmt_ap where seq='" + seq + "' and seq1='" + seq1 + "'";
+        //    using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+        //        int ap = 0;
+        //        string dmtap_cname = "";
+        //        while (dr.Read()) {
+        //            ap++;
+        //            dmtap_cname += (dmtap_cname != "" ? " " : "") + ap + "." + dr["apcust_no"] + dr["ap_cname"];
+        //        }
+        //        dt.Rows[i]["dmtap_cname"] = dmtap_cname;
+        //    }
+        //
+        //    //立案案性
+        //    SQL = "select rs_detail from code_br where cr='Y' and dept='" + Session["dept"] + "'";
+        //    SQL += "and rs_type = '" + dt.Rows[i]["arcase_type"] + "' and rs_code='" + dt.Rows[i]["arcase"] + "'";
+        //    objResult = conn.ExecuteScalar(SQL);
+        //    string arcasenm = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+        //    dt.Rows[i]["arcasenm"] = arcasenm;
+        //
+        //    //案件狀態
+        //    string lf = "cr";
+        //    SQL = "select cg,rs from step_dmt where seq=" + seq + " and seq1='" + seq1 + "' ";
+        //    SQL += " and step_grade = " + dt.Rows[i]["now_grade"];
+        //    using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+        //        if (dr.Read()) {
+        //            lf = "" + dr["cg"] + dr["rs"];
+        //            if (lf.ToUpper() == "ZS") lf = "cr";
+        //        }
+        //    }
+        //
+        //    SQL = "select rs_class,rs_detail from code_br where " + lf + "='Y' and dept='" + Session["dept"] + "' ";
+        //    SQL += " and rs_type = '" + dt.Rows[i]["now_arcase_type"] + "' and rs_code='" + dt.Rows[i]["now_arcase"] + "'";
+        //    using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+        //        if (dr.Read()) {
+        //            dt.Rows[i]["now_arcasenm"] = dr.SafeRead("rs_detail", "");
+        //            dt.Rows[i]["now_rsclass"] = dr.SafeRead("rs_class", "");
+        //        }
+        //    }
+        //}
+        //return dt;
+    }
+    #endregion
+
     #region AddCR 交辦客收預設值
     private Dictionary<string, string> AddCR() {
         Dictionary<string, string> cr_form = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         if (dtCaseMain.Rows.Count > 0) {
-            //cr_form["seq"] = seq;
-            //cr_form["seq1"] = seq1;
-            //cr_form["in_scode"] = dtCaseMain.Rows[0].SafeRead("in_scode", "");
-            //cr_form["in_no"] = in_no;
-            //cr_form["cust_area"] = dtCaseMain.Rows[0].SafeRead("cust_area", "");
-            //cr_form["cust_seq"] = dtCaseMain.Rows[0].SafeRead("cust_seq", "");
-
             cr_form["step_date"] = DateTime.Today.ToShortDateString();
             cr_form["cg"] = "C";
             cr_form["rs"] = "R";
             cr_form["cgrs"] = "CR";
             cr_form["send_cl"] = "1";
             cr_form["act_code"] = "_";
-
-            //cr_form["send_way"] = dtCaseMain.Rows[0].SafeRead("send_way", "");//收文方式改由營洽登錄帶入值
-            //cr_form["receipt_type"] = dtCaseMain.Rows[0].SafeRead("receipt_type", "");
-            //cr_form["receipt_title"] = dtCaseMain.Rows[0].SafeRead("receipt_title", "B");//預設空白
-
-            //cr_form["codemark"] = dtCaseMain.Rows[0].SafeRead("codemark", "");//收文代碼備註：B爭救案
-            //cr_form["dmt_term1"] = dtCaseMain.Rows[0].GetDateTimeString("dmt_term1", "yyyy/M/d");//專用期限起日check非創申案有期限者提醒需註記註冊費繳費狀態
-            //cr_form["dmt_term2"] = dtCaseMain.Rows[0].GetDateTimeString("dmt_term2", "yyyy/M/d");//專用期限迄日
-            //cr_form["cust_date"] = dtCaseMain.Rows[0].GetDateTimeString("cust_date", "yyyy/M/d");//客戶期限
-            //cr_form["pr_date"] = dtCaseMain.Rows[0].GetDateTimeString("pr_date", "yyyy/M/d");//承辦期限
-            //cr_form["case_last_date"] = dtCaseMain.Rows[0].GetDateTimeString("last_date", "yyyy/M/d");//營洽輸入法定期限
 
             string spe_ctrl3 = "N";//Y:案性需管制法定期限
             //收文代碼
@@ -528,9 +598,11 @@
     }
     #endregion
 
-
     #region GetAttCaseDmt 對應交辦發文檔
     private DataTable GetAttCaseDmt(ref DataTable dt) {
+        dt = Sys.GetAttCaseDmt(conn, "", in_no);
+        return dt;
+        /*
         SQL = "select *,''rs_class_name,''rs_code_name,''act_code_name,''ncase_stat,''ncase_statnm,''rs_agt_nonm,''markb ";
         SQL += "from attcase_dmt where in_no='" + in_no + "'";
         conn.DataTable(SQL, dt);
@@ -573,6 +645,84 @@
             dt.Rows[i]["markb"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
         }
         return dt;
+        */
+    }
+    #endregion
+
+    #region AddGS 交辦官發預設值
+    private Dictionary<string, string> AddGS() {
+        Dictionary<string, string> gs_form = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (dtCaseMain.Rows.Count > 0) {
+            gs_form["fees"] = "0";
+            gs_form["fees_stat"] = "N";
+            gs_form["step_date"] = DateTime.Today.ToShortDateString();
+            //總收發文日期
+            //台北所總收發當天就會發文
+            gs_form["mp_date"] = DateTime.Today.ToShortDateString();
+            if (Sys.GetSession("seBranch") != "N") {
+                switch (DateTime.Today.DayOfWeek) {
+                    case DayOfWeek.Friday: gs_form["mp_date"] = DateTime.Today.AddDays(3).ToShortDateString(); break;//星期五加三天
+                    case DayOfWeek.Saturday: gs_form["mp_date"] = DateTime.Today.AddDays(2).ToShortDateString(); break;//星期六加兩天
+                    default: gs_form["mp_date"] = DateTime.Today.AddDays(1).ToShortDateString(); break;//加一天
+                }
+            }
+            //2011/2/18依2010/12/15李協理Email需求，結構分類：C4_行政訴訟預設發文對象為Q_智慧財產法院
+            if (dtDmt.Rows[0].SafeRead("now_rsclass", "") == "C4") {
+                gs_form["send_cl"] = "Q";
+            } else {
+                gs_form["send_cl"] = "1";
+            }
+
+            gs_form["send_cl1"] = "";
+            gs_form["send_sel"] = "";
+            gs_form["rs_type"] = dtCaseMain.Rows[0].SafeRead("arcase_type", "");
+            gs_form["rs_class"] = dtCaseMain.Rows[0].SafeRead("arcase_class", "");
+            gs_form["rs_code"] = dtCaseMain.Rows[0].SafeRead("arcase", "");
+
+
+            //gs_form["cg"] = "Gc";
+            //gs_form["rs"] = "S";
+            //gs_form["cgrs"] = "GS";
+            //gs_form["send_cl"] = "1";
+            //gs_form["act_code"] = "_";
+
+
+            //string spe_ctrl3 = "N";//Y:案性需管制法定期限
+            ////收文代碼
+            //SQL = " select rs_type,rs_class,rs_code,rs_detail,case_stat,case_stat_name,spe_ctrl ";
+            //SQL += "from vcode_act ";
+            //SQL += "where rs_code = '" + dtCaseMain.Rows[0].SafeRead("arcase", "") + "' and act_code = '_' ";
+            //SQL += "and rs_type = '" + dtCaseMain.Rows[0].SafeRead("arcase_type", "") + "'";
+            //SQL += "and cg = 'C' and rs = 'R'";
+            //using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+            //    if (dr.Read()) {
+            //        gs_form["rs_type"] = dr.SafeRead("rs_type", "");
+            //        gs_form["rs_class"] = dr.SafeRead("rs_class", "");
+            //        gs_form["rs_code"] = dr.SafeRead("rs_code", "");
+            //        gs_form["rs_detail"] = dr.SafeRead("rs_detail", "");
+            //        gs_form["case_stat"] = dr.SafeRead("case_stat", "");
+            //        gs_form["case_statnm"] = dr.SafeRead("case_stat_name", "");
+            //
+            //        if (dtCaseMain.Rows[0].SafeRead("back_flag", "") == "Y") {
+            //            gs_form["rs_detail"] += "(請復案)";
+            //        }
+            //        if (dtCaseMain.Rows[0].SafeRead("end_flag", "") == "Y") {
+            //            gs_form["rs_detail"] += "(請結案)";
+            //        }
+            //
+            //        string[] spe_ctrl = dr.SafeRead("spe_ctrl", "").Split(',');//抓取案性控制
+            //        if (spe_ctrl.Length >= 3) spe_ctrl3 = (spe_ctrl[2] == "" ? "N" : spe_ctrl[2]);//是否為爭救案
+            //    }
+            //}
+            //gs_form["spe_ctrl3"] = spe_ctrl3;
+            //
+            ////進度序號
+            //SQL = "select isnull(step_grade,0)+1 from dmt where seq = '" + seq + "' and seq1 = '" + seq1 + "'";
+            //object objResult = conn.ExecuteScalar(SQL);
+            //int nstep_grade = (objResult == DBNull.Value || objResult == null) ? 1 : Convert.ToInt32(objResult);
+            //gs_form["step_grade"] = nstep_grade.ToString();
+        }
+        return gs_form;
     }
     #endregion
 </script>

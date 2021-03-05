@@ -278,7 +278,7 @@
 
         if (row.SafeRead("opt_stat", "") == "" || row.SafeRead("opt_stat", "") == "X") {
             todo_name = "自行發文";
-            todo_link = Page.ResolveUrl("~/brt6m/brt63edit.aspx") + "?menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&erpt_code=" + row["erpt_code"] + "&att_sqlno=" + row["att_sqlno"];
+            todo_link = Page.ResolveUrl("~/brt6m/brt63_edit.aspx") + "?prgid=" + prgid+"&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&erpt_code=" + row["erpt_code"] + "&att_sqlno=" + row["att_sqlno"];
             todo_link1 = todo_link;
         }
 
@@ -307,7 +307,7 @@
             todo_link += "&step_date=" + row.GetDateTimeString("step_date","yyyy/M/d");
             todo_link += "&contract_flag=" + row["contract_flag"];
 
-            todo_link1 = "brt63edit.asp?menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&erpt_code=" + row["erpt_code"] + "&att_sqlno=" + row["att_sqlno"];
+            todo_link1 = "brt63_edit.aspx?prgid=" + prgid + "&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&erpt_code=" + row["erpt_code"] + "&att_sqlno=" + row["att_sqlno"];
         }
         //950928為有關爭救案理由後補之收費情形,避免造成收費重覆新加入程式做控制,2010/8/6規費已支出不能發文	
         if (Convert.ToDecimal(row.SafeRead("gs_fees", "0")) > 0) {
@@ -315,7 +315,7 @@
             todo_link = "";
         }
         //不需發文link
-        untodo_link = Page.ResolveUrl("~/brt6m/brt63edit.aspx") + "?menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&task=cancel";
+        untodo_link = Page.ResolveUrl("~/brt6m/brt63_edit.aspx") + "?prgid=" + prgid + "&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&task=cancel";
 
         string seq = row.SafeRead("seq", "");
         string seq1 = row.SafeRead("seq1", "");

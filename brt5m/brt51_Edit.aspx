@@ -4,8 +4,8 @@
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "Newtonsoft.Json"%>
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
-<%@ Register Src="~/commonForm/dmt_CR_Form.ascx" TagPrefix="uc1" TagName="dmt_CR_Form" %>
-<%@ Register Src="~/commonForm/dmt_ctrl_Form.ascx" TagPrefix="uc1" TagName="dmt_ctrl_Form" %>
+<%@ Register Src="~/commonForm/brt511form.ascx" TagPrefix="uc1" TagName="brt511form" %>
+<%@ Register Src="~/commonForm/Brta212form.ascx" TagPrefix="uc1" TagName="brta212form" %>
 
 
 
@@ -160,8 +160,8 @@
     <input type="text" id="cust_area" name="cust_area">
     <input type="text" id="cust_seq" name="cust_seq">
     <center>
-         <uc1:dmt_CR_Form runat="server" ID="dmt_CR_Form" /><!--~/commonForm/dmt_CR_Form.ascx-->
-         <uc1:dmt_ctrl_Form runat="server" ID="dmt_ctrl_Form" /><!--~/commonForm/dmt_ctrl_Form.ascx-->
+         <uc1:brt511form runat="server" ID="brt511form" /><!--~/commonForm/brt511form.ascx-->
+         <uc1:brta212form runat="server" ID="brta212form" /><!--~/commonForm/brta212form.ascx-->
      </center>
 
     <%#DebugStr%>
@@ -233,8 +233,8 @@
         });
 
         //畫面準備
-        cr_form.init();//收文form
-        ctrl_form.init();//管制期限form
+        brt511form.init();//收文form
+        brta212form.init();//管制期限form
 
         //-----------------
         $("input.dateField").datepick();
@@ -288,12 +288,12 @@
         if(main.submittask=="A"){
             if($("#hrs_code").val()=="FC11"||$("#hrs_code").val()=="FC21"||$("#hrs_code").val()=="FC6"||$("#hrs_code").val()=="FC7"||$("#hrs_code").val()=="FC8"||$("#hrs_code").val()=="FC5"
                 ||$("#hrs_code").val()=="FCI"||$("#hrs_code").val()=="FCH"||$("#hrs_code").val()=="FT2"||$("#hrs_code").val()=="FL5"||$("#hrs_code").val()=="FL6"){
-                cr_form.getdseq();//一案多件
+                brt511form.getdseq();//一案多件
             }
             if($("#hrs_code").val().Left(2)=="FD"){
-                cr_form.getdseq1();//分割
+                brt511form.getdseq1();//分割
             }
-            cr_form.getCtrl();
+            brt511form.getCtrl();
         }
         
         //顯示爭救案交辦欄位
@@ -302,7 +302,7 @@
             //2013/11/5修改，爭救案性預設帶官收法定期限
             if(CInt($("#nstep_grade"))!=1){
                 $("#btnqrygrlastdate").show();//顯示[查官收未銷法定期限按鈕]
-                ctrl_form.add_ctrl();
+                brta212form.add_ctrl();
                 $("#ctrl_type_"+$("#ctrlnum").val()).val("A1");
                 getgrlast_date();
             }

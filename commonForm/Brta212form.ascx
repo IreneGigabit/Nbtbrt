@@ -1,10 +1,11 @@
-﻿<%@ Control Language="C#" ClassName="dmt_ctrl_form" %>
+﻿<%@ Control Language="C#" ClassName="brta212form" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Import Namespace = "System.Data"%>
 <%@ Import Namespace = "Newtonsoft.Json"%>
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
 
 <script runat="server">
+    //管制欄位畫面，與收文共同
     //父控制項傳入的參數
     public Dictionary<string, string> SrvrVal = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -85,9 +86,9 @@
 	    <%if (submitTask != "Q" && submitTask != "D") { %>
 	        <TR class=whitetablebg align=center id="ctrl_line1">
 		        <TD colspan=7>
-			        <input type=button value ="增加一筆管制" class="cbutton" id=Add_button name=Add_button onclick="ctrl_form.add_ctrl()">
+			        <input type=button value ="增加一筆管制" class="cbutton" id=Add_button name=Add_button onclick="brta212form.add_ctrl()">
 			        <%if (submitTask == "A" || prgid == "brta24" || prgid == "brta38") {%><!--國內案官收確認作業//國內案官發確認作業-->
-				        <input type=button value ="減少一筆管制" class="cbutton" id=res_button name=res_button onclick="ctrl_form.del_ctrl()">
+				        <input type=button value ="減少一筆管制" class="cbutton" id=res_button name=res_button onclick="brta212form.del_ctrl()">
 			        <%}%>
 			        <input type="hidden" name="rsqlno" id="rsqlno">
 			        <%if (prgid != "brt51" && prgid != "brta22" && prgid != "brta78") {%><!--國內案客戶收文確認//國內案客戶收文作業//國內案確認轉案作業-->
@@ -150,9 +151,9 @@
 </TABLE>
 
 <script language="javascript" type="text/javascript">
-    var ctrl_form = {};
+    var brta212form = {};
 
-    ctrl_form.init = function () {
+    brta212form.init = function () {
         if(main.submittask!="Q"&&main.submmittask!="D"){
             $("#ctrl_line1").show();
             $("#ctrl_line2").hide();
@@ -168,7 +169,7 @@
     }
 
     //管制期限增加一筆
-    ctrl_form.add_ctrl = function () {
+    brta212form.add_ctrl = function () {
         var nRow = CInt($("#ctrlnum").val()) + 1;
         //複製樣板
         var copyStr = $("#ctrl_template").text() || "";
@@ -185,7 +186,7 @@
     }
 
     //管制期限減少一筆
-    ctrl_form.del_ctrl = function () {
+    brta212form.del_ctrl = function () {
         var nRow = CInt($("#ctrlnum").val());
         if(main.prgid=="brta34"){
             if($("#io_flg_"+nRow).val()=="N"){

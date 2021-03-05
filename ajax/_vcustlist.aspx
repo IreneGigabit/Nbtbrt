@@ -22,6 +22,9 @@
         cust_seq = (Request["cust_seq"] ?? "");
 
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            DataTable dt = Sys.GetVCustlist(conn, apcust_no, cust_area, cust_seq);
+
+            /*
             SQL = "select *,''apclassnm,''ap_countrynm,''con_codenm,''rmark_codenm,''ref_seqnm,''magnm ";
             SQL += ",''pdis_typenm,''ppay_typenm,''tdis_typenm,''tpay_typenm ";
             SQL += "from vcustlist where 1=1 ";
@@ -96,9 +99,8 @@
                 SQL = "select code_name from cust_code where code_type='C' and cust_code='" + dt.Rows[i].SafeRead("tpay_type", "").Trim() + "'";
                 object objResult3 = conn.ExecuteScalar(SQL);
                 dt.Rows[i]["tpay_typenm"] = (objResult3 == DBNull.Value || objResult3 == null) ? "" : objResult3.ToString();
-
             }
-
+            */
 
             var settings = new JsonSerializerSettings()
             {

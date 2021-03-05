@@ -348,7 +348,8 @@ function delayNO1(low_no, low_no1) {
             $("#s_marka_1,#s_markb_1").val("商標");
         }
         //正聯防
-        $("#tfzy_Pul,#tfzd_Pul").val(oMain.vdmtall[0].pul).triggerHandler("change");
+        $("#tfzy_Pul").val(oMain.vdmtall[0].pul).triggerHandler("change");
+        $("#tfzd_Pul").val(oMain.vdmtall[0].pul).triggerHandler("change");
         $("#tfzd_Tcn_ref").val(oMain.vdmtall[0].tcn_ref);
         $("#tfzd_Tcn_Class").val(oMain.vdmtall[0].tcn_class);
         $("#tfzd_Tcn_name").val(oMain.vdmtall[0].tcn_name);

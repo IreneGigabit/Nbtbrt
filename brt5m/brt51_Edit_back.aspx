@@ -4,9 +4,8 @@
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "Newtonsoft.Json"%>
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
-<%@ Register Src="~/commonForm/dmt_CR_Form.ascx" TagPrefix="uc1" TagName="dmt_CR_Form" %>
-<%@ Register Src="~/commonForm/dmt_ctrl_Form.ascx" TagPrefix="uc1" TagName="dmt_ctrl_Form" %>
-
+<%@ Register Src="~/commonForm/brt511form.ascx" TagPrefix="uc1" TagName="brt511form" %>
+<%@ Register Src="~/commonForm/Brta212form.ascx" TagPrefix="uc1" TagName="brta212form" %>
 
 
 <script runat="server">
@@ -370,8 +369,8 @@
     <input type="text" id=seq name=seq>
     <input type="text" id=seq1 name=seq1>
      <center>
-         <uc1:dmt_CR_Form runat="server" ID="dmt_CR_Form" /><!--~/commonForm/dmt_CR_Form.ascx-->
-         <uc1:dmt_ctrl_Form runat="server" ID="dmt_ctrl_Form" /><!--~/commonForm/dmt_ctrl_Form.ascx-->
+         <uc1:brt511form runat="server" ID="brt511form" /><!--~/commonForm/brt511form.ascx-->
+         <uc1:brta212form runat="server" ID="brta212form" /><!--~/commonForm/brta212form.ascx-->
      </center>
 
     <%#DebugStr%>
@@ -442,12 +441,12 @@
         });
 
         //畫面準備
-        cr_form.init();//收文form
+        brt511form.init();//收文form
 
         //-----------------
         $("input.dateField").datepick();
         main.bind();//資料綁定
-        cr_form.bind();//資料綁定
+        brt511form.bind();//資料綁定
         $(".Lock").lock();
         $(".Hide").hide();
 
@@ -457,7 +456,7 @@
             //2013/11/5修改，爭救案性預設帶官收法定期限
             if(CInt($("#nstep_grade"))!=1){
                 $("#btnqrygrlastdate").show();//顯示[查官收未銷法定期限按鈕]
-                ctrl_form.Add_button.click();
+                brta212form.Add_button.click();
                 $("#ctrl_type_"+$("#ctrlnum").val()).val("A1");
             }
         }
@@ -491,7 +490,7 @@
         $("#spe_ctrl3").val(jMain.spe_ctrl3);
         $("#seq").val(jMain.seq);
         $("#seq1").val(jMain.seq1);
-        //cr_form
+        //brt511form
         $("#rs_type").val(jMain.rs_type);//結構分類
         $("#rs_type").triggerHandler("change");
         $("#code").val(jMain.code);
@@ -540,7 +539,7 @@
         $("#spe_ctrl3").val(jMain.cr_main.spe_ctrl3);
         $("#seq").val(jMain.cr_main.seq);
         $("#seq1").val(jMain.cr_main.seq1);
-        //cr_form
+        //brt511form
         $("#rs_type").val(jMain.step_dmt[0].rs_type);//結構分類
         $("#rs_type").triggerHandler("change");
         $("#code").val(jMain.cr_main.code);

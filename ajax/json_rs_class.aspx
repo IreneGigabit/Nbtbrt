@@ -12,45 +12,22 @@
 <script runat="server">
     protected string SQL = "";
 
-    protected string cgrs = "";
+    protected string rs_type = "";
     protected string cg = "";
     protected string rs = "";
-    protected string rs_class = "";
-    protected string rs_code = "";
-    protected string submittask = "";
 
     protected void Page_Load(object sender, EventArgs e) {
-        cgrs = Request["cgrs"] ?? "";
+        rs_type = Request["rs_type"] ?? "";
         cg = Request["cg"] ?? "";
         rs = Request["rs"] ?? "";
-        rs_class = Request["rs_class"] ?? "";
-        rs_code = Request["rs_code"] ?? "";
-        submittask = (Request["submittask"] ?? "").ToUpper();
 
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
-            SQL = "select distinct act_code,act_code_name,rs_class,act_sort,spe_ctrl ";
-            SQL += "from vcode_act ";
-            SQL += " where dept='" + Sys.GetSession("dept") + "' ";
-            if (cgrs != "") {
-                SQL += " and " + cgrs + "='Y' ";
-            }
-            if (cg != "") {
-                SQL += " and cg='" + cg + "' ";
-            }
-            if (rs != "") {
-                SQL += " and rs='" + rs + "'";
-            }
-            if (submittask == "A") {
-                SQL += " and (end_date is null or end_date = '' or end_date > getdate()) ";
-            }
-            if (rs_class != "") {
-                SQL += " and rs_class='" + rs_class + "' ";
-            }
-            if (rs_code != "") {
-                SQL += " and rs_code='" + rs_code + "'";
-            }
-            SQL += " ORDER BY act_sort";
+            SQL = "select * from cust_code ";
+            SQL += " where code_type='" + rs_type + "' and mark is null ";
+            SQL += " and cust_code in (select rs_class from vcode_act where cg ='" + cg + "' and rs = '" + rs + "' and rs_type='" + rs_type + "') ";
+            SQL += " order by cust_code";
+
             conn.DataTable(SQL, dt);
         }
 

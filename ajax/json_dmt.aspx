@@ -22,16 +22,20 @@
         prgid = (Request["prgid"] ?? "");
         seq = (Request["seq"] ?? "");
         seq1 = (Request["seq1"] ?? "");
-        cust_area = (Request["cust_area"] ?? "");
-        cust_seq = (Request["cust_seq"] ?? "");
+        //cust_area = (Request["cust_area"] ?? "");
+        //cust_seq = (Request["cust_seq"] ?? "");
 
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            DataTable dt = new DataTable();
+            dt = Sys.GetDmt(conn, seq, seq1);
+            
+            /*
             SQL = "select seq,seq1,s_mark,appl_name,apply_no,issue_no,end_date,''smarknm ";
             SQL += " from dmt where seq=" + seq;
             SQL += " and seq1='" + seq1 + "' ";
-            SQL += " and cust_area='" + cust_area + "' ";
-            SQL += " and cust_seq='" + cust_seq + "'";
-
+            if (cust_area != "") SQL += " and cust_area='" + cust_area + "' ";
+            if (cust_seq != "") SQL += " and cust_seq='" + cust_seq + "'";
+            
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
 
@@ -43,9 +47,10 @@
                     case "M": dt.Rows[i]["smarknm"] = "團體標章"; break;
                     default: dt.Rows[i]["smarknm"] = "商標"; break;
                 }
-            }
+            }*/
 
-            var settings = new JsonSerializerSettings() {
+            var settings = new JsonSerializerSettings()
+            {
                 Formatting = Formatting.Indented,
                 ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
                 Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉

@@ -100,31 +100,33 @@
     #region GetDmt 案件主檔
     private DataTable GetDmt() {
         DataTable dt = new DataTable();
+        dt = Sys.GetDmt(connbr, seq, seq1);
+        /*
         SQL = "SELECT *,''arcasenm,''now_arcasenm,''now_statnm,''cust_name,'否'con_termnm ";
         SQL += ",''end_codenm ";
         SQL += " FROM dmt ";
         SQL += " WHERE seq='" + seq + "' and seq1='" + seq1 + "'";
         connbr.DataTable(SQL, dt);
-
+        */
         if (dt.Rows.Count > 0) {
             if (prgid == "brta24") {
                 dt.Rows[0]["arcasenm"] = getArcase(Request["rs_code"], Request["rs_type"]);
             } else {
                 dt.Rows[0]["arcasenm"] = getArcase(dt.Rows[0].SafeRead("arcase", ""), dt.Rows[0].SafeRead("arcase_type", ""));
-                dt.Rows[0]["now_arcasenm"] = getArcase(dt.Rows[0].SafeRead("now_arcase", ""), dt.Rows[0].SafeRead("now_arcase_type", ""));
+                //dt.Rows[0]["now_arcasenm"] = getArcase(dt.Rows[0].SafeRead("now_arcase", ""), dt.Rows[0].SafeRead("now_arcase_type", ""));
             }
-            dt.Rows[0]["now_statnm"] = getStatus(dt.Rows[0].SafeRead("now_stat", ""));
+            //dt.Rows[0]["now_statnm"] = getStatus(dt.Rows[0].SafeRead("now_stat", ""));
 
-            SQL = "select b.ap_cname1,b.ap_cname2,a.con_term ";
-            SQL += "from custz a inner join apcust b on a.cust_seq=b.cust_seq and a.cust_area = b.cust_area ";
-            SQL += "where a.cust_area='" + dt.Rows[0].SafeRead("cust_area", "") + "' and a.cust_seq='" + dt.Rows[0].SafeRead("cust_seq", "") + "' ";
-            using (SqlDataReader dr = connbr.ExecuteReader(SQL)) {
-                if (dr.Read()) {
-                    dt.Rows[0]["cust_name"] = dr.SafeRead("ap_cname1", "").Trim() + dr.SafeRead("ap_cname2", "").Trim();
-                    if (dr.SafeRead("con_term", "").Trim() != "") dt.Rows[0]["con_termnm"] = "是";
-                }
-            }
-            dt.Rows[0]["end_codenm"] = getCodeName("ENDCODE", dt.Rows[0].SafeRead("end_code", ""));
+            //SQL = "select b.ap_cname1,b.ap_cname2,a.con_term ";
+            //SQL += "from custz a inner join apcust b on a.cust_seq=b.cust_seq and a.cust_area = b.cust_area ";
+            //SQL += "where a.cust_area='" + dt.Rows[0].SafeRead("cust_area", "") + "' and a.cust_seq='" + dt.Rows[0].SafeRead("cust_seq", "") + "' ";
+            //using (SqlDataReader dr = connbr.ExecuteReader(SQL)) {
+            //    if (dr.Read()) {
+            //        dt.Rows[0]["cust_name"] = dr.SafeRead("ap_cname1", "").Trim() + dr.SafeRead("ap_cname2", "").Trim();
+            //        if (dr.SafeRead("con_term", "").Trim() != "") dt.Rows[0]["con_termnm"] = "是";
+            //    }
+            //}
+            //dt.Rows[0]["end_codenm"] = getCodeName("ENDCODE", dt.Rows[0].SafeRead("end_code", ""));
             //brt51客收確認，移轉案傳入結案原因012_已另案移轉
             if(prgid=="brt51"&&Request["end_type"]!=""){
                 dt.Rows[0]["end_type"] = Request["end_type"].ToString();

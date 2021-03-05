@@ -490,6 +490,18 @@ public partial class Sys
     }
     #endregion
 
+    #region getRsDetail 取得案性說明
+    private static string getRsDetail(DBHelper conn, string pCgrs, string pRsType, string pRsCode) {
+        string SQL = "select rs_detail from code_br ";
+        SQL += "where " + pCgrs + " = 'Y' ";
+        SQL += " and dept = '" + Sys.GetSession("dept") + "' ";
+        SQL += " and rs_code = '" + pRsCode + "' ";
+        SQL += " and rs_type = '" + pRsType + "' ";
+        object objResult = conn.ExecuteScalar(SQL);
+        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString(); ;
+    }
+    #endregion
+
     #region getCaseAspx - 國內案性對應的交辦畫面aspx
     /// <summary>  
     /// 國內案性對應的交辦畫面aspx
@@ -505,6 +517,118 @@ public partial class Sys
             SQL += "and b.rs_code='" + rsCode + "' ";
             object objResult = conn.ExecuteScalar(SQL);
             return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+        }
+    }
+    #endregion
+
+    #region getCase11Aspx - 國內案營洽交辦畫面aspx
+    /// <summary>  
+    /// 國內案營洽交辦畫面aspx
+    /// </summary>  
+    public static string getCase11Aspx(string prgid, string in_no, string in_scode, string submittask) {
+        object objResult = null;
+        string urlasp = "";//連結的url
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            string SQL = "SELECT a.seq,a.seq1,a.in_scode, a.in_no,a.arcase_type,a.arcase_class,b.class, a.arcase ";
+            SQL += ", a.cust_area, a.cust_seq,a.case_no,a.ar_service,a.ar_fees,a.ar_code,a.ar_curr,a.mark ";
+            SQL += ",(SELECT rs_class FROM code_br WHERE rs_code = a.arcase AND dept = 'T' AND cr = 'Y' AND rs_type=a.arcase_type) AS Ar_form ";
+            SQL += ",''step_grade ";
+            SQL += " FROM case_dmt a ";
+            SQL += "where in_no='" + in_no + "' ";
+            SQL += "and in_scode='" + in_scode + "' ";
+            DataTable dt = new DataTable();
+            if (dt.Rows.Count > 0) {
+                DataRow dr = dt.Rows[0];
+                string new_form = Sys.getCaseDmtAspx(dr.SafeRead("arcase_type", ""), dr.SafeRead("arcase", ""));//連結的aspx
+
+                SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
+                objResult = conn.ExecuteScalar(SQL);
+                string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();//連結的版本
+
+                //抓取對應客收進度
+                SQL = "select step_grade from step_dmt where seq='" + dr["seq"] + "' and seq1='" + dr["seq1"] + "' and case_no='" + dr["case_no"] + "' and cg='C' and rs='R' ";
+                objResult = conn.ExecuteScalar(SQL);
+                string case_step_grade = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();//抓取對應客收進度
+
+                urlasp = "~/brt1m" + link_remark + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid;
+
+                urlasp += "&in_scode=" + dr["in_scode"];
+                urlasp += "&in_no=" + dr["in_no"];
+                urlasp += "&case_no=" + dr["case_no"];
+                urlasp += "&seq=" + dr["seq"];
+                urlasp += "&seq1=" + dr["seq1"];
+                urlasp += "&add_arcase=" + dr["arcase"];
+                urlasp += "&cust_area=" + dr["cust_area"];
+                urlasp += "&cust_seq=" + dr["cust_seq"];
+                urlasp += "&ar_form=" + dr["ar_form"];
+                urlasp += "&new_form=" + new_form;
+                urlasp += "&code_type=" + dr["arcase_type"];
+                urlasp += "&ar_code=" + dr["ar_code"];
+                urlasp += "&mark=" + dr["mark"];
+                urlasp += "&ar_service=" + dr["ar_service"];
+                urlasp += "&ar_fees=" + dr["ar_fees"];
+                urlasp += "&ar_curr=" + dr["ar_curr"];
+                urlasp += "&step_grade=" + case_step_grade;
+                urlasp += "&uploadtype=case";
+                urlasp += "&submittask=" + submittask;
+            }
+
+            return urlasp;
+        }
+    }
+    #endregion
+
+    #region getCase52Aspx - 國內案營洽交辦維護畫面aspx
+    /// <summary>  
+    /// 國內案營洽交辦維護畫面aspx
+    /// </summary>  
+    public static string getCase52Aspx(string prgid, string in_no, string in_scode, string submittask) {
+        object objResult = null;
+        string urlasp = "";//連結的url
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            string SQL = "SELECT a.seq,a.seq1,a.in_scode,a.in_no,a.arcase_type,a.arcase_class, a.arcase ";
+            SQL += ",a.cust_area,a.cust_seq,a.case_no,a.ar_service,a.ar_fees,a.ar_code,a.ar_curr,a.mark ";
+            SQL += ",(SELECT rs_class FROM code_br WHERE rs_code = a.arcase AND dept = 'T' AND cr = 'Y' AND rs_type=a.arcase_type) AS Ar_form ";
+            SQL += "FROM case_dmt a ";
+            SQL += "where in_no='" + in_no + "' and in_scode='" + in_scode + "' ";
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
+            if (dt.Rows.Count > 0) {
+                DataRow dr = dt.Rows[0];
+                string new_form = Sys.getCaseDmtAspx(dr.SafeRead("arcase_type", ""), dr.SafeRead("arcase", ""));//連結的aspx
+
+                SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
+                objResult = conn.ExecuteScalar(SQL);
+                string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();//連結的版本
+
+                SQL = "select step_grade from step_dmt where seq='" + dr["seq"] + "' and seq1='" + dr["seq1"] + "' and case_no='" + dr["case_no"] + "' and cg='C' and rs='R' ";
+                objResult = conn.ExecuteScalar(SQL);
+                string case_step_grade = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();//抓取對應客收進度
+
+                urlasp = "~/brt5m" + link_remark + "/Brt52EDIT" + new_form + ".aspx?prgid=" + prgid;
+
+                urlasp += "&in_scode=" + dr["in_scode"];
+                urlasp += "&in_no=" + dr["in_no"];
+                urlasp += "&case_no=" + dr["case_no"];
+                urlasp += "&seq=" + dr["seq"];
+                urlasp += "&seq1=" + dr["seq1"];
+                urlasp += "&add_arcase=" + dr["arcase"];
+                urlasp += "&cust_area=" + dr["cust_area"];
+                urlasp += "&cust_seq=" + dr["cust_seq"];
+                urlasp += "&ar_form=" + dr["ar_form"];
+                urlasp += "&new_form=" + new_form;
+                urlasp += "&code_type=" + dr["arcase_type"];
+                urlasp += "&ar_code=" + dr["ar_code"];
+                urlasp += "&mark=" + dr["mark"];
+                urlasp += "&ar_service=" + dr["ar_service"];
+                urlasp += "&ar_fees=" + dr["ar_fees"];
+                urlasp += "&ar_curr=" + dr["ar_curr"];
+                urlasp += "&step_grade=" + case_step_grade;
+                urlasp += "&uploadtype=case";
+                urlasp += "&submittask=" + submittask;
+            }
+
+            return urlasp;
         }
     }
     #endregion
@@ -562,6 +686,16 @@ public partial class Sys
 
             return dt;
         }
+    }
+    #endregion
+
+    #region getCodeName 取得代碼名稱
+    private static string getCodeName(DBHelper conn, string pCodeType, string pCustCode) {
+        string SQL = "select code_name from cust_code ";
+        SQL += "where code_type = '" + pCodeType + "' ";
+        SQL += " and cust_code = '" + pCustCode + "' ";
+        object objResult = conn.ExecuteScalar(SQL);
+        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString(); ;
     }
     #endregion
 

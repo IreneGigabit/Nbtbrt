@@ -315,7 +315,8 @@ main.bind = function () {
         $("input[name='tfzd_s_mark2'][value='" + jMain.case_main[0].s_mark2 + "']").prop("checked", true);
 
         //*正聯防商標
-        $("#tfzy_Pul,#tfzd_Pul").val(jMain.case_main[0].pul).triggerHandler("change");
+        $("#tfzy_Pul").val(jMain.case_main[0].pul).triggerHandler("change");
+        $("#tfzd_Pul").val(jMain.case_main[0].pul).triggerHandler("change");
         $("#tfzd_Tcn_ref").val(jMain.case_main[0].tcn_ref);
         $("#tfzd_Tcn_Class").val(jMain.case_main[0].tcn_class);
         $("#tfzd_Tcn_name").val(jMain.case_main[0].tcn_name);

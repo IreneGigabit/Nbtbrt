@@ -4,13 +4,11 @@
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "Newtonsoft.Json"%>
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
-<%@ Register Src="~/commonForm/dmt_CR_Form.ascx" TagPrefix="uc1" TagName="dmt_CR_Form" %>
-<%@ Register Src="~/commonForm/dmt_ctrl_Form.ascx" TagPrefix="uc1" TagName="dmt_ctrl_Form" %>
-
+<%@ Register Src="~/commonForm/Brta21form.ascx" TagPrefix="uc1" TagName="Brta21form" %>
 
 
 <script runat="server">
-    protected string HTProgCap = "國內案客收確認作業";//HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -27,19 +25,14 @@
     protected string SQL = "";
 
     protected string submitTask = "";
-    protected string cgrs = "CR";
-    //protected string code = "";//todo.sqlno
-    //protected string in_scode = "";
-    //protected string in_no = "";
-    //protected string cust_area = "";
-    //protected string cust_seq = "";
-    //protected string endflag51 = "";
-    //protected string end_date51 = "";
-    //protected string end_code51 = "";
-    //protected string end_type51 = "";
-    //protected string end_remark51 = "";
-    //protected string seqend_flag = "";
+    protected string seq = "";
+    protected string seq1 = "";
+    protected string case_no = "";
+    protected string in_scode = "";
+    protected string in_no = "";
 
+    protected string se_grpid = "000", mSC_code = "", mSC_name = "", html_selectsign = "";
+ 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
@@ -55,10 +48,15 @@
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
         submitTask = ReqVal.TryGet("submittask").ToUpper();
+        seq = ReqVal.TryGet("seq");
+        seq1 = ReqVal.TryGet("seq1");
+        case_no = ReqVal.TryGet("case_no");
+        in_scode = ReqVal.TryGet("in_scode");
+        in_no = ReqVal.TryGet("in_no");
         
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
-        HTProgCap = myToken.Title.Replace("收文", "<font color=blue>收文</font>");
+        HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
             
@@ -69,6 +67,7 @@
     }
 
     private void PageLayout() {
+        
         if (submitTask == "") submitTask = "A";
         if (prgid == "brt63") {
             HTProgCap = "國內案承辦<font color=blue>交辦發文</font>作業";
@@ -87,33 +86,18 @@
         if (submitTask == "D") HTProgCap += "-<font color=blue>刪除</font>";
         if (submitTask == "R") HTProgCap += "-<font color=blue>退回</font>";//20160901 增加[退回]功能(R)
 
-        if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
-            if (cgrs == "CR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta4m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";//***todo
-            if (cgrs == "GR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta41m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";//***todo
-            StrFormBtnTop += "<font style=\"cursor: pointer;color:darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"Help_Click()\">[說明]</font>";//***todo
-
-            if (submitTask == "A" || (Request["closewin"] ?? "") == "Y") {
-                StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
-            }
-        }
-
-        if (submitTask != "Q") {
-            if ((HTProgRight & 4) > 0 || (HTProgRight & 8) > 0 || (HTProgRight & 16) > 0 || (HTProgRight & 64) > 0) {
-                if (((HTProgRight & 4) > 0 && submitTask == "A") || ((HTProgRight & 8) > 0 && submitTask == "U") || ((HTProgRight & 64) > 0 && submitTask == "U")) {
-                    StrFormBtn += "<input type=button value ='存　檔' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
-                }
-                if (((HTProgRight & 16) > 0 && submitTask == "D")) {
-                    StrFormBtn += "<input type=button value ='刪　除' class='cbutton bsubmit' onclick='formDelSubmit()'>\n";
-                }
-                StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
-            }
-        }
-
+    if ((submitTask == "U" || submitTask == "R")&&prgid=="brta38") {//20160901 增加[退回]功能(R)
+        Lock["PrLock"] = "Lock";
+    }
+    if (submitTask == "Q" || submitTask == "D" || submitTask == "D") {//20160901 增加[退回]功能(R)
+        Lock["QLock"] = "Lock";
+    }
+        
+        
+        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl(Sys.getCase52Aspx("brt52", in_no, in_scode, "Edit")) + "\" target=\"Eblank\">[交辦維護作業]</a>\n";
+        StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
 
         if ((HTProgRight & 4) > 0 || (HTProgRight & 8) > 0 || (HTProgRight & 16) > 0 || (HTProgRight & 64) > 0 || (HTProgRight & 128) > 0) {
-            if (((HTProgRight & 8) > 0 && submitTask == "R") || ((HTProgRight & 64) > 0 && submitTask == "R")) {
-                StrFormBtn += "<input type=button id='button1' value ='退　回' class='redbutton' onClick='formRejectSubmit()'>\n";
-            }
             if (((HTProgRight & 4) > 0 && submitTask == "A") || ((HTProgRight & 8) > 0 && submitTask == "U") || ((HTProgRight & 64) > 0 && submitTask == "U")) {
                 //20161212官發確認時增加電子申請書word檢查
                 if (prgid == "brta38") {
@@ -121,12 +105,22 @@
                 }
                 StrFormBtn += "<input type=button value ='確　認' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
             }
+            if (((HTProgRight & 8) > 0 && submitTask == "R") || ((HTProgRight & 64) > 0 && submitTask == "R")) {
+                StrFormBtn += "<input type=button id='button1' value ='退　回' class='redbutton' onClick='formRejectSubmit()'>\n";
+            }
             StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
         }
+
+        //正常簽核
+        Sys.getGrpidMaster(Sys.GetSession("SeBranch"), ref se_grpid, ref mSC_code, ref mSC_name);
+        //特殊簽核
+        DataRow[] drx = Sys.getGrpidUp("N", "000").Select("grplevel=1");
+        html_selectsign = drx.Option("{master_scode}", "{master_type}---{master_nm}", false);
     }
 
     //將共用參數傳給子控制項
     private void ChildBind() {
+        Brta21form.Lock = Lock;
     }
 
 </script>
@@ -155,8 +149,6 @@
     main.submittask = "<%#submitTask%>";
     main.in_no = "<%#ReqVal.TryGet("in_no")%>";
     main.in_scode = "<%#ReqVal.TryGet("in_scode")%>";
-    main.cust_area = "<%#ReqVal.TryGet("cust_area")%>";
-    main.cust_seq = "<%#ReqVal.TryGet("cust_seq")%>";
     main.code = "<%#ReqVal.TryGet("code")%>";//todo.sqlno
     main.change = "<%#ReqVal.TryGet("change")%>";//異動簽核狀態
     jMain={};
@@ -165,7 +157,12 @@
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
-        <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】</td>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
+		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;&nbsp;
+		案件編號：<span id="span_fseq"></span>&nbsp;&nbsp;<span id="span_rs_no">發文序號：</span>
+        </td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <%#StrFormBtnTop%>
         </td>
@@ -176,27 +173,80 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id=submittask name=submittask value="<%=submitTask%>">
-    <INPUT TYPE="text" id=prgid name=prgid value="<%=prgid%>">
-    <input type="text" id=codemark name=codemark>
-    <input type="text" id=dmt_term1 name=dmt_term1>
-    <input type="text" id=dmt_term2 name=dmt_term2>
-    <input type="text" id=endflag51 name=endflag51 value="<%=Request["endflag51"]%>">
-    <input type="text" id=end_date51 name=end_date51 value="<%=Request["end_date51"]%>">
-    <input type="text" id=end_code51 name=end_code51 value="<%=Request["end_code51"]%>">
-    <input type="text" id=end_type51 name=end_type51 value="<%=Request["end_type51"]%>">
-    <input type="text" id=end_remark51 name=end_remark51 value="<%=Request["end_remark51"]%>">
-    <input type="text" id=seqend_flag name=seqend_flag value="<%=Request["seqend_flag"]%>"><!--結案註記-->
-    <input type="text" id=case_last_date name=case_last_date><!--營洽輸入法定期限-->
-    <input type="text" id=spe_ctrl3 name=spe_ctrl3><!--Y:案性需管制法定期限-->
-    <input type="text" id=seq name=seq>
-    <input type="text" id=seq1 name=seq1>
-    <input type="text" id="cust_area" name="cust_area">
-    <input type="text" id="cust_seq" name="cust_seq">
-    <center>
-         <uc1:dmt_CR_Form runat="server" ID="dmt_CR_Form" /><!--~/commonForm/dmt_CR_Form.ascx-->
-         <uc1:dmt_ctrl_Form runat="server" ID="dmt_ctrl_Form" /><!--~/commonForm/dmt_ctrl_Form.ascx-->
-     </center>
+    <INPUT TYPE="text" id="submittask" name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="text" id="prgid" name="prgid" value="<%=prgid%>">
+    <INPUT TYPE="text" id="prgid1" name="prgid1" value="<%=Request["prgid1"]%>">
+    <INPUT TYPE="text" id="todo_sqlno" name="todo_sqlno" value="<%=Request["todo_sqlno"]%>"><!--承辦交辦發文或程序官發確認todo_dmt.sqlno-->
+    <INPUT TYPE="text" id="in_scode" name="in_scode" value="<%=in_scode%>"><!--對應交辦case_dmt.in_scode-->
+    <INPUT TYPE="text" id="in_no" name="in_no" value="<%=in_no%>"><!--對應交辦case_dmt.in_no-->
+    <INPUT TYPE="text" id="case_no" name="case_no" value="<%=case_no%>"><!--對應交辦case_dmt.case_no-->
+    <INPUT TYPE="text" id="att_sqlno" name="att_sqlno" value="<%=Request["att_sqlno"]%>"><!--對應交辦發文attcase_dmt.att_sqlno-->
+    <INPUT TYPE="text" id="ctrl_flg" name="ctrl_flg" value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
+    <INPUT TYPE="text" id="havectrl" name="havectrl" value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
+    <INPUT TYPE="text" id="task" name="task" value="<%=Request["task"]%>"><!--prsave:承辦發文維護,pr:承辦自行發文,cancel:不需發文,conf:確認-->
+    <input type="text" id="edoc_type" name="edoc_type"><!--判斷要檢查的電子送件文件種類xx,改用申請書檢核-->
+    <input type="text" id="report_name" name="report_name"><!--案性對應申請書名稱xx,改用上傳檔名-->
+    <input type="text" id="contract_flag" name="contract_flag"><!--契約書後補註記N:無或已後補,Y:有-->
+
+    <uc1:Brta21form runat="server" id="Brta21form" /><!--案件主檔欄位畫面，與收文共同-->
+
+    <br />
+    <input type="hidden" name="rsqlno" id="rsqlno">
+    <table id=tabpr border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%" >
+	    <TR>
+		    <TD align=center colspan=2 class=lightbluetable1><font color=white>承&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;處&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;說&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明</font></TD>
+	    </TR>
+	    <tr>
+		    <td class="lightbluetable" align="right">承辦處理說明/<font color=red>不需發文說明</font>：</td>
+		    <td class="whitetablebg" align="left">
+			    <textarea name="job_remark" id="job_remark" rows="5" cols="70" class="<%#Lock.TryGet("PrLock")%>"></textarea>
+		    </td>
+	    </tr>
+	    <%if(submitTask=="R"){%>
+	        <TR>
+		        <TD align=center colspan=2 class=lightbluetable1><font color=white>程&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;退&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;回&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;說&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明</font></TD>
+	        </TR>
+	        <tr>
+		        <td class="lightbluetable" align="right"><font color=red>程序退回說明</font>：</td>
+		        <td class="whitetablebg" align="left">
+			        <textarea name="approve_desc" id="approve_desc" rows="5" cols="70"></textarea>
+		        </td>
+	        </tr>
+	    <%}%>
+	    <tr id="tr_respdate" style="display:none">
+		    <td class="lightbluetable" align="right">期限銷管：</td>
+		    <td class="whitetablebg" align="left">	
+			    <input type=button class="c1button" name="btnresp" id="btnresp" value ="進度查詢及銷管制">
+		    </td>
+	    </tr>
+    </table>
+
+    <div id="div_sign">
+    <br>
+    <table id="tabsign"border="0" width="70%" cellspacing="1" cellpadding="0" align="center" style="font-size: 9pt">
+	    <TR>
+		    <td width="14%"><input type=radio name="usesign" id="usesign1" onclick="toselect()" checked><strong>正常簽核:</strong></td>
+		    <td><strong>上級主管:</strong><%=mSC_name%><input type=hidden name=Msign id=Msign value="<%=mSC_code%>"></td>
+		    <td style="display:none"><strong>管制日期:</strong>
+		    <input type=text name="signdate" id="signdate" size=10 readonly class="dateField">
+		    </td>
+	    </TR>
+	    <TR>
+		    <td ><input type=radio name="usesign" id="usesign2"><strong>特殊處理:</strong></td>
+		    <td ><input type=radio name=Osign onclick="$('#usesign2').prop('checked',true)" >
+			    <select name=selectsign id=selectsign>
+				    <option value="" style="color:blue">請選擇主管</option>
+				    <%#html_selectsign%>
+			    </select>
+		    </td>
+		    <td><input type=radio name=Osign disabled onclick="$('#usesign2').prop('checked',true)">
+		    <input type=text name=Nsign id=Nsign size=10 readonly>(薪號)
+		    </td>
+	    </TR>
+    </table>
+    <input type=hidden id="GrpID" name="GrpID" value="<%=se_grpid%>">
+    <input type=hidden id=signid name=signid>
+    </div>
 
     <%#DebugStr%>
 </form>
@@ -218,11 +268,7 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         if (window.parent.tt !== undefined) {
-            if($("#prgid").val()!="brt51"){
-                window.parent.tt.rows = "*,2*";
-            }else{
-                window.parent.tt.rows = "0%,100%";
-            }
+            window.parent.tt.rows = "0%,100%";
         }
 
         this_init();
@@ -267,9 +313,7 @@
         });
 
         //畫面準備
-        cr_form.init();//收文form
-        ctrl_form.init();//管制期限form
-
+        brta21form.init();
         //-----------------
         $("input.dateField").datepick();
         main.bind();//資料綁定
@@ -278,119 +322,80 @@
     }
     
     main.bind = function () {
-        $("#codemark").val(jMain.case_main[0].codemark);
-        $("#dmt_term1").val(dateReviver(jMain.case_main[0].dmt_term1,'yyyy/M/d'));
-        $("#dmt_term2").val(dateReviver(jMain.case_main[0].dmt_term2,'yyyy/M/d'));
-        $("#case_last_date").val(jMain.case_main[0].last_date);
-        $("#seq").val(jMain.case_main[0].seq);
-        $("#seq1").val(jMain.case_main[0].seq1);
-        $("#spe_ctrl3").val(jMain.step_cr.spe_ctrl3);
-        //cr_form
-        $("#rs_type").val(jMain.step_cr.rs_type);//結構分類
-        $("#rs_type").triggerHandler("change");
-        $("#code").val(main.code);
-        $("#in_no").val(jMain.case_main[0].in_no);
-        $("#in_scode").val(jMain.case_main[0].in_scode);
-        $("#change").val(main.change);
-        $("#cust_area,#cust_area1").val(main.cust_area);
-        $("#cust_seq,#cust_seq1").val(main.cust_seq);
-        $("#rs_no").val(jMain.step_cr.rs_no);
-        $("#nstep_grade").val(jMain.step_cr.step_grade);
-        $("#cgrs").val(jMain.step_cr.cgrs);
-        $("#step_date").val(jMain.step_cr.step_date);
-        $("#receive_no").val(jMain.step_cr.receive_no);
-        $("#hrs_class,#rs_class").val(jMain.step_cr.rs_class);
-        $("#rs_class").triggerHandler("change");
-        $("#hrs_code,#rs_code").val(jMain.step_cr.rs_code);
-        $("#rs_code").triggerHandler("change");
-        $("#hact_code,#act_code").val(jMain.step_cr.act_code);
-        $("#act_code").triggerHandler("change");
-        $("#ocase_stat,#ncase_stat").val(jMain.step_cr.case_stat);
-        $("#ncase_statnm").val(jMain.step_cr.case_statnm);
-        $("#rs_detail").val(jMain.step_cr.rs_detail);
-        $("#doc_detail").val(jMain.step_cr.doc_detail);
-        $("#old_receipt_type,#receipt_type").val(jMain.case_main[0].receipt_type);
-        $("#old_receipt_title,#receipt_title").val(jMain.case_main[0].receipt_title);
-        $("#old_send_way,#send_way").val(jMain.case_main[0].send_way);
-        $("#send_sel").val(jMain.step_cr.send_sel);
-        if (main.submittask == "A") {
-            $("input[name='opt_stat'][value='N']").prop("checked", true);//需交辦
-            $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
-        }
-        $("input[name='opt_stat'][value='" + jMain.step_cr.opt_stat + "']").prop("checked", true);
+        $("#span_fseq").html(jMain.case_main[0].fseq);
+        $("#oldseq,#grseq,#seq").val(jMain.dmt[0].seq);
+        $("#oldseq1,#grseq1,#seq1").val(jMain.dmt[0].seq1);
+        brta21form.btnseq();//[確定]
 
-        if(main.submittask=="A"){
-            if($("#hrs_code").val()=="FC11"||$("#hrs_code").val()=="FC21"||$("#hrs_code").val()=="FC6"||$("#hrs_code").val()=="FC7"||$("#hrs_code").val()=="FC8"||$("#hrs_code").val()=="FC5"
-                ||$("#hrs_code").val()=="FCI"||$("#hrs_code").val()=="FCH"||$("#hrs_code").val()=="FT2"||$("#hrs_code").val()=="FL5"||$("#hrs_code").val()=="FL6"){
-                cr_form.getdseq();//一案多件
-            }
-            if($("#hrs_code").val().Left(2)=="FD"){
-                cr_form.getdseq1();//分割
-            }
-            cr_form.getCtrl();
-        }
-        
-        //顯示爭救案交辦欄位
-        if ($("#codemark").val()=="B"){
-            document.all.show_optstat.style.display=""
-            //2013/11/5修改，爭救案性預設帶官收法定期限
-            if(CInt($("#nstep_grade"))!=1){
-                $("#btnqrygrlastdate").show();//顯示[查官收未銷法定期限按鈕]
-                ctrl_form.add_ctrl();
-                $("#ctrl_type_"+$("#ctrlnum").val()).val("A1");
-                getgrlast_date();
-            }
-        }
-        //顯示註冊費繳費狀態，當非創申案立新案
-        if(main.submittask=="A"){
-            if(CInt($("#nstep_grade").val())==1){
-                if ($("#hrs_class").val()!="A1"){
-                    $("#show_paytimes").show();
-                }
-            }else{
-                if($("#seqend_flag").val()=="Y"){//2010/10/6修改為結案註記有勾選結案才顯示
-                    $("#show_endstat").show();
-                }else{
-                    $("input[name='end_stat']").prop("checked",false);
-                }
-            }
-        }
-    }
+        if($("#submittask").val()=="A"){
+            $("#step_date").val(jMain.step_gs.step_date);
+            $("#mp_date").val(jMain.step_gs.mp_date);
+            $("#send_cl").val(jMain.step_gs.send_cl);
+            $("#send_cl1").val(jMain.step_gs.send_cl1);
+            $("#rs_type").val(jMain.step_gs.rs_type).triggerHandler("change");
+            $("#case_arcase_class").val(jMain.step_gs.rs_class);
+            $("#case_arcase").val(jMain.step_gs.rs_code);
 
-    function Help_Click(){
-        window.open(getRootPath() + "/brtam/國內案發收文系統操作手冊.htm","","width=700, height=500, top=50, left=50, toolbar=no, menubar=no, location=no, directories=no, resizeable=no, status=no, scrollbars=yes");
-    }
+            openread();	//控制特定欄位不能修改
+        }else{
 
-    function getgrlast_date(){
-        //抓取官收最小法定期限A1
-        var searchSql="Select min(a.ctrl_date) as last_date,a.step_grade,a.rs_no ";
-        searchSql+= " from ctrl_dmt a ";
-        searchSql+= " inner join step_dmt b on a.rs_no=b.rs_no and b.cg='G' and b.rs='R' ";
-        searchSql+= " where a.seq='"+$("#seq").val()+"' and a.seq1='"+$("#seq1").val()+ "' and a.ctrl_type='A1'";
-        searchSql+= " group by a.step_grade,a.rs_no ";
-        $.ajax({
-            type: "get",
-            url: getRootPath() + "/ajax/JsonGetSqlData.aspx",
-            data: { sql: searchSql },
-            async: false,
-            cache: false,
-            success: function (json) {
-                var JSONdata = $.parseJSON(json);
-                if (JSONdata.length > 0) {
-                    var plast_date=dateReviver(JSONdata[0].last_date,'yyyy/M/d');
-                    $("#ctrl_step_grade_"+$("#ctrlnum").val()).val(JSONdata[0].step_grade);
-                    $("#ctrl_rs_no_"+$("#ctrlnum").val()).val(JSONdata[0].rs_no);
-                    if(plast_date==""){
-                        alert("無本筆案件編號：" +$("#seq").val()+ "-" +$("#seq1").val()+ "之官收法定期限資料，請檢查！");
-                    }else{
-                        $("#ctrl_date_"+$("#ctrlnum").val()).val(plast_date);
-                        $("#ctrl_date_"+$("#ctrlnum")).lock();
-                    }
-                }else{
-                    alert("本筆案件編號：" +$("#seq").val()+ "-"+$("#seq1").val()+ "無官收法定期限資料，請檢查！");
-                }
-            }
-        });
+        }
+        if(jMain.attcase_dmt.length>0) {
+            $("#span_rs_no").html("發文序號："+jMain.attcase_dmt[0].rs_sqlno);
+            $("#remark").val(jMain.case_main[0].remark);
+        }
+        $("#contract_flag").val(jMain.case_main[0].ncontract_flag);
+
+        //brta21form
+        //getcase_no_data1()//***todo
+
+        /*
+        $("#oldseq,#grseq,#seq").val(jMain.dmt[0].seq);
+        $("#oldseq1,#grseq1,#seq1").val(jMain.dmt[0].seq1);
+        $("#s_mark").val(jMain.dmt[0].s_mark);
+        $("#cust_prod").val(jMain.dmt[0].cust_prod);
+        $("#in_date").val(dateReviver(jMain.dmt[0].in_date,'yyyy/M/d'));
+        $("#step_grade").val(jMain.dmt[0].step_grade);
+        $("#appl_name").val(jMain.dmt[0].appl_name);
+        $("#arcase").val(jMain.dmt[0].arcasenm);
+        $("#att_sql").val(jMain.dmt[0].att_sql);
+        $("#cust_area").val(jMain.dmt[0].cust_area);
+        $("#cust_seq").val(jMain.dmt[0].cust_seq);
+        $("#cust_name").val(jMain.dmt[0].cust_name);
+        $("#class_count").val(jMain.dmt[0].class_count);
+        $("#class1").val(jMain.dmt[0].class.CutData(10));
+        $("#apcust_no").val(jMain.dmt[0].ap_apcust_no);
+        $("#ap_cname").val(jMain.dmt[0].ap_cname);
+        $("#dmtap_cname").val(jMain.dmt[0].dmtap_cname);
+        $("#now_arcasenm").val(jMain.dmt[0].now_arcasenm);
+        $("#agt_no").val(jMain.dmt[0].agt_no);
+        $("#scode").val(jMain.dmt[0].scodenm);
+        $("#case_stat").val(jMain.dmt[0].now_statnm);
+        $("#apply_date").val(dateReviver(jMain.dmt[0].apply_date,'yyyy/M/d'));
+        $("#apply_no").val(jMain.dmt[0].apply_no);
+        var ar_ref=jMain.dmt[0].ref_no1.split("-");
+        if(ar_ref.count>=1) $("#ref_no1").val(ar_ref[0]);
+        if(ar_ref.count>=2) $("#ref_no11").val(ar_ref[1]);
+        $("#issue_date").val(dateReviver(jMain.dmt[0].issue_date,'yyyy/M/d'));
+        $("#issue_no").val(jMain.dmt[0].issue_no);
+        $("#mseq").val(jMain.dmt[0].mseq);
+        $("#mseq1").val(jMain.dmt[0].mseq1);
+        $("#open_date").val(dateReviver(jMain.dmt[0].open_date,'yyyy/M/d'));
+        $("#rej_no").val(jMain.dmt[0].rej_no);
+        $("#end_date").val(dateReviver(jMain.dmt[0].end_date,'yyyy/M/d'));
+        $("#end_code").val(jMain.dmt[0].end_code);
+        $("#end_name").val(jMain.dmt[0].end_codenm);
+        $("#end_remark").val(jMain.dmt[0].end_remark);
+        $("#term1").val(dateReviver(jMain.dmt[0].term1,'yyyy/M/d'));
+        $("#term2").val(dateReviver(jMain.dmt[0].term2,'yyyy/M/d'));
+        $("#renewal").val(jMain.dmt[0].renewal);
+        $("#opay_times,#hpay_times,#pay_times").val(jMain.dmt[0].pay_times);
+        $("#opay_date,#pay_date").val(dateReviver(jMain.dmt[0].pay_date,'yyyy/M/d'));
+        $("#tran_seq_branch").val(jMain.dmt[0].tran_seq_branch);
+        $("#tran_seq").val(jMain.dmt[0].tran_seq);
+        $("#tran_seq1").val(jMain.dmt[0].tran_seq1);
+        $("#tran_remark").val(jMain.dmt[0].tran_remark);
+        */
     }
 
     //存檔
@@ -521,6 +526,25 @@
                 }
             });
         });
+    }
+
+    function openread(){
+        $("#btnQuery").hide();
+        $("#seq,#seq1,#rs_class,#rs_code").lock();
+        
+        if((main.right&128)!=0||(main.right&256)!=0){
+            $("input[name='rfees_stat']").unlock();
+        }
+        $("#arAdd_button,#arres_button").lock();
+
+        if(CInt($("#arnum").val())>0){
+            $("#btncase_no_1").hide();
+            $("#case_no_1,#gs_fees_1").lock();
+        }else{
+            if(CInt($("#fees")>0)){
+                $("#arAdd_button,#arres_button").unlock();
+            }
+        }
     }
 </script>
 

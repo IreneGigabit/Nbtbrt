@@ -3,6 +3,7 @@
 <%@ Import Namespace = "System.Data"%>
 
 <script runat="server">
+    //案件主檔欄位畫面，與收文共同
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -46,163 +47,152 @@
     }
 
     private void PageLayout() {
-        if (submitTask == "Q" || submitTask == "D") {
-            Lock["Qdisabled"] = "Lock";
-            Lock["Qdisabled_opt"] = "Lock";
+        if (prgid != "brta21" || prgid == "brta24") {
+            Lock["QLock"] = "Lock";
         }
     }
 </script>
 
 <%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
-<input type="hidden" id="now_grade" name="now_grade">
-<input type="hidden" id="now_arcase" name="now_arcase">
-<input type="hidden" id="now_stat" name="now_stat">
+<input type="text" id="now_grade" name="now_grade">
+<input type="text" id="now_arcase" name="now_arcase">
+<input type="text" id="now_stat" name="now_stat">
 
 <TABLE id=tabbr style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
-	<%if prgid="brta24" then%>
-	<TR class="brta24"><!--官收確認-->
-		<input type=hidden id="hdomark" name="hdomark" value="X">
-		<%if new_seq<>"" then%>
-		    <TD class=lightbluetable align=right nowrap>作業選項：</td>
-		    <td class=whitetablebg colspan=5>
-			    <input type=radio name=domark id=domarkA value="A" onclick="vbscript:domark_onclick1 me.value">需立子案
-			    <input type=button class="c1button" name="btnnewseq" id="btnnewseq" value="子案立案">
-			    <input type=radio name=domark id=domarkB value="B" onclick="vbscript:domark_onclick1 me.value">已立案
-			    <input type=radio name=domark id=domarkX value="X" onclick="vbscript:domark_onclick1 me.value">本案收文
-		    </TD>
-		    <TD align=right  class=whitetablebg>
-			    <input type=button name="getmgdmt" id="getmgdmt" class="cbutton" value="核對總收發主檔檢核資料" onclick="vbscript:btnmgdmt_onclick1 'nseq'">
-		    </TD>
-		<%else%>
-		    <TD align=right  class=whitetablebg colspan=7>
-			    <input type=button name="getmgdmt" id="getmgdmt" class="cbutton" value="核對總收發主檔檢核資料" onclick="vbscript:btnmgdmt_onclick1 ''">
-		    </TD>
-		<%end if%>
+	<%if (prgid=="brta24"){%>><!--官收確認****todo-->
+	<TR>
+		<TD class=lightbluetable align=right nowrap>作業選項：</td>
+		<td class=whitetablebg colspan=5>
+			<input type=radio name=domark id=domarkA value="A" onclick="brta21form.domark(this.value)">需立子案
+			<input type=button class="c1button" name="btnnewseq" id="btnnewseq" value="子案立案" onclick="brta21form.btnnewseq()">
+			<input type=radio name=domark id=domarkB value="B" onclick="brta21form.domark(this.value)">已立案
+			<input type=radio name=domark id=domarkX value="X" onclick="brta21form.domark(this.value)">本案收文
+		    <input type=text id="hdomark" name="hdomark" value="X">
+		</TD>
+		<TD align=right  class=whitetablebg>
+			<input type=button name="getmgdmt" id="getmgdmt" class="cbutton" value="核對總收發主檔檢核資料" onclick="brta21form.btnmgdmt('nseq')"><!--***todo brta21form.btnmgdmt('')-->
+		</TD>
 	</TR>
-	<%end if%>
+	<%}%>
 	<TR>
 		<TD class=lightbluetable align=right nowrap>本所編號：</TD>
 		<TD class=whitetablebg>
-			<input type="hidden" id="keyseq" name="keyseq" value="N">
-			<input type="hidden" id="oldseq" name="oldseq" value="<%=seq%>">
-			<input type="hidden" id="oldseq1" name="oldseq1" value="<%=seq1%>">
-			<input type="hidden" id="s_mark" name="s_mark" value="<%=s_mark%>">
-			<input type="hidden" id="grseq" name="grseq" value="<%=seq%>"><!--官收案號for官收立子案之原案號-->
-			<input type="hidden" id="grseq1" name="grseq1" value="<%=seq1%>"><!--官收案號for官收立子案之原案號-->
-			<input type="text" id="seq" name="seq" <%=Qclass1%> size=6 maxlength=6 value="<%=seq%>">-
-			<input type="text" id="seq1" name="seq1" <%=Qclass1%> size=1 maxlength=1 value="<%=seq1%>">
-			<input type=button class="cbutton" id="btnseq" name="btnseq" value ="確定">
+			<input type="text" id="keyseq" name="keyseq" value="N">
+			<input type="text" id="oldseq" name="oldseq">
+			<input type="text" id="oldseq1" name="oldseq1">
+			<input type="text" id="s_mark" name="s_mark">
+			<input type="text" id="grseq" name="grseq"><!--官收案號for官收立子案之原案號-->
+			<input type="text" id="grseq1" name="grseq1"><!--官收案號for官收立子案之原案號-->
+			<input type="text" id="seq" name="seq" size=6 maxlength="<%#Sys.DmtSeq%>">-
+			<input type="text" id="seq1" name="seq1" size=1 maxlength="<%#Sys.DmtSeq1%>">
+			<input type=button class="cbutton" id="btnseq" name="btnseq" value ="確定" onclick="brta21form.btnseq()">
 		</td>
 		<TD class=whitetablebg>
-			<input type=button class="cbutton" id="btnQuery" name="btnQuery" value ="查詢本所編號" style="width:120">
-			<input type=button class="cbutton" id="btncase" name="btncase"  value ="案件主檔查詢" style="width:120">
+			<input type=button class="cbutton" id="btnQuery" name="btnQuery" value ="查詢本所編號" onclick="brta21form.btnQuery()">
+			<input type=button class="cbutton" id="btncase" name="btncase"  value ="案件主檔查詢" onclick="brta21form.btncase()">
 		</TD>
 		<TD class=lightbluetable align=right nowrap>客戶卷號：</TD>
-		<TD class=whitetablebg><input type="text" value="<%=cust_prod%>" id="cust_prod" name="cust_prod" class="sedit" readonly size=25></TD>
+		<TD class=whitetablebg><input type="text" id="cust_prod" name="cust_prod" class="sedit" readonly size=25></TD>
 		<TD class=lightbluetable align=right nowrap>立案日期：</TD>
 		<TD class=whitetablebg>
-		<input type="text" value="<%=in_date%>" id="in_date" name="in_date" class="sedit" readonly size=10>
+		<input type="text" id="in_date" name="in_date" class="sedit" readonly size=10>
 		&nbsp;&nbsp;進度：		
-		<input type="text" value="<%=step_grade%>" id="step_grade" name="step_grade" size=5 class="sedit" readonly>
+		<input type="text" id="step_grade" name="step_grade" size=5 class="sedit" readonly>
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>案件名稱：</TD>
 		<TD class=whitetablebg colspan=4>
-			<input type="text" value="<%=appl_name%>" id="appl_name" name="appl_name" class="sedit" readonly size=50>
+			<input type="text" id="appl_name" name="appl_name" class="sedit" readonly size=50>
 		</TD>
 		<TD class=lightbluetable align=right>立案案性：</TD>
-		<TD class=whitetablebg><input type="text" value="<%=arcase%>" id="arcase" name="arcase" class="sedit" readonly size=25></TD>
+		<TD class=whitetablebg><input type="text" id="arcase" name="arcase" class="sedit" readonly size=25></TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>客戶名稱：</TD>
 		<TD class=whitetablebg colspan=4>
-			<input type="hidden" value="<%=att_sql%>" id="att_sql" name="att_sql">
-			<input type="text" value="<%=cust_area%>" id="cust_area" name="cust_area" class="sedit" readonly size=1>-
-			<input type="text" value="<%=cust_seq%>" id="cust_seq" name="cust_seq" size=6 class="sedit" readonly>
-			<input type="text" value="<%=cust_name%>" id="cust_name" name="cust_name" class="sedit" size=40 readonly>
+			<input type="text" id="att_sql" name="att_sql">
+			<input type="text" id="cust_area" name="cust_area" class="sedit" readonly size=1>-
+			<input type="text" id="cust_seq" name="cust_seq" size=6 class="sedit" readonly>
+			<input type="text" id="cust_name" name="cust_name" class="sedit" size=40 readonly>
 		</TD>
 		<TD class=lightbluetable align=right>類別：</TD>
-		<TD class=whitetablebg>(共<input type="text" value="<%=class_count%>" id="class_count" name="class_count" class="sedit" readonly size=2>類) 
-		                         <input type="text" value="<%=class1%>" id="class1" name="class1" class="sedit" readonly size=13></TD>
+		<TD class=whitetablebg>(共<input type="text" id="class_count" name="class_count" class="sedit" readonly size=2>類) 
+		                         <input type="text" id="class1" name="class1" class="sedit" readonly size=13></TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>申請人：</TD>
 		<TD class=whitetablebg colspan=4>
-			<input type="hidden" value="<%=apcust_no%>" id="apcust_no" name="apcust_no" class="sedit" readonly size=11>
-			<input type="hidden" value="<%=ap_cname%>" id="ap_cname" name="ap_cname" class="sedit" size=40 readonly>
-			<input type="text" value="<%=dmtap_cname%>" id="dmtap_cname" name="dmtap_cname" class="sedit" size=60 readonly>
+			<input type="text" id="apcust_no" name="apcust_no" class="sedit" readonly size=11>
+			<input type="text" id="ap_cname" name="ap_cname" class="sedit" size=40 readonly>
+			<input type="text" id="dmtap_cname" name="dmtap_cname" class="sedit" size=60 readonly>
 		</TD>	
 		<TD class=lightbluetable align=right rowspan=2>案件狀態：</TD>	
-		<TD class=whitetablebg><input type="text" value="<%=now_arcasenm%>" id="now_arcasenm" name="now_arcasenm" size=20 class="sedit" readonly></TD>
+		<TD class=whitetablebg><input type="text" id="now_arcasenm" name="now_arcasenm" size=20 class="sedit" readonly></TD>
 		</TR>
 	<TR>
 		<TD class=lightbluetable align=right>出名代理：</TD>
-		<TD class=whitetablebg ><input type="text" value="<%=agt_no%>" id="agt_no" name="agt_no" size=8 class="sedit" readonly></TD>
+		<TD class=whitetablebg ><input type="text" id="agt_no" name="agt_no" size=8 class="sedit" readonly></TD>
 		<TD class=lightbluetable align=right>營洽：</TD>
-		<TD class=whitetablebg colspan=2><input type="text" value="<%=scode%>" id="scode" name="scode" size=12 class="sedit" readonly></TD>	    
-		<TD class=whitetablebg><input type="text" value="<%=case_stat%>" id="case_stat" name="case_stat" size=20 class="sedit" readonly></TD>
+		<TD class=whitetablebg colspan=2><input type="text" id="scode" name="scode" size=12 class="sedit" readonly></TD>	    
+		<TD class=whitetablebg><input type="text" id="case_stat" name="case_stat" size=20 class="sedit" readonly></TD>
 		</TR>
 	<TR>
 		<TD class=lightbluetable align=right>申請日期：</TD>
 		<TD class=whitetablebg>
-            <input type="text" value="<%=apply_date%>" id="apply_date" name="apply_date" size=10 maxlength=10 class="dateField" <%if prgid<>"brta21" and prgid<>"brta24" then%>class="sedit" readonly <%end if%><%=Qclass%>>
+            <input type="text" id="apply_date" name="apply_date" size=10 maxlength=10 class="dateField <%#Lock.TryGet("QLock")%>">
 		</TD>
 		<TD class=lightbluetable align=right>申請號碼：</TD>
-		<TD class=whitetablebg colspan=2><input type="text" value="<%=apply_no%>" id="apply_no" name="apply_no" size=15 maxlength=20 <%if prgid<>"brta21" and prgid<>"brta24" then%>class="sedit" readonly<%else%> onblur="vbscript:applyno_onblur"<%end if%><%=Qclass%>></TD>
+		<TD class=whitetablebg colspan=2><input type="text" id="apply_no" name="apply_no" size=15 maxlength=20 class="<%#Lock.TryGet("QLock")%>"></TD>
 		<TD class=lightbluetable align=right>相關案號：</TD>
 		<TD class=whitetablebg>
-			<input type="text" value="<%=ref_no1%>" id="ref_no1" name="ref_no1" size=5 class="sedit" readonly style="cursor:hand" onclick=refnoclick()>-
-			<input type="text" value="<%=ref_no11%>" id="ref_no11" name="ref_no11" size=1 class="sedit" readonly style="cursor:hand" onclick=refnoclick()>
+			<input type="text" id="ref_no1" name="ref_no1" size=5 class="sedit" readonly style="cursor:pointer" onclick=brta21form.RefnoClick()>-
+			<input type="text" id="ref_no11" name="ref_no11" size=1 class="sedit" readonly style="cursor:pointer" onclick=brta21form.RefnoClick()>
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>註冊日期：</TD>
 		<TD class=whitetablebg>
-            <input type="text" value="<%=issue_date%>" id="issue_date" name="issue_date" size=10 maxlength=10 class="dateField" <%if prgid<>"brta21" and prgid<>"brta24" then%>class="sedit" readonly <%end if%><%=Qclass%>>
+            <input type="text" id="issue_date" name="issue_date" size=10 maxlength=10 class="dateField <%#Lock.TryGet("QLock")%>">
 		</TD>
 		<TD class=lightbluetable align=right>註冊號碼：</TD>
-		<TD class=whitetablebg colspan=2><input type="text" value="<%=issue_no%>" id="issue_no" name="issue_no" size=15 maxlength=20 <%if prgid<>"brta21" and prgid<>"brta24" then%>class="sedit" readonly<%else%> onblur="vbscript:issueno_onblur" <%end if%><%=Qclass%>></TD>
+		<TD class=whitetablebg colspan=2><input type="text" id="issue_no" name="issue_no" size=15 maxlength=20 class="<%#Lock.TryGet("QLock")%>"></TD>
 		<TD class=lightbluetable align=right>母案案號：</TD>
 		<TD class=whitetablebg>
-			<input type="text" value="<%=mseq%>" id="mseq" name="mseq" size=5 class="sedit" readonly style="cursor:hand" onclick=MSeqclick()>-
-			<input type="text" value="<%=mseq1%>" id="mseq1" name="mseq1" size=1 class="sedit" readonly style="cursor:hand" onclick=MSeqclick()>
+			<input type="text" id="mseq" name="mseq" size=5 class="sedit" readonly style="cursor:pointer" onclick=brta21form.MSeqClick()>-
+			<input type="text" id="mseq1" name="mseq1" size=1 class="sedit" readonly style="cursor:pointer" onclick=brta21form.MSeqClick()>
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>公告日期：</TD>
 		<TD class=whitetablebg>
-            <input type="text" value="<%=open_date%>" id="open_date" name="open_date" size=10 maxlength=10 class="dateField" <%if prgid<>"brta21" and prgid<>"brta24" then%>class="sedit" readonly <%end if%><%=Qclass%>>
+            <input type="text" id="open_date" name="open_date" size=10 maxlength=10 class="dateField <%#Lock.TryGet("QLock")%>">
 		</TD>		
 		<TD class=lightbluetable align=right>核駁號碼：</TD>
-		<TD class=whitetablebg colspan=2><input type="text" value="<%=rej_no%>" id="rej_no" name="rej_no" size=15 maxlength=20 <%if prgid<>"brta21" and prgid<>"brta24" then%>class="sedit" readonly<%else%> onblur="vbscript:rejno_onblur"  <%end if%><%=Qclass%>></TD>
+		<TD class=whitetablebg colspan=2><input type="text" id="rej_no" name="rej_no" size=15 maxlength=20 class="<%#Lock.TryGet("QLock")%>"></TD>
 		<TD class=lightbluetable align=right>結案日期：</TD>
-		<TD class=whitetablebg><input type="text" value="<%=end_date%>" id="end_date" name="end_date" size=10 class="sedit" readonly>-
-			<input type="text" value="<%=end_code%>" id="end_code" name="end_code" size=1 class="sedit" readonly>
-			<input type="hidden" value="<%=end_name%>" id="end_name" name="end_name" >
-			原因：<input type="text" value="<%=end_remark%>" id="end_remark" name="end_remark" size=20 class="sedit" readonly>
+		<TD class=whitetablebg><input type="text" id="end_date" name="end_date" size=10 class="sedit" readonly>-
+			<input type="text" id="end_code" name="end_code" size=1 class="sedit" readonly>
+			<input type="text" id="end_name" name="end_name" >
+			原因：<input type="text" id="end_remark" name="end_remark" size=20 class="sedit" readonly>
 		</TD>
 		</TR>
 	<TR>
 		<TD class=lightbluetable align=right>專用期限：</TD>
 		<TD class=whitetablebg colspan=2 nowrap>
-            <input type="text" value="<%=term1%>" id="term1" name="term1" size=10 maxlength=10 class="dateField" <%if prgid<>"brta21" and prgid<>"brta24" then%>class="sedit" readonly <%end if%><%=Qclass%>>
+            <input type="text" id="term1" name="term1" size=10 maxlength=10 class="dateField <%#Lock.TryGet("QLock")%>">
 			~
-			<input type="text" value="<%=term2%>" id="term2" name="term2" size=10 maxlength=10 class="dateField" <%if prgid<>"brta21" and prgid<>"brta24" then%>class="sedit" readonly <%end if%><%=Qclass%>>
+			<input type="text" id="term2" name="term2" size=10 maxlength=10 class="dateField <%#Lock.TryGet("QLock")%>">
 		</TD>
 		<TD class=lightbluetable align=right>延展次數：</TD>
-		<TD class=whitetablebg><input type="text" value="<%=renewal%>" id="renewal" name="renewal" size=2 maxlength=2 <%if prgid<>"brta21" and prgid<>"brta24" then%>class="sedit" readonly <%end if%>></TD>
+		<TD class=whitetablebg><input type="text" id="renewal" name="renewal" class="<%#Lock.TryGet("QLock")%>" size=2 maxlength=2 /></TD>
 		<TD class=lightbluetable align=right>註冊費已繳：</TD>
 		<TD class=whitetablebg>
-			<input type="hidden" id="opay_times" name="opay_times" value="<%=pay_times%>">
-			<input type="hidden" id="hpay_times" name="hpay_times" value="<%=pay_times%>">
-	   		<Select NAME="pay_times" id="pay_times" disabled=true>
-				<%SQL="SELECT cust_code, code_name FROM cust_code where code_type = '"&ucase(session("dept"))&"PAY_TIMES' ORDER BY sortfld"
-				call ShowSelect3(conn,SQL,false,pay_times)
-				%>
-			</SELECT>
-			<input type="hidden" value="<%=pay_date%>" id="opay_date" name="opay_date" size=10 maxlength=10 class="sedit" readonly>
-			<input type="text" value="<%=pay_date%>" id="pay_date" name="pay_date" size=10 maxlength=10 class="sedit" readonly>
+			<input type="text" id="opay_times" name="opay_times">
+			<input type="text" id="hpay_times" name="hpay_times">
+	   		<Select NAME="pay_times" id="pay_times" class="Lock"><%#html_pay_times%></SELECT>
+			<input type="text" id="opay_date" name="opay_date" size=10 maxlength=10 class="sedit" readonly>
+			<input type="text" id="pay_date" name="pay_date" size=10 maxlength=10 class="sedit" readonly>
 		</TD>
 	</TR>
 	<tr>
@@ -213,14 +203,14 @@
 			</td>
 			<td class="lightbluetable"  align="right">轉案單位案件編號：</td>
 			<td class="whitetablebg" colspan=2>
-					<input type="text" id="tran_seq_branch" name="tran_seq_branch" size="1" disabled value="<%=tran_seq_branch%>">
-					<input type="text" id="tran_seq" name="tran_seq" size=5 readonly class="sedit" value="<%=tran_seq%>">
-					<input type="text" id="tran_seq1" name="tran_seq1" size="3" readonly class="sedit" value="<%=tran_seq1%>">
-					<font style="cursor: hand;background-color:lightbluetable3" title="進度查詢" onmouseover="vbs:me.style.color='red'" onmouseout="vbs:me.style.color='black'" onclick="vbscript:QstepClick"><img src="../images/annex.gif">
+					<input type="text" id="tran_seq_branch" name="tran_seq_branch" size="1" class="Lock">
+					<input type="text" id="tran_seq" name="tran_seq" size=5 readonly class="sedit">
+					<input type="text" id="tran_seq1" name="tran_seq1" size="3" readonly class="sedit">
+					<span style="cursor: pointer;background-color:lightbluetable3" title="進度查詢" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" onclick="brta21form.Qstep()"><img src="<%=Page.ResolveUrl("~/images/annex.gif")%>"><span>
 			</td>
 			<td class="lightbluetable"  align="right">轉案說明：</td>
 			<td class="whitetablebg" >
-				<input type="text" id="tran_remark" name="tran_remark" size="20" readonly class="sedit" value="<%=tran_remark%>">
+				<input type="text" id="tran_remark" name="tran_remark" size="20" readonly class="sedit">
 			</td>
 		</tr>
 </table>
@@ -230,265 +220,361 @@
     var brta21form = {};
 
     brta21form.init = function () {
+        if($("#submittask").val()=="U"||$("#submittask").val()=="Q"||$("#submittask").val()=="D"||$("#submittask").val()=="R"){
+            $("#seq,#seq1").lock().triggerHandler("change");
+            $("#btnseq").hide();//[確定]
+            $("#btnQuery").hide();//[查詢本所編號]
+            $("#btnnewseq").hide();//子案立案
+        }
     }
 
-    //依rs_type帶結構分類
-    $("#rs_type").change(function () {
-        $("#rs_class").getOption({
-            url: getRootPath() + "/ajax/JsonGetSqlData.aspx",
-            data: {
-                sql: "select cust_code,code_name from cust_code where code_type='" + $("#rs_type").val() + "' and mark is null " +
-				      " and cust_code in (select rs_class from vcode_act where cg ='C' and rs = 'R') order by cust_code"
-            },
-            valueFormat: "{cust_code}",
-            textFormat: "{code_name}"
-        });
-    });
-
-    //依結構分類帶案性代碼
-    $("#rs_class").change(function () {
-        $("#rs_code").getOption({//案性代碼
-            url: getRootPath() + "/ajax/json_rs_code.aspx",
-            data: { cgrs: "CR", rs_type: $("#rs_type").val() },
-            valueFormat: "{rs_code}",
-            textFormat: "{rs_detail}",
-            attrFormat: "vrs_class='{rs_class}'"
-        });
-    });
-
-    //依案性帶處理事項
-    $("#rs_code").change(function () {
-        $("#act_code").getOption({//處理事項
-            url: getRootPath() + "/ajax/json_act_code.aspx",
-            data: { bcgrs: "CR", rs_class: $("#rs_class").val(), rs_code: $("#rs_code").val() },
-            valueFormat: "{act_code}",
-            textFormat: "{act_code_name}",
-            attrFormat: "spe_ctrl='{spe_ctrl}'"
-        });
-        brta21form.setSendWay();
-    });
-
-    //20200701 增加顯示發文方式
-    brta21form.setSendWay = function () {
-        $("#send_way").getOption({//發文方式
-            url: getRootPath() + "/ajax/json_sendway.aspx",
-            data: { rs_type: $("#rs_type").val(), rs_code: $("#rs_code").val() },
-            valueFormat: "{cust_code}",
-            textFormat: "{code_name}"
-        });
-        $("#send_way option[value!='']").eq(0).prop("selected", true);
-    };
-
-    $("#step_date").blur(function () {
-        ChkDate($(this)[0]);
-    });
-
-    //一案多件/分割 增加一筆子案
-    brta21form.add_sub = function () {
-        var nRow = CInt($("#tot_num").val()) + 1;
-        //複製樣板
-        var copyStr = $("#cr_ar1_template").text() || "";
-        copyStr = copyStr.replace(/##/g, nRow);
-        $("#tabar1 tbody").append(copyStr);
-        $("#tot_num").val(nRow);
-        $(".dateField", $('#tr_cr_' + nRow)).datepick();
-    }
-
-    //一案多件時取得子案本所編號
-    brta21form.getdseq = function () {
-        //案性為一案多件時, 要顯示 sub seq 的畫面
-        $("#tabar1").show();
-        if ($("#rs_code").val() == "FC11" || $("#rs_code").val() == "FC5" || $("#rs_code").val() == "FC7" || $("#rs_code").val() == "FCH") {
-            $("#span_no").html("申請號");
-        } else if ($("#rs_code").val() == "FC21" || $("#rs_code").val() == "FC6" || $("#rs_code").val() == "FC8" || $("#hrs_code").val() == "FCI"
-             || $("#hrs_code").val() == "FT2" || $("#hrs_code").val() == "FL5" || $("#hrs_code").val() == "FL6") {
-            $("#span_no").html("註冊號");
+    //[確定]
+    brta21form.btnseq=function () {
+        if($("#seq").val()==""){
+            alert("本所編號未輸入!!!");
+            $("#seq").focus();
+            return false;
         }
+        if (chkNum($("#seq").val(), "本所編號")) return false;
 
-        if ($("#rs_code").val() == "FT2") {
-            $("#span_seqdesc").html("此次移轉本所編號：");
-        } else if ($("#rs_code").val() == "FL5") {
-            $("#span_seqdesc").html("此次授權本所編號：");
-        } else if ($("#rs_code").val() == "FL6") {
-            $("#span_seqdesc").html("此次再授權本所編號：");
-        } else {
-            $("#span_seqdesc").html("此次變更本所編號：");
-        }
-
-        //產生母案案號
-        brta21form.add_sub();
-        var spl_num =1;
-        $("#dseq_" + spl_num).val(jMain.case_main[0].seq);
-        $("#dseq1A_" + spl_num).val(jMain.case_main[0].seq1);
-        $("#s_mark_" + spl_num).val(jMain.case_main[0].s_marknm);
-        $("#dclass_" + spl_num).val(jMain.case_main[0].class);
-        $("#appl_name_" + spl_num).val(jMain.case_main[0].appl_name);
-        if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
-            $("#dref_no_" + spl_num).val(jMain.case_main[0].apply_no);
-        } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
-            $("#dref_no_" + spl_num).val(jMain.case_main[0].issue_no);
-        }
-
-        $.each(jMain.case_dmt1, function (i, item) {
-            //產生一案多件子案案號
-            brta21form.add_sub();
-            var spl_num = (i + 2);//1是母案,從2開始
-            $("#dseq_" + spl_num).val(item.seq);
-            $("#dseq1A_" + spl_num).val(item.seq1);
-            $.each(item.get_dmt, function (x, xitem) {
-                $("#s_mark_" + spl_num).val(xitem.s_marknm);
-                $("#dclass_" + spl_num).val(xitem.class);
-                $("#appl_name_" + spl_num).val(xitem.appl_name);
-                if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
-                    $("#dref_no_" + spl_num).val(xitem.apply_no);
-                } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
-                    $("#dref_no_" + spl_num).val(xitem.issue_no);
-                }
-            });
-        });
-
-        $(".rs_code_FD").show();
-    }
-
-    //分割時取得子案本所編號
-    brta21form.getdseq1 = function () {
-        //案性為一案多件時, 要顯示 sub seq 的畫面
-        $("#tabar1").show();
-        if ($("#rs_code").val() == "FD1") {
-            $("#span_no").html("申請號");
-        } else if ($("#rs_code").val() == "FD2" || $("#rs_code").val() == "FD3") {
-            $("#span_no").html("註冊號");
-        }
-        $("#span_seqdesc").html("此次分割案件資料：");
-
-        $.each(jMain.dmt_temp1, function (i, item) {
-            //產生分割子案案號
-            brta21form.add_sub();
-            var spl_num = (i + 1);
-            $("#dseq_" + spl_num).val(item.seq);
-            $("#s_mark_" + spl_num).val(item.s_marknm);
-            $("#dclass_" + spl_num).val(item.class);
-            $("#appl_name_" + spl_num).val(item.appl_name);
-            if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
-                $("#dref_no_" + spl_num).val(item.apply_no);
-            } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
-                $("#dref_no_" + spl_num).val(item.issue_no);
-            }
-        });
-
-        $(".rs_code_FD").hide();
-    }
-
-    //產生預設期限
-    brta21form.getCtrl = function () {
-        if(jMain.case_main[0].cust_date!=""){
-            //新增客戶期限
-            ctrl_form.add_ctrl();
-            $("#ctrl_type_"+$("#ctrlnum").val()).val("A2");
-            $("#ctrl_date_"+$("#ctrlnum").val()).val(dateReviver(jMain.case_main[0].cust_date,'yyyy/M/d'));
-        }
-        if(jMain.case_main[0].pr_date!=""){
-            //新增承辦期限
-            ctrl_form.add_ctrl();
-            $("#ctrl_type_"+$("#ctrlnum").val()).val("B2");
-            $("#ctrl_date_"+$("#ctrlnum").val()).val(dateReviver(jMain.case_main[0].pr_date,'yyyy/M/d'));
-        }
-        //2010/10/6修改為結案註記有勾選結案才顯示
-        if($("#seqend_flag").val()=="Y"){
-            //新增結案完成期限
-            ctrl_form.add_ctrl();
-            $("#ctrl_type_"+$("#ctrlnum").val()).val("B61");
-            $("#ctrl_date_"+$("#ctrlnum").val()).val(Today().addMonths(3).format("yyyy/M/d"));
-            $("#ctrl_remark_"+$("#ctrlnum").val()).val("程序確認結案暨掃描完成期限");
-        }
-	
-        //取得案性管制設定
+        var dmt_data = {};
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/json_act_sqlno.aspx?cgrs=" + $("#cgrs").val()+ "&rs_class=" + $("#rs_class").val()+"&rs_code=" + $("#rs_code").val()+"&act_code=" + $("#act_code").val(),
+            url: getRootPath() + "/ajax/json_dmt.aspx?seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val(),
             async: false,
             cache: false,
             success: function (json) {
-                var jCtrl = $.parseJSON(json);
-                $.each(jCtrl, function (i, item) {
-                    if(item.sqlflg=="A"&&item.ctrl_type!="A2"&&item.ctrl_type!="B2"){
-                        $("#act_sqlno").val(item.ctrl_sqlno);
-                        ctrl_form.add_ctrl();
-                        $("#ctrl_type_"+$("#ctrlnum").val()).val(item.ctrl_type);//管制種類
-                        $("#ctrl_remark_"+$("#ctrlnum").val()).val(item.ctrl_remark);//管制內容
-                        var days=0;//管制天數
-                        if(item.ad=="A"){//日期基礎:A:加，D:減 
-                            days=CInt(item.days);
-                        }else{
-                            days=CInt(item.days)*-1;
-                        }
-                        var days2=0;//管制天數
-                        if(item.ad2=="A"){//日期基礎:A:加，D:減 
-                            days2=CInt(item.days2);
-                        }else{
-                            days2=CInt(item.days2)*-1;
-                        }
-                       
-                        var md=item.md;//管制性質
-                        var md2=item.md2;//管制性質
-                        var date_ctrl=$("#"+item.date_name).val()||"";//基準日期欄位
-                        if(date_ctrl==""){
-                            alert("管制天數之基準日期未輸入, 請輸入!!");
-                            $("#act_sqlno").val("");
-                            $("#"+item.date_name).focus();
-                        }
-
-                        var Cdate_ctrl=CDate(date_ctrl);
-                        if(md.toUpperCase()=="D"){
-                            Cdate_ctrl=Cdate_ctrl.addDays(days);
-                        }else if(md.toUpperCase()=="M"){
-                            Cdate_ctrl=Cdate_ctrl.addMonths(days);
-                        }else if(md.toUpperCase()=="Y"){
-                            Cdate_ctrl=Cdate_ctrl.addYears(days);
-                        }
-
-                        if(item.ad2!=""){
-                            if(md2.toUpperCase()=="D"){
-                                Cdate_ctrl=Cdate_ctrl.addDays(days2);
-                            }else if(md2.toUpperCase()=="M"){
-                                Cdate_ctrl=Cdate_ctrl.addMonths(days2);
-                            }else if(md2.toUpperCase()=="Y"){
-                                Cdate_ctrl=Cdate_ctrl.addYears(days2);
-                            }
-                        }
-
-                        $("#ctrl_date_"+$("#ctrlnum").val()).val(Cdate_ctrl.format("yyyy/M/d"));//管制日期
-                        $("#ncase_stat").val(item.case_stat);
-                        $("#ncase_statnm").val(item.case_statnm);
-                    }
-                })
+                dmt_data = $.parseJSON(json);
             },
             error: function (xhr) {
-                $("#dialog").html("<a href='" + this.url + "' target='_new'>案性管制載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '案性管制載入失敗！', modal: true, maxHeight: 500, width: "90%" });
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>抓取案件主檔失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '抓取案件主檔失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
-    }
+        
+        if (dmt_data.length == 0) {
+            alert($("#seq").val()+"-"+ $("#seq1").val()+ "不存在於案件主檔內，請重新輸入!!!");
+            return false;
+        }
 
-    //結案處理
-    brta21form.end_stat = function () {
-        if ($("input[name='end_stat']:eq(0)").prop("checked") == true) {//送會計確認
-            alert("修改管制種類為結案完成期限，請檢查！");
-            for (var k = 1; k <= CInt($("#ctrlnum").val()) ; k++) {
-                if ($("#ctrl_type_" + k).val() == "B6") {
-                    $("#ctrl_type_" + k).val("B61");
-                    $("#ctrl_date_" + k).val(Today().addMonths(3).format("yyyy/M/d"));
-                    $("#ctrl_remark_" + k).val("程序確認結案暨掃描完成期限");
+        if(dmt_data[0].rmarkcode!=""&&dmt_data[0].rmarkcode!="___"&&$("#cgrs").val()!="GR" &&$("#cgrs").val()!="CS"){
+            alert(dmt_data[0].cust_area+dmt_data[0].cust_seq+"債信不良不可收發文，請重新輸入!!!");
+            if($("#submittask").val()!="Q"){
+                $("#seq").val("").focus();
+                return false;
+            }
+        }
+        $("#appl_name").val(dmt_data[0].appl_name);
+        $("#s_mark").val(dmt_data[0].s_mark);
+        $("#class1").val(dmt_data[0].class.CutData(10)).attr("title",dmt_data[0].class);
+        $("#cust_area").val(dmt_data[0].cust_area);
+        $("#cust_seq").val(dmt_data[0].cust_seq);
+        $("#cust_name").val(dmt_data[0].cust_name);
+        $("#agt_no").val(dmt_data[0].agt_no);
+        $("#scode").val(dmt_data[0].scodenm);
+        $("#apply_date").val(dateReviver(dmt_data[0].apply_date,'yyyy/M/d'));
+        $("#apply_no").val(dmt_data[0].apply_no);
+        var ar_ref=dmt_data[0].ref_no1.split("-");
+        if(ar_ref.count>=1) $("#ref_no1").val(ar_ref[0]);
+        if(ar_ref.count>=2) $("#ref_no11").val(ar_ref[1]);
+        $("#issue_date").val(dateReviver(dmt_data[0].issue_date,'yyyy/M/d'));
+        $("#issue_no").val(dmt_data[0].issue_no);
+        $("#step_grade").val(dmt_data[0].step_grade);
+        $("#open_date").val(dateReviver(dmt_data[0].open_date,'yyyy/M/d'));
+        $("#rej_no").val(dmt_data[0].rej_no);
+        $("#term1").val(dateReviver(dmt_data[0].term1,'yyyy/M/d'));
+        $("#term2").val(dateReviver(dmt_data[0].term2,'yyyy/M/d'));
+        $("#end_date").val(dateReviver(dmt_data[0].end_date,'yyyy/M/d'));
+        $("#end_code").val(dmt_data[0].end_code);
+        $("#in_date").val(dateReviver(dmt_data[0].in_date,'yyyy/M/d'));
+        $("#case_stat").val(dmt_data[0].now_statnm);
+        $("#apcust_no").val(dmt_data[0].ap_apcust_no);
+        $("#ap_cname").val(dmt_data[0].ap_cname);
+        $("#arcase").val(dmt_data[0].arcasenm);
+        $("#now_arcasenm").val(dmt_data[0].now_arcasenm);
+        $("#class_count").val(dmt_data[0].class_count);
+        $("#mseq").val(dmt_data[0].mseq);
+        $("#mseq1").val(dmt_data[0].mseq1);
+        $("#renewal").val(dmt_data[0].renewal);
+        $("#att_sql").val(dmt_data[0].att_sql);
+        $("#now_grade").val(dmt_data[0].now_grade);
+        $("#now_arcase").val(dmt_data[0].now_arcase);
+        $("#now_stat").val(dmt_data[0].now_stat);
+        $("#rs_class").val(dmt_data[0].now_rsclass).triggerHandler("change");
+        $("#nstep_grade").val(CInt(dmt_data[0].step_grade)+1);
+        $("#rs_code").val($("#now_arcase").val()).triggerHandler("change");
+
+        $("#opay_times,#hpay_times,#pay_times").val(dmt_data[0].pay_times);
+        $("#opay_date,#pay_date").val(dateReviver(dmt_data[0].pay_date,'yyyy/M/d'));
+        $("#dmtap_cname").val(dmt_data[0].dmtap_cname);
+        $("#end_name").val(dmt_data[0].end_codenm);
+        $("#end_remark").val(dmt_data[0].end_remark);
+        $("input[name='tran_flag'][value='"+dmt_data[0].tran_flag+"']").prop("checked",true);
+        $("#tran_seq_branch").val(dmt_data[0].tran_seq_branch);
+        $("#tran_seq").val(dmt_data[0].tran_seq);
+        $("#tran_seq1").val(dmt_data[0].tran_seq1);
+        $("#tran_remark").val(dmt_data[0].tran_remark);
+        $("#cust_prod").val(dmt_data[0].cust_prod);
+
+        //$("#oldseq,#grseq,#seq").val(dmt_data[0].seq);
+        //$("#oldseq1,#grseq1,#seq1").val(dmt_data[0].seq1);
+        $("#oldseq,#grseq").val(dmt_data[0].seq);
+        $("#oldseq1,#grseq").val(dmt_data[0].seq1);
+        $("#keyseq").val("Y");//有按確定給Y
+        $("#btnseq").lock();
+
+        if($("#end_date").val()!=""){
+            alert("該案件已結案!!!");
+            if($("#submittask").val()!="Q" && $("#cgrs").val()=="GS"){
+                if($("#task").val()!="cancel"){
+                    $("#button1").lock();
                 }
             }
-        } else {//待結案處理
-            alert("修改管制種類為結案期限，請檢查！");
-            if ($("#ctrl_type_" + k).val() == "B61") {
-                $("#ctrl_type_" + k).val("B6");
-                $("#ctrl_date_" + k).val(Today().addMonths(1).format("yyyy/M/d"));
-                $("#ctrl_remark_" + k).val("結案處理期限");
+        }
+    }
+
+    //[查詢本所編號]
+    brta21form.btnQuery=function () {
+        window.open(getRootPath() + "/brt1m/brta21Query.aspx", "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+    }
+
+    //[案件主檔查詢]
+    brta21form.btncase=function(){
+        if ($("#seq").val() == "") {
+            alert("請先輸入本所編號!!!");
+            return false;
+        }
+
+        //2011/6/13因新單位進度查詢連結原單位案件進度查詢時，點選案件主檔查詢要連回原單位，所以增加type=brtran&branch
+        var breakflag=false;
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/_dmt.aspx?prgid=brta21&seq="+$("#seq").val()+"&seq1="+$("#seq1").val()+"&type=<%=Request["type"]%>&branch=<%=Request["branch"]%>",
+            async: false,
+            cache: false,
+            success: function (json) {
+                var JSONdata = $.parseJSON(json);
+                if (JSONdata.length == 0) {
+                    alert($("#seq").val()+  "-" + $("#seq1").val()+ "不存在於案件主檔內，請重新輸入!!!");
+                    breakflag=true;
+                }
+            },
+            error: function (xhr) {
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
+            }
+        });
+
+        if(breakflag==false){
+            window.open(getRootPath() +"/brt5m/brt15ShowFP.aspx?submittask=Q&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&type=<%=Request["type"]%>&branch=<%=Request["branch"]%>&prgid=<%=prgid%>&winact=Y","DmtmyWindowOne","width=800 height=520 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        }
+    }
+
+    //相關案號
+    brta21form.RefnoClick=function(){
+        if($("#ref_no1").val()!=""&&$("#ref_no11").val()!=""){
+            //***todo
+            window.showModalDialog(getRootPath() +"\commonForm\brta21Qdmt.aspx?seq=" +$("#ref_no1").val()+ "&seq1=" +$("#ref_no11").val() ,"","dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
+        }
+    }
+
+    //母案案號
+    brta21form.MSeqClick=function(){
+        if($("#mseq").val()!=""&&$("#mseq1").val()!=""){
+            //***todo
+            window.showModalDialog(getRootPath() +"\commonForm\brta21Qdmt.aspx?seq=" +$("#mseq").val()+ "&seq1=" +$("#mseq1").val() ,"","dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
+        }
+    }
+
+    $("#seq,#seq1").blur(function () {
+        if($("#oldseq").val()!=$("#seq").val()||$("#oldseq1").val()!=$("#seq1").val()){
+            $("#keyseq").val("N");//有變動給N
+        }else{
+            $("#keyseq").val("Y");//無變動給Y
+        }
+    });
+
+    $("#seq,#seq1").change(function (e) {
+        $("#btnseq").unlock();
+    });
+
+    $("#apply_date,#issue_date,#term1,#term2").blur(function (e) {
+        ChkDate(this);
+    });
+
+    $("#apply_no").blur(function (e) {
+        chk_dmt_applyno($(this)[0],9);
+    });
+
+    $("#issue_no").blur(function (e) {
+        chk_dmt_issueno($(this)[0],8);
+    });
+
+    $("#rej_no").blur(function (e) {
+        chk_dmt_rejno($(this)[0],7);
+    });
+
+    //[核對總收發主檔檢核資料]
+    brta21form.btnmgdmt=function(pchk){
+        //存檔時檢查
+        if (pchk=="chk") {
+            var isql="";
+            if ($("#hdomark").val()=="A" || $("#hdomark").val()=="B"){
+                isql="select a.gno_date as mg_apply_date,a.gno as mg_apply_no,b.issue_date as mg_issue_date,b.issue_no2 as mg_issue_no,b.issue_no3 as mg_rej_no,b.end_date as mg_end_date ";
+                isql +=" from mgt_temp b,step_mgt_temp a ";
+                isql+= " where a.temp_rs_sqlno=b.temp_rs_sqlno and b.temp_rs_sqlno=" +$("#temp_rs_sqlno").val();
+            }else{
+                isql="select b.apply_date as mg_apply_date,b.apply_no as mg_apply_no,b.issue_date as mg_issue_date,b.issue_no2 as mg_issue_no,b.issue_no3 as mg_rej_no,b.end_date as mg_end_date ";
+                isql+= " from mgt_temp b ";
+                isql+= " where b.temp_rs_sqlno=" +$("#temp_rs_sqlno").val();
             }
 
+            var mg_apply_date = "",mg_apply_no = "",mg_issue_date = "",mg_issue_no = "",mg_rej_no = "",mg_end_date = "";
+            $.ajax({
+                type: "get",
+                url: getRootPath() + "/ajax/JsonGetSqlData.aspx",
+                data: { sql: isql },
+                async: false,
+                cache: false,
+                success: function (json) {
+                    var JSONdata = $.parseJSON(json);
+                    if (JSONdata.length > 0) {
+                        mg_apply_date = dateReviver(JSONdata[0].mg_apply_date,'yyyy/M/d');
+                        mg_apply_no = JSONdata[0].mg_apply_no;
+                        mg_issue_date = dateReviver(JSONdata[0].mg_issue_date,'yyyy/M/d');
+                        mg_issue_no = JSONdata[0].mg_issue_no;
+                        mg_rej_no = JSONdata[0].mg_rej_no;
+                        mg_end_date = dateReviver(JSONdata[0].mg_end_date,'yyyy/M/d');
+                    }else{
+                        alert("找不到總管處案件主檔資料，請通知系統維護人員!!");
+                    }
+                }
+            });
+
+            var cansave_flag = "Y";
+            //申請日期
+            if ($("#apply_date").val()!=mg_apply_date){
+                cansave_flag = "N";
+            }
+            //申請號
+            if ($("#apply_no").val()!=mg_apply_no){
+                cansave_flag = "N"
+            }
+            //註冊號
+            if ($("#issue_no").val()!=mg_issue_no){
+                if($("#smgt_temp_mark").val()!="IS"){
+                    cansave_flag = "N"
+                }
+            }
+            //核駁號
+            if ($("#rej_no").val()!=mg_rej_no){
+                cansave_flag = "N"
+            }
+
+            if (cansave_flag == "N"){
+                $("#cansave").val("N");
+                alert("案件主檔檢核資料與總收發主檔不符，請檢查！");
+            }else{
+                var mg_ctrl_date = "",mg_ctrl_type = "";
+                //檢查法定期限
+                isql="select ctrl_date,ctrl_type from ctrl_mgt_temp where temp_rs_sqlno=" +$("#temp_rs_sqlno").val()+ " and left(ctrl_type,1)='A' ";
+                $.ajax({
+                    type: "get",
+                    url: getRootPath() + "/ajax/JsonGetSqlData.aspx",
+                    data: { sql: isql },
+                    async: false,
+                    cache: false,
+                    success: function (json) {
+                        var JSONdata = $.parseJSON(json);
+                        if (JSONdata.length > 0) {
+                            mg_ctrl_date = dateReviver(JSONdata[0].ctrl_date,'yyyy/M/d');
+                            mg_ctrl_type = JSONdata[0].ctrl_type;
+                        }else{
+                            alert("找不到總管處期限管制資料，請通知系統維護人員!!");
+                        }
+                    }
+                });
+
+                if(mg_ctrl_date!=""){
+                    var havectrl_flag="N";
+                    for (var n = 1; n <= CInt($("#ctrlnum").val()) ;n++) {
+                        var ctrl_type= $("#ctrl_type_" + n).val();
+                        var ctrl_date= $("#ctrl_date_" + n).val();
+                        if (ctrl_type!="" && ctrl_date!="" && ctrl_type==mg_ctrl_type && ctrl_date==mg_ctrl_date){
+                            havectrl_flag=="Y";
+                            break;
+                        }
+                    }
+                    if(havectrl_flag=="N"){
+                        $("#cansave").val("N");
+                        alert("期限管制資料與總收發不符，請檢查！");
+                    }else{
+                        $("#cansave").val("Y");
+                        return false;
+                    }
+                }else{
+                    $("#cansave").val("Y");
+                    return false;
+                }
+            }
         }
+        //立子案檢查
+        if (pchk=="nseq") {
+            if($("input[name='domark']:checked").length==0){
+                alert("請先點選「作業選項」並確認本次收文案件編號後，再執行核對總收發主檔資料！");
+                return false;
+            }
+        }
+        var requlink = "&seq="+ $("#seq").val() +"&seq1="+ $("#seq1").val()+"&temp_rs_sqlno=" + $("#temp_rs_sqlno").val();
+        requlink+= "&apply_no=" + $("#apply_no").val() +"&apply_date=" +$("#apply_date").val();
+        requlink+= "&issue_no=" + $("#issue_no").val() +"&issue_date=" +$("#issue_date").val();
+        requlink+= "&rej_no=" + $("#rej_no").val();
+        requlink+= "&end_date=" + $("#end_date").val();
+        requlink+= "&domark=" + $("#hdomark").val();
+        requlink+= "&smgt_temp_mark=" + $("#smgt_temp_mark").val();
+        //***todo
+        window.open(getRootPath() +"/brtam/brtaform/brtachkdmt.aspx?prgid=<%=prgid%>"+requlink,"", "width=900 height=700 top=20 left=20 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+    }
+
+    //官收立子案的作業處理
+    brta21form.domark=function(pvalue){
+        $("#hdomark").val(pvalue);
+        switch (pvalue) {
+            case 'A':
+                alet("若確定要立子案並以子案收文，請先點選「子案立案」立案完成後再執行官收確認！");
+                $("#btnseq,#btnnewseq").show();//[確定]
+                break;
+            case 'B':
+                alet("若確定以子案收文且子案已立案，請輸入子案編號並點選確定後後再執行官收確認！");
+                $("#seq,#seq1").unlock();
+                $("#btnseq,#btnQuery").show();//[確定][查詢本所編號]
+                $("#btnnewseq").hide();//[子案立案]
+                break;
+            case 'X':
+                $("#seq").val($("#grseq").val()).lock();
+                $("#seq1").val($("#grseq1").val()).lock();
+                $("#btnseq,#btnQuery,#btnnewseq").hide();//[確定][查詢本所編號][子案立案]
+                break;
+        }
+    }
+
+    //官收立案[子案立案]
+    brta21form.btnnewseq=function(){
+        window.open(getRootPath() +"/brt5m/brt15ShowFP.aspx?submittask=A&seq=" + $("#grseq").val() + "&seq1=" + $("#grseq1").val() + "&cgrs=" + $("#cgrs").val()+ "&rs_type=" + $("#rs_type").val() + "&rs_code="+ $("#rs_code").val() + "&prgid=<%=prgid%>&winact=Y","DmtmyWindowOne","width=1000 height=800 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        $("#btnseq").unlock();
+        $("#keyseq").val("N");
+    }
+
+    //查詢轉案進度
+    brta21form.Qstep=function(){
+        x1 = $("#tran_seq").val()||"";
+        x2 = $("#tran_seq1").val()||"";
+        x3 = $("#tran_seq_branch").val()||"";
+        if (x1=="" ||x2==""||x3==""){
+            alert("無轉案單位資料，無法查詢進度！");
+            return false;
+        }
+        //***todo
+        window.open(getRootPath() +"/brtam/brta61Edit.aspx?aseq=" + x1 + "&aseq1=" + x2 + "&branch=" +x3+ "&submittask=Q&FrameBlank=50&prgid=<%=prgid%>&closewin=Y&winact=1&type=brtran","","dialogHeight: 520px; dialogWidth: 960px; center: Yes;resizable: No; status: No;scrollbars=yes");
     }
 </script>

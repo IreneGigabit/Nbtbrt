@@ -154,6 +154,22 @@ function chkRadio(pFieldName, pmsg){
     }
 }
 
+//連結內商查詢期限管制、進度查詢及交辦內容
+function dmt_IMG_Click(pType) {
+    if ($("#seq").val() != "") {
+        switch (pType) {
+            case "1": break;//期限管制
+            case "2": //收發進度
+                //***todo
+                window.open(getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + $("#seq").val() + "&aseq1=" + $("#seq1").val(), "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+                break;
+            case "4": break;//交辦內容
+        }
+    } else {
+        alert("請先輸入本所編號後再執行查詢功能!!");
+    }
+}
+
 //內商申請號與註冊號之不足位數補0
 function chkgno(pvalue, plen) {
     pvalue = pvalue.trim();//2012/12/12修改，因發現輸入有空白，所以trim掉後補足
