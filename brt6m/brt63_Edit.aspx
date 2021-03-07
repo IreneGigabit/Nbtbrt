@@ -25,6 +25,7 @@
     protected string SQL = "";
 
     protected string submitTask = "";
+    protected string json = "";
     protected string seq = "";
     protected string seq1 = "";
     protected string case_no = "";
@@ -48,6 +49,7 @@
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
         submitTask = ReqVal.TryGet("submittask").ToUpper();
+        json = (Request["json"] ?? "").Trim().ToUpper();
         seq = ReqVal.TryGet("seq");
         seq1 = ReqVal.TryGet("seq1");
         case_no = ReqVal.TryGet("case_no");
@@ -59,15 +61,17 @@
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
-            
-            PageLayout();
-            ChildBind();
+            if (json == "Y") {
+                QueryData();
+            } else {
+                PageLayout();
+                ChildBind();
+            }
             this.DataBind();
         }
     }
 
-    private void PageLayout() {
-        
+    private void PageLayout() {     
         if (submitTask == "") submitTask = "A";
         if (prgid == "brt63") {
             HTProgCap = "國內案承辦<font color=blue>交辦發文</font>作業";
@@ -123,6 +127,56 @@
         Brta21form.Lock = Lock;
     }
 
+    private void QueryData() {
+        //交辦檔
+        DataTable dtCaseMain = Sys.GetCaseDmtMain(conn, in_no);
+        //案件主檔
+        DataTable dtDmt = Sys.GetDmt(conn, seq, seq1);
+        //交辦官發檔
+        DataTable dtAttCase = Sys.GetAttCaseDmt(conn, "", in_no);
+
+        //預設值
+        Dictionary<string, string> add_gs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            add_gs["fees"] = "0";
+            add_gs["fees_stat"] = "N";
+            add_gs["step_date"] = DateTime.Today.ToShortDateString();
+            //總收發文日期
+            //台北所總收發當天就會發文
+            add_gs["mp_date"] = DateTime.Today.ToShortDateString();
+            if (Sys.GetSession("seBranch") != "N") {
+                switch (DateTime.Today.DayOfWeek) {
+                    case DayOfWeek.Friday: add_gs["mp_date"] = DateTime.Today.AddDays(3).ToShortDateString(); break;//星期五加三天
+                    case DayOfWeek.Saturday: add_gs["mp_date"] = DateTime.Today.AddDays(2).ToShortDateString(); break;//星期六加兩天
+                    default: add_gs["mp_date"] = DateTime.Today.AddDays(1).ToShortDateString(); break;//加一天
+                }
+            }
+            //2011/2/18依2010/12/15李協理Email需求，結構分類：C4_行政訴訟預設發文對象為Q_智慧財產法院
+            if (dtDmt.Rows[0].SafeRead("now_rsclass", "") == "C4") {
+                add_gs["send_cl"] = "Q";
+            } else {
+                add_gs["send_cl"] = "1";
+            }
+            //add_gs["send_cl"] = "1";
+            add_gs["send_cl1"] = "";
+            add_gs["send_sel"] = "";
+            add_gs["rs_type"] = dtCaseMain.Rows[0].SafeRead("arcase_type", "");
+            add_gs["rs_class"] = dtCaseMain.Rows[0].SafeRead("arcase_class", "");
+            add_gs["rs_code"] = dtCaseMain.Rows[0].SafeRead("arcase", "");
+
+        
+        var settings = new JsonSerializerSettings() {
+            Formatting = Formatting.Indented,
+            ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
+            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
+        };
+        Response.Write("{");
+        Response.Write("\"case_main\":" + JsonConvert.SerializeObject(dtCaseMain, settings).ToUnicode() + "\n");
+        Response.Write(",\"dmt\":" + JsonConvert.SerializeObject(dtDmt, settings).ToUnicode() + "\n");//案件主檔
+        Response.Write(",\"attcase_dmt\":" + JsonConvert.SerializeObject(dtAttCase, settings).ToUnicode() + "\n");//對應交辦發文檔
+        Response.Write(",\"add_gs\":" + JsonConvert.SerializeObject(add_gs, settings).ToUnicode() + "\n");//交辦官發預設值
+        Response.Write("}");
+        Response.End();
+    }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
@@ -298,12 +352,12 @@
         //取得交辦資料
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
+            url: "brt63_edit.aspx?json=Y&<%#Request.QueryString%>",
+            //url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
             async: false,
             cache: false,
             success: function (json) {
-                //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                toastr.info("<a href='" + this.url + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 jMain = $.parseJSON(json);
             },
             error: function (xhr) {

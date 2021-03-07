@@ -7,7 +7,7 @@ using System.Web;
 
 public partial class Sys
 {
-    #region Dmt 案件主檔
+    #region GetDmt 案件主檔
     public static DataTable GetDmt(DBHelper conn, string seq, string seq1) {
         object objResult = null;
         DataTable dt = new DataTable();

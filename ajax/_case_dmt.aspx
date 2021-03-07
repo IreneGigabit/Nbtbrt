@@ -92,7 +92,7 @@
         Response.Write(",\"step_cr\":" + JsonConvert.SerializeObject(AddCR(), settings).ToUnicode() + "\n");//交辦客收預設值
         Response.Write(",\"step_dmt_cr\":" + JsonConvert.SerializeObject(GetStepCR(ref dtStepDmtCR), settings).ToUnicode() + "\n");//對應客收進度
         Response.Write(",\"attcase_dmt\":" + JsonConvert.SerializeObject(GetAttCaseDmt(ref dtAttCaseDmt), settings).ToUnicode() + "\n");//對應交辦發文檔
-        Response.Write(",\"step_gs\":" + JsonConvert.SerializeObject(AddGS(), settings).ToUnicode() + "\n");//交辦官發預設值
+        //Response.Write(",\"step_gs\":" + JsonConvert.SerializeObject(AddGS(), settings).ToUnicode() + "\n");//交辦官發預設值
         Response.Write("}");
 
         //Response.Write(JsonConvert.SerializeObject(dt, settings).ToUnicode());
@@ -100,19 +100,7 @@
 
     #region GetCase 交辦資料
     private DataTable GetCase(ref DataTable dt) {
-        //if (submitTask == "Edit" || submitTask == "Show" || submitTask == "AddNext") {//編輯/檢視/複製下一筆 模式
-        //SQL = "Pro_case2 '" + in_no + "'";
-        SQL = "SELECT a.*,c.*,g.* ";
-        SQL += ",(SELECT b.coun_c FROM sysctrl.dbo.country b WHERE b.coun_code = a.zname_type and b.markb<>'X') AS nzname ";
-        SQL += ",(SELECT c.coun_code+c.coun_cname FROM sysctrl.dbo.ipo_country c WHERE c.ref_coun_code = a.prior_country ) AS ncountry ";
-        SQL += ",a.mark temp_mark,c.mark case_mark, C.service + C.fees+ C.oth_money AS othsum,b.mark as codemark ";
-        SQL += ",''s_marknm,''fseq,c.contract_flag ncontract_flag ";
-        SQL += " FROM dmt_temp A ";
-        SQL += " inner join case_dmt c on a.in_no = c.in_no and a.in_scode = c.in_scode ";
-        SQL += " inner join code_br b on c.arcase_type=b.rs_type and c.arcase=b.rs_code and b.dept='T' and b.cr='Y' ";
-        SQL += " left JOIN dmt_tran G ON C.in_scode = G.in_scode AND C.in_no = G.in_no ";
-        SQL += " WHERE A.in_no ='" + in_no + "' and a.case_sqlno=0 ";
-        conn.DataTable(SQL, dt);
+        dt = Sys.GetCaseDmtMain(conn, in_no);
 
         if (dt.Rows.Count > 0) {
             seq = dt.Rows[0].SafeRead("seq", "");
@@ -121,6 +109,7 @@
             code_type = dt.Rows[0].SafeRead("arcase_type", "");
             arcase = dt.Rows[0].SafeRead("arcase", "");
             br_in_scode = dt.Rows[0].SafeRead("in_scode", "");
+            br_in_scname = dt.Rows[0].SafeRead("in_scodenm", "");
 
             if (submitTask == "AddNext") {//圖様改為新檔名
                 if (dt.Rows[0].SafeRead("draw_file", "") != "") {
@@ -128,33 +117,9 @@
                     string strpath1 = sfile.gbrWebDir + "/temp";
                     string newName = br_in_scode + "-" + Path.GetFileName(dt.Rows[0].SafeRead("draw_file", ""));
                     sFi.CopyTo(Server.MapPath(Sys.Path2Nbtbrt(strpath1 + "/" + newName)), true);
-                    dt.Rows[0]["draw_file"] = strpath1 + "/" + newName;
+                    dt.Rows[0]["draw_file"] = Sys.Path2Nbtbrt(strpath1 + "/" + newName);
                 }
             }
-            dt.Rows[0]["draw_file"] = Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("draw_file", ""));
-
-            dt.Rows[0]["fseq"] = Sys.formatSeq(dt.Rows[0].SafeRead("seq", ""), dt.Rows[0].SafeRead("seq1", ""), "", Sys.GetSession("SeBranch"), Sys.GetSession("dept"));
-            if (dt.Rows[0].SafeRead("contract_flag_date", "") != "") {//若已有契約書後補完成日，則表契約書已後補
-                dt.Rows[0]["ncontract_flag"] = "N";
-            }
-
-            if (dt.Rows[0].SafeRead("s_mark", "") == "S") {
-                dt.Rows[0]["s_marknm"] = "服務";
-            } else if (dt.Rows[0].SafeRead("s_mark", "") == "L") {
-                dt.Rows[0]["s_marknm"] = "證明";
-            } else if (dt.Rows[0].SafeRead("s_mark", "") == "M") {
-                dt.Rows[0]["s_marknm"] = "團體標章";
-            } else if (dt.Rows[0].SafeRead("s_mark", "") == "N") {
-                dt.Rows[0]["s_marknm"] = "團體商標";
-            } else if (dt.Rows[0].SafeRead("s_mark", "") == "K") {
-                dt.Rows[0]["s_marknm"] = "產地證明標章";
-            } else {
-                dt.Rows[0]["s_marknm"] = "商標";
-            }
-
-            SQL = "select sc_name from sysctrl.dbo.scode where scode='" + br_in_scode + "'";
-            object objResult = conn.ExecuteScalar(SQL);
-            br_in_scname = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
 
             //轉帳金額合計抓收費標準
             SQL = "select b.service ";

@@ -7,7 +7,7 @@ using System.Web;
 
 public partial class Sys
 {
-    #region AttCaseDmt 交辦發文檔
+    #region GetAttCaseDmt 交辦發文檔
     public static DataTable GetAttCaseDmt(DBHelper conn, string att_sqlno, string in_no) {
         object objResult = null;
         DataTable dt = new DataTable();

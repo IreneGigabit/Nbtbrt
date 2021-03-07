@@ -7,7 +7,7 @@ using System.Web;
 
 public partial class Sys
 {
-    #region AttCaseDmt 交辦發文檔
+    #region GetVCustlist 客戶檔
     public static DataTable GetVCustlist(DBHelper conn, string apcust_no, string cust_area, string cust_seq) {
         object objResult = null;
         DataTable dt = new DataTable();
