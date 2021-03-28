@@ -644,7 +644,7 @@ main.chkCaseForm = function () {
     //***契約書種類與對應文件種類檢查
     if ($("#tfy_contract_flag").prop("checked") == false) {
         var pchktype = "B"
-        if (main.prgid == "brt51") pchktype = "A";////客收確認
+        if ($("#prgid").val() == "brt51") pchktype = "A";////客收確認
         if (check_doctype("T", $("#tfy_contract_type").val(), pchktype) == true) {
             settab("#case");
             return false;
@@ -920,6 +920,46 @@ main.chkAr = function () {
     }
 }
 
+//檢查契約書&復案提醒
+main.chkContract = function () {
+    if ($("input[name='Contract_no_Type']:checked").length == 0) {
+        alert("請輸入契約書種類！！！");
+        settab("#case");
+        $("input[name='Contract_no_Type']")[0].focus();
+        return false;
+    } else {
+        var cont_type = $("input[name='Contract_no_Type']:checked").val();
+        if (cont_type == "N") {//一般契約書
+            if ($("#tfy_Contract_no").val() == "") {
+                alert("請輸入契約號碼!!");
+                settab("#case");
+                $("#tfy_Contract_no").focus();
+                return false;
+            } else if (!IsNumeric($("#tfy_Contract_no").val())) {
+                alert("契約號碼請輸入數值!!");
+                settab("#case");
+                $("#tfy_Contract_no").focus();
+                return false;
+            }
+        }
+        if (cont_type == "M" && $("#tfy_Contract_no").val() == "") {//總契約書但無契約書號
+            if ($("#tfy_contract_flag").pdop("checked") == false) {//無勾選契約書後補
+                alert("無總契約書號，請檢查！");
+                settab("#case");
+                $("input[name='Contract_no_Type'][value='M']").focus();
+                return false;
+            }
+        }
+    }
+    //復案提醒
+    if ($("#tfy_back_flag").val() == "Y") {
+        var answer = confirm("該案件營洽確定復案並交辦，是否確定復案並執行客收？");
+        if (answer == false) {
+            return false;
+        }
+    }
+}
+
 //存檔檢查
 main.savechkA3 = function () {
     //客戶聯絡人檢查
@@ -962,6 +1002,11 @@ main.savechkA3 = function () {
 
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
+
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
 
     $("#F_tscode,#tfzd_Tcn_mark").unlock();
     $("#tfg1_seq").val($("#tfzb_seq").val());
@@ -1092,6 +1137,11 @@ main.savechkA4 = function () {
 
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
+
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
 
     //附註檢查
     if ($("#O_item1").val() == "" && $("input[name=O_item2]").prop("checked").length > 0) {
@@ -1378,6 +1428,11 @@ main.savechkA5 = function () {
 
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
+
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
 
     $("#F_tscode,#tfzd_Tcn_mark").unlock();
 
@@ -1710,6 +1765,11 @@ main.savechkA6 = function () {
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
 
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
+
     //變更一案多件控制
     switch ($("#tfy_Arcase").val()) {
         case "FC11": case "FC5": case "FC7": case "FCH":
@@ -1863,6 +1923,11 @@ main.savechkA7 = function () {
 
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
+
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
 
     //*****案件內容
     var errName = "", errName1 = "";
@@ -2108,6 +2173,46 @@ main.savechkA8 = function () {
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
 
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+
+        //當有輸入母案編號提醒程序要作結案
+        if ($("#tfzd_ref_no").val() != "") {
+            if ($("#endflag51").val() == "X") {//未點選母案結案
+                alert("客收移轉案性原舊案應作結案，請點選「母案結案」確認營洽輸入的母案本所編號及結案原因。");
+                settab("#dmt");
+                $("#but_end").focus();
+                return false;
+            }
+            if ($("#endflag51").val() == "N") {//有點選但未作結案，2010/6/17因應結案流程修改為案號有誤退回
+                alert("營洽輸入的母案本所編號有誤，若不退回營洽修改，請修改母案本所編號後，重新點選「母案結案」確認輸入的母案本所編號及結案原因。");
+                settab("#dmt");
+                $("#but_end").focus();
+                return false;
+            }
+        }
+        //子案提醒有輸入母案編號要作結案
+        if ($("#tfy_Arcase").val().Left(3) == "FT2") {
+            for (var x = 2; x <= CInt($("#nfy_tot_num").val()) ; x++) {
+                if ($("#dmseqb_" + x).val() != "") {
+                    if ($("#endflag51b_" + x).val() == "X") {//未點選母案
+                        alert("客收移轉案性原舊案應作結案，請點選「母案結案」確認營洽輸入的母案本所編號及結案原因。");
+                        settab("#tran");
+                        $("#but_endb_" + x).focus();
+                        return false;
+                    }
+                    if ($("#endflag51b_" + x).val() == "N") {//有點選但未作結案，2010/6/17因應結案流程修改為案號有誤退回
+                        alert("營洽輸入的母案本所編號" + x + "有誤，若不退回營洽修改，請先點選本所編號" + x + "「案件主檔編修」修改母案本所編號後，重新點選「母案結案」確認輸入的母案本所編號及結案原因。");
+                        settab("#tran");
+                        $("#but_endb_" + x).focus();
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
     //*****案件內容
     $("#F_tscode,#tfzd_Tcn_mark").unlock();
     $("#tfg1_seq").val($("#tfzb_seq").val());
@@ -2151,6 +2256,11 @@ main.savechkA9 = function () {
 
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
+
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
 
     //*****案件內容
     if ($("#tfy_Arcase").val().Left(3) == "FP1") {
@@ -2219,6 +2329,11 @@ main.savechkAA = function () {
 
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
+
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
 
     //*****案件內容
     if ($("input[name=tfgd_mod_claim1]").eq(0).prop("checked") == true) {
@@ -2320,6 +2435,11 @@ main.savechkAB = function () {
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
 
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
+
     //*****案件內容
     $("#F_tscode,#tfzd_Tcn_mark").unlock();
     $("#tfg1_seq").val($("#tfzb_seq").val());
@@ -2369,6 +2489,11 @@ main.savechkAC = function () {
 
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
+
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
 
     $("#F_tscode,#tfzd_Tcn_mark").unlock();
     $("#tfg1_seq").val($("#tfzb_seq").val());
@@ -2818,6 +2943,11 @@ main.savechkB = function () {
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
 
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
+
     $("#F_tscode,#tfzd_Tcn_mark").unlock();
     $("#tfg1_seq").val($("#tfzb_seq").val());
     $("#tfg1_seq1").val($("#tfzb_seq1").val());
@@ -2860,6 +2990,11 @@ main.savechkZZ = function () {
 
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
+
+    if ($("#prgid").val() == "brt51") {
+        //檢查契約書&復案提醒
+        if (main.chkContract() == false) return false;
+    }
 
     //*****案件內容
     if ($("#tfy_Arcase").val().Left(3) == "FOB") {

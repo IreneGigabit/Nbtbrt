@@ -121,7 +121,7 @@ public partial class Sys
     }
 
     /// <summary>
-    /// 區所案件資料庫名稱
+    /// 區所案件資料庫名稱,ex:sinn05.sindbs.dbo
     /// </summary>
     public static string tdbname(string pBranch) {
         string rtnStr = "";
@@ -299,10 +299,10 @@ public partial class Sys
 
         SmtpClient client = new SmtpClient("sin30");
         try {
-            ////client.ServicePoint.MaxIdleTime = 2;//連線可閒置時間(毫秒)
-            ////client.ServicePoint.ConnectionLimit = 1;//允許最大連線數
-            ////client.Credentials = new System.Net.NetworkCredential("siiplo", "Jean212");
-            //client.Send(MailMsg);//發送郵件
+            //client.ServicePoint.MaxIdleTime = 2;//連線可閒置時間(毫秒)
+            //client.ServicePoint.ConnectionLimit = 1;//允許最大連線數
+            //client.Credentials = new System.Net.NetworkCredential("siiplo", "Jean212");
+            client.Send(MailMsg);//發送郵件
         }
         catch {
             throw;

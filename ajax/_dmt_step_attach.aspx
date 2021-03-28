@@ -139,6 +139,13 @@
 
     #region GetDmtAttach 進度附件
     private DataTable GetDmtAttach(ref DataTable dt) {
+        string where = "";
+        if (ReqVal["step_grade"] != "") where += " and step_grade=" + ReqVal["step_grade"];
+        if (ReqVal["attach_sqlno"] != "") where += " and attach_sqlno=" + ReqVal["attach_sqlno"];
+        if (ReqVal["att_sqlno"] != "") where += " and att_sqlno=" + ReqVal["att_sqlno"];
+
+        dt = Sys.GetDmtAttach(conn, ReqVal["seq"], ReqVal["seq1"], ReqVal["source"], where);
+        /*
         SQL = "select *,(select mark1 from cust_code where code_type='Tdoc' and cust_code=dmt_attach.doc_type) as doc_type_mark,'' as old_branch ";
         SQL += " from dmt_attach ";
         SQL += " where seq = '" + ReqVal["seq"] + "' and seq1 = '" + ReqVal["seq1"] + "' and source='" + ReqVal["source"] + "' and attach_flag<>'D' ";
@@ -157,7 +164,7 @@
         for (int i = 0; i < dt.Rows.Count; i++) {
             dt.Rows[i]["attach_path"] = Sys.Path2Nbtbrt(dt.Rows[i].SafeRead("attach_path", ""));
         }
-
+        */
         return dt;
     }
     #endregion

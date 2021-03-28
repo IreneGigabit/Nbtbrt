@@ -9,15 +9,23 @@
     protected string ScriptString = "";
     protected string exMsg = "";
 
+    DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    private void Page_Unload(System.Object sender, System.EventArgs e) {
+        if (conn != null) conn.Dispose();
+    }
+
     private void Page_Load(Object sender, EventArgs e) {
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
+        conn = new DBHelper(Conn.ODBCDSN, false).Debug(false);
+
         StringBuilder sb = new StringBuilder();
         string strChk = CheckUser();
+        //Response.Write("a=" + strChk+"<hr>");
         if (strChk.Length > 0) {
-            //sb.AppendLine("alert(\"" + strChk + Request["tfx_scode"] + "\");");
+            sb.AppendLine("alert(\"" + strChk + "\");");
             sb.AppendLine("top.location.href = \"login.aspx\";");
         } else if (exMsg.Length == 0) {
             //sb.AppendLine("alert(\"" + Request["tfx_scode"] + "\");");
@@ -41,10 +49,8 @@
             sys_pwd = Util.GetHashValueMD5(tfx_sys_password.ToLower());//明碼轉md5
         }
         string SQL = "";
-        DBHelper conn = null;
         try
         {
-            conn = new DBHelper(Conn.ODBCDSN, false).Debug(false);
             if (Uid != "")
             {
                 SQL = "SELECT a.*,b.*,c.logingrp,c.GrpName ";
@@ -55,8 +61,9 @@
                 SQL += " where b.Syscode ='" + syscode + "' ";
                 SQL += " AND a.scode='" + Uid + "' ";
                 SQL += " AND a.sys_pwd ='" + sys_pwd + "' ";
-                SQL += " AND GETDATE() BETWEEN a.beg_date AND isnull(a.end_date,'2079/06/06') ";
+                SQL += " AND GETDATE() BETWEEN isnull(a.beg_date,'1900/01/01') AND isnull(a.end_date,'2079/06/06') ";
                 //Sys.errorLog(new Exception(Conn.ODBCDSN), SQL, "checklogin");
+                //Response.Write("1="+SQL+"<hr>");
                 SqlDataReader dr = conn.ExecuteReader(SQL);
                 if (dr.Read())
                 {
@@ -76,6 +83,7 @@
                     SQL += "inner join grpid b on b.grpclass=a.grpclass and b.grpid=a.grpid ";
                     SQL += " and (substring(b.grpid,1,1)='" +Session["Dept"] +"' or substring(b.grpid,1,3)='000') ";
                     SQL += " where a.scode='" + Session["scode"] + "' and a.grpclass='" + Session["SeBranch"] + "' ";
+                    //Response.Write("2=" + SQL+"<hr>");
                     DataTable dt = new DataTable();
                     conn.DataTable(SQL,dt);
                     for (int i = 0; i < dt.Rows.Count; i++) {
@@ -97,6 +105,7 @@
                 }
                 else
                 {
+                    //Response.Write("3=帳號/密碼 不合！請重新登入！<hr>");
                     Session["Password"] = false;
                     strRet = "帳號/密碼 不合！請重新登入！";
                 }
@@ -106,6 +115,7 @@
             }
             else
             {
+                //Response.Write("4=輸入錯誤 !<hr>");
                 Session["Password"] = false;
                 Session.Abandon();
                 strRet = "輸入錯誤 !";
@@ -113,6 +123,7 @@
         }
         catch (Exception ex)
         {
+            //Response.Write("5=執行錯誤 !" + "<hr>");
             exMsg = conn.ConnString + "\n" + SQL;
             if (conn != null) Sys.errorLog(ex, conn.exeSQL, "checklogin");
             strRet = "執行錯誤 !" + ex.Message + "\\n\\n" + SQL;
@@ -120,10 +131,6 @@
             Session.Abandon();
 
             //throw new Exception(exMsg, ex);
-        }
-        finally
-        {
-            if (conn != null) conn.Dispose();
         }
 
         return strRet;

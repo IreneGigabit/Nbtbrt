@@ -385,10 +385,10 @@
             alert("本所序號輸入的資料必須為數值!!");
             return false;
         }
-        if ($("#seq1").val() != "" && IsNumeric($("#seq1").val()) == false) {
-            alert("本所序號輸入的資料必須為數值!!");
-            return false;
-        }
+        //if ($("#seq1").val() != "" && IsNumeric($("#seq1").val()) == false) {
+        //    alert("本所序號輸入的資料必須為數值!!");
+        //    return false;
+        //}
         if ($("#cust_seq").val() != "" && IsNumeric($("#cust_seq").val()) == false) {
             alert("客戶編號輸入的資料必須為數值!!");
             return false;
@@ -555,7 +555,6 @@
     }
     //[詳細資料]
     function CapplClick(x1, x2) {
-        //***todo
         var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + x1+ "&seq1=" + x2 + "&submittask=Q";
         window.showModalDialog(url, "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
     }

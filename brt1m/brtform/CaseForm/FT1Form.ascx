@@ -113,7 +113,7 @@
 			    <td class="lightbluetable" align="right">母案本所編號##:</td>
 			    <td class="whitetablebg" >
 					<input type=text id=dmseqb_## name=dmseqb_## size=<%=Sys.DmtSeq%> maxlength=<%=Sys.DmtSeq%> readonly >-<input type=text id=dmseq1b_## name=dmseq1b_## size=<%=Sys.DmtSeq1%>  maxlength=<%=Sys.DmtSeq1%> value='_' readonly >
-					<input type=button style='display:none' id='but_endb_##' name='but_endb_##' class='redbutton' style='cursor:pointer' value='母案結案' onclick="btnendA8click('dmseqb_##' ,reg.dmseqb_##.value,reg.dmseq1b_##.value)">
+					<input type=button style='display:none' id='but_endb_##' name='but_endb_##' class='redbutton' style='cursor:pointer' value='母案結案' onclick="dmt_form.btnendA8click('dmseqb_##' ,reg.dmseqb_##.value,reg.dmseq1b_##.value)">
 					<input type=hidden name='endflag51b_##' id='endflag51b_##' value='X'>
 					<input type=hidden name='end_code51b_##' id='end_code51b_##'>
 					<input type=hidden name='end_type51b_##' id='end_type51b_##'>

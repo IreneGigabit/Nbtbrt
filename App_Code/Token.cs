@@ -44,6 +44,21 @@ public class Token
         m_Rights = Rights;
     }
 
+    public string DebugStr {//☑測試
+        get {
+            if (this.APcode == "" || this.APcode == null) {//沒有prgid就用Sys.IsDebug判斷
+                if (Sys.IsDebug()) {
+                    return "<label id=\"labTest\"><input type=\"checkbox\" id=\"chkTest\" name=\"chkTest\" value=\"TEST\" />測試1</label>";
+                }
+            } else {
+                if ((this.Rights & 512) > 0) {//有prgid就用權限值判斷
+                    return "<label id=\"labTest\"><input type=\"checkbox\" id=\"chkTest\" name=\"chkTest\" value=\"TEST\" />測試</label>";
+                }
+            }
+            return "";
+        }
+    }
+
     public string ConnectionString
     {
         get { return m_CnnStr; }
@@ -209,13 +224,30 @@ public class Token
 
     private string PageRsponse(string strMsg)
     {
-        string strOut = "";
-        strOut = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" +
-            "<script type=\"text/javascript\" language=\"javascript\">\nwindow.alert(\"" + strMsg + "\");\n" +
-            "if (typeof (top.opener) == 'object') window.close();\n" +
-			"else top.location.href=\"http://" + HttpContext.Current.Session["uploadserver"].ToString() + "/Fimp/default.asp\";\n</script></head><body></body></html>\n";
-			//"else top.location.href=\"../default.aspx\";\n</script></head><body></body></html>\n";
-		return strOut;
+        //string strOut = "";
+        //strOut = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" +
+        //    "<script type=\"text/javascript\" language=\"javascript\">\nwindow.alert(\"" + strMsg + "\");\n" +
+        //    "if (typeof (top.opener) == 'object') window.close();\n" +
+		//	"else top.location.href=\"http://" + HttpContext.Current.Session["uploadserver"].ToString() + "/Fimp/default.asp\";\n</script></head><body></body></html>\n";
+		//return strOut;
+
+        string url = "Default.aspx";
+        if (!Convert.ToBoolean(HttpContext.Current.Session["pwd"])) url = "Login.aspx";
+
+        StringBuilder strOut = new StringBuilder();
+        strOut.AppendLine("<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'>");
+        strOut.AppendLine("<script type='text/javascript'>");
+        strOut.AppendLine("alert('" + strMsg.Replace("'", "\\'") + "'); ");
+        strOut.AppendLine("if (typeof(window.opener)!='undefined'){");
+        strOut.AppendLine(" window.opener.top.location.href = '" + HttpContext.Current.Request.ApplicationPath + "/" + url + "'; ");
+        strOut.AppendLine(" window.close();");
+        strOut.AppendLine("}else{");
+        strOut.AppendLine(" window.top.location.href = '" + HttpContext.Current.Request.ApplicationPath + "/" + url + "'; ");
+        strOut.AppendLine("}");
+        strOut.AppendLine("</script>");
+
+        return strOut.ToString();
+
     }
 
     public static bool IsAdmin()

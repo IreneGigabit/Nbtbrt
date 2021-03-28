@@ -111,11 +111,11 @@
         }
         
         //案件客戶
-        cust_form.Lock = Lock;
+        cust_form.Lock = new Dictionary<string, string>(Lock);
         //案件聯絡人
-        attent_form.Lock = Lock;
+        attent_form.Lock = new Dictionary<string, string>(Lock);
         //案件申請人
-        apcust_form.Lock = Lock;
+        apcust_form.Lock = new Dictionary<string, string>(Lock);
         //收費與接洽事項
         dmt_case_form.formFunction = formFunction;
         dmt_case_form.HTProgRight = HTProgRight;

@@ -229,7 +229,8 @@ public class OpenXmlHelper
 	public void SaveTo(string outputPath) {
 		outDoc.MainDocumentPart.Document.Save();
 		outDoc.Close();
-		using (FileStream fileStream = new FileStream(outputPath, FileMode.Create)) {
+        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+        using (FileStream fileStream = new FileStream(outputPath, FileMode.Create)) {
 			outMem.Position = 0;
 			outMem.WriteTo(fileStream);
 		}
@@ -244,6 +245,7 @@ public class OpenXmlHelper
     public void SaveAndFlush(string outputPath, string outputName) {
         outDoc.MainDocumentPart.Document.Save();
         outDoc.Close();
+        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
         using (FileStream fileStream = new FileStream(outputPath, FileMode.Create)) {
             outMem.Position = 0;
             outMem.WriteTo(fileStream);

@@ -338,7 +338,7 @@
         var fld3 = $("#dept").val();
         var chktest = ($("#chkTest:checked").val() || "");
 
-        var url = getRootPath() + "/brt3m/brt31Scode.aspx?fld1=" + fld1 + "&fld2=" + fld2 + "&fld3=" + fld3 + "&chkTest=" + chktest;
+        var url = getRootPath() + "/brt3m/brt31_Scode.aspx?fld1=" + fld1 + "&fld2=" + fld2 + "&fld3=" + fld3 + "&chkTest=" + chktest;
         ajaxScriptByGet("營洽清單", url);
     }
 </script>

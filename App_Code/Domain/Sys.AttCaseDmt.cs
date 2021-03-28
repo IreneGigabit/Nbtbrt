@@ -61,6 +61,4 @@ public partial class Sys
         return dt;
     }
     #endregion
-
-
 }

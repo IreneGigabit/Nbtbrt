@@ -367,7 +367,7 @@
         if (tot_num == "a_1" || tot_num == "b_1") {//是主案
             Filereadonly();
         }
-        window.open(getRootPath() + "/brt1m/brta21Query.aspx?cust_seq=" + cust_seq + "&tot_num=" + tot_num, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brtam/brta21Query.aspx?cust_seq=" + cust_seq + "&tot_num=" + tot_num, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
     //[案件主檔查詢]

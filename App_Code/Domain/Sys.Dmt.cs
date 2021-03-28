@@ -69,8 +69,8 @@ public partial class Sys
 
             //目前案性/狀態
             string lf = "cr";
-            SQL = "select cg,rs from step_dmt where seq=" + seq + " and seq1='" + seq1 + "' ";
-            SQL += " and step_grade = " + dr["now_grade"];
+            SQL = "select cg,rs from step_dmt where seq='" + seq + "' and seq1='" + seq1 + "' ";
+            SQL += " and step_grade = '" + dr["now_grade"]+"'";
             using (SqlDataReader sdr = conn.ExecuteReader(SQL)) {
                 if (sdr.Read()) {
                     lf = "" + sdr["cg"] + sdr["rs"];
@@ -100,6 +100,4 @@ public partial class Sys
         return dt;
     }
     #endregion
-
-
 }

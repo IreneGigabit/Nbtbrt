@@ -112,10 +112,10 @@
     <script type="text/html" id="upload_template"><!--文件上傳樣板-->
 		<TR class="tr_brattach_##">
 			<TD class=lightbluetable align=center>
-		        文件檔案<input type=text id='<%#uploadfield%>_filenum##' name='<%#uploadfield%>_filenum##' class="Lock" size=2 value='##'>.
+		        文件檔案<input type=text id='<%#uploadfield%>_filenum##' name='<%#uploadfield%>_filenum##' class=sedit readonly size=2 value='##'>.
 			</TD>
 			<TD class=sfont9 colspan="2" align="left">
-                檔案名稱：<input type=text id='<%#uploadfield%>_name_##' name='<%#uploadfield%>_name_##' class="Lock" size=50 maxlength=50>
+                檔案名稱：<input type=text id='<%#uploadfield%>_name_##' name='<%#uploadfield%>_name_##' class=sedit readonly size=50 maxlength=50>
                 <input type=button id='btn<%#uploadfield%>_##' name='btn<%#uploadfield%>_##' class='cbutton <%=Lock.TryGet("Qup")%>' value='上傳' onclick="upload_form.UploadAttach('##')">
                 <input type=button id='btn<%#uploadfield%>_D_##' name='btn<%#uploadfield%>_D_##' class='cbutton <%=Lock.TryGet("Qup")%>' value='刪除' onclick="upload_form.DelAttach('##')">
                 <input type=button id='btn<%#uploadfield%>_S_##' name='btn<%#uploadfield%>_S_##' class='cbutton' value='檢視' onclick="upload_form.PreviewAttach('##')">
@@ -124,7 +124,7 @@
                 <input type='hidden' id='tstep_grade_##' name='tstep_grade_##'>
                 <input type='hidden' id='attach_sqlno_##' name='attach_sqlno_##'>
                 <input type='hidden' id='attach_flag_##' name='attach_flag_##'>
-                <!--span id="span_source_##" style="display:none"--><BR>原始檔名：<input type='text' id='source_name_##' name='source_name_##' class="Lock" size=50><!--/span-->
+                <!--span id="span_source_##" style="display:none"--><BR>原始檔名：<input type='text' id='source_name_##' name='source_name_##' class=sedit readonly size=50><!--/span-->
                 <input type='hidden' id='attach_no_##' name='attach_no_##' value='##'>
                 <input type='hidden' id='old_<%#uploadfield%>_name_##' name='old_<%#uploadfield%>_name_##'>
                 <input type='hidden' id='doc_type_mark_##' name='doc_type_mark_##'>
@@ -161,6 +161,12 @@
     upload_form.init = function () {
         var fld = $("#uploadfield").val();
 
+        if(main.prgid=="brta38"||main.prgid=="brt63"){
+            if(CInt($("#att_sqlno").val())>0){
+                $("#file_Del_button").hide();//官發確認
+            }
+        }
+
         if (main.prgid == "brt81") {
             $("#uploadTitle").html("交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;相&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;關&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件");
         } else {
@@ -169,7 +175,6 @@
             }
         }
     }
-
 
     //[多檔上傳]
     upload_form.mAppendFile = function (nRow) {
@@ -208,6 +213,7 @@
         //});
         //$('#dialog').dialog('open');
     }
+
     //多檔上傳後回傳資料顯示於畫面上
     function uploadSuccess(rvalue) {
         var fld = $("#uploadfield").val();
@@ -284,11 +290,11 @@
         } else {
             if ($("#prgid").val() == "brt63") {	//2012/12/24修改承辦交辦發文作業prgid=brt63
                 if ($("#send_way").val() == "E") {
-                    $("#doc_flag_" + nRow).prop("check", true);//□電子送件文件檔(pdf)
+                    $("#doc_flag_" + nRow).prop("checked", true);//□電子送件文件檔(pdf)
                 }
             }
         }
-
+        $('#tr_brattach_' + nRow + ' .Lock').lock();
     }
 
     //[減少一筆]
@@ -309,8 +315,22 @@
         }
     }
 
-    //欄位鎖定
-    upload_form.readonly = function (nRow) {
+    //form鎖定
+    upload_form.uploadreadonly = function (pctrl) {
+        var fld = $("#uploadfield").val();
+        var treadonly = false;
+        if (pctrl == "Y") {
+            treadonly = true
+            $("#multi_upload_button,#file_Del_button").hide();
+        }
+        for (var n = 1; n <= CInt($("#" + fld + "_filenum").val()) ; n++) {
+            upload_form.uploadreadonly_one(n);
+        }
+    }
+
+    //單行欄位鎖定
+    upload_form.uploadreadonly_one = function (nRow) {
+        var fld = $("#uploadfield").val();
         $("#" + fld + "_desc_" + nRow).lock();
         $("#btn" + fld + "_" + nRow).hide();
         $("#btn" + fld + "_D_" + nRow).hide();
@@ -327,6 +347,7 @@
             "&file_name=" + $("#uploadfield").val() + "_name_" + nRow +
             "&size_name=" + $("#uploadfield").val() + "_size_" + nRow +
             "&dir_name=" + $("#uploadfield").val() + "_" + nRow +
+            "&source_name=source_name_" + nRow +
             "&attach_flag_name=attach_flag_" + nRow +
             "&prgid=<%=prgid%>" +
             "&btnname=btn" + $("#uploadfield").val() + "_" + nRow +
@@ -444,5 +465,36 @@
 
         //抓取文件種類之mark1說明，for電子送件copy時用原始檔名或更名
         $("#doc_type_mark_" + nRow).val($("#doc_type_" + nRow + " :selected").attr("v1"));
+    }
+    
+    //附件資料append到畫面
+    upload_form.appendAttach=function(jData){
+        $.each(jData, function (i, item) {
+            var fld = $("#uploadfield").val();
+            upload_form.appendFile();//增加一筆
+            var nRow = $("#" + fld + "_filenum").val();
+            $("#" + fld + "_name_" + nRow).val(item.attach_name);
+            $("#old_" + fld + "_name_" + nRow).val(item.attach_name);
+            $("#" + fld + "_" + nRow).val(item.attach_path);
+            $("#doc_type_" + nRow).val(item.doc_type);
+            $("#" + fld + "_desc_" + nRow).val(item.attach_desc);
+            $("#" + fld + "_size_" + nRow).val(item.attach_size);
+            $("#attach_sqlno_" + nRow).val(item.attach_sqlno);
+            $("#" + fld + "_apattach_sqlno_" + nRow).val(item.apattach_sqlno);//總契約書/委任書流水號
+            $("#attach_flag_" + nRow).val("U");//維護時判斷是否要更名，即A表示新上傳的文件
+            $("#btn" + fld + "_" + nRow).prop("disabled", true);
+            $("input[name='" + fld + "_branch_" + nRow + "'][value='" + item.attach_branch + "']").prop("checked", true);//交辦專案室
+            $("#source_name_" + nRow).val(item.source_name);
+            $("#attach_no_" + nRow).val(item.attach_no);
+            $("#attach_flagtran_" + nRow).val(item.attach_flagtran);//異動作業上傳註記Y
+
+            $("#doc_type_mark_").val(item.doc_type_mark);
+            $("#tran_sqlno_" + nRow).val(item.tran_sqlno);//異動作業流水號
+            $("#maxattach_no").val(Math.max(CInt(item.attach_no), CInt($("#maxattach_no").val())));
+
+            if (item.doc_flag == "E") {//電子送件文件檔(pdf)
+                $("#doc_flag_" + nRow).prop("checked", true);
+            }
+        });
     }
 </script>

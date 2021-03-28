@@ -258,11 +258,11 @@
                 strTo.Add(Session["scode"] + "@saint-island.com.tw");
                 break;
             case "web10":
-                strTo = dt.AsEnumerable().Select(r => r.Field<string>("scode")).ToList();
+                strTo = dt.AsEnumerable().Select(r => r.Field<string>("scode") + "@saint-island.com.tw").ToList();
                 strCC.Add(Session["scode"] + "@saint-island.com.tw");
                 break;
             default:
-                strTo = dt.AsEnumerable().Select(r => r.Field<string>("scode")).ToList();
+                strTo = dt.AsEnumerable().Select(r => r.Field<string>("scode") + "@saint-island.com.tw").ToList();
                 break;
         }
 

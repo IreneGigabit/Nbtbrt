@@ -178,7 +178,7 @@
 
     <asp:Repeater id="dataRepeater" runat="server">
     <HeaderTemplate>
-      <table align=center style="color:blue">
+      <table align=center style="color:blue" class="bluetable1">
 		    <TR>
 		    <Div>
 		    <TD>營洽人員:<%#name1%></TD>
@@ -187,6 +187,7 @@
 		    </Div>    
 		    </TR> 
 	    </table>	
+        <br />
         <table style="display:<%#dt.Rows.Count==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="90%" align="center" id="dataList">
 	        <thead>
                 <TR>

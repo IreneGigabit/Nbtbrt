@@ -104,7 +104,7 @@
     
     //將共用參數傳給子控制項
     private void ChildBind() {
-        brt25_Form.Lock = Lock;
+        brt25_Form.Lock = new Dictionary<string, string>(Lock);
         brt25_Form.uploadfield = uploadfield;
     }
 

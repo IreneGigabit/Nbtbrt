@@ -18,10 +18,17 @@
 	protected string StrSYSs = "";//下拉選單
 	//protected string mainPage = "";
 
+    DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    private void Page_Unload(System.Object sender, System.EventArgs e) {
+        if (cnn != null) cnn.Dispose();
+    }
+
     private void Page_Load(System.Object sender, System.EventArgs e) {
 		Response.CacheControl = "Private";
 		Response.AddHeader("Pragma", "no-cache");
 		Response.Expires = -1;
+
+        cnn = new DBHelper(Conn.ODBCDSN, false).Debug(false);
 
         sideWidth = "220";
         if (Convert.ToBoolean(Session["Password"])) {
@@ -31,7 +38,7 @@
             if (Sys.IsDebug()){
                 Eblank = "<span id='btnEblank' style='cursor:pointer;color:brown;' v1='65%,*' v2='100%,*'>[Eblank frame]</span>&nbsp;";
             }
-            
+
             CreateMenu();
         }
         
@@ -39,104 +46,90 @@
 	}
 
     private void CreateMenu() {
-        if (Convert.ToBoolean(Session["Password"])) {
-            //StrUser = ProjectName + " / " + Session["sc_name");
-            using (DBHelper cnn = new DBHelper(Conn.ODBCDSN).Debug(false))
-            {
-                string SQL = "SELECT a.APcode, a.APnameC, a.APorder, a.APserver, a.APpath, a.ReMark" +
-                     ", b.LoginGrp, b.Rights" +
-                     ", c.APcatCName, c.APCatID" +
-                     " FROM AP AS a" +
-                     " INNER JOIN LoginAP AS b ON a.APcode = b.APcode AND a.SYScode = b.SYScode" +
-                     " INNER JOIN APcat AS c ON a.APcat = c.APcatID AND a.SYScode = c.SYScode " +
-                     " WHERE b.LoginGrp = '" + Session["LoginGrp"] + "'" +
-                     //" AND b.SYScode = '" + Session["Syscode"] + "'" +//新舊系統用同一個syscode,但menu要分開
-                     " AND b.SYScode = '" + Sys.Sysmenu + "'" +
-                     " AND (b.Rights & 1) > 0 " +
-                     " ORDER BY c.APseq, a.APorder, a.APcode";
-                DataTable dt = new DataTable();
-                cnn.DataTable(SQL, dt);
+        //StrUser = ProjectName + " / " + Session["sc_name");
+        string SQL = "SELECT a.APcode, a.APnameC, a.APorder, a.APserver, a.APpath, a.ReMark" +
+             ", b.LoginGrp, b.Rights" +
+             ", c.APcatCName, c.APCatID" +
+             " FROM AP AS a" +
+             " INNER JOIN LoginAP AS b ON a.APcode = b.APcode AND a.SYScode = b.SYScode" +
+             " INNER JOIN APcat AS c ON a.APcat = c.APcatID AND a.SYScode = c.SYScode " +
+             " WHERE b.LoginGrp = '" + Session["LoginGrp"] + "'" +
+            //" AND b.SYScode = '" + Session["Syscode"] + "'" +//新舊系統用同一個syscode,但menu要分開
+             " AND b.SYScode = '" + Sys.Sysmenu + "'" +
+             " AND (b.Rights & 1) > 0 " +
+             " ORDER BY c.APseq, a.APorder, a.APcode";
+        DataTable dt = new DataTable();
+        cnn.DataTable(SQL, dt);
 
-                int xn = 0;
-                int xItemCount = 0;
-                //int xmIdx = 1;
-                int xmIdx = 0;
-                string xapcat = "";
-                string xaporder = "";
-                string xapcode = "";
-                string xapo = "";
-                //string xpath = "";
+        int xn = 0;
+        int xItemCount = 0;
+        //int xmIdx = 1;
+        int xmIdx = 0;
+        string xapcat = "";
+        string xaporder = "";
+        string xapcode = "";
+        string xapo = "";
+        //string xpath = "";
 
-                //StrMenus = "<table cellSpacing=\"0\" cellPadding=\"0\" bgColor=\"#5A63BD\" border=\"0\"><tr>\n";
-                StrMenus = "<table cellSpacing=\"0\" cellPadding=\"0\" bgColor=\"\" border=\"0\"><tr>\n";
-                scriptString = "";
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    if (dt.Rows[i]["APcatCName"].ToString()  != xapcat)
-                    {
-                        xn = xn + 1;
-                        xapcat = dt.Rows[i]["APcatCName"].ToString();
-                        xaporder = "";
-                        xItemCount = 1;
-                        StrMenus += "<td width=\"87\" align=\"center\" class=\"apcat tab-title\" v1=\"" + xn.ToString() + "\" height=\"19\" valign=\"bottom\">" + xapcat + "</td>\n";
-                    }
-                    if (dt.Rows[i]["APNameC"].ToString() != xapcode)
-                    {
-                        scriptString += "\t\tzmenu[" + xmIdx.ToString() + "] = new MenuItem();\n";
-                        scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].mIdx = " + xn.ToString() + ";\n";
-                        scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].sIdx = " + xItemCount.ToString() + ";\n";
-                        scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Code = \"" + dt.Rows[i]["APcode"].ToString()  + "\";\n";
-                        scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Cat = \"" + dt.Rows[i]["APcatID"].ToString()  + "\";\n";
-                        scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Name = \"" + dt.Rows[i]["APNameC"].ToString()  + "\";\n";
-
-                        //scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"" + dt.Rows[i]["APpath"].ToString() + "?prgid=" + dt.Rows[i]["APcode"].ToString() + "\";\n";
-                        if (Sys.Host == "localhost") {
-                            scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"http://" + Sys.Host + "/" + dt.Rows[i]["APpath"].ToString() +
-                                                                                        "?prgid=" + dt.Rows[i]["APcode"].ToString() +
-                                                                                        "&prgname=" + Server.UrlEncode(dt.Rows[i]["APNameC"].ToString()) +
-                                                                                        dt.Rows[i]["ReMark"].ToString() + "\";\n";
-                        } else {
-                            scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"http://" + dt.Rows[i]["APserver"].ToString() + "/" + dt.Rows[i]["APpath"].ToString() +
-                                                                                 "?prgid=" + dt.Rows[i]["APcode"].ToString() +
-                                                                                 "&prgname=" + Server.UrlEncode(dt.Rows[i]["APNameC"].ToString()) +
-                                                                                 dt.Rows[i]["ReMark"].ToString() + "\";\n";
-                        }
-                        xapo = dt.Rows[i]["APorder"].ToString().Substring(0, 1);
-                        if (xapo != xaporder)
-                        {
-                            if (xItemCount != 0)
-                                scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Bar = \"Y\";\n";
-                            xaporder = xapo;
-                        }
-                        xmIdx = xmIdx + 1;
-                        xItemCount = xItemCount + 1;
-                        xapcode = dt.Rows[i]["APNameC"].ToString();
-                    }
-                }
-                StrMenus += "</tr></table>";
+        //StrMenus = "<table cellSpacing=\"0\" cellPadding=\"0\" bgColor=\"#5A63BD\" border=\"0\"><tr>\n";
+        StrMenus = "<table cellSpacing=\"0\" cellPadding=\"0\" bgColor=\"\" border=\"0\"><tr>\n";
+        scriptString = "";
+        for (int i = 0; i < dt.Rows.Count; i++) {
+            if (dt.Rows[i]["APcatCName"].ToString() != xapcat) {
+                xn = xn + 1;
+                xapcat = dt.Rows[i]["APcatCName"].ToString();
+                xaporder = "";
+                xItemCount = 1;
+                StrMenus += "<td width=\"87\" align=\"center\" class=\"apcat tab-title\" v1=\"" + xn.ToString() + "\" height=\"19\" valign=\"bottom\">" + xapcat + "</td>\n";
             }
-			
-			StrSYSs = "";
-            using (DBHelper cnn = new DBHelper(Conn.ODBCDSN).Debug(false))
-            {
-                //求取該登入人員所有的系統權限(不含本系統)
-                string SQL = "SELECT a.sysserver+ISNULL(a.syspath, '')path, a.sysnameC, a.syscode";
-                SQL += " FROM sysctrl AS b";
-                SQL += " INNER JOIN SYScode AS a ON b.syscode=a.syscode";
-                SQL += " WHERE b.scode='" + Session["scode"] + "'";
-                //SQL += " AND a.syscode<>'" + Session["syscode"] + "'";//新舊系統用同一個syscode,但menu要分開
-                SQL += " AND a.syscode<>'" + Sys.Sysmenu + "'";
-                
-                DataTable dt_1 = new DataTable();
-                cnn.DataTable(SQL, dt_1);
-                for (int i = 0; i < dt_1.Rows.Count; i++)
-                {
-                    StrSYSs += "<option value=\"" +  dt_1.Rows[i]["path"].ToString()  + "\" value1=\"" + dt_1.Rows[i]["Syscode"].ToString()  + "\">◎" + dt_1.Rows[i]["sysnameC"].ToString() + "</option>";
+            if (dt.Rows[i]["APNameC"].ToString() != xapcode) {
+                scriptString += "\t\tzmenu[" + xmIdx.ToString() + "] = new MenuItem();\n";
+                scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].mIdx = " + xn.ToString() + ";\n";
+                scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].sIdx = " + xItemCount.ToString() + ";\n";
+                scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Code = \"" + dt.Rows[i]["APcode"].ToString() + "\";\n";
+                scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Cat = \"" + dt.Rows[i]["APcatID"].ToString() + "\";\n";
+                scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Name = \"" + dt.Rows[i]["APNameC"].ToString() + "\";\n";
+
+                //scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"" + dt.Rows[i]["APpath"].ToString() + "?prgid=" + dt.Rows[i]["APcode"].ToString() + "\";\n";
+                if (Sys.Host == "localhost") {
+                    scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"http://" + Sys.Host + "/" + dt.Rows[i]["APpath"].ToString() +
+                                                                                "?prgid=" + dt.Rows[i]["APcode"].ToString() +
+                                                                                "&prgname=" + Server.UrlEncode(dt.Rows[i]["APNameC"].ToString()) +
+                                                                                dt.Rows[i]["ReMark"].ToString() + "\";\n";
+                } else {
+                    scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"http://" + dt.Rows[i]["APserver"].ToString() + "/" + dt.Rows[i]["APpath"].ToString() +
+                                                                         "?prgid=" + dt.Rows[i]["APcode"].ToString() +
+                                                                         "&prgname=" + Server.UrlEncode(dt.Rows[i]["APNameC"].ToString()) +
+                                                                         dt.Rows[i]["ReMark"].ToString() + "\";\n";
                 }
+                xapo = dt.Rows[i]["APorder"].ToString().Substring(0, 1);
+                if (xapo != xaporder) {
+                    if (xItemCount != 0)
+                        scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Bar = \"Y\";\n";
+                    xaporder = xapo;
+                }
+                xmIdx = xmIdx + 1;
+                xItemCount = xItemCount + 1;
+                xapcode = dt.Rows[i]["APNameC"].ToString();
             }
         }
-    }
+        StrMenus += "</tr></table>";
 
+        StrSYSs = "";
+        //求取該登入人員所有的系統權限(不含本系統)
+        SQL = "SELECT a.sysserver+ISNULL(a.syspath, '')path, a.sysnameC, a.syscode";
+        SQL += " FROM sysctrl AS b";
+        SQL += " INNER JOIN SYScode AS a ON b.syscode=a.syscode";
+        SQL += " WHERE b.scode='" + Session["scode"] + "'";
+        //SQL += " AND a.syscode<>'" + Session["syscode"] + "'";//新舊系統用同一個syscode,但menu要分開
+        SQL += " AND a.syscode<>'" + Sys.Sysmenu + "'";
+
+        DataTable dt_1 = new DataTable();
+        cnn.DataTable(SQL, dt_1);
+        for (int i = 0; i < dt_1.Rows.Count; i++) {
+            StrSYSs += "<option value=\"" + dt_1.Rows[i]["path"].ToString() + "\" value1=\"" + dt_1.Rows[i]["Syscode"].ToString() + "\">◎" + dt_1.Rows[i]["sysnameC"].ToString() + "</option>";
+        }
+    }
 </script>
 <html>
 <head>

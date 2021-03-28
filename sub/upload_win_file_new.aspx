@@ -159,27 +159,27 @@
         }
 
         if ("<%=ReqVal.TryGet("form_name")%>".length > 0)
-            $('#<%=ReqVal.TryGet("form_name")%>', window.opener.document).val(data.full_path);
+            $('#<%=ReqVal.TryGet("form_name")%>', window.opener.document).val(data.full_path);//完整路徑+檔名
         if ("<%=ReqVal.TryGet("size_name")%>".length > 0)
-            $('#<%=ReqVal.TryGet("size_name")%>', window.opener.document).val(data.size);
+            $('#<%=ReqVal.TryGet("size_name")%>', window.opener.document).val(data.size);//檔案大小
         if ("<%=ReqVal.TryGet("file_name")%>".length > 0)
-            $('#<%=ReqVal.TryGet("file_name")%>', window.opener.document).val(data.name);
+            $('#<%=ReqVal.TryGet("file_name")%>', window.opener.document).val(data.name);//檔名
         if ("<%=ReqVal.TryGet("btnname")%>".length > 0)
-            $('#<%=ReqVal.TryGet("btnname")%>', window.opener.document).prop('disabled', true);
+            $('#<%=ReqVal.TryGet("btnname")%>', window.opener.document).prop('disabled', true);//[上傳]按鈕名
         if ("<%=ReqVal.TryGet("doc_in_date")%>".length > 0)
-            $('#<%=ReqVal.TryGet("doc_in_date")%>', window.opener.document).val((new Date()).format("yyyy/M/d"));
+            $('#<%=ReqVal.TryGet("doc_in_date")%>', window.opener.document).val((new Date()).format("yyyy/M/d"));//上傳日期
         if ("<%=ReqVal.TryGet("doc_in_scode")%>".length > 0)
-            $('#<%=ReqVal.TryGet("doc_in_scode")%>', window.opener.document).val(data.in_scode);
+            $('#<%=ReqVal.TryGet("doc_in_scode")%>', window.opener.document).val(data.in_scode);//上傳薪號
         if ("<%=ReqVal.TryGet("doc_in_scodenm")%>".length > 0)
-            $('#<%=ReqVal.TryGet("doc_in_scodenm")%>', window.opener.document).val(data.in_scodenm);
+            $('#<%=ReqVal.TryGet("doc_in_scodenm")%>', window.opener.document).val(data.in_scodenm);//上傳姓名
         if ("<%=ReqVal.TryGet("source_name")%>".length > 0)
-            $('#<%=ReqVal.TryGet("source_name")%>', window.opener.document).val(data.source);
+            $('#<%=ReqVal.TryGet("source_name")%>', window.opener.document).val(data.source);//原始檔名
         if ("<%=ReqVal.TryGet("draw_name")%>".length > 0)
-            $('#<%=ReqVal.TryGet("draw_name")%>', window.opener.document).val(data.full_path);
+            $('#<%=ReqVal.TryGet("draw_name")%>', window.opener.document).val(data.full_path);//完整路徑+檔名
         if ("<%=ReqVal.TryGet("dir_name")%>".length > 0)
-            $('#<%=ReqVal.TryGet("dir_name")%>', window.opener.document).val(data.dir);
+            $('#<%=ReqVal.TryGet("dir_name")%>', window.opener.document).val(data.dir);//檔案目錄
         if ("<%=ReqVal.TryGet("attach_flag_name")%>".length > 0)
-            $('#<%=ReqVal.TryGet("attach_flag_name")%>', window.opener.document).val(data.attach_flag);
+            $('#<%=ReqVal.TryGet("attach_flag_name")%>', window.opener.document).val(data.attach_flag);//檔案模式(A/U/D)
         if ("<%=ReqVal.TryGet("db_file_flag")%>".length > 0) {
             //2012/5/2 將對催帳客函或請款單產生方式改為「使用者自行上傳」
             for (var i = 0; i <= $("input[name='<%=ReqVal.TryGet("db_file_flag")%>']", window.opener.document).length - 1; i++) {

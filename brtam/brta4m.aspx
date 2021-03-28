@@ -411,11 +411,16 @@
         }
 
         if ($("#prtkind").val() == "411" || $("#prtkind").val() == "421") {//承辦單若超過50筆，要縮小範圍
-            var url = "brta4m_data411.aspx?cgrs=" + $("#cgrs").val() + "&sdate=" + $("#sdate").val() + "&edate=" + $("#edate").val() +
+            var url = "json_data411.aspx?cgrs=" + $("#cgrs").val() + "&sdate=" + $("#sdate").val() + "&edate=" + $("#edate").val() +
                 "&srs_no=" + $("#srs_no").val() + "&ers_no=" + $("#ers_no").val() + "&sseq=" + $("#sseq").val() + "&eseq=" + $("#eseq").val() +
                 "&seq1=" + $("#seq1").val() + "&hprint=" + $("#hprint").val();
             ajaxScriptByGet("檢查承辦單筆數", url);
-            if (jBreak) return false;//由ajaxScriptByGet呼叫的程式指定值
+            if (jCount == 0) {//由ajaxScriptByGet呼叫的程式指定值
+                alert("無資料需產生");
+            } else if (jCount > 50) {
+                alert("承辦單超過50筆，請縮小範圍列印!!!");
+                return false;
+            }
         }
 
         if ($("#haveword").val() == "Y") {

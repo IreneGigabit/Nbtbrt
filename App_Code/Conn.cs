@@ -43,6 +43,22 @@ public static class Conn
         }
     }
 
+	/// <summary>
+    /// account
+	/// </summary>
+    public static string account {
+        get {
+            switch (Host) {
+                case "SINN05": return Sys.getConnString("prod_N_account");//正式環境北
+                case "SIC10": return Sys.getConnString("prod_C_account");//正式環境中
+                case "SIS10": return Sys.getConnString("prod_S_account");//正式環境南
+                case "SIK10": return Sys.getConnString("prod_K_account");//正式環境雄
+                case "WEB10": return Sys.getConnString("test_account");//使用者測試環境
+                default: return Sys.getConnString("dev_account");//開發環境
+            }
+        }
+	}
+
     /// <summary>
     /// 總收發文系統
     /// </summary>
@@ -88,8 +104,8 @@ public static class Conn
                 case "SIC10": return Sys.getConnString("prod_Csysctrl");//正式環境中
                 case "SIS10": return Sys.getConnString("prod_Ssysctrl");//正式環境南
                 case "SIK10": return Sys.getConnString("prod_Ksysctrl");//正式環境雄
-                case "WEB10": return Sys.getConnString("test_mg_sysctrl");//使用者測試環境
-                default: return Sys.getConnString("dev_mg_sysctrl");//開發環境
+                case "WEB10": return Sys.getConnString("test_sysctrl");//使用者測試環境
+                default: return Sys.getConnString("dev_sysctrl");//開發環境
             }
         }
     }

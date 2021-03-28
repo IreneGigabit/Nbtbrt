@@ -30,7 +30,8 @@
             SQL = "select a.csflg,a.cs_detail,a.spe_ctrl,b.sqlno ctrl_sqlno,b.act_sqlno,b.ctrl_type,b.date_ctrl,b.ad,b.days,b.md,b.remark ctrl_remark ";
             SQL += ",(select mark1 from cust_code where code_type='DC' and cust_code=b.date_ctrl) as date_name ";
             SQL += ",a.case_stat,(select code_name from cust_code where code_type='tcase_stat' and cust_code=a.case_stat) as case_statnm ";
-            SQL += ",b.ad2,isnull(b.days2,0) as days2,b.md2,'B'sqlflg ";
+            SQL += ",b.ad2,isnull(b.days2,0) as days2,b.md2 ";
+            SQL += ",case when b.sqlno is not null then 'A' else 'B' end sqlflg ";
             SQL += " from vcode_act a ";
             SQL += " left join code_ctrl b on a.sqlno=b.act_sqlno ";
             SQL += " where a.dept='" + Sys.GetSession("dept") + "' ";
@@ -42,9 +43,6 @@
             }
             conn.DataTable(SQL, dt);
             for (int i = 0; i < dt.Rows.Count; i++) {
-                if (dt.Rows[i].SafeRead("ctrl_sqlno", "") != "") {//有管制設定
-                    dt.Rows[i]["sqlflg"] = "A";
-                }
             }
         }
 

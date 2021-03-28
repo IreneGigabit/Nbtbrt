@@ -44,15 +44,7 @@
             if ((Request["hprint"] ?? "") == "N" && cgrs != "CS") SQL += " and isnull(new,'N')='" + Request["hprint"] + "'";
             object objResult = conn.ExecuteScalar(SQL);
             int count = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
-            if(count==0){
-                strOut.AppendLine("alert('無資料需產生');");
-                strOut.AppendLine("var jBreak=true;");
-            } else if (count > 50) {
-                strOut.AppendLine("alert('承辦單超過50筆，請縮小範圍列印!!!');");
-                strOut.AppendLine("var jBreak=true;");
-            } else {
-                strOut.AppendLine("var jBreak=false;");
-            }
+            strOut.AppendLine("var jCount=0;");
         }
     }
 </script>

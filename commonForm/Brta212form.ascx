@@ -7,11 +7,9 @@
 <script runat="server">
     //管制欄位畫面，與收文共同
     //父控制項傳入的參數
-    public Dictionary<string, string> SrvrVal = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public int HTProgRight = 0;
-
 
     protected string submitTask = "";
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//功能權限代碼
@@ -44,39 +42,6 @@
             Lock["Qdisabled"] ="Lock";
         }
     }
-
-    private string QueryData() {
-        if (prgid == "brta34") {//本發作業
-            SQL = " select sqlno,ctrl_type,ctrl_remark,ctrl_date,null as resp_date,null as resp_grade from ctrl_dmt ";
-            SQL += " where rs_no='" + Request["cr_rs_no"] + "' and ctrl_type='A1' ";
-            SQL += " union select sqlno,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_grade from resp_dmt ";
-            SQL += " where rs_no='" + Request["cr_rs_no"] + "' and ctrl_type='A1' ";
-            SQL += " order by ctrl_date";
-        } else if (prgid == "brta24" && SrvrVal.TryGet("from_flag") == "C") {//官收電子收文
-            SQL = " select tctrl_sqlno as sqlno,ctrl_type,ctrl_remark,ctrl_date,null as resp_date,null as resp_grade ";
-            SQL += " from ctrl_mgt_temp where temp_rs_sqlno=" + SrvrVal.TryGet("temp_rs_sqlno") + " and ctrl_type like 'A%' ";
-            SQL += " union select null as sqlno,ctrl_type,ctrl_remark,ctrl_date,resp_date,mg_resp_step_grade as resp_grade ";
-            SQL += " from resp_mgt_temp where temp_rs_sqlno=" + SrvrVal.TryGet("temp_rs_sqlno") + " and ctrl_type like 'A%' ";
-        } else {
-            SQL = " select sqlno,ctrl_type,ctrl_remark,ctrl_date,null as resp_date,null as resp_grade from ctrl_dmt ";
-            SQL += " where rs_no='" + SrvrVal.TryGet("rs_no") + "'";
-            SQL += " union select sqlno,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_grade from resp_dmt ";
-            SQL += " where rs_no='" + SrvrVal.TryGet("rs_no") + "'";
-            SQL += " order by ctrl_date";
-        }
-
-        DataTable dt = new DataTable();
-        conn.DataTable(SQL, dt);
-
-        var settings = new JsonSerializerSettings()
-        {
-            Formatting = Formatting.None,
-            ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
-            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
-        };
-
-        return JsonConvert.SerializeObject(dt, settings).ToUnicode().Replace("\\", "\\\\").Replace("\"", "\\\"");
-    }
 </script>
 
 <%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
@@ -92,9 +57,9 @@
 			        <%}%>
 			        <input type="hidden" name="rsqlno" id="rsqlno">
 			        <%if (prgid != "brt51" && prgid != "brta22" && prgid != "brta78") {%><!--國內案客戶收文確認//國內案客戶收文作業//國內案確認轉案作業-->
-			            <input type=button class="c1button" id="btndis" name="btndis" value ="進度查詢及銷管制">
+			            <input type=button class="c1button" id="btndis" name="btndis" value ="進度查詢及銷管制" onclick="brta212form.btndis()"
 			        <%}%>
-			        <input type="button" class="c1button" value="查官收未銷法定期限" onclick="queryjob()" style="display:none" id="btnqrygrlastdate">
+			        <input type="button" class="c1button" value="查官收未銷法定期限" onclick="brta212form.queryjob()" style="display:none" id="btnqrygrlastdate">
 		        </TD>
 	        </TR>
 	    <%} else {%>
@@ -124,7 +89,7 @@
 		</td>
 		<td class=whitetablebg align=center>
 	        <input type=hidden id='octrl_date_##' name='octrl_date_##'>
-	        <input type=text size=10 maxlength=10 id=ctrl_date_## name=ctrl_date_## onblur="ctrl_date_blur('##')" class="dateField <%=Lock.TryGet("Qdisabled")%>">
+	        <input type=text size=10 maxlength=10 id=ctrl_date_## name=ctrl_date_## onblur="brta212form.ctrl_date_blur('##')" class="dateField <%=Lock.TryGet("Qdisabled")%>">
 		</td>
 		<td class=whitetablebg align=center>
 	        <input type=hidden id='octrl_remark_##' name='octrl_remark_##'>
@@ -199,8 +164,8 @@
         $("#ctrlnum").val(Math.max(0, nRow - 1));
     }
 
-    //設定欄位開關
-    function ctrl_line_lock(nRow) {
+    //設定欄位開關??
+    brta212form.ctrl_line_lock=function(nRow) {
         if ($("#resp_date_" + nRow).val() != "") {
             $("#io_flg_" + nRow).val("N");//該筆資料不可修改 & 不用入檔
             $("#ctrl_type_" + nRow).lock();
@@ -226,7 +191,7 @@
         }
     }
 
-    function ctrl_date_blur(nRow) {
+    brta212form.ctrl_date_blur=function (nRow) {
         var tctrl_date=$("#ctrl_date_"+nRow).val();
         if (tctrl_date=="") return false;
         if (CDate(tctrl_date).getTime() < Today().getTime()) {
@@ -236,7 +201,7 @@
     }
 
     //[進度查詢及銷管制]
-    $("#btndis").click(function (e) {
+    brta212form.btndis=function () {
         //***todo
         var tlink = getRootPath() + "/brtam/brta21disEdit.aspx?branch=<%=Session["seBranch"]%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&rsqlno=" + $("#rsqlno").val() + "&step_grade=" + $("#nstep_grade").val();
         //本發只能進度查詢
@@ -262,10 +227,10 @@
         }
 
         window.open(tlink, "", "width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
-    });
+    }
 
     //[查官收未銷法定期限]
-    function queryjob() {
+    brta212form.queryjob=function() {
         if (($("#seq").val() || "") == "") {
             alert("無案件編號，無法查詢!!");
             return false;

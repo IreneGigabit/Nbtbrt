@@ -8,7 +8,6 @@
     public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public int HTProgRight = 0;
 
-
     protected string submitTask = "";
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//功能權限代碼
     protected string SQL = "";
@@ -18,7 +17,6 @@
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        
     }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -323,7 +321,24 @@
             $("#dref_no_" + spl_num).val(jMain.case_main[0].issue_no);
         }
 
-        $.each(jMain.case_dmt1, function (i, item) {
+        //取得一案多件子案
+        var jDmt1 = {};
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/json_get_dmt_temp_sub.aspx?prgid=" + main.prgid + "&in_no=" + main.in_no,
+            async: false,
+            cache: false,
+            success: function (json) {
+                toastr.info("<a href='" + this.url + "' target='_new'>Debug(json_get_dmt_temp_sub)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                jSub = $.parseJSON(json);
+            },
+            error: function (xhr) {
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>取得分割子案失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '取得分割子案失敗！', modal: true, maxHeight: 500, width: "90%" });
+            }
+        });
+
+        $.each(jDmt1, function (i, item) {
             //產生一案多件子案案號
             brt511form.add_sub();
             var spl_num = (i + 2);//1是母案,從2開始
@@ -355,7 +370,24 @@
         }
         $("#span_seqdesc").html("此次分割案件資料：");
 
-        $.each(jMain.dmt_temp1, function (i, item) {
+        //取得分割子案
+        var jSub = {};
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/json_get_dmt_temp_sub.aspx?prgid=" + main.prgid + "&in_no=" + main.in_no,
+            async: false,
+            cache: false,
+            success: function (json) {
+                toastr.info("<a href='" + this.url + "' target='_new'>Debug(json_get_dmt_temp_sub)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                jSub = $.parseJSON(json);
+            },
+            error: function (xhr) {
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>取得分割子案失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '取得分割子案失敗！', modal: true, maxHeight: 500, width: "90%" });
+            }
+        });
+
+        $.each(jSub, function (i, item) {
             //產生分割子案案號
             brt511form.add_sub();
             var spl_num = (i + 1);

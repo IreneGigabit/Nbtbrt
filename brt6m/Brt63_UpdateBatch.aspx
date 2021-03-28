@@ -184,7 +184,7 @@
                             ColMap["case_no"] = Util.dbchar(arr_case_no[i]);
                             ColMap["pr_scode"] = Util.dbchar(arr_pr_scode[i]);
                             ColMap["in_date"] = Util.dbchar(DateTime.Today.ToShortDateString());
-                            ColMap["seq"] = Util.dbchar(arr_seq[i]);
+                            ColMap["seq"] = Util.dbnull(arr_seq[i]);
                             ColMap["seq1"] = Util.dbchar(arr_seq1[i]);
                             ColMap["step_date"] = Util.dbchar(arr_step_date[i]);
                             ColMap["mp_date"] = Util.dbchar(arr_mp_date[i]);

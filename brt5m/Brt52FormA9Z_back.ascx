@@ -369,7 +369,7 @@
         if (tot_num == "a_1" || tot_num == "b_1") {//是主案
             Filereadonly();
         }
-        window.open(getRootPath() + "/brt1m/brta21Query.aspx?cust_seq=" + cust_seq + "&tot_num=" + tot_num, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brtam/brta21Query.aspx?cust_seq=" + cust_seq + "&tot_num=" + tot_num, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
     //[案件主檔查詢]
@@ -1336,8 +1336,11 @@
             });
 
             //文件上傳
-            $("#tabfile" + $("#uploadfield").val() + ">tbody").empty();
-            $.each(jMain.case_attach, function (i, item) {
+            var fld = $("#uploadfield").val();
+            $("#tabfile" + fld + ">tbody").empty();
+            $("#" + fld + "_filenum").val("0");
+            upload_form.appendAttach(jMain.case_attach);//顯示上傳文件資料
+            /*$.each(jMain.case_attach, function (i, item) {
                 var fld = $("#uploadfield").val();
                 upload_form.appendFile();//增加一筆
                 var nRow = $("#" + fld + "_filenum").val();
@@ -1357,7 +1360,7 @@
                 $("#attach_flagtran_" + nRow).val(item.attach_flagtran);//異動作業上傳註記Y
                 $("#tran_sqlno_" + nRow).val(item.tran_sqlno);//異動作業流水號
                 $("#maxattach_no").val(Math.max(CInt(item.attach_no), CInt($("#maxattach_no").val())));
-            });
+            });*/
             settab("#tran");//交辦內容
         }
         //*****交辦內容綁定(function在各自的form.ascx)

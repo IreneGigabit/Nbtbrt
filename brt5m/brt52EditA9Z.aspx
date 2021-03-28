@@ -120,22 +120,22 @@
         }
 
         //案件客戶
-        cust_form.Lock = Lock;
-        cust_form.Hide = Hide;
+        cust_form.Lock = new Dictionary<string, string>(Lock);
+        cust_form.Hide = new Dictionary<string, string>(Hide);
         //案件聯絡人
-        attent_form.Lock = Lock;
-        attent_form.Hide = Hide;
+        attent_form.Lock = new Dictionary<string, string>(Lock);
+        attent_form.Hide = new Dictionary<string, string>(Hide);
         //案件申請人
-        apcust_form.Lock = Lock;
-        apcust_form.Hide = Hide;
+        apcust_form.Lock = new Dictionary<string, string>(Lock);
+        apcust_form.Hide = new Dictionary<string, string>(Hide);
         //收費與接洽事項
-        dmt_case_form.Lock = Lock;
-        dmt_case_form.Hide = Hide;
+        dmt_case_form.Lock = new Dictionary<string, string>(Lock);
+        dmt_case_form.Hide = new Dictionary<string, string>(Hide);
         dmt_case_form.formFunction = formFunction;
         dmt_case_form.HTProgRight = HTProgRight;
         //案件內容
-        dmt_Form.Lock = Lock;
-        dmt_Form.Hide = Hide;
+        dmt_Form.Lock = new Dictionary<string, string>(Lock);
+        dmt_Form.Hide = new Dictionary<string, string>(Hide);
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >

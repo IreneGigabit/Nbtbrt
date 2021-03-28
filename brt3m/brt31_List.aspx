@@ -74,7 +74,7 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a href="+HTProgPrefix+".aspx?qs_dept="+qs_dept+">[回上一頁]</a>";
+        StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx?qs_dept=" + qs_dept + "&prgid=" + prgid + ">[回上一頁]</a>";
 
         if (qs_dept == "t") {
             FormName = "備註:<br>\n";
@@ -599,7 +599,7 @@
 	</table>
 	<br>
 
-    <table border="0" width="90%" cellspacing="0" cellpadding="0" align="center">
+    <table style="display:<%#page.totRow==0?"none":""%>" border="0" width="90%" cellspacing="0" cellpadding="0" align="center">
 		<TR>			
 			<TD align=right>簽核狀態:</TD>
 			<TD align=left>
@@ -633,7 +633,7 @@
 		</TR>
     </table>
 
-    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <table style="display:<%#page.totRow==0?"none":""%>" border="0" width="100%" cellspacing="0" cellpadding="0">
      <tr><td width="100%">     
        <p align="center">        
             <input type=button value ="送出" class="cbutton bsubmit" onClick="formupdate()" id=btnsend name=btnsend>

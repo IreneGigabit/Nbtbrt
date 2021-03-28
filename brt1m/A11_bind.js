@@ -181,8 +181,11 @@ main.bind = function () {
         $("#tfy_ar_chk1[value='" + jMain.case_main[0].discount_chk + "']").prop('checked', true).triggerHandler("click");
 
         //文件上傳
-        $("#tabfile" + $("#uploadfield").val() + ">tbody").empty();
-        $.each(jMain.case_attach, function (i, item) {
+        var fld = $("#uploadfield").val();
+        $("#tabfile" + fld + ">tbody").empty();
+        $("#" + fld + "_filenum").val("0");
+        upload_form.appendAttach(jMain.case_attach);//顯示上傳文件資料
+        /*$.each(jMain.case_attach, function (i, item) {
             var fld = $("#uploadfield").val();
             upload_form.appendFile();//增加一筆
             var nRow = $("#" + fld + "_filenum").val();
@@ -202,8 +205,7 @@ main.bind = function () {
             $("#attach_flagtran_" + nRow).val(item.attach_flagtran);//異動作業上傳註記Y
             $("#tran_sqlno_" + nRow).val(item.tran_sqlno);//異動作業流水號
             $("#maxattach_no").val(Math.max(CInt(item.attach_no), CInt($("#maxattach_no").val())));
-        });
-
-        settab("#tran");
+        });*/
+        settab("#tran");//交辦內容
     }
 }

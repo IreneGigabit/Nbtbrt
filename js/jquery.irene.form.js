@@ -24,7 +24,7 @@
                     //$(input).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
                     $(input).datepick('destroy');
                 }
-                if (this.type == "text" || this.type == "textarea") {
+                if (this.type == "text" || this.type == "textarea" || this.type == "hidden") {
                     $(input).prop('readonly', true).addClass('SEdit');
                 } else {
                     $(input).prop('disabled', true);
@@ -57,7 +57,7 @@
 	                //$(input).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
 	                $(input).datepick();
 	            }
-	            if (input.type == "text" || input.type == "textarea") {
+	            if (this.type == "text" || this.type == "textarea" || this.type == "hidden") {
 	                $(input).prop('readonly', true).addClass('SEdit');
 	            } else {
 	                $(input).prop('disabled', true);

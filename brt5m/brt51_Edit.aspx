@@ -27,6 +27,7 @@
     protected string SQL = "";
 
     protected string submitTask = "";
+    protected string json = "";
     protected string cgrs = "CR";
     //protected string code = "";//todo.sqlno
     //protected string in_scode = "";
@@ -54,15 +55,19 @@
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
         submitTask = ReqVal.TryGet("submittask").ToUpper();
-        
+        json = (Request["json"] ?? "").Trim().ToUpper();
+
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title.Replace("收文", "<font color=blue>收文</font>");
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
-            
-            PageLayout();
-            ChildBind();
+            if (json == "Y") {
+                QueryData();
+            } else {
+                PageLayout();
+                ChildBind();
+            }
             this.DataBind();
         }
     }
@@ -94,7 +99,72 @@
     //將共用參數傳給子控制項
     private void ChildBind() {
     }
+    
+    private void QueryData() {
+        //預設值
+        Dictionary<string, string> add_cr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        //交辦檔
+        DataTable dtCaseMain = Sys.GetCaseDmtMain(conn, Request["in_no"]);
+        
+        if (dtCaseMain.Rows.Count > 0) {
+            add_cr["step_date"] = DateTime.Today.ToShortDateString();
+            add_cr["cg"] = "C";
+            add_cr["rs"] = "R";
+            add_cr["cgrs"] = "CR";
+            add_cr["send_cl"] = "1";
+            add_cr["act_code"] = "_";
 
+            string spe_ctrl3 = "N";//Y:案性需管制法定期限
+            string seq = dtCaseMain.Rows[0].SafeRead("seq", "");
+            string seq1 = dtCaseMain.Rows[0].SafeRead("seq1", "");
+            //收文代碼
+            SQL = " select rs_type,rs_class,rs_code,rs_detail,case_stat,case_stat_name,spe_ctrl ";
+            SQL += "from vcode_act ";
+            SQL += "where rs_code = '" + dtCaseMain.Rows[0].SafeRead("arcase", "") + "' and act_code = '_' ";
+            SQL += "and rs_type = '" + dtCaseMain.Rows[0].SafeRead("arcase_type", "") + "'";
+            SQL += "and cg = 'C' and rs = 'R'";
+            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+                if (dr.Read()) {
+                    add_cr["rs_type"] = dr.SafeRead("rs_type", "");
+                    add_cr["rs_class"] = dr.SafeRead("rs_class", "");
+                    add_cr["rs_code"] = dr.SafeRead("rs_code", "");
+                    add_cr["rs_detail"] = dr.SafeRead("rs_detail", "");
+                    add_cr["case_stat"] = dr.SafeRead("case_stat", "");
+                    add_cr["case_statnm"] = dr.SafeRead("case_stat_name", "");
+
+                    if (dtCaseMain.Rows[0].SafeRead("back_flag", "") == "Y") {
+                        add_cr["rs_detail"] += "(請復案)";
+                    }
+                    if (dtCaseMain.Rows[0].SafeRead("end_flag", "") == "Y") {
+                        add_cr["rs_detail"] += "(請結案)";
+                    }
+
+                    string[] spe_ctrl = dr.SafeRead("spe_ctrl", "").Split(',');//抓取案性控制
+                    if (spe_ctrl.Length >= 3) spe_ctrl3 = (spe_ctrl[2] == "" ? "N" : spe_ctrl[2]);//是否為爭救案
+                }
+            }
+            add_cr["spe_ctrl3"] = spe_ctrl3;
+
+            //進度序號
+            SQL = "select isnull(step_grade,0)+1 from dmt where seq = '" + seq + "' and seq1 = '" + seq1 + "'";
+            object objResult = conn.ExecuteScalar(SQL);
+            int nstep_grade = (objResult == DBNull.Value || objResult == null) ? 1 : Convert.ToInt32(objResult);
+            add_cr["step_grade"] = nstep_grade.ToString();
+        }        
+        
+        var settings = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.Indented,
+            ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
+            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
+        };
+        Response.Write("{");
+        Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
+        Response.Write(",\"case_main\":" + JsonConvert.SerializeObject(dtCaseMain, settings).ToUnicode() + "\n");
+        Response.Write(",\"add_cr\":" + JsonConvert.SerializeObject(add_cr, settings).ToUnicode() + "\n");//交辦官發預設值
+        Response.Write("}");
+        Response.End();
+    }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
@@ -218,12 +288,13 @@
         //取得交辦資料
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
+            url: "brt51_edit.aspx?json=Y&<%#Request.QueryString%>",
+            //url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
             async: false,
             cache: false,
             success: function (json) {
                 //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(_case_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                toastr.info("<a href='" + this.url + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 jMain = $.parseJSON(json);
             },
             error: function (xhr) {
@@ -235,7 +306,6 @@
         //畫面準備
         brt511form.init();//收文form
         brta212form.init();//管制期限form
-
         //-----------------
         $("input.dateField").datepick();
         main.bind();//資料綁定
@@ -250,9 +320,9 @@
         $("#case_last_date").val(jMain.case_main[0].last_date);
         $("#seq").val(jMain.case_main[0].seq);
         $("#seq1").val(jMain.case_main[0].seq1);
-        $("#spe_ctrl3").val(jMain.step_cr.spe_ctrl3);
-        //cr_form
-        $("#rs_type").val(jMain.step_cr.rs_type);//結構分類
+        $("#spe_ctrl3").val(jMain.add_cr.spe_ctrl3);
+        //add_cr
+        $("#rs_type").val(jMain.add_cr.rs_type);//結構分類
         $("#rs_type").triggerHandler("change");
         $("#code").val(main.code);
         $("#in_no").val(jMain.case_main[0].in_no);
@@ -260,30 +330,30 @@
         $("#change").val(main.change);
         $("#cust_area,#cust_area1").val(main.cust_area);
         $("#cust_seq,#cust_seq1").val(main.cust_seq);
-        $("#rs_no").val(jMain.step_cr.rs_no);
-        $("#nstep_grade").val(jMain.step_cr.step_grade);
-        $("#cgrs").val(jMain.step_cr.cgrs);
-        $("#step_date").val(jMain.step_cr.step_date);
-        $("#receive_no").val(jMain.step_cr.receive_no);
-        $("#hrs_class,#rs_class").val(jMain.step_cr.rs_class);
+        $("#rs_no").val(jMain.add_cr.rs_no);
+        $("#nstep_grade").val(jMain.add_cr.step_grade);
+        $("#cgrs").val(jMain.add_cr.cgrs);
+        $("#step_date").val(jMain.add_cr.step_date);
+        $("#receive_no").val(jMain.add_cr.receive_no);
+        $("#hrs_class,#rs_class").val(jMain.add_cr.rs_class);
         $("#rs_class").triggerHandler("change");
-        $("#hrs_code,#rs_code").val(jMain.step_cr.rs_code);
+        $("#hrs_code,#rs_code").val(jMain.add_cr.rs_code);
         $("#rs_code").triggerHandler("change");
-        $("#hact_code,#act_code").val(jMain.step_cr.act_code);
+        $("#hact_code,#act_code").val(jMain.add_cr.act_code);
         $("#act_code").triggerHandler("change");
-        $("#ocase_stat,#ncase_stat").val(jMain.step_cr.case_stat);
-        $("#ncase_statnm").val(jMain.step_cr.case_statnm);
-        $("#rs_detail").val(jMain.step_cr.rs_detail);
-        $("#doc_detail").val(jMain.step_cr.doc_detail);
+        $("#ocase_stat,#ncase_stat").val(jMain.add_cr.case_stat);
+        $("#ncase_statnm").val(jMain.add_cr.case_statnm);
+        $("#rs_detail").val(jMain.add_cr.rs_detail);
+        $("#doc_detail").val(jMain.add_cr.doc_detail);
         $("#old_receipt_type,#receipt_type").val(jMain.case_main[0].receipt_type);
         $("#old_receipt_title,#receipt_title").val(jMain.case_main[0].receipt_title);
         $("#old_send_way,#send_way").val(jMain.case_main[0].send_way);
-        $("#send_sel").val(jMain.step_cr.send_sel);
+        $("#send_sel").val(jMain.add_cr.send_sel);
         if (main.submittask == "A") {
             $("input[name='opt_stat'][value='N']").prop("checked", true);//需交辦
             $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
         }
-        $("input[name='opt_stat'][value='" + jMain.step_cr.opt_stat + "']").prop("checked", true);
+        $("input[name='opt_stat'][value='" + jMain.add_cr.opt_stat + "']").prop("checked", true);
 
         if(main.submittask=="A"){
             if($("#hrs_code").val()=="FC11"||$("#hrs_code").val()=="FC21"||$("#hrs_code").val()=="FC6"||$("#hrs_code").val()=="FC7"||$("#hrs_code").val()=="FC8"||$("#hrs_code").val()=="FC5"

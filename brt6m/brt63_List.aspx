@@ -115,7 +115,6 @@
         SQL += ",e.classp as erpt_code,isnull(at.att_sqlno,0) as att_sqlno ";
         SQL += ",(select code_name from cust_code where code_type='rpt_pr_t' and cust_code=e.classp) as report_name ";
         SQL += ",(select min(ctrl_date) from ctrl_dmt where rs_no=s.rs_no and branch=s.branch and seq=s.seq and seq1=s.seq1 and step_grade=s.step_grade and ctrl_type='A1') as ctrl_date ";
-        SQL += ",(select cust_code from cust_code where code_type='rec_titleT' and mark='Y' and end_date is null )def_title ";
         SQL += ",a.service + a.fees+ a.oth_money AS othsum ";
         SQL += ",isnull(s.send_sel,at.send_sel)send_sel,isnull(at.pr_scode,s.pr_scode)pr_scode ";
         SQL += ",''link_remark,''button,''urlasp,''rs_agt_no,''rs_agt_nonm ";
@@ -468,7 +467,7 @@
         int i = Container.ItemIndex+1;
         string receipt_title = Eval("receipt_title").ToString();
         //如果DB無值則以設定檔為準
-        if (receipt_title == "") receipt_title = Eval("def_title").ToString();
+        if (receipt_title == "") receipt_title = Sys.getDefaultTitle();
 
         if (ReqVal.TryGet("qrysend_way") == showSendWay) {
 

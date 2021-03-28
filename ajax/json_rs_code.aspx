@@ -25,7 +25,16 @@
 
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
-            SQL = "select *,0 service,0 fees,0 ar_service,0 ar_fees,0 others,0 ar_others from code_br ";
+            //現行案件預設出名代理人
+            string tagt_no = Sys.getTagNo("N").Rows[0].SafeRead("cust_code", "");
+
+            SQL = "select *,0 service,0 fees,0 ar_service,0 ar_fees,0 others,0 ar_others ";
+            SQL += ",isnull(remark,'" + tagt_no + "') as rsagtno ";//若code_br沒有預設則以cust_code為準
+            SQL += ",(select agt_name from agt where agt_no=isnull(code_br.remark,'" + tagt_no + "')) as rsagtnm ";
+            SQL += ",(select treceipt from agt where agt_no=isnull(code_br.remark,'" + tagt_no + "')) as receipt ";
+            SQL += ",(select agt_name from agt where agt_no='" + tagt_no + "') as pagt_name ";
+            SQL += ",(select treceipt from agt where agt_no='" + tagt_no + "') as preceipt ";
+            SQL += " from code_br ";
             SQL += " where dept='" + Sys.GetSession("dept") + "' and rs_type = '" + rs_type + "'";
             if (cgrs != "") {
                 SQL += " and " + cgrs + "='Y' ";
@@ -41,7 +50,12 @@
 
             for (int i = 0; i < dt.Rows.Count; i++) {
                 DataRow dr = dt.Rows[i];
-                
+                if (dr.SafeRead("rsagtno", "") == "") {
+                    dr["rsagtno"] = tagt_no;
+                    dr["rsagtnm"] = dt.Rows[i].SafeRead("pagt_name", "");
+                    dr["receipt"] = dt.Rows[i].SafeRead("preceipt", "");
+                }
+
                 //現行收費標準
                 SQL = "select * from case_fee ";
                 SQL += "where dept='T' and country='T' and rs_code='" + dr["rs_code"] + "' ";

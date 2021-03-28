@@ -790,7 +790,7 @@
 
     //查詢主案件編號
     dmt_form.Queryclick = function(cust_seq) {
-        window.open(getRootPath() + "/brt1m/brta21Query.aspx?cust_seq=" + cust_seq, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brtam/brta21Query.aspx?cust_seq=" + cust_seq, "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
         /*$('#dialog')
             .html('<iframe style="border: 0px;" src="brta21Query.aspx?cust_seq='+cust_seq+'" width="100%" height="100%"></iframe>')
             .dialog({autoOpen: true,modal: true,height: 420,width: 650,title: "查詢主案件編號"});*/
@@ -812,7 +812,7 @@
                 from_fld="";
             }
             //***todo
-            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" & value1 & "&seq1=" & value2 & "&from_fld=" & from_fld & "&submittask=Q&prgid=Brt51&end_type=012", "", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
+            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + value1 + "&seq1=" + value2 + "&from_fld=" + from_fld + "&submittask=Q&prgid=Brt51&end_type=012", "", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
         }
     }
     //案件進度查詢
@@ -829,7 +829,7 @@
     dmt_form.Updseqclick = function(pseq,pseq1) {
         if (pseq!=""&&pseq1!=""){
             //***todo
-            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" & pseq & "&seq1=" & pseq1 & "&submittask=U&prgid=Brt51&closewin=Y", "myWindowOneu", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
+            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + pseq+ "&seq1=" + pseq1 + "&submittask=U&prgid=Brt51&closewin=Y", "myWindowOneu", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
         }else{
             alert("請先輸入本所編號再執行維護功能!!!");
             return false;

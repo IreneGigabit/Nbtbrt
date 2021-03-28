@@ -8,8 +8,7 @@
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public int HTProgRight = 0;
-
-
+    
     protected string submitTask = "";
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//功能權限代碼
     protected string SQL = "";
@@ -19,7 +18,6 @@
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        
     }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -335,7 +333,7 @@
 
     //[查詢本所編號]
     brta21form.btnQuery=function () {
-        window.open(getRootPath() + "/brt1m/brta21Query.aspx", "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brtam/brta21Query.aspx", "myWindowOneN", "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
     //[案件主檔查詢]

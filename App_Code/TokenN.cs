@@ -48,19 +48,6 @@ public class TokenN
         }
     }
 
-    public string DebugMsg(string msg) {//除錯訊息
-        if (this.APcode == "") {//沒有prgid就用Sys.IsDebug判斷
-            if (Sys.IsDebug()) {
-                return msg;
-            }
-        } else {
-            if ((this.Rights & 512) > 0) {//有prgid就用權限值判斷
-                return msg;
-            }
-        }
-        return "";
-    }
-
     public TokenN()
         : this(
          Sys.Sysmenu//.getAppSetting("Sysmenu")//因menu的syscode不同.所以不能用syscode

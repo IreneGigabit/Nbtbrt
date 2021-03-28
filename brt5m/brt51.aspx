@@ -124,8 +124,6 @@
 			    <%#StrFormBtn%>
 	        </td></tr>
         </table>
-
-        <div></div>
     </div>
 
     <%#DebugStr%>

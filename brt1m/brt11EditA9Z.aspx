@@ -1,5 +1,6 @@
 ﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
+<%@ Import Namespace = "System.Data"%>
 <%@ Register Src="~/brt1m/brtform/cust_form.ascx" TagPrefix="uc1" TagName="cust_form" %>
 <%@ Register Src="~/brt1m/brtform/attent_form.ascx" TagPrefix="uc1" TagName="attent_form" %>
 <%@ Register Src="~/brt1m/brtform/apcust_form.ascx" TagPrefix="uc1" TagName="apcust_form" %>
@@ -37,6 +38,8 @@
     protected string seq = "";
     protected string seq1 = "";
     protected string code = "";
+
+    protected string html_selectsign1 = "", html_selectsign2 = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -109,6 +112,13 @@
                 StrFormBtn += "<input type=button value ='重　填' class='cbutton' onclick='this_init()'>\n";
             }
         }
+
+        //簽核主管
+        DataRow[] drx = Sys.getGrpidUp("N", "T000").Select("grplevel=2");
+        html_selectsign1 = drx.Option("{master_scode}", "{master_type}--{master_nm}", "selected", false);
+        //特殊處理
+        DataRow[] drx1 = Sys.getGrpidUp("N", "000").Select("grplevel>=1");
+        html_selectsign2 = drx1.Option("{master_scode}", "{master_type}--{master_nm}", false);
     }
 
     //將共用參數(鎖定/隱藏)傳給子控制項
@@ -272,15 +282,57 @@
 	    <INPUT TYPE=hidden NAME=contract_flag value="<%=Request["contract_flag"]%>"><!--契約書後補註記，N不需後補或後補已完成，Y尚需後補-->
 	    <table id=tabar border=0 width="80%" cellspacing="1" cellpadding="1" class="bluetable" align="center">
 		    <tr>
-		    <td class="lightbluetable" align="right">承辦處理說明：</td>
-		    <td class="whitetablebg" align="left">	
-			    <textarea id="job_remark" name="job_remark" rows="5" cols="65" ></textarea>
-		    </td>
-	    </tr>
+		        <td class="lightbluetable" align="right">承辦處理說明：</td>
+		        <td class="whitetablebg" align="left">	
+			        <textarea id="job_remark" name="job_remark" rows="5" cols="65" ></textarea>
+		        </td>
+	        </tr>
 	    </table><br>
 		<%if ((HTProgRight & 8) > 0) {%>
-			<div style="color:blue;text-align:center"><input type=button value ="爭救案件交辦" class="cbutton" onclick="formOptSubmit()" id=btnSubmit name=btnSubmit></div>
+			<div style="color:blue;text-align:center"><input type=button value ="爭救案件交辦" class="cbutton bsubmit" onclick="formOptSubmit()" id=btnSubmit name=btnSubmit></div>
 		<%}%>
+    <%} else if (prgid == "brt1a") {%><!--國內爭救案交辦專案室抽件作業[抽件]-->
+	    <br>
+	     <INPUT TYPE=hidden NAME=opt_sqlno value="<%=Request["opt_sqlno"]%>">
+	     <INPUT TYPE=hidden NAME=brt18_seq value="<%=Request["seq"]%>">
+	     <INPUT TYPE=hidden NAME=brt18_seq1 value="<%=Request["seq1"]%>">
+	     <INPUT TYPE=hidden NAME=Case_no value="<%=Request["case_no"]%>">
+	     <INPUT TYPE=hidden NAME=step_grade value="<%=Request["step_grade"]%>">
+	     <INPUT TYPE=hidden NAME=step_date value="<%=Request["step_date"]%>">
+	     <INPUT TYPE=hidden NAME=brt18_rs_no value="<%=Request["rs_no"]%>">
+	     <INPUT TYPE=hidden NAME=brt18_prgid value="<%=Request["prgid"]%>">
+	    <table class="bluetable" border="0" cellspacing="1" cellpadding="0" width="98%">
+	    <Tr>
+	        <TD align="center" colspan="3" class=lightbluetable><font color=red>註&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;銷&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;處&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;理</font></TD>
+	    </tr>
+	    <Tr>
+		    <TD align=center class=lightbluetable width="18%"><font color="red">註銷原因</font></TD>
+		    <TD class=lightbluetable>
+			    <textarea ROWS="6" COLS="82" id=Creason name=Creason></textarea>
+		    </TD>
+	    </tr>
+	    </table>
+	    <br>
+	    <table border="0" width="98%" cellspacing="0" cellpadding="0">
+		    <TR>
+			    <td align="center">
+				    <label><input type="radio" value="1" name="ap_type" checked onclick="ap_type_click()"><strong>簽核主管:</strong></label>
+				    <select id='job_scode1' name='job_scode1'>
+				        <option value="" style="color:blue">請選擇主管</option>
+				        <%#html_selectsign1%>
+				    </select>
+                    <label><input type="radio" value="2" name="ap_type" onclick="ap_type_click()"><strong>特殊處理:</strong></label>
+			        <select id='job_scode2' name='job_scode2'>
+			            <%#html_selectsign2%>
+			        </select>
+			        <input type="hidden" name="signscode" id="signscode">
+			     </td>
+		    </tr>
+	    </table>
+        <br>
+        <%if ((HTProgRight & 8) > 0) {%>
+		    <div style="color:blue;text-align:center"><input type=button value ="註銷" class="redbutton bsubmit" onclick="formCancelSubmit()" id=btnSubmit name=btnSubmit></div>
+	    <%}%>
     <%}%>
 
     <%#DebugStr%>
@@ -388,8 +440,16 @@
         if($("#prgid").val()=="brt63"){//爭救案交辦用
             $("#span_step_last_date").show();//客收法定期限
             $("#step_last_date").val("<%=Request["ctrl_date"]%>");
-            $("#dfy_last_date").unlock();
-            $("#btnSubmit,#job_remark").unlock();
+            $("#dfy_last_date").unlock();//法定期限
+            $("#job_remark").unlock();//承辦處理說明
+            $("#btnSubmit,#chkTest").unlock();
+        }
+
+        if($("#prgid").val()=="brt1a"){//國內爭救案交辦專案室抽件作業用
+            $("input[name='ap_type']").unlock();//簽核主管
+            $("input[name='ap_type']:checked").triggerHandler("click");
+            $("#Creason").unlock();//註銷原因
+            $("#btnSubmit,#chkTest").unlock();
         }
     }
 
@@ -477,6 +537,7 @@
         }
     }
 
+    //[爭救案件交辦]
     function formOptSubmit(){
         if($("#dfy_last_date").val()==""){//法定期限
             if($("#step_last_date").val()!=""){
@@ -531,6 +592,55 @@
                 }
             });
         });
+    }
+
+    //[註銷]
+    function formCancelSubmit(){
+        var a=confirm("是否確定註銷？？");
+        if(a==false){
+            return false;
+        }
+
+        if($("#Creason").val()==""){
+            alert("請輸入註銷原因!!");
+            $("#Creason").focus();
+            return false;
+        }
+
+        //reg.action = getRootPath() + "/brt1m/Brt1a_Update.aspx";
+        //reg.target = "ActFrame";
+        //reg.submit();
+
+        var formData = new FormData($('#reg')[0]);
+        ajaxByForm( getRootPath() + "/brt1m/Brt1a_Update.aspx",formData)
+        .complete(function( xhr, status ) {
+            $("#dialog").html(xhr.responseText);
+            $("#dialog").dialog({
+                title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
+                ,buttons: {
+                    確定: function() {
+                        $(this).dialog("close");
+                    }
+                }
+                ,close:function(event, ui){
+                    if(status=="success"){
+                        if(!$("#chkTest").prop("checked")){
+                            window.parent.Etop.goSearch();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    //簽核主管
+    function ap_type_click(){
+        $("#job_scode1,#job_scode2").lock();
+        if ($("input[name='ap_type']:checked").val()=="1"){
+            $("#job_scode1").unlock();
+        }else{
+            $("#job_scode2").unlock();
+        }
     }
 </script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/brt1m/brtform/CaseForm/Descript.js")%>"></script><!--欄位說明-->
