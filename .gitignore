@@ -8,7 +8,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-/Web.config
 /vwd.webinfo
 
 # User-specific files (MonoDevelop/Xamarin Studio)
@@ -290,3 +289,4 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+/Web.config
