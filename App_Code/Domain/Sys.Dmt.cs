@@ -15,6 +15,7 @@ public partial class Sys
         SQL = "Select *,''scodenm,''s_marknm,''cust_name,'否'con_termnm,''ap_apcust_no,''dmtap_cname ";
         SQL += ",''arcasenm,''now_arcasenm,''now_rsclass,''now_statnm ";
         SQL += ",''rmarkcode,''rmark_codenm,''end_codenm ";
+        SQL += ",''a_last_date ";
         SQL += "from dmt where seq='" + seq + "' and seq1='" + seq1 + "'";
         conn.DataTable(SQL, dt);
 
@@ -96,6 +97,13 @@ public partial class Sys
 
             //結案代碼
             dr["end_codenm"] = getCodeName(conn, "ENDCODE", dr.SafeRead("end_code", ""));
+
+            //抓取案件最小法定期限
+            SQL = " select min(ctrl_date) as last_date from ctrl_dmt ";
+            SQL += " where seq=" + dr["seq"] + " and seq1='" + dr["seq1"] + "' and ctrl_type like 'A%'";
+            objResult = conn.ExecuteScalar(SQL);
+            string last_date = (objResult == DBNull.Value || objResult == null) ? "" : Util.parseDBDate(objResult.ToString(), "yyyy/M/d");
+            dr["a_last_date"] = last_date;
         }
         return dt;
     }

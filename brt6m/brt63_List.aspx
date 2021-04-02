@@ -118,7 +118,7 @@
         SQL += ",a.service + a.fees+ a.oth_money AS othsum ";
         SQL += ",isnull(s.send_sel,at.send_sel)send_sel,isnull(at.pr_scode,s.pr_scode)pr_scode ";
         SQL += ",''link_remark,''button,''urlasp,''rs_agt_no,''rs_agt_nonm ";
-        SQL += ",''fseq,''dmt_pay_times,''pay_times,''pay_date,''apply_no,''spe_ctrl_4,0 gs_fee,''mp_date,''gs_contract_flag ";
+        SQL += ",''fseq,''last_date,''dmt_pay_times,''pay_times,''pay_date,''apply_no,''spe_ctrl_4,0 gs_fee,''mp_date,''gs_contract_flag ";
         SQL += " FROM case_dmt a ";
         SQL += " INNER JOIN dmt_temp b ON a.in_scode = b.in_scode AND a.in_no = b.in_no ";
         SQL += " inner join code_br e on e.rs_code=a.arcase AND e.dept = 'T' AND e.cr = 'Y' and e.no_code = 'N' and e.rs_type=a.arcase_type ";
@@ -184,6 +184,13 @@
 
             //案號
             dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
+
+            //抓取本筆案件最小法定期限
+            SQL = " select min(ctrl_date) as last_date from ctrl_dmt ";
+            SQL += " where seq=" + dr["seq"] + " and seq1='" + dr["seq1"] + "' and ctrl_type like 'A%'";
+            objResult = conn.ExecuteScalar(SQL);
+            string last_date = (objResult == DBNull.Value || objResult == null) ? "" : Util.parseDBDate(objResult.ToString(), "yyyy/M/d");
+            dr["last_date"] = last_date;
 
             //總收發文日期
             //台北所總收發當天就會發文
@@ -542,7 +549,7 @@
 <link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.css")%>" />
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-1.12.4.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.min.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
@@ -695,6 +702,7 @@
 	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="a.case_date">交辦日期</td>
 	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="t.in_date,a.case_date">客收確認日</td>
 	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="d.cust_name">客戶名稱</td> 
+	                <td  class="lightbluetable" nowrap align="center">法定期限</td> 
 	                <td  class="lightbluetable" nowrap align="center">案件名稱</td> 
 	                <td  class="lightbluetable" nowrap align="center">類別</td>
 	                <td  class="lightbluetable" nowrap align="center">案性</td> 
@@ -706,8 +714,8 @@
                   <Tr <%=((row_span == "1")?"style=\"display:none\"":"")%>>
 	                <%=((row_span == "1")?"<td class=\"lightbluetable\"></td>":"")%>
 	                <td class="lightbluetable" nowrap align="center">規費支出</td>
-	                <td class="lightbluetable" nowrap align="center" colspan=6>發文內容</td>
-	                <td class="lightbluetable" nowrap align="center" colspan=5>契約書後補簽核</td>
+	                <td class="lightbluetable" nowrap align="center" colspan=7>發文內容</td>
+	                <td class="lightbluetable" nowrap align="center" colspan=6>契約書後補簽核</td>
                   </tr>
 	        </thead>
 	        <tbody>
@@ -738,6 +746,7 @@
 		                <td align="center"><%#Eval("case_date","{0:yyyy/M/d}")%></td>
 		                <td align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
 		                <td align="center"><%#Eval("cust_name").ToString().Left(5)%></td>
+		                <td align="center"><%#Eval("last_date","{0:yyyy/M/d}")%></td>
 		                <td><%#Eval("appl_name").ToString().Left(20)%></td>
 		                <td><%#Eval("class")%></td>
 		                <td align="center"><%#Eval("case_name")%></td>
@@ -752,7 +761,7 @@
 			                <input type=text id="fees_<%#(Container.ItemIndex+1)%>" value="<%#Eval("gs_fee")%>" style="text-align:right" size=5><!--收費標準-->
 			                <input type=hidden  id="case_fees_<%#(Container.ItemIndex+1)%>" value="<%#Eval("fees")%>" size=5><!--交辦規費-->
 		                </td>
-		                <td colspan=6>
+		                <td colspan=7>
 			                發文日期:<input type=text id="step_date_<%#(Container.ItemIndex+1)%>" value="<%#DateTime.Today.ToShortDateString()%>" size="10" class="dateField">
 			                總發文日期:<input type=text id="mp_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mp_date")%>" size="10" class="dateField">
 			                官方號碼:<SELECT id="send_sel_<%#(Container.ItemIndex+1)%>" disabled><%#GetOptSendSel(Container)%></SELECT>
@@ -781,7 +790,7 @@
 			                <input type=hidden id="rs_agt_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_agt_no")%>">
 			                <input type=hidden id="rs_agt_nonm_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_agt_nonm")%>">
 		                </td>
-		                <td nowrap colspan=5>
+		                <td nowrap colspan=6>
                             <!--契約書後補簽核--><%#GetContractSign(Container,"EA")%>
 		                </td>
 				    </tr>
@@ -816,7 +825,8 @@
                     3.電子送件所需pdf檔完成後，請依<a href="區所商標電子申請承辦作業.pptx" target="_blank">[電子送件承辦操作說明]</a>上傳至系統。<br>
                     4.電子申請書的收據抬頭預設抓取第一位申請人的中文名稱，若有共同申請且需修改為另一位申請人，則請承辦自行於「收據抬頭」修改；<br>
                       另智慧局有限制收據抬頭欄位字數為50字(2015/9/2更新1.8.2版)，因此系統將只擷取前50個字顯示，承辦請再檢查，確認「收據抬頭」內容無誤後再產生電子申請書。<br>
-                    5.批次確認中「<input type="checkbox"><font color="red">*</font>」表示同一天有其他進度
+                    5.批次確認中「<input type="checkbox"><font color="red">*</font>」表示同一天有其他進度<br>
+                    6.法定期限為本筆案件尚未銷管的最小法定期限。<br>
 			    </div>
 		    </td>
             </tr>

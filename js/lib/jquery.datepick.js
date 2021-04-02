@@ -196,7 +196,11 @@ $.extend(Datepicker.prototype, {
 				return (!minDate || plugin.today().getTime() >= minDate.getTime()) &&
 					(!maxDate || plugin.today().getTime() <= maxDate.getTime()); },
 			date: function(inst) { return plugin.today(); },
-			action: function(inst) { plugin._showMonthPlugin(this); }
+			//action: function (inst) { plugin._showMonthPlugin(this); }
+			action: function (inst) {
+			    plugin._setDatePlugin(inst.target[0], plugin.today());
+			    plugin._hidePlugin(this);
+            }
 		},
 		clear: {text: 'clearText', status: 'clearStatus', // Clear the datepicker
 			keystroke: {keyCode: 35, ctrlKey: true}, // Ctrl + End

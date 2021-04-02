@@ -101,7 +101,7 @@
         SQL += ",c.scode as dmt_scode,c.class,(select sc_name from sysctrl.dbo.scode where scode=a.in_scode) as sc_name ";
         SQL += ",c.apply_no,c.pay_times,c.pay_date,c.cust_seq ";
         SQL += ",''link_remark,''button,''urlasp,''rs_agt_no,''rs_agt_nonm ";
-        SQL += ",''fseq,''last_date,''pay_times,''pay_date,''spe_ctrl_4,''ectrlnum ";
+        SQL += ",''fseq,''last_date,''pay_date,''spe_ctrl_4,''ectrlnum ";
         SQL += ",''receipt_type,''receipt_title,''rectitle_name,''tmprectitle_name ";
         SQL += ",'0'case_fees,'0'case_gs_fees,'0'case_service,''case_gs_curr,''case_agt_no,''case_agt_name ";
         //SQL+=",''dmt_pay_times,''apply_no,0 gs_fee,''mp_date,''gs_contract_flag ";
@@ -167,22 +167,18 @@
             //註冊費已繳
             if (dr.SafeRead("rs_code", "") == "FF1") {
                 if (dr.SafeRead("pay_times", "") == "") {
-                    dr["pay_times"] = "1";
                     dr["pay_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
                 }
             } else if (dr.SafeRead("rs_code", "") == "FF2") {
                 if (dr.SafeRead("pay_times", "") == "") {
-                    dr["pay_times"] = "2";
                     dr["pay_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
                 }
             } else if (dr.SafeRead("rs_code", "") == "FF3") {
                 if (dr.SafeRead("pay_times", "") == "") {
-                    dr["pay_times"] = "2";
                     dr["pay_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
                 }
             } else if (dr.SafeRead("rs_code", "") == "FF0") {
                 if (dr.SafeRead("pay_times", "") == "") {
-                    dr["pay_times"] = "A";
                     dr["pay_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
                 }
             }
@@ -196,7 +192,6 @@
             SQL+= " from case_dmt a ";
             SQL += " inner join dmt_temp b on a.in_no=b.in_no and b.case_sqlno=0 ";
             SQL += " where case_no='" +dr["case_no"]+ "' and a.seq="+dr["seq"]+  " and a.seq1='" +dr["seq1"]+ "'";
-            Sys.showLog(SQL);
             using (SqlDataReader dr1 = conn.ExecuteReader(SQL)) {
                 if (dr1.Read()) {
                     dr["receipt_type"] = dr1.SafeRead("receipt_type", "");
@@ -351,162 +346,20 @@
 
     //註冊費已繳
     protected string GetOptPayTimes(RepeaterItem Container) {
-        string pay_times = DataBinder.Eval(Container.DataItem, "pay_times").ToString();
+        string pay_times = Eval("pay_times").ToString();
+        //註冊費已繳
+        if (pay_times == "") {
+            if (Eval("rs_code").ToString() == "FF1") {
+                pay_times = "1";
+            } else if (Eval("rs_code").ToString() == "FF2") {
+                pay_times = "2";
+            } else if (Eval("rs_code").ToString() == "FF3") {
+                pay_times = "2";
+            } else if (Eval("rs_code").ToString() == "FF0") {
+                pay_times = "A";
+            }
+        }
         return Sys.getCustCode(Sys.GetSession("dept") + "PAY_TIMES", "", "sortfld").Option("{cust_code}", "{code_name}", true, pay_times);
-    }
-   
-    //[作業]
-    protected string GetButton(DataRow row, int nRow) {
-        string rtn = "";
-        string todo_name = "";
-        string todo_link = "";//自行發文/專案室發文
-        string todo_link1 = "";//發文維護
-        string untodo_link = "";//不需發文
-
-        if (row.SafeRead("opt_stat", "") == "" || row.SafeRead("opt_stat", "") == "X") {
-            todo_name = "自行發文";
-            todo_link = Page.ResolveUrl("~/brt6m/brt63_edit.aspx") + "?prgid=" + prgid+"&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&erpt_code=" + row["erpt_code"] + "&att_sqlno=" + row["att_sqlno"];
-            todo_link1 = todo_link;
-        }
-
-        if (row.SafeRead("opt_stat", "") == "N") {
-            todo_name = "專案室發文";
-            string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
-            todo_link = Page.ResolveUrl("~/brt1m" + row.SafeRead("link_remark", "") + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
-            todo_link += "&in_scode=" + row["in_scode"];
-            todo_link += "&in_no=" + row["in_no"];
-            todo_link += "&add_arcase=" + row["arcase"];
-            todo_link += "&cust_area=" + row["cust_area"];
-            todo_link += "&cust_seq=" + row["cust_seq"];
-            todo_link += "&ar_form=" + row["ar_form"];
-            todo_link += "&new_form=" + new_form;
-            todo_link += "&code_type=" + row["arcase_type"];
-            todo_link += "&homelist=" + Request["homelist"];
-            todo_link += "&uploadtype=case";
-            todo_link += "&submittask=Show";
-            todo_link += "&todo_sqlno=" + row["todo_sqlno"];
-            todo_link += "&rs_no=" + row["rs_no"];
-            todo_link += "&seq=" + row["seq"];
-            todo_link += "&seq1=" + row["seq1"];
-            todo_link += "&case_no=" + row["case_no"];
-            todo_link += "&ctrl_date=" + row.GetDateTimeString("ctrl_date", "yyyy/M/d");
-            todo_link += "&step_grade=" + row["step_grade"];
-            todo_link += "&step_date=" + row.GetDateTimeString("step_date","yyyy/M/d");
-            todo_link += "&contract_flag=" + row["contract_flag"];
-
-            todo_link1 = "brt63_edit.aspx?prgid=" + prgid + "&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&erpt_code=" + row["erpt_code"] + "&att_sqlno=" + row["att_sqlno"];
-        }
-        //950928為有關爭救案理由後補之收費情形,避免造成收費重覆新加入程式做控制,2010/8/6規費已支出不能發文	
-        if (Convert.ToDecimal(row.SafeRead("gs_fees", "0")) > 0) {
-            todo_name = "<font color=red>規費已支出</font>";
-            todo_link = "";
-        }
-        //不需發文link
-        untodo_link = Page.ResolveUrl("~/brt6m/brt63_edit.aspx") + "?prgid=" + prgid + "&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&task=cancel";
-
-        string seq = row.SafeRead("seq", "");
-        string seq1 = row.SafeRead("seq1", "");
-        string step_grade = row.SafeRead("step_grade", "");
-        string source = row.SafeRead("source", "");
-        string attach_path = row.SafeRead("attach_path", "");
-        string attach_sqlno = row.SafeRead("attach_sqlno", "");
-
-        //抓確認當天有無其他進度
-        SQL = "select count(*)cc from step_dmt where seq='" + row["seq"] + "' and seq1='" + row["seq1"] + "' and step_date='" + DateTime.Today.ToShortDateString() + "' and cg+rs in('CR','GS')";
-        objResult = conn.ExecuteScalar(SQL);
-        int same_count = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
-
-        if (ReqVal.TryGet("qrysend_way") != "EA") {
-            if (todo_name != "") {
-                rtn = "[<a href=\"" + todo_link1 + "&task=prsave\" target=\"Eblank\">發文維護</a>]<BR>";
-                rtn += "[<a href=\"" + todo_link + "&task=pr\" target=\"Eblank\">" + todo_name + "</a>]<BR>";
-            }
-            rtn += "[<a href=\"" + untodo_link + "\" target=\"Eblank\">不需發文</a>]<BR>";
-        } else {
-            rtn = "<input type=checkbox name=chk_" + nRow + " id=chk_" + nRow + " value='Y'>";
-            if (same_count > 1) rtn += "<font color=red>*</font>";
-        }
-
-        return rtn;
-    }
-
-    protected string GetCaseLink(DataRow row) {
-        string urlasp = "";//連結的url
-        string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
-
-        urlasp = Page.ResolveUrl("~/brt5m" + row["link_remark"] + "/Brt52EDIT" + new_form + ".aspx?prgid=brt52");
-        urlasp += "&in_scode=" + row["in_scode"];
-        urlasp += "&in_no=" + row["in_no"];
-        urlasp += "&case_no=" + row["case_no"];
-        urlasp += "&seq=" + row["seq"];
-        urlasp += "&seq1=" + row["seq1"];
-        urlasp += "&add_arcase=" + row["arcase"];
-        urlasp += "&cust_area=" + row["cust_area"];
-        urlasp += "&cust_seq=" + row["cust_seq"];
-        urlasp += "&ar_form=" + row["ar_form"];
-        urlasp += "&new_form=" + new_form;
-        urlasp += "&code_type=" + row["arcase_type"];
-        urlasp += "&ar_code=" + row["ar_code"];
-        urlasp += "&mark=" + row["case_mark"];
-        urlasp += "&ar_service=" + row["ar_service"];
-        urlasp += "&ar_fees=" + row["ar_fees"];
-        urlasp += "&ar_curr=" + row["ar_curr"];
-        urlasp += "&step_grade=" + row["step_grade"];
-        urlasp += "&uploadtype=case";
-        urlasp += "&submittask=Edit";
-              
-        return urlasp;
-    }
-    
-    //申請書列印
-    protected string GetPrintLink(RepeaterItem Container, string showSendWay) {
-        string rtn = "";
-        int i = Container.ItemIndex + 1;
-        if (showSendWay.IndexOf(ReqVal.TryGet("qrysend_way")) > -1) {
-            string erpt_code = Eval("erpt_code").ToString();
-            string reportp = Eval("reportp").ToString();
-
-            //有電子申請書優先
-            if (erpt_code == "" & reportp != "") {//沒有電子申請書才顯示紙本申請書
-                //***todo
-                /*select reportp,classp,* from code_br 
-                where reportp in('FD2','FC11','FC21','FL5','FT1','FP1','FP2','B5C1') --,'FOB'
-                order by rs_class
-                 */
-                if (Eval("prt_code") != "ZZ" && Eval("prt_code") != "D9Z" && Eval("ar_form") != "D3") {
-                    string prtUrl = Page.ResolveUrl("~/Report-word/Print_" + reportp + ".aspx?in_scode=" + Eval("in_scode") + "&in_no=" + Eval("in_no"));
-                    rtn += "[<a href=\"" + prtUrl + "\" target=\"Eblank\">紙本申請書</a>]";
-                }
-            } else if (erpt_code != "") {
-                if (ReqVal.TryGet("qrysend_way") == "E") {
-                    //電子送件要依畫面所選收據種類列印,需要參數不同
-                    rtn += "[<font style=\"cursor:pointer;color=darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"formPrintDNet_erpt("+i+",'" + Eval("in_scode") + "','" + Eval("in_no") + "','" + Eval("link_remark") + "','" + Eval("seq") + "','" + Eval("seq1") + "','" + Eval("erpt_code") + "')\">電子申請書</font>]";
-                } else {
-                    string prtUrl = Page.ResolveUrl("~/Report/Print_" + erpt_code + ".aspx?in_scode=" + Eval("in_scode") + "&in_no=" + Eval("in_no") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&send_sel=" + Eval("send_sel"));
-                    rtn += "[<a href=\"" + prtUrl + "\" target=\"Eblank\">電子申請書</a>]";
-                }
-            }
-
-        }
-        return rtn;
-    }
-    
-    //商標圖檔
-    protected string GetDrawFile(RepeaterItem Container) {
-        string rtn = "";
-
-        if (Eval("draw_file") != null && Eval("draw_file").ToString() != "") {
-            rtn = "<img border=\"0\" src=\"" + Page.ResolveUrl("~/images/annex.gif") + "\" onclick=\"ViewAttach_dmt('" + Sys.Path2Nbtbrt(Eval("draw_file").ToString()) + "')\">";
-        }
-        return rtn;
-    }
-
-    //合計
-    protected string GetSum(RepeaterItem Container) {
-        int Service = Convert.ToInt32(DataBinder.Eval(Container.DataItem, "Service"));
-        int fees = Convert.ToInt32(DataBinder.Eval(Container.DataItem, "fees"));
-        int oth_money = Convert.ToInt32(DataBinder.Eval(Container.DataItem, "oth_money"));
-        return (Service + fees + oth_money).ToString();
     }
 </script>
 
@@ -520,7 +373,7 @@
 <link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.css")%>" />
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-1.12.4.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-ui.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.min.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
@@ -609,48 +462,61 @@
 <form style="margin:0;" id="reg" name="reg" method="post">
     <input type="hidden" id=row name=row value="<%#page.pagedTable.Rows.Count%>"> 
     <INPUT type="hidden" name="rows_chk" id="rows_chk">
+    <INPUT type="hidden" name="rows_cgrs" id="rows_cgrs">
+    <INPUT type="hidden" name="rows_todo_sqlno" id="rows_todo_sqlno">
+    <INPUT type="hidden" name="rows_cust_seq" id="rows_cust_seq">
     <INPUT type="hidden" name="rows_seq" id="rows_seq">
     <INPUT type="hidden" name="rows_seq1" id="rows_seq1">
-    <INPUT type="hidden" name="rows_todo_sqlno" id="rows_todo_sqlno">
-    <INPUT type="hidden" name="rows_eappl_name" id="rows_eappl_name">
-    <INPUT type="hidden" name="rows_eappl_name1" id="rows_eappl_name1">
-    <INPUT type="hidden" name="rows_zname_type" id="rows_zname_type">
+    <INPUT type="hidden" name="rows_now_grade" id="rows_now_grade">
+    <INPUT type="hidden" name="rows_step_grade" id="rows_step_grade">
+    <INPUT type="hidden" name="rows_nstep_grade" id="rows_nstep_grade">
+    <INPUT type="hidden" name="rows_rectitle_name" id="rows_rectitle_name">
+    <INPUT type="hidden" name="rows_tmprectitle_name" id="rows_tmprectitle_name">
+    <INPUT type="hidden" name="rows_att_sqlno" id="rows_att_sqlno">
+    <INPUT type="hidden" name="rows_send_way" id="rows_send_way">
+    <INPUT type="hidden" name="rows_case_no" id="rows_case_no">
+    <INPUT type="hidden" name="rows_rs_type" id="rows_rs_type">
+    <INPUT type="hidden" name="rows_rs_agt_no" id="rows_rs_agt_no">
+    <INPUT type="hidden" name="rows_rs_agt_nonm" id="rows_rs_agt_nonm">
+    <INPUT type="hidden" name="rows_case_agt_no" id="rows_case_agt_no">
+    <INPUT type="hidden" name="rows_case_agt_name" id="rows_case_agt_name">
+    <INPUT type="hidden" name="rows_fees_stat" id="rows_fees_stat">
+    <INPUT type="hidden" name="rows_opt_branch" id="rows_opt_branch">
     <INPUT type="hidden" name="rows_dmt_pay_times" id="rows_dmt_pay_times">
+    <INPUT type="hidden" name="rows_rs_no" id="rows_rs_no">
     <INPUT type="hidden" name="rows_spe_ctrl_4" id="rows_spe_ctrl_4">
+
+    <INPUT type="hidden" name="rows_ctrl_num" id="rows_ctrl_num">
+    <INPUT type="hidden" name="rows_rsqlno" id="rows_rsqlno">
+    <INPUT type="hidden" name="rows_ctrl_type" id="rows_ctrl_type">
+    <INPUT type="hidden" name="rows_ctrl_date" id="rows_ctrl_date">
+    <INPUT type="hidden" name="rows_ctrl_remark" id="rows_ctrl_remark">
     <INPUT type="hidden" name="rows_fees" id="rows_fees">
+    <INPUT type="hidden" name="rows_case_service" id="rows_case_service">
     <INPUT type="hidden" name="rows_case_fees" id="rows_case_fees">
+    <INPUT type="hidden" name="rows_case_gs_fees" id="rows_case_gs_fees">
+    <INPUT type="hidden" name="rows_case_gs_curr" id="rows_case_gs_curr">
+
     <INPUT type="hidden" name="rows_step_date" id="rows_step_date">
     <INPUT type="hidden" name="rows_mp_date" id="rows_mp_date">
+    <INPUT type="hidden" name="rows_send_cl" id="rows_send_cl">
+    <INPUT type="hidden" name="rows_send_cl1" id="rows_send_cl1">
+    <INPUT type="hidden" name="rows_rs_class_name" id="rows_rs_class_name">
+    <INPUT type="hidden" name="rows_rs_code_name" id="rows_rs_code_name">
+    <INPUT type="hidden" name="rows_act_code_name" id="rows_act_code_name">
+    <INPUT type="hidden" name="rows_rs_class" id="rows_rs_class">
+    <INPUT type="hidden" name="rows_ncase_stat" id="rows_ncase_stat">
+    <INPUT type="hidden" name="rows_ncase_statnm" id="rows_ncase_statnm">
+    <INPUT type="hidden" name="rows_rs_code" id="rows_rs_code">
+    <INPUT type="hidden" name="rows_act_code" id="rows_act_code">
+    <INPUT type="hidden" name="rows_pr_scode" id="rows_pr_scode">
+    <INPUT type="hidden" name="rows_rs_detail" id="rows_rs_detail">
+    <INPUT type="hidden" name="rows_receipt_type" id="rows_receipt_type">
+    <INPUT type="hidden" name="rows_receipt_title" id="rows_receipt_title">
     <INPUT type="hidden" name="rows_send_sel" id="rows_send_sel">
     <INPUT type="hidden" name="rows_apply_no" id="rows_apply_no">
     <INPUT type="hidden" name="rows_pay_times" id="rows_pay_times">
     <INPUT type="hidden" name="rows_pay_date" id="rows_pay_date">
-    <INPUT type="hidden" name="rows_pr_scode" id="rows_pr_scode">
-
-    <INPUT type="hidden" name="rows_send_way" id="rows_send_way">
-    <INPUT type="hidden" name="rows_case_no" id="rows_case_no">
-    <INPUT type="hidden" name="rows_send_cl" id="rows_send_cl">
-    <INPUT type="hidden" name="rows_send_cl1" id="rows_send_cl1">
-    <INPUT type="hidden" name="rows_in_scode" id="rows_in_scode">
-    <INPUT type="hidden" name="rows_in_no" id="rows_in_no">
-    <INPUT type="hidden" name="rows_rs_type" id="rows_rs_type">
-    <INPUT type="hidden" name="rows_rs_class" id="rows_rs_class">
-    <INPUT type="hidden" name="rows_rs_code" id="rows_rs_code">
-    <INPUT type="hidden" name="rows_act_code" id="rows_act_code">
-    <INPUT type="hidden" name="rows_rs_detail" id="rows_rs_detail">
-    <INPUT type="hidden" name="rows_agt_no" id="rows_agt_no">
-    <INPUT type="hidden" name="rows_fees_stat" id="rows_fees_stat">
-    <INPUT type="hidden" name="rows_opt_branch" id="rows_opt_branch">
-    <INPUT type="hidden" name="rows_contract_flag" id="rows_contract_flag">
-    <INPUT type="hidden" name="rows_rs_agt_no" id="rows_rs_agt_no">
-    <INPUT type="hidden" name="rows_rs_agt_nonm" id="rows_rs_agt_nonm">
-
-    <INPUT type="hidden" name="rows_receipt_type" id="rows_receipt_type">
-    <INPUT type="hidden" name="rows_receipt_title" id="rows_receipt_title">
-    <INPUT type="hidden" name="rows_rectitle_name" id="rows_rectitle_name">
-    <INPUT type="hidden" name="rows_tmprectitle_name" id="rows_tmprectitle_name">
-
-    <INPUT type="hidden" name="rows_signid" id="rows_signid">
 
     <asp:Repeater id="singleRepeater" runat="server">
     <HeaderTemplate>
@@ -731,122 +597,120 @@
 	        <tbody>
     </HeaderTemplate>
 	<ItemTemplate>
- 	            <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
-		            <td align="center" rowspan=2>
-                        <input type=checkbox name=chk_<%#(Container.ItemIndex+1)%> id=chk_<%#(Container.ItemIndex+1)%> onclick="chk_flag_onclick(<%#(Container.ItemIndex+1)%>)" value='Y'>
-			            <BR>
-			            <input type="text" name="hchk_flag_<%#(Container.ItemIndex+1)%>" id="hchk_flag_<%#(Container.ItemIndex+1)%>" value="N">
-			            <input type="text" name="cgrs_<%#(Container.ItemIndex+1)%>" id="cgrs_<%#(Container.ItemIndex+1)%>" value="GS">
-			            <input type="text" name="todo_sqlno_<%#(Container.ItemIndex+1)%>" id="todo_sqlno_<%#(Container.ItemIndex+1)%>" value="<%#Eval("todo_sqlno")%>">
-			            <input type="text" name="cust_seq_<%#(Container.ItemIndex+1)%>" id="cust_seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("cust_seq")%>">
-			            <input type="text" name="seq_<%#(Container.ItemIndex+1)%>" id="seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq")%>">
-			            <input type="text" name="seq1_<%#(Container.ItemIndex+1)%>" id="seq1_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq1")%>">
-			            <input type="text" name="now_grade_<%#(Container.ItemIndex+1)%>" id="now_grade_<%#(Container.ItemIndex+1)%>" value="<%#Eval("now_grade")%>">
-			            <input type="text" name="step_grade_<%#(Container.ItemIndex+1)%>" id="step_grade_<%#(Container.ItemIndex+1)%>" value="<%#Eval("step_grade")%>">
-			            <input type="text" name="nstep_grade_<%#(Container.ItemIndex+1)%>" id="nstep_grade_<%#(Container.ItemIndex+1)%>" value="<%#Convert.ToInt32(Eval("step_grade"))+1%>">
-			            <input type="text" name="rectitle_name_<%#(Container.ItemIndex+1)%>" id="rectitle_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rectitle_name")%>">
-			            <input type="text" name="tmprectitle_name_<%#(Container.ItemIndex+1)%>" id="tmprectitle_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("tmprectitle_name")%>">
-			            <input type="text" name="att_sqlno_<%#(Container.ItemIndex+1)%>" id="att_sqlno_<%#(Container.ItemIndex+1)%>" value="<%#Eval("att_sqlno")%>">
-			            <input type="text" name="send_way_<%#(Container.ItemIndex+1)%>" id="send_way_<%#(Container.ItemIndex+1)%>" value="<%#Eval("send_way")%>">
-			            <input type="text" name="case_no_<%#(Container.ItemIndex+1)%>" id="case_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_no")%>">
-			            <input type="text" name="rs_type_<%#(Container.ItemIndex+1)%>" id="rs_type_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_type")%>">
-			            <input type="text" name="rs_agt_no_<%#(Container.ItemIndex+1)%>" id="rs_agt_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_agt_no")%>"><!--案性出名代理人-->
-			            <input type="text" name="rs_agt_nonm_<%#(Container.ItemIndex+1)%>" id="rs_agt_nonm_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_agt_nonm")%>"><!--案性出名代理人-->
-			            <input type="text" name="case_agt_no_<%#(Container.ItemIndex+1)%>" id="case_agt_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_agt_no")%>" /><!--交辦代理人-->
-			            <input type="text" name="case_agt_name_<%#(Container.ItemIndex+1)%>" id="case_agt_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_agt_name")%>" /><!--交辦代理人-->
-			            <input type="text" name="fees_stat_<%#(Container.ItemIndex+1)%>" id="fees_stat_<%#(Container.ItemIndex+1)%>" value="<%#Eval("fees_stat")%>"><!--收費管制-->
-			            <input type="text" name="opt_branch_<%#(Container.ItemIndex+1)%>" id="opt_branch_<%#(Container.ItemIndex+1)%>" value="<%#Eval("opt_branch")%>"><!--發文單位-->
-			            <input type="text" name="dmt_pay_times_<%#(Container.ItemIndex+1)%>" id="dmt_pay_times_<%#(Container.ItemIndex+1)%>" value="<%#Eval("pay_times")%>"><!--註冊費已繳-->
-			            <input type="text" name="rs_no_<%#(Container.ItemIndex+1)%>" id="rs_no_<%#(Container.ItemIndex+1)%>" value="">
-			            <input type="text" name="spe_ctrl_4_<%#(Container.ItemIndex+1)%>" id="spe_ctrl_4_<%#(Container.ItemIndex+1)%>" value="<%#Eval("spe_ctrl_4")%>"><!--該案性可用發文方式-->
-			            <a href="javascript:void(0)" onclick="linkedit(<%#(Container.ItemIndex+1)%>,'<%#Eval("seq")%>','<%#Eval("seq1")%>','U','<%#Eval("att_sqlno")%>','<%#Eval("fseq")%>','<%#Eval("todo_sqlno")%>')" >[確認]</a>
-			            <BR>
-			            <a href="javascript:void(0)" onclick="linkedit(<%#(Container.ItemIndex+1)%>,'<%#Eval("seq")%>','<%#Eval("seq1")%>','R','<%#Eval("att_sqlno")%>','<%#Eval("fseq")%>','<%#Eval("todo_sqlno")%>')" >[退回]</a>
-		            </td>
-		            <td align="center"><%#Eval("fseq")%></td>
-		            <td ><%#Eval("class")%></td>
-		            <td ><%#Eval("appl_name").ToString().Left(20)%></td>
-		            <td nowrap align="center"><%#Eval("sc_name")%></td>
-		            <td align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
-		            <td align="left"><%#Eval("rs_detail")%></td>
-		            <td align="center"><%#Eval("last_date")%></td>
-		            <td nowrap align="center"><%#Eval("in_no")%></td>
-		            <td align="center" rowspan=2>
-			            <a href="javascript:void(0)" onclick="ctrlWin(<%#(Container.ItemIndex+1)%>)" ><span id="ctrl_<%#(Container.ItemIndex+1)%>">[新增]</span></a>
-			            <BR>
-			            <a href="javascript:void(0)" onclick="disWin(<%#(Container.ItemIndex+1)%>)" ><span id="ctrl_<%#(Container.ItemIndex+1)%>">[銷管(<%#Eval("ectrlnum")%>)]</span></a>
-			            <input type="text" name="ctrl_num_<%#(Container.ItemIndex+1)%>" id="ctrl_num_<%#(Container.ItemIndex+1)%>" value="<%#Eval("ectrlnum")%>"><!--銷管筆數-->
-			            <input type="text" name="rsqlno_<%#(Container.ItemIndex+1)%>" id="rsqlno_<%#(Container.ItemIndex+1)%>" value=""><!--銷管的序號-->
-			            <input type="text" name="ctrl_type_<%#(Container.ItemIndex+1)%>" id="ctrl_type_<%#(Container.ItemIndex+1)%>" value=""><!--管制種類-->
-			            <input type="text" name="ctrl_date_<%#(Container.ItemIndex+1)%>" id="ctrl_date_<%#(Container.ItemIndex+1)%>" value=""><!--管制日期-->
-			            <input type="text" name="ctrl_remark_<%#(Container.ItemIndex+1)%>" id="ctrl_remark_<%#(Container.ItemIndex+1)%>" value=""><!--說明-->
-		            </td>
-	            </tr>
- 	            <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
-		            <td align="center">
-			            <input type=text name="fees_<%#(Container.ItemIndex+1)%>" id="fees_<%#(Container.ItemIndex+1)%>" value="<%#Eval("fees")%>" style="text-align:right" size=5>
-			            <input type=text name="case_service_<%#(Container.ItemIndex+1)%>" id="case_service_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_service")%>" size=5>
-			            <input type=text name="case_fees_<%#(Container.ItemIndex+1)%>" id="case_fees_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_fees")%>" size=5><!--交辦規費-->
-			            <input type=text name="case_gs_fees_<%#(Container.ItemIndex+1)%>" id="case_gs_fees_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_gs_fees")%>" size=5><!--已支出規費-->
-			            <input type=text name="case_gs_curr_<%#(Container.ItemIndex+1)%>" id="case_gs_curr_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_gs_curr")%>" size=5><!--官發次數-->
-		            </td>
-		<td align="left" colspan=7>
-			發文日期:<input type=text name="step_date_<%#(Container.ItemIndex+1)%>" id="step_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("step_date","{0:yyyy/M/d}")%>" size="10" class="dateField">
-			總發文日期:<input type=text name="mp_date_<%#(Container.ItemIndex+1)%>" id="mp_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mp_date","{0:yyyy/M/d}")%>" size="10" class="dateField">
-			發文對象:<Select NAME="send_cl_<%#(Container.ItemIndex+1)%>" id="send_cl_<%#(Container.ItemIndex+1)%>">
-			<!--發文對象--><%#GetSendCL(Container)%>
-			</SELECT>
-			副本對象:<Select NAME="send_cl1_<%#(Container.ItemIndex+1)%>" id="send_cl1_<%#(Container.ItemIndex+1)%>">
-			<!--副本對象--><%#GetSendCL1(Container)%>
-			</SELECT>
-			<BR>
-			結構分類:
-			<input type="text" name="rs_class_name_<%#(Container.ItemIndex+1)%>" id="rs_class_name_<%#(Container.ItemIndex+1)%>" value="">
-			<input type="text" name="rs_code_name_<%#(Container.ItemIndex+1)%>" id="rs_code_name_<%#(Container.ItemIndex+1)%>" value="">
-			<input type="text" name="act_code_name_<%#(Container.ItemIndex+1)%>" id="act_code_name_<%#(Container.ItemIndex+1)%>" value="">
-			<select id="rs_class_<%#(Container.ItemIndex+1)%>" name="rs_class_<%#(Container.ItemIndex+1)%>" disabled >
-			<!--結構分類--><%#GetRsClass(Container)%>
-			</select>
-			案性:
-			<input type=text id="ncase_stat_<%#(Container.ItemIndex+1)%>" name="ncase_stat_<%#(Container.ItemIndex+1)%>" value="">
-			<input type=text id="ncase_statnm_<%#(Container.ItemIndex+1)%>" name="ncase_statnm_<%#(Container.ItemIndex+1)%>" value="">
-			<span id=span_rs_code>
-				<select id="rs_code_<%#(Container.ItemIndex+1)%>" name="rs_code_<%#(Container.ItemIndex+1)%>" onchange='rs_code_onchange1()' disabled >
-			    <!--案性--><%#GetRsCode(Container)%>
-				</select>
-			</span>
-			處理事項:
-			<span id=span_act_code>
-				<select id="act_code_<%#(Container.ItemIndex+1)%>" name="act_code_<%#(Container.ItemIndex+1)%>">
-			    <!--處理事項--><%#GetActCode(Container)%>
-				</select>
-			</span>
-			承辦:<SELECT id="pr_scode_<%#(Container.ItemIndex+1)%>" name="pr_scode_<%#(Container.ItemIndex+1)%>">
-			    <!--承辦--><%#GetPrScode(Container)%>
-			</SELECT>
-			<BR>
-			發文內容:<input type="text" id="rs_detail_<%#(Container.ItemIndex+1)%>" name="rs_detail_<%#(Container.ItemIndex+1)%>" size=60 value="<%#Eval("rs_detail")%>">
-			<BR>
-			<font color=blue>收據種類:</font>
-			<select id="receipt_type_<%#(Container.ItemIndex+1)%>" name="receipt_type_<%#(Container.ItemIndex+1)%>">
-				<option value="P" <%#(Eval("receipt_type").ToString()=="P"?" selected":"")%>>紙本收據</option>
-				<option value="E" <%#(Eval("receipt_type").ToString()=="E"||Eval("receipt_type").ToString()==""?" selected":"")%>>電子收據</option>
-			</select>
-			<font color=blue>收據抬頭:</font>
-			<select id="receipt_title_<%#(Container.ItemIndex+1)%>" name="receipt_title_<%#(Container.ItemIndex+1)%>" onchange="rectitle_chk(<%#(Container.ItemIndex+1)%>,'<%#Eval("in_no")%>')">
-			    <!--收據抬頭--><%#GetReceiptTitle(Container)%>
-			</select>
-			官方號碼:<SELECT name="send_sel_<%#(Container.ItemIndex+1)%>" id="send_sel_<%#(Container.ItemIndex+1)%>" disabled>
-			    <!--官方號碼--><%#GetSendSel(Container)%>
-			</SELECT>
-			<input type=text name="apply_no_<%#(Container.ItemIndex+1)%>" id="apply_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("apply_no")%>" size="10" readonly class="SEdit">
-			註冊費已繳:<Select NAME="pay_times_<%#(Container.ItemIndex+1)%>" id="pay_times_<%#(Container.ItemIndex+1)%>" disabled>
-			    <!--註冊費已繳--><%#GetOptPayTimes(Container)%>
-			</SELECT>
-			<input type=text name="pay_date_<%#(Container.ItemIndex+1)%>" id="pay_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("pay_date","{0:yyyy/M/d}")%>" size="10" readonly class="SEdit">
-		</td>
-
-	            </tr>
+ 	    <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
+		    <td align="center" rowspan=2>
+                <input type=checkbox id=chk_<%#(Container.ItemIndex+1)%> onclick="chk_flag_onclick(<%#(Container.ItemIndex+1)%>)" value='Y'>
+			    <BR>
+			    <input type="hidden" id="cgrs_<%#(Container.ItemIndex+1)%>" value="GS">
+			    <input type="hidden" id="todo_sqlno_<%#(Container.ItemIndex+1)%>" value="<%#Eval("todo_sqlno")%>">
+			    <input type="hidden" id="cust_seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("cust_seq")%>">
+			    <input type="hidden" id="seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq")%>">
+			    <input type="hidden" id="seq1_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq1")%>">
+			    <input type="hidden" id="now_grade_<%#(Container.ItemIndex+1)%>" value="<%#Eval("now_grade")%>">
+			    <input type="hidden" id="step_grade_<%#(Container.ItemIndex+1)%>" value="<%#Eval("step_grade")%>">
+			    <input type="hidden" id="nstep_grade_<%#(Container.ItemIndex+1)%>" value="<%#Convert.ToInt32(Eval("step_grade"))+1%>">
+			    <input type="hidden" id="rectitle_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rectitle_name")%>">
+			    <input type="hidden" id="tmprectitle_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("tmprectitle_name")%>">
+			    <input type="hidden" id="att_sqlno_<%#(Container.ItemIndex+1)%>" value="<%#Eval("att_sqlno")%>">
+			    <input type="hidden" id="send_way_<%#(Container.ItemIndex+1)%>" value="<%#Eval("send_way")%>">
+			    <input type="hidden" id="case_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_no")%>">
+			    <input type="hidden" id="rs_type_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_type")%>">
+			    <input type="hidden" id="rs_agt_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_agt_no")%>"><!--案性出名代理人-->
+			    <input type="hidden" id="rs_agt_nonm_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_agt_nonm")%>"><!--案性出名代理人-->
+			    <input type="hidden" id="case_agt_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_agt_no")%>" /><!--交辦代理人-->
+			    <input type="hidden" id="case_agt_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_agt_name")%>" /><!--交辦代理人-->
+			    <input type="hidden" id="fees_stat_<%#(Container.ItemIndex+1)%>" value="<%#Eval("fees_stat")%>"><!--收費管制-->
+			    <input type="hidden" id="opt_branch_<%#(Container.ItemIndex+1)%>" value="<%#Eval("opt_branch")%>"><!--發文單位-->
+			    <input type="hidden" id="dmt_pay_times_<%#(Container.ItemIndex+1)%>" value="<%#Eval("pay_times")%>"><!--註冊費已繳-->
+			    <input type="hidden" id="rs_no_<%#(Container.ItemIndex+1)%>" value="">
+			    <input type="hidden" id="spe_ctrl_4_<%#(Container.ItemIndex+1)%>" value="<%#Eval("spe_ctrl_4")%>"><!--該案性可用發文方式-->
+			    <a href="javascript:void(0)" onclick="linkedit(<%#(Container.ItemIndex+1)%>,'<%#Eval("seq")%>','<%#Eval("seq1")%>','U','<%#Eval("att_sqlno")%>','<%#Eval("fseq")%>','<%#Eval("todo_sqlno")%>')" >[確認]</a>
+			    <BR>
+			    <a href="javascript:void(0)" onclick="linkedit(<%#(Container.ItemIndex+1)%>,'<%#Eval("seq")%>','<%#Eval("seq1")%>','R','<%#Eval("att_sqlno")%>','<%#Eval("fseq")%>','<%#Eval("todo_sqlno")%>')" >[退回]</a>
+		    </td>
+		    <td align="center"><%#Eval("fseq")%></td>
+		    <td ><%#Eval("class")%></td>
+		    <td ><%#Eval("appl_name").ToString().Left(20)%></td>
+		    <td nowrap align="center"><%#Eval("sc_name")%></td>
+		    <td align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+		    <td align="left"><%#Eval("rs_detail")%></td>
+		    <td align="center"><%#Eval("last_date")%></td>
+		    <td nowrap align="center"><%#Eval("in_no")%></td>
+		    <td align="center" rowspan=2>
+			    <a href="javascript:void(0)" onclick="ctrlWin(<%#(Container.ItemIndex+1)%>)" ><span id="ctrl_<%#(Container.ItemIndex+1)%>">[新增]</span></a>
+			    <BR>
+			    <a href="javascript:void(0)" onclick="disWin(<%#(Container.ItemIndex+1)%>)" ><span id="ctrl_<%#(Container.ItemIndex+1)%>">[銷管(<%#Eval("ectrlnum")%>)]</span></a>
+			    <input type="hidden" id="ctrl_num_<%#(Container.ItemIndex+1)%>" value="<%#Eval("ectrlnum")%>"><!--銷管筆數-->
+			    <input type="hidden" id="rsqlno_<%#(Container.ItemIndex+1)%>" value=""><!--銷管的序號-->
+			    <input type="hidden" id="ctrl_type_<%#(Container.ItemIndex+1)%>" value=""><!--管制種類-->
+			    <input type="hidden" id="ctrl_date_<%#(Container.ItemIndex+1)%>" value=""><!--管制日期-->
+			    <input type="hidden" id="ctrl_remark_<%#(Container.ItemIndex+1)%>" value=""><!--說明-->
+		    </td>
+	    </tr>
+ 	    <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
+		    <td align="center">
+			    <input type=text id="fees_<%#(Container.ItemIndex+1)%>" value="<%#Eval("fees")%>" style="text-align:right" size=5>
+			    <input type=hidden id="case_service_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_service")%>" size=5>
+			    <input type=hidden id="case_fees_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_fees")%>" size=5><!--交辦規費-->
+			    <input type=hidden id="case_gs_fees_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_gs_fees")%>" size=5><!--已支出規費-->
+			    <input type=hidden id="case_gs_curr_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_gs_curr")%>" size=5><!--官發次數-->
+		    </td>
+		    <td align="left" colspan=7>
+			    發文日期:<input type=text id="step_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("step_date","{0:yyyy/M/d}")%>" size="10" class="dateField">
+			    總發文日期:<input type=text id="mp_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mp_date","{0:yyyy/M/d}")%>" size="10" class="dateField">
+			    發文對象:<Select id="send_cl_<%#(Container.ItemIndex+1)%>">
+			    <!--發文對象--><%#GetSendCL(Container)%>
+			    </SELECT>
+			    副本對象:<Select id="send_cl1_<%#(Container.ItemIndex+1)%>">
+			    <!--副本對象--><%#GetSendCL1(Container)%>
+			    </SELECT>
+			    <BR>
+			    結構分類:
+			    <input type="hidden" id="rs_class_name_<%#(Container.ItemIndex+1)%>" value="">
+			    <input type="hidden" id="rs_code_name_<%#(Container.ItemIndex+1)%>" value="">
+			    <input type="hidden" id="act_code_name_<%#(Container.ItemIndex+1)%>" value="">
+			    <select id="rs_class_<%#(Container.ItemIndex+1)%>" disabled >
+			    <!--結構分類--><%#GetRsClass(Container)%>
+			    </select>
+			    案性:
+			    <input type=hidden id="ncase_stat_<%#(Container.ItemIndex+1)%>" value="">
+			    <input type=hidden id="ncase_statnm_<%#(Container.ItemIndex+1)%>" value="">
+			    <span id=span_rs_code>
+				    <select id="rs_code_<%#(Container.ItemIndex+1)%>" onchange='rs_code_onchange1()' disabled >
+			        <!--案性--><%#GetRsCode(Container)%>
+				    </select>
+			    </span>
+			    處理事項:
+			    <span id=span_act_code>
+				    <select id="act_code_<%#(Container.ItemIndex+1)%>">
+			        <!--處理事項--><%#GetActCode(Container)%>
+				    </select>
+			    </span>
+			    承辦:<SELECT id="pr_scode_<%#(Container.ItemIndex+1)%>">
+			        <!--承辦--><%#GetPrScode(Container)%>
+			    </SELECT>
+			    <BR>
+			    發文內容:<input type="text" id="rs_detail_<%#(Container.ItemIndex+1)%>" size=60 value="<%#Eval("rs_detail")%>">
+			    <BR>
+			    <font color=blue>收據種類:</font>
+			    <select id="receipt_type_<%#(Container.ItemIndex+1)%>">
+				    <option value="P" <%#(Eval("receipt_type").ToString()=="P"?" selected":"")%>>紙本收據</option>
+				    <option value="E" <%#(Eval("receipt_type").ToString()=="E"||Eval("receipt_type").ToString()==""?" selected":"")%>>電子收據</option>
+			    </select>
+			    <font color=blue>收據抬頭:</font>
+			    <select id="receipt_title_<%#(Container.ItemIndex+1)%>" onchange="rectitle_chk(<%#(Container.ItemIndex+1)%>,'<%#Eval("in_no")%>')">
+			        <!--收據抬頭--><%#GetReceiptTitle(Container)%>
+			    </select>
+			    官方號碼:<SELECT id="send_sel_<%#(Container.ItemIndex+1)%>" disabled>
+			        <!--官方號碼--><%#GetSendSel(Container)%>
+			    </SELECT>
+			    <input type=text id="apply_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("apply_no")%>" size="10" readonly class="SEdit">
+			    註冊費已繳:<Select id="pay_times_<%#(Container.ItemIndex+1)%>" disabled>
+			        <!--註冊費已繳--><%#GetOptPayTimes(Container)%>
+			    </SELECT>
+			    <input type=text id="pay_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("pay_date","{0:yyyy/M/d}")%>" size="10" readonly class="SEdit">
+		    </td>
+	    </tr>
 	</ItemTemplate>
     <FooterTemplate>
 	        </tbody>
@@ -964,50 +828,54 @@
 
     //管制
     function ctrlWin(pno){
-        var url=getRootPath() + "/brtam/brta38CtrlEdit.aspx?branch=<%=Session["seBranch"]%>&seq="+$("#seq_"+pno).val()+
-	"&seq1="+$("#seq1_"+pno).val()+"&pno="+pno+"&step_grade="+$("#nstep_grade_"+pno).val()+
-	"&submitTask=A";
-        window.open(url,"CtrlWin","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        var url=getRootPath() + "/brtam/brta38_CtrlEdit.aspx?prgid=brta38&branch=<%=Session["seBranch"]%>&seq="+$("#seq_"+pno).val()+
+	    "&seq1="+$("#seq1_"+pno).val()+"&pno="+pno+"&step_grade="+$("#nstep_grade_"+pno).val()+
+	    "&submitTask=A";
+        //window.open(url,"CtrlWinN","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        $('#dialog')
+        .html('<iframe style="border: 0px;" src="'+url+'" width="100%" height="100%"></iframe>')
+        .dialog({autoOpen: true,modal: true,height: 420,width: 650,title: "新增管制"});
     }
 
     //銷管
     function disWin(pno){
         //官收確認或官發確認之進度銷管同新增
-        var url=getRootPath() + "/brtam/brta21disEdit.aspx?branch=<%=Session["seBranch"]%>&seq="+$("#seq_"+pno).val()+
+        var url=getRootPath() + "/brtam/brta21disEdit.aspx?prgid=brta38&branch=<%=Session["seBranch"]%>&seq="+$("#seq_"+pno).val()+
         "&seq1="+$("#seq1_"+pno).val()+"&qtype=N&rsqlno="+$("#rsqlno_"+pno).val()+"&step_grade="+$("#nstep_grade_"+pno).val()+
         "&submitTask=A&rtnCol=rsqlno_"+pno;
-        window.open(url,"DisWin","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        //window.open(url,"DisWinN","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        $('#dialog')
+        .html('<iframe style="border: 0px;" src="'+url+'" width="100%" height="100%"></iframe>')
+        .dialog({autoOpen: true,modal: true,height: 420,width: 650,title: "進度查詢及銷案設定"});
     }
 
     //全選
     function selectall(){
         $("input:checkbox[id^='chk'][id!='chkTest']").each(function(idx) {
             var pno=(idx+1);
-            if($(this).attr("checked")){
-                $("#chk"+pno).attr( "checked" , false );
-                $("#hchk_flag"+pno).val( "N");
+            if($(this).prop("checked")){
+                $("#chk_"+pno).prop( "checked" , false );
+                //$("#hchk_flag_"+pno).val( "N");
             }else{
-                $("#chk"+pno).attr( "checked" , true );
-                $("#hchk_flag"+pno).val( "Y");
+                $("#chk_"+pno).prop( "checked" , true );
+                //$("#hchk_flag_"+pno).val( "Y");
             }
         });
     }
 
     //勾選某一筆
     function chk_flag_onclick(pchknum){
-        if (document.getElementById("chk"+pchknum).checked) {
-            document.getElementById("hchk_flag"+pchknum).value="Y";
+        if (document.getElementById("chk_"+pchknum).checked) {
+            //$("#hchk_flag_"+pchknum).val( "Y");
         }else{
-            document.getElementById("hchk_flag"+pchknum).value="N";
+            //$("#hchk_flag_"+pchknum).val( "N");
         }
     }
 
     //取消選擇某一筆
     function cancelChk(pno){
-        //$("#chk"+pno).attr("checked",false);
-        //$("#hchk_flag"+pno).val("N");
-        //document.getElementById("chk"+pno).style.borderColor ="#3D7591";
-        document.getElementById("chk"+pno).setAttribute("style","border-color: red");
+        //$("#chk"+pno).prop("checked",false);
+        //$("#hchk_flag_"+pno).val("N");
     }
 
     //選擇處理事項
@@ -1054,16 +922,15 @@
         });
 	
         //檢查是否有勾選
-        var totnum=$("input[id^='hchk_flag'][value=Y]").length;
+        var totnum=$("input[id^='chk_']:checked").length;
         if (totnum == 0){
             alert("請勾選您要確認的案件!!");
             return false;
         }
         var isSubmit=true;
         var msg="";
-        $("input[id^='hchk_flag']").each(function(idx) {
-            var pno=(idx+1);
-            if($(this).val()=="Y"){//hchk_flag
+        for (var pno = 1; pno <= CInt($("#row").val()) ; pno++) {
+            if($("#chk_"+pno).prop("checked")==true){
                 if( chkNull("第"+pno+"筆 本所編號 ",$('#seq_'+pno)[0]) ) {isSubmit=false;}
                 if( chkNull("第"+pno+"筆 本所編號副碼 ",$('#seq1_'+pno)[0]) ) {isSubmit=false;}
                 if( chkNull("第"+pno+"筆 發文日期 ",$('#step_date_'+pno)[0]) ) {isSubmit=false;}
@@ -1198,22 +1065,101 @@
                         break;
                 }
             }
-        });
-	
-        if(msg!=""){
-            alert(msg);
-            return false;
         }
 	
         if(!isSubmit){
             return false;
         }
 	
+        if(msg!=""){
+            alert(msg);
+            return false;
+        }
+	
         if (!confirm("共有" + totnum + "筆確認 , 是否確定?")) return false;
-        document.getElementById('reg').action = "brta38UpdateBatch.asp?submitTask=A&cgrs=gs";
-        $("#reg :input").attr("disabled", false);
-        if (document.getElementById("chkTest").checked) reg.target = "ActFrame"; else reg.target = "_self";
-        document.getElementById('reg').submit();
-        document.getElementById('button1').disabled = true;
+        
+        //串接資料
+        $("#rows_chk").val(getJoinValue("#dataList>tbody input[id^='chk_']"));
+        $("#rows_cgrs").val(getJoinValue("#dataList>tbody input[id^='cgrs_']"));
+        $("#rows_todo_sqlno").val(getJoinValue("#dataList>tbody input[id^='todo_sqlno_']"));
+        $("#rows_cust_seq").val(getJoinValue("#dataList>tbody input[id^='cust_seq_']"));
+        $("#rows_seq").val(getJoinValue("#dataList>tbody input[id^='seq_']"));
+        $("#rows_seq1").val(getJoinValue("#dataList>tbody input[id^='seq1_']"));
+        $("#rows_now_grade").val(getJoinValue("#dataList>tbody input[id^='now_grade_']"));
+        $("#rows_step_grade").val(getJoinValue("#dataList>tbody input[id^='step_grade_']"));
+        $("#rows_nstep_grade").val(getJoinValue("#dataList>tbody input[id^='nstep_grade_']"));
+        $("#rows_rectitle_name").val(getJoinValue("#dataList>tbody input[id^='rectitle_name_']"));
+        $("#rows_tmprectitle_name").val(getJoinValue("#dataList>tbody input[id^='tmprectitle_name_']"));
+        $("#rows_att_sqlno").val(getJoinValue("#dataList>tbody input[id^='att_sqlno_']"));
+        $("#rows_send_way").val(getJoinValue("#dataList>tbody input[id^='send_way_']"));
+        $("#rows_case_no").val(getJoinValue("#dataList>tbody input[id^='case_no_']"));
+        $("#rows_rs_type").val(getJoinValue("#dataList>tbody input[id^='rs_type_']"));
+        $("#rows_rs_agt_no").val(getJoinValue("#dataList>tbody input[id^='rs_agt_no_']"));
+        $("#rows_rs_agt_nonm").val(getJoinValue("#dataList>tbody input[id^='rs_agt_nonm_']"));
+        $("#rows_case_agt_no").val(getJoinValue("#dataList>tbody input[id^='case_agt_no_']"));
+        $("#rows_case_agt_name").val(getJoinValue("#dataList>tbody input[id^='case_agt_name_']"));
+        $("#rows_fees_stat").val(getJoinValue("#dataList>tbody input[id^='fees_stat_']"));
+        $("#rows_opt_branch").val(getJoinValue("#dataList>tbody input[id^='opt_branch_']"));
+        $("#rows_dmt_pay_times").val(getJoinValue("#dataList>tbody input[id^='dmt_pay_times_']"));
+        $("#rows_rs_no").val(getJoinValue("#dataList>tbody input[id^='rs_no_']"));
+        $("#rows_spe_ctrl_4").val(getJoinValue("#dataList>tbody input[id^='spe_ctrl_4_']"));
+
+        $("#rows_ctrl_num").val(getJoinValue("#dataList>tbody input[id^='ctrl_num_']"));
+        $("#rows_rsqlno").val(getJoinValue("#dataList>tbody input[id^='rsqlno_']"));
+        $("#rows_ctrl_type").val(getJoinValue("#dataList>tbody input[id^='ctrl_type_']"));
+        $("#rows_ctrl_date").val(getJoinValue("#dataList>tbody input[id^='ctrl_date_']"));
+        $("#rows_ctrl_remark").val(getJoinValue("#dataList>tbody input[id^='ctrl_remark_']"));
+
+        $("#rows_fees").val(getJoinValue("#dataList>tbody input[id^='fees_']:not([id^='fees_stat_'])"));
+        $("#rows_case_service").val(getJoinValue("#dataList>tbody input[id^='case_service_']"));
+        $("#rows_case_fees").val(getJoinValue("#dataList>tbody input[id^='case_fees_']"));
+        $("#rows_case_gs_fees").val(getJoinValue("#dataList>tbody input[id^='case_gs_fees_']"));
+        $("#rows_case_gs_curr").val(getJoinValue("#dataList>tbody input[id^='case_gs_curr_']"));
+
+        $("#rows_step_date").val(getJoinValue("#dataList>tbody input[id^='step_date_']"));
+        $("#rows_mp_date").val(getJoinValue("#dataList>tbody input[id^='mp_date_']"));
+        $("#rows_send_cl").val(getJoinValue("#dataList>tbody select[id^='send_cl_']"));
+        $("#rows_send_cl1").val(getJoinValue("#dataList>tbody select[id^='send_cl1_']"));
+        $("#rows_rs_class_name").val(getJoinValue("#dataList>tbody input[id^='rs_class_name_']"));
+        $("#rows_rs_code_name").val(getJoinValue("#dataList>tbody input[id^='rs_code_name_']"));
+        $("#rows_act_code_name").val(getJoinValue("#dataList>tbody input[id^='act_code_name_']"));
+        $("#rows_rs_class").val(getJoinValue("#dataList>tbody select[id^='rs_class_']"));
+        $("#rows_ncase_stat").val(getJoinValue("#dataList>tbody input[id^='ncase_stat_']"));
+        $("#rows_ncase_statnm").val(getJoinValue("#dataList>tbody input[id^='ncase_statnm_']"));
+        $("#rows_rs_code").val(getJoinValue("#dataList>tbody select[id^='rs_code_']"));
+        $("#rows_act_code").val(getJoinValue("#dataList>tbody select[id^='act_code_']"));
+        $("#rows_pr_scode").val(getJoinValue("#dataList>tbody select[id^='pr_scode_']"));
+        $("#rows_rs_detail").val(getJoinValue("#dataList>tbody input[id^='rs_detail_']"));
+        $("#rows_receipt_type").val(getJoinValue("#dataList>tbody select[id^='receipt_type_']"));
+        $("#rows_receipt_title").val(getJoinValue("#dataList>tbody select[id^='receipt_title_']"));
+        $("#rows_send_sel").val(getJoinValue("#dataList>tbody select[id^='send_sel_']"));
+        $("#rows_apply_no").val(getJoinValue("#dataList>tbody input[id^='apply_no_']"));
+        $("#rows_pay_times").val(getJoinValue("#dataList>tbody select[id^='pay_times_']"));
+        $("#rows_pay_date").val(getJoinValue("#dataList>tbody input[id^='pay_date_']"));
+        
+        $("input:disabled, select:disabled").unlock();
+        $(".bsubmit").lock(!$("#chkTest").prop("checked"));
+        
+        var formData = new FormData($('#reg')[0]);
+        ajaxByForm("brta38_UpdateBatch.aspx?submitTask=A&cgrs=gs&prgid=<%=prgid%>",formData)
+        .complete(function( xhr, status ) {
+            $("#dialog").html(xhr.responseText);
+            $("#dialog").dialog({
+                title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
+                ,buttons: {
+                    確定: function() {
+                        $(this).dialog("close");
+                    }
+                }
+                ,close:function(event, ui){
+                    if(status=="success"){
+                        if(!$("#chkTest").prop("checked")){
+                            window.parent.tt.rows="100%,0%";
+                            window.parent.Etop.goSearch();//重新整理
+                        }
+                    }
+                }
+            });
+        });
     }
 </script>

@@ -144,6 +144,7 @@
         mm.focus();
     }
     //多檔上傳後回傳資料顯示於畫面上
+    //(於multi_upload_file.aspx onUploadSuccess指定呼叫此function)
     function uploadSuccess(rvalue) {
         var fld = $("#uploadfield").val();
         if (rvalue.msg == "") {//沒有錯誤或警告

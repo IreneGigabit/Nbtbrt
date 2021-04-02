@@ -34,6 +34,7 @@
         //Response.Write("file_name=" + file_name + "<BR>");
         //Response.Write("folder_name=" + folder_name + "<BR>");
         //Response.Write("file_name_w=" + System.IO.Path.GetFileNameWithoutExtension(file_name) + "<BR>");
+        //Response.Write("dFi=" + dFi + "<BR>");
         //Response.End();
         
         System.IO.FileInfo fi = new System.IO.FileInfo(Server.MapPath(file_name));

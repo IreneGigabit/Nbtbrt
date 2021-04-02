@@ -30,7 +30,8 @@ form
     BORDER-TOP-STYLE: none;
     BORDER-RIGHT-STYLE: none;
     BORDER-LEFT-STYLE: none;
-    BACKGROUND-COLOR: #eaf9f5;
+    /*BACKGROUND-COLOR: #eaf9f5;*/
+    background-color: transparent;
     BORDER-BOTTOM-STYLE: none
 }
 A:hover
@@ -115,6 +116,7 @@ hr
 {
 	border-style: none;
 	border-width: 0px;
+    background-color: transparent;
 }
 .FormName
 {
@@ -390,6 +392,12 @@ input.bluebutton {
 	background-color:#000099;
 	border: solid 1px;
 	border-color: #8df #009 #009 #8df;
+}
+.greendata
+{
+    FONT-SIZE: 10pt;
+    FONT-FAMILY: Verdana, Arial, 細明體;
+    BACKGROUND-COLOR: #eaf9f5
 }
 .lightbluetable3,.lightbluetable3>td
 {

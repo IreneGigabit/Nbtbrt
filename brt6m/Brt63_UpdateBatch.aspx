@@ -162,7 +162,7 @@
                             ColMap["mp_date"] = Util.dbchar(arr_mp_date[i]);//總管處發文日期
                             ColMap["send_cl"] = Util.dbchar(arr_send_cl[i]);//收發單位
                             ColMap["send_cl1"] = Util.dbchar(arr_send_cl1[i]);//副本單位
-                            ColMap["send_sel"] = Util.dbchar(arr_send_sel[i]);//發文性質
+                            ColMap["send_sel"] = Util.dbchar(arr_send_sel[i]);//官方號碼
                             ColMap["rs_class"] = Util.dbchar(arr_rs_class[i]);//發文代碼結構分類
                             ColMap["rs_code"] = Util.dbchar(arr_rs_code[i]);//發文代碼
                             ColMap["act_code"] = Util.dbchar(arr_act_code[i]);//處理事項代碼
@@ -170,7 +170,7 @@
                             ColMap["fees"] = Util.dbzero(arr_fees[i]);//規費
                             ColMap["fees_stat"] = Util.dbchar(arr_fees_stat[i]);//規費狀態
                             ColMap["rs_agt_no"] = Util.dbchar(arr_rs_agt_no[i]);//出名代理人
-                            ColMap["opt_branch"] = Util.dbchar(arr_opt_branch[i]);//爭救案處理單位
+                            ColMap["opt_branch"] = Util.dbchar(arr_opt_branch[i]);//發文單位
                             ColMap["sign_stat"] = Util.dbchar(sign_stat);
                             ColMap["send_way"] = Util.dbchar(arr_send_way[i]);//發文方式
                             SQL += ColMap.GetUpdateSQL();

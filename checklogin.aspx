@@ -26,7 +26,7 @@
         //Response.Write("a=" + strChk+"<hr>");
         if (strChk.Length > 0) {
             sb.AppendLine("alert(\"" + strChk + "\");");
-            sb.AppendLine("top.location.href = \"login.aspx\";");
+            //sb.AppendLine("top.location.href = \"login.aspx\";");
         } else if (exMsg.Length == 0) {
             //sb.AppendLine("alert(\"" + Request["tfx_scode"] + "\");");
             sb.AppendLine("top.location.href = \"Default.aspx\";");

@@ -1,3 +1,12 @@
+select * from SYScode where syscode='ntbrt'
+select * from SYScode where syscode='nntbrt'
+/*
+insert into SYScode 
+select 'NNTBRT','台北所商標網路作業系統(新)',sysnameE,'web08','/nbtbrt',DataBranch,ClassCode,'07',corp_user,main_user,sys_user,online_date,beg_date,end_date,sysremark,mark,dbserver,dbname
+from SYScode where syscode='ntbrt'
+*/
+
+
 select * from loginap where syscode='ntbrt'
 select * from loginap where syscode='nntbrt'
 /*
