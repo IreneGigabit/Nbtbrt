@@ -541,6 +541,8 @@
 		                <td align="center">
 			                <a href="javascript:void(0)" onclick="linkedit(<%#(Container.ItemIndex+1)%>,'<%#Eval("seq")%>','<%#Eval("seq1")%>','U','<%#Eval("att_sqlno")%>','<%#Eval("fseq")%>','<%#Eval("todo_sqlno")%>')" >[確認]</a>
 			                <a href="javascript:void(0)" onclick="linkedit(<%#(Container.ItemIndex+1)%>,'<%#Eval("seq")%>','<%#Eval("seq1")%>','R','<%#Eval("att_sqlno")%>','<%#Eval("fseq")%>','<%#Eval("todo_sqlno")%>')" >[退回]</a>
+			                <input type="hidden" id="in_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("in_no")%>">
+			                <input type="hidden" id="case_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_no")%>">
 		                </td>
 		                <td align="center"><%#Eval("fseq")%></td>
 		                <td ><%#Eval("class")%></td>
@@ -613,6 +615,7 @@
 			    <input type="hidden" id="tmprectitle_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("tmprectitle_name")%>">
 			    <input type="hidden" id="att_sqlno_<%#(Container.ItemIndex+1)%>" value="<%#Eval("att_sqlno")%>">
 			    <input type="hidden" id="send_way_<%#(Container.ItemIndex+1)%>" value="<%#Eval("send_way")%>">
+			    <input type="hidden" id="in_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("in_no")%>">
 			    <input type="hidden" id="case_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_no")%>">
 			    <input type="hidden" id="rs_type_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_type")%>">
 			    <input type="hidden" id="rs_agt_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_agt_no")%>"><!--案性出名代理人-->
@@ -821,7 +824,8 @@
 
     //單筆確認
     function linkedit(pno,tseq,tseq1,task,att_sqlno,fseq,todo_sqlno){
-        var url = getRootPath() + "/brt6m/Brt63_edit.aspx?prgid=brta38&cgrs=gs&seq=" + tseq + "&seq1=" + tseq1 + "&branch=<%=Session["seBranch"]%>&SubmitTask=" + task + "&att_sqlno=" + att_sqlno + "&fseq=" + fseq + "&todo_sqlno=" + todo_sqlno;
+        //var url = getRootPath() + "/brt6m/Brt63_edit.aspx?prgid=brta38&cgrs=gs&seq=" + tseq + "&seq1=" + tseq1 + "&branch=<%=Session["seBranch"]%>&SubmitTask=" + task + "&att_sqlno=" + att_sqlno + "&fseq=" + fseq + "&todo_sqlno=" + todo_sqlno;
+        var url = getRootPath() + "/brt6m/Brt63_edit.aspx?prgid=brta38&cgrs=gs&seq=" + tseq + "&seq1=" + tseq1 + "&branch=<%=Session["seBranch"]%>&SubmitTask=" + task + "&att_sqlno=" + att_sqlno + "&fseq=" + fseq + "&todo_sqlno=" + todo_sqlno+ "&in_no=" + $("#in_no_"+pno).val()+ "&case_no=" + $("#case_no_"+pno).val();
         window.parent.Eblank.location.href=url;
     }
 

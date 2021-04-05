@@ -195,7 +195,7 @@
 				<input type="hidden" name="qtype" id="qtype" value="<%=Request["qtype"]%>">
 				<input type="hidden" name="step_grade" id="step_grade" value="<%=Request["step_grade"]%>">
 				<input type="hidden" name="submitTask" id="submitTask" value="<%=Request["submitTask"]%>">
-				<input type="hidden" name="rSqlNo" id="rSqlNo" value="<%=Request["rSqlNo"]%>">
+				<input type="hidden" name="rsqlno" id="rsqlno" value="<%=Request["rsqlno"]%>">
 				<label><input type="radio" name="Rqtype" value="R">本進度銷管</label>
 				<label><input type="radio" name="Rqtype" value="N">尚未銷管</label>
 				<label><input type="radio" name="Rqtype" value="A">全部進度</label>
@@ -258,7 +258,7 @@
 		<ItemTemplate>
             <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>" align="center">
 		        <td class="td_dis">
-			        <input type="hidden" name="rSqlNo_<%#(Container.ItemIndex+1)%>" id="rSqlNo_<%#(Container.ItemIndex+1)%>" value=<%#Eval("sqlno")%>>
+			        <input type="hidden" name="rsqlno_<%#(Container.ItemIndex+1)%>" id="rsqlno_<%#(Container.ItemIndex+1)%>" value=<%#Eval("sqlno")%>>
 			        <input type="checkbox" name="respChk_<%#(Container.ItemIndex+1)%>" id="respChk_<%#(Container.ItemIndex+1)%>" vsqlno="<%#Eval("sqlno")%>" value="Y" <%#Eval("ldisabled")%>>
 		        </td>		
 		        <td><%#(Eval("rownum").ToString()=="*"?Eval("step_grade"):"")%></td>
@@ -355,7 +355,7 @@
     /////////////////////////////////////////////
     $("input[name='Rqtype']").click(function (e) {
         if ($(this).val() == "N") {//尚未銷管
-            $("#rSqlNo").val(getChkValue());
+            $("#rsqlno").val(getChkValue());
         }
 
         $("#qtype").val($(this).val());
@@ -387,7 +387,7 @@
         }
 
         //顯示已暫存的資料
-        var arr_asqlno = $("#rSqlNo").val().split(";");
+        var arr_asqlno = $("#rsqlno").val().split(";");
         $.each(arr_asqlno, function (index, value) {
             $("input:checkbox[id^='respChk_'][vsqlno='" + arr_asqlno[index] + "']").prop("checked", true);
         });
@@ -429,7 +429,7 @@
         if ($("#rtnCol").val() != "") {
             $("#" + $("#rtnCol").val(), pObject.document).val(lstr);
         } else {
-            $("#rSqlNo", $(pObject)).val(lstr);
+            $("#rsqlno", pObject.document).val(lstr);
         }
 
         $(".imgCls").click();

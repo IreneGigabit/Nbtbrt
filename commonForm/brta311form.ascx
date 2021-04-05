@@ -431,6 +431,7 @@
 
         //2010/7/26因應承辦交辦發文不用管制期限，增加判斷prgid=brt63不抓期限管制
         if (($("#submittask").val() == "A" && $("#prgid").val() != "brt63") || ($("#submittask").val() == "U" && $("#prgid").val() == "brta38")) {
+            brta212form.empty_ctrl();//onchange觸發多次會有多筆.先清空管制期限
             brta311form.getCtrl();
         }
 

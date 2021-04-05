@@ -308,7 +308,7 @@ Date.prototype.addDays = function (days) {
 //var today = new Date();
 //today.addMonths(7);
 Date.prototype.addMonths = function (months) {
-    this.setDate(this.getMonth() + months);
+    this.setMonth(this.getMonth() + months);
     return this;
 }
 //#end region
@@ -318,7 +318,7 @@ Date.prototype.addMonths = function (months) {
 //var today = new Date();
 //today.addYears(7);
 Date.prototype.addYears = function (years) {
-    this.setDate(this.getFullYear() + years);
+    this.setYear(this.getFullYear() + years);
     return this;
 }
 //#end region

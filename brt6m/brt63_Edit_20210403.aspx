@@ -174,14 +174,14 @@
         //        }
         //    }
         //}
-
+            
         //附件檔
         string where = "";
         if (ReqVal.TryGet("step_grade") != "") where += " and step_grade=" + ReqVal["step_grade"];
         if (ReqVal.TryGet("attach_sqlno") != "") where += " and attach_sqlno=" + ReqVal["attach_sqlno"];
         if (ReqVal.TryGet("att_sqlno") != "") where += " and att_sqlno=" + ReqVal["att_sqlno"];
         DataTable dtCaseAttach = Sys.GetDmtAttach(conn, seq, seq1, "cgrs", where);
-
+        
         add_gs["cgrs"] = ReqVal.TryGet("cgrs");
         add_gs["fees"] = "0";
         add_gs["fees_stat"] = "N";
@@ -205,11 +205,24 @@
 
         //抓取客收進度for文件上傳&發文方式
         add_gs["case_step_grade"] = "";
-        if (dtStepDmtCR.Rows.Count > 0) {
-            add_gs["case_step_grade"] = dtStepDmtCR.Rows[0].SafeRead("case_step_grade", "");
-            add_gs["send_way"] = dtStepDmtCR.Rows[0].SafeRead("send_way", "");
+        if(dtStepDmtCR.Rows.Count>0){
+            add_gs["case_step_grade"]= dtStepDmtCR.Rows[0].SafeRead("case_step_grade", "");
+            add_gs["send_way"]= dtStepDmtCR.Rows[0].SafeRead("send_way", "");
         }
-
+		//若為電子送件,預設收據種類為電子收據
+		if (add_gs["receipt_type"]==""){
+			if (add_gs["send_way"]=="E")
+				add_gs["receipt_type"]="E";
+			else
+				add_gs["receipt_type"]="P";
+        }
+		//若為電子送件,設定預設值
+        if (add_gs["receipt_title"] == "") {
+            if (add_gs["send_way"] == "E")
+                add_gs["receipt_title"] = Sys.getDefaultTitle();
+            else
+                add_gs["receipt_title"] = "B";
+        }
         add_gs["step_date"] = DateTime.Today.ToShortDateString();
         //總收發文日期
         //台北所總收發當天就會發文
@@ -223,48 +236,12 @@
         }
 
         //電子送件之總發文日皆為區所發文日，即當天
-        if (add_gs["send_way"] == "E") {
+		if (add_gs["send_way"]=="E"){
             add_gs["mp_date"] = DateTime.Today.ToShortDateString();
         }
 
-        //有交辦發文檔以交辦發文檔為準
-        if (dtAttCase.Rows.Count > 0) {
-            add_gs["fees"] = dtAttCase.Rows[0].SafeRead("fees", "0");
-            add_gs["fees_stat"] = dtAttCase.Rows[0].SafeRead("fees_stat", "");
-            add_gs["send_cl"] = dtAttCase.Rows[0].SafeRead("send_cl", "");
-            add_gs["send_cl1"] = dtAttCase.Rows[0].SafeRead("send_cl1", "");
-            add_gs["send_sel"] = dtAttCase.Rows[0].SafeRead("send_sel", "");
-            add_gs["rs_type"] = dtAttCase.Rows[0].SafeRead("rs_type", "");
-            add_gs["rs_class"] = dtAttCase.Rows[0].SafeRead("rs_class", "");
-            add_gs["rs_code"] = dtAttCase.Rows[0].SafeRead("rs_code", "");
-            add_gs["receipt_type"] = dtAttCase.Rows[0].SafeRead("receipt_type", "");
-            add_gs["receipt_title"] = dtAttCase.Rows[0].SafeRead("receipt_title", "");
-            add_gs["rectitle_name"] = dtAttCase.Rows[0].SafeRead("rectitle_name", "");
-            add_gs["send_way"] = dtAttCase.Rows[0].SafeRead("send_way", "");
-        }
-
-        //DB無值時預設選項
-        //若為電子送件,預設收據種類為電子收據
-        if (add_gs["receipt_type"] == "") {
-            if (add_gs["send_way"] == "E")
-                add_gs["receipt_type"] = "E";
-            else
-                add_gs["receipt_type"] = "P";
-        }
-        //若為電子送件,設定預設值
-        if (add_gs["receipt_title"] == "") {
-            if (add_gs["send_way"] == "E") {
-                add_gs["receipt_title"] = Sys.getDefaultTitle();
-                SQL = "Select a.ap_cname from dmt_temp_ap a where a.in_no='" + in_no + "' and a.case_sqlno=0 ";
-                SQL += " order by a.server_flag desc,a.temp_ap_sqlno ";
-                object objResult = conn.ExecuteScalar(SQL);
-                add_gs["rectitle_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-            } else {
-                add_gs["receipt_title"] = "B";
-            }
-        }
-
-        var settings = new JsonSerializerSettings() {
+        var settings = new JsonSerializerSettings()
+        {
             Formatting = Formatting.Indented,
             ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
             Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
@@ -424,7 +401,6 @@
 <div id="dialog"></div>
 
 <iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
-<div id="msg" style='text-align:left;height:100px'></div>
 </body>
 </html>
 
@@ -509,7 +485,7 @@
             $("#receipt_title").val(jMain.add_gs.receipt_title);
             $("#rectitle_name").val(jMain.add_gs.rectitle_name);
 
-            brta311form.add_ar();//增加一筆交辦單號
+            brta311form.add_ar();
             $("#case_no_1").val(jMain.case_main[0].case_no);
             brta311form.getmoney(1);//依交辦單號抓取服務費、規費
             $("#remark").val(jMain.case_main[0].remark);
@@ -539,57 +515,13 @@
                 $("#tr_respdate").show();//期限銷管
             }
         }else{
-            $("#cgrs").val(jMain.add_gs.cgrs).triggerHandler("change");
-            $("#span_fseq").html(jMain.case_main[0].fseq);
-            $("#oldseq,#grseq,#seq").val(jMain.dmt[0].seq);
-            $("#oldseq1,#grseq1,#seq1").val(jMain.dmt[0].seq1);
-            brta21form.btnseq();//[確定]
-            $("#step_date").val(jMain.add_gs.step_date);
-            $("#mp_date").val(jMain.add_gs.mp_date);
-            $("#send_cl").val(jMain.add_gs.send_cl);
-            $("#send_cl1").val(jMain.add_gs.send_cl1);
-            $("#fees").val(jMain.add_gs.fees);
-            $("#fees_stat").val(jMain.add_gs.fees_stat);
-            $("#rs_type").val(jMain.add_gs.rs_type).triggerHandler("change");
-            $("#case_arcase_class,#rs_class,#hrs_class").val(jMain.add_gs.rs_class);
-            $("#rs_class").triggerHandler("change");
-            $("#case_arcase,#rs_code,#hrs_code").val(jMain.add_gs.rs_code);
-            $("#rs_code").triggerHandler("change");
-            $("#send_way,#old_send_way").val(jMain.add_gs.send_way);
-            $("#receipt_type").val(jMain.add_gs.receipt_type);
-            $("#receipt_title").val(jMain.add_gs.receipt_title);
-            $("#rectitle_name").val(jMain.add_gs.rectitle_name);
-
-            brta311form.add_ar();//增加一筆交辦單號
-            $("#case_no_1").val(jMain.case_main[0].case_no);
-            brta311form.getmoney(1);//依交辦單號抓取服務費、規費
             $("#remark").val(jMain.case_main[0].remark);
-            $("#contract_flag").val(jMain.case_main[0].ncontract_flag);
-
+            $("#chk_typestr").html(jMain.add_gs.chk_typestr);
             if(jMain.attcase_dmt.length>0) {
                 $("#span_rs_no").html("發文序號："+jMain.attcase_dmt[0].rs_sqlno);
-                $("#step_date").val(dateReviver(jMain.attcase_dmt[0].step_date,'yyyy/M/d'));
-                $("#mp_date").val(dateReviver(jMain.attcase_dmt[0].mp_date,'yyyy/M/d'));
-                $("#send_cl").val(jMain.attcase_dmt[0].send_cl);
-                $("#send_cl1").val(jMain.attcase_dmt[0].send_cl1);
-                $("#send_sel").val(jMain.attcase_dmt[0].send_sel);
-                $("#pr_scode").val(jMain.attcase_dmt[0].pr_scode);
-                $("#remark").val(jMain.attcase_dmt[0].remark);
                 $("#act_code,#hact_code").val(jMain.attcase_dmt[0].act_code);
                 $("#act_code").triggerHandler("change");
             }
-            if((main.right&128)!=0||(main.right&256)!=0){
-                $("input[name='rfees_stat'][value='"+jMain.add_gs.fees_stat+"']").prop("checked",true);
-            }
-
-            openread();	//控制特定欄位不能修改
-            upload_form.appendAttach(jMain.case_attach);//顯示上傳文件資料
-            $("#task").val("conf");
-            $("#chk_typestr").html(jMain.add_gs.chk_typestr);
-        }
-
-        if(jMain.dmt[0].ectrlnum!=""){
-            $("#btndis").val("進度查詢及銷管制("+jMain.dmt[0].ectrlnum+"件)");
         }
 
         if($("#submittask").val()=="U") {

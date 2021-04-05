@@ -9,13 +9,13 @@
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    public int HTProgRight = 0;
 
     protected string submitTask = "";
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//功能權限代碼
     protected string SQL = "";
 
     protected string html_ctrl = "";
+    protected string ectrlnum = "";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
@@ -55,9 +55,9 @@
 			        <%if (submitTask == "A" || prgid == "brta24" || prgid == "brta38") {%><!--國內案官收確認作業//國內案官發確認作業-->
 				        <input type=button value ="減少一筆管制" class="cbutton" id=res_button name=res_button onclick="brta212form.del_ctrl()">
 			        <%}%>
-			        <input type="hidden" name="rsqlno" id="rsqlno">
+			        <input type="text" name="rsqlno" id="rsqlno">
 			        <%if (prgid != "brt51" && prgid != "brta22" && prgid != "brta78") {%><!--國內案客戶收文確認//國內案客戶收文作業//國內案確認轉案作業-->
-			            <input type=button class="c1button" id="btndis" name="btndis" value ="進度查詢及銷管制" onclick="brta212form.btndis()"
+			            <input type=button class="c1button" id="btndis" name="btndis" value ="進度查詢及銷管制" onclick="brta212form.btndis()" />
 			        <%}%>
 			        <input type="button" class="c1button" value="查官收未銷法定期限" onclick="brta212form.queryjob()" style="display:none" id="btnqrygrlastdate">
 		        </TD>
@@ -164,6 +164,12 @@
         $("#ctrlnum").val(Math.max(0, nRow - 1));
     }
 
+    //管制期限清空
+    brta212form.empty_ctrl = function () {
+        $("#tabctrl tbody").empty();
+        $("#ctrlnum").val("0");
+    }
+
     //設定欄位開關??
     brta212form.ctrl_line_lock=function(nRow) {
         if ($("#resp_date_" + nRow).val() != "") {
@@ -202,8 +208,7 @@
 
     //[進度查詢及銷管制]
     brta212form.btndis=function () {
-        //***todo
-        var tlink = getRootPath() + "/brtam/brta21disEdit.aspx?branch=<%=Session["seBranch"]%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&rsqlno=" + $("#rsqlno").val() + "&step_grade=" + $("#nstep_grade").val();
+        var tlink = getRootPath() + "/brtam/brta21disEdit.aspx?prgid=<%=prgid%>&branch=<%=Session["seBranch"]%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&rsqlno=" + $("#rsqlno").val() + "&step_grade=" + $("#nstep_grade").val();
         //本發只能進度查詢
         if ("<%=prgid%>" == "brta34") {
             tlink += "&qtype=R&submitTask=Q";
@@ -245,7 +250,7 @@
         }
 
         //***todo
-        var tlink = getRootPath() + "/brt6m/brt62_steplist.aspx?seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&step_grade=" + $("#nstep_grade").val() + "&ctrl_type=A1&prgid=<%=prgid%>&seqnum=" + pseqnum;
+        var tlink = getRootPath() + "/brt6m/brt62_steplist.aspx?prgid=<%=prgid%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&step_grade=" + $("#nstep_grade").val() + "&ctrl_type=A1&prgid=<%=prgid%>&seqnum=" + pseqnum;
         window.open(tlink, "mywindowN", "width=700,height=480,toolbar=yes,menubar=yes,resizable=yes,scrollbars=yes,status=0,top=50,left=80");
     }
 </script>
