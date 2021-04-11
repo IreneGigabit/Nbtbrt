@@ -268,7 +268,7 @@
         $("#cust_area").val(dmt_data[0].cust_area);
         $("#cust_seq").val(dmt_data[0].cust_seq);
         $("#cust_name").val(dmt_data[0].cust_name);
-        $("#agt_no").val(dmt_data[0].agt_no);
+        $("#agt_no").val(dmt_data[0].agt_nonm);
         $("#scode").val(dmt_data[0].scodenm);
         $("#apply_date").val(dateReviver(dmt_data[0].apply_date,'yyyy/M/d'));
         $("#apply_no").val(dmt_data[0].apply_no);
@@ -317,7 +317,7 @@
         //$("#oldseq,#grseq,#seq").val(dmt_data[0].seq);
         //$("#oldseq1,#grseq1,#seq1").val(dmt_data[0].seq1);
         $("#oldseq,#grseq").val(dmt_data[0].seq);
-        $("#oldseq1,#grseq").val(dmt_data[0].seq1);
+        $("#oldseq1,#grseq1").val(dmt_data[0].seq1);
         $("#keyseq").val("Y");//有按確定給Y
         $("#btnseq").lock();
 

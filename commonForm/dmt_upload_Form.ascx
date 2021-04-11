@@ -120,13 +120,13 @@
                 <input type=button id='btn<%#uploadfield%>_D_##' name='btn<%#uploadfield%>_D_##' class='cbutton <%=Lock.TryGet("Qup")%>' value='刪除' onclick="upload_form.DelAttach('##')">
                 <input type=button id='btn<%#uploadfield%>_S_##' name='btn<%#uploadfield%>_S_##' class='cbutton' value='檢視' onclick="upload_form.PreviewAttach('##')">
                 <input type='hidden' id='<%#uploadfield%>_size_##' name='<%#uploadfield%>_size_##'>
-                <input type='hidden' id='<%#uploadfield%>_##' name='<%#uploadfield%>_##'>
+                <input type='text' id='<%#uploadfield%>_##' name='<%#uploadfield%>_##'>
                 <input type='hidden' id='tstep_grade_##' name='tstep_grade_##'>
                 <input type='hidden' id='attach_sqlno_##' name='attach_sqlno_##'>
                 <input type='hidden' id='attach_flag_##' name='attach_flag_##'>
                 <!--span id="span_source_##" style="display:none"--><BR>原始檔名：<input type='text' id='source_name_##' name='source_name_##' class=sedit readonly size=50><!--/span-->
                 <input type='hidden' id='attach_no_##' name='attach_no_##' value='##'>
-                <input type='hidden' id='old_<%#uploadfield%>_name_##' name='old_<%#uploadfield%>_name_##'>
+                <input type='text' id='old_<%#uploadfield%>_name_##' name='old_<%#uploadfield%>_name_##'>
                 <input type='hidden' id='doc_type_mark_##' name='doc_type_mark_##'>
                 <input type='hidden' id='attach_flagtran_##' name='attach_flagtran_##'><!--2014/12/13柳月for異動作業增加-->
                 <input type='hidden' id='tran_sqlno_##' name='tran_sqlno_##' value='0'><!--2014/12/13柳月for異動作業增加-->

@@ -69,6 +69,7 @@
 				    <option value="Z">Z_雜卷</option>
 				    <%if(Session["seBranch"].ToString()=="N")%><option value="M">M_大陸案</option>
 			    </select>
+			    <input type=button class="cbutton" name="Qry_step1" id="Qry_step1" value ="查詢案件進度" onclick="dmt_form.Qstepclick(reg.New_seq.value, reg.New_seq1.value)">
             </span>
             <span id=CaseNewAssign><!--新案(指定編號)-->
  			    <INPUT TYPE=text id=New_Ass_seq NAME=New_Ass_seq SIZE=<%=Sys.DmtSeq%> MAXLENGTH=<%=Sys.DmtSeq%>>-<INPUT TYPE=text id=New_Ass_seq1 NAME=New_Ass_seq1 SIZE=<%=Sys.DmtSeq1%> MAXLENGTH=<%=Sys.DmtSeq1%> value="" style="text-transform:uppercase;">	
@@ -938,11 +939,11 @@
             $("#DelayCase,#CaseNewAssign").hide();//舊案/新案(指定編號)
             $("#CaseNew").show();//新案
             $("#A9Ztr_endtype,#A9Ztr_backflag").hide();//結案/復案
-            if(main.prgid=="brt52"){
+            if(main.prgid.Left(4)=="brt1"){
+                $("#New_seq").val("");
+            } else {
                 $("#New_seq,#tfzb_seq").val(jMain.case_main[0].seq);
                 $("#New_seq1,#tfzb_seq1").val(jMain.case_main[0].seq1);
-            }else{
-                $("#New_seq").val("");
             }
             Filecanput();
             $("#F_cust_seq").unlock();

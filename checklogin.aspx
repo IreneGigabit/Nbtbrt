@@ -73,7 +73,7 @@
                     Session["sc_name"] = dr["sc_name"].ToString();
                     Session["SeSysPwd"] = dr["sys_pwd"].ToString();
                     Session["SeBranch"] = dr["DataBranch"].ToString();
-                    Session["Dept"] = dr["Dept"].ToString().ToLower();
+                    Session["Dept"] = dr["Dept"].ToString();
                     Session["Syscode"] = Sys.Syscode;//.getAppSetting("syscode");// dr["Syscode"].ToString();//因有新舊資料問題,改用舊系統的syscode
                     Session["LoginGrp"] = dr["LoginGrp"].ToString();
                     Session["GrpName"] = dr["GrpName"].ToString();

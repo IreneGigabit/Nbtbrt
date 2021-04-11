@@ -221,6 +221,16 @@ public partial class Sys
             if (sFi.FullName.ToLower() != dFi.FullName.ToLower()) {
                 HttpContext.Current.Response.Write("衝突備份=" + dFi.DirectoryName + "\\" + backup_name + "<HR>");
             }
+            //來源跟目的不同時才要搬,否則會出錯
+            //測試模式不搬動.只複製檔案
+            if (sFi.FullName.ToLower() != dFi.FullName.ToLower()) {
+                if (dFi.Exists) {
+                    dFi.CopyTo(dFi.DirectoryName + "\\" + backup_name, true);
+                    sFi.CopyTo(dFi.FullName, true);
+                } else {
+                    sFi.CopyTo(dFi.FullName);
+                }
+            }
         }
     }
     #endregion

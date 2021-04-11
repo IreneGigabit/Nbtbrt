@@ -327,6 +327,8 @@
 
         if($("#submittask").val()!="Edit"){//不是編輯模式全部鎖定
             $("select,textarea,input,button").lock();
+            //例外開啟的物件
+            $("#Qry_step1").unlock();
         }
     }
     

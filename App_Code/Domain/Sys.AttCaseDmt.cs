@@ -15,7 +15,7 @@ public partial class Sys
 
         SQL = "select *,''rs_class_name,''rs_code_name,''act_code_name,''ncase_stat,''ncase_statnm,''rs_agt_nonm,''markb ";
         SQL += "from attcase_dmt where 1=1 ";
-        if (att_sqlno != "") SQL += "and in_no='" + att_sqlno + "'";
+        if (att_sqlno != "") SQL += "and att_sqlno='" + att_sqlno + "'";
         if (in_no != "") SQL += "and in_no='" + in_no + "'";
         conn.DataTable(SQL, dt);
 

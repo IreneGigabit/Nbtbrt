@@ -21,9 +21,9 @@
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
             string isql = "select in_no from case_dmt where case_no = '" + case_no + "'";
             
-            SQL = "select seq,seq1 from case_dmt where in_no in ('" + isql + "')";
+            SQL = "select seq,seq1 from case_dmt where in_no in (" + isql + ")";
             SQL += " union ";
-            SQL += " select seq,seq1 from case_dmt1 where in_no in ('" + isql + "')";
+            SQL += " select seq,seq1 from case_dmt1 where in_no in (" + isql + ")";
             SQL += " order by seq,seq1 ";
             conn.DataTable(SQL, dt);
         }

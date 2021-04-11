@@ -103,9 +103,10 @@
             FormName += "「01」表組主管→部門主管→區所會計檢核→區所主管→商標經理→程序收文； <br>\n";
         }
 
-        //轉上級人員
         DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), Request["job_scode"]);
         MasterList.ShowTable();
+        
+        //轉上級人員
         if (job_grplevel == "0") {//專商經理
             txtSMaster = "";
             txtSMastercode = "";
@@ -193,7 +194,7 @@
             }
 
             if (ReqVal.TryGet("scode") != "*" && ReqVal.TryGet("scode") != "") {
-                SQL += " and A.in_scode = '" + Request["scode"] + "'";
+                SQL += " and b.in_scode = '" + Request["scode"] + "'";
             }
             if (ReqVal.TryGet("dtype") == "1") {
                 SQL += " and A.ctrl_date between '" + Request["Sdate"] + "' and '" + Request["Edate"] + "'";
@@ -219,29 +220,30 @@
 
             //分頁完再處理其他資料才不會虛耗資源
             for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
+                DataRow dr=page.pagedTable.Rows[i];
                 int ctrl_rowspan = 1;
                 if (qs_dept == "t") {
-                    SQL = "Select remark from cust_code where cust_code='__' and code_type='" + page.pagedTable.Rows[i]["arcase_type"] + "'";
+                    SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
                     object objResult = conn.ExecuteScalar(SQL);
                     string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                    page.pagedTable.Rows[i]["link_remark"] = link_remark;//案性版本連結
+                    dr["link_remark"] = link_remark;//案性版本連結
 
-                    page.pagedTable.Rows[i]["chk_stat"] = "N";
-                    page.pagedTable.Rows[i]["accdchk_flag"] = "N";
+                    dr["chk_stat"] = "N";
+                    dr["accdchk_flag"] = "N";
 
-                    if (page.pagedTable.Rows[i].SafeRead("ar_mark", "") == "D") {
-                        string remark1 = page.pagedTable.Rows[i]["remark"].ToString();
+                    if (dr.SafeRead("ar_mark", "") == "D") {
+                        string remark1 = dr["remark"].ToString();
                         ctrl_rowspan += 1;
                         if (remark1 == "") {
                             //抓取交辦內容
-                            SQL = "select tran_remark1 from dmt_tran where in_no='" + page.pagedTable.Rows[i]["in_no"] + "'";
+                            SQL = "select tran_remark1 from dmt_tran where in_no='" + dr["in_no"] + "'";
                             objResult = conn.ExecuteScalar(SQL);
                             remark1 = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
                         }
-                        page.pagedTable.Rows[i]["tran_remark1"] = remark1;//扣收入原因
+                        dr["tran_remark1"] = remark1;//扣收入原因
                     }
 
-                    if (page.pagedTable.Rows[i].SafeRead("discount_remark", "") != "") {
+                    if (dr.SafeRead("discount_remark", "") != "") {
                         ctrl_rowspan += 1;
                     }
 
@@ -253,31 +255,31 @@
                     SQL = "select a.item_service as case_service,a.item_fees as case_fees, service*item_count as fee_service,fees*item_count AS fee_Fees ";
                     SQL += "from caseitem_dmt a ";
                     SQL += "inner join case_fee b on a.item_arcase=b.rs_code ";
-                    SQL += "where a.in_no='" + page.pagedTable.Rows[i].SafeRead("in_no", "") + "' ";
-                    SQL += "and b.dept='T' and b.country='T' and '" + page.pagedTable.Rows[i].GetDateTimeString("case_date", "yyyy/MM/dd HH:mm:ss") + "' between b.beg_date and b.end_date ";
-                    using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                        if (dr.Read()) {
-                            T_Service += dr.SafeRead("case_service", 0);
-                            P_Service += dr.SafeRead("Fee_service", 0);
-                            T_Fees += dr.SafeRead("Case_Fees", 0);
-                            P_Fees += dr.SafeRead("Fee_Fees", 0);
+                    SQL += "where a.in_no='" + dr.SafeRead("in_no", "") + "' ";
+                    SQL += "and b.dept='T' and b.country='T' and '" + dr.GetDateTimeString("case_date", "yyyy/MM/dd HH:mm:ss") + "' between b.beg_date and b.end_date ";
+                    using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                        if (dr0.Read()) {
+                            T_Service += dr0.SafeRead("case_service", 0);
+                            P_Service += dr0.SafeRead("Fee_service", 0);
+                            T_Fees += dr0.SafeRead("Case_Fees", 0);
+                            P_Fees += dr0.SafeRead("Fee_Fees", 0);
                         }
                     }
-                    page.pagedTable.Rows[i]["T_Service"] = T_Service;
-                    page.pagedTable.Rows[i]["T_Fees"] = T_Fees;
-                    page.pagedTable.Rows[i]["P_Service"] = P_Service;
-                    page.pagedTable.Rows[i]["P_Fees"] = P_Fees;
-                    page.pagedTable.Rows[i]["fseq"] = page.pagedTable.Rows[i].SafeRead("seq", "") + (page.pagedTable.Rows[i].SafeRead("seq1", "_") != "_" ? "-" + page.pagedTable.Rows[i].SafeRead("seq1", "") : "");
+                    dr["T_Service"] = T_Service;
+                    dr["T_Fees"] = T_Fees;
+                    dr["P_Service"] = P_Service;
+                    dr["P_Fees"] = P_Fees;
+                    dr["fseq"] = dr.SafeRead("seq", "") + (dr.SafeRead("seq1", "_") != "_" ? "-" + dr.SafeRead("seq1", "") : "");
                 } else {
 
                 }
 
-                if (page.pagedTable.Rows[i].SafeRead("contract_flag", "") == "") {
-                    page.pagedTable.Rows[i]["contract_flag"] = "N";//契約書後補註記
+                if (dr.SafeRead("contract_flag", "") == "") {
+                    dr["contract_flag"] = "N";//契約書後補註記
                 }
 
-                page.pagedTable.Rows[i]["urlasp"] = GetLink(page.pagedTable.Rows[i]); ;
-                page.pagedTable.Rows[i]["ctrl_rowspan"] = ctrl_rowspan;
+                dr["urlasp"] = GetLink(dr); ;
+                dr["ctrl_rowspan"] = ctrl_rowspan;
 
                 //簽准層級grplevel=2部門主管→11會計→1區所主管→0商標經理
                 string upload_flag = "N";//專案請核單upload_chk=Y需經商標經理簽准
@@ -286,53 +288,53 @@
                 string contract_flag = "N";//契約書後補contract_flag=Y需經區所主管簽准
                 string dis_flag = "N";//折扣簽核dis_flag=Y低於8折或低於7折且服務費<=5000需經區所主管簽准
                 string disT_flag = "N";//折扣簽核disT_flag=Y低於7折或國內案低於7折且服務費>5000需經商標經理簽准
-                if (page.pagedTable.Rows[i].SafeRead("upload_chk", "") == "Y") {//專案請核單upload_chk=Y需經商標經理簽准
+                if (dr.SafeRead("upload_chk", "") == "Y") {//專案請核單upload_chk=Y需經商標經理簽准
                     upload_flag = "Y";//0
                 }
-                if (Convert.ToDecimal(page.pagedTable.Rows[i]["discount"]) > 20) {//折扣低於8折需經區所主管簽准
+                if (Convert.ToDecimal(dr["discount"]) > 20) {//折扣低於8折需經區所主管簽准
                     dis_flag = "Y";
-                    if (Convert.ToDecimal(page.pagedTable.Rows[i]["discount"]) > 30 && Convert.ToDecimal(page.pagedTable.Rows[i]["P_Service"]) > 5000) {//折扣低於7折且服務費>5000需經商標經理簽准
+                    if (Convert.ToDecimal(dr["discount"]) > 30 && Convert.ToDecimal(dr["P_Service"]) > 5000) {//折扣低於7折且服務費>5000需經商標經理簽准
                         disT_flag = "Y";
                     }
                 }
                 if (qs_dept=="e") {//出口案才有扣收入流程
-                    if (page.pagedTable.Rows[i].SafeRead("ar_mark", "") == "D") {//扣收入需經會計檢核
+                    if (dr.SafeRead("ar_mark", "") == "D") {//扣收入需經會計檢核
                         armark_flag = "Y";//11
-                        if (Convert.ToDecimal(page.pagedTable.Rows[i].SafeRead("fees", "")) > 5000) {//扣收入且規費>5000需經商標經理簽准
+                        if (Convert.ToDecimal(dr.SafeRead("fees", "")) > 5000) {//扣收入且規費>5000需經商標經理簽准
                             armarkT_flag = "Y";//0
                         }
                     }
                 }
-                if (page.pagedTable.Rows[i].SafeRead("contract_flag", "") == "Y") {//契約書後補需經區所主管簽准
+                if (dr.SafeRead("contract_flag", "") == "Y") {//契約書後補需經區所主管簽准
                     contract_flag = "Y";//1
                 }
                 
-                page.pagedTable.Rows[i]["upload_flag"] = upload_flag;
-                page.pagedTable.Rows[i]["armark_flag"] = armark_flag;
-                page.pagedTable.Rows[i]["armarkT_flag"] = armarkT_flag;
-                page.pagedTable.Rows[i]["dis_flag"] = dis_flag;
-                page.pagedTable.Rows[i]["disT_flag"] = disT_flag;
+                dr["upload_flag"] = upload_flag;
+                dr["armark_flag"] = armark_flag;
+                dr["armarkT_flag"] = armarkT_flag;
+                dr["dis_flag"] = dis_flag;
+                dr["disT_flag"] = disT_flag;
 
                 //計算簽核層級,並檢查簽准層級=交辦營洽則再往上一級
                 string sign_level = "", sign_levelnm="";
-                DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), page.pagedTable.Rows[i].SafeRead("in_scode", ""));
+                DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), dr.SafeRead("in_scode", ""));
                 if (upload_flag == "Y" || disT_flag == "Y" || armarkT_flag == "Y") {
                     sign_level = "0";//商標經理
                 } else if (armarkT_flag == "Y") {
                     sign_level = "01";//商標經理(會計)
                 } else if (contract_flag == "Y" || dis_flag == "Y") {
                     sign_level = "1";//區所主管
-                    if (page.pagedTable.Rows[i].SafeRead("in_scode", "") == MasterList.Select("grplevel=1")[0]["master_scode"]) {
+                    if (dr.SafeRead("in_scode", "") == MasterList.Select("grplevel=1")[0]["master_scode"]) {
                         sign_level = "0";//商標經理
                     }
                 } else if (armark_flag == "Y") {
                     sign_level = "11";//區所主管(會計)
-                    if (page.pagedTable.Rows[i].SafeRead("in_scode", "") == MasterList.Select("grplevel=1")[0]["master_scode"]) {
+                    if (dr.SafeRead("in_scode", "") == MasterList.Select("grplevel=1")[0]["master_scode"]) {
                         sign_level = "0";//商標經理
                     }
                 } else {
                     sign_level = "2";//部門主管
-                    if (page.pagedTable.Rows[i].SafeRead("in_scode", "") == MasterList.Select("grplevel=2")[0]["master_scode"]) {
+                    if (dr.SafeRead("in_scode", "") == MasterList.Select("grplevel=2")[0]["master_scode"]) {
                         sign_level = "1";//區所主管
                     }
                 }
@@ -343,8 +345,8 @@
                     case "0": sign_levelnm = "0"; break;
                     case "01": sign_levelnm = "01"; break;
                 }
-                page.pagedTable.Rows[i]["sign_level"] = sign_level;
-                page.pagedTable.Rows[i]["sign_levelnm"] = sign_levelnm;
+                dr["sign_level"] = sign_level;
+                dr["sign_levelnm"] = sign_levelnm;
             }
 
             dataRepeater.DataSource = page.pagedTable;
@@ -636,6 +638,7 @@
     <table style="display:<%#page.totRow==0?"none":""%>" border="0" width="100%" cellspacing="0" cellpadding="0">
      <tr><td width="100%">     
        <p align="center">        
+					<input type=hidden value="S" name=mark id=mark>	
             <input type=button value ="送出" class="cbutton bsubmit" onClick="formupdate()" id=btnsend name=btnsend>
             <input type=button value ="取消" class="cbutton" onClick="resetForm()" id=button4 name=button4>
      </td></tr>

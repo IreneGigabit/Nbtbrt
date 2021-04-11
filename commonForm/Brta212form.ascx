@@ -93,7 +93,7 @@
 		</td>
 		<td class=whitetablebg align=center>
 	        <input type=hidden id='octrl_remark_##' name='octrl_remark_##'>
-	        <input type=text id='ctrl_remark_##' name='ctrl_remark_##' class="dateField" size=30 maxlength=60>
+	        <input type=text id='ctrl_remark_##' name='ctrl_remark_##' size=30 maxlength=60>
             <label class="brta78"><input type=checkbox id='brctrl_mgt_##' name='brctrl_mgt_##' value='Y'>需總管處代管期限</label>
 		</td>
         <%if (submitTask == "U" || submitTask == "D" || submitTask == "Q") {%>
@@ -108,7 +108,7 @@
         <%}%>
         <%if ((submitTask=="U" || submitTask=="D") && prgid!="brta34" && prgid!="brta38"){%>
 		<td class=whitetablebg align=center>
-            <input type=checkbox id='delchk_##' name='delchk_##' value="true">
+            <input type=checkbox id='delchk_##' name='delchk_##' value="Y">
 		</td>
         <%}%>
 	</tr>
@@ -178,19 +178,19 @@
             $("#ctrl_date_" + nRow).lock();
             $("#ctrl_remark_" + nRow).lock();
             if ("<%=submitTask%>" == "U" || "<%=submitTask%>" == "D") {
-                $("#delchk_").lock();
+                $("#delchk_" + nRow).lock();
             }
         } else {
             $("#io_flg_" + nRow).val("Y");
             if ("<%=prgid%>" == "brta24") {
-                $("#delchk_").lock();
+                $("#delchk_" + nRow).lock();
             }
         }
         if ("<%=submitTask%>" == "U" || "<%=submitTask%>" == "D") {
-            $("#delchk_").lock();
+            $("#delchk_" + nRow).lock();
         }
         if ("<%=submitTask%>" == "U" || "<%=prgid%>" == "brta34") {//本發作業
-            $("#delchk_").lock();
+            $("#delchk_" + nRow).lock();
             $("#ctrl_type_" + nRow).lock();
             $("#ctrl_date_" + nRow).lock();
             $("#ctrl_remark_" + nRow).lock();

@@ -15,7 +15,7 @@ public partial class Sys
         SQL = "Select *,''scodenm,''s_marknm,''cust_name,'否'con_termnm,''ap_apcust_no,''dmtap_cname ";
         SQL += ",''arcasenm,''now_arcasenm,''now_rsclass,''now_statnm ";
         SQL += ",''rmarkcode,''rmark_codenm,''end_codenm ";
-        SQL += ",''a_last_date,''ectrlnum ";
+        SQL += ",''agt_nonm,''a_last_date,''ectrlnum ";
         SQL += "from dmt where seq='" + seq + "' and seq1='" + seq1 + "'";
         conn.DataTable(SQL, dt);
 
@@ -104,6 +104,14 @@ public partial class Sys
             objResult = conn.ExecuteScalar(SQL);
             string last_date = (objResult == DBNull.Value || objResult == null) ? "" : Util.parseDBDate(objResult.ToString(), "yyyy/M/d");
             dr["a_last_date"] = last_date;
+
+            //取得發文出名代理人
+            SQL = "select treceipt,agt_name from agt where agt_no='" + dt.Rows[i]["agt_no"] + "'";
+            using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                if (dr0.Read()) {
+                    dr["agt_nonm"] = dr0.SafeRead("agt_name", "");
+                }
+            }
 
             //抓取未銷管筆數
             SQL = "select count(*) as ectrlnum from ctrl_dmt where seq=" + dr["seq"] + " and seq1='" + dr["seq1"] + "'";

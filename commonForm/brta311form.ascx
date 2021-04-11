@@ -244,7 +244,7 @@
     <thead>
 		<TR>
 			<TD class=whitetablebg colspan=7><span id="span_seqdesc">一案多件附屬本所編號：</span>
-				<input type=button value ="增加一筆" class="cbutton <%=Lock.TryGet("QLock")%>" id=dseqAdd_button name=dseqAdd_button onclick="brta311form.dseqAdd('N')" >
+				<input type=button value ="增加一筆" style="display:none" class="cbutton <%=Lock.TryGet("QLock")%>" id=dseqAdd_button name=dseqAdd_button onclick="brta311form.dseqAdd('N')" >
 			</TD>
 		</TR>
 		<TR align=center class=lightbluetable>
@@ -737,8 +737,8 @@
                 success: function (json) {
                     var jSeq = $.parseJSON(json);
                     $.each(jSeq, function (i, item) {
-                        var mseq=$("#seq").val().trim()+$("#seq1").val().trim();
-                        var dseq=item.seq.trim()+item.seq1.trim();
+                        var mseq=$.trim($("#seq").val())+$.trim($("#seq1").val());
+                        var dseq=$.trim(item.seq)+$.trim(item.seq1);
                         if(mseq!=dseq){
                             brta311form.dseqAdd("Y");
                             $("#dseq_" + $("#tot_num").val()).val(item.seq);
@@ -746,6 +746,25 @@
                             brta311form.btndseq($("#tot_num").val());//[確定]
                         }
                     })
+                    if (jSeq.length > 0) {
+                        if ($("#rs_code").val() == "FC11"|| $("#rs_code").val() == "FD1"
+                        || $("#rs_code").val() == "FC5" || $("#rs_code").val() == "FC7"|| $("#rs_code").val() == "FCH" ) {
+                            $("#span_no").html("申請號");
+                        }else if ($("#rs_code").val() == "FC21"|| $("#rs_code").val() == "FD2"|| $("#rs_code").val() == "FD3"
+                            || $("#rs_code").val() == "FC6" || $("#rs_code").val() == "FC8"|| $("#rs_code").val() == "FCI" 
+                            || $("#rs_code").val() == "FL5" || $("#rs_code").val() == "FL6"|| $("#rs_code").val() == "FT2" ) {
+                            $("#span_no").html("註冊號");
+                        }
+
+                        if ($("#rs_code").val().Left(2) == "FD") {
+                            $("#span_seqdesc").html("分割案件本所編號:");
+                        } else {
+                            $("#span_seqdesc").html("一案多件附屬本所編號:");
+                        }
+                        $("#tabar1").show();
+                    }else{
+                        $("#tabar1").hide();
+                    }
                 },
                 error: function (xhr) {
                     $("#dialog").html("<a href='" + this.url + "' target='_new'>案性設定載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);

@@ -58,8 +58,8 @@
                     if (Request["task"] == "cancel") {
                         doCancel();
                     }
-                    //conn.Commit();
-                    conn.RollBack();
+                    conn.Commit();
+                    //conn.RollBack();
                 }
                 
                 if (Request["task"] == "pr") {

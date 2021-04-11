@@ -434,6 +434,8 @@
                 $(".tabCont[id!='#upload'] select,.tabCont[id!='#upload'] textarea,.tabCont[id!='#upload'] input,.tabCont[id!='#upload'] button").lock();
             }else{
                 $("select,textarea,input,button").lock();
+                //例外開啟的物件
+                $("#Qry_step1").unlock();
             }
         }
         

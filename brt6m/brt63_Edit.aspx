@@ -155,7 +155,7 @@
         //交辦對應客收進度
         DataTable dtStepDmtCR = Sys.GetStepDmt(conn, seq, seq1, Request["case_no"]);
         //交辦官發檔
-        DataTable dtAttCase = Sys.GetAttCaseDmt(conn, "", in_no);
+        DataTable dtAttCase = Sys.GetAttCaseDmt(conn, ReqVal.TryGet("att_sqlno"), in_no);
         //檢查array.account.plus_temp.chk_type='Y'表會計已確認，只要有一筆 ="Y"就要有警語
         add_gs["chk_type"] = "";
         add_gs["chk_typestr"] = "";
@@ -182,7 +182,7 @@
         if (ReqVal.TryGet("att_sqlno") != "") where += " and att_sqlno=" + ReqVal["att_sqlno"];
         DataTable dtCaseAttach = Sys.GetDmtAttach(conn, seq, seq1, "cgrs", where);
 
-        add_gs["cgrs"] = ReqVal.TryGet("cgrs");
+        add_gs["cgrs"] = ReqVal.TryGet("cgrs").ToUpper();
         add_gs["fees"] = "0";
         add_gs["fees_stat"] = "N";
         //2011/2/18依2010/12/15李協理Email需求，結構分類：C4_行政訴訟預設發文對象為Q_智慧財產法院
@@ -237,9 +237,6 @@
             add_gs["rs_type"] = dtAttCase.Rows[0].SafeRead("rs_type", "");
             add_gs["rs_class"] = dtAttCase.Rows[0].SafeRead("rs_class", "");
             add_gs["rs_code"] = dtAttCase.Rows[0].SafeRead("rs_code", "");
-            add_gs["receipt_type"] = dtAttCase.Rows[0].SafeRead("receipt_type", "");
-            add_gs["receipt_title"] = dtAttCase.Rows[0].SafeRead("receipt_title", "");
-            add_gs["rectitle_name"] = dtAttCase.Rows[0].SafeRead("rectitle_name", "");
             add_gs["send_way"] = dtAttCase.Rows[0].SafeRead("send_way", "");
         }
 
@@ -353,7 +350,9 @@
         <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" /><!--文件上傳畫面-->
     <%}%>
     <br />
-    <input type="hidden" name="rsqlno" id="rsqlno">
+    <%if (prgid=="brt63"&&Request["task"]=="cancel"){%>
+	    <input type="text" name="rsqlno" id="rsqlno">
+	<%}%>
     <table id=tabpr border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%" >
 	    <TR>
 		    <TD align=center colspan=2 class=lightbluetable1><font color=white>承&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;處&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;說&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明</font></TD>
@@ -492,6 +491,7 @@
             $("#span_fseq").html(jMain.case_main[0].fseq);
             $("#oldseq,#grseq,#seq").val(jMain.dmt[0].seq);
             $("#oldseq1,#grseq1,#seq1").val(jMain.dmt[0].seq1);
+            $("#in_scode").val(jMain.case_main[0].in_scode);
             brta21form.btnseq();//[確定]
             $("#step_date").val(jMain.add_gs.step_date);
             $("#mp_date").val(jMain.add_gs.mp_date);
@@ -543,6 +543,7 @@
             $("#span_fseq").html(jMain.case_main[0].fseq);
             $("#oldseq,#grseq,#seq").val(jMain.dmt[0].seq);
             $("#oldseq1,#grseq1,#seq1").val(jMain.dmt[0].seq1);
+            $("#in_scode").val(jMain.case_main[0].in_scode);
             brta21form.btnseq();//[確定]
             $("#step_date").val(jMain.add_gs.step_date);
             $("#mp_date").val(jMain.add_gs.mp_date);
@@ -574,7 +575,7 @@
                 $("#send_cl1").val(jMain.attcase_dmt[0].send_cl1);
                 $("#send_sel").val(jMain.attcase_dmt[0].send_sel);
                 $("#pr_scode").val(jMain.attcase_dmt[0].pr_scode);
-                $("#remark").val(jMain.attcase_dmt[0].remark);
+                $("#job_remark").val(jMain.attcase_dmt[0].remark);
                 $("#act_code,#hact_code").val(jMain.attcase_dmt[0].act_code);
                 $("#act_code").triggerHandler("change");
             }
@@ -1101,8 +1102,7 @@
 
     //for不需發文之銷管期限
     $("#btnresp").click(function() {
-        //***todo
-        window.open(getRootPath() + "/brtam/brta21disEdit.aspx?branch=<%=Session["seBranch"]%>&seq="+$("#seq").val()+"&seq1="+$("#seq1").val()+"&qtype=N&rsqlno="+$("#rsqlno").val()+"&step_grade="+$("#nstep_grade").val()+"&submitTask=A","","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brtam/brta21disEdit.aspx?prgid=<%=prgid%>&branch=<%=Session["seBranch"]%>&seq="+$("#seq").val()+"&seq1="+$("#seq1").val()+"&qtype=N&rsqlno="+$("#rsqlno").val()+"&step_grade="+$("#nstep_grade").val()+"&submitTask=A","","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     });
 
     function toselect() {
@@ -1117,7 +1117,7 @@
 	
         jQuery.support.cors = true;
         $.ajax({ 
-            url: getRootPath() + "/brt6m/Brt63checkWord.aspx",
+            url: getRootPath() + "/brt6m/Brt63checkWordN.aspx",
             type: 'GET', 
             dataType : "text",//回傳的格式為text
             data: { 

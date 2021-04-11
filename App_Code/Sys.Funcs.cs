@@ -444,7 +444,7 @@ public partial class Sys
     /// 組本所編號,ex:NT-33333
     /// </summary>
     public static string formatSeq(string seq, string seq1, string country, string branch, string dept) {
-        string lseq = (seq != "" ? branch + dept.ToUpper() : "");
+        string lseq = (seq != "" ? branch.ToUpper() + dept.ToUpper() : "");
         lseq += (lseq != "" ? "-" : "") + seq;
         lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
@@ -457,7 +457,7 @@ public partial class Sys
     /// 組本所編號,ex:NT33333
     /// </summary>  
     public static string formatSeq1(string seq, string seq1, string country, string branch, string dept) {
-        string lseq = (seq != "" ? branch + dept.ToUpper() + seq : "");
+        string lseq = (seq != "" ? branch.ToUpper() + dept.ToUpper() + seq : "");
         lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
         return lseq;
@@ -1065,6 +1065,13 @@ public partial class Sys
             case "step_dmt":
                 usql = "insert into " + table + "_log(ud_flg,tran_date,tran_scode," + tfield_str + ")";
                 usql += " SELECT " + Util.dbnull(ud_flag) + ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
+                usql += " FROM " + table;
+                usql += " WHERE 1=1 ";
+                usql += wsql;
+                break;
+            case "resp_dmt":
+                usql = "insert into " + table + "_log(ud_flg,resp_flg,tran_date,tran_scode," + tfield_str + ")";
+                usql += " SELECT " + Util.dbnull(ud_flag.Left(1)) + ",'" + ud_flag.Right(1) + "',GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;
                 usql += " WHERE 1=1 ";
                 usql += wsql;

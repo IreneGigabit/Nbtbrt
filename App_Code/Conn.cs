@@ -60,6 +60,25 @@ public static class Conn
 	}
 
     /// <summary>
+    /// 智產會計系統
+    /// </summary>
+    public static string iaccount {
+        get {
+            switch (Host) {
+                case "SINN05":
+                case "SIC10":
+                case "SIS10":
+                case "SIK10":
+                    return Sys.getConnString("prod_iacc");//正式環境
+                case "WEB10":
+                    return Sys.getConnString("test_iacc");//使用者測試環境
+                default:
+                    return Sys.getConnString("dev_iacc");//開發環境
+            }
+        }
+    }
+
+    /// <summary>
     /// 總收發文系統
     /// </summary>
     public static string MG {

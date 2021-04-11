@@ -1238,7 +1238,7 @@
     //for不需發文之銷管期限
     $("#btnresp").click(function() {
         //***todo
-        window.open(getRootPath() + "/brtam/brta21disEdit.aspx?branch=<%=Session["seBranch"]%>&seq="+$("#seq").val()+"&seq1="+$("#seq1").val()+"&qtype=N&rsqlno="+$("#rsqlno").val()+"&step_grade="+$("#nstep_grade").val()+"&submitTask=A","","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brtam/brta21disEdit.aspx?prgid=<%=prgid%>&branch=<%=Session["seBranch"]%>&seq="+$("#seq").val()+"&seq1="+$("#seq1").val()+"&qtype=N&rsqlno="+$("#rsqlno").val()+"&step_grade="+$("#nstep_grade").val()+"&submitTask=A","","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     });
 
     function toselect() {

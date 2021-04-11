@@ -162,7 +162,7 @@ public static partial class Util
 
         //處理空白選項
         if (showEmpty)
-            rtnStr += "<option value='' style='color:blue' selected>請選擇</option>\n";
+            rtnStr += "<option value='' style='color:blue'>請選擇</option>\n";
 
         for (int r = 0; r < dt.Rows.Count; r++) {
             //處理預設欄位條件
