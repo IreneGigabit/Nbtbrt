@@ -402,8 +402,8 @@
 				<label><input type=radio name="signid" value="SY" onclick=tosign() <%#rdoSY%>>簽准</label>
 				<label><input type=radio name="signid" value="SX" onclick=tosign() <%#rdoSX%>>不准，退回承辦</label>
 				<label><input type=radio name="signid" value="ST" onclick=tosign() <%#rodST%>>轉上級簽核</label>
-				<input type=text name=signidnext id=signidnext>
-				<input type=text name=status id=status>
+				<input type=hidden name=signidnext id=signidnext>
+				<input type=hidden name=status id=status>
 			</TD>
 			<TD align=right>
 				<span style="" id="showsign1">
@@ -516,6 +516,7 @@
 
         if ($("#sign_level").val()=="") {
             $("#sign_level").val(sign_level);
+            $("#contract_flag").val(tcontract);
         }
 
         if($("#C_"+tcount).prop("checked")==true){
@@ -552,13 +553,13 @@
     }
 
     function tosign(){
-        if ($("input[name=signid]:checked").val() == "YY") {//簽准
+        if ($("input[name=signid]:checked").val() == "SY") {//簽准
             $("#showsign").hide();//主管
             $("#showsign1").show();//程序人員
-        }else if ($("input[name=signid]:checked").val() == "XX") {//不准退回
+        }else if ($("input[name=signid]:checked").val() == "SX") {//不准退回
             $("#showsign").hide();//主管
             $("#showsign1").hide();//程序人員
-        }else if ($("input[name=signid]:checked").val() == "YT") {//轉上級簽核
+        }else if ($("input[name=signid]:checked").val() == "ST") {//轉上級簽核
             $("#showsign1").hide();//程序人員
             $("#showsign").show();//主管
             $("input[name='upsign']:eq(0)").prop("checked", true);
@@ -569,20 +570,20 @@
     //*****不准退回        :update2	
     function formupdate(){
         var url="";
-        if($("input[name=signid][value='YY']").prop("checked")==true){
+        if($("input[name=signid][value='SY']").prop("checked")==true){
             if ($("#contract_flag").val()== "Y"){
                 alert("選取契約書後補交辦案件依規定需經商標經理及國內所執委簽核才能發文，請點選「轉上級簽核」並選擇簽核主管！");
-                $("input[name='signid'][value='YT']").prop("checked", true).triggerHandler("click");
+                $("input[name='signid'][value='ST']").prop("checked", true).triggerHandler("click");
                 return false;
             }
             $("#status").val("SY");
             $("#signidnext").val($("#prscode").val());//程序
             $("#mark").val("");//是否給代理人簽核
             reg.action = "<%#HTProgPrefix%>_Update.aspx?qs_dept=<%=qs_dept%>";
-        }else if($("input[name=signid][value='XX']").prop("checked")==true){
+        }else if($("input[name=signid][value='SX']").prop("checked")==true){
             $("#status").val("SX");
             reg.action = "<%#HTProgPrefix%>_Update2.aspx?qs_dept=<%=qs_dept%>";
-        }else if($("input[name=signid][value='YT']").prop("checked")==true){
+        }else if($("input[name=signid][value='ST']").prop("checked")==true){
             if($("input[name='upsign']:eq(0)").prop("checked")==true){
                 $("#signidnext").val($("#sMastercode").val());//主管
                 $("#mark").val("");//是否給代理人簽核

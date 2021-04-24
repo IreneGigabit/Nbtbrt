@@ -66,7 +66,7 @@ public static class DataExt
         //內容
         for (int i = 0; i < table.Rows.Count; i++) {
             rtnStr += (rtnStr != "" ? concatStr : "");
-            rtnStr += table.Rows[i][columnName];
+            rtnStr += table.Rows[i][columnName].ToString().Trim();
         }
 
         return rtnStr;
@@ -419,6 +419,22 @@ public static class DataExt
             return dr[colName].ToString() == "1" || dr[colName].ToString() == "Y" || dr[colName].ToString().ToLower() == "true";
         }
         return false;
+    }
+
+    /// <summary>
+    /// 串接指定欄位
+    /// </summary>
+    /// <param name="columnName">欄位名稱</param>
+    /// <param name="concatStr">串接的字串</param>
+    public static string ConcatColumn(this IDataReader dr, string columnName, string concatStr) {
+        string rtnStr = "";
+        //內容
+        while (dr.Read()) {
+            rtnStr += (rtnStr != "" ? concatStr : "");
+            rtnStr += dr[columnName].ToString().Trim();
+        }
+
+        return rtnStr;
     }
     #endregion
 

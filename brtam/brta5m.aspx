@@ -12,6 +12,7 @@
     protected string DebugStr = "";
     protected string StrFormBtnTop = "";
     protected string StrFormBtn = "";
+    protected string FormName = "";
     protected string SQL = "";
 
     protected string cgrs = "";
@@ -68,6 +69,10 @@
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
         }
 
+        if (prgid == "brta51m") {
+            FormName = "官方發文回條：不顯示收據種類為電子收據之資料<BR>\n";
+        }
+        
         emg_scode = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), "T", "mg_pror");//總管處程序人員-正本
         emg_agscode = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), "T", "mg_prorm");//總管處程序人員-副本
         
@@ -115,16 +120,16 @@
 </table>
 
 <form id="reg" name="reg" method="post">
-    <input type="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <input type="text" id=cgrs name=cgrs value=<%=cgrs%>>
-    <input type="text" id=haveword name=haveword>
+    <input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <input type="hidden" id=cgrs name=cgrs value=<%=cgrs%>>
+    <input type="hidden" id=haveword name=haveword>
 
     <div id="id-div-slide">
         <table id="qryForm" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="90%" align="center">	
 	        <tr>
 		        <TD class=lightbluetable align=right width="15%">報表種類：</TD>
 		        <TD class=whitetablebg align=left colspan=3>
-			        <input type="text" id=prtkind name=prtkind>
+			        <input type="hidden" id=prtkind name=prtkind>
                     <%#html_rprtkind%>
                     <%if (cgrs=="GS"){%>
 			            <hr class="style-one" color="blue">
@@ -213,8 +218,7 @@
 </form>
 
 <div align="left">
-    <br />
-    官方發文回條：不顯示收據種類為電子收據之資料
+    <br /><%#FormName%>
 </div>
 
 <div id="dialog"></div>
@@ -498,9 +502,12 @@
                 reg.action = "brta" + $("#prtkind").val() + "Print_word.aspx";
                 reg.submit();
             } else {
-                url = "brta" + $("#prtkind").val() + "Print.aspx";
-                url+="?"+$("#reg").serialize();
+                var url = "brta" + $("#prtkind").val() + "Print.aspx";
+                url += "?" + $("#reg").serialize();
                 window.open(url,"myWindowOne1", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no, scrollbars=yes,titlebar=no");
+                //$('#dialog')
+                //.html('<iframe style="border: 0px;" src="' + url + '" width="100%" height="100%"></iframe>')
+                //.dialog({ autoOpen: true, modal: true, height: 550, width: 750, title: "列印" });
             }
         }
     });

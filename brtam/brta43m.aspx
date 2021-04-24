@@ -4,7 +4,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "收發文共同報表列印";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -19,7 +19,8 @@
     protected string rs_no = "";
 
     protected string html_rprtkind = "";
-    protected string html_sscode1 = "";
+    protected string html_ctrl_type = "";
+    protected string td_tscode = "";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
@@ -32,17 +33,11 @@
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
-
+        
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
         
         cgrs = (Request["cgrs"] ?? "").ToUpper();
-        step_date = (Request["step_date"] ?? "");
-        rs_no = (Request["rs_no"] ?? "").ToUpper();
-        
-        if (cgrs == "CR") HTProgCap = "<font color=blue>客戶</font>";
-        if (cgrs == "GR") HTProgCap = "<font color=blue>官方</font>";
-        HTProgCap += "收文報表列印";
         
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
@@ -61,14 +56,24 @@
         }
         
         //報表種類
-        DataTable dtkind = Sys.getCustCode("rpt_" + cgrs.ToLower() + "_t", "", "");
+        DataTable dtkind = Sys.getCustCode("rpt_cgrs_t", "", "");
         html_rprtkind = dtkind.Radio("rprtkind", "{cust_code}", "{code_name}", "onclick=\"rprtkind_onclick('{cust_code}','{mark1}',this.value)\"", 3);
+        
+        //管制種類
+        html_ctrl_type = Sys.getCustCode("CT", "", "").Option("{cust_code}", "{code_name}",false);
 
-        //洽案營洽
-        SQL = "select scode,sc_name from vscode_type where branch='" + Session["seBranch"] + "' and grpid like '" + Session["Dept"] + "%' and work_type='sales' order by scode";
-        DataTable dtscode = new DataTable();
-        cnn.DataTable(SQL, dtscode);
-        html_sscode1 = dtscode.Option("{scode}", "{scode}_{sc_name}");
+        using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
+            //營洽清單
+            if ((HTProgRight & 64) != 0) {
+                td_tscode = "<select id='scode1' name='scode1' >";
+                td_tscode += Sys.getDmtScode("", "").Option("{scode}", "{star}{scode}_{sc_name}", "style='color:{color}'", true);
+                td_tscode += "<option value='" + Sys.GetSession("seBranch") + Sys.GetSession("dept") + "'>" + Sys.GetSession("seBranch") + Sys.GetSession("dept").ToUpper() + "_部門(開放客戶)</option>";
+                td_tscode += "</select>";
+            } else {
+                td_tscode = "<input type='hidden' id='scode1' name='scode1' readonly class='SEdit' value='" + Session["se_scode"] + "'>";
+                td_tscode = "<input type='text' id='ScodeName' name='ScodeName' readonly class='SEdit' value='" + Session["sc_name"] + "'>";
+            }
+        }
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -117,18 +122,18 @@
                     <%#html_rprtkind%>
 		        </td>
 	        </tr>
-            <TR id="tr_sdate">
-                <td class="lightbluetable" align="right">收文日期：</td>
+	        <tr id="tr_step_date">
+		        <td class="lightbluetable" align="right"><span id="datetitle">收/發</span>文日期：</td>
 		        <td class="whitetablebg" align="left" colspan=3>
-			        <input type="text" id="sdate" name="sdate" size="10" class="dateField" onchange="getRsNo()">～
-			        <input type="text" id="edate" name="edate" size="10" class="dateField" onchange="getRsNo()">
+			        <input type="text" name="sstep_date" id="sstep_date" size="10" maxlength=10 class="dateField" onblur="ChkDate(this)">
+			        <input type="text" name="estep_date" id="estep_date" size="10" maxlength=10 class="dateField" onblur="ChkDate(this)">
 		        </td>
-	       </TR>
+	        </tr>
 	        <tr id="tr_rs_no">
-		        <td class="lightbluetable" align="right">收文字號：</td>
+		        <td class="lightbluetable" align="right"><span id="rsnotitle">收/發</span>文字號：</td>
 		        <td class="whitetablebg" align="left" colspan=3>
-			        <input type="text" id="srs_no" name="srs_no" size="11" maxlength=10>～
-			        <input type="text" id="ers_no" name="ers_no" size="11" maxlength=10>
+			        <input type="text" name="srs_no" id="srs_no" size="11" maxlength=10>～
+			        <input type="text" name="ers_no" id="ers_no" size="11" maxlength=10>
 		        </td>
 	        </tr>
 	        <tr id="tr_seq">
@@ -136,32 +141,29 @@
 		        <td class="whitetablebg" align="left" colspan=3>
 			        <input type="text" id="sseq" name="sseq" size="<%#Sys.DmtSeq%>" maxlength=<%#Sys.DmtSeq%>>～
 			        <input type="text" id="eseq" name="eseq" size="<%#Sys.DmtSeq%>" maxlength=<%#Sys.DmtSeq%>>
-			        <select id=seq1 name=seq1>
-				        <option value="" selected>請選擇</option>
-                        <option value="_">一般</option>
-				        <option value="C">著作權</option>
-                        <option value="Z">雜卷</option>
-			        </select>
 		        </td>
 	        </tr>
-	        <tr id="tr_bdate_days">
-		        <td class=lightbluetable align="right">基準日期：</td>
-		        <td class="whitetablebg" align="left">
-			        <input type="text" id="bdate" name="bdate" size="10" maxlength=10 class="dateField">
+	        <tr id="tr_ctrl_date">
+		        <td class="lightbluetable" align="right" width="15%">稽催日期：</td>
+		        <td class="whitetablebg" align="left" colspan=3>
+			        <input type="text" id="sctrl_date" name="sctrl_date" size="10" maxlength=10 class="dateField" onblur="ChkDate(this)">
+			        <input type="text" id="ectrl_date" name="ectrl_date" size="10" maxlength=10 class="dateField" onblur="ChkDate(this)">
 		        </td>
-		        <td class=lightbluetable align="right">稽催天數：</td>
-		        <td class="whitetablebg" align="left">
-			        <input type="text" id="days"  name="days" size="2" maxlength=2 value=5>
+	        </tr>
+	        <tr id="tr_ctrl_type">
+		        <td class="lightbluetable" align="right" width="15%">管制種類：</td>		
+		        <td class=whitetablebg align="left" colspan=3>
+			        <input type=hidden name="ctrl_name" id="ctrl_name" value="所有管制種類">		
+			        <select name="ctrl_type" id="ctrl_type" onchange="reg.ctrl_name.value=reg.ctrl_type.options(reg.ctrl_type.selectedIndex).text">
+		            <option value="" style="color:blue" selected>所有管制種類</option>
+			        <%#html_ctrl_type%>
+			        </select>
 		        </td>
 	        </tr>
 	        <tr id="tr_scode1">
-		        <td class=lightbluetable align="right" id=salename  width="15%">洽案營洽：</td>
+		        <td class=lightbluetable align="right" id=salename  width="15%">營　　洽：</td>
 		        <td class=whitetablebg align="left" colspan=3>
-			        <input type=hidden name=scode1 id=scode1>
-			        <select id='sscode1' name='sscode1' onchange="reg.scode1.value=this.value">
-		            <option value="" style="color:blue" selected>全部</option>
-                    <%#html_sscode1%>
-			        </select>
+			        <%#td_tscode%>
 		        </td>
 	        </tr>
 	        <tr id="tr_in_date">
@@ -169,6 +171,13 @@
 		        <td class="whitetablebg" align="left" colspan=3>
 			        <input type="text" id="isdate" name="isdate" size="10" class="dateField" onblur="ChkDate(this)">～
 			        <input type="text" id="iedate" name="iedate" size="10" class="dateField" onblur="ChkDate(this)">
+		        </td>
+	        </tr>
+	        <tr id="tr_end_date">
+		        <td class="lightbluetable" align="right" width="15%">結案日期：</td>
+		        <td class="whitetablebg" align="left" colspan=3>
+			        <input type="text" id="esdate" name="esdate" size="10" class="dateField" onblur="ChkDate(this)">～
+			        <input type="text" id="eedate" name="eedate" size="10" class="dateField" onblur="ChkDate(this)">
 		        </td>
 	        </tr>
 	        <tr id="tr_cust">
@@ -179,34 +188,30 @@
 			        <input type="text" id="ecust_seq" name="ecust_seq" size="6" maxlength=6>
 		        </td>
 	        </tr>
-           <TR id="tr_print">
-		        <TD class=lightbluetable align=right>列印選擇：</TD>
-		        <TD class=whitetablebg align=left colspan=3>
-                    <input type=hidden name=hprint id=hprint>
-		            <label><input type=radio value="N" name=rprint>尚未列印</label>
-			        <label><input type=radio value="Y" name=rprint>已列印</label>
-		        </TD>
-	        </TR>
-	        <tr id="tr_scan">
-		        <td class="lightbluetable" align="right">掃描選擇：</td>
+	        <tr id="tr_apcust">
+		        <td class="lightbluetable" align="right">申請人名稱：</td>
 		        <td class="whitetablebg" align="left" colspan=3>
-			        <input type="hidden" name="hscan" id="hscan">
-			        <label><input type="radio" name="rscan" value="N">不需掃描</label>
-			        <label><input type="radio" name="rscan" value="Y">需要掃描</label>
-			        <label><input type="radio" name="rscan" value="*" checked>不指定</label>
+			        <input type="text" id="ap_cname" name="ap_cname" size="40" maxlength="40">
 		        </td>
 	        </tr>
-	        <tr id="tr_receive_way">
-		        <td class="lightbluetable" align="right" >來文方式：</td>
-		        <td class="whitetablebg" align="left" colspan=3>
-		            <input type="hidden" name="hreceive_way" id="hreceive_way" value="">
-			        <input type="radio" name="receive_way" value="R5,R9">紙本收文<!--非電子收文及非電子公文-->
-			        <input type="radio" name="receive_way" value="R5">電子收文
-			        <input type="radio" name="receive_way" value="R9">電子公文
-			        <input type="radio" name="receive_way" value="" checked>不指定
+	        <tr id="tr_sort">
+		        <td class="lightbluetable" align="right" width="15%">排列順序：</td>		
+		        <td class=whitetablebg align="left" colspan=3>
+			        <select id="sort" name="sort">
+				        <option value='scode1' selected>依營洽</option>
+				        <option value='ctrl_date' >依管制期限</option>
+			        </select>
 		        </td>
 	        </tr>
-
+	        <tr id="tr_sort1">
+		        <td class="lightbluetable" align="right" width="15%">排列順序：</td>		
+		        <td class=whitetablebg align="left" colspan=3>
+			        <select id="sort1" name="sort1">
+				        <option value='sort_seq' selected>依本所編號</option>
+				        <option value='sort_cust' >依客戶</option>
+			        </select>
+		        </td>
+	        </tr>
         </table>
         <br>
         <%#DebugStr%>
@@ -217,6 +222,12 @@
         </table>
     </div>
 </form>
+
+<div align="left">
+    <br />
+    *營洽中有　<font color=red size=2>' * '</font>　符號者，表該營洽已離職!!<br>
+    *延展管制表的稽催日期，指專用期限迄日!!<br />
+</div>
 
 <div id="dialog"></div>
 
@@ -236,15 +247,12 @@
         }
 
         $("input.dateField").datepick();
+        $("input[name='rprtkind'][value='433']").prop("disabled", true);//官方回應追蹤報表
 
         init();
-        $("#sdate,#edate,#bdate,#isdate,#iedate").val("<%#DateTime.Today.ToShortDateString()%>");
-        getRsNo();
-        if ("<%#rs_no%>" != "") {
-            window.parent.tt.rows = "30%,70%";
-            $("#sdate,#edate").val("<%#step_date%>");
-            $("#srs_no,#ers_no").val("<%#rs_no%>");
-        }
+        $("#sstep_date,#estep_date,#isdate,#iedate").val("<%#DateTime.Today.ToShortDateString()%>");
+        $("#sctrl_date").val("1980/1/1");
+        $("#ectrl_date").val(Today().addDays(5).format("yyyy/M/d"));
     }
 
     //[重填]
@@ -255,24 +263,24 @@
 
     //////////////////////////////////////////////////////
     function init() {
+        $("#tr_step_date").hide();//收/發文日期
+        $("#tr_rs_no").hide();//收/發文字號
         $("#tr_seq").hide();//本所編號
-        $("#tr_bdate_days").hide();//基準日期
-        $("#tr_scode1").hide();//洽案營洽
+        $("#tr_ctrl_date").hide();//稽催日期
+        $("#tr_ctrl_type").hide();//管制種類
+        $("#tr_scode1").hide();//營洽
         $("#tr_in_date").hide();//立案日期
+        $("#tr_end_date").hide();//結案日期
         $("#tr_cust").hide();//客戶編號
-        $("#tr_print").hide();//列印選擇
-        $("#tr_scan").hide();//掃描選擇
-        $("#tr_receive_way").hide();//來文方式
-        $("#hprint").val("");//列印選擇
-        $("#hscan").val("*");//掃描選擇
+        $("#tr_sort,#tr_sort1").hide();//排列順序
+        $("#tr_apcust").hide();//申請人名稱
     }
 
     function getRsNo() {
-        if ($("#sdate").val() != "" || $("#edate").val() != "") {
-
+        if ($("#sstep_date").val() != "" || $("#estep_date").val() != "") {
             $.ajax({
                 type: "get",
-                url: getRootPath() + "/ajax/json_rs_no.aspx?branch=<%#Session["seBranch"]%>&cgrs=" + $("#cgrs").val() + "&sdate="+ $("#sdate").val() + "&edate=" + $("#edate").val(),
+                    url: getRootPath() + "/ajax/json_rs_no.aspx?branch=<%#Session["seBranch"]%>&cgrs=" + $("#cgrs").val() + "&sdate="+ $("#sstep_date").val() + "&edate=" + $("#estep_date").val(),
                 async: false,
                 cache: false,
                 success: function (json) {
@@ -305,120 +313,60 @@
         }
     });
 
-    //列印選擇
-    $("input[name='rprint']").click(function (e) {
-        $("#hprint").val($(this).val());
-    });
-
-    //掃描選擇
-    $("input[name='rscan']").click(function (e) {
-        $("#hscan").val($(this).val());
-    });
-
-    //來文方式
-    $("input[name='receive_way']").click(function (e) {
-        $("#hreceive_way").val($(this).val());
-    });
-
     //報表種類
     function rprtkind_onclick(prtkind,pword,pvalue){
         $("#prtkind").val(prtkind);
         $("#haveword").val(pword);
         init();
 
-        if ($("#cgrs").val() == "CR") {
-            //411:客收承辦單、412:客收明細、413:案件總簿明細、414:案件總簿簡表
-            if (pvalue == "411") {
-                $("#tr_seq").show();//本所編號
-                $("#tr_print").show();//列印選擇
-                $("input[name='rprint'][value='N']").prop("checked", true).triggerHandler("click");
-            }
-            if (pvalue == "413" || pvalue == "414") {
-                $("#tr_sdate").hide();//收文日期
-                $("#tr_rs_no").hide();//收文字號
-                $("#tr_seq").show();//本所編號
-                $("#tr_cust").show();//客戶編號
-                $("#tr_scode1").show();//洽案營洽
-            } else {
-                $("#tr_sdate").show();//收文日期
-                $("#tr_rs_no").show();//收文字號
-            }
+        $("#rsnotitle,#datetitle").html("收/發");
+        //431:期限管制列印、432:案件狀態列印、433:官方回應追蹤報表、434:延展管制表
+        if (pvalue == "431") {
+            $("#tr_step_date").show();//本所編號
+            $("#tr_seq").show();//本所編號
+            $("#tr_scode1").show();//營洽
+            $("#tr_ctrl_date").show();//稽催日期
+            $("#tr_ctrl_type").show();//管制種類
+            $("#tr_sort").show();//排列順序
+            $("#sstep_date").val("1980/1/1");//收/發文日期
         }
-
-        if ($("#cgrs").val() == "GR") {
-            //421:官收承辦單、422:官收明細
-            if (pvalue == "421") {
-                $("#prtkind").val("411");//報表同客收承辦單
-                $("#tr_seq").show();//本所編號
-                $("#tr_print").show();//列印選擇
-                $("#tr_scan").show();//掃描選擇
-                $("#tr_receive_way").hide();//來文方式
-                $("input[name='rprint'][value='N']").prop("checked", true).triggerHandler("click");
-            }
-            if (pvalue == "422") {
-                $("#tr_receive_way").show();//來文方式
-            }
+        if (pvalue == "432") {
+            $("#tr_in_date").show();//立案日期
+            $("#tr_end_date").show();//結案日期
+            $("#tr_cust").show();//客戶編號
+            $("#tr_seq").show();//本所編號
+            $("#tr_scode1").show();//營洽
+            $("#tr_sort1").show();//排列順序
         }
-
+        if (pvalue == "433") {
+            $("#cgrs").val("GS");
+            $("#tr_step_date").show();//收/發文日期
+            $("#tr_rs_no").show();//收/發文字號
+            $("#tr_seq").show();//本所編號
+            $("#tr_cust").show();//客戶編號
+            $("#rsnotitle,#datetitle").html("發");
+        }
+        if (pvalue == "434") {
+            $("#tr_seq").show();//本所編號
+            $("#tr_scode1").show();//營洽
+            $("#tr_ctrl_date").show();//稽催日期
+            $("#tr_cust").show();//客戶編號
+            $("#tr_apcust").show();//申請人名稱
+            $("#tr_sort1").show();//排列順序
+            $("#sctrl_date").val(Today().addMonths(6).format("yyyy/M/1"));
+            $("#ectrl_date").val(CDate(Today().addMonths(7).format("yyyy/M/1")).addDays(-1).format("yyyy/M/d"));
+        }
     }
-
-    $("input[name='dtype']").click(function (e) {
-        if ($(this).val() == "1") {//管制日期
-            $("#sdate").val(Today().format("yyyy/M/d"));
-            $("#edate").val(Today().addDays(1).format("yyyy/M/d"));
-        } else if ($(this).val() == "2") {//交辦日期
-            $("#sdate").val(Today().format("yyyy/M/1"));
-            $("#edate").val(Today().format("yyyy/M/d"));
-        }else {//不指定
-            $("#sdate").val("");
-            $("#edate").val("");
-        }
-    });
 
     //[列印]
     $("#btnSrch").click(function (e) {
-        if ($("#tr_sdate").is(":visible")) {
-            if ($("#sdate").val() == "" || $("#edate").val() == "") {
-                alert("收文日期任一不得為空白!!!");
-                return false;
-            }
-        }
-
-        if ($("#srs_no").val() == "" && $("#srs_no").val() == "") {
-            getRsNo();
-        }
-
         if ($("#prtkind").val() == "") {
             alert("報表種類必須選擇!!!");
             return false;
         }
-
-        if ($("#cgrs").val() == "CR") {
-            if (chkNum($("#scust_seq").val(), "客戶編號起始號")) return false;
-            if (chkNum($("#ecust_seq").val(), "客戶編號迄止號")) return false;
-            if ($("#scust_seq").val() != "" && $("#ecust_seq").val() != "") {
-                if (CInt($("#scust_seq").val()) > CInt($("#ecust_seq").val())) {
-                    alert("起始客戶編號不可大於終止客戶編號!!!");
-                    return false;
-                }
-            }
-            if ($("#prtkind").val() == "413" || $("#prtkind").val() == "414") {
-                if ($("#scust_seq").val() == "" && $("#ecust_seq").val() == "" && $("#sseq").val() == "" && $("#eseq").val() == "") {
-                    alert("本所編號或客戶編號需輸入其一!!!");
-                    return false;
-                }
-            }
-        }
-
-        if ($("#prtkind").val() == "411" || $("#prtkind").val() == "421") {//承辦單若超過50筆，要縮小範圍
-            var url = "json_data411.aspx?cgrs=" + $("#cgrs").val() + "&sdate=" + $("#sdate").val() + "&edate=" + $("#edate").val() +
-                "&srs_no=" + $("#srs_no").val() + "&ers_no=" + $("#ers_no").val() + "&sseq=" + $("#sseq").val() + "&eseq=" + $("#eseq").val() +
-                "&seq1=" + $("#seq1").val() + "&hprint=" + $("#hprint").val();
-            ajaxScriptByGet("檢查承辦單筆數", url);
-            if (jCount == 0) {//由ajaxScriptByGet呼叫的程式指定值
-                alert("無資料需產生");
-            } else if (jCount > 50) {
-                alert("承辦單超過50筆，請縮小範圍列印!!!");
+        if ($("#tr_ctrl_date").is(":visible")) {
+            if ($("#sctrl_date").val() == "" || $("#ectrl_date").val() == "") {
+                alert("稽催日期任一不得為空白!!!");
                 return false;
             }
         }

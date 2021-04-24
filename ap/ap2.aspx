@@ -34,7 +34,7 @@
 
     private void QueryPageLayout() {
         if ((HTProgRight & 2) > 0) {
-            StrFormBtn += "<input type=\"button\" value=\"執行\" onclick=\"checksys()\" id=\"task1\" class=\"cbutton\">\n";
+            StrFormBtn += "<input type=\"button\" value=\"執行\" onclick=\"checksys()\" id=\"task1\" class=\"cbutton bsubmit\">\n";
             StrFormBtn += "<input type=\"button\" value=\"重填\" id=\"task2\" class=\"cbutton\">\n";
         }
     }

@@ -104,7 +104,9 @@
                 Rpt.ReplaceBookmark("sdate", Request["sdate"]);
                 Rpt.ReplaceBookmark("edate", Request["edate"]);
 
-                DataTable dtDtl = dt.Select("branch='" + dtCL.Rows[i].SafeRead("branch", "") + "' and rs_agt_no='" + dtCL.Rows[i].SafeRead("rs_agt_no", "") + "'", " compname,rs_agt_no,step_date,seq,seq1").CopyToDataTable();
+                //DataTable dtDtl = dt.Select("branch='" + dtCL.Rows[i].SafeRead("branch", "") + "' and rs_agt_no='" + dtCL.Rows[i].SafeRead("rs_agt_no", "") + "'", " compname,rs_agt_no,step_date,seq,seq1").CopyToDataTable();
+                var rows = dt.Select("branch='" + dtCL.Rows[i].SafeRead("branch", "") + "' and rs_agt_no='" + dtCL.Rows[i].SafeRead("rs_agt_no", "") + "'", " compname,rs_agt_no,step_date,seq,seq1");
+                var dtDtl = rows.Any() ? rows.CopyToDataTable() : dt.Clone();
                 for (int d = 0; d < dtDtl.Rows.Count; d++) {
                     DataRow dr=dtDtl.Rows[d];
 

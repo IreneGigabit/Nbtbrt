@@ -820,7 +820,7 @@
     dmt_form.Qstepclick = function(pseq,pseq1) {
         if (pseq!=""&&pseq1!=""){
             //***todo
-            window.open(getRootPath() + "/brtam/brta61Edit.aspx?submitTask=Q&qtype=A&prgid=" + main.prgid + "&closewin=Y&winact=1&aseq=" & pseq & "&aseq1=" & pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+            window.open(getRootPath() + "/brtam/brta61Edit.aspx?submitTask=Q&qtype=A&prgid=" + main.prgid + "&closewin=Y&winact=1&aseq=" + pseq & "&aseq1=" + pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
         }else{
             alert("請先輸入本所編號再執行維護功能!!!");
             return false;

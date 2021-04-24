@@ -5,9 +5,9 @@
 <%@ Import Namespace = "Newtonsoft.Json"%>
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
 <%@ Register Src="~/commonForm/Brta21form.ascx" TagPrefix="uc1" TagName="Brta21form" %>
-<%@ Register Src="~/commonForm/brta311form.ascx" TagPrefix="uc1" TagName="brta311form" %>
+<%@ Register Src="~/commonForm/brta211form.ascx" TagPrefix="uc1" TagName="brta211form" %>
 <%@ Register Src="~/commonForm/Brta212form.ascx" TagPrefix="uc1" TagName="Brta212form" %>
-<%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
+<%@ Register Src="~/commonForm/brt15form.ascx" TagPrefix="uc1" TagName="brt15form" %>
 
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
@@ -141,8 +141,7 @@
     //將共用參數傳給子控制項
     private void ChildBind() {
         Brta21form.Lock = new Dictionary<string, string>(Lock);
-        Brta311form.Lock = new Dictionary<string, string>(Lock);
-        Brta311form.HTProgRight = HTProgRight;
+        Brta211form.Lock = new Dictionary<string, string>(Lock);
     }
 
     private void QueryData() {
@@ -341,45 +340,29 @@
     <input type="text" id="report_name" name="report_name"><!--案性對應申請書名稱xx,改用上傳檔名-->
     <input type="text" id="contract_flag" name="contract_flag"><!--契約書後補註記N:無或已後補,Y:有-->
 
-    <uc1:Brta21form runat="server" id="Brta21form" /><!--案件主檔欄位畫面，與收文共同-->
-    <uc1:brta311form runat="server" ID="Brta311form" /><!--官發欄位畫面-->
-    <%if (prgid=="brta38"){%>
-        <uc1:Brta212form runat="server" ID="Brta212form" /><!--管制欄位畫面，與收文共同-->
-    <%}%>
-    <%if (prgid=="brta38"||(prgid=="brt63"&&(Request["task"]=="pr"||Request["task"]=="prsave"))||prgid=="brt36"){%>
-        <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" /><!--文件上傳畫面-->
-    <%}%>
-    <br />
-    <%if (prgid=="brt63"&&Request["task"]=="cancel"){%>
-	    <input type="text" name="rsqlno" id="rsqlno">
-	<%}%>
-    <table id=tabpr border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%" >
-	    <TR>
-		    <TD align=center colspan=2 class=lightbluetable1><font color=white>承&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;處&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;說&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明</font></TD>
-	    </TR>
-	    <tr>
-		    <td class="lightbluetable" align="right">承辦處理說明/<font color=red>不需發文說明</font>：</td>
-		    <td class="whitetablebg" align="left">
-			    <textarea name="job_remark" id="job_remark" rows="5" cols="70" class="<%#Lock.TryGet("PrLock")%>"></textarea>
-		    </td>
-	    </tr>
-	    <%if(submitTask=="R"){%>
-	        <TR>
-		        <TD align=center colspan=2 class=lightbluetable1><font color=white>程&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;退&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;回&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;說&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明</font></TD>
-	        </TR>
-	        <tr>
-		        <td class="lightbluetable" align="right"><font color=red>程序退回說明</font>：</td>
-		        <td class="whitetablebg" align="left">
-			        <textarea name="approve_desc" id="approve_desc" rows="5" cols="70"></textarea>
-		        </td>
-	        </tr>
-	    <%}%>
-	    <tr id="tr_respdate" style="display:none">
-		    <td class="lightbluetable" align="right">期限銷管：</td>
-		    <td class="whitetablebg" align="left">	
-			    <input type=button class="c1button" name="btnresp" id="btnresp" value ="進度查詢及銷管制">
-		    </td>
-	    </tr>
+    <table cellspacing="1" cellpadding="0" width="98%" border="0">
+    <tr>
+        <td>
+        <table border="0" cellspacing="0" cellpadding="0">
+            <tr id="CTab">
+                <td class="tab" href="#grstep">案件暨進度資料</td>
+                <td class="tab" href="#grconf">後續交辦紀錄</td>
+            </tr>
+        </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="tabCont" id="#grstep">
+                <uc1:Brta21form runat="server" id="Brta21form" /><!--案件主檔欄位畫面，與收文共同-->
+                <uc1:brta211form runat="server" id="Brta211form" /><!--官收欄位畫面-->
+                <uc1:Brta212form runat="server" id="Brta212form" /><!--管制欄位畫面，與收文共同-->
+            </div>
+            <div class="tabCont" id="#grconf">
+                <uc1:brt15form runat="server" id="brt15form" /><!--後續交辦紀錄欄位畫面-->
+            </div>
+       </td>
+    </tr>
     </table>
 
     <div id="div_sign" style="display:none">

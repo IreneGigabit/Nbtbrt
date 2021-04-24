@@ -490,7 +490,7 @@
                         }
 
                         if (main.prgid == "brt51"){
-                            window.parent.Eblank.location.href=getRootPath() +"/brt5m/Brt51_Edit.aspx?prgid=brt51&submittask=A&in_scode=<%=in_scode%>&in_no=<%=in_no%>&cust_area=<%=cust_area%>&cust_seq=<%=cust_seq%>&code=<%=code%>&endflag51="+$("#endflag51").val()+"&end_date51="+$("#end_date51").val()+"&end_code51="+$("#end_code51").val()+"&end_type51="+$("#end_type51").val()+"&end_remark51="+$("#end_remark51").val();
+                            window.parent.Eblank.location.href=getRootPath() +"/brt5m/Brt51_Edit.aspx?prgid=brt51&submittask=A&in_scode=<%=in_scode%>&in_no=<%=in_no%>&cust_area=<%=cust_area%>&cust_seq=<%=cust_seq%>&code=<%=code%>&endflag51="+$("#endflag51").val()+"&end_date51="+$("#end_date51").val()+"&end_code51="+$("#end_code51").val()+"&end_type51="+$("#end_type51").val()+"&end_remark51="+$("#end_remark51").val()+"&seqend_flag="+$("#tfy_end_flag").val();
                         }
                     }
                 }

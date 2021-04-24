@@ -152,13 +152,10 @@
 
                     //更新交辦狀態
                     if (work_opt != "P") {//新增交辦發文，不用修改客收交辦之最近狀態,2015/5/7修改
-
                         SQL = "Insert Into " + tblname + "(Branch,Syscode,Apcode,In_team,case_In_scode,In_no,Case_no,in_scode,in_date,dowhat,Job_scode,job_team,Job_status,from_flag,seq,seq1,step_grade)";
-                        SQL += " select branch,syscode,'" + HTProgCode + "',in_team,case_in_scode,in_no,case_no,'" + Session["Syscode"] + "',getdate(),'" + dowhat + "','" + pr_scode + "','','NN',from_flag,seq,seq1,step_grade ";
+                        SQL += " select branch,syscode,'" + HTProgCode + "',in_team,case_in_scode,in_no,case_no,'" + Session["scode"] + "',getdate(),'" + dowhat + "','" + pr_scode + "','','NN',from_flag,seq,seq1,step_grade ";
                         SQL += " from " + tblname + " where sqlno = '" + pre_sqlno + "'";
                         conn.ExecuteNonQuery(SQL);
-
-
                         if (dept == "e") {
                             //更新交辦檔最近狀態case_ext.stat_code
                             SQL = "update Case_ext set stat_code = 'YZ' where in_no = '" + Min_no + "'";
@@ -259,7 +256,7 @@
             }
 
             string body = dobody();
-            body += "<font color=blue>◎請先通知相關人員至" + qs_deptnm + "契約書後補作業，完成契約書相關文件上傳。<br>";
+            body += "<br><font color=blue>◎請先通知相關人員至" + qs_deptnm + "契約書後補作業，完成契約書相關文件上傳。<br>";
             body += "◎再請至：商標網路作業系統－＞";
             string tsub = "退回";
             body += "承辦作業－＞" + qs_dept_title + "作業，重新進行交辦作業。</font>";

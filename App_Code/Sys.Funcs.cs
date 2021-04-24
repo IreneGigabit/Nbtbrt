@@ -961,6 +961,32 @@ public partial class Sys
     }
     #endregion
 
+    #region getSetting - 取得管制日期顏色&天數設定
+    public static string getSetting(string pDept, string pType, string pDate) {
+        DateTime today = DateTime.Today;
+        string Color = "black";
+
+        if (pType == "1") {
+            switch (pDept.ToUpper()) {
+                //期限稽催列印規則設定 日管制日期超過2天的顯示紅色
+                //管制日期 <= 2 日內顯示紅色
+                case "T":
+                    if (Util.str2Dateime(pDate) <= today.AddDays(2)) {
+                        Color = "red";
+                    }
+                    break;
+                case "P":
+                    if (Util.str2Dateime(pDate) <= today.AddDays(2)) {
+                        Color = "red";
+                    }
+                    break;
+            }
+        }
+
+        return Color;
+    }
+    #endregion
+
     #region insert_log_table
     /// <summary>
     /// 寫入 Log 檔，適用於 log table 中有 ud_flag、ud_date、ud_scode、prgid 這些欄位者
@@ -1061,8 +1087,16 @@ public partial class Sys
                 usql += " WHERE 1=1 ";
                 usql += wsql;
                 break;
-            case "ctrl_dmt":
             case "step_dmt":
+                tfield_str = tfield_str.Replace(",tran_date", "").Replace(",tran_scode", "");
+                usql = "insert into " + table + "_log(ud_flg,tran_date,tran_scode," + tfield_str + ")";
+                usql += " SELECT " + Util.dbnull(ud_flag) + ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
+                usql += " FROM " + table;
+                usql += " WHERE 1=1 ";
+                usql += wsql;
+                break;
+            case "ctrl_dmt":
+                tfield_str = tfield_str.Replace(",tran_date", "").Replace(",tran_scode", "");
                 usql = "insert into " + table + "_log(ud_flg,tran_date,tran_scode," + tfield_str + ")";
                 usql += " SELECT " + Util.dbnull(ud_flag) + ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;
@@ -1070,13 +1104,21 @@ public partial class Sys
                 usql += wsql;
                 break;
             case "resp_dmt":
+                tfield_str = tfield_str.Replace(",tran_date", "").Replace(",tran_scode", "");
                 usql = "insert into " + table + "_log(ud_flg,resp_flg,tran_date,tran_scode," + tfield_str + ")";
                 usql += " SELECT " + Util.dbnull(ud_flag.Left(1)) + ",'" + ud_flag.Right(1) + "',GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + tfield_str;
                 usql += " FROM " + table;
                 usql += " WHERE 1=1 ";
                 usql += wsql;
                 break;
-            default:
+            case "fees_dmt":
+                usql = "insert into " + table + "_log(ud_flg," + tfield_str + ")";
+                usql += " SELECT " + Util.dbnull(ud_flag) + "," + tfield_str;
+                usql += " FROM " + table;
+                usql += " WHERE 1=1 ";
+                usql += wsql;
+                break;
+           default:
                 usql = "insert into " + table + "_log(ud_flag,ud_date,ud_scode,prgid," + tfield_str + ")";
                 usql += " SELECT " + Util.dbnull(ud_flag) + ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + Util.dbnull(prgid) + "," + tfield_str;
                 usql += " FROM " + table;

@@ -478,6 +478,8 @@ public static partial class Util
     /// 將字串日期(ex:2014/12/29)轉成DateTime
     /// </summary>
     public static DateTime str2Dateime(string iStr) {
+        if (iStr == null || iStr == "") return DateTime.MinValue;
+
         return DateTime.ParseExact(iStr.Trim(), "yyyy/M/d", new System.Globalization.CultureInfo("zh-TW"));
     }
     #endregion

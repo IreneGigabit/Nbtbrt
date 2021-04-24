@@ -96,6 +96,7 @@
 		<input type="text" id="in_date" name="in_date" class="sedit" readonly size=10>
 		&nbsp;&nbsp;進度：		
 		<input type="text" id="step_grade" name="step_grade" size=5 class="sedit" readonly>
+        <span style="color:red;display:none" id="span_a_last_date">最小法定期限：<INPUT type=text id=a_last_date NAME=a_last_date SIZE=10 class="SEdit" readonly></span>
 		</TD>
 	</TR>
 	<TR>

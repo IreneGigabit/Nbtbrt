@@ -207,3 +207,24 @@ function chk_dmt_rejno(pobject, plen) {
     var tno = chkgno(pvalue, plen);
     pobject.value = tno;
 }
+
+//檢查本所編號
+function fseq_chk(pObject) {
+    if (pObject.value != "") {
+        var b = pObject.value.trim();
+        if (b.Right(1) == ",") {
+            alert("最後的本所編號不可有逗號!");
+            pObject.focus();
+            return;
+        }
+
+        var b1 = b.split(",");
+        for (var i = 0; i < b1.length; i++) {
+            if (isNaN(b1[i])) {
+                alert("『" + b1[i] + "』需為數值!");
+                pObject.focus();
+                return;
+            }
+        }
+    }
+}

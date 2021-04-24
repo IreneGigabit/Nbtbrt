@@ -28,7 +28,7 @@
     DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        if (cnn != null) conn.Dispose();
+        if (cnn != null) cnn.Dispose();
     }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -142,7 +142,6 @@
 
         DataTable dt = new DataTable();
         conn.DataTable(SQL, dt);
-        Sys.showLog(SQL);
 
         //處理分頁
         int nowPage = Convert.ToInt32(Request["GoPage"] ?? "1"); //第幾頁

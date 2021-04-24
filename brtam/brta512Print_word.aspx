@@ -155,7 +155,9 @@
                 Rpt.CopyTable("tbl_cltitle");//發文對象
 
                 Rpt.ReplaceBookmark("send_clnm", dtCL.Rows[c].SafeRead("send_clnm", ""));
-                DataTable dtDtl = dt.Select("branch='" + dtCL.Rows[c].SafeRead("branch", "") + "' and send_cl='" + dtCL.Rows[c].SafeRead("send_cl", "") + "'").CopyToDataTable();
+                //DataTable dtDtl = dt.Select("branch='" + dtCL.Rows[c].SafeRead("branch", "") + "' and send_cl='" + dtCL.Rows[c].SafeRead("send_cl", "") + "'").CopyToDataTable();
+                var rows = dt.Select("branch='" + dtCL.Rows[c].SafeRead("branch", "") + "' and send_cl='" + dtCL.Rows[c].SafeRead("send_cl", "") + "'");
+                var dtDtl = rows.Any() ? rows.CopyToDataTable() : dt.Clone();
                 for (int d = 0; d < dtDtl.Rows.Count; d++) {
                     Rpt.CopyTable("tbl_detail");//明細行
                     Rpt.ReplaceBookmark("seq", dtDtl.Rows[d].SafeRead("fseq", ""));

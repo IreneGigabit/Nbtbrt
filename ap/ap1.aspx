@@ -96,17 +96,17 @@
         <%#DebugStr%>
         <center>
         <div id="show_syscode" style="display:none">
-		    <input type="button" name="syscode1" value="新增系統代碼" onclick="addsys1('A')" class="cbutton">
+		    <input type="button" name="syscode1" value="新增系統代碼" onclick="addsys1('A')" class="cbutton bsubmit">
 		    <input type="button" name="syscode2" value="查詢系統代碼" onclick="addsys1('Q')" class="cbutton">
 		    <input type="button" name="syscode3" value="重　填" onclick="cleardata()" class="cbutton">
 	    </div>
         <div id="show_menu" style="display:none">
-		    <input type="button" name="menu2" value="新增Menu作業" onclick="menu_control('A')" class="cbutton">
+		    <input type="button" name="menu2" value="新增Menu作業" onclick="menu_control('A')" class="cbutton bsubmit">
 		    <input type="button" name="menu1" value="查詢Menu作業" onclick="menu_control('Q')" class="cbutton">
 		    <input type="button" name="menu3" value="重　填" onclick="cleardata()" class="cbutton">
         </div>
         <div id="show_ap" style="display:none">
-		    <input type="button" name="ap2" value="新增程式代碼" onclick="ap_control('A')" class="cbutton">
+		    <input type="button" name="ap2" value="新增程式代碼" onclick="ap_control('A')" class="cbutton bsubmit">
 		    <input type="button" name="ap1" value="查詢程式代碼" onclick="ap_control('Q')" class="cbutton">
 		    <input type="button" name="ap3" value="重　填" onclick="cleardata()" class="cbutton">
         </div>

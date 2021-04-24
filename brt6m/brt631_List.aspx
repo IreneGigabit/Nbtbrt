@@ -28,7 +28,7 @@
     DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        if (cnn != null) conn.Dispose();
+        if (cnn != null) cnn.Dispose();
     }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -309,7 +309,6 @@
 		                <td align="left" nowrap>&nbsp;<%#Eval("scode_name")%></td>
 		                <td align="left" nowrap title="<%#Eval("approve_desc")%>" style="cursor:pointer;">不發文說明</td>
 				    </tr>
-
 			    </ItemTemplate>
     <FooterTemplate>
 	        </tbody>

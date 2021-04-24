@@ -8,7 +8,7 @@
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"] ?? "商標官方發文明細表";//功能名稱
     protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
-    protected string HTProgCode = "brta5m";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
@@ -121,7 +121,9 @@
             if ((dtlRpt != null)) {
                 string branch = ((DataRowView)e.Item.DataItem).Row["branch"].ToString();
                 string send_cl = ((DataRowView)e.Item.DataItem).Row["send_cl"].ToString();
-                DataTable dtDtl = dtRpt.Select("branch='" + branch + "' and send_cl='" + send_cl + "'").CopyToDataTable();
+                //DataTable dtDtl = dtRpt.Select("branch='" + branch + "' and send_cl='" + send_cl + "'").CopyToDataTable();
+                var rows = dtRpt.Select("branch='" + branch + "' and send_cl='" + send_cl + "'");
+                var dtDtl = rows.Any() ? rows.CopyToDataTable() : dtRpt.Clone();
                 dtlRpt.DataSource = dtDtl;
                 dtlRpt.DataBind();
             }
@@ -216,7 +218,7 @@
 	    </tr>
     </table>
 
-	<asp:Repeater id="clRepeater" runat="server" OnItemDataBound="clRepeater_ItemDataBound">
+	<asp:Repeater id="clRepeater" runat="server" OnItemDataBound="clRepeater_ItemDataBound" Visible='<%#bool.Parse((clRepeater.Items.Count>0).ToString())%>'>
     <HeaderTemplate>
         <table border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%">	
 			<tr align="center" height="20" class="lightbluetable" style="font-size:12pt">

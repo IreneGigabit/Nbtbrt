@@ -8,7 +8,7 @@
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"] ?? "商標官方發文規費明細表";//功能名稱
     protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
-    protected string HTProgCode = "brta5m";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = HttpContext.Current.Request["prgid"] ?? "";//程式代碼
     protected int HTProgRight = 0;
     protected string SQL = "";
@@ -140,7 +140,9 @@
                 string branch = ((DataRowView)e.Item.DataItem).Row["branch"].ToString();
                 string send_cl = ((DataRowView)e.Item.DataItem).Row["send_cl"].ToString();
                 
-                DataTable dtlDtl = dtRpt.Select("branch='" + branch + "' and send_cl='" + send_cl + "'").CopyToDataTable();
+                //DataTable dtlDtl = dtRpt.Select("branch='" + branch + "' and send_cl='" + send_cl + "'").CopyToDataTable();
+                var rows = dtRpt.Select("branch='" + branch + "' and send_cl='" + send_cl + "'");
+                var dtlDtl = rows.Any() ? rows.CopyToDataTable() : dtRpt.Clone();
                 dtlRpt.DataSource = dtlDtl;
                 dtlRpt.DataBind();
             }
@@ -174,7 +176,6 @@
 </head>
 
 <body>
-
     <asp:Label ID="lblEmpty" runat="server" Visible='<%#bool.Parse((clRepeater.Items.Count==0).ToString())%>'>
         <table border="0" width="100%" cellspacing="1" cellpadding="0" align="center">
 		    <tr>
@@ -191,7 +192,7 @@
         <div align="center"><font color="red" size=2>=== 查無資料===</font></div>
     </asp:Label> 
 
-	<asp:Repeater id="clRepeater" runat="server" OnItemDataBound="clRepeater_ItemDataBound">
+	<asp:Repeater id="clRepeater" runat="server" OnItemDataBound="clRepeater_ItemDataBound" Visible='<%#bool.Parse((clRepeater.Items.Count>0).ToString())%>'>
 	<ItemTemplate>
         <table border="0" width="100%" cellspacing="1" cellpadding="0" align="center">
 		    <tr>

@@ -44,7 +44,7 @@
             SQL = "select a.*,(select sc_name from sysctrl.dbo.scode where scode=a.dmt_scode) as sc_name,";
             SQL += "(select sc_name from sysctrl.dbo.scode where scode=a.pr_scode) as pr_name,";
             SQL += "attention,att_company,att_zip,att_addr1,att_addr2,att_fax,att_tel0,att_tel,att_tel1,";
-            SQL += "(select send_way from cs_dmt where rs_no=a.cs_rs_no) as send_way,";
+            SQL += "(select send_way from cs_dmt where rs_no=a.cs_rs_no) as send_way1,";
             SQL += "(select attach_name from dmt_attach where seq=a.seq and seq1=a.seq1 and step_grade=a.step_grade and source='scan' and attach_flag<>'D') as barcode_name ";
             SQL += " from vstep_dmt a where cg='" + cgrs.Left(1) + "' and rs='" + cgrs.Right(1) + "'";
             if ((Request["sdate"] ?? "") != "") SQL += " and step_date>='" + Request["sdate"] + "'";
@@ -57,7 +57,6 @@
             if ((Request["hprint"] ?? "") == "N") SQL += " and isnull(new,'N')='" + Request["hprint"] + "'";
             if ((Request["hscan"] ?? "") != "*" && (Request["hscan"] ?? "") != "") SQL += " and pr_scan='" + Request["hscan"] + "'";
             SQL += " order by rs_no";
-
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
 
@@ -85,7 +84,7 @@
                     //發文日期
                     Rpt.ReplaceBookmark("step_date", dt.Rows[i].GetDateTimeString("step_date", "yyyy/M/d"));
                     //本所編號
-                    Rpt.ReplaceBookmark("fseq", Sys.formatSeq(dt.Rows[i].SafeRead("seq", ""), dt.Rows[i].SafeRead("seq1", ""), "", dt.Rows[i].SafeRead("branch", ""), Sys.GetSession("dept")));
+                    Rpt.ReplaceBookmark("fseq", Sys.formatSeq1(dt.Rows[i].SafeRead("seq", ""), dt.Rows[i].SafeRead("seq1", ""), "", dt.Rows[i].SafeRead("branch", ""), Sys.GetSession("dept")));
                     //客戶編號
                     if (dt.Rows[i].SafeRead("cust_seq", "") != "") {
                         Rpt.ReplaceBookmark("cust_seq", "(" + dt.Rows[i].SafeRead("cust_area", "") + dt.Rows[i].SafeRead("cust_seq", "") + ")", "");
@@ -215,7 +214,7 @@
                         Rpt.ReplaceBookmark("pr_detail", "");
                         //寄發方式
                         string send_way = "", send_waynm = "";
-                        send_way = dt.Rows[i].SafeRead("send_way", "");
+                        send_way = dt.Rows[i].SafeRead("send_way1", "");
                         for (int k = 0; k < swDt.Rows.Count; k++) {
                             if (send_way == swDt.Rows[k].SafeRead("cust_code", "")) {
                                 send_waynm += "(V)" + swDt.Rows[k]["code_name"] + " ";

@@ -218,7 +218,6 @@
             }
         }
 
-
         //入step_dmt	
         SQL = "insert into step_dmt ";
         ColMap.Clear();
@@ -832,79 +831,79 @@
                             conn.ExecuteNonQuery(SQL);
                         }
                     } else {//子本所編號 的 刪除 checked	
-
                         //已存在進度檔, 將之刪除; 若為新增之本所編號又要刪除且與已存在之本所編號重覆 hrs_no 會是空的, 不做此判斷的話會把已存在的重覆本所編號一起刪除
-                        if (dr_rs_no != "" && Request["hrs_no_" + z] != "")
+                        if (dr_rs_no != "" && Request["hrs_no_" + z] != "") {
                             //刪除發文主檔
                             //新增 step_dmt_Log 檔
                             Sys.insert_log_table(conn, "D", HTProgCode, "step_dmt", "rs_no", dr_rs_no, logReason);
 
-                        //刪除 step_dmt
-                        SQL = "delete step_dmt where rs_no='" + dr_rs_no + "'";
-                        conn.ExecuteNonQuery(SQL);
+                            //刪除 step_dmt
+                            SQL = "delete step_dmt where rs_no='" + dr_rs_no + "'";
+                            conn.ExecuteNonQuery(SQL);
 
-                        //刪除總收發文mgt_send,todo_mgt
-                        Delete_mgt_send(dseq, dseq1A, dr_rs_no);
+                            //刪除總收發文mgt_send,todo_mgt
+                            Delete_mgt_send(dseq, dseq1A, dr_rs_no);
 
-                        //若案件主檔案件狀態進度序號等於進度序號，則修改案件狀態
-                        SQL = "select step_grade,isnull(now_grade,0) as now_grade from dmt where seq=" + dseq + " and seq1='" + dseq1A + "'";
-                        string dstep_grade = "0", dnow_grade = "0";
-                        using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                            if (dr.Read()) {
-                                dstep_grade = dr.SafeRead("step_grade", "0");
-                                dnow_grade = dr.SafeRead("now_grade", "0");
-                            }
-                        }
-
-                        if (dr_rs_no != "") {
-                            //更新主檔進度序號
-                            if (Convert.ToInt32(dstep_grade) == Convert.ToInt32(dr_step_grade)) {
-                                SQL = "select max(step_grade) as step_grade from vstep_dmt ";
-                                SQL += " where seq = " + dseq + " and seq1='" + dseq1A + "' and step_grade <> '" + dr_step_grade + "'";
-                                object objResult = conn.ExecuteScalar(SQL);
-                                string rstep_grade = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-
-                                SQL = " update dmt set seq = seq ";
-                                if (rstep_grade != "") SQL += " ,step_grade = '" + rstep_grade + "'";
-                                SQL += " where seq = " + dseq + " and seq1='" + dseq1A + "'";
-                                conn.ExecuteNonQuery(SQL);
-                            }
-
-                            //更新主檔 now_arcase, now_stat ..... 等欄位
-                            if (Convert.ToInt32(dnow_grade) == Convert.ToInt32(dr_step_grade)) {
-                                SQL = "select * from vstep_dmt a, vcode_act b";
-                                SQL += " where a.seq = " + dseq;
-                                SQL += "   and a.seq1 = '" + dseq1A + "'";
-                                SQL += "   and a.rs_no <> '" + dr_rs_no + "'";
-                                SQL += "   and a.rs_type = b.rs_type ";
-                                SQL += "   and a.rs_class = b.rs_class ";
-                                SQL += "   and a.rs_code = b.rs_code ";
-                                SQL += "   and a.act_code = b.act_code ";
-                                SQL += "   and b.cg = a.cg ";
-                                SQL += "   and b.rs = a.rs ";
-                                SQL += "   and b.case_stat is not null ";
-                                SQL += " order by step_grade desc";
-
-                                string nnow_arcase_type = "", nnow_arcase = "", nnow_stat = "", nnow_grade = "", nnow_arcase_class = "", nnow_act_code = "";
-                                using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                                    if (dr.Read()) {
-                                        nnow_arcase_type = dr.SafeRead("rs_type", "");
-                                        nnow_arcase = dr.SafeRead("rs_code", "");
-                                        nnow_stat = dr.SafeRead("case_stat", "");
-                                        nnow_grade = dr.SafeRead("step_grade", "");
-                                        nnow_arcase_class = dr.SafeRead("rs_class", "");
-                                        nnow_act_code = dr.SafeRead("act_code", "");
-                                    }
+                            //若案件主檔案件狀態進度序號等於進度序號，則修改案件狀態
+                            SQL = "select step_grade,isnull(now_grade,0) as now_grade from dmt where seq=" + dseq + " and seq1='" + dseq1A + "'";
+                            string dstep_grade = "0", dnow_grade = "0";
+                            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+                                if (dr.Read()) {
+                                    dstep_grade = dr.SafeRead("step_grade", "0");
+                                    dnow_grade = dr.SafeRead("now_grade", "0");
                                 }
-                                SQL = " update dmt set seq = seq ";
-                                SQL += " ,now_arcase_type = " + Util.dbnull(nnow_arcase_type);
-                                SQL += " ,now_arcase = " + Util.dbnull(nnow_arcase);
-                                SQL += " ,now_stat = " + Util.dbnull(nnow_stat);
-                                SQL += " ,now_grade = " + Util.dbnull(nnow_grade);
-                                SQL += " ,now_arcase_class = " + Util.dbnull(nnow_arcase_class);
-                                SQL += " ,now_act_code = " + Util.dbnull(nnow_act_code);
-                                SQL += " where seq = " + dseq + " and seq1='" + dseq1A + "'";
-                                conn.ExecuteNonQuery(SQL);
+                            }
+
+                            if (dr_rs_no != "") {
+                                //更新主檔進度序號
+                                if (Convert.ToInt32(dstep_grade) == Convert.ToInt32(dr_step_grade)) {
+                                    SQL = "select max(step_grade) as step_grade from vstep_dmt ";
+                                    SQL += " where seq = " + dseq + " and seq1='" + dseq1A + "' and step_grade <> '" + dr_step_grade + "'";
+                                    object objResult = conn.ExecuteScalar(SQL);
+                                    string rstep_grade = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+                                    SQL = " update dmt set seq = seq ";
+                                    if (rstep_grade != "") SQL += " ,step_grade = '" + rstep_grade + "'";
+                                    SQL += " where seq = " + dseq + " and seq1='" + dseq1A + "'";
+                                    conn.ExecuteNonQuery(SQL);
+                                }
+
+                                //更新主檔 now_arcase, now_stat ..... 等欄位
+                                if (Convert.ToInt32(dnow_grade) == Convert.ToInt32(dr_step_grade)) {
+                                    SQL = "select * from vstep_dmt a, vcode_act b";
+                                    SQL += " where a.seq = " + dseq;
+                                    SQL += "   and a.seq1 = '" + dseq1A + "'";
+                                    SQL += "   and a.rs_no <> '" + dr_rs_no + "'";
+                                    SQL += "   and a.rs_type = b.rs_type ";
+                                    SQL += "   and a.rs_class = b.rs_class ";
+                                    SQL += "   and a.rs_code = b.rs_code ";
+                                    SQL += "   and a.act_code = b.act_code ";
+                                    SQL += "   and b.cg = a.cg ";
+                                    SQL += "   and b.rs = a.rs ";
+                                    SQL += "   and b.case_stat is not null ";
+                                    SQL += " order by step_grade desc";
+
+                                    string nnow_arcase_type = "", nnow_arcase = "", nnow_stat = "", nnow_grade = "", nnow_arcase_class = "", nnow_act_code = "";
+                                    using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+                                        if (dr.Read()) {
+                                            nnow_arcase_type = dr.SafeRead("rs_type", "");
+                                            nnow_arcase = dr.SafeRead("rs_code", "");
+                                            nnow_stat = dr.SafeRead("case_stat", "");
+                                            nnow_grade = dr.SafeRead("step_grade", "");
+                                            nnow_arcase_class = dr.SafeRead("rs_class", "");
+                                            nnow_act_code = dr.SafeRead("act_code", "");
+                                        }
+                                    }
+                                    SQL = " update dmt set seq = seq ";
+                                    SQL += " ,now_arcase_type = " + Util.dbnull(nnow_arcase_type);
+                                    SQL += " ,now_arcase = " + Util.dbnull(nnow_arcase);
+                                    SQL += " ,now_stat = " + Util.dbnull(nnow_stat);
+                                    SQL += " ,now_grade = " + Util.dbnull(nnow_grade);
+                                    SQL += " ,now_arcase_class = " + Util.dbnull(nnow_arcase_class);
+                                    SQL += " ,now_act_code = " + Util.dbnull(nnow_act_code);
+                                    SQL += " where seq = " + dseq + " and seq1='" + dseq1A + "'";
+                                    conn.ExecuteNonQuery(SQL);
+                                }
                             }
                         }
                     }

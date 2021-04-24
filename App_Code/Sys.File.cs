@@ -60,6 +60,51 @@ public partial class Sys
         getFileServer(pbrBranch, "");
     }
 
+    #region scanpathT - 國內案掃描文件路徑(虛擬路徑)
+    /// <summary>
+    /// 國內案掃描文件路徑(虛擬路徑)
+    /// </summary>
+    public static string scanpathT {
+        get {
+            return "/nbtbrt/scandoc/" + GetSession("seBranch") + GetSession("dept").ToUpper();
+        }
+    }
+    #endregion
+
+    #region scanpathTE - 出口案掃描文件路徑(虛擬路徑)
+    /// <summary>
+    /// 出口案掃描文件路徑(虛擬路徑)
+    /// </summary>
+    public static string scanpathTE {
+        get {
+            return "/nbtbrt/scandoc/" + GetSession("seBranch") + GetSession("dept").ToUpper() + "E";
+       }
+    }
+    #endregion
+
+    #region formatScanPathNo - 掃瞄文件重新命名規則
+    public static void formatScanPathNo(string pseq, string pseq1, string pstep_grade, string pattach_no, ref string scanpath, ref string scanfile) {
+        //目錄 (ex:/nbtbrt/scandoc/NT/NT-641/)
+        scanpath = Sys.scanpathT + "/" + GetSession("seBranch") + GetSession("Dept").ToUpper() + "-" + pseq.PadLeft(5, '0').Left(3) + "/";
+
+        //檔名 (ex:NT-64150--0002-01.pdf)
+        scanfile = GetSession("seBranch") + GetSession("Dept").ToUpper() + "-" + pseq.PadLeft(5, '0') + "-" + (pseq1 != "_" ? pseq1 : "");
+        scanfile += "-" + pstep_grade.PadLeft(4, '0') + "-" + pattach_no.PadLeft(2, '0') + ".pdf";
+    }
+    #endregion
+
+    #region formatScanPathNoExt - 出口案掃瞄文件重新命名規則
+    public static void formatScanPathNoExt(string pseq, string pseq1, string pstep_grade, string pattach_no, ref string scanpath, ref string scanfile) {
+        //目錄 (ex:/nbtbrt/scandoc/NTE/NTE-641/)
+        scanpath = Sys.scanpathT + "/" + GetSession("seBranch") + GetSession("Dept").ToUpper() + "-" + pseq.PadLeft(5, '0').Left(3) + "/";
+
+        //檔名 (ex:NTE-64150--0002-01.pdf)
+        scanfile = GetSession("seBranch") + GetSession("Dept").ToUpper() + "E-" + pseq.PadLeft(5, '0') + "-" + (pseq1 != "_" ? pseq1 : "");
+        scanfile += "-" + pstep_grade.PadLeft(4, '0') + "-" + pattach_no.PadLeft(2, '0') + ".pdf";
+    }
+    #endregion
+
+    #region IPODir - 電子送件總管處檔案目錄
     /// <summary>
     /// 電子送件總管處檔案目錄
     /// </summary>
@@ -74,6 +119,7 @@ public partial class Sys
             //}
         }
     }
+    #endregion
 
     #region Path2Nbtbrt - 檔案路徑轉換(檢視＆複製檔案用)，brbrt→nbtbrt
     /// <summary>

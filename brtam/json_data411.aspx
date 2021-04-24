@@ -24,7 +24,7 @@
 
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
             if (cgrs == "CS") {
-                SQL = "select isnull(count(*),0) count from vcs_dmt";
+                SQL = "select isnull(count(*),0) count from vcs_dmt where 1=1";
             } else {
                 SQL = "select isnull(count(*),0) count from vstep_dmt";
                 SQL += " where cg='" + cgrs.Left(1) + "' and rs='" + cgrs.Right(1) + "'";
@@ -44,7 +44,7 @@
             if ((Request["hprint"] ?? "") == "N" && cgrs != "CS") SQL += " and isnull(new,'N')='" + Request["hprint"] + "'";
             object objResult = conn.ExecuteScalar(SQL);
             int count = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
-            strOut.AppendLine("var jCount=0;");
+            strOut.AppendLine("var jCount=" + count + ";");
         }
     }
 </script>

@@ -58,17 +58,17 @@
         if (submitTask == "U") {
             HTProgCap = HTProgCap + "‧編修作業";
             if ((HTProgRight & 8) > 0) {
-                StrFormBtn += "<input type=button value=\"編修存檔\" class=\"cbutton\" id=\"btnSubmit\">\n";
+                StrFormBtn += "<input type=button value=\"編修存檔\" class=\"cbutton bsubmit\" id=\"btnSubmit\">\n";
             }
             if ((HTProgRight & 16) > 0) {
-                StrFormBtn += "<input type=button value=\"刪　除\" class=\"cbutton\" id=\"btnDel\">\n";
+                StrFormBtn += "<input type=button value=\"刪　除\" class=\"cbutton bsubmit\" id=\"btnDel\">\n";
             }
             StrFormBtn += "<input type=button value=\"重　填\" class=\"cbutton\" id=\"btnReset\">\n";
             StrFormBtn += "<input type=button value=\"關閉視窗\" class=\"cbutton\" id=\"btnClose\">\n";
         } else {
             HTProgCap = HTProgCap + "‧新增作業";
             if ((HTProgRight & 4) > 0) {
-                StrFormBtn += "<input type=button value=\"新增存檔\" class=\"cbutton\" id=\"btnSubmit\">\n";
+                StrFormBtn += "<input type=button value=\"新增存檔\" class=\"cbutton bsubmit\" id=\"btnSubmit\">\n";
                 StrFormBtn += "<input type=button value=\"重　填\" class=\"cbutton\" id=\"btnReset\">\n";
             }
         }
@@ -203,8 +203,8 @@
             $("#tfx_APcatCName").focus();
             return false;
         }
-        $("select,textarea,input,span").unlock();
-        $("#btnSubmit,#btnDel,#btnReset").lock(!$("#chkTest").prop("checked"));
+        $("input:disabled, select:disabled").unlock();
+        $(".bsubmit").lock(!$("#chkTest").prop("checked"));
         $("#task").val($("#submittask").val());
         reg.action = "<%=HTProgPrefix%>_Update.aspx";
         reg.target = "ActFrame";
@@ -214,8 +214,8 @@
     //刪除
     $("#btnDel").click(function () {
         if (confirm("注意！\n\n　你確定刪除資料嗎？")) {
-            $("select,textarea,input,span").unlock();
-            $("#btnSubmit,#btnDel,#btnReset").lock(!$("#chkTest").prop("checked"));
+            $("input:disabled, select:disabled").unlock();
+            $(".bsubmit").lock(!$("#chkTest").prop("checked"));
             $("#task").val("D");
             reg.action = "<%=HTProgPrefix%>_Update.aspx";
             reg.target = "ActFrame";

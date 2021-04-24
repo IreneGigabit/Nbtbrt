@@ -507,119 +507,109 @@ public class OpenXmlHelper
 	}
 	#endregion
 
-    #region 取代書籤 +void ReplaceBookmark(string bookmarkName, string text, bool delFlag, System.Drawing.Color color)
-    /// <summary>
-    /// 取代書籤
-    /// </summary>
-    /// <param name="bookmarkName">書籤名稱</param>
-    /// <param name="text">取代的值</param>
-    /// <param name="delFlag">若取代值為空,是否刪除整個段落</param>
-    /// <param name="color">套用此顏色</param>
-    public void ReplaceBookmark(string bookmarkName, string text, bool delFlag, System.Drawing.Color color) {
-        try {
-            List<OpenXmlPart> parts = new List<OpenXmlPart>();
-            parts.Add(outDoc.MainDocumentPart);
-            foreach (OpenXmlPart headPart in outDoc.MainDocumentPart.HeaderParts) {
-                parts.Add(headPart);
-            }
-            foreach (OpenXmlPart footPart in outDoc.MainDocumentPart.FooterParts) {
-                parts.Add(footPart);
-            }
-            
-            foreach (OpenXmlPart mainPart in parts) {
-                BookmarkStart bookmarkStart = mainPart.RootElement.Descendants<BookmarkStart>().Where(i => i.Name.Value.ToLower() == bookmarkName.ToLower()).FirstOrDefault();
-                //HttpContext.Current.Response.Write(bookmarkName+"=" + (bookmarkStart==null?"null":"notnull") + "<BR>");
-                if (bookmarkStart != null) {
-                    //foreach (BookmarkStart bookmarkStart in mainPart.RootElement.Descendants<BookmarkStart>()) {
-                    if (bookmarkStart.Name.Value.ToLower() == bookmarkName.ToLower()) {
-                        string id = bookmarkStart.Id.Value;
+	#region 取代書籤 +void ReplaceBookmark(string bookmarkName, string text, bool delFlag, System.Drawing.Color color)
+	/// <summary>
+	/// 取代書籤
+	/// </summary>
+	/// <param name="bookmarkName">書籤名稱</param>
+	/// <param name="text">取代的值</param>
+	/// <param name="delFlag">若取代值為空,是否刪除整個段落</param>
+	/// <param name="color">套用此顏色</param>
+	public void ReplaceBookmark(string bookmarkName, string text, bool delFlag, System.Drawing.Color color) {
+		try {
+			MainDocumentPart mainPart = outDoc.MainDocumentPart;
+			//IEnumerable<BookmarkEnd> bookMarkEnds = mainPart.RootElement.Descendants<BookmarkEnd>();
+			BookmarkStart bookmarkStart = mainPart.RootElement.Descendants<BookmarkStart>().Where(i => i.Name.Value.ToLower() == bookmarkName.ToLower()).FirstOrDefault();
+			if (bookmarkStart != null) {
+				//foreach (BookmarkStart bookmarkStart in mainPart.RootElement.Descendants<BookmarkStart>()) {
+				if (bookmarkStart.Name.Value.ToLower() == bookmarkName.ToLower()) {
+					string id = bookmarkStart.Id.Value;
 
-                        //如果是空值,且要刪除整個段落
-                        if (text == "" && delFlag) {
-                            bookmarkStart.Parent.Remove();
+					//如果是空值,且要刪除整個段落
+					if (text == "" && delFlag) {
+						bookmarkStart.Parent.Remove();
+					} else {
+						BookmarkEnd bookmarkEnd = bookmarkStart.Parent.Descendants<BookmarkEnd>().Where(i => i.Id.Value == id).FirstOrDefault();
+
+                        if (bookmarkStart.NextSibling() != null && bookmarkStart.NextSibling().GetType() == typeof(BookmarkEnd) && ((BookmarkEnd)bookmarkStart.NextSibling()).Id == id) {
+                            Run LastRun = bookmarkStart.PreviousSibling<Run>();
+                            if (LastRun == null) {
+                                LastRun = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().AppendChild(new Run());
+
+                                RunProperties NewRunProp = new RunProperties();
+                                RunFonts f = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().Descendants<RunFonts>().FirstOrDefault();
+                                FontSize s = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().Descendants<FontSize>().FirstOrDefault();
+                                Color c = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().Descendants<Color>().FirstOrDefault();
+                                if (f != null) NewRunProp.AppendChild(f.CloneNode(true));
+                                if (s != null) NewRunProp.AppendChild(s.CloneNode(true));
+                                if (c != null) NewRunProp.AppendChild(c.CloneNode(true));
+                                LastRun.AppendChild(NewRunProp);
+                            }
+                            string[] txtArr = text.Split('\n');
+                            for (int i = 0; i < txtArr.Length; i++) {
+                                if (i != 0) {
+                                    LastRun.Append(new Break());
+                                }
+                                //LastRun.Append(new Text(txtArr[i]));
+                                LastRun.Append(new Text { Text = txtArr[i], Space = SpaceProcessingModeValues.Preserve });
+                            }
+                            //bookmarkStart.InsertBeforeSelf(LastRun);
                         } else {
-                            BookmarkEnd bookmarkEnd = bookmarkStart.Parent.Descendants<BookmarkEnd>().Where(i => i.Id.Value == id).FirstOrDefault();
+                            //Console.WriteLine(bookmarkName + "=22222");
+                            //留第一個run其他run刪除,從BookmarkStart刪到BookmarkEnd為止
+                            OpenXmlElement[] bookmarkItems = bookmarkStart.Parent.ChildElements.ToArray();
+                            //HttpContext.Current.Response.Write(bookmarkItems.Count());
+                            //HttpContext.Current.Response.End();
 
-                            if (bookmarkStart.NextSibling() != null && bookmarkStart.NextSibling().GetType() == typeof(BookmarkEnd) && ((BookmarkEnd)bookmarkStart.NextSibling()).Id == id) {
-                                Run LastRun = bookmarkStart.PreviousSibling<Run>();
-                                if (LastRun == null) {
-                                    LastRun = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().AppendChild(new Run());
-
-                                    RunProperties NewRunProp = new RunProperties();
-                                    RunFonts f = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().Descendants<RunFonts>().FirstOrDefault();
-                                    FontSize s = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().Descendants<FontSize>().FirstOrDefault();
-                                    Color c = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().Descendants<Color>().FirstOrDefault();
-                                    if (f != null) NewRunProp.AppendChild(f.CloneNode(true));
-                                    if (s != null) NewRunProp.AppendChild(s.CloneNode(true));
-                                    if (c != null) NewRunProp.AppendChild(c.CloneNode(true));
-                                    LastRun.AppendChild(NewRunProp);
+                            bool canRemove = false;
+                            int bIndex = 0;
+                            foreach (OpenXmlElement item in bookmarkItems) {
+                                if (item.GetType() == typeof(BookmarkEnd) && bookmarkEnd != null && bookmarkEnd.Id == id) {
+                                    break;
                                 }
-                                string[] txtArr = text.Split('\n');
-                                for (int i = 0; i < txtArr.Length; i++) {
-                                    if (i != 0) {
-                                        LastRun.Append(new Break());
-                                    }
-                                    //LastRun.Append(new Text(txtArr[i]));
-                                    LastRun.Append(new Text { Text = txtArr[i], Space = SpaceProcessingModeValues.Preserve });
-                                }
-                                //bookmarkStart.InsertBeforeSelf(LastRun);
-                            } else {
-                                //Console.WriteLine(bookmarkName + "=22222");
-                                //留第一個run其他run刪除,從BookmarkStart刪到BookmarkEnd為止
-                                OpenXmlElement[] bookmarkItems = bookmarkStart.Parent.ChildElements.ToArray();
-                                //HttpContext.Current.Response.Write(bookmarkItems.Count());
-                                //HttpContext.Current.Response.End();
-
-                                bool canRemove = false;
-                                int bIndex = 0;
-                                foreach (OpenXmlElement item in bookmarkItems) {
-                                    if (item.GetType() == typeof(BookmarkEnd) && bookmarkEnd != null && bookmarkEnd.Id == id) {
-                                        break;
-                                    }
-                                    if (canRemove && item.GetType() == typeof(Run)) {
-                                        if (bIndex == 0) {
-                                            string[] txtArr = text.Split('\n');
-                                            for (int i = 0; i < txtArr.Length; i++) {
-                                                if (i == 0) {
-                                                    if (color != System.Drawing.Color.Empty) {
-                                                        RunProperties FirstRunProp = item.Descendants<RunProperties>().FirstOrDefault();
-                                                        if (FirstRunProp == null) {
-                                                            FirstRunProp = new RunProperties();
-                                                        }
-                                                        Color RunColor = new Color() { Val = toHtmlHexColor(color) };
-                                                        FirstRunProp.Append(RunColor);
+                                if (canRemove && item.GetType() == typeof(Run)) {
+                                    if (bIndex == 0) {
+                                        string[] txtArr = text.Split('\n');
+                                        for (int i = 0; i < txtArr.Length; i++) {
+                                            if (i == 0) {
+                                                if (color != System.Drawing.Color.Empty) {
+                                                    RunProperties FirstRunProp = item.Descendants<RunProperties>().FirstOrDefault();
+                                                    if (FirstRunProp == null) {
+                                                        FirstRunProp = new RunProperties();
                                                     }
-                                                    item.GetFirstChild<Text>().Text = txtArr[i];
-                                                    item.GetFirstChild<Text>().Space = SpaceProcessingModeValues.Preserve;
-                                                } else {
-                                                    item.Append(new Break());
-                                                    //item.Append(new Text(txtArr[i]));
-
-                                                    item.Append(new Text { Text = txtArr[i], Space = SpaceProcessingModeValues.Preserve });
+                                                    Color RunColor = new Color() { Val = toHtmlHexColor(color) };
+                                                    FirstRunProp.Append(RunColor);
                                                 }
+                                                item.GetFirstChild<Text>().Text = txtArr[i];
+                                                item.GetFirstChild<Text>().Space = SpaceProcessingModeValues.Preserve;
+                                            } else {
+                                                item.Append(new Break());
+                                                //item.Append(new Text(txtArr[i]));
+
+                                                item.Append(new Text { Text = txtArr[i], Space = SpaceProcessingModeValues.Preserve });
                                             }
-                                        } else {
-                                            item.Remove();
                                         }
-                                        bIndex++;
+                                    } else {
+                                        item.Remove();
                                     }
-                                    //if (item.GetType() == typeof(BookmarkStart)) {
-                                    if (item.Equals(bookmarkStart)) {
-                                        canRemove = true;
-                                    }
+                                    bIndex++;
+                                }
+                                //if (item.GetType() == typeof(BookmarkStart)) {
+                                if (item.Equals(bookmarkStart)) {
+                                    canRemove = true;
                                 }
                             }
-
-                            bookmarkStart.Remove();
-                            if (bookmarkEnd != null) bookmarkEnd.Remove();
                         }
-                    }
-                }
-            }
-        }
-        catch (Exception ex) {
-            throw new Exception("取代書籤錯誤!!(" + bookmarkName + ")", ex);
-        }
+
+						bookmarkStart.Remove();
+						if (bookmarkEnd != null) bookmarkEnd.Remove();
+					}
+				}
+			}
+		}
+		catch (Exception ex) {
+			throw new Exception("取代書籤錯誤!!(" + bookmarkName + ")", ex);
+		}
 	}
 	#endregion
 
@@ -1120,63 +1110,52 @@ public class OpenXmlHelper
     #region 取代書籤(插入圖片) +void ReplaceBookmark(Drawing img)
     /// <summary>
     /// 取代書籤(插入圖片)
-    /// <para>ex:Rpt.ReplaceBookmark("draw_file",Rpt.GetImage(new ImageFile("c:\xxx.jpg")));</para> 
     /// </summary>
     /// <param name="bookmarkName">書籤名稱</param>
     public void ReplaceBookmark(string bookmarkName, Drawing img) {
         try {
-            List<OpenXmlPart> parts = new List<OpenXmlPart>();
-            parts.Add(outDoc.MainDocumentPart);
-            foreach (OpenXmlPart headPart in outDoc.MainDocumentPart.HeaderParts) {
-                parts.Add(headPart);
-            }
-            foreach (OpenXmlPart footPart in outDoc.MainDocumentPart.FooterParts) {
-                parts.Add(footPart);
-            }
+            MainDocumentPart mainPart = outDoc.MainDocumentPart;
+            BookmarkStart bookmarkStart = mainPart.RootElement.Descendants<BookmarkStart>().Where(i => i.Name.Value.ToLower() == bookmarkName.ToLower()).FirstOrDefault();
+            if (bookmarkStart != null) {
+                if (bookmarkStart.Name.Value.ToLower() == bookmarkName.ToLower()) {
+                    string id = bookmarkStart.Id.Value;
 
-            foreach (OpenXmlPart mainPart in parts) {
-                BookmarkStart bookmarkStart = mainPart.RootElement.Descendants<BookmarkStart>().Where(i => i.Name.Value.ToLower() == bookmarkName.ToLower()).FirstOrDefault();
-                if (bookmarkStart != null) {
-                    if (bookmarkStart.Name.Value.ToLower() == bookmarkName.ToLower()) {
-                        string id = bookmarkStart.Id.Value;
+                    BookmarkEnd bookmarkEnd = bookmarkStart.Parent.Descendants<BookmarkEnd>().Where(i => i.Id.Value == id).FirstOrDefault();
 
-                        BookmarkEnd bookmarkEnd = bookmarkStart.Parent.Descendants<BookmarkEnd>().Where(i => i.Id.Value == id).FirstOrDefault();
+                    if (bookmarkStart.NextSibling() != null && bookmarkStart.NextSibling().GetType() == typeof(BookmarkEnd) && ((BookmarkEnd)bookmarkStart.NextSibling()).Id == id) {
+                        Paragraph LastRun = bookmarkStart.PreviousSibling<Paragraph>();
+                        if (LastRun == null) {
+                            LastRun = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault();
+                        }
+                        LastRun.Append(img);
+                    } else {
+                        //留第一個run其他run刪除,從BookmarkStart刪到BookmarkEnd為止
+                        OpenXmlElement[] bookmarkItems = bookmarkStart.Parent.ChildElements.ToArray();
 
-                        if (bookmarkStart.NextSibling() != null && bookmarkStart.NextSibling().GetType() == typeof(BookmarkEnd) && ((BookmarkEnd)bookmarkStart.NextSibling()).Id == id) {
-                            Paragraph LastRun = bookmarkStart.PreviousSibling<Paragraph>();
-                            if (LastRun == null) {
-                                LastRun = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault();
+                        bool canRemove = false;
+                        int bIndex = 0;
+                        foreach (OpenXmlElement item in bookmarkItems) {
+                            if (item.GetType() == typeof(BookmarkEnd) && bookmarkEnd != null && bookmarkEnd.Id == id) {
+                                break;
                             }
-                            LastRun.Append(img);
-                        } else {
-                            //留第一個run其他run刪除,從BookmarkStart刪到BookmarkEnd為止
-                            OpenXmlElement[] bookmarkItems = bookmarkStart.Parent.ChildElements.ToArray();
-
-                            bool canRemove = false;
-                            int bIndex = 0;
-                            foreach (OpenXmlElement item in bookmarkItems) {
-                                if (item.GetType() == typeof(BookmarkEnd) && bookmarkEnd != null && bookmarkEnd.Id == id) {
-                                    break;
+                            if (canRemove && item.GetType() == typeof(Run)) {
+                                if (bIndex == 0) {
+                                    Text t = item.Elements<Text>().First();
+                                    t.Text = "";
+                                    item.Append(img);
+                                } else {
+                                    item.Remove();
                                 }
-                                if (canRemove && item.GetType() == typeof(Run)) {
-                                    if (bIndex == 0) {
-                                        Text t = item.Elements<Text>().First();
-                                        t.Text = "";
-                                        item.Append(img);
-                                    } else {
-                                        item.Remove();
-                                    }
-                                    bIndex++;
-                                }
-                                if (item.Equals(bookmarkStart)) {
-                                    canRemove = true;
-                                }
+                                bIndex++;
+                            }
+                            if (item.Equals(bookmarkStart)) {
+                                canRemove = true;
                             }
                         }
-
-                        bookmarkStart.Remove();
-                        if (bookmarkEnd != null) bookmarkEnd.Remove();
                     }
+
+                    bookmarkStart.Remove();
+                    if (bookmarkEnd != null) bookmarkEnd.Remove();
                 }
             }
         }

@@ -58,7 +58,7 @@
         }
 
         if ((HTProgRight & 4) > 0) {
-            StrFormBtn += "<input type=button value=\"複製存檔\" class=\"cbutton\" id=\"btnSubmit\">\n";
+            StrFormBtn += "<input type=button value=\"複製存檔\" class=\"cbutton bsubmit\" id=\"btnSubmit\">\n";
             StrFormBtn += "<input type=button value=\"重　填\" class=\"cbutton\" id=\"btnReset\">\n";
         }
     }
@@ -236,8 +236,8 @@
             return false;
         }
 
-        $("select,textarea,input,span").unlock();
-        $("#btnSubmit,#btnDel,#btnReset").lock(!$("#chkTest").prop("checked"));
+        $("input:disabled, select:disabled").unlock();
+        $(".bsubmit").lock(!$("#chkTest").prop("checked"));
         $("#task").val("C");
         reg.action = "<%=HTProgPrefix%>_Update.aspx";
         reg.target = "ActFrame";
