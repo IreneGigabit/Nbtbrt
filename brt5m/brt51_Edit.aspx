@@ -74,9 +74,9 @@
 
     private void PageLayout() {
         if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
-            if (cgrs == "CR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta4m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";//***todo
-            if (cgrs == "GR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta41m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";//***todo
-            StrFormBtnTop += "<font style=\"cursor: pointer;color:darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"Help_Click()\">[說明]</font>";//***todo
+            if (cgrs == "CR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta4m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";
+            if (cgrs == "GR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta41m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";
+            StrFormBtnTop += "<font style=\"cursor: pointer;color:darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"Help_Click()\">[說明]</font>";
 
             if (submitTask == "A" || (Request["closewin"] ?? "") == "Y") {
                 StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
@@ -274,15 +274,6 @@
         $("div.tabCont").hide();
         $("div.tabCont[id='" + k + "']").show();
     }
-
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
 
     function this_init() {
         //取得交辦資料

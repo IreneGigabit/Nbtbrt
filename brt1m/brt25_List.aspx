@@ -550,41 +550,6 @@
             }
         });
     };
-
-    //每頁幾筆
-    $("#PerPage").change(function (e) {
-        goSearch();
-    });
-    //指定第幾頁
-    $("#divPaging").on("change", "#GoPage", function (e) {
-        goSearch();
-    });
-    //上下頁
-    $(".pgU,.pgD").click(function (e) {
-        $("#GoPage").val($(this).attr("v1"));
-        goSearch();
-    });
-    //排序
-    $(".setOdr").click(function (e) {
-        $("#dataList>thead tr .setOdr span").remove();
-        $(this).append("<span>▲</span>");
-        $("#SetOrder").val($(this).attr("v1"));
-        goSearch();
-    });
-    //重新整理
-    $(".imgRefresh").click(function (e) {
-        goSearch();
-    });
-    //查詢條件
-    $(".imgQry").click(function (e) { $("#id-div-slide").slideToggle("fast"); });
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    });
     //////////////////////
 
     //[重填]
@@ -601,7 +566,7 @@
     function Qseqdetail(pseq,pseq1){
         var urlasp=getRootPath();
         if(main.prgid.Left(3)=="brt"){
-            urlasp += "/brt5m/brt15_ShowFP.aspx?seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q";
+            urlasp += "/brt5m/brt15ShowFP.aspx?seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q";
         }else{
             urlasp += "/brt5m/ext54_Edit.aspx?seq=" + pseq + "&seq1=" + pseq1 + "&submittask=DQ&winact=Y&prgid="+main.prgid;
         }

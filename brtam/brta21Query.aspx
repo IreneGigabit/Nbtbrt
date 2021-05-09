@@ -414,12 +414,6 @@
         goSearch();
     });
 
-    //[重填]
-    $("#btnReset").click(function (e) {
-        regPage.reset();
-        this_init();
-    });
-
     //執行查詢
     function goSearch() {
         $("#divPaging,#dataList,.noData,.haveData").hide();
@@ -493,45 +487,13 @@
             }
         });
     };
+    //////////////////////
+    //[重填]
+    $("#btnReset").click(function (e) {
+        regPage.reset();
+        this_init();
+    });
 
-    //每頁幾筆
-    $("#PerPage").change(function (e) {
-        goSearch();
-    });
-    //指定第幾頁
-    $("#divPaging").on("change", "#GoPage", function (e) {
-        goSearch();
-    });
-    //上下頁
-    $(".pgU,.pgD").click(function (e) {
-        $("#GoPage").val($(this).attr("v1"));
-        goSearch();
-    });
-    //排序
-    $(".setOdr").click(function (e) {
-        $("#dataList>thead tr .setOdr span").remove();
-        $(this).append("<span>▲</span>");
-        $("#SetOrder").val($(this).attr("v1"));
-        goSearch();
-    });
-    //重新整理
-    $(".imgRefresh").click(function (e) {
-        goSearch();
-    });
-    //查詢條件
-    $(".imgQry").click(function (e) { $("#id-div-slide").slideToggle("fast"); });
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            if (window.parent.$('#dialog').length > 0) {
-                window.parent.$('#dialog').dialog('close');
-            } else {
-                window.close();
-            }
-        }
-    });
     //帶回資料
     function SeqClick(x1, x2) {
         var fld = $("#tot_num").val() || "";

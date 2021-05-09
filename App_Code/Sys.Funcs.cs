@@ -535,7 +535,7 @@ public partial class Sys
             SQL += ",''step_grade ";
             SQL += " FROM case_dmt a ";
             SQL += "where in_no='" + in_no + "' ";
-            SQL += "and in_scode='" + in_scode + "' ";
+            if (in_scode != "") SQL += "and in_scode='" + in_scode + "' ";
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
             if (dt.Rows.Count > 0) {
@@ -592,7 +592,8 @@ public partial class Sys
             SQL += ",a.cust_area,a.cust_seq,a.case_no,a.ar_service,a.ar_fees,a.ar_code,a.ar_curr,a.mark ";
             SQL += ",(SELECT rs_class FROM code_br WHERE rs_code = a.arcase AND dept = 'T' AND cr = 'Y' AND rs_type=a.arcase_type) AS Ar_form ";
             SQL += "FROM case_dmt a ";
-            SQL += "where in_no='" + in_no + "' and in_scode='" + in_scode + "' ";
+            SQL += "where in_no='" + in_no + "' ";
+            if (in_scode != "") SQL += "and in_scode='" + in_scode + "' ";
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
             if (dt.Rows.Count > 0) {

@@ -151,7 +151,7 @@
         if (pr_scan_flag == "Y") {
             rtn = "<img src=" + Page.ResolveUrl("~/images/todolist01.jpg") + " style=\"cursor:pointer\" align=\"absmiddle\" border=\"0\">";
         } else {
-            rtn = "<a href=\"Brt15_Edit.aspx?closewin=N&submittask=U&grconf_sqlno=" + Eval("grconf_sqlno") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&step_grade=" + Eval("step_grade") + "\" target=\"Eblank\">[確認]</a>";
+            rtn = "<a href=\"Brt15_Edit.aspx?prgid="+prgid+"&closewin=N&submittask=U&grconf_sqlno=" + Eval("grconf_sqlno") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&step_grade=" + Eval("step_grade") + "\" target=\"Eblank\">[確認]</a>";
         }
 
         return rtn;
@@ -316,9 +316,13 @@
             window.parent.tt.rows = "100%,0%";
         }
 
-        theadOdr();//設定表頭排序圖示
         this_init();
     });
+
+    //執行查詢
+    function goSearch() {
+        $("#regPage").submit();
+    };
 
     function this_init() {
         if ((main.right & 64) == 0) {
@@ -330,50 +334,6 @@
         $(".Lock").lock();
         $("input.dateField").datepick();
     }
-
-    //執行查詢
-    function goSearch() {
-        $("#regPage").submit();
-    };
-    //每頁幾筆
-    $("#PerPage").change(function (e) {
-        goSearch();
-    });
-    //指定第幾頁
-    $("#divPaging").on("change", "#GoPage", function (e) {
-        goSearch();
-    });
-    //上下頁
-    $(".pgU,.pgD").click(function (e) {
-        $("#GoPage").val($(this).attr("v1"));
-        goSearch();
-    });
-    //排序
-    $(".setOdr").click(function (e) {
-        $("#SetOrder").val($(this).attr("v1"));
-        goSearch();
-    });
-    //設定表頭排序圖示
-    function theadOdr() {
-        $(".setOdr").each(function (i) {
-            $(this).remove("span.odby");
-            if ($(this).attr("v1").toLowerCase() == $("#SetOrder").val().toLowerCase()) {
-                $(this).append("<span class='odby'>▲</span>");
-            }
-        });
-    }
-    //重新整理
-    $(".imgRefresh").click(function (e) {
-        goSearch();
-    });
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
     //////////////////////
     //案件主檔查詢
     function CapplClick(pseq,pseq1){

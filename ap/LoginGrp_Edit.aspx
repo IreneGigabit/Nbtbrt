@@ -64,7 +64,7 @@
                 StrFormBtn += "<input type=button value=\"刪除群組\" class=\"cbutton bsubmit\" id=\"btnDel\">\n";
             }
             StrFormBtn += "<input type=button value=\"重　填\" class=\"cbutton\" id=\"btnReset\">\n";
-            StrFormBtn += "<input type=button value=\"關閉視窗\" class=\"cbutton\" id=\"btnClose\">\n";
+            StrFormBtn += "<input type=button value=\"關閉視窗\" class=\"cbutton imgCls\" id=\"btnClose\">\n";
         } else {
             HTProgCap = HTProgCap + "‧新增作業";
             if ((HTProgRight & 4) > 0) {
@@ -215,19 +215,6 @@
             $("#dfx_beg_date").val((new Date()).format("yyyy/M/d"));
         }
     }
-
-    //關閉視窗
-    $(".imgCls,#btnClose").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            if (window.parent.Etop.goSearch !== undefined) {
-                window.parent.Etop.goSearch();
-            } else {
-                window.parent.tt.rows = "100%,0%";
-            }
-        } else {
-            window.close();
-        }
-    })
 
     //新增/修改
     $("#btnSubmit").click(function () {

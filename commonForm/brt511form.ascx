@@ -252,7 +252,7 @@
     $("#rs_code").change(function () {
         $("#act_code").getOption({//處理事項
             url: getRootPath() + "/ajax/json_act_code.aspx",
-            data: { bcgrs: "CR", rs_class: $("#rs_class").val(), rs_code: $("#rs_code").val() },
+            data: { cgrs: "CR", rs_class: $("#rs_class").val(), rs_code: $("#rs_code").val() },
             valueFormat: "{act_code}",
             textFormat: "{act_code_name}",
             attrFormat: "spe_ctrl='{spe_ctrl}'"

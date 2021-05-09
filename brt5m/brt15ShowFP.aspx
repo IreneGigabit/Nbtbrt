@@ -753,19 +753,6 @@
         $("div.tabCont[id='" + k + "']").show();
     }
 
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            if (window.parent.$('.ui-dialog-content:visible').length>0){
-                window.parent.$('.ui-dialog-content:visible').dialog('destroy').empty();
-            }else{
-                window.close();
-            }
-        }
-    })
-
     function this_init() {
         settab("#dmt");
         //-----------------

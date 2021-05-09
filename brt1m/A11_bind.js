@@ -1,6 +1,8 @@
 ﻿//資料綁定
 main.bind = function () {
     //console.log("main.bind");
+    $("#grconf_sqlno").val(main.qgrconf_sqlno);
+    $("#hgrconf_sqlno").val(main.qgrconf_sqlno);
     if (jMain.case_main.length == 0) {
         //main.changeTag("000");//交辦內容顯示預設項目
         main.changeTag($("#tfy_Arcase option[value!='']").eq(0).val());//交辦內容顯示預設項目用第一個案性

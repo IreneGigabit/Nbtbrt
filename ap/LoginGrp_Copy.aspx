@@ -197,19 +197,6 @@
         $("#tfx_source").val($("#LoginGrp").val());
     }
 
-    //關閉視窗
-    $(".imgCls,#btnClose").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            if (window.parent.Etop.goSearch !== undefined) {
-                window.parent.Etop.goSearch();
-            } else {
-                window.parent.tt.rows = "100%,0%";
-            }
-        } else {
-            window.close();
-        }
-    })
-
     //複製存檔
     $("#btnSubmit").click(function () {
         var errMsg = "";

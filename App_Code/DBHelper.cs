@@ -83,14 +83,18 @@ public class DBHelper : IDisposable
     /// 執行查詢，取得SqlDataReader；SqlDataReader使用後須Close，否則會Lock(強烈建議使用using)。
     /// </summary>
     public SqlDataReader ExecuteReader(string commandText) {
-        //if (this._debug) {
-        //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
-        //}
-        //this.exeSQL.Add(commandText);
-        this._cmd.CommandText = commandText;
-        SqlDataReader dr = this._cmd.ExecuteReader();
-
-        return dr;
+        try {
+            //if (this._debug) {
+            //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
+            //}
+            //this.exeSQL.Add(commandText);
+            this._cmd.CommandText = commandText;
+            SqlDataReader dr = this._cmd.ExecuteReader();
+            return dr;
+        }
+        catch (Exception ex) {
+            throw new Exception(commandText, ex);
+        }
     }
     #endregion
 

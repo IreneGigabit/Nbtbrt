@@ -870,7 +870,6 @@
             window.parent.tt.rows = "100%,0%";
         }
 
-        theadOdr();//設定表頭排序圖示
         this_init();
     });
 
@@ -895,45 +894,6 @@
 
         $("#regPage").submit();
     };
-    //每頁幾筆
-    $("#PerPage").change(function (e) {
-        goSearch();
-    });
-    //指定第幾頁
-    $("#divPaging").on("change", "#GoPage", function (e) {
-        goSearch();
-    });
-    //上下頁
-    $(".pgU,.pgD").click(function (e) {
-        $("#GoPage").val($(this).attr("v1"));
-        goSearch();
-    });
-    //排序
-    $(".setOdr").click(function (e) {
-        $("#SetOrder").val($(this).attr("v1"));
-        goSearch();
-    });
-    //設定表頭排序圖示
-    function theadOdr() {
-        $(".setOdr").each(function (i) {
-            $(this).remove("span.odby");
-            if ($(this).attr("v1").toLowerCase() == $("#SetOrder").val().toLowerCase()) {
-                $(this).append("<span class='odby'>▲</span>");
-            }
-        });
-    }
-    //重新整理
-    $(".imgRefresh").click(function (e) {
-        goSearch();
-    });
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
     //////////////////////
     //[電子收據]
     $(".receipt").on("click",function(){
@@ -1052,7 +1012,7 @@
     //重抓總管處案件主檔資料
     function getmgt(tseq,tseq1,temp_rs_sqlno,mg_step_rs_sqlno){
         if (confirm("是否確定重新取得總收發案件資料？")){
-            var url = "brta33_Get_mgt.aspx?prgid=<%=prgid%>&cgrs=GS&temp_rs_sqlno="+temp_rs_sqlno+"&mg_step_rs_sqlno=" + mg_step_rs_sqlno+"&qbranch=<%=Session["seBranch"]%>&qseq="+tseq+"&qseq1=" + tseq1;
+            var url = getRootPath() + "/ajax/brta33_Get_mgt.aspx?prgid=<%=prgid%>&cgrs=GS&temp_rs_sqlno="+temp_rs_sqlno+"&mg_step_rs_sqlno=" + mg_step_rs_sqlno+"&qbranch=<%=Session["seBranch"]%>&qseq="+tseq+"&qseq1=" + tseq1;
             ajaxScriptByGet("重新取得總收發案件資料", url);
         }
     }
@@ -1064,17 +1024,17 @@
         string strbcc = "";//密件副本
         string Sender=Sys.GetSession("scode");//寄件者
         if (Sys.Host=="web08") {
-            strto = "m1583;";
+            strto = "";
             strcc = "m1583;";
             strbcc = "";
         } else if (Sys.Host == "web10") {
-            strto = Sys.GetSession("scode") + ";";
-            strcc = "m1583;";
+            strto = emg_scode + ";";
+            strcc = emg_agscode + ";";//2016/4/19修改
             strbcc = "";
         } else {
             strto = emg_scode + ";";
             strcc = emg_agscode + ";";//2016/4/19修改
-            strbcc = "m1583;";
+            strbcc = "";
         }
         %>
         var tsubject = "國內所－官發資料修正通知（區所編號：" + fseq + "，發文字號：" + rs_no + " ）";//主旨

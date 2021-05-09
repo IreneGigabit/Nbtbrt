@@ -1,4 +1,4 @@
-﻿//for IE8 不支援JavaScript的Object.keys
+﻿//#region for IE8 不支援JavaScript的Object.keys
 if (!Object.keys) {
     Object.keys = (function () {
         'use strict';
@@ -39,8 +39,9 @@ if (!Object.keys) {
         };
     }());
 }
+//#endregion
 
-//獲取web ap根路徑 ex:http://web02/nOpt
+//#region getRootPath - 獲取web ap根路徑 ex:http://web02/nOpt
 function getRootPath() {
     var strFullPath = window.document.location.href;
     var strPath = window.document.location.pathname;
@@ -49,22 +50,17 @@ function getRootPath() {
     var postPath = strPath.substring(0, strPath.substr(1).indexOf('/') + 1);
     return (prePath + postPath);
 }
+//#endregion
 
-//獲取web ap根目錄 ex:nOpt
+//#region getRootDir - 獲取web ap根目錄 ex:nOpt
 function getRootDir() {
     var strPath = window.document.location.pathname;
     var postPath = strPath.substring(0, strPath.substr(1).indexOf('/') + 1);
     return postPath;
 }
+//#endregion
 
-//串接欄位的值
-function getValueStr(selector, symbol) {
-    return $(selector).map(function () {
-        return $(this).val();
-    }).get().join(symbol);
-}
-
-//判斷是否為json格式
+//#region isJson - 判斷是否為json格式
 function isJson(str) {
     try {
         $.parseJSON(str);
@@ -73,8 +69,9 @@ function isJson(str) {
     }
     return true;
 }
+//#endregion
 
-/*ajax function(get)*/
+//#region ajaxByGet - ajax function(get)
 function ajaxByGet(url, param) {
     return $.ajax({
         url: url,
@@ -84,8 +81,9 @@ function ajaxByGet(url, param) {
         data: param
     });
 }
+//#endregion
 
-/*ajax function(submit form)*/
+//#region ajaxByForm - ajax function(submit form)
 function ajaxByForm(url, param) {
     return $.ajax({
         url: url,
@@ -97,11 +95,12 @@ function ajaxByForm(url, param) {
         beforeSend: function (xhr) {
             $("#dialog").html("<div align='center'><h1>存檔中...</h1></div>");
             $("#dialog").dialog({ title: '存檔訊息', modal: true, maxHeight: 500, width: 800, buttons: [] });
-        },
+        }
     });
 }
+//#endregion
 
-/*ajax function(post)*/
+//#region ajaxByPost - ajax function(post)
 function ajaxByPost(url, param) {
     return $.ajax({
         url: url,
@@ -111,8 +110,9 @@ function ajaxByPost(url, param) {
         data: JSON.stringify(param)
     });
 }
+//#endregion
 
-/*ajax function(get)*/
+//#region ajaxScriptByGet - ajax function(get)
 function ajaxScriptByGet(titleName, url) {
     $.ajax({
         url: url,
@@ -126,22 +126,24 @@ function ajaxScriptByGet(titleName, url) {
         }
     });
 }
+//#endregion
 
-//將&#nnnn;轉為字元
+//#region decodeStr - 將&#nnnn;轉為字元
 function decodeStr(encodedString) {
     var textArea = document.createElement('textarea');
     textArea.innerHTML = encodedString;
     return textArea.value;
 }
+//#endregion
 
-//#region NulltoEmpty 若為null回傳空字串
+//#region NulltoEmpty - 若為null回傳空字串
 function NulltoEmpty(s) {
     if (s == null || s == undefined) return "";
     return s;
 }
 //#endregion
 
-//#region 四捨五入
+//#region xRound - 四捨五入
 function xRound(num, pos) {
     var size = Math.pow(10, (pos || 0));
     return Math.round(num * size) / size;
@@ -149,21 +151,22 @@ function xRound(num, pos) {
 }
 //#endregion
 
-/* 左邊補0(padStr) */
+//#region padLeft - 左邊補0(padStr)
 function padLeft(str, len, padStr) {
     str = '' + str;
     return str.length >= len ? str : new Array(len - str.length + 1).join(padStr) + str;
 }
+//#endregion
 
-/* 右邊補0(padStr) */
+//#region padRight - 右邊補0(padStr)
 function padRight(str, len, padStr) {
     str = '' + str;
     return str.length >= len ? str : str + new Array(len - str.length + 1).join(padStr);
 }
+//#endregion
 
-//#region dateReviver
-//json日期格式返回new Date格式
-//dateConvert(jOpt.last_date);
+//#region dateReviver - json日期格式返回new Date格式
+//ex:dateConvert(jOpt.last_date);
 function dateConvert(value) {
     var a;
     var b;
@@ -183,11 +186,10 @@ function dateConvert(value) {
         return "";
     }
 }
-//end region
+//#endregion
 
-//#region dateReviver
-//json日期格式轉指定格式
-//dateReviver(jOpt.last_date, "yyyy/M/d");
+//#region dateReviver - json日期格式轉指定格式
+//ex: dateReviver(jOpt.last_date, "yyyy/M/d");
 function dateReviver(value, pstr) {
     var a;
     var b;
@@ -207,64 +209,73 @@ function dateReviver(value, pstr) {
         return "";
     }
 }
-//end region
+//#endregion
 
-
-//#region CInt
-//vbscript CInt Convertion
+//#region CInt - vbscript CInt Convertion
 function CInt(n) {
     return parseInt(n || 0, 10);
 }
-//end region
+//#endregion
 
-//#region CDbl
-//vbscript CDbl Convertion
+//#region CDbl - vbscript CDbl Convertion
 function CDbl(n) {
     return parseFloat(n || 0, 10);
 }
-//end region
+//#endregion
 
-//#region CLng
-//vbscript CLng Convertion
+//#region CLng - vbscript CLng Convertion
 function CLng(n) {
     return parseInt(n || 0, 10);
 }
-//end region
+//#endregion
 
-//#region IsNumeric
-//vbscript IsNumeric Convertion
+//#region IsNumeric - vbscript IsNumeric Convertion
 function IsNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
-//end region
+//#endregion
 
-//#region IsEmpty
-//vbscript IsEmpty + IsNull + "" Convertion
+//#region IsEmpty - vbscript IsEmpty + IsNull + "" Convertion
 function IsEmpty(n) {
     if (n === undefined || n == null || n == "") {
         return true;
     }
     return false;
 }
-//end region
+//#endregion
 
+//#region CDate - vbscript CDate Convertion
+//比較日期時要加.getTime(),ex: CDate("2021/3/2").getTime()==CDate("2021/3/2").getTime()
+function CDate(Str) {
+    return new Date(Str.replace(/-/g, "/"));
+    //return Date.parse(Str.replace(/-/g, "/"));
+}
+//#endregion
+
+//#region Today - 取得當天日期
 //比較日期時要加.getTime(),ex: Today.getTime()==CDate("2021/3/2").getTime()
 function Today() {
     var td = new Date();
     td.setHours(0, 0, 0, 0);
     return td;
 }
-//#region CDate
-//vbscript CDate Convertion
-//比較日期時要加.getTime(),ex: CDate("2021/3/2").getTime()==CDate("2021/3/2").getTime()
-function CDate(Str) {
-    return new Date(Str.replace(/-/g, "/"));
-    //return Date.parse(Str.replace(/-/g, "/"));
-}
-//end region
+//#endregion
 
-//#region Date.prototype.format
-//js日期格式fotmat轉換
+//#region getJoinValue - 串接明細欄位
+//ex: $("#rows_chk").val(getJoinValue("#dataList>tbody input[id^='chk_']"));
+function getJoinValue(selector) {
+    return "\f" + $(selector).map(function () {
+        $this = $(this);
+        if ($this.prop("type") == "checkbox") {
+            return $(this).prop("checked") ? $this.val() : "";
+        } else {
+            return $this.val();
+        }
+    }).get().join('\f');//\f是換頁鍵Chr(12)
+}
+//#endregion
+
+//#region Date.prototype.format - js日期格式fotmat轉換
 //("yyyy-MM-dd")
 //("yyyy-MM-dd hh:mm:ss")
 Date.prototype.format = function (fmt) {
@@ -291,39 +302,37 @@ Date.prototype.format = function (fmt) {
     }
     return fmt;
 }
-//#end region
+//#endregion
 
-//#region Date.prototype.addDays
-//js日期加上 X 天
+//#region Date.prototype.addDays - js日期加上 X 天
 //var today = new Date();
 //today.addDays(7);
 Date.prototype.addDays = function (days) {
     this.setDate(this.getDate() + days);
     return this;
 }
-//#end region
+//#endregion
 
-//#region Date.prototype.addMonths
-//js日期加上 X 月
+//#region Date.prototype.addMonths - js日期加上 X 月
 //var today = new Date();
 //today.addMonths(7);
 Date.prototype.addMonths = function (months) {
     this.setMonth(this.getMonth() + months);
     return this;
 }
-//#end region
+//#endregion
 
-//#region Date.prototype.addYears
-//js日期加上 X 年
+//#region Date.prototype.addYears - js日期加上 X 年
 //var today = new Date();
 //today.addYears(7);
 Date.prototype.addYears = function (years) {
     this.setYear(this.getFullYear() + years);
     return this;
 }
-//#end region
+//#endregion
 
-/*將數值轉換貨幣表示法
+//#region Number.prototype.format - 將數值轉換貨幣表示法
+/*
 n:取到小數第幾位
 x:幾位一撇
 Number(-1654349.7).format(0,3); →   -1,654,350
@@ -334,11 +343,27 @@ Number.prototype.format = function (n, x) {
     var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
     return this.toFixed(Math.max(0, ~ ~n)).replace(new RegExp(re, 'g'), '$&,');
 };
+//#endregion
 
-String.prototype.ReplaceAll = function (s1, s2) {
-    return this.replace(new RegExp(s1, "gmi"), s2);
+//#region String.prototype.IN - 類似T-SQL的IN，判斷字串是否符合清單中的任何值(不分大小寫)。
+/*
+"FCF".IN("FC1,FC10,FC9,FCA,FCB,FCF") → true
+*/
+String.prototype.IN = function (n) {
+    var arr = n.split(",");
+    return arr.map(function (value) {
+        return value.toLowerCase();
+    }).indexOf(String(this).toLowerCase())>-1;
 }
+//#endregion
 
+//#region String.prototype.ReplaceAll - 全部取代
+String.prototype.ReplaceAll = function (s1, s2) {
+    return this.replace(new RegExp(s1, "gmi"), s2);//全域性匹配+多行匹配+不分大小寫
+}
+//#endregion
+
+//#region String.prototype.Right - 取右邊N個字
 String.prototype.Right = function (n) {
 	if (n <= 0)
 		return "";
@@ -349,7 +374,9 @@ String.prototype.Right = function (n) {
 		return String(this).substring(iLen, iLen - n);
 	}
 }
+//#endregion
 
+//#region String.prototype.Left - 取左邊N個字
 String.prototype.Left = function (n) {
 	if (n <= 0)
 		return "";
@@ -358,7 +385,9 @@ String.prototype.Left = function (n) {
 	else
 		return String(this).substring(0, n);
 }
+//#endregion
 
+//#region String.prototype.CutData - 截取左邊N個byte,超過時後面加...
 String.prototype.CutData = function (n) {
     if (n <= 0)
         return "";
@@ -380,8 +409,9 @@ String.prototype.CutData = function (n) {
         return tStr2;
     }
 }
+//#endregion
 
-//#region CodeLength計算字元長度(英數=1,中文=2)
+//#region String.prototype.CodeLength - 計算字串byte(英數=1,中文=2)
 String.prototype.CodeLength = function () {
     /*
     var len = 0;
@@ -398,6 +428,7 @@ String.prototype.CodeLength = function () {
 }
 //#endregion
 
+//#region String.prototype.trim - 去除字串前後空白
 if (!String.prototype.trim) {
 	String.prototype.trim = function () {
 		//return this.replace(/[(^\s+)(\s+$)]/g,"");//會把字符串中間的空白也去掉  
@@ -405,7 +436,9 @@ if (!String.prototype.trim) {
 		return this.replace(/^\s+/g, "").replace(/\s+$/g, "");
 	};
 }
+//#endregion
 
+//#region showBlockUI - 顯示畫面遮罩(叫用blockUI plugin)
 function showBlockUI(param) {
     $.blockUI({
         message: "<div id=\"divProgress\">" +
@@ -416,20 +449,12 @@ function showBlockUI(param) {
         css: { borderWidth: '0px', backgroundColor: 'transparent' } //透明背景
     });
 }
+//#endregion
 
-//串接明細欄位
-function getJoinValue(selector) {
-    return "\f" + $(selector).map(function () {
-        $this = $(this);
-        if ($this.prop("type") == "checkbox") {
-            return $(this).prop("checked") ? $this.val() : "";
-        } else {
-            return $this.val();
-        }
-    }).get().join('\f');//\f是換頁鍵Chr(12)
-}
-
+//#region $.maskStart & $.maskStop - 遮罩控制
 //靜態函式
+//$(document).ajaxStart(function () { $.maskStart("資料載入中"); });
+//$(document).ajaxStop(function () { $.maskStop(); });
 (function ($) {
     //#region $.maskStart 顯示遮罩
     $.maskStart = function (msg) {
@@ -493,9 +518,73 @@ function getJoinValue(selector) {
     }
     //#endregion
 })(jQuery);
-//$(document).ajaxStart(function () { $.maskStart("資料載入中"); });
-//$(document).ajaxStop(function () { $.maskStop(); });
+//#endregion
+
+//#region 畫面載入時綁定function & 行為
 $(function () {
+    ///////////////////////////////////////////////////////////////
+    //分頁相關
+    //設定表頭排序圖示
+    $(".setOdr").each(function (i) {
+        $(this).remove("span.odby");
+        if ($(this).attr("v1").toLowerCase() == $("#SetOrder").val().toLowerCase()) {
+            //$(this).append("<span class='odby'>▲</span>");//⇧
+            $(this).after("<span class='odby'>▲</span>");
+        }
+    });
+    //每頁幾筆
+    $("body").on("change", "#PerPage", function (e) {
+        //$("#PerPage").change(function (e) {
+        $("#GoPage").val("1");//回到第一頁
+        goSearch();
+    });
+    //指定第幾頁
+    $("body").on("change", "#GoPage", function (e) {
+        //$("#divPaging").on("change", "#GoPage", function (e) {
+        goSearch();
+    });
+    //上下頁
+    $("body").on("click", ".pgU,.pgD", function (e) {
+        //$(".pgU,.pgD").click(function (e) {
+        $("#GoPage").val($(this).attr("v1"));
+        goSearch();
+    });
+    //排序
+    $("body").on("click", ".setOdr", function (e) {
+        //$(".setOdr").click(function (e) {
+        $("#GoPage").val("1");//回到第一頁
+        $("#SetOrder").val($(this).attr("v1"));
+        goSearch();
+    });
+    //重新整理
+    $("body").on("click", ".imgRefresh", function (e) {
+        //$(".imgRefresh").click(function (e) {
+        goSearch();
+    });
+    //查詢條件
+    $("body").on("click", ".imgQry", function (e) {
+        //$(".imgQry").click(function (e) {
+        $("#id-div-slide").slideToggle("fast");
+    });
+    //關閉視窗
+    $("body").on("click", ".imgCls", function (e) {
+        //$(".imgCls").click(function (e) {
+        if (window.parent.tt !== undefined) {
+            //if (window.parent.Etop.goSearch !== undefined) {
+            //    window.parent.Etop.goSearch();
+            //}
+            window.parent.tt.rows = "100%,0%";
+        } else {
+            if (window.parent.$('.ui-dialog-content:visible').length > 0) {
+                window.parent.$('.ui-dialog-content:visible').dialog('destroy').empty();
+                //window.parent.$('#dialog').dialog('close');
+            } else {
+                window.close();
+            }
+        }
+    });
+    ///////////////////////////////////////////////////////////////
+
     //若有 ☑測試 預設打勾
     $("#ActFrame").hide();//取消使用ActFrame
     $("#chkTest").click(function (e) {
@@ -505,3 +594,4 @@ $(function () {
     //$("#chkTest").prop("checked", true).triggerHandler("click");
     $("#chkTest").prop("checked", false).triggerHandler("click");//預設不勾
 });
+//#endregion

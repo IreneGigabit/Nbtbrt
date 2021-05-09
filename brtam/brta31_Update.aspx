@@ -1585,7 +1585,7 @@
                                     , ar);
 
         string strpath = Request[uploadfield + "_" + nRow];//存檔路徑+檔名
-        strpath = System.IO.Path.GetDirectoryName(strpath);//只取目錄
+        if (strpath.IndexOf(".") > -1) strpath = System.IO.Path.GetDirectoryName(strpath);//如果有含檔名則只取目錄
         Sys.RenameFile(Sys.Path2Nbtbrt(strpath + "/" + aa), Sys.Path2Nbtbrt(strpath + "/" + lname), true);
 
         attach_path = Sys.Path2Btbrt(strpath + "/" + lname);//存入資料庫路徑+新檔名

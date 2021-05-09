@@ -33,6 +33,7 @@
     protected string seq = "";
     protected string seq1 = "";
     protected string add_arcase = "";
+    protected string qgrconf_sqlno = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -52,6 +53,7 @@
         seq = (Request["seq"] ?? "").Trim();
         seq1 = (Request["seq1"] ?? "").Trim();
         add_arcase = (Request["add_arcase"] ?? "").Trim();
+        qgrconf_sqlno = (Request["qgrconf_sqlno"] ?? "").Trim();
 
         formFunction = (Request["formFunction"] ?? "").Trim();
         if (formFunction == "") {
@@ -72,7 +74,10 @@
     private void PageLayout() {
         StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Brt11blank\">[聯絡人新增]</a>\n";
         StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Brt11blank\">[申請人新增]</a>\n";
-
+        if (Request["closeframe"] == "Y") {
+            StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
+        }
+        
         if (formFunction == "Edit") {
             if ((HTProgRight & 8) > 0) {
                 if (prgid == "brt51") {//客收確認
@@ -140,6 +145,7 @@
     main.code_type = "<%#code_type%>";
     main.seq = "<%#seq%>";
     main.seq1 = "<%#seq1%>";
+    main.qgrconf_sqlno = "<%#qgrconf_sqlno%>";
     jMain = {};
 </script>
 
@@ -236,7 +242,11 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
+            if(main.prgid=="brt151"){
+                window.parent.tt.rows = "20%,100%";
+            }else{
+                window.parent.tt.rows = "100%,0%";
+            }
         }
 
         this_init();
@@ -252,15 +262,6 @@
         $("div.tabCont").hide();
         $("div.tabCont[id='" + k + "']").show();
     }
-
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
 
     function this_init() {
         //console.log("this_init");

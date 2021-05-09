@@ -107,7 +107,7 @@
         }
 
         StrFormBtnTop += "<a href=\"" + Page.ResolveUrl(Sys.getCase52Aspx("brt52", in_no, in_scode, "Edit")) + "\" target=\"Eblank\">[交辦維護作業]</a>\n";
-        StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
+        StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>";
 
         if ((HTProgRight & 4) > 0 || (HTProgRight & 8) > 0 || (HTProgRight & 16) > 0 || (HTProgRight & 64) > 0 || (HTProgRight & 128) > 0) {
             if (((HTProgRight & 8) > 0 && submitTask == "R") || ((HTProgRight & 64) > 0 && submitTask == "R")) {
@@ -446,15 +446,6 @@
         $("div.tabCont").hide();
         $("div.tabCont[id='" + k + "']").show();
     }
-
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
 
     function this_init() {
         //取得交辦資料

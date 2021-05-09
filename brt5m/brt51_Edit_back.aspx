@@ -414,15 +414,6 @@
         $("div.tabCont[id='" + k + "']").show();
     }
 
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
-
     function this_init() {
         $.ajax({
             url: "brt51_Edit.aspx?json=Y&<%=Request.QueryString%>",

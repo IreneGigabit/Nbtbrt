@@ -243,18 +243,6 @@
         }
     }
 
-    //關閉視窗
-    $(".imgCls,#btnClose").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            if (window.parent.Etop.goSearch !== undefined) {
-                window.parent.Etop.goSearch();
-            }
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
-
     //回前頁
     $(".btnBack,#btnBack").click(function (e) {
         history.go(-1);

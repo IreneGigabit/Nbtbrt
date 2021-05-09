@@ -38,9 +38,6 @@
     }
 
     private void PageLayout() {
-        if (submitTask == "Q" || submitTask== "D") {
-            Lock["Qdisabled"] ="Lock";
-        }
     }
 </script>
 
@@ -51,13 +48,13 @@
 	    <%if (submitTask != "Q" && submitTask != "D") { %>
 	        <TR class=whitetablebg align=center id="ctrl_line1">
 		        <TD colspan=7>
-			        <input type=button value ="增加一筆管制" class="cbutton" id=Add_button name=Add_button onclick="brta212form.add_ctrl()">
+			        <input type=button value ="增加一筆管制" class="cbutton <%=Lock.TryGet("Qdisabled")%>" id=Add_button name=Add_button onclick="brta212form.add_ctrl()">
 			        <%if (submitTask == "A" || prgid == "brta24" || prgid == "brta38") {%><!--國內案官收確認作業//國內案官發確認作業-->
-				        <input type=button value ="減少一筆管制" class="cbutton" id=res_button name=res_button onclick="brta212form.del_ctrl()">
+				        <input type=button value ="減少一筆管制" class="cbutton <%=Lock.TryGet("Qdisabled")%>" id=res_button name=res_button onclick="brta212form.del_ctrl()">
 			        <%}%>
 			        <input type="text" name="rsqlno" id="rsqlno">
 			        <%if (prgid != "brt51" && prgid != "brta22" && prgid != "brta78") {%><!--國內案客戶收文確認//國內案客戶收文作業//國內案確認轉案作業-->
-			            <input type=button class="c1button" id="btndis" name="btndis" value ="進度查詢及銷管制" onclick="brta212form.btndis()" />
+			            <input type=button class="c1button <%=Lock.TryGet("Qdisabled")%>" id="btndis" name="btndis" value="進度查詢及銷管制" onclick="brta212form.btndis()" />
 			        <%}%>
 			        <input type="button" class="c1button" value="查官收未銷法定期限" onclick="brta212form.queryjob()" style="display:none" id="btnqrygrlastdate">
 		        </TD>
@@ -91,7 +88,7 @@
 	        <input type=hidden id='octrl_date_##' name='octrl_date_##'>
 	        <input type=text size=10 maxlength=10 id=ctrl_date_## name=ctrl_date_## onblur="brta212form.ctrl_date_blur('##')" class="dateField <%=Lock.TryGet("Qdisabled")%>">
 		</td>
-		<td class=whitetablebg align=center>
+		<td class=whitetablebg>
 	        <input type=hidden id='octrl_remark_##' name='octrl_remark_##'>
 	        <input type=text id='ctrl_remark_##' name='ctrl_remark_##' size=30 maxlength=60>
             <label class="brta78"><input type=checkbox id='brctrl_mgt_##' name='brctrl_mgt_##' value='Y'>需總管處代管期限</label>
@@ -127,10 +124,16 @@
             $("#ctrl_line2").show();
         }
 
-
         if (main.prgid == "brta24") {//國內案官收確認作業
             $(".brta24").lock();
         }
+    }
+
+    brta212form.bind = function (jData,jCtrl) {
+        if (jData.ectrlnum != "") {
+            $("#btndis").val("進度查詢及銷管制(" + jData.ectrlnum + "件)");
+        }
+        brta212form.appendCtrl(jMain.gr_ctrl);//管制資料append到畫面
     }
 
     //管制期限增加一筆
@@ -144,10 +147,15 @@
         $(".dateField", $('#tr_ctrl_' + nRow)).datepick();
 
         if (main.prgid == "brta78") {//轉案
-            $(".brta78").show();
+            $(".brta78").show();//需總管處代管期限
         } else {
-            $(".brta78").hide();
+            $(".brta78").hide();//需總管處代管期限
         }
+
+        if(main.prgid=="brta24"){
+            $("#delchk_" + nRow).lock();
+        }
+
     }
 
     //管制期限減少一筆
@@ -171,31 +179,31 @@
     }
 
     //設定欄位開關??
-    brta212form.ctrl_line_lock=function(nRow) {
+    /*brta212form.ctrl_line_lock=function(nRow) {
         if ($("#resp_date_" + nRow).val() != "") {
             $("#io_flg_" + nRow).val("N");//該筆資料不可修改 & 不用入檔
             $("#ctrl_type_" + nRow).lock();
             $("#ctrl_date_" + nRow).lock();
             $("#ctrl_remark_" + nRow).lock();
-            if ("<%=submitTask%>" == "U" || "<%=submitTask%>" == "D") {
+            if (main.submittask == "U" || main.submittask == "D") {
                 $("#delchk_" + nRow).lock();
             }
         } else {
             $("#io_flg_" + nRow).val("Y");
-            if ("<%=prgid%>" == "brta24") {
+            if (main.prgid == "brta24") {
                 $("#delchk_" + nRow).lock();
             }
         }
-        if ("<%=submitTask%>" == "U" || "<%=submitTask%>" == "D") {
+        if (main.submittask == "U" || main.submittask == "D") {
             $("#delchk_" + nRow).lock();
         }
-        if ("<%=submitTask%>" == "U" || "<%=prgid%>" == "brta34") {//本發作業
+        if (main.submittask == "U" || main.prgid == "brta34") {//本發作業
             $("#delchk_" + nRow).lock();
             $("#ctrl_type_" + nRow).lock();
             $("#ctrl_date_" + nRow).lock();
             $("#ctrl_remark_" + nRow).lock();
         }
-    }
+    }*/
 
     brta212form.ctrl_date_blur=function (nRow) {
         var tctrl_date=$("#ctrl_date_"+nRow).val();
@@ -252,5 +260,41 @@
         //***todo
         var tlink = getRootPath() + "/brt6m/brt62_steplist.aspx?prgid=<%=prgid%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&step_grade=" + $("#nstep_grade").val() + "&ctrl_type=A1&prgid=<%=prgid%>&seqnum=" + pseqnum;
         window.open(tlink, "mywindowN", "width=700,height=480,toolbar=yes,menubar=yes,resizable=yes,scrollbars=yes,status=0,top=50,left=80");
+    }
+
+    //管制資料append到畫面
+    brta212form.appendCtrl = function (jData) {
+        $.each(jData, function (i, item) {
+            brta212form.add_ctrl();//增加一筆
+            var nRow = $("#ctrlnum").val();
+            $("#sqlno_" + nRow).val(item.sqlno);
+            $("#octrl_type_" + nRow).val(item.ctrl_type);
+            $("#ctrl_type_" + nRow).val(item.ctrl_type);
+            $("#octrl_date_" + nRow).val(dateReviver(item.ctrl_date, "yyyy/M/d"));
+            $("#ctrl_date_" + nRow).val(dateReviver(item.ctrl_date, "yyyy/M/d"));
+            $("#octrl_remark_" + nRow).val(item.ctrl_remark);
+            $("#ctrl_remark_" + nRow).val(item.ctrl_remark);
+            $("#oresp_date_" + nRow).val(dateReviver(item.resp_date, "yyyy/M/d"));
+            $("#resp_date_" + nRow).val(dateReviver(item.resp_date, "yyyy/M/d"));
+            $("#oresp_grade_" + nRow).val(item.resp_grade);
+            $("#resp_grade_" + nRow).val(item.resp_grade);
+            if ($("#resp_date_" + nRow).val() != "") {
+                $("#io_flg_" + nRow).val("N");//該筆資料不可修改 & 不用入檔
+                $("#ctrl_type_" + nRow).lock();
+                $("#ctrl_date_" + nRow).lock();
+                $("#ctrl_remark_" + nRow).lock();
+                if (main.submittask == "U" || main.submittask == "D") {
+                    $("#delchk_" + nRow).lock();
+                }
+            } else {
+                $("#io_flg_" + nRow).val("Y");
+            }
+
+            if (main.submittask == "U" && main.prgid == "brta34") {//本發作業
+                $("#ctrl_type_" + nRow).lock();
+                $("#ctrl_date_" + nRow).lock();
+                $("#ctrl_remark_" + nRow).lock();
+            }
+        });
     }
 </script>

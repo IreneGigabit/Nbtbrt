@@ -124,7 +124,7 @@
                 <input type='hidden' id='tstep_grade_##' name='tstep_grade_##'>
                 <input type='hidden' id='attach_sqlno_##' name='attach_sqlno_##'>
                 <input type='hidden' id='attach_flag_##' name='attach_flag_##'>
-                <!--span id="span_source_##" style="display:none"--><BR>原始檔名：<input type='text' id='source_name_##' name='source_name_##' class=sedit readonly size=50><!--/span-->
+                <span id="span_source_##"><BR>原始檔名：<input type='text' id='source_name_##' name='source_name_##' class=sedit readonly size=50></span>
                 <input type='hidden' id='attach_no_##' name='attach_no_##' value='##'>
                 <input type='text' id='old_<%#uploadfield%>_name_##' name='old_<%#uploadfield%>_name_##'>
                 <input type='hidden' id='doc_type_mark_##' name='doc_type_mark_##'>
@@ -484,7 +484,11 @@
             $("#attach_flag_" + nRow).val("U");//維護時判斷是否要更名，即A表示新上傳的文件
             $("#btn" + fld + "_" + nRow).prop("disabled", true);
             $("input[name='" + fld + "_branch_" + nRow + "'][value='" + item.attach_branch + "']").prop("checked", true);//交辦專案室
-            $("#source_name_" + nRow).val(item.source_name);
+            if (item.source_name) {
+                $("#source_name_" + nRow).val(item.source_name);
+            } else {
+                $("#span_source_" + nRow).hide();
+            }
             $("#attach_no_" + nRow).val(item.attach_no);
             $("#attach_flagtran_" + nRow).val(item.attach_flagtran);//異動作業上傳註記Y
 

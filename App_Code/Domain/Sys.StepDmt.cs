@@ -13,6 +13,11 @@ public partial class Sys
         return dt;
     }
 
+    public static DataTable GetStepDmt(DBHelper conn, string seq, string seq1,int step_grade) {
+        DataTable dt = StepDmt(conn, seq, seq1, "and step_grade='" + step_grade + "'");
+        return dt;
+    }
+
     public static DataTable GetStepDmt(DBHelper conn, string seq, string seq1, string case_no) {
         DataTable dt = StepDmt(conn, seq, seq1, "and case_no='" + case_no + "'");
         return dt;

@@ -256,55 +256,12 @@
         if (window.parent.tt !== undefined) {
             window.parent.tt.rows = "100%,0%";
         }
-        theadOdr();//設定表頭排序圖示
     });
 
     //執行查詢
     function goSearch() {
         $("#regPage").submit();
     };
-    //每頁幾筆
-    $("#PerPage").change(function (e) {
-        goSearch();
-    });
-    //指定第幾頁
-    $("#divPaging").on("change", "#GoPage", function (e) {
-        goSearch();
-    });
-    //上下頁
-    $(".pgU,.pgD").click(function (e) {
-        $("#GoPage").val($(this).attr("v1"));
-        goSearch();
-    });
-    //排序
-    $(".setOdr").click(function (e) {
-        //$("#dataList>thead tr .setOdr span").remove();
-        //$(this).append("<span class='odby'>▲</span>");
-        $("#SetOrder").val($(this).attr("v1"));
-        goSearch();
-    });
-    //設定表頭排序圖示
-    function theadOdr() {
-        $(".setOdr").each(function (i) {
-            $(this).remove("span.odby");
-            if ($(this).attr("v1").toLowerCase() == $("#SetOrder").val().toLowerCase()) {
-                $(this).append("<span class='odby'>▲</span>");
-            }
-        });
-    }
-    //重新整理
-    $(".imgRefresh").click(function (e) {
-        goSearch();
-    });
-
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
 
     //取回進度項目
     function getstep(pno) {

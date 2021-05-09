@@ -146,15 +146,6 @@
         }
     });
 
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
-
     function AddForm(){
         reg.action = "Brt11Add" + reg.new_form.value + ".aspx";
         reg.submitTask.value = "Add";

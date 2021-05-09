@@ -18,7 +18,7 @@
     protected string DebugStr = "";
     protected string StrFormBtnTop = "";
     protected string StrFormBtn = "";
-    protected string formFunction = "";
+    protected string FormName = "";
     
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -30,35 +30,32 @@
     protected string json = "";
     protected string seq = "";
     protected string seq1 = "";
-    protected string case_no = "";
-    protected string in_scode = "";
-    protected string in_no = "";
-    protected string task = "";
+    protected string step_grade = "";
 
-    protected string se_grpid = "000", mSC_code = "", mSC_name = "", html_selectsign = "";
- 
+    protected string se_grpid = "", mSC_code = "", mSC_name = "", html_selectsign = "";
+
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
+        if (cnn != null) cnn.Dispose();
     }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
-
         
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
+        cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
+        
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
-
         submitTask = ReqVal.TryGet("submittask").ToUpper();
+        
         json = (Request["json"] ?? "").Trim().ToUpper();
         seq = ReqVal.TryGet("seq");
         seq1 = ReqVal.TryGet("seq1");
-        case_no = ReqVal.TryGet("case_no");
-        in_scode = ReqVal.TryGet("in_scode");
-        in_no = ReqVal.TryGet("in_no");
-        task = ReqVal.TryGet("task").Trim().ToLower();
+        step_grade = ReqVal.TryGet("step_grade","0");
         
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
@@ -76,65 +73,41 @@
     }
 
     private void PageLayout() {
-        if (submitTask == "") submitTask = "A";
-        if (prgid == "brt63") {
-            HTProgCap = "國內案承辦<font color=blue>交辦發文</font>作業";
-        } else if (prgid == "brta38") {
-            HTProgCap = "國內案程序<font color=blue>官方發文</font>作業";
-        }
-        if (submitTask == "A") {
-            if (ReqVal.TryGet("task") == "pr" || ReqVal.TryGet("task") == "prsave") {
-                HTProgCap += "-<font color=blue>新增</font>";
-            } else {
-                HTProgCap += "-<font color=blue>不需發文</font>";
-            }
-        }
-        if (submitTask == "U") HTProgCap += "-<font color=blue>確認</font>";
-        if (submitTask == "Q") HTProgCap += "-<font color=blue>查詢</font>";
-        if (submitTask == "D") HTProgCap += "-<font color=blue>刪除</font>";
-        if (submitTask == "R") HTProgCap += "-<font color=blue>退回</font>";//20160901 增加[退回]功能(R)
+        Lock["Qdisabled"] = "Lock";
 
-        if ((submitTask == "U" || submitTask == "R") && prgid == "brta38") {//20160901 增加[退回]功能(R)
-            Lock["PrLock"] = "Lock";
-        }
-        if (submitTask == "Q" || submitTask == "D" || submitTask == "R") {//20160901 增加[退回]功能(R)
-            Lock["QLock"] = "Lock";
-        }
-
-        Lock["Lock38"] = Lock.TryGet("QLock");
-        if (prgid == "brta38") {
-            Lock["Lock38"] = "Lock";
-        }
-
-        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl(Sys.getCase52Aspx("brt52", in_no, in_scode, "Edit")) + "\" target=\"Eblank\">[交辦維護作業]</a>\n";
+        StrFormBtnTop += "<font style=\"cursor: pointer;color:darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"Help_Click()\">[說明]</font>";
         StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
 
-        if ((HTProgRight & 4) > 0 || (HTProgRight & 8) > 0 || (HTProgRight & 16) > 0 || (HTProgRight & 64) > 0 || (HTProgRight & 128) > 0) {
-            if (((HTProgRight & 8) > 0 && submitTask == "R") || ((HTProgRight & 64) > 0 && submitTask == "R")) {
-                StrFormBtn += "<input type=button id='button1' value ='退　回' class='redbutton' onClick='formRejectSubmit()'>\n";
-            }
-            if (((HTProgRight & 4) > 0 && submitTask == "A") || ((HTProgRight & 8) > 0 && submitTask == "U") || ((HTProgRight & 64) > 0 && submitTask == "U")) {
-                //20161212官發確認時增加電子申請書word檢查
-                if (prgid == "brta38") {
-                    StrFormBtn += "<input type=button id='button0' value='電子申請附件檢查' class='c1button' onClick='chkAttach()'>\n";
+        if (submitTask == "U" && prgid == "brt152") {
+            FormName = "備註:<br>\n";
+            FormName += "1.作業處理不能修改，表示已洽案<br>\n";
+        }
+
+        if (submitTask != "Q") {
+            if ((HTProgRight & 4) > 0 || (HTProgRight & 8) > 0 || (HTProgRight & 16) > 0 || (HTProgRight & 64) > 0 || (HTProgRight & 128) > 0) {
+                if (((HTProgRight & 4) > 0 && submitTask == "A") || ((HTProgRight & 8) > 0 && submitTask == "U") || ((HTProgRight & 64) > 0 && submitTask == "U")) {
+                    //20161212官發確認時增加電子申請書word檢查
+                    if (prgid == "brt15") {
+                        StrFormBtn += "<input type=button id='button0' value='確認交辦' class='cbutton bsubmit' onClick='formAddSubmit()'>\n";
+                    } else if (prgid == "brt152") {
+                        StrFormBtn += "<input type=button id='button0' value='編修存檔' class='cbutton bsubmit' onClick='formAddSubmit()'>\n";
+                    }
                 }
-                if (task == "pr") {
-                    StrFormBtn += "<input type=button id='button1' value='交辦發文' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
-                } else if (task == "prsave") {
-                    StrFormBtn += "<input type=button id='button1' value='發文存檔' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
-                } else if (task == "cancel") {
-                    StrFormBtn += "<input type=button id='button1'value='不需發文' class='redbutton bsubmit' onclick='formAddSubmit()'>\n";
-                } else {
-                    StrFormBtn += "<input type=button id='button1' value='確　認' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
+                if (((HTProgRight & 16) > 0 && submitTask == "D")) {
+                    StrFormBtn += "<input type=button id='button1' value='刪　除' class='cbutton bsubmit' onClick='formDelSubmit()'>\n";
                 }
+                StrFormBtn += "<input type=button value='重　填' class='cbutton' onclick='this_init()'>\n";
             }
-            StrFormBtn += "<input type=button value='重　填' class='cbutton' onclick='this_init()'>\n";
         }
         
         //正常簽核
-        Sys.getGrpidMaster(Sys.GetSession("SeBranch"), ref se_grpid, ref mSC_code, ref mSC_name);
+        mSC_code = Sys.getSignMaster(Sys.GetSession("SeBranch"), ReqVal.TryGet("qryscode", Sys.GetSession("scode")), false);
+        SQL = "select sc_name from scode where scode='" + mSC_code + "'";
+        object objResult = cnn.ExecuteScalar(SQL);
+        mSC_name = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
         //特殊簽核
-        DataRow[] drx = Sys.getGrpidUp("N", "000").Select("grplevel=1");
+        DataRow[] drx = Sys.getGrpidUp("N", "000").Select("grplevel<=1 and grplevel>-1");
         html_selectsign = drx.Option("{master_scode}", "{master_type}---{master_nm}", false);
     }
 
@@ -142,137 +115,212 @@
     private void ChildBind() {
         Brta21form.Lock = new Dictionary<string, string>(Lock);
         Brta211form.Lock = new Dictionary<string, string>(Lock);
+        Brta212form.Lock = new Dictionary<string, string>(Lock);
+        Brt15form.Lock = new Dictionary<string, string>(Lock);
     }
 
     private void QueryData() {
-        //預設值
-        Dictionary<string, string> add_gs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        //交辦檔
-        DataTable dtCaseMain = Sys.GetCaseDmtMain(conn, in_no);
-        //案件主檔
-        DataTable dtDmt = Sys.GetDmt(conn, seq, seq1);
-        //交辦對應客收進度
-        DataTable dtStepDmtCR = Sys.GetStepDmt(conn, seq, seq1, Request["case_no"]);
-        //交辦官發檔
-        DataTable dtAttCase = Sys.GetAttCaseDmt(conn, ReqVal.TryGet("att_sqlno"), in_no);
-        //檢查array.account.plus_temp.chk_type='Y'表會計已確認，只要有一筆 ="Y"就要有警語
-        add_gs["chk_type"] = "";
-        add_gs["chk_typestr"] = "";
-        //if (dtAttCase.Rows.Count > 0) {
-        //    using (DBHelper conni = new DBHelper(Conn.account).Debug(Request["chkTest"] == "TEST")) {
-        //        SQL = "select case_no from plus_temp where branch='" + Session["seBranch"] + "' and dept='" + Session["dept"] + "'";
-        //        SQL += " and rs_no='" + dtAttCase.Rows[0]["rs_no"] + "' and chk_type='Y'";
-        //        using (SqlDataReader dr = conni.ExecuteReader(SQL)) {
-        //            if (dr.HasRows) {
-        //                add_gs["chk_type"] = "Y";
-        //                while (dr.Read()) {
-        //                    add_gs["chk_typestr"] += "," + dr.SafeRead("case_no", "");
-        //                }
-        //                add_gs["chk_typestr"] = "(會計已確認:" + add_gs["chk_typestr"].Substring(1) + ")";
-        //            }
-        //        }
-        //    }
-        //}
+        Dictionary<string, string> add_gr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase){
+        {"grconf_sqlno",""},{"rs_sqlno",""},
+        //Brta21form案件主檔
+        {"new_seq",""}, {"branch",""},{"seq",""},{"seq1",""},{"fseq",""},
+        //brta211form收文資料
+        {"mg_step_grade",""},{"mg_rs_sqlno",""},{"rs_no",""},{"nstep_grade",""},{"cgrs",""},{"step_date",""},{"mp_date",""},
+        {"send_cl",""},{"receive_no",""},{"receive_way",""},{"mg_rs_detail",""},{"pdfsource",""},{"rs_type",""},{"rs_class_name",""},
+        {"rs_code_name",""},{"act_code_name",""},{"rs_class",""},{"rs_code",""},{"act_sqlno",""},{"act_code",""},
+        {"ocase_stat",""},{"ncase_stat",""},{"ncase_statnm",""},{"rs_detail",""},{"doc_detail",""},
+        {"pr_scan",""},{"pr_scan_page",""},{"pr_scan_remark",""},{"pr_scan_path",""},{"cs_flag",""},{"csd_flag",""},
+        {"cs_rs_no",""},{"send_way",""},{"pr_scode",""},{"cs_remark_code",""},{"cs_remark",""},{"cs_detail",""},
+        {"pmail_date",""},{"mail_date",""},{"mail_scode",""},{"mwork_date",""},{"mail_scname",""},{"print_date",""},
+        //brta212管制資料
+        {"ectrlnum",""},
+        //brt15form營洽後續作業
+        {"job_case",""},{"job_no",""},{"job_type",""},{"pre_date",""},{"sales_remark",""},{"cs_report",""}
+        };
+        
+        SQL = "select a.*,c.branch,c.cappl_name as appl_name,c.csd_flag as scsd_flag,c.cs_remark,c.pmail_date";
+        SQL += ",c.step_date,c.mp_date,c.rs_detail,c.rs_no,c.cg,c.rs,c.send_cl,c.rs_class,c.rs_code,c.act_code";
+        SQL += ",c.doc_detail,c.mg_rs_sqlno,c.receive_no,c.receive_way,c.pr_scode,c.pr_scan,c.pr_scan_page,c.pr_scan_remark,c.pr_scan_path";
+        SQL += ",(select sc_name from sysctrl.dbo.scode where scode=c.dmt_scode) as sc_name,c.cust_prod";
+        SQL += ",''fseq,''nstep_grade,''cs_detail,''send_way,''print_date,''mail_date";
+        SQL += " from grconf_dmt a ";
+        SQL += " inner join vstep_dmt c on a.seq=c.seq and a.seq1=c.seq1 and a.step_grade=c.step_grade and a.rs_sqlno=c.rs_sqlno ";
+        SQL += " where a.seq=" + seq + " and a.seq1='" + seq1 + "' and a.step_grade=" + step_grade;
+        DataTable dtGrConfDmt = new DataTable();
+        conn.DataTable(SQL, dtGrConfDmt);
 
-        //附件檔
-        string where = "";
-        if (ReqVal.TryGet("step_grade") != "") where += " and step_grade=" + ReqVal["step_grade"];
-        if (ReqVal.TryGet("attach_sqlno") != "") where += " and attach_sqlno=" + ReqVal["attach_sqlno"];
-        if (ReqVal.TryGet("att_sqlno") != "") where += " and att_sqlno=" + ReqVal["att_sqlno"];
-        DataTable dtCaseAttach = Sys.GetDmtAttach(conn, seq, seq1, "cgrs", where);
+        //管制資料
+        DataTable dtCtrl = new DataTable();
 
-        add_gs["cgrs"] = ReqVal.TryGet("cgrs").ToUpper();
-        add_gs["fees"] = "0";
-        add_gs["fees_stat"] = "N";
-        //2011/2/18依2010/12/15李協理Email需求，結構分類：C4_行政訴訟預設發文對象為Q_智慧財產法院
-        if (dtDmt.Rows[0].SafeRead("now_rsclass", "") == "C4") {
-            add_gs["send_cl"] = "Q";
-        } else {
-            add_gs["send_cl"] = "1";
+        add_gr["seq"] = seq;
+        add_gr["seq1"] = seq1;
+        add_gr["fseq"] = Sys.formatSeq(seq, seq1, "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
+
+        if (dtGrConfDmt.Rows.Count > 0) {
+            DataRow dr = dtGrConfDmt.Rows[0];
+
+            SQL = " select sqlno,ctrl_type,ctrl_remark,ctrl_date,null as resp_date,null as resp_grade from ctrl_dmt ";
+            SQL+= " where rs_no='" +dr.SafeRead("rs_no", "")+ "'";
+            SQL+= " union select sqlno,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_grade from resp_dmt ";
+            SQL+= " where rs_no='" +dr.SafeRead("rs_no", "")+ "'";
+            SQL+= " order by ctrl_date";
+            conn.DataTable(SQL, dtCtrl);
+
+            add_gr["grconf_sqlno"] = dr.SafeRead("grconf_sqlno", "");
+            add_gr["rs_sqlno"] = dr.SafeRead("rs_sqlno", "");
+            add_gr["rs_no"] = dr.SafeRead("rs_no", "");
+            add_gr["branch"] = dr.SafeRead("branch", "");
+            add_gr["nstep_grade"] = dr.SafeRead("step_grade", "");
+            add_gr["cgrs"] = dr.SafeRead("cg", "") + dr.SafeRead("rs", "");
+            add_gr["step_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
+            add_gr["mp_date"] = dr.GetDateTimeString("mp_date", "yyyy/M/d");
+            add_gr["send_cl"] = dr.SafeRead("send_cl", "");
+            add_gr["ssend_cl"] = dr.SafeRead("send_cl", "");
+            add_gr["receive_no"] = dr.SafeRead("receive_no", "");
+            add_gr["receive_way"] = dr.SafeRead("receive_way", "");
+            add_gr["rs_type"] = Sys.getRsType();
+            add_gr["rs_class"] = dr.SafeRead("rs_class", "");
+            add_gr["rs_code"] = dr.SafeRead("rs_code", "");
+            add_gr["act_code"] = dr.SafeRead("act_code", "");
+            //取得案件狀態
+            SQL = " select rs_type,rs_class,rs_code,act_code,case_stat,case_stat_name ";
+            SQL += "from vcode_act ";
+            SQL += "where rs_code = '" + add_gr["rs_code"] + "' and act_code = '" + add_gr["act_code"] + "' ";
+            SQL += "and rs_type = '" + add_gr["rs_type"] + "'";
+            SQL += "and cg = 'G' and rs = 'R'";
+            using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                if (dr0.Read()) {
+                    add_gr["ocase_stat"] = dr0.SafeRead("case_stat", "");
+                    add_gr["ncase_stat"] = dr0.SafeRead("case_stat", "");
+                    add_gr["ncase_statnm"] = dr0.SafeRead("case_stat_name", "");
+                }
+            }
+            add_gr["rs_detail"] = dr.SafeRead("rs_detail", "");
+            add_gr["doc_detail"] = dr.SafeRead("doc_detail", "");
+            add_gr["cs_rs_no"] = dr.SafeRead("cs_rs_no", "");
+            if (dr.SafeRead("cs_rs_no", "") != "") {
+                SQL = "select rs_no,rs_detail,send_way,print_date,mail_date,(select sc_name from sysctrl.dbo.scode where scode=mail_scode) as mail_scname,mwork_date from cs_dmt where rs_no='" + dr["cs_rs_no"] + "'";
+                using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                    if (dr0.Read()) {
+                        add_gr["cs_detail"] = dr0.SafeRead("rs_detail", "");
+                        add_gr["send_way"] = dr0.SafeRead("send_way", "");
+                        add_gr["print_date"] = dr0.SafeRead("print_date", "");
+                        add_gr["mail_date"] = dr0.GetDateTimeString("mail_date", "yyyy/M/d");
+                        add_gr["mail_scname"] = dr0.SafeRead("mail_scname", "");
+                        add_gr["mwork_date"] = dr0.SafeRead("mwork_date", "");
+                    }
+                }
+            }
+
+            add_gr["pr_scode"] = dr.SafeRead("pr_scode", "");
+            add_gr["pr_scan"] = dr.SafeRead("pr_scan", "");
+            add_gr["pr_scan_page"] = dr.SafeRead("pr_scan_page", "");
+            add_gr["pr_scan_remark"] = dr.SafeRead("pr_scan_remark", "");
+            add_gr["pr_scan_path"] = Sys.Path2Nbtbrt(dr.SafeRead("pr_scan_path", ""));
+            //掃描文件改入dmt_attach，所以掃描資料要抓dmt_attach
+            SQL = "select chk_status,chk_page,attach_path,attach_desc from dmt_attach where seq=" + seq + " and seq1='" + seq1 + "' and step_grade=" + add_gr["nstep_grade"] + " and source='scan'";
+            using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                if (dr0.Read()) {
+                    add_gr["pr_scan_page"] = dr0.SafeRead("chk_page", "");
+                    add_gr["pr_scan_remark"] = dr0.SafeRead("attach_desc", "");
+                    add_gr["pr_scan_path"] = Sys.Path2Nbtbrt(dr0.SafeRead("attach_path", ""));
+                    if (dr0.SafeRead("chk_status", "") == "NN") {
+                        add_gr["pr_scan_path"] = "";
+                    }
+                }
+            }
+
+            //取得總收發文收文內容
+            SQL = "select rs_detail from step_mgt_temp where mg_step_rs_sqlno='" + dr["mg_rs_sqlno"] + "'";
+            using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                if (dr0.Read()) {
+                    add_gr["mg_rs_detail"] = dr0.SafeRead("rs_detail", "");
+                }
+            }
+
+            //營洽確認之後續交辦畫面資料
+            add_gr["cs_flag"] = dr.SafeRead("cs_flag", "");
+            add_gr["scs_detail"] = dr.SafeRead("scs_detail", "");
+            add_gr["cs_send_way"] = dr.SafeRead("cs_send_way", "");
+            add_gr["last_date"] = dr.GetDateTimeString("last_date", "yyyy/M/d");
+            add_gr["sales_csd_flag"] = dr.SafeRead("csd_flag", "");
+            add_gr["csd_remark"] = dr.SafeRead("csd_remark", "");
+            add_gr["pstep_date"] = dr.GetDateTimeString("pstep_date", "yyyy/M/d");
+            add_gr["job_type"] = dr.SafeRead("job_type", "");
+            add_gr["job_case"] = dr.SafeRead("job_case", "");
+            add_gr["pre_date"] = dr.GetDateTimeString("pre_date", "yyyy/M/d");
+            add_gr["sales_remark"] = dr.SafeRead("sales_remark", "");
+            add_gr["cs_report"] = dr.SafeRead("cs_report", "");
+            add_gr["job_no"] = dr.SafeRead("job_no", "");
+            add_gr["finish_date"] = dr.GetDateTimeString("finish_date", "yyyy/M/d");
+            //客戶報導資料
+            add_gr["csd_flag"] = dr.SafeRead("scsd_flag", "");
+            add_gr["cs_remark"] = dr.SafeRead("cs_remark", "");
+            add_gr["pmail_date"] = dr.GetDateTimeString("pmail_date", "yyyy/M/d");
+            //20170828增加客戶卷號
+            add_gr["cust_prod"] = dr.SafeRead("cust_prod", "");
         }
-        //add_gs["send_cl"] = "1";
-        add_gs["send_cl1"] = "";
-        add_gs["send_sel"] = "";
-        add_gs["rs_type"] = dtCaseMain.Rows[0].SafeRead("arcase_type", "");
-        add_gs["rs_class"] = dtCaseMain.Rows[0].SafeRead("ar_form", "");
-        add_gs["rs_code"] = dtCaseMain.Rows[0].SafeRead("arcase", "");
-        add_gs["contract_flag"] = dtCaseMain.Rows[0].SafeRead("contract_flag", "");
-        add_gs["receipt_type"] = dtCaseMain.Rows[0].SafeRead("receipt_type", "");
-        add_gs["receipt_title"] = dtCaseMain.Rows[0].SafeRead("receipt_title", "");
-        add_gs["rectitle_name"] = dtCaseMain.Rows[0].SafeRead("rectitle_name", "");
-        add_gs["send_way"] = dtCaseMain.Rows[0].SafeRead("send_way", "");
 
-        //抓取客收進度for文件上傳&發文方式
-        add_gs["case_step_grade"] = "";
-        if (dtStepDmtCR.Rows.Count > 0) {
-            add_gs["case_step_grade"] = dtStepDmtCR.Rows[0].SafeRead("case_step_grade", "");
-            add_gs["send_way"] = dtStepDmtCR.Rows[0].SafeRead("send_way", "");
+        add_gr["pdfsource"] = "GR";
+        //2019/6/18修改，電子公文rsreive_way=R9其source=EGGR，其餘皆為GR，路徑只有電子公文會不同須判斷，其餘都直接連到總管處顯示
+        if (add_gr["receive_way"] == "R9") {//R9_電子公文
+            add_gr["pdfsource"] = "EGR";
         }
 
-        add_gs["step_date"] = DateTime.Today.ToShortDateString();
-        //總收發文日期
-        //台北所總收發當天就會發文
-        add_gs["mp_date"] = DateTime.Today.ToShortDateString();
-        if (Sys.GetSession("seBranch") != "N") {
-            switch (DateTime.Today.DayOfWeek) {
-                case DayOfWeek.Friday: add_gs["mp_date"] = DateTime.Today.AddDays(3).ToShortDateString(); break;//星期五加三天
-                case DayOfWeek.Saturday: add_gs["mp_date"] = DateTime.Today.AddDays(2).ToShortDateString(); break;//星期六加兩天
-                default: add_gs["mp_date"] = DateTime.Today.AddDays(1).ToShortDateString(); break;//加一天
+        //2019/6/20因官收作業進入無案件編號  
+        DataTable dtMGAttach = new DataTable();
+        if (seq != "" && seq != "0") {
+            SQL = "select attach_path,attach_name,source,''view_path from dmt_attach where seq=" + seq + " and seq1='" + seq1 + "' and step_grade=" + add_gr["nstep_grade"] + " and source='" + add_gr["pdfsource"] + "' and attach_flag<>'D' order by attach_sqlno ";
+            conn.DataTable(SQL, dtMGAttach);
+            for (int i = 0; i < dtMGAttach.Rows.Count; i++) {
+                DataRow dr = dtMGAttach.Rows[i];
+                string attach_path = Sys.Path2Nbtbrt(dr.SafeRead("attach_path", ""));
+                string viewserver = "http://" + Sys.Host;
+
+                //若區所主機找不到就找總所主機
+                if (Sys.CheckFile(attach_path) == false) {
+                    viewserver = "http://" + Sys.MG_IIS;
+                    if (add_gr["pdfsource"] == "EGR") {
+                        attach_path = attach_path.Replace("/nbtbrt/", "/MG/");
+                    }
+                }
+                dr["attach_path"] = attach_path;
+                dr["view_path"] = viewserver + attach_path;
             }
         }
 
-        //電子送件之總發文日皆為區所發文日，即當天
-        if (add_gs["send_way"] == "E") {
-            add_gs["mp_date"] = DateTime.Today.ToShortDateString();
-        }
+        //官收確認文件
+        DataTable dtGRAttach = new DataTable();
+        SQL = "select *,''view_path from dmt_attach where seq='" + seq + "' and seq1='" + seq1 + "' and step_grade=" + add_gr["nstep_grade"] + " and source='grconf_cs' and attach_flag<>'D' order by attach_sqlno ";
+        conn.DataTable(SQL, dtGRAttach);
+        for (int i = 0; i < dtGRAttach.Rows.Count; i++) {
+            DataRow dr = dtGRAttach.Rows[i];
+            string attach_path = Sys.Path2Nbtbrt(dr.SafeRead("attach_path", ""));
+            string viewserver = "http://" + Sys.Host;
 
-        //有交辦發文檔以交辦發文檔為準
-        if (dtAttCase.Rows.Count > 0) {
-            add_gs["fees"] = dtAttCase.Rows[0].SafeRead("fees", "0");
-            add_gs["fees_stat"] = dtAttCase.Rows[0].SafeRead("fees_stat", "");
-            add_gs["send_cl"] = dtAttCase.Rows[0].SafeRead("send_cl", "");
-            add_gs["send_cl1"] = dtAttCase.Rows[0].SafeRead("send_cl1", "");
-            add_gs["send_sel"] = dtAttCase.Rows[0].SafeRead("send_sel", "");
-            add_gs["rs_type"] = dtAttCase.Rows[0].SafeRead("rs_type", "");
-            add_gs["rs_class"] = dtAttCase.Rows[0].SafeRead("rs_class", "");
-            add_gs["rs_code"] = dtAttCase.Rows[0].SafeRead("rs_code", "");
-            add_gs["send_way"] = dtAttCase.Rows[0].SafeRead("send_way", "");
-        }
-
-        //DB無值時預設選項
-        //若為電子送件,預設收據種類為電子收據
-        if (add_gs["receipt_type"] == "") {
-            if (add_gs["send_way"] == "E")
-                add_gs["receipt_type"] = "E";
-            else
-                add_gs["receipt_type"] = "P";
-        }
-        //若為電子送件,設定預設值
-        if (add_gs["receipt_title"] == "") {
-            if (add_gs["send_way"] == "E") {
-                add_gs["receipt_title"] = Sys.getDefaultTitle();
-                SQL = "Select a.ap_cname from dmt_temp_ap a where a.in_no='" + in_no + "' and a.case_sqlno=0 ";
-                SQL += " order by a.server_flag desc,a.temp_ap_sqlno ";
-                object objResult = conn.ExecuteScalar(SQL);
-                add_gs["rectitle_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-            } else {
-                add_gs["receipt_title"] = "B";
+            //若區所主機找不到就找總所主機
+            if (Sys.CheckFile(attach_path) == false) {
+                if (add_gr["pdfsource"] == "EGR") {
+                    viewserver = "http://" + Sys.MG_IIS;
+                    attach_path = attach_path.Replace("/nbtbrt/", "/MG/");
+                }
             }
+            dr["attach_path"] = attach_path;
+            dr["view_path"] = viewserver + attach_path;
         }
 
-        var settings = new JsonSerializerSettings() {
+        var settings = new JsonSerializerSettings()
+        {
             Formatting = Formatting.Indented,
             ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
             Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
         };
         Response.Write("{");
         Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
-        Response.Write(",\"case_main\":" + JsonConvert.SerializeObject(dtCaseMain, settings).ToUnicode() + "\n");
-        Response.Write(",\"dmt\":" + JsonConvert.SerializeObject(dtDmt, settings).ToUnicode() + "\n");//案件主檔
-        Response.Write(",\"step_dmt_cr\":" + JsonConvert.SerializeObject(dtStepDmtCR, settings).ToUnicode() + "\n");//交辦對應客收進度
-        Response.Write(",\"attcase_dmt\":" + JsonConvert.SerializeObject(dtAttCase, settings).ToUnicode() + "\n");//交辦官發檔
-        Response.Write(",\"add_gs\":" + JsonConvert.SerializeObject(add_gs, settings).ToUnicode() + "\n");//交辦官發預設值
-        Response.Write(",\"case_attach\":" + JsonConvert.SerializeObject(dtCaseAttach, settings).ToUnicode() + "\n");//附件檔
+        Response.Write(",\"add_gr\":" + JsonConvert.SerializeObject(add_gr, settings).ToUnicode() + "\n");//交辦官發預設值
+        Response.Write(",\"gr_ctrl\":" + JsonConvert.SerializeObject(dtCtrl, settings).ToUnicode() + "\n");//管制資料
+        Response.Write(",\"mg_attach\":" + JsonConvert.SerializeObject(dtMGAttach, settings).ToUnicode() + "\n");//總管處官收文件
+        Response.Write(",\"gr_attach\":" + JsonConvert.SerializeObject(dtGRAttach, settings).ToUnicode() + "\n");//官收確認文件
         Response.Write("}");
         Response.End();
     }
@@ -310,10 +358,11 @@
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
         <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
+            &nbsp;&nbsp;<span id="span_rs_no"></span>
 		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;&nbsp;
 		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;&nbsp;
 		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;&nbsp;
-		案件編號：<span id="span_fseq"></span>&nbsp;&nbsp;<span id="span_rs_no" style="display:none">發文序號：</span>
+		案件編號：<span id="span_fseq"></span>
         </td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <%#StrFormBtnTop%>
@@ -325,20 +374,12 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id="submittask" name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="text" id=ctrl_flg name=ctrl_flg value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
+    <INPUT TYPE="text" id=havectrl name=havectrl value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
     <INPUT TYPE="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="text" id="prgid1" name="prgid1" value="<%=Request["prgid1"]%>">
-    <INPUT TYPE="text" id="todo_sqlno" name="todo_sqlno" value="<%=Request["todo_sqlno"]%>"><!--承辦交辦發文或程序官發確認todo_dmt.sqlno-->
-    <INPUT TYPE="text" id="in_scode" name="in_scode" value="<%=in_scode%>"><!--對應交辦case_dmt.in_scode-->
-    <INPUT TYPE="text" id="in_no" name="in_no" value="<%=in_no%>"><!--對應交辦case_dmt.in_no-->
-    <INPUT TYPE="text" id="case_no" name="case_no" value="<%=case_no%>"><!--對應交辦case_dmt.case_no-->
-    <INPUT TYPE="text" id="att_sqlno" name="att_sqlno" value="<%=Request["att_sqlno"]%>"><!--對應交辦發文attcase_dmt.att_sqlno-->
-    <INPUT TYPE="text" id="ctrl_flg" name="ctrl_flg" value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
-    <INPUT TYPE="text" id="havectrl" name="havectrl" value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
-    <INPUT TYPE="text" id="task" name="task" value="<%=Request["task"]%>"><!--prsave:承辦發文維護,pr:承辦自行發文,cancel:不需發文,conf:確認-->
-    <input type="text" id="edoc_type" name="edoc_type"><!--判斷要檢查的電子送件文件種類xx,改用申請書檢核-->
-    <input type="text" id="report_name" name="report_name"><!--案性對應申請書名稱xx,改用上傳檔名-->
-    <input type="text" id="contract_flag" name="contract_flag"><!--契約書後補註記N:無或已後補,Y:有-->
+    <INPUT TYPE="text" id="submittask" name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="text" id=grconf_sqlno name=grconf_sqlno>
+    <INPUT TYPE="text" id=rs_sqlno name=rs_sqlno>
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
@@ -359,7 +400,7 @@
                 <uc1:Brta212form runat="server" id="Brta212form" /><!--管制欄位畫面，與收文共同-->
             </div>
             <div class="tabCont" id="#grconf">
-                <uc1:brt15form runat="server" id="brt15form" /><!--後續交辦紀錄欄位畫面-->
+                <uc1:brt15form runat="server" id="Brt15form" /><!--後續交辦紀錄欄位畫面-->
             </div>
        </td>
     </tr>
@@ -367,12 +408,12 @@
 
     <div id="div_sign" style="display:none">
         <br>
-        <table id="tabsign"border="0" width="70%" cellspacing="1" cellpadding="0" align="center" style="font-size: 9pt">
+        <table id="tabhd1" border="0" width="70%" cellspacing="1" cellpadding="0" align="center" style="font-size: 9pt">
 	        <TR>
 		        <td width="14%"><input type=radio name="usesign" id="usesign1" onclick="toselect()" checked><strong>正常簽核:</strong></td>
 		        <td><strong>上級主管:</strong><%=mSC_name%><input type=hidden name=Msign id=Msign value="<%=mSC_code%>"></td>
 		        <td style="display:none"><strong>管制日期:</strong>
-		        <input type=text name="signdate" id="signdate" size=10 readonly class="dateField">
+		            <input type=text name="signdate" id="signdate" size=10 readonly class="dateField">
 		        </td>
 	        </TR>
 	        <TR>
@@ -383,8 +424,9 @@
 				        <%#html_selectsign%>
 			        </select>
 		        </td>
-		        <td><input type=radio name=Osign disabled onclick="$('#usesign2').prop('checked',true)">
-		        <input type=text name=Nsign id=Nsign size=10 readonly>(薪號)
+		        <td style="display:none">
+                    <input type=radio name=Osign disabled onclick="$('#usesign2').prop('checked',true)">
+		            <input type=text name=Nsign id=Nsign size=10 readonly>(薪號)
 		        </td>
 	        </TR>
         </table>
@@ -400,6 +442,12 @@
     <td width="100%" align="center">
         <%#StrFormBtn%>
     </td>
+</tr>
+</table>
+<br />
+<table border="0" width="98%" cellspacing="0" cellpadding="0">
+<tr class="FormName">
+    <td><div align="left" style="color:blue"><%#FormName%></div></td>
 </tr>
 </table>
 
@@ -430,20 +478,13 @@
         $("div.tabCont[id='" + k + "']").show();
     }
 
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
-
     function this_init() {
-        //取得交辦資料
+        settab("#grconf");
+
+        //取得收文資料
         $.ajax({
             type: "get",
-            url: "brt63_edit.aspx?json=Y&<%#Request.QueryString%>",
+            url: "brt15_edit.aspx?json=Y&<%#Request.QueryString%>",
             //url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
             async: false,
             cache: false,
@@ -459,611 +500,89 @@
 
         //畫面準備
         brta21form.init();
-        brta311form.init();
-        if (typeof upload_form !== "undefined") upload_form.init();
+        brta211form.init();
+        brta212form.init();
+        brt15form.init();
+        
         //-----------------
         $("input.dateField").datepick();
         main.bind();//資料綁定
+
         $(".Lock").lock();
         $(".Hide").hide();
     }
     
     main.bind = function () {
-        if($("#submittask").val()=="A"){
-            $("#cgrs").val(jMain.add_gs.cgrs).triggerHandler("change");
-            $("#span_fseq").html(jMain.case_main[0].fseq);
-            $("#oldseq,#grseq,#seq").val(jMain.dmt[0].seq);
-            $("#oldseq1,#grseq1,#seq1").val(jMain.dmt[0].seq1);
-            $("#in_scode").val(jMain.case_main[0].in_scode);
-            $("#a_last_date").val(jMain.case_main[0].a_last_date);//最小法定期限
-            brta21form.btnseq();//[確定]
-            $("#step_date").val(jMain.add_gs.step_date);
-            $("#mp_date").val(jMain.add_gs.mp_date);
-            $("#send_cl").val(jMain.add_gs.send_cl);
-            $("#send_cl1").val(jMain.add_gs.send_cl1);
-            $("#fees").val(jMain.add_gs.fees);
-            $("#fees_stat").val(jMain.add_gs.fees_stat);
-            $("#rs_type").val(jMain.add_gs.rs_type).triggerHandler("change");
-            $("#case_arcase_class,#rs_class,#hrs_class").val(jMain.add_gs.rs_class);
-            $("#rs_class").triggerHandler("change");
-            $("#case_arcase,#rs_code,#hrs_code").val(jMain.add_gs.rs_code);
-            $("#rs_code").triggerHandler("change");
-            $("#send_way,#old_send_way").val(jMain.add_gs.send_way);
-            $("#receipt_type").val(jMain.add_gs.receipt_type);
-            $("#receipt_title").val(jMain.add_gs.receipt_title);
-            $("#rectitle_name").val(jMain.add_gs.rectitle_name);
+        $("#grconf_sqlno").val(jMain.add_gr.grconf_sqlno);
+        $("#rs_sqlno").val(jMain.add_gr.rs_sqlno);
 
-            brta311form.add_ar();//增加一筆交辦單號
-            $("#case_no_1").val(jMain.case_main[0].case_no);
-            brta311form.getmoney(1);//依交辦單號抓取服務費、規費
-            $("#remark").val(jMain.case_main[0].remark);
-            $("#contract_flag").val(jMain.case_main[0].ncontract_flag);
+        brta21form.bind(jMain.add_gr);//主檔資料
+        brta211form.bind(jMain.add_gr,jMain.mg_attach);//收文資料
+        brta212form.bind(jMain.add_gr,jMain.gr_ctrl);//管制資料
+        brt15form.bind(jMain.add_gr,jMain.gr_attach);//後續交辦紀錄/自行客戶報導
 
-            if(jMain.attcase_dmt.length>0) {
-                $("#span_rs_no").html("發文序號："+jMain.attcase_dmt[0].rs_sqlno);
-                $("#step_date").val(dateReviver(jMain.attcase_dmt[0].step_date,'yyyy/M/d'));
-                $("#mp_date").val(dateReviver(jMain.attcase_dmt[0].mp_date,'yyyy/M/d'));
-                $("#send_cl").val(jMain.attcase_dmt[0].send_cl);
-                $("#send_cl1").val(jMain.attcase_dmt[0].send_cl1);
-                $("#send_sel").val(jMain.attcase_dmt[0].send_sel);
-                $("#pr_scode").val(jMain.attcase_dmt[0].pr_scode);
-                $("#remark").val(jMain.attcase_dmt[0].remark);
-                $("#act_code,#hact_code").val(jMain.attcase_dmt[0].act_code);
-                $("#act_code").triggerHandler("change");
-            }
-            if((main.right&128)!=0||(main.right&256)!=0){
-                $("input[name='rfees_stat'][value='"+jMain.add_gs.fees_stat+"']").prop("checked",true);
-            }
+        $("#tr_csmail_date").show();
+    }
 
-            openread();	//控制特定欄位不能修改
-            if(main.task=="pr"||main.task=="prsave"){
-                upload_form.appendAttach(jMain.case_attach);//顯示上傳文件資料
-            }else if(main.task=="cancel"){
-                $("#tabgs").hide();//發文資料
-                $("#tr_respdate").show();//期限銷管
-            }
-        }else{
-            $("#cgrs").val(jMain.add_gs.cgrs).triggerHandler("change");
-            $("#span_fseq").html(jMain.case_main[0].fseq);
-            $("#oldseq,#grseq,#seq").val(jMain.dmt[0].seq);
-            $("#oldseq1,#grseq1,#seq1").val(jMain.dmt[0].seq1);
-            $("#in_scode").val(jMain.case_main[0].in_scode);
-            $("#a_last_date").val(jMain.case_main[0].a_last_date);//最小法定期限
-            brta21form.btnseq();//[確定]
-            $("#step_date").val(jMain.add_gs.step_date);
-            $("#mp_date").val(jMain.add_gs.mp_date);
-            $("#send_cl").val(jMain.add_gs.send_cl);
-            $("#send_cl1").val(jMain.add_gs.send_cl1);
-            $("#fees").val(jMain.add_gs.fees);
-            $("#fees_stat").val(jMain.add_gs.fees_stat);
-            $("#rs_type").val(jMain.add_gs.rs_type).triggerHandler("change");
-            $("#case_arcase_class,#rs_class,#hrs_class").val(jMain.add_gs.rs_class);
-            $("#rs_class").triggerHandler("change");
-            $("#case_arcase,#rs_code,#hrs_code").val(jMain.add_gs.rs_code);
-            $("#rs_code").triggerHandler("change");
-            $("#send_way,#old_send_way").val(jMain.add_gs.send_way);
-            $("#receipt_type").val(jMain.add_gs.receipt_type);
-            $("#receipt_title").val(jMain.add_gs.receipt_title);
-            $("#rectitle_name").val(jMain.add_gs.rectitle_name);
-
-            brta311form.add_ar();//增加一筆交辦單號
-            $("#case_no_1").val(jMain.case_main[0].case_no);
-            brta311form.getmoney(1);//依交辦單號抓取服務費、規費
-            $("#remark").val(jMain.case_main[0].remark);
-            $("#contract_flag").val(jMain.case_main[0].ncontract_flag);
-
-            if(jMain.attcase_dmt.length>0) {
-                $("#span_rs_no").html("發文序號："+jMain.attcase_dmt[0].rs_sqlno);
-                $("#step_date").val(dateReviver(jMain.attcase_dmt[0].step_date,'yyyy/M/d'));
-                $("#mp_date").val(dateReviver(jMain.attcase_dmt[0].mp_date,'yyyy/M/d'));
-                $("#send_cl").val(jMain.attcase_dmt[0].send_cl);
-                $("#send_cl1").val(jMain.attcase_dmt[0].send_cl1);
-                $("#send_sel").val(jMain.attcase_dmt[0].send_sel);
-                $("#pr_scode").val(jMain.attcase_dmt[0].pr_scode);
-                $("#job_remark").val(jMain.attcase_dmt[0].remark);
-                $("#act_code,#hact_code").val(jMain.attcase_dmt[0].act_code);
-                $("#act_code").triggerHandler("change");
-            }
-            if((main.right&128)!=0||(main.right&256)!=0){
-                $("input[name='rfees_stat'][value='"+jMain.add_gs.fees_stat+"']").prop("checked",true);
-            }
-
-            openread();	//控制特定欄位不能修改
-            upload_form.appendAttach(jMain.case_attach);//顯示上傳文件資料
-            $("#task").val("conf");
-            $("#chk_typestr").html(jMain.add_gs.chk_typestr);
-        }
-
-        if(jMain.dmt[0].ectrlnum!=""){
-            $("#btndis").val("進度查詢及銷管制("+jMain.dmt[0].ectrlnum+"件)");
-        }
-
-        if($("#submittask").val()=="U") {
-            $("#span_rs_no").show();
-        }
-        if($("#submittask").val()!="Q"){
-            if (jMain.case_main[0].ncontract_flag=="Y" && main.task=="pr"){
-                $("#div_sign").show();
-            }
-        }
+    function Help_Click(){
+        window.open(getRootPath() + "/brtam/國內案發收文系統操作手冊.htm","","width=700, height=500, top=50, left=50, toolbar=no, menubar=no, location=no, directories=no, resizeable=no, status=no, scrollbars=yes");
     }
 
     //存檔
     function formAddSubmit(){
-        if($("#submittask").val()=="A"||$("#submittask").val()=="U"){
-            //20161212增加word申請書附件檢查
-            if (document.getElementById('task').value=="conf" && document.getElementById("send_way").value=="E"){
-                //未檢查通過
-                if (!document.getElementById('button0').disabled){
-                    alert("請先執行電子申請附件檢查!!");
-                    return false;
-                }
-            }
-		
-            if (document.getElementById('task').value==""){
-                alert( "系統無法判斷存檔後的執行作業，請回系統首頁再重新進入本項作業，若仍無法處哩，請通知資訊部！");
+        if(chkNull("本所編號",$("#seq"))) return false;
+        if(chkNull("本所編號副碼",$("#seq1"))) return false;
+        if(chkNull("案性代碼",$("#rs_code"))) return false;
+        if(chkNull("處理事項",$("#act_code"))) return false;
+        if($("input[name='job_type']:checked").length==0){
+            alert("作業處理必須點選!!!");
+            return false;
+        }
+
+        if($("input[name='job_type']:checked").val()=="case"){//接洽客戶後續案性
+            if($("#job_case").val()==""){
+                alert("洽案登錄案性必須點選!!!");
+                $("#toadd").focus();
                 return false;
             }
-            if (document.getElementById('task').value== "cancel"){	//不需發文
-                if(chkNull("不需發文說明",document.getElementById('job_remark'))) return false;
-                var ans = confirm("是否確定不需發文？");
-                if (ans!=true){
-                    return false;
-                }
-            }else{  //交辦發文 or發文確認
-                if(document.getElementById('keyseq').value=="N"){
-                    alert( "本所編號變動過，請按[確定]按鈕，重新抓取資料!!!");
-                    return false;
-                }
-                if(chkNull("本所編號",document.getElementById('seq'))) return false;
-                if(chkNull("本所編號副碼",document.getElementById('seq1'))) return false;
-                if(chkNull("發文日期",document.getElementById('step_date'))) return false;
-                if(chkNull("案性代碼",document.getElementById('rs_code'))) return false;
-                if(chkNull("處理事項",document.getElementById('act_code'))) return false;
-                if(chkNull("發文方式",document.getElementById('send_way'))) return false;//2012/12/12因應電子申請增加發文方式修改
-                if (document.getElementById('send_way').value ==""){
-                    alert("發文方式不可空白！");
-                    return false;
-                }
-                if(document.getElementById('spe_ctrl').value == "E"){
-                    if (document.getElementById('send_way').value !="E"){
-                        alert("電子申請案性之發文方式必須為電子送件，請檢查！");
-                        return false;
-                    }
-                }else if(document.getElementById('spe_ctrl_4').value != ""){
-                    if (document.getElementById('spe_ctrl_4').value.indexOf(document.getElementById('send_way').value)==-1){
-                        alert("此案性發文方式不可選擇["+$("#send_way option:selected" ).text()+"]，請檢查！\n若需修改，則請通知程序至國內案客戶收文作業修改後再發文。");
-                        return false;
-                    }
-                    if (document.getElementById('send_way').value!=document.getElementById('old_send_way').value){
-                        alert("若需修改發文方式，請通知程序至國內案客戶收文作業修改後再發文。");
-                        return false;
-                    }
-                }else{
-                    if (document.getElementById('send_way').value!="M"||document.getElementById('send_way').value!=document.getElementById('old_send_way').value){
-                        alert("非電子申請案性之發文方式應為親送，若確定要修改發文方式，則請通知程序至國內案客戶收文作業修改後再發文！");
-                        return false;
-                    }
-                }
+            if(chkNull("預計處理日期",$("#pre_date"))) return false;
+        }
 
-                //20180525增加檢查發文日期/總發文日期不可小於系統日
-                var sdate = CDate($('#step_date').val());
-                var mdate = CDate($('#mp_date').val());
-                if(sdate.getTime()< Today().getTime() || mdate.getTime()<Today().getTime()){
-                    alert("發文日期或總發文日期不可小於系統日！");
-                    return false;
-                }
+        if($("input[name='cs_report']:checked").length==0){
+            alert("自行客戶報導必須點選!!!");
+            return false;
+        }
 
-                //交辦發文檢查
-                if (document.getElementById('task').value=="pr"){
-                    //20161226 增加檢查非pdf檔不可勾選電子送件
-                    //20161227 增加檢查須上傳電子申請書word檔
-                    if (document.getElementById("send_way").value=="E"){
-                        var fldname=reg.uploadfield.value;
-                        var filenum=document.getElementById(fldname+"_filenum").value;
-                        var hasWord=false;
-                        for (p = 1; p <= filenum; p++) { 
-                            var filename=document.getElementById(fldname+"_name_" + p).value.toLowerCase();
-                            if (document.getElementById("doc_flag_" + p).checked==true) {
-                                if (filename.substr(filename.length-4)!=".pdf"){
-                                    alert("(文件"+p+")檔案類型為 "+filename.substr(filename.length-4)+" 不可勾選電子送件文件檔!");
-                                    return false;
-                                }
-                            }else{
-                                var names = filename.split(".");
-                                if ((names[names.length-1]=="doc"||names[names.length-1]=="docx") && document.getElementById(fldname+"_desc_" + p).value.indexOf("申請書")>-1){
-                                    hasWord=true;
-                                }
-                            }
-                        }
-                        if (!hasWord){
-                            alert("請上傳電子申請書word檔，且檔案說明須含有「申請書」字樣!");
-                            return false;
-                        }
-                    }
-                    //若契約書尚未後補完成，則需轉區所主管簽核
-                    if (document.getElementById('contract_flag').value=="Y"){
-                        if (document.getElementsByName("usesign")[0].checked){
-                            document.getElementById('signid').value = document.getElementById('Msign').value;
-                        }else{
-                            if (document.getElementsByName("Osign")[0].checked){
-                                if (document.getElementById('selectsign').value == ""){
-                                    alert("請選擇主管");
-                                    document.getElementById('selectsign').focus();
-                                    return false;
-                                }
-                                document.getElementById('signid').value = document.getElementById('selectsign').value;
-                            }else{
-                                if (document.getElementById('Nsign').value == ""){
-                                    alert("薪號欄位不得為空白");
-                                    document.getElementById('Nsign').focus();
-                                    return false;
-                                }
-                                document.getElementById('signid').value = document.getElementById('Nsign').value;
-                            }
-                        }
-                        if (document.getElementById('signid').value==""){
-                            alert("本筆交辦為契約書後補，需經主管簽核，請選擇主管！");
-                            return false;
-                        }
-                    }
-                }
-			
-                //發文確認檢查
-                if (document.getElementById('task').value=="conf"){
-                    if (document.getElementById("send_way").value=="E"){
-                        var fldname=reg.uploadfield.value;
-                        var filenum=document.getElementById(fldname+"_filenum").value;
-                        if (filenum=="0"){
-                            alert("電子申請案性必須上傳電子送件文件，請上傳！");
-                            return false;
-                        }
-                        var efilenum=0;	//電子送件文件
-                        for (p = 1; p <= filenum; p++) { 
-                            if (document.getElementById("doc_flag_" + p).checked==true) {
-                                var filename=document.getElementById(fldname+"_name_" + p).value.toLowerCase();
-                                if (filename.substr(filename.length-4)!=".pdf"){
-                                    alert("勾選電子送件文件檔之附件，副檔名須為.pdf！(檔案"+p+")");
-                                    return false;
-                                }
-                                efilenum += 1;
-                            }
-                        }
-                        if (efilenum==0){
-                            alert("上傳文件皆無電子送件文件檔，請檢查！");
-                            return false;
-                        }
-                        //電子送件文件種類檢查(xx改用申請書檢核)
-                        //if (document.getElementById("edoc_type").value!=""){
-                        //    var edoc_type=document.getElementById("edoc_type").value.split(",");
-                        //
-                        //    for(j = 0; j < edoc_type.length; j++)
-                        //    {
-                        //        var ctype_flag=false;
-                        //        for(p = 1; p <= filenum; p++)
-                        //        {
-                        //            if (document.getElementById("doc_flag_" + p).checked==true) {
-                        //                if (edoc_type[j]==document.getElementById("doc_type_"+p).value){
-                        //                    ctype_flag=true;
-                        //                    break;
-                        //                }
-                        //            }
-                        //        }
-                        //        if (ctype_flag==false){
-                        //            edoc_name=getdocname(edoc_type[j]);
-                        //            alert("電子送件文件檔未上傳「" + edoc_name + "」或檔案種類未選擇「" + edoc_name + "」或未勾選「電子送件文件檔」，請檢查！");
-                        //            return false;
-                        //        }
-                        //    }
-                        //}
-                    }
-                    //非電子送件不可選擇電子收據
-                    if (document.getElementById("send_way").value!="E"&&document.getElementById("send_way").value!="EA"){
-                        if (document.getElementById("receipt_type").value=="E"){
-                            alert("非電子送件不可選擇電子收據");
-                            return false;
-                        }
-                    }
-                }
-
-                if (document.getElementById("cgrs").value=="GS"){
-                    if(chkNull("發文對象",document.getElementById('send_cl'))) return false;
-                    //if reg.rs_class.value<>"A1" and reg.rs_class.value<>"A0" then
-                    if ($("#rs_class option:selected").attr("vref_code")!="A"){	//2012/12/24因應電子申請修改(不是新申請案要選擇官方號碼)
-                        if(chkNull("官方號碼",document.getElementById('send_sel'))) return false;
-                    }
-                    if(chkNull("承辦",document.getElementById('pr_scode'))) return false;
-				
-                    if ((main.right & 128) != 0 || (main.right & 256) != 0) {
-                        if($("input[name='rfees_stat']:checked").length==0){
-                            alert("收費管制必須點選!!!");
-                            return false;
-                        }
-                    }
-
-                    //2006/6/13配合爭救案系統提醒發文方式
-                    if (document.getElementById("hmarkb").value == "L"){
-                        if (document.getElementsByName("opt_branch")[0].checked==true){
-                            if (confirm("發文爭救案性確定自行發文，不需轉法律處發文？")!=true){
-                                document.getElementsByName("opt_branch")[1].focus();
-                                return false;
-                            }
-                        }
-                    }
-                    //不可同一筆官發重覆輸入同一case_no
-                    for (j = 1; j <= document.getElementById('arnum').value; j++) {
-                        var tcase_no1=$.trim(document.getElementById('case_no_'+j).value);
-                        if (tcase_no1!=""){
-                            for (k=1; k<= document.getElementById('arnum').value; k++) {
-                                var tcase_no2=$.trim(document.getElementById('case_no_'+k).value);
-                                if (tcase_no2!=""){
-                                    if (j!=k){
-                                        if (tcase_no1==tcase_no2){
-                                            alert("同一筆官發不可重覆輸入同一筆交辦單號!!!");
-                                            document.getElementById("case_no_"+j).focus();
-                                            return false;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        //若無交辦單號，本次支出大於0，不可存檔
-                        var tgs_fees=document.getElementById('gs_fees_'+j).value;
-                        if (tgs_fees!=""){
-                            if (parseInt(tgs_fees,10)>0 && tcase_no1==""){
-                                alert("若無交辦單號，本次支出不可大於零!!!");
-                                document.getElementById("gs_fees_"+j).value=0;
-                                return false;
-                            }
-                        }
-                        //2008/1/14聖島四合一，檢查對應之交辦單之出名代理人要相同
-                        if (j==1){
-                            var tmp_agt_no=document.getElementById("case_agt_no_" + j).value;
-                            //檢查交辦與發文出名代理人不一樣，顯示提示訊息
-                            if (tmp_agt_no != ""){
-                                if ($.trim(tmp_agt_no)!=$.trim(document.getElementById("rs_agt_no").value)){
-                                    var answer=confirm("該交辦案件之出名代理人與發文出名代理人不同，是否確定要發文？(如需修改出名代理人請至交辦維護作業)");
-                                    if (answer !=true){
-                                        return false;
-                                    }
-                                }
-                            }
-                        }else{
-                            var cur_agt_no=document.getElementById('case_agt_no_' + j).value;
-                            if ($.trim(tmp_agt_no)!=$.trim(document.getElementById("mcur_agt_no"))){
-                                alert("同一筆官發所對應交辦之出名代理人必須相同！");
-                                return false;
-                            }
-                        }
-                    }
-				
-                    brta311form.countfees();
-                    if((main.right&128)!=0||(main.right&256)!=0){
-                        if(document.getElementsByName("rfees_stat")[0].checked==true){//已交辦
-                            if (CInt(document.getElementById("fees").value)!=CInt(document.getElementById("tot_fees").value)){
-                                alert("交辦單本次規費支出合計("+CInt(document.getElementById("tot_fees").value)+")需等於官發規費支出("+CInt(document.getElementById("fees").value)+")!!!\n\n若交辦單本次規費支出合計須等於官發規費支出，請按確定!!!");
-                                return false;
-                            }
-                        }
-                    }else{
-                        if (CInt(document.getElementById("fees").value)!=CInt(document.getElementById("tot_fees").value)){
-                            alert("交辦單本次規費支出合計("+CInt(document.getElementById("tot_fees").value)+")需等於官發規費支出("+CInt(document.getElementById("fees").value)+")!!!\n\n若交辦單本次規費支出合計須等於官發規費支出，請按確定!!!");
-                            return false;
-                        }
-                    }
-                    //官發出名代理人依交辦案件為主
-                    if (document.getElementById("arnum").value > 0){
-                        if ($.trim(document.getElementById("case_agt_no_1").value) != "") {
-                            document.getElementById("rs_agt_no").value=document.getElementById("case_agt_no_1").value;
-                        }
-                    }
-                }
-			
-                //註冊費繳納期數與發文案性關聯性檢查
-                switch (document.getElementById("rs_code").value) {
-                    case "FF1":
-                        document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                        if ($.trim(document.getElementById("pay_times").value) != "1") {
-                            var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第一期 』?");
-                            if (ans != true) {
-                                document.getElementById("rs_code").focus();
-                                return false;
-                            }else{
-                                document.getElementById("pay_times").value = "1";
-                                document.getElementById("hpay_times").value = "1";
-                                document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                            }
-                        }
+        if($("input[name='cs_report']:checked").val()=="Y"){//自行客戶報導:是
+            var fld=$("#uploadfield").val();
+            if($("#"+fld+"_filenum").val()==""||$("#"+fld+"_filenum").val()=="0"){
+                alert("自行客戶報導需至少新增一筆上傳文件！");
+                return false;
+            }else{
+                var filename_flag=false;
+                for (var pnum = 1; pnum <= CInt($("#"+fld+"_filenum").val()) ; pnum++) {
+                    if($("#"+fld+"_filenum").val()!=""){
+                        filename_flag=true;
                         break;
-                    case "FF2":
-                        document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                        if ($.trim(document.getElementById("pay_times").value) != "2") {
-                            var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第二期 』?");
-                            if (ans != true) {
-                                document.getElementById("rs_code").focus();
-                                return false;
-                            }else{
-                                document.getElementById("pay_times").value = "2";
-                                document.getElementById("hpay_times").value = "2";
-                                document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                            }
-                        }
-                        break;
-                    case "FF3":
-                        document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                        if ($.trim(document.getElementById("pay_times").value) != "2") {
-                            var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第二期 』?");
-                            if (ans != true) {
-                                document.getElementById("rs_code").focus();
-                                return false;
-                            }else{
-                                document.getElementById("pay_times").value = "2";
-                                document.getElementById("hpay_times").value = "2";
-                                document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                            }
-                        }
-                        break;
-                    case "FF0":
-                        document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                        if ($.trim(document.getElementById("pay_times").value) != "A") {
-                            var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 全期 』?");
-                            if (ans != true) {
-                                document.getElementById("rs_code").focus();
-                                return false;
-                            }else{
-                                document.getElementById("pay_times").value = "A";
-                                document.getElementById("hpay_times").value = "A";
-                                document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                            }
-                        }
-                        break;
-                }
-			
-                if(document.getElementById("rs_code").value == "FC11" || document.getElementById("rs_code").value == "FC21" 
-                || document.getElementById("rs_code").value == "FC5"  || document.getElementById("rs_code").value == "FC6" 
-                || document.getElementById("rs_code").value == "FC7"  || document.getElementById("rs_code").value == "FC8" 
-                || document.getElementById("rs_code").value == "FCH"  || document.getElementById("rs_code").value == "FCI"){
-                    if (document.getElementById("tot_num").value == "0"){
-                        alert("您所選的案性為一案多件, 但您發文件數僅一件, 請重新選取發文案性!!");
-                        document.getElementById("rs_code").focus();
-                        return false;
-                    }
-                }
-                if (document.getElementById("rs_code").value.substr(0,2) == "FD"){
-                    if (document.getElementById("tot_num").value == "0"){
-                        alert("您所選的案性為分割, 但您分割案件件數為零, 請重新選取發文案性!!");
-                        document.getElementById("rs_code").focus();
-                        return false;
-                    }
-                }
-                //變更案入檔時子本所編號檢查
-                if(document.getElementById("rs_code").value == "FC11"  || document.getElementById("rs_code").value == "FC21" 
-                || document.getElementById("hrs_code").value == "FC11" || document.getElementById("hrs_code").value == "FC21" 
-                || document.getElementById("rs_code").value == "FC5"   || document.getElementById("rs_code").value == "FC6" 
-                || document.getElementById("rs_code").value == "FC7"   || document.getElementById("rs_code").value == "FC8" 
-                || document.getElementById("rs_code").value == "FCH"   || document.getElementById("rs_code").value == "FCI"){
-                    // a.子本所編號確定是否都有按
-                    // b.子本所編號不可重複 也不可與主要本所編號相同
-                    var delcnt = 0;
-                    for(i = 1; i < document.getElementById("tot_num").value; i++){
-                        var dseq = $.trim(document.getElementById('dseq_'+i).value) + "" + $.trim(document.getElementById('dseq1A_'+i).value);
-                        if (document.getElementById('dseqdel_'+i).value!="D"){
-                            if (document.getElementById('keydseq_'+i).value != "Y"){
-                                alert("共同變更之本所編號尚未確認, 請按確定按鈕!!");
-                                document.getElementById('dseq_'+i).focus();
-                                return false;
-                            }
-                            for(j = 1; j < document.getElementById("tot_num").value; j++){
-                                if (i != j && document.getElementById('dseqdel_'+j).value != "D"){
-                                    if ( $.trim(document.getElementById('dseq_'+i).value) == $.trim(document.getElementById('dseq_'+j).value)
-                                    &&	$.trim(document.getElementById('dseq1A_'+i).value) == $.trim(document.getElementById('dseq1A_'+j).value) ){
-                                        alert("共同變更之本所不可重覆, 請刪除重覆的資料!! 重覆之本所編號為 : " + dseq);
-                                        document.getElementById('dseq_'+i).focus();
-                                        return false;
-                                    }
-                                }
-                            }
-                            if ( $.trim(document.getElementById('dseq_'+i).value) == $.trim(document.getElementById('seq').value) 
-                                && $.trim(document.getElementById('dseq1A_'+i).value) == $.trim(document.getElementById('seq1').value) ){
-                                alert("共同變更之本所不可與主要本所編號相同!!");
-                                document.getElementById('dseq_'+i).focus();
-                                return false;
-                            }
-                        }else{
-                            delcnt += 1;
-                        }
-                    }
-                    if (document.getElementById('tot_num').value - delcnt > 49){
-                        alert("總變更件數不可超過五十筆!!");
-                        return false;
                     }
                 }
 
-                //分割案入檔時子本所編號檢查
-                if (document.getElementById("rs_code").value.substr(0,2) == "FD"){
-                    // 子本所編號不可重複 也不可與主要本所編號相同
-                    var delcnt = 0;
-                    for(i = 1; i < document.getElementById("tot_num").value; i++){
-                        var dseq = $.trim(document.getElementById('dseq_'+i).value) + "" + $.trim(document.getElementById('dseq1A_'+i).value);
-                        if (document.getElementById('dseqdel_'+i).value!="D"){
-                            for(j = 1; j < document.getElementById("tot_num").value; j++){
-                                if (i != j && document.getElementById('dseqdel_'+j).value != "D"){
-                                    if ( $.trim(document.getElementById('dseq_'+i).value) == $.trim(document.getElementById('dseq_'+j).value)
-                                    &&	$.trim(document.getElementById('dseq1A_'+i).value) == $.trim(document.getElementById('dseq1A_'+j).value) ){
-                                        alert("分割案之本所不可重覆, 請刪除重覆的資料!! 重覆之本所編號為 : " + dseq);
-                                        document.getElementById('dseq_'+i).focus();
-                                        return false;
-                                    }
-                                }
-                            }
-                            if ( $.trim(document.getElementById('dseq_'+i).value) == $.trim(document.getElementById('seq').value) 
-                                && $.trim(document.getElementById('dseq1A_'+i).value) == $.trim(document.getElementById('seq1').value) ){
-                                alert("分割案子案之本所不可與主要本所編號相同!!");
-                                document.getElementById('dseq_'+i).focus();
-                                return false;
-                            }
-                        }else{
-                            delcnt += 1;
-                        }
-                    }
-                    if (document.getElementById('tot_num').value - delcnt > 30){
-                        alert("總變更件數不可超過三十筆!!");
-                        return false;
-                    }
-                }
-
-                //2019/5/17李協理提出
-                //20210412增加延展案發文檢查.不可小於最小法定期限-半年
-                if($("#rs_code").val() == "FR1"){
-                    if($("#a_last_date").val()!=""){
-                        var ldate = CDate($('#a_last_date').val()).addMonths(-6);//最小法定期限-半年
-                        var sdate = CDate($('#step_date').val());//發文日期
-                        if(sdate.getTime()< ldate.getTime()){
-                            if ($('#task').val()=="pr"){//交辦發文時只提醒
-                                if(!confirm("延展案發文日期不可早於最小法定期限減半年！\n是否確認交辦發文?")){
-                                    return false;
-                                }
-                            }else if ($('#task').val()=="conf"){//發文確認時擋住
-                                alert("延展案發文日期不可早於最小法定期限減半年！");
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-            //判斷task的end if
-		
-            $("#reg :input").attr("disabled",false);
-		
-            //***todo
-            //if ($("#submittask").val()=="U" and chk_type="Y" then%>
-            //alert("<=rs_no%>進度會計已確認，若有修改「發文日期」、「應繳規費」、「交辦單號」，\n請通知會計更正帳款資料，謝謝 !!!");
-            //end if%>
-            if (document.getElementById('task').value == "pr" //自行發文
-            ||  document.getElementById('task').value == "cancel" //不需發文
-            ||  document.getElementById('task').value == "prsave"){//發文維護
-                $("#submittask").val("A");
-                postForm(getRootPath() + "/brt6m/Brt63_Update.aspx");
-            }else if (document.getElementById('task').value == "conf"){//官發確認
-                //為入官發進度，修改submittask=A
-                $("#submittask").val("A");
-                postForm(getRootPath() + "/brtam/Brta31_Update.aspx");
+                if (filename_flag=false){
+                   alert("自行客戶報導需至少上傳一筆文件！")
+                   return false;
+               }
             }
         }
-    }
 
-    function formRejectSubmit(){
-        var ans = confirm("是否確定退回!!!");
-        if (ans == true){
-            if(chkNull("退回說明",document.getElementById('approve_desc'))) return false;
-            $("#submittask").val("R");
-            postForm(getRootPath() + "/brtam/Brta31_Update.aspx");
-        }
-    }
-
-    function postForm(url){
         $("input:disabled, select:disabled").unlock();
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
+
+        var url="";
+        if($("#prgid").val()=="brt15"){
+            url="Brt15_Update.aspx";
+        }else if($("#prgid").val()=="brt152"){
+            url="Brt152_Update.aspx";
+        }
 
         var formData = new FormData($('#reg')[0]);
         ajaxByForm(url,formData)
@@ -1088,66 +607,8 @@
         });
     }
 
-    function openread(){
-        $("#btnQuery").hide();
-        $("#seq,#seq1,#rs_class,#rs_code").lock();
-        
-        if((main.right&128)!=0||(main.right&256)!=0){
-            $("input[name='rfees_stat']").lock();
-        }
-        $("#arAdd_button,#arres_button").lock();
-
-        if(CInt($("#arnum").val())>0){
-            $("#btncase_no_1").hide();
-            $("#case_no_1,#gs_fees_1").lock();
-        }else{
-            if(CInt($("#fees")>0)){
-                $("#arAdd_button,#arres_button").unlock();
-            }
-        }
-    }
-
-    //for不需發文之銷管期限
-    $("#btnresp").click(function() {
-        window.open(getRootPath() + "/brtam/brta21disEdit.aspx?prgid=<%=prgid%>&branch=<%=Session["seBranch"]%>&seq="+$("#seq").val()+"&seq1="+$("#seq1").val()+"&qtype=N&rsqlno="+$("#rsqlno").val()+"&step_grade="+$("#nstep_grade").val()+"&submitTask=A","","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
-    });
-
     function toselect() {
         $("input[name=Osign]").prop("checked",false);
-    }
-
-    //20161212 檢查電子送件word檔【附送書件】vs文件上傳附件是否相符
-    function chkAttach(){
-        if (document.getElementById('task').value!="conf" || document.getElementById("send_way").value!="E"){
-            return false;
-        }
-	
-        jQuery.support.cors = true;
-        $.ajax({ 
-            url: getRootPath() + "/brt6m/Brt63checkWordN.aspx",
-            type: 'GET', 
-            dataType : "text",//回傳的格式為text
-            data: { 
-                uploadfield: $("#uploadfield").val(),
-                seq: $('#seq').val() ,
-                seq1: $('#seq1').val() ,
-                branch: "<%=Session["seBranch"]%>" ,
-                att_sqlno: $("#att_sqlno").val(),
-                source: "cgrs",
-                debug: "n",
-                seed: Math.random()
-            }, 
-            beforeSend: function(xhr) { 
-                $('#msg').html("檢查中..");
-            }, 
-            error: function(xhr) { 
-                $('#msg').html("<Font align=left color='red' size=3>檢查【附送書件】發生未知錯誤，請聯繫資訊人員!!</font>");
-                alert('檢查【附送書件】發生錯誤!!'); 
-            },
-            success: function(response) {
-                eval(response);
-            }
-        }); 
     }
 </script>
 

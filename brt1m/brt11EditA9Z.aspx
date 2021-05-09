@@ -376,15 +376,6 @@
         $("div.tabCont[id='" + k + "']").show();
     }
 
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
-
     function this_init() {
         if(main.ar_form=="A6"){//變更
             $("#CTab td.tab[href='#dmt']").after($("#CTab td.tab[href='#apcust']"));//[案件申請人]移到[案件主檔]後面

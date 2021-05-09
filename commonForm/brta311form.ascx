@@ -723,7 +723,8 @@
     }
 
     //取得子案
-    brta311form.get_dseq=function (pcase_no){
+    brta311form.get_dseq = function (pcase_no) {
+        if ($("#rs_code").val() == null) return;
         if ($("#rs_code").val() == "FC11"||$("#rs_code").val() == "FC21" || $("#rs_code").val().Left(2) == "FD"
             || $("#rs_code").val() == "FC5" || $("#rs_code").val() == "FC6"|| $("#rs_code").val() == "FC7"|| $("#rs_code").val() == "FC8"
             || $("#rs_code").val() == "FCH" || $("#hrs_code").val() == "FCI"|| $("#hrs_code").val() == "FL5" || $("#hrs_code").val() == "FL6"

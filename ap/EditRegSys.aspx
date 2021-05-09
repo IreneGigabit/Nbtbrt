@@ -235,15 +235,6 @@
         $(".Lock").lock();
     }
 
-    //關閉視窗
-    $(".imgCls,#btnClose").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
-
     //新增/修改
     $("#btnSubmit").click(function () {
         $("input:disabled, select:disabled").unlock();
