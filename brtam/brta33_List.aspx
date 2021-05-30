@@ -96,8 +96,8 @@
             FormName += "2.執行退件確認時，發文進度取消、期限管制取消及銷管恢復、對應交辦已扣規費取消，退回「國內案承辦交辦發文作業」。<br>\n";
         }
 
-        emg_scode = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), "T", "mg_pror");//總管處程序人員-正本
-        emg_agscode = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), "T", "mg_prorm");//總管處程序人員-副本
+        emg_scode = Sys.getRoleScode("M", Sys.GetSession("syscode"), "T", "mg_pror");//總管處程序人員-正本
+        emg_agscode = Sys.getRoleScode("M", Sys.GetSession("syscode"), "T", "mg_prorm");//總管處程序人員-副本
     }
 
     private void QueryData() {
@@ -566,6 +566,8 @@
         <tr>
 	        <td class="text9">
 		        ◎官發日期: <input type="text" id="qryStep_DateS" name="qryStep_DateS" size="10" value="<%#ReqVal.TryGet("qryStep_DateS")%>" class="dateField">
+                ~
+                <input type="text" id="qryStep_DateE" name="qryStep_DateE" size="10" value="<%#ReqVal.TryGet("qryStep_DateE")%>" class="dateField">
 	        </td>
 	        <td class="text9">
 		        ◎本所編號:<input type="text" id="qrySeq" name="qrySeq" size="30">-<input type="text" id="qrySeq1" name="qrySeq1" size="2">
@@ -961,7 +963,7 @@
     }
     //案件主檔查詢
     function CapplClick(pseq,pseq1){
-        window.showModalDialog(getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q", "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
+        window.showModalDialog(getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q", "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
     }
     //案件進度查詢
     function QstepClick(pseq,pseq1) {

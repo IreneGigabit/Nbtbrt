@@ -23,6 +23,8 @@
         rs_class = Request["rs_class"] ?? "";
         submittask = (Request["submittask"] ?? "").ToUpper();
 
+        if (cgrs == "ZS") cgrs = "CR";
+
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
             //現行案件預設出名代理人
@@ -47,7 +49,6 @@
             }
             SQL += " ORDER BY rs_class,rs_code";
             conn.DataTable(SQL, dt);
-
             for (int i = 0; i < dt.Rows.Count; i++) {
                 DataRow dr = dt.Rows[i];
                 if (dr.SafeRead("rsagtno", "") == "") {
@@ -72,11 +73,12 @@
                 }
             }
         }
-    
-        var settings = new JsonSerializerSettings() {
+
+        var settings = new JsonSerializerSettings()
+        {
             Formatting = Formatting.Indented,
             ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
-                Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
+            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
         };
 
         Response.Write(JsonConvert.SerializeObject(dt, settings).ToUnicode());

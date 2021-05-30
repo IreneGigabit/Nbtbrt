@@ -496,28 +496,35 @@
 
     //帶回資料
     function SeqClick(x1, x2) {
-        var fld = $("#tot_num").val() || "";
-        if (fld == "" || fld == "a_1" || fld == "b_1") {
-            //window.opener.reg.old_seq.value = x1;
-            //window.opener.reg.old_seq1.value = x2;
-            //window.opener.reg.keyseq.value = "N";
-            //window.opener.reg.btnseq_ok.disabled = false;
-            //window.opener.reg.old_seq.focus();
-            $("#old_seq", opener.document).val(x1);
-            $("#old_seq1", opener.document).val(x2);
-            $("#keyseq", opener.document).val("N");
-            $("#btnseq_ok", opener.document).triggerHandler("click");
+        if ($("#cgrs").val() == "CS") {
+            var nRow = $("#seqnum").val();
+            $("#seq_" + nRow, opener.document).val(x1);
+            $("#aseq1_" + nRow, opener.document).val(x2);
+            $("#seq_" + nRow, opener.document).focus();
         } else {
-            $("#dseq" + fld, opener.document).val(x1)
-            $("#dseq1" + fld, opener.document).val(x2);
-            $("#keydseq" + fld, opener.document).val("N");
-            $("#btndseq_ok" + fld, opener.document).triggerHandler("click");
+            var fld = $("#tot_num").val() || "";
+            if (fld == "" || fld == "a_1" || fld == "b_1") {
+                //window.opener.reg.old_seq.value = x1;
+                //window.opener.reg.old_seq1.value = x2;
+                //window.opener.reg.keyseq.value = "N";
+                //window.opener.reg.btnseq_ok.disabled = false;
+                //window.opener.reg.old_seq.focus();
+                $("#old_seq", opener.document).val(x1);
+                $("#old_seq1", opener.document).val(x2);
+                $("#keyseq", opener.document).val("N");
+                $("#btnseq_ok", opener.document).triggerHandler("click");
+            } else {
+                $("#dseq" + fld, opener.document).val(x1)
+                $("#dseq1" + fld, opener.document).val(x2);
+                $("#keydseq" + fld, opener.document).val("N");
+                $("#btndseq_ok" + fld, opener.document).triggerHandler("click");
+            }
         }
         window.close();
     }
     //[詳細資料]
     function CapplClick(x1, x2) {
-        var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + x1+ "&seq1=" + x2 + "&submittask=Q";
+        var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=Q";
         window.showModalDialog(url, "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
     }
 </script>

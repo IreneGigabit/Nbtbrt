@@ -62,7 +62,7 @@
             SQL += ",a.doc_type,a.attach_desc,a.attach_name,a.source_name,a.attach_size,a.attach_flag,a.stop_remark,a.main_dept,a.main_seq,a.main_seq1";
             SQL += ",a.mcontract_no,a.mremark,a.use_dates,a.use_datee";
             SQL += ",(select agt_namefull from agt where agt_no=a.agt_no) as agt_nonm";
-            SQL += ",(select agent_na1+isnull(agent_na2,'') from agent where agent_no=a.agent_no and agent_no1=a.agent_no1) as agent_na";
+            SQL += ",(select agent_na1+isnull(agent_na2,'') from agent23 where agent_no=a.agent_no and agent_no1=a.agent_no1) as agent_na";
             SQL += ",(select sc_name from sysctrl.dbo.scode where scode=a.tran_scode) as tran_scodenm";
             SQL += ",''sign_flagnm,''attach_flagnm,''ref_cust_seqtitle,''ref_cust_seq,''ref_cust_seqnm ";
             SQL += " From apcust_attach a inner join apcust_attach_ref b on a.apattach_sqlno=b.apattach_sqlno";

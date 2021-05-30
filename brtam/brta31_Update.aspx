@@ -149,7 +149,7 @@
             rs_no = ReqVal.TryGet("rs_no");
             opt_branch = ReqVal.TryGet("send_dept");
         } else {
-            rs_no = getRsNo();//取得新發文序號
+            rs_no = Sys.getRsNo(conn, Request["cgrs"]);//取得新發文序號
             opt_branch = ReqVal.TryGet("opt_branch");
         }
 
@@ -354,7 +354,7 @@
                 string dseq = ReqVal.TryGet("dseq_" + z);
                 string dseq1A = ReqVal.TryGet("dseq1A_" + z);
                 if (ReqVal.TryGet("dseqdel_" + z) != "D") {
-                    string drs_no = getRsNo();//取得新發文序號
+                    string drs_no = Sys.getRsNo(conn, Request["cgrs"]);//取得新發文序號
 
                     //取得案件進度
                     SQL = "select step_grade+1 step_grade,isnull(now_grade,0) as now_grade from dmt where seq=" + dseq + " and seq1='" + dseq1A + "'";
@@ -758,7 +758,7 @@
                             //法定期限銷管資料寫入總收發
                             Insert_brresp_mgt(Getmgt_send_sqlno, dtCtrl);
                         } else {//新增加之子本所編號. 要新增案件進度檔
-                            string drs_no = getRsNo();//取得新發文序號
+                            string drs_no = Sys.getRsNo(conn, Request["cgrs"]);//取得新發文序號
 
                             //取得案件進度
                             //若案件主檔案件狀態進度序號等於進度序號，則修改案件狀態
@@ -1638,20 +1638,6 @@
                 System.IO.File.Copy(Server.MapPath(Sys.Path2Nbtbrt(attach_path)), Server.MapPath(sendt_path + "/" + attach_name), true);
             }
         }
-    }
-
-    //取得發文序號
-    private string getRsNo() {
-        SQL = "select isnull(sql,0)+1 from cust_code where code_type='Z' and cust_code='" + Session["sebranch"] + Session["dept"] + Request["cgrs"] + "'";
-        objResult = conn.ExecuteScalar(SQL);
-        string nrs_no = (objResult == DBNull.Value || objResult == null) ? "1" : objResult.ToString();
-        nrs_no = ReqVal.TryGet("cgrs").ToUpper() + nrs_no.PadLeft(8, '0');
-
-        //流水號加一
-        SQL = " update cust_code set sql=sql+1 where code_type='Z' and cust_code='" + Session["sebranch"] + Session["dept"] + Request["cgrs"] + "'";
-        conn.ExecuteNonQuery(SQL);
-
-        return nrs_no;
     }
 </script>
 

@@ -73,11 +73,13 @@
     }
 
     private void PageLayout() {
-        if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
-            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Eblank\">[聯絡人新增]</a>\n";
-            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Eblank\">[申請人新增]</a>\n";
-            if ((Request["cust_seq"] ?? "") != "") {
-                StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
+        if (submitTask != "Show") {
+            if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
+                StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Eblank\">[聯絡人新增]</a>\n";
+                StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Eblank\">[申請人新增]</a>\n";
+                if ((Request["cust_seq"] ?? "") != "") {
+                    StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
+                }
             }
         }
         if ((Request["homelist"] ?? "") != "homelist") {
@@ -124,6 +126,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="x-ua-compatible" content="IE=10"><!--如果用window.open會跑成ie5,強制修改(iis設定的)-->
 <title><%=HTProgCap%></title>
 <link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/inc/setstyle.css")%>" />
 <link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.css")%>" />

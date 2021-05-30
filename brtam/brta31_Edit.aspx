@@ -7,10 +7,9 @@
 <%@ Register Src="~/commonForm/Brta21form.ascx" TagPrefix="uc1" TagName="Brta21form" %>
 <%@ Register Src="~/commonForm/brta311form.ascx" TagPrefix="uc1" TagName="brta311form" %>
 <%@ Register Src="~/commonForm/Brta212form.ascx" TagPrefix="uc1" TagName="Brta212form" %>
-<%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內案官方發文作業";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -25,18 +24,15 @@
     protected Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
     protected string SQL = "";
+    protected object objResult = null;
 
     protected string submitTask = "";
     protected string json = "";
     protected string seq = "";
     protected string seq1 = "";
-    protected string case_no = "";
-    protected string in_scode = "";
-    protected string in_no = "";
-    protected string task = "";
+    protected string cgrs = "";
+    protected string prgid1 = "";
 
-    protected string se_grpid = "000", mSC_code = "", mSC_name = "", html_selectsign = "";
- 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
@@ -47,7 +43,6 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
-        
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
@@ -55,10 +50,8 @@
         json = (Request["json"] ?? "").Trim().ToUpper();
         seq = ReqVal.TryGet("seq");
         seq1 = ReqVal.TryGet("seq1");
-        case_no = ReqVal.TryGet("case_no");
-        in_scode = ReqVal.TryGet("in_scode");
-        in_no = ReqVal.TryGet("in_no");
-        task = ReqVal.TryGet("task").Trim().ToLower();
+        cgrs = ReqVal.TryGet("cgrs").ToUpper();
+        prgid1 = ReqVal.TryGet("prgid1").ToLower();
         
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
@@ -77,168 +70,188 @@
 
     private void PageLayout() {
         if (submitTask == "") submitTask = "A";
-        if (prgid == "brt63") {
-            HTProgCap = "國內案承辦<font color=blue>交辦發文</font>作業";
-        } else if (prgid == "brta38") {
-            HTProgCap = "國內案程序<font color=blue>官方發文</font>作業";
-        }
-        if (submitTask == "A") {
-            if (ReqVal.TryGet("task") == "pr" || ReqVal.TryGet("task") == "prsave") {
-                HTProgCap += "-<font color=blue>新增</font>";
-            } else {
-                HTProgCap += "-<font color=blue>不需發文</font>";
-            }
-        }
         if (submitTask == "U") HTProgCap += "-<font color=blue>確認</font>";
         if (submitTask == "Q") HTProgCap += "-<font color=blue>查詢</font>";
         if (submitTask == "D") HTProgCap += "-<font color=blue>刪除</font>";
         if (submitTask == "R") HTProgCap += "-<font color=blue>退回</font>";//20160901 增加[退回]功能(R)
 
-        if ((submitTask == "U" || submitTask == "R") && prgid == "brta38") {//20160901 增加[退回]功能(R)
-            Lock["PrLock"] = "Lock";
+        if (prgid1 != "brta81") {
+            if (submitTask == "Q" || submitTask == "D") {
+                Lock["QLock"] = "Lock";
+            }
+            if (cgrs == "CR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta5m.aspx") + "?prgid=brta5m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";
+            if (cgrs == "GR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta5m.aspx") + "?prgid=brta51m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";
+        } else {
+            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta81List.aspx") + "?prgid=brta81\" target=\"Etop\">[回官方發文回條確認清單]</a>";
         }
-        if (submitTask == "Q" || submitTask == "D" || submitTask == "R") {//20160901 增加[退回]功能(R)
-            Lock["QLock"] = "Lock";
-        }
-
-        Lock["Lock38"] = Lock.TryGet("QLock");
-        if (prgid == "brta38") {
-            Lock["Lock38"] = "Lock";
-        }
-
-        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl(Sys.getCase52Aspx("brt52", in_no, in_scode, "Edit")) + "\" target=\"Eblank\">[交辦維護作業]</a>\n";
-        StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
+        StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>";
+        StrFormBtnTop += "<font style=\"cursor: pointer;color:darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"Help_Click()\">[說明]</font>";
 
         if ((HTProgRight & 4) > 0 || (HTProgRight & 8) > 0 || (HTProgRight & 16) > 0 || (HTProgRight & 64) > 0 || (HTProgRight & 128) > 0) {
-            if (((HTProgRight & 8) > 0 && submitTask == "R") || ((HTProgRight & 64) > 0 && submitTask == "R")) {
-                StrFormBtn += "<input type=button id='button1' value ='退　回' class='redbutton' onClick='formRejectSubmit()'>\n";
-            }
             if (((HTProgRight & 4) > 0 && submitTask == "A") || ((HTProgRight & 8) > 0 && submitTask == "U") || ((HTProgRight & 64) > 0 && submitTask == "U")) {
-                //20161212官發確認時增加電子申請書word檢查
-                if (prgid == "brta38") {
-                    StrFormBtn += "<input type=button id='button0' value='電子申請附件檢查' class='c1button' onClick='chkAttach()'>\n";
-                }
-                if (task == "pr") {
-                    StrFormBtn += "<input type=button id='button1' value='交辦發文' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
-                } else if (task == "prsave") {
-                    StrFormBtn += "<input type=button id='button1' value='發文存檔' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
-                } else if (task == "cancel") {
-                    StrFormBtn += "<input type=button id='button1'value='不需發文' class='redbutton bsubmit' onclick='formAddSubmit()'>\n";
-                } else {
-                    StrFormBtn += "<input type=button id='button1' value='確　認' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
-                }
+                StrFormBtn += "<input type=button id='button1' value='存　檔' class='cbutton bsubmit' onclick='formAddSubmit()'>\n";
+            }
+            if (((HTProgRight & 16) > 0 && submitTask == "D")) {
+                StrFormBtn += "<input type=button id='button1' value='刪　除' class='cbutton bsubmit' onclick='formDelSubmit()'>\n";
             }
             StrFormBtn += "<input type=button value='重　填' class='cbutton' onclick='this_init()'>\n";
         }
-        
-        //正常簽核
-        Sys.getGrpidMaster(Sys.GetSession("SeBranch"), ref se_grpid, ref mSC_code, ref mSC_name);
-        //特殊簽核
-        DataRow[] drx = Sys.getGrpidUp("N", "000").Select("grplevel=1");
-        html_selectsign = drx.Option("{master_scode}", "{master_type}---{master_nm}", false);
     }
 
     //將共用參數傳給子控制項
     private void ChildBind() {
         Brta21form.Lock = new Dictionary<string, string>(Lock);
         Brta311form.Lock = new Dictionary<string, string>(Lock);
-        Brta311form.HTProgRight = HTProgRight;
+        Brta212form.Lock = new Dictionary<string, string>(Lock);
     }
 
     private void QueryData() {
-        //預設值
         Dictionary<string, string> add_gs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        //交辦檔
-        DataTable dtCaseMain = Sys.GetCaseDmtMain(conn, in_no);
-        //案件主檔
-        DataTable dtDmt = Sys.GetDmt(conn, seq, seq1);
-        //交辦對應客收進度
-        DataTable dtStepDmtCR = Sys.GetStepDmt(conn, seq, seq1, Request["case_no"]);
-        //交辦官發檔
-        DataTable dtAttCase = Sys.GetAttCaseDmt(conn, "", in_no);
-        //檢查array.account.plus_temp.chk_type='Y'表會計已確認，只要有一筆 ="Y"就要有警語
-        add_gs["chk_type"] = "";
-        add_gs["chk_typestr"] = "";
-        //if (dtAttCase.Rows.Count > 0) {
-        //    using (DBHelper conni = new DBHelper(Conn.account).Debug(Request["chkTest"] == "TEST")) {
-        //        SQL = "select case_no from plus_temp where branch='" + Session["seBranch"] + "' and dept='" + Session["dept"] + "'";
-        //        SQL += " and rs_no='" + dtAttCase.Rows[0]["rs_no"] + "' and chk_type='Y'";
-        //        using (SqlDataReader dr = conni.ExecuteReader(SQL)) {
-        //            if (dr.HasRows) {
-        //                add_gs["chk_type"] = "Y";
-        //                while (dr.Read()) {
-        //                    add_gs["chk_typestr"] += "," + dr.SafeRead("case_no", "");
-        //                }
-        //                add_gs["chk_typestr"] = "(會計已確認:" + add_gs["chk_typestr"].Substring(1) + ")";
-        //            }
-        //        }
-        //    }
-        //}
-            
-        //附件檔
-        string where = "";
-        if (ReqVal.TryGet("step_grade") != "") where += " and step_grade=" + ReqVal["step_grade"];
-        if (ReqVal.TryGet("attach_sqlno") != "") where += " and attach_sqlno=" + ReqVal["attach_sqlno"];
-        if (ReqVal.TryGet("att_sqlno") != "") where += " and att_sqlno=" + ReqVal["att_sqlno"];
-        DataTable dtCaseAttach = Sys.GetDmtAttach(conn, seq, seq1, "cgrs", where);
-        
-        add_gs["cgrs"] = ReqVal.TryGet("cgrs");
-        add_gs["fees"] = "0";
-        add_gs["fees_stat"] = "N";
-        //2011/2/18依2010/12/15李協理Email需求，結構分類：C4_行政訴訟預設發文對象為Q_智慧財產法院
-        if (dtDmt.Rows[0].SafeRead("now_rsclass", "") == "C4") {
-            add_gs["send_cl"] = "Q";
-        } else {
-            add_gs["send_cl"] = "1";
-        }
-        //add_gs["send_cl"] = "1";
-        add_gs["send_cl1"] = "";
-        add_gs["send_sel"] = "";
-        add_gs["rs_type"] = dtCaseMain.Rows[0].SafeRead("arcase_type", "");
-        add_gs["rs_class"] = dtCaseMain.Rows[0].SafeRead("ar_form", "");
-        add_gs["rs_code"] = dtCaseMain.Rows[0].SafeRead("arcase", "");
-        add_gs["contract_flag"] = dtCaseMain.Rows[0].SafeRead("contract_flag", "");
-        add_gs["receipt_type"] = dtCaseMain.Rows[0].SafeRead("receipt_type", "");
-        add_gs["receipt_title"] = dtCaseMain.Rows[0].SafeRead("receipt_title", "");
-        add_gs["rectitle_name"] = dtCaseMain.Rows[0].SafeRead("rectitle_name", "");
-        add_gs["send_way"] = dtCaseMain.Rows[0].SafeRead("send_way", "");
 
-        //抓取客收進度for文件上傳&發文方式
-        add_gs["case_step_grade"] = "";
-        if(dtStepDmtCR.Rows.Count>0){
-            add_gs["case_step_grade"]= dtStepDmtCR.Rows[0].SafeRead("case_step_grade", "");
-            add_gs["send_way"]= dtStepDmtCR.Rows[0].SafeRead("send_way", "");
-        }
-		//若為電子送件,預設收據種類為電子收據
-		if (add_gs["receipt_type"]==""){
-			if (add_gs["send_way"]=="E")
-				add_gs["receipt_type"]="E";
-			else
-				add_gs["receipt_type"]="P";
-        }
-		//若為電子送件,設定預設值
-        if (add_gs["receipt_title"] == "") {
-            if (add_gs["send_way"] == "E")
-                add_gs["receipt_title"] = Sys.getDefaultTitle();
-            else
-                add_gs["receipt_title"] = "B";
-        }
-        add_gs["step_date"] = DateTime.Today.ToShortDateString();
-        //總收發文日期
-        //台北所總收發當天就會發文
-        add_gs["mp_date"] = DateTime.Today.ToShortDateString();
-        if (Sys.GetSession("seBranch") != "N") {
-            switch (DateTime.Today.DayOfWeek) {
-                case DayOfWeek.Friday: add_gs["mp_date"] = DateTime.Today.AddDays(3).ToShortDateString(); break;//星期五加三天
-                case DayOfWeek.Saturday: add_gs["mp_date"] = DateTime.Today.AddDays(2).ToShortDateString(); break;//星期六加兩天
-                default: add_gs["mp_date"] = DateTime.Today.AddDays(1).ToShortDateString(); break;//加一天
+        if (prgid1 != "brta81") {//正常的官發作業
+            if (submitTask == "A") {
+                add_gs["seq"] = "";
+                add_gs["seq1"] = "_";
+                add_gs["fseq"] = Sys.formatSeq(add_gs["seq"], add_gs["seq1"], "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
+                add_gs["fees"] = "0";
+                add_gs["fees_stat"] = "N";
+                add_gs["step_date"] = DateTime.Today.ToShortDateString();
+
+                //總收發文日期
+                //台北所總收發當天就會發文
+                add_gs["mp_date"] = DateTime.Today.ToShortDateString();
+                if (Sys.GetSession("seBranch") != "N") {
+                    switch (DateTime.Today.DayOfWeek) {
+                        case DayOfWeek.Friday: add_gs["mp_date"] = DateTime.Today.AddDays(3).ToShortDateString(); break;//星期五加三天
+                        case DayOfWeek.Saturday: add_gs["mp_date"] = DateTime.Today.AddDays(2).ToShortDateString(); break;//星期六加兩天
+                        default: add_gs["mp_date"] = DateTime.Today.AddDays(1).ToShortDateString(); break;//加一天
+                    }
+                }
+
+                add_gs["rs_type"] = Sys.getRsType();
+                add_gs["opt_branch"] = Sys.GetSession("seBranch");
+            }
+
+            if (submitTask == "U" || submitTask == "Q" || submitTask == "D") {
+                SQL = "SELECT * from vstep_dmt where rs_no='" + Request["rs_no"] + "'";
+                DataTable dtStep = new DataTable();
+                conn.DataTable(SQL, dtStep);
+                if (dtStep.Rows.Count > 0) {
+                    DataRow dr = dtStep.Rows[0];
+                    add_gs["rs_sqlno"] = dr.SafeRead("rs_sqlno", "");
+                    add_gs["rs_no"] = dr.SafeRead("rs_no", "");
+                    add_gs["branch"] = dr.SafeRead("branch", "");
+                    add_gs["seq"] = dr.SafeRead("seq", "");
+                    add_gs["seq1"] = dr.SafeRead("seq1", "");
+                    add_gs["fseq"] = Sys.formatSeq(add_gs["seq"], add_gs["seq1"], "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
+                    add_gs["step_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
+                    add_gs["mp_date"] = dr.GetDateTimeString("mp_date", "yyyy/M/d");
+                    add_gs["send_cl"] = dr.SafeRead("send_cl", "");
+                    add_gs["send_cl1"] = dr.SafeRead("send_cl1", "");
+                    add_gs["send_sel"] = dr.SafeRead("send_sel", "");
+                    add_gs["send_way"] = dr.SafeRead("send_way", "");
+
+                    //找對應客收的發文方式
+                    SQL = "select b.send_way ";
+                    SQL += " from fees_dmt a ";
+                    SQL += "inner join case_dmt b on a.case_no = b.case_no ";
+                    SQL += "inner join dmt_temp c on b.in_no=c.in_no and c.case_sqlno=0";
+                    SQL += "where rs_no='" + add_gs["rs_no"] + "' ";
+                    objResult = conn.ExecuteScalar(SQL);
+                    add_gs["old_send_way"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+                    add_gs["rs_type"] = Sys.getRsType();
+                    add_gs["rs_class"] = dr.SafeRead("rs_class", "");
+                    add_gs["rs_code"] = dr.SafeRead("rs_code", "");
+                    add_gs["act_code"] = dr.SafeRead("act_code", "");
+                    //取得結構分類、代碼、處理事項名稱
+                    SQL = "select code_name from cust_code where code_type='" + add_gs["rs_type"] + "' and cust_code='" + add_gs["rs_class"] + "'";
+                    objResult = conn.ExecuteScalar(SQL);
+                    add_gs["rs_class_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+                    SQL = "select rs_detail from code_br where rs_type='" + add_gs["rs_type"] + "' and rs_code='" + add_gs["rs_code"] + "' and gs='Y' ";
+                    objResult = conn.ExecuteScalar(SQL);
+                    add_gs["rs_code_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+                    SQL = "select code_name from cust_code where code_type='tact_code' and cust_code='" + add_gs["act_code"] + "'";
+                    objResult = conn.ExecuteScalar(SQL);
+                    add_gs["act_code_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+                    //取得案件狀態
+                    SQL = " select rs_type,rs_class,rs_code,act_code,case_stat,case_stat_name ";
+                    SQL += "from vcode_act ";
+                    SQL += "where rs_code = '" + add_gs["rs_code"] + "' ";
+                    SQL += "and act_code = '" + add_gs["act_code"] + "' ";
+                    SQL += "and rs_type = '" + add_gs["rs_type"] + "'";
+                    SQL += "and cg = 'G' and rs = 'S'";
+                    using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                        if (dr0.Read()) {
+                            add_gs["ncase_stat"] = dr0.SafeRead("case_stat", "");
+                            add_gs["ncase_statnm"] = dr0.SafeRead("case_stat_name", "");
+                        }
+                    }
+
+                    add_gs["rs_detail"] = dr.SafeRead("rs_detail", "");
+                    add_gs["fees"] = dr.SafeRead("fees", "");
+                    add_gs["fees_stat"] = dr.SafeRead("fees_stat", "");
+                    add_gs["case_no"] = dr.SafeRead("case_no", "");
+                    add_gs["pr_scode"] = dr.SafeRead("pr_scode", "");
+                    add_gs["opt_branch"] = dr.SafeRead("opt_branch", "");
+                    add_gs["rs_agt_no"] = dr.SafeRead("rs_agt_no", "");
+
+                    //取得發文出名代理人
+                    SQL = "select treceipt+'_'+agt_name from agt where agt_no='" + add_gs["rs_agt_no"] + "'";
+                    objResult = conn.ExecuteScalar(SQL);
+                    add_gs["rs_agt_nonm"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+                    //取得案性mark
+                    SQL = "select mark from code_br where dept='T' and rs_type='" + add_gs["rs_type"] + "' and rs_class='" + add_gs["rs_class"] + "' and rs_code='" + add_gs["rs_code"] + "' and gs='Y'";
+                    objResult = conn.ExecuteScalar(SQL);
+                    add_gs["markb"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+                    //收據抬頭
+                    add_gs["receipt_type"] = dr.SafeRead("receipt_type", "");
+                    add_gs["receipt_title"] = dr.SafeRead("receipt_title", "");
+                    add_gs["rectitle_name"] = dr.SafeRead("rectitle_name", "");
+                    //若為電子送件,預設收據種類為電子收據
+                    if (add_gs["receipt_type"] == "") {
+                        if (add_gs["send_way"] == "E")
+                            add_gs["receipt_type"] = "E";
+                        else
+                            add_gs["receipt_type"] = "P";
+                    }
+                    //若為電子送件,設定預設值
+                    if (add_gs["receipt_title"] == "") {
+                        if (add_gs["send_way"] == "E") {
+                            add_gs["receipt_title"] = Sys.getDefaultTitle();
+                        } else {
+                            add_gs["receipt_title"] = "B";
+                        }
+                    }
+
+                    //檢查array.account.plus_temp.chk_type='Y'表會計已確認，只要有一筆 ="Y"就要有警語
+                    add_gs["chk_typestr"] = "";
+                    using (DBHelper conni = new DBHelper(Conn.account).Debug(Request["chkTest"] == "TEST")) {
+                        SQL = "select case_no from plus_temp where branch='" + Session["seBranch"] + "' and dept='" + Session["dept"] + "'";
+                        SQL += " and rs_no='" + add_gs["rs_no"] + "' and chk_type='Y'";
+                        using (SqlDataReader dr0 = conni.ExecuteReader(SQL)) {
+                            if (dr0.HasRows) {
+                                while (dr0.Read()) {
+                                    add_gs["chk_typestr"] += "," + dr0.SafeRead("case_no", "");
+                                }
+                                add_gs["chk_typestr"] = "(會計已確認:" + add_gs["chk_typestr"].Substring(1) + ")";
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (prgid1 == "brta81") {//從爭救案發文確認連入
+            SQL = "SELECT * from bstep_temp where rs_no='" + Request["rs_no"] + "' and mark='N'";
+            DataTable dtStep = new DataTable();
+            conn.DataTable(SQL, dtStep);
+            if (dtStep.Rows.Count > 0) {
+                DataRow dr = dtStep.Rows[0];
             }
         }
 
-        //電子送件之總發文日皆為區所發文日，即當天
-		if (add_gs["send_way"]=="E"){
-            add_gs["mp_date"] = DateTime.Today.ToShortDateString();
-        }
 
         var settings = new JsonSerializerSettings()
         {
@@ -248,12 +261,7 @@
         };
         Response.Write("{");
         Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
-        Response.Write(",\"case_main\":" + JsonConvert.SerializeObject(dtCaseMain, settings).ToUnicode() + "\n");
-        Response.Write(",\"dmt\":" + JsonConvert.SerializeObject(dtDmt, settings).ToUnicode() + "\n");//案件主檔
-        Response.Write(",\"step_dmt_cr\":" + JsonConvert.SerializeObject(dtStepDmtCR, settings).ToUnicode() + "\n");//交辦對應客收進度
-        Response.Write(",\"attcase_dmt\":" + JsonConvert.SerializeObject(dtAttCase, settings).ToUnicode() + "\n");//交辦官發檔
-        Response.Write(",\"add_gs\":" + JsonConvert.SerializeObject(add_gs, settings).ToUnicode() + "\n");//交辦官發預設值
-        Response.Write(",\"case_attach\":" + JsonConvert.SerializeObject(dtCaseAttach, settings).ToUnicode() + "\n");//附件檔
+        Response.Write(",\"add_gs\":" + JsonConvert.SerializeObject(add_gs, settings).ToUnicode() + "\n");//官發維護預設值
         Response.Write("}");
         Response.End();
     }
@@ -306,86 +314,21 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id="submittask" name=submittask value="<%=submitTask%>">
     <INPUT TYPE="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="text" id="prgid1" name="prgid1" value="<%=Request["prgid1"]%>">
-    <INPUT TYPE="text" id="todo_sqlno" name="todo_sqlno" value="<%=Request["todo_sqlno"]%>"><!--承辦交辦發文或程序官發確認todo_dmt.sqlno-->
-    <INPUT TYPE="text" id="in_scode" name="in_scode" value="<%=in_scode%>"><!--對應交辦case_dmt.in_scode-->
-    <INPUT TYPE="text" id="in_no" name="in_no" value="<%=in_no%>"><!--對應交辦case_dmt.in_no-->
-    <INPUT TYPE="text" id="case_no" name="case_no" value="<%=case_no%>"><!--對應交辦case_dmt.case_no-->
-    <INPUT TYPE="text" id="att_sqlno" name="att_sqlno" value="<%=Request["att_sqlno"]%>"><!--對應交辦發文attcase_dmt.att_sqlno-->
+    <INPUT TYPE="text" id="prgid1" name="prgid1" value="<%=prgid1%>">
+    <INPUT TYPE="text" id="submittask" name=submittask value="<%=submitTask%>">
+    <%if(prgid1=="brta81"){%>
+	    <INPUT TYPE="hidden" id=opt_sqlno name=opt_sqlno>
+	    <INPUT TYPE="hidden" id=Send_dept name=Send_dept>
+    <%}%>
     <INPUT TYPE="text" id="ctrl_flg" name="ctrl_flg" value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
     <INPUT TYPE="text" id="havectrl" name="havectrl" value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
-    <INPUT TYPE="text" id="task" name="task" value="<%=Request["task"]%>"><!--prsave:承辦發文維護,pr:承辦自行發文,cancel:不需發文,conf:確認-->
-    <input type="text" id="edoc_type" name="edoc_type"><!--判斷要檢查的電子送件文件種類xx,改用申請書檢核-->
-    <input type="text" id="report_name" name="report_name"><!--案性對應申請書名稱xx,改用上傳檔名-->
-    <input type="text" id="contract_flag" name="contract_flag"><!--契約書後補註記N:無或已後補,Y:有-->
+    <INPUT TYPE="text" id=rs_sqlno name=rs_sqlno><!--進度流水號，for官發收入資料寫入智產系統用-->
 
     <uc1:Brta21form runat="server" id="Brta21form" /><!--案件主檔欄位畫面，與收文共同-->
     <uc1:brta311form runat="server" ID="Brta311form" /><!--官發欄位畫面-->
-    <%if (prgid=="brta38"){%>
-        <uc1:Brta212form runat="server" ID="Brta212form" /><!--管制欄位畫面，與收文共同-->
-    <%}%>
-    <%if (prgid=="brta38"||(prgid=="brt63"&&(Request["task"]=="pr"||Request["task"]=="prsave"))||prgid=="brt36"){%>
-        <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" /><!--文件上傳畫面-->
-    <%}%>
+    <uc1:Brta212form runat="server" ID="Brta212form" /><!--管制欄位畫面，與收文共同-->
     <br />
-    <input type="hidden" name="rsqlno" id="rsqlno">
-    <table id=tabpr border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%" >
-	    <TR>
-		    <TD align=center colspan=2 class=lightbluetable1><font color=white>承&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;處&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;說&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明</font></TD>
-	    </TR>
-	    <tr>
-		    <td class="lightbluetable" align="right">承辦處理說明/<font color=red>不需發文說明</font>：</td>
-		    <td class="whitetablebg" align="left">
-			    <textarea name="job_remark" id="job_remark" rows="5" cols="70" class="<%#Lock.TryGet("PrLock")%>"></textarea>
-		    </td>
-	    </tr>
-	    <%if(submitTask=="R"){%>
-	        <TR>
-		        <TD align=center colspan=2 class=lightbluetable1><font color=white>程&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;退&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;回&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;說&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明</font></TD>
-	        </TR>
-	        <tr>
-		        <td class="lightbluetable" align="right"><font color=red>程序退回說明</font>：</td>
-		        <td class="whitetablebg" align="left">
-			        <textarea name="approve_desc" id="approve_desc" rows="5" cols="70"></textarea>
-		        </td>
-	        </tr>
-	    <%}%>
-	    <tr id="tr_respdate" style="display:none">
-		    <td class="lightbluetable" align="right">期限銷管：</td>
-		    <td class="whitetablebg" align="left">	
-			    <input type=button class="c1button" name="btnresp" id="btnresp" value ="進度查詢及銷管制">
-		    </td>
-	    </tr>
-    </table>
-
-    <div id="div_sign" style="display:none">
-        <br>
-        <table id="tabsign"border="0" width="70%" cellspacing="1" cellpadding="0" align="center" style="font-size: 9pt">
-	        <TR>
-		        <td width="14%"><input type=radio name="usesign" id="usesign1" onclick="toselect()" checked><strong>正常簽核:</strong></td>
-		        <td><strong>上級主管:</strong><%=mSC_name%><input type=hidden name=Msign id=Msign value="<%=mSC_code%>"></td>
-		        <td style="display:none"><strong>管制日期:</strong>
-		        <input type=text name="signdate" id="signdate" size=10 readonly class="dateField">
-		        </td>
-	        </TR>
-	        <TR>
-		        <td ><input type=radio name="usesign" id="usesign2"><strong>特殊處理:</strong></td>
-		        <td ><input type=radio name=Osign onclick="$('#usesign2').prop('checked',true)" >
-			        <select name=selectsign id=selectsign>
-				        <option value="" style="color:blue">請選擇主管</option>
-				        <%#html_selectsign%>
-			        </select>
-		        </td>
-		        <td><input type=radio name=Osign disabled onclick="$('#usesign2').prop('checked',true)">
-		        <input type=text name=Nsign id=Nsign size=10 readonly>(薪號)
-		        </td>
-	        </TR>
-        </table>
-        <input type=hidden id="GrpID" name="GrpID" value="<%=se_grpid%>">
-        <input type=hidden id=signid name=signid>
-    </div>
 
     <%#DebugStr%>
 </form>
@@ -401,6 +344,7 @@
 <div id="dialog"></div>
 
 <iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<div id="msg" style='text-align:left;height:100px'></div>
 </body>
 </html>
 
@@ -445,7 +389,7 @@
         //畫面準備
         brta21form.init();
         brta311form.init();
-        if (typeof upload_form !== "undefined") upload_form.init();
+        brta212form.init();
         //-----------------
         $("input.dateField").datepick();
         main.bind();//資料綁定
@@ -454,72 +398,36 @@
     }
     
     main.bind = function () {
+        $("#span_fseq").html(jMain.add_gs.fseq);
+        $("#in_scode").val(jMain.add_gs.in_scode);
+        $("#span_rs_no").html("發文序號："+jMain.add_gs.rs_sqlno);
+        $("#job_remark").val(jMain.add_gs.remark);
+        $("#contract_flag").val(jMain.add_gs.contract_flag);
+
+        brta21form.bind(jMain.add_gs);//主檔資料
+        brta311form.bind(jMain.add_gs);//發文資料
+        brta212form.bind(jMain.add_gs,null);//管制資料
+
+        //顯示交辦單號
+        brta311form.add_ar();//增加一筆交辦單號
+        $("#case_no_1").val(jMain.add_gs.case_no);
+        brta311form.getmoney(1);//依交辦單號抓取服務費、規費
+
+        openread();	//控制特定欄位不能修改
         if($("#submittask").val()=="A"){
-            $("#cgrs").val(jMain.add_gs.cgrs).triggerHandler("change");
-            $("#span_fseq").html(jMain.case_main[0].fseq);
-            $("#oldseq,#grseq,#seq").val(jMain.dmt[0].seq);
-            $("#oldseq1,#grseq1,#seq1").val(jMain.dmt[0].seq1);
-            brta21form.btnseq();//[確定]
-            $("#step_date").val(jMain.add_gs.step_date);
-            $("#mp_date").val(jMain.add_gs.mp_date);
-            $("#send_cl").val(jMain.add_gs.send_cl);
-            $("#send_cl1").val(jMain.add_gs.send_cl1);
-            $("#fees").val(jMain.add_gs.fees);
-            $("#fees_stat").val(jMain.add_gs.fees_stat);
-            $("#rs_type").val(jMain.add_gs.rs_type).triggerHandler("change");
-            $("#case_arcase_class,#rs_class,#hrs_class").val(jMain.add_gs.rs_class);
-            $("#rs_class").triggerHandler("change");
-            $("#case_arcase,#rs_code,#hrs_code").val(jMain.add_gs.rs_code);
-            $("#rs_code").triggerHandler("change");
-            $("#send_way,#old_send_way").val(jMain.add_gs.send_way);
-            $("#receipt_type").val(jMain.add_gs.receipt_type);
-            $("#receipt_title").val(jMain.add_gs.receipt_title);
-            $("#rectitle_name").val(jMain.add_gs.rectitle_name);
-
-            brta311form.add_ar();
-            $("#case_no_1").val(jMain.case_main[0].case_no);
-            brta311form.getmoney(1);//依交辦單號抓取服務費、規費
-            $("#remark").val(jMain.case_main[0].remark);
-            $("#contract_flag").val(jMain.case_main[0].ncontract_flag);
-
-            if(jMain.attcase_dmt.length>0) {
-                $("#span_rs_no").html("發文序號："+jMain.attcase_dmt[0].rs_sqlno);
-                $("#step_date").val(dateReviver(jMain.attcase_dmt[0].step_date,'yyyy/M/d'));
-                $("#mp_date").val(dateReviver(jMain.attcase_dmt[0].mp_date,'yyyy/M/d'));
-                $("#send_cl").val(jMain.attcase_dmt[0].send_cl);
-                $("#send_cl1").val(jMain.attcase_dmt[0].send_cl1);
-                $("#send_sel").val(jMain.attcase_dmt[0].send_sel);
-                $("#pr_scode").val(jMain.attcase_dmt[0].pr_scode);
-                $("#remark").val(jMain.attcase_dmt[0].remark);
-                $("#act_code,#hact_code").val(jMain.attcase_dmt[0].act_code);
-                $("#act_code").triggerHandler("change");
-            }
-            if((main.right&128)!=0||(main.right&256)!=0){
-                $("input[name='rfees_stat'][value='"+jMain.add_gs.fees_stat+"']").prop("checked",true);
-            }
-
-            openread();	//控制特定欄位不能修改
-            if(main.task=="pr"||main.task=="prsave"){
-                upload_form.appendAttach(jMain.case_attach);//顯示上傳文件資料
-            }else if(main.task=="cancel"){
+            if(main.task=="cancel"){
                 $("#tabgs").hide();//發文資料
                 $("#tr_respdate").show();//期限銷管
             }
         }else{
-            $("#remark").val(jMain.case_main[0].remark);
-            $("#chk_typestr").html(jMain.add_gs.chk_typestr);
-            if(jMain.attcase_dmt.length>0) {
-                $("#span_rs_no").html("發文序號："+jMain.attcase_dmt[0].rs_sqlno);
-                $("#act_code,#hact_code").val(jMain.attcase_dmt[0].act_code);
-                $("#act_code").triggerHandler("change");
-            }
+            $("#task").val("conf");
         }
 
         if($("#submittask").val()=="U") {
             $("#span_rs_no").show();
         }
         if($("#submittask").val()!="Q"){
-            if (jMain.case_main[0].ncontract_flag=="Y" && main.task=="pr"){
+            if (jMain.add_gs.contract_flag=="Y" && main.task=="pr"){
                 $("#div_sign").show();
             }
         }
@@ -582,6 +490,7 @@
                         return false;
                     }
                 }
+
                 //20180525增加檢查發文日期/總發文日期不可小於系統日
                 var sdate = CDate($('#step_date').val());
                 var mdate = CDate($('#mp_date').val());
@@ -589,7 +498,6 @@
                     alert("發文日期或總發文日期不可小於系統日！");
                     return false;
                 }
-
 
                 //交辦發文檢查
                 if (document.getElementById('task').value=="pr"){
@@ -702,6 +610,7 @@
                         }
                     }
                 }
+
                 if (document.getElementById("cgrs").value=="GS"){
                     if(chkNull("發文對象",document.getElementById('send_cl'))) return false;
                     //if reg.rs_class.value<>"A1" and reg.rs_class.value<>"A0" then
@@ -914,6 +823,7 @@
                         return false;
                     }
                 }
+
                 //分割案入檔時子本所編號檢查
                 if (document.getElementById("rs_code").value.substr(0,2) == "FD"){
                     // 子本所編號不可重複 也不可與主要本所編號相同
@@ -946,9 +856,27 @@
                         return false;
                     }
                 }
-            }	//判斷task的end if
-		
-            $("#reg :input").attr("disabled",false);
+
+                //2019/5/17李協理提出
+                //20210412增加延展案發文檢查.不可小於最小法定期限-半年
+                if($("#rs_code").val() == "FR1"){
+                    if($("#a_last_date").val()!=""){
+                        var ldate = CDate($('#a_last_date').val()).addMonths(-6);//最小法定期限-半年
+                        var sdate = CDate($('#step_date').val());//發文日期
+                        if(sdate.getTime()< ldate.getTime()){
+                            if ($('#task').val()=="pr"){//交辦發文時只提醒
+                                if(!confirm("延展案發文日期不可早於最小法定期限減半年！\n是否確認交辦發文?")){
+                                    return false;
+                                }
+                            }else if ($('#task').val()=="conf"){//發文確認時擋住
+                                alert("延展案發文日期不可早於最小法定期限減半年！");
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            //判斷task的end if
 		
             //***todo
             //if ($("#submittask").val()=="U" and chk_type="Y" then%>
@@ -1024,7 +952,6 @@
 
     //for不需發文之銷管期限
     $("#btnresp").click(function() {
-        //***todo
         window.open(getRootPath() + "/brtam/brta21disEdit.aspx?prgid=<%=prgid%>&branch=<%=Session["seBranch"]%>&seq="+$("#seq").val()+"&seq1="+$("#seq1").val()+"&qtype=N&rsqlno="+$("#rsqlno").val()+"&step_grade="+$("#nstep_grade").val()+"&submitTask=A","","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     });
 
@@ -1040,7 +967,7 @@
 	
         jQuery.support.cors = true;
         $.ajax({ 
-            url: getRootPath() + "/brt6m/Brt63checkWord.aspx",
+            url: getRootPath() + "/brt6m/Brt63checkWordN.aspx",
             type: 'GET', 
             dataType : "text",//回傳的格式為text
             data: { 

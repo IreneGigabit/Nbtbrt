@@ -200,7 +200,7 @@
                 
                 if (qs_dept == "t") {
                     dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), dr.SafeRead("country", ""), Sys.GetSession("SeBranch"), Sys.GetSession("dept"));
-                    dr["urlasp"] = Page.ResolveUrl(Sys.getCase11Aspx(prgid,dr.SafeRead("in_no",""),dr.SafeRead("in_scode","") ,"Show"));
+                    dr["urlasp"] = Sys.getCase11Aspx(prgid,dr.SafeRead("in_no",""),dr.SafeRead("in_scode","") ,"Show");
                 } else {
                     dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), dr.SafeRead("country", ""), Sys.GetSession("SeBranch"), Sys.GetSession("dept")+"E");
                 }

@@ -464,6 +464,36 @@ public partial class Sys
     }
     #endregion
 
+    #region getZNo - 取流水號,並加1
+    /// <summary>  
+    /// 取流水號(cust_code.code_type='Z' and cust_code=??)
+    /// </summary>  
+    public static string getZNo(DBHelper conn, string cust_code) {
+        string z_no = "";
+        string SQL = "select isnull(sql,0)+1 from cust_code where code_type='Z' and cust_code='" + cust_code + "'";
+        object objResult = conn.ExecuteScalar(SQL);
+        z_no = (objResult == DBNull.Value || objResult == null) ? "1" : objResult.ToString();
+        
+        //流水號加一
+        SQL = " update cust_code set sql = sql + 1 where code_type='Z' and cust_code='" + cust_code + "'";
+        conn.ExecuteNonQuery(SQL);
+
+        return z_no;
+    }
+    #endregion
+
+    #region getRsNo - 取收發文序號
+    /// <summary>  
+    /// 取收發文序號
+    /// <param name="cgrs">收發文種類,ex:CR</param>
+    /// </summary>  
+    public static string getRsNo(DBHelper conn, string cgrs) {
+        string rs_no = cgrs.ToUpper() + getZNo(conn, GetSession("sebranch") + "T" + cgrs).PadLeft(8, '0');
+
+        return rs_no;
+    }
+    #endregion
+
     #region getRsType - 國內案目前交辦案性的版本
     /// <summary>  
     /// 國內案目前交辦案性的版本
@@ -551,10 +581,9 @@ public partial class Sys
                 objResult = conn.ExecuteScalar(SQL);
                 string case_step_grade = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();//抓取對應客收進度
 
-                urlasp = "~/brt1m" + link_remark + "/Brt11Edit" + new_form + ".aspx";
+                urlasp = Sys.GetRootDir() + "/brt1m" + link_remark + "/Brt11Edit" + new_form + ".aspx";
 
-                urlasp += "?prgid=" + prgid;
-                urlasp += "&in_scode=" + dr["in_scode"];
+                urlasp += "?in_scode=" + dr["in_scode"];
                 urlasp += "&in_no=" + dr["in_no"];
                 urlasp += "&case_no=" + dr["case_no"];
                 urlasp += "&seq=" + dr["seq"];
@@ -572,7 +601,12 @@ public partial class Sys
                 urlasp += "&ar_curr=" + dr["ar_curr"];
                 urlasp += "&step_grade=" + case_step_grade;
                 urlasp += "&uploadtype=case";
-                urlasp += "&submittask=" + submittask;
+                if (prgid != "") {
+                    urlasp += "&prgid=" + prgid;
+                }
+                if (submittask != "") {
+                    urlasp += "&submittask=" + submittask;
+                }
             }
 
             return urlasp;
@@ -608,10 +642,9 @@ public partial class Sys
                 objResult = conn.ExecuteScalar(SQL);
                 string case_step_grade = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();//抓取對應客收進度
 
-                urlasp = "~/brt5m" + link_remark + "/Brt52EDIT" + new_form + ".aspx";
+                urlasp = Sys.GetRootDir() + "/brt5m" + link_remark + "/Brt52EDIT" + new_form + ".aspx";
 
-                urlasp += "?prgid=" + prgid;
-                urlasp += "&in_scode=" + dr["in_scode"];
+                urlasp += "?in_scode=" + dr["in_scode"];
                 urlasp += "&in_no=" + dr["in_no"];
                 urlasp += "&case_no=" + dr["case_no"];
                 urlasp += "&seq=" + dr["seq"];
@@ -629,7 +662,12 @@ public partial class Sys
                 urlasp += "&ar_curr=" + dr["ar_curr"];
                 urlasp += "&step_grade=" + case_step_grade;
                 urlasp += "&uploadtype=case";
-                urlasp += "&submittask=" + submittask;
+                if (prgid != "") {
+                    urlasp += "&prgid=" + prgid;
+                }
+                if (submittask != "") {
+                    urlasp += "&submittask=" + submittask;
+                }
             }
 
             return urlasp;
@@ -864,9 +902,80 @@ public partial class Sys
     }
     #endregion
 
+    #region getBranchCode - 抓取指定單位代碼
+    /// <summary>  
+    /// 抓取指定單位代碼
+    /// </summary>  
+    public static DataTable getBranchCode() {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            string SQL = "select branch,branchname from branch_code where mark='Y' and showcode='Y' order by sort ";
+            DataTable dt = new DataTable();
+            cnn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
+    #region getCodeName - 抓取代碼資料或特定欄位資料(取第一欄第一列)
+    /// <summary>  
+    /// 抓取代碼資料或特定欄位資料(取第一欄第一列)
+    /// </summary>  
+    public static string getCodeName(DBHelper conn, string table, string column, string where) {
+        string SQL = "select " + column + " from " + table + " " + where;
+        object objResult = conn.ExecuteScalar(SQL);
+        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+    }
+    #endregion
+
+    #region getSetting - 取得管制日期顏色&天數設定
+    public static string getSetting(string pDept, string pType, string pDate) {
+        DateTime today = DateTime.Today;
+        string Color = "black";
+
+        if (pType == "1") {
+            switch (pDept.ToUpper()) {
+                //期限稽催列印規則設定 日管制日期超過2天的顯示紅色
+                //管制日期 <= 2 日內顯示紅色
+                case "T":
+                    if (Util.str2Dateime(pDate) <= today.AddDays(2)) {
+                        Color = "red";
+                    }
+                    break;
+                case "P":
+                    if (Util.str2Dateime(pDate) <= today.AddDays(2)) {
+                        Color = "red";
+                    }
+                    break;
+            }
+        }
+
+        return Color;
+    }
+    #endregion
+
+    //各種人員清單///////////////////////////////////////////////////////////
+    #region getLoginGrpSales - 抓取LoginGrp內的營洽(LoginGrp.worktype='sales')
+    /// <summary>  
+    /// 抓取LoginGrp內的營洽(LoginGrp.worktype='sales')
+    /// </summary>  
+    public static DataTable getLoginGrpSales() {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            string SQL = "SELECT distinct(scode)scode,sc_name,right('0000'+substring(scode,2,len(scode)),4) as a ";
+            SQL += " FROM vcust_scode ";
+            SQL += " WHERE dept='T' AND  Syscode = '" + Sys.GetSession("syscode") + "' and branch='" + Sys.GetSession("seBranch") + "'";
+            SQL += " and worktype='sales' order by a";
+            DataTable dt = new DataTable();
+            cnn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
     #region getCaseDmtScode - 抓取交辦檔內的營洽(國內案)
     /// <summary>  
-    /// 抓取案件主檔內的營洽(國內案)
+    /// 抓取交辦檔內的營洽(國內案)
     /// </summary>  
     public static DataTable getCaseDmtScode(string branch, string pwh) {
         string strConn = Conn.btbrt;
@@ -936,57 +1045,27 @@ public partial class Sys
     }
     #endregion
 
-    #region getBranchCode - 抓取指定單位代碼
+    #region getPrScode - 抓取承辦人員
     /// <summary>  
-    /// 抓取指定單位代碼
+    /// 抓取承辦人員
     /// </summary>  
-    public static DataTable getBranchCode() {
-        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
-            string SQL = "select branch,branchname from branch_code where mark='Y' and showcode='Y' order by sort ";
+    public static DataTable getPrScode() {
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            string SQL = "select a.scode,b.sc_name,a.sort ";
+            SQL += " from sysctrl.dbo.scode_roles a ";
+            SQL += " inner join sysctrl.dbo.scode b on a.scode=b.scode ";
+            SQL += " where a.dept = '" + Sys.GetSession("dept") + "' and syscode = '" + Sys.GetSession("syscode") + "' and prgid = 'brta21'";
+            SQL += " and roles = 'process' and branch = '" + Sys.GetSession("seBranch") + "' ";
+            SQL += " order by sort ";
+
             DataTable dt = new DataTable();
-            cnn.DataTable(SQL, dt);
+            conn.DataTable(SQL, dt);
 
             return dt;
         }
     }
     #endregion
-
-    #region getCodeName - 抓取代碼資料或特定欄位資料(取第一欄第一列)
-    /// <summary>  
-    /// 抓取代碼資料或特定欄位資料(取第一欄第一列)
-    /// </summary>  
-    public static string getCodeName(DBHelper conn, string table, string column, string where) {
-        string SQL = "select " + column + " from " + table + " " + where;
-        object objResult = conn.ExecuteScalar(SQL);
-        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-    }
-    #endregion
-
-    #region getSetting - 取得管制日期顏色&天數設定
-    public static string getSetting(string pDept, string pType, string pDate) {
-        DateTime today = DateTime.Today;
-        string Color = "black";
-
-        if (pType == "1") {
-            switch (pDept.ToUpper()) {
-                //期限稽催列印規則設定 日管制日期超過2天的顯示紅色
-                //管制日期 <= 2 日內顯示紅色
-                case "T":
-                    if (Util.str2Dateime(pDate) <= today.AddDays(2)) {
-                        Color = "red";
-                    }
-                    break;
-                case "P":
-                    if (Util.str2Dateime(pDate) <= today.AddDays(2)) {
-                        Color = "red";
-                    }
-                    break;
-            }
-        }
-
-        return Color;
-    }
-    #endregion
+    ////////////////////////////////////////////////////////////////////////
 
     #region insert_log_table
     /// <summary>

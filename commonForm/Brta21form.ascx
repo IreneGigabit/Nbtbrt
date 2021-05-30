@@ -28,15 +28,7 @@
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         submitTask = (Request["submittask"] ?? "").Trim().ToUpper();
 
-        SQL = "select a.scode,b.sc_name,a.sort ";
-        SQL += " from sysctrl.dbo.scode_roles a ";
-        SQL += " inner join sysctrl.dbo.scode b on a.scode=b.scode ";
-        SQL += " where a.dept = '" + Session["dept"] + "' and syscode = '" + Session["syscode"] + "' and prgid = 'brta21' ";
-        SQL += " and roles = 'process' and branch = '" + Session["seBranch"] + "' ";
-        SQL += " order by sort ";
-        DataTable prDT = new DataTable();
-        conn.DataTable(SQL, prDT);
-        html_pr_scode = prDT.Option("{scode}", "{scode}_{sc_name}", "", false, "", "sort=01");
+        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", false, "", "sort=01");
         html_send_sel = Sys.getCustCode("SEND_SEL", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_pay_times = Sys.getCustCode(Sys.GetSession("dept") + "PAY_TIMES", "", "sortfld").Option("{cust_code}", "{code_name}");
 
@@ -137,7 +129,7 @@
 		</TR>
 	<TR>
 		<TD class=lightbluetable align=right>出名代理：</TD>
-		<TD class=whitetablebg ><input type="text" id="agt_no" name="agt_no" size=8 class="sedit" readonly></TD>
+		<TD class=whitetablebg ><input type="text" id="agt_no" name="agt_no" size=8 style="width:95%" class="sedit" readonly></TD>
 		<TD class=lightbluetable align=right>營洽：</TD>
 		<TD class=whitetablebg colspan=2><input type="text" id="scode" name="scode" size=12 class="sedit" readonly></TD>	    
 		<TD class=whitetablebg><input type="text" id="case_stat" name="case_stat" size=20 class="sedit" readonly></TD>
@@ -298,6 +290,7 @@
         $("#issue_date").val(dateReviver(dmt_data[0].issue_date,'yyyy/M/d'));
         $("#issue_no").val(dmt_data[0].issue_no);
         $("#step_grade").val(dmt_data[0].step_grade);
+        $("#a_last_date").val(dmt_data[0].a_last_date);//最小法定期限
         $("#open_date").val(dateReviver(dmt_data[0].open_date,'yyyy/M/d'));
         $("#rej_no").val(dmt_data[0].rej_no);
         $("#term1").val(dateReviver(dmt_data[0].term1,'yyyy/M/d'));
@@ -319,11 +312,26 @@
         $("#now_arcase").val(dmt_data[0].now_arcase);
         $("#now_stat").val(dmt_data[0].now_stat);
         $("#rs_class").val(dmt_data[0].now_rsclass);//.triggerHandler("change");
-        $("#nstep_grade").val(CInt(dmt_data[0].step_grade)+1);
+        if ($("#submittask").val() == "A") {
+            $("#nstep_grade").val(CInt(dmt_data[0].step_grade) + 1);
+        } else {
+            if ($("#prgid").val() == "brta24" && $("#new_seq").val() != "") {
+                if ($("#seq").val() != $("#grseq").val() || $("#seq1").val() != $("#grseq1").val()) {
+                    $("#nstep_grade").val(CInt(dmt_data[0].step_grade) + 1);
+                }
+            }
+            if ($("#prgid").val() == "brta38" && $("#submittask").val() == "U") {
+                //官發確認顯示本筆官發進度
+                $("#nstep_grade").val(CInt(dmt_data[0].step_grade) + 1);
+            }
+
+            $("#nstep_grade").val(CInt(dmt_data[0].step_grade));
+        }
         $("#rs_code").val($("#now_arcase").val());//.triggerHandler("change");
 
-        $("#opay_times,#hpay_times,#pay_times").val(dmt_data[0].pay_times);
-        $("#opay_date,#pay_date").val(dateReviver(dmt_data[0].pay_date,'yyyy/M/d'));
+        $("#opay_times,#hpay_times").val(dmt_data[0].pay_times);
+        $("#pay_times option[value='" + dmt_data[0].pay_times + "']").prop("selected", true);
+        $("#opay_date,#pay_date").val(dateReviver(dmt_data[0].pay_date, 'yyyy/M/d'));
         $("#dmtap_cname").val(dmt_data[0].dmtap_cname);
         $("#end_name").val(dmt_data[0].end_codenm);
         $("#end_remark").val(dmt_data[0].end_remark);
@@ -519,8 +527,12 @@
                             mg_ctrl_date = dateReviver(JSONdata[0].ctrl_date, 'yyyy/M/d');
                             mg_ctrl_type = JSONdata[0].ctrl_type;
                         } else {
-                            alert("找不到總管處期限管制資料，請通知系統維護人員!!");
+                            mg_ctrl_date = "";
+                            mg_ctrl_type = "";
                         }
+                    },
+                    error: function (xhr) {
+                        alert("找不到總管處期限管制資料，請通知系統維護人員!!");
                     }
                 });
 
@@ -569,11 +581,11 @@
         $("#hdomark").val(pvalue);
         switch (pvalue) {
             case 'A':
-                alet("若確定要立子案並以子案收文，請先點選「子案立案」立案完成後再執行官收確認！");
+                alert("若確定要立子案並以子案收文，請先點選「子案立案」立案完成後再執行官收確認！");
                 $("#btnseq,#btnnewseq").show();//[確定]
                 break;
             case 'B':
-                alet("若確定以子案收文且子案已立案，請輸入子案編號並點選確定後後再執行官收確認！");
+                alert("若確定以子案收文且子案已立案，請輸入子案編號並點選確定後後再執行官收確認！");
                 $("#seq,#seq1").unlock();
                 $("#btnseq,#btnQuery").show();//[確定][查詢本所編號]
                 $("#btnnewseq").hide();//[子案立案]

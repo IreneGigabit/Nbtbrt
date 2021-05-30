@@ -566,7 +566,7 @@
     function Qseqdetail(pseq,pseq1){
         var urlasp=getRootPath();
         if(main.prgid.Left(3)=="brt"){
-            urlasp += "/brt5m/brt15ShowFP.aspx?seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q";
+            urlasp += "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q";
         }else{
             urlasp += "/brt5m/ext54_Edit.aspx?seq=" + pseq + "&seq1=" + pseq1 + "&submittask=DQ&winact=Y&prgid="+main.prgid;
         }

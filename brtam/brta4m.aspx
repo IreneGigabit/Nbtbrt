@@ -18,6 +18,7 @@
     protected string step_date = "";
     protected string rs_no = "";
 
+    protected string FrameBlank = "";
     protected string html_rprtkind = "";
     protected string html_sscode1 = "";
 
@@ -39,7 +40,8 @@
         cgrs = (Request["cgrs"] ?? "").ToUpper();
         step_date = (Request["step_date"] ?? "");
         rs_no = (Request["rs_no"] ?? "").ToUpper();
-        
+        FrameBlank = (Request["FrameBlank"] ?? "");
+    
         if (cgrs == "CR") HTProgCap = "<font color=blue>客戶</font>";
         if (cgrs == "GR") HTProgCap = "<font color=blue>官方</font>";
         HTProgCap += "收文報表列印";
@@ -55,6 +57,10 @@
     }
 
     private void PageLayout() {
+        if (FrameBlank != "") {
+            StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>";
+        }
+        
         if ((HTProgRight & 2) > 0) {
             StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"列　印\" class=\"cbutton bsubmit\" />\n";
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";

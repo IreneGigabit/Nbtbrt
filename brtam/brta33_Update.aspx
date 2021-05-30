@@ -131,12 +131,6 @@
                 Sys.errorLog(ex, conniacc.exeSQL, prgid);
                 throw;
             }
-            finally {
-                conn.Dispose();
-                connm.Dispose();
-                conni2.Dispose();
-                conniacc.Dispose();
-            }
             this.DataBind();
         }
     }
@@ -440,10 +434,10 @@
                 string cs_rs_no = "";
                 if (arr_radcs[i] == "Y") {
                     //先取得客發序號. 新增完官收後再新增客發
-                    cs_rs_no = getRSNo(conn, "CS");
+                    cs_rs_no = Sys.getRsNo(conn, "CS");
                 }
                 //收文序號
-                string rs_no = getRSNo(conn, "GR");
+                string rs_no = Sys.getRsNo(conn, "GR");
 
                 //取得案件進度
                 string lstep_grade = "1";
@@ -622,6 +616,7 @@
                     SQL += ",'" + csact_code + "'," + Util.dbnull(cs_detail) + "," + Util.dbnull(lctrl_date);
                     SQL += "," + Util.dbnull(arr_send_way[i]) + ",getdate(),'" + Session["scode"] + "')";
                     conn.ExecuteNonQuery(SQL);
+                    
                     SQL = "insert into csd_dmt(rs_no,branch,seq,seq1,cust_seq,att_sql)";
                     SQL += "values('" + cs_rs_no + "','" + Session["seBranch"] + "'," + tseq + ",'" + tseq1 + "'";
                     SQL += "," + Util.dbnull(arr_cust_seq[i]) + "," + Util.dbnull(arr_att_sql[i]) + ")";
@@ -773,10 +768,10 @@
                         //判斷是否需客戶報導 , 若需客戶報導則需新增一筆客發
                         string dcs_rs_no = "";
                         if (arr_radcs[i] == "Y") {
-                            dcs_rs_no = getRSNo(conn, "CS");
+                            dcs_rs_no = Sys.getRsNo(conn, "CS");
                         }
                         //收文序號
-                        string drs_no = getRSNo(conn, "GR");
+                        string drs_no = Sys.getRsNo(conn, "GR");
                         //取得案件進度
                         string dlstep_grade = "1";
                         SQL = "select step_grade from dmt where seq= '" + dseq + "' and seq1 = '" + dseq1 + "'";
@@ -1214,20 +1209,6 @@
                 }
             }
         }
-    }
-
-    //取收發文序號
-    private string getRSNo(DBHelper pconn, string cgrs) {
-        string rs_no = "";
-        SQL = "select isnull(sql,0)+1 from cust_code where code_type='Z' and cust_code='" + Session["sebranch"] + "T" + cgrs + "'";
-        objResult = pconn.ExecuteScalar(SQL);
-        rs_no = (objResult == DBNull.Value || objResult == null) ? "1" : objResult.ToString();
-        rs_no = cgrs + rs_no.PadLeft(8, '0');
-        //流水號加一
-        SQL = " update cust_code set sql = sql + 1 where code_type='Z' and cust_code='" + Session["sebranch"] + "T" + cgrs + "'";
-        pconn.ExecuteNonQuery(SQL);
-
-        return rs_no;
     }
     
     //更新案件主檔 案件狀態/進度序號

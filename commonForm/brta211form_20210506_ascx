@@ -33,18 +33,7 @@
         html_receive_way = Sys.getCustCode("Treceive_way", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_send_way = Sys.getCustCode("SEND_WAY", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_cs_remark_code = Sys.getCustCode("Tcs_remark", "", "cust_code").Option("{cust_code}", "{code_name}");
-
-        
-        SQL = "select a.scode,b.sc_name,a.sort ";
-        SQL += " from sysctrl.dbo.scode_roles a ";
-        SQL += " inner join sysctrl.dbo.scode b on a.scode=b.scode ";
-        SQL += " where a.dept = '" + Session["dept"] + "' and syscode = '" + Session["syscode"] + "' and prgid = 'brta21' ";
-        SQL += " and roles = 'process' and branch = '" + Session["seBranch"] + "' ";
-        SQL += " order by sort ";
-        DataTable prDT = new DataTable();
-        conn.DataTable(SQL, prDT);
-        html_pr_scode = prDT.Option("{scode}", "{scode}_{sc_name}", "", false);
-        
+        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", false);
         html_pay_times = Sys.getCustCode(Sys.GetSession("dept") + "PAY_TIMES", "", "sortfld").Option("{cust_code}", "{code_name}");
 
         PageLayout();
@@ -229,7 +218,7 @@
     $("#rs_class").change(function () {
         $("#rs_code").getOption({//案性代碼
             url: getRootPath() + "/ajax/json_rs_code.aspx",
-            data: { cgrs: $("cgrs").val(), rs_type: $("#rs_type").val() },
+            data: { cgrs: $("#cgrs").val(), rs_type: $("#rs_type").val() },
             valueFormat: "{rs_code}",
             textFormat: "{rs_detail}",
             attrFormat: "vrs_class='{rs_class}'"

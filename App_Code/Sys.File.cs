@@ -82,7 +82,11 @@ public partial class Sys
     }
     #endregion
 
-    #region formatScanPathNo - 掃瞄文件重新命名規則
+    #region formatScanPathNo - 掃瞄文件重新命名
+    /// <summary>
+    /// 掃瞄文件重新命名
+    /// <para>命名規則branch+dept-seq(5)-seq1-step_grade(4)-attach_no(2).pdf</para>
+    /// </summary>
     public static void formatScanPathNo(string pseq, string pseq1, string pstep_grade, string pattach_no, ref string scanpath, ref string scanfile) {
         //目錄 (ex:/nbtbrt/scandoc/NT/NT-641/)
         scanpath = Sys.scanpathT + "/" + GetSession("seBranch") + GetSession("Dept").ToUpper() + "-" + pseq.PadLeft(5, '0').Left(3) + "/";

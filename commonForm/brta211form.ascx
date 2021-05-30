@@ -32,17 +32,7 @@
         html_receive_way = Sys.getCustCode("Treceive_way", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_send_way = Sys.getCustCode("SEND_WAY", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_cs_remark_code = Sys.getCustCode("Tcs_remark", "", "cust_code").Option("{cust_code}", "{code_name}");
-        
-        SQL = "select a.scode,b.sc_name,a.sort ";
-        SQL += " from sysctrl.dbo.scode_roles a ";
-        SQL += " inner join sysctrl.dbo.scode b on a.scode=b.scode ";
-        SQL += " where a.dept = '" + Session["dept"] + "' and syscode = '" + Session["syscode"] + "' and prgid = 'brta21' ";
-        SQL += " and roles = 'process' and branch = '" + Session["seBranch"] + "' ";
-        SQL += " order by sort ";
-        DataTable prDT = new DataTable();
-        conn.DataTable(SQL, prDT);
-        html_pr_scode = prDT.Option("{scode}", "{scode}_{sc_name}", "", false);
-        
+        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", false);
         html_pay_times = Sys.getCustCode(Sys.GetSession("dept") + "PAY_TIMES", "", "sortfld").Option("{cust_code}", "{code_name}");
 
         PageLayout();
@@ -219,9 +209,9 @@
         $("#scgrs").val(jData.cgrs);
         $("#step_date").val(jData.step_date);
         $("#mp_date").val(jData.mp_date);
-        $("#send_cl").val(jData.send_cl);
+        $("#send_cl option[value='" + jData.send_cl + "']").prop("selected", true);
         $("#receive_no").val(jData.receive_no);
-        $("#receive_way").val(jData.receive_way);
+        $("#receive_way option[value='" + jData.receive_way + "']").prop("selected", true);
         //總管處收文內容
         $("#mg_rs_detail").val(jData.mg_rs_detail);
         $("#pdfcnt").val(jMGAttach.length);
@@ -239,10 +229,13 @@
         $("#rs_class_name").val(jData.rs_class_name);
         $("#rs_code_name").val(jData.rs_code_name);
         $("#act_code_name").val(jData.act_code_name);
-        $("#rs_class").val(jData.rs_class).triggerHandler("change");
-        $("#rs_code").val(jData.rs_code).triggerHandler("change");
-        $("#act_sqlno").val(jData.act_sqlno);//.triggerHandler("change");
-        $("#act_code").val(jData.act_code);//.triggerHandler("change");
+        $("#rs_class option[value='" + jData.rs_class + "']").prop("selected", true);
+        $("#rs_class").triggerHandler("change");
+        $("#rs_code option[value='" + jData.rs_code + "']").prop("selected", true);
+        $("#rs_code").triggerHandler("change");
+        $("#act_code option[value='"+jData.act_code+"']").prop("selected", true);
+        $("#act_code").triggerHandler("change");
+        $("#act_sqlno").val(jData.act_sqlno);
         $("#ocase_stat").val(jData.ocase_stat);
         $("#ncase_stat").val(jData.ncase_stat);
         $("#ncase_statnm").val(jData.ncase_statnm);
@@ -253,7 +246,7 @@
         $("#pr_scan_path").val(jData.pr_scan_path);
         $("#cs_rs_no").val(jData.cs_rs_no);
         $("#send_way,#csd_flag").lock();
-        if (jData.cs_rs_no != "") {
+        if ((jData.cs_rs_no||"") != "") {
             $("#btnPreviewcsreport").show();
             $("input[name='csflg'][value='Y']").prop("checked", true);
             $("#send_way,#cs_detail,#csd_flag").unlock();
@@ -267,9 +260,9 @@
         $("input[name='csd_flag'][value='" + jData.csd_flag + "']").prop("checked", true);
         $("#csd_flag:checked").triggerHandler("click");
 
-        $("#send_way").val(jData.send_way);
+        $("#send_way option[value='" + jData.send_way + "']").prop("selected", true);
         $("input[name='pr_scan'][value='" + jData.pr_scan + "']").prop("checked", true);
-        $("#pr_scode").val(jData.pr_scode);
+        $("#pr_scode option[value='" + jData.pr_scode + "']").prop("selected", true);
         $("#cs_remark_code").val(jData.cs_remark_code);
         $("#cs_remark").val(jData.cs_remark);
         $("#cs_detail").val(jData.cs_detail);
@@ -298,7 +291,7 @@
     $("#rs_class").change(function () {
         $("#rs_code").getOption({//案性代碼
             url: getRootPath() + "/ajax/json_rs_code.aspx",
-            data: { cgrs: $("cgrs").val(), rs_type: $("#rs_type").val() },
+            data: { cgrs: $("#cgrs").val(), rs_class: $("#rs_class").val(), rs_type: $("#rs_type").val() },
             valueFormat: "{rs_code}",
             textFormat: "{rs_detail}",
             attrFormat: "vrs_class='{rs_class}'"
@@ -324,8 +317,8 @@
         $("#ncase_stat,#ncase_statnm").val("");
         $("#rs_detail").val($("#rs_code option:selected").text());
 
-        if($( "#act_code option:selected").text()!="_"){
-            $("#rs_detail").val($("#rs_detail").val()+$( "#act_code option:selected").text());
+        if ($("#act_code option:selected").val() != "" && $("#act_code option:selected").val() != "_") {
+            $("#rs_detail").val($("#rs_detail").val() + $("#act_code option:selected").text());
         }
 
         brta211form.getCtrl();//帶預設期限
@@ -420,7 +413,6 @@
 
     //產生預設期限
     brta211form.getCtrl = function () {
-        alert("brta211form.getCtrl");
         if(main.submittask=="A"){
             brta212form.empty_ctrl();//onchange觸發多次會有多筆.先清空管制期限
             //取得案性管制設定

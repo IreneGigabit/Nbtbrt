@@ -27,15 +27,7 @@
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         submitTask = (Request["submittask"] ?? "").Trim().ToUpper();
 
-        SQL = "select a.scode,b.sc_name,a.sort ";
-        SQL += " from sysctrl.dbo.scode_roles a ";
-        SQL += " inner join sysctrl.dbo.scode b on a.scode=b.scode ";
-        SQL += " where a.dept = '" + Session["dept"] + "' and syscode = '" + Session["syscode"] + "' and prgid = 'brta21' ";
-        SQL += " and roles = 'process' and branch = '" + Session["seBranch"] + "' ";
-        SQL += " order by sort ";
-        DataTable prDT = new DataTable();
-        conn.DataTable(SQL, prDT);
-        html_pr_scode = prDT.Option("{scode}", "{scode}_{sc_name}", "", false, "", "sort=01");
+        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", false, "", "sort=01");
         html_send_sel = Sys.getCustCode("SEND_SEL", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_pay_times = Sys.getCustCode(Sys.GetSession("dept") + "PAY_TIMES", "", "sortfld").Option("{cust_code}", "{code_name}");
 

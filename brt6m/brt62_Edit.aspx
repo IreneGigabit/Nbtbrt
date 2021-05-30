@@ -303,6 +303,8 @@
 
         //文件清單
         $("#tabfile" + fld + ">tbody").empty();
+        upload_form.bind(jMain.dmt_attach);
+        /*
         $.each(jMain.dmt_attach, function (i, item) {
             upload_form.appendFile();//增加一筆
             var nRow = $("#" + fld + "_filenum").val();
@@ -324,6 +326,7 @@
             $("#maxattach_no").val(Math.max(CInt(item.attach_no), CInt($("#maxattach_no").val())));
             $("input[name='doc_flag_" + nRow + "'][value='" + item.doc_flag + "']").prop("checked", true);//電子送件文件檔(pdf)
         });
+        */
     }
 
     function getgrlast_date(){

@@ -247,13 +247,13 @@
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1tran_remark1)"><strong>柒、<u>事實及理由：</u></strong></td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top"><TEXTAREA rows=9 cols=90 id=tfz2_tran_remark1 name=tfz2_tran_remark1></TEXTAREA></td>
+		<td class="whitetablebg" colspan="8" valign="top"><TEXTAREA rows=9 cols=90 id=tfz2_tran_remark1 name=tfz2_tran_remark1></TEXTAREA></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(zAttechD)"><strong>捌、<u>證據(附件)內容：</u></strong></td>
 	</tr>
 	<tr>
-		<td class="lightbluetable" colspan="8" valign="top"><TEXTAREA rows=9 cols=90 id=tfz2_tran_remark2 name=tfz2_tran_remark2></TEXTAREA></td>
+		<td class="whitetablebg" colspan="8" valign="top"><TEXTAREA rows=9 cols=90 id=tfz2_tran_remark2 name=tfz2_tran_remark2></TEXTAREA></td>
 	</tr>
 	<tr>
 		<td class="lightbluetable" colspan="8" valign="top" STYLE="cursor:pointer;COLOR:BLUE" onclick="PMARK(o1Other_item)"><strong>玖、<u>相關聯案件：</u></strong></td>

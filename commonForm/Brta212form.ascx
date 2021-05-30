@@ -67,7 +67,7 @@
 	    <TR align=center class=lightbluetable>
 		    <TD></TD><TD>管制種類</TD><TD>管制日期</TD><TD>說明</TD>
             <%if (submitTask == "U" || submitTask == "D" || submitTask == "Q") {%><TD>銷管日期</TD><TD>銷管進度</TD><%}%>
-            <%if ((submitTask == "U" || submitTask == "D") && prgid != "brta34" && prgid != "brta38") {%><TD>刪除</TD><%}%><!--國內案本所發文作業//國內案官發確認作業-->
+            <%if ((submitTask == "U" || submitTask == "D") && prgid != "brta34" && prgid != "brta38") {%><TD class="ctrl_del">刪除</TD><%}%><!--國內案本所發文作業//國內案官發確認作業-->
 	    </TR>
     </thead>
     <tbody></tbody>
@@ -90,7 +90,7 @@
 		</td>
 		<td class=whitetablebg>
 	        <input type=hidden id='octrl_remark_##' name='octrl_remark_##'>
-	        <input type=text id='ctrl_remark_##' name='ctrl_remark_##' size=30 maxlength=60>
+	        <input type=text id='ctrl_remark_##' name='ctrl_remark_##' class="<%=Lock.TryGet("Qdisabled")%>" size=30 maxlength=60>
             <label class="brta78"><input type=checkbox id='brctrl_mgt_##' name='brctrl_mgt_##' value='Y'>需總管處代管期限</label>
 		</td>
         <%if (submitTask == "U" || submitTask == "D" || submitTask == "Q") {%>
@@ -104,7 +104,7 @@
 		</td>
         <%}%>
         <%if ((submitTask=="U" || submitTask=="D") && prgid!="brta34" && prgid!="brta38"){%>
-		<td class=whitetablebg align=center>
+		<td class="whitetablebg ctrl_del" align=center>
             <input type=checkbox id='delchk_##' name='delchk_##' value="Y">
 		</td>
         <%}%>
@@ -116,10 +116,10 @@
     var brta212form = {};
 
     brta212form.init = function () {
-        if(main.submittask!="Q"&&main.submmittask!="D"){
+        if (main.submittask != "Q" && main.submmittask != "D") {
             $("#ctrl_line1").show();
             $("#ctrl_line2").hide();
-        }else{
+        } else {
             $("#ctrl_line1").hide();
             $("#ctrl_line2").show();
         }
@@ -133,7 +133,7 @@
         if (jData.ectrlnum != "") {
             $("#btndis").val("進度查詢及銷管制(" + jData.ectrlnum + "件)");
         }
-        brta212form.appendCtrl(jMain.gr_ctrl);//管制資料append到畫面
+        brta212form.appendCtrl(jCtrl);//管制資料append到畫面
     }
 
     //管制期限增加一筆
@@ -155,7 +155,10 @@
         if(main.prgid=="brta24"){
             $("#delchk_" + nRow).lock();
         }
-
+        
+        if (main.prgid == "brta2m" && $("#cgrs").val() == "ZS") {//國內案進度維護(本發)
+            $(".ctrl_del").hide();
+        }
     }
 
     //管制期限減少一筆
@@ -258,7 +261,7 @@
         }
 
         //***todo
-        var tlink = getRootPath() + "/brt6m/brt62_steplist.aspx?prgid=<%=prgid%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&step_grade=" + $("#nstep_grade").val() + "&ctrl_type=A1&prgid=<%=prgid%>&seqnum=" + pseqnum;
+        var tlink = getRootPath() + "/brt6m/brt62_steplist.aspx?prgid=<%=prgid%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&step_grade=" + $("#nstep_grade").val() + "&ctrl_type=A1&seqnum=" + pseqnum;
         window.open(tlink, "mywindowN", "width=700,height=480,toolbar=yes,menubar=yes,resizable=yes,scrollbars=yes,status=0,top=50,left=80");
     }
 
@@ -269,7 +272,7 @@
             var nRow = $("#ctrlnum").val();
             $("#sqlno_" + nRow).val(item.sqlno);
             $("#octrl_type_" + nRow).val(item.ctrl_type);
-            $("#ctrl_type_" + nRow).val(item.ctrl_type);
+            $("#ctrl_type_" + nRow + " option[value='" + item.ctrl_type + "']").prop("selected", true);
             $("#octrl_date_" + nRow).val(dateReviver(item.ctrl_date, "yyyy/M/d"));
             $("#ctrl_date_" + nRow).val(dateReviver(item.ctrl_date, "yyyy/M/d"));
             $("#octrl_remark_" + nRow).val(item.ctrl_remark);
@@ -291,6 +294,12 @@
             }
 
             if (main.submittask == "U" && main.prgid == "brta34") {//本發作業
+                $("#ctrl_type_" + nRow).lock();
+                $("#ctrl_date_" + nRow).lock();
+                $("#ctrl_remark_" + nRow).lock();
+            }
+
+            if (main.submittask == "U" && main.prgid == "brta2m" && $("#cgrs").val() == "ZS") {//國內案進度維護(本發)
                 $("#ctrl_type_" + nRow).lock();
                 $("#ctrl_date_" + nRow).lock();
                 $("#ctrl_remark_" + nRow).lock();

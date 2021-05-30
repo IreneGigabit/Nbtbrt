@@ -133,7 +133,7 @@
             }
 
             //不可銷本身進度的管制 & 之後進度的管制
-            if (Convert.ToInt32(dr["step_grade"]) >= Convert.ToInt32(Request["step_grade"])) {
+            if (Convert.ToInt32("0" + dr["step_grade"]) >= Convert.ToInt32("0" + Request["step_grade"])) {
                 dr["ldisabled"] = "disabled";
             } else {
                 dr["ldisabled"] = "";
@@ -183,7 +183,6 @@
 </table>
 <form id="regPage" name="regPage" method="post" action="brta21disEdit.aspx">
     <input type="hidden" id=row name=row value="<%#page.pagedTable.Rows.Count%>"> 
-    <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <table border="0" width="100%" cellspacing="1" cellpadding="0" align="center">  
 		<tr>
 			<td width="100%" colspan="6" class="FormRtext">
@@ -203,7 +202,7 @@
 		</tr>
     </TABLE>
 
-    <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
+    <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center" style="display:<%#page.totRow==0?"none":""%>">
         <tr>
             <td><%if(qtype=="N"){%>
                 <a href="javascript:void(0);" onclick="selectall()" style="color:darkblue" onmouseover="this.style.color='red'" onmouseout="this.style.color='darkblue'">全選</a>
@@ -229,7 +228,6 @@
             </td>
         </tr>
     </TABLE>
-    </div>
 </form>
 
     <div align="center" id="noData" style="display:<%#page.totRow==0?"":"none"%>">
@@ -276,7 +274,7 @@
 	        </tbody>
         </table>
     <br>
-    <table width="100%" cellspacing="1" cellpadding="0" border="0">
+    <table width="100%" cellspacing="1" cellpadding="0" border="0" style="display:<%#page.totRow==0?"none":""%>">
 	    <tr align="center">
 		    <td>
 			    <input type=button class="cbutton" name="btnseq" id="btnseq" value="確定" onclick="formupdate()">

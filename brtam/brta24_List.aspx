@@ -64,8 +64,8 @@
 
         if (ReqVal.TryGet("qryfrom_flag") == "") ReqVal["qryfrom_flag"] = "P";
 
-        emg_scode = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), Sys.GetSession("dept"), "mg_pror");//總管處程序人員-正本
-        emg_agscode = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), Sys.GetSession("dept"), "mg_prorm");//總管處程序人員-副本
+        emg_scode = Sys.getRoleScode("M", Sys.GetSession("syscode"), Sys.GetSession("dept"), "mg_pror");//總管處程序人員-正本
+        emg_agscode = Sys.getRoleScode("M", Sys.GetSession("syscode"), Sys.GetSession("dept"), "mg_prorm");//總管處程序人員-副本
     }
 
     private void QueryData() {
@@ -433,6 +433,7 @@
     function linkedit(pno,tseq,tseq1,temp_rs_sqlno,fseq){
         var br_end_date=$("#end_date_"+pno).val();
         var mg_end_date=$("#mg_end_date_"+pno).val();
+        var qryfrom_flag=$("input[name='qryfrom_flag']:checked").val();
 
         if (br_end_date!=mg_end_date) {
             if (br_end_date=="" && mg_end_date!=""){
@@ -440,7 +441,7 @@
                 return false;
             }
         }
-        window.parent.Eblank.location.href="Brta24_edit.aspx?prgid=<%=prgid%>&cgrs=GR&seq=" + tseq + "&seq1=" + tseq1 + "&branch=<%=Session["seBranch"]%>&SubmitTask=U&temp_rs_sqlno=" + temp_rs_sqlno + "&fseq=" + fseq + "&mg_end_date=" +mg_end_date;
+        window.parent.Eblank.location.href="Brta24_edit.aspx?prgid=<%=prgid%>&cgrs=GR&seq=" + tseq + "&seq1=" + tseq1 + "&branch=<%=Session["seBranch"]%>&SubmitTask=U&temp_rs_sqlno=" + temp_rs_sqlno + "&fseq=" + fseq + "&mg_end_date=" +mg_end_date + "&qryfrom_flag=" +qryfrom_flag;
     }
 
     //重抓總管處案件主檔資料

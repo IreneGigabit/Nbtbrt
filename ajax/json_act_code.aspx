@@ -21,11 +21,11 @@
 
     protected void Page_Load(object sender, EventArgs e) {
         cgrs = Request["cgrs"] ?? "";
-        cg = Request["cg"] ?? "";
-        rs = Request["rs"] ?? "";
         rs_class = Request["rs_class"] ?? "";
         rs_code = Request["rs_code"] ?? "";
         submittask = (Request["submittask"] ?? "").ToUpper();
+
+        if (cgrs == "ZS") cgrs = "CR";
 
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
@@ -33,13 +33,8 @@
             SQL += "from vcode_act ";
             SQL += " where dept='" + Sys.GetSession("dept") + "' ";
             if (cgrs != "") {
-                SQL += " and " + cgrs + "='Y' ";
-            }
-            if (cg != "") {
-                SQL += " and cg='" + cg + "' ";
-            }
-            if (rs != "") {
-                SQL += " and rs='" + rs + "'";
+                SQL += " and cg='" + cgrs.Left(1) + "' ";
+                SQL += " and rs='" + cgrs.Right(1) + "' ";
             }
             if (submittask == "A") {
                 SQL += " and (end_date is null or end_date = '' or end_date > getdate()) ";
@@ -53,7 +48,7 @@
             SQL += " ORDER BY act_sort";
             conn.DataTable(SQL, dt);
         }
-
+        
         var settings = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented,

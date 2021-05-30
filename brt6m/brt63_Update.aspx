@@ -341,21 +341,47 @@
 
     private void doCancel() {
         //入交辦發文檔註記不發文
-        SQL = "insert into attcase_dmt ";
-        ColMap.Clear();
-        ColMap["in_scode"] = Util.dbchar(ReqVal.TryGet("in_scode"));
-        ColMap["in_no"] = Util.dbchar(ReqVal.TryGet("in_no"));
-        ColMap["case_no"] = Util.dbchar(ReqVal.TryGet("case_no"));
-        ColMap["pr_scode"] = Util.dbchar(Sys.GetSession("scode"));
-        ColMap["in_date"] = Util.dbchar(DateTime.Today.ToShortDateString());
-        ColMap["seq"] = Util.dbchar(ReqVal.TryGet("seq"));
-        ColMap["seq1"] = Util.dbchar(ReqVal.TryGet("seq1"));
-        ColMap["remark"] = Util.dbchar(ReqVal.TryGet("job_remark"));
-        ColMap["sign_stat"] = Util.dbchar("SX");
-        ColMap["todo_sqlno"] = Util.dbnull(ReqVal.TryGet("todo_sqlno"));
-        SQL += ColMap.GetInsertSQL();
-        conn.ExecuteNonQuery(SQL);
+        string in_no = ReqVal.TryGet("in_no");
 
+        //再抓一次交辦流水號,防止多個視窗同時存檔
+        string Getatt_sqlno = "0";
+        SQL = "select att_sqlno,0 ord from attcase_dmt where in_no='" + in_no + "' and sign_stat='SN' ";
+        SQL += "union all ";
+        SQL += "select att_sqlno,1 ord from attcase_dmt where in_no='" + in_no + "' and sign_stat='NN' ";
+        SQL += "order by ord ";
+        using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+            if (dr.Read()) {
+                Getatt_sqlno = dr.SafeRead("att_sqlno", "0");
+            }
+        }
+
+        if (Convert.ToInt32(Getatt_sqlno) > 0) {
+            //入attcase_dmt_log
+            Sys.insert_log_table(conn, "U", prgid, "attcase_dmt", "att_sqlno", Getatt_sqlno, logReason);
+
+            SQL = "update attcase_dmt set ";
+            ColMap.Clear();
+            ColMap["sign_stat"] = Util.dbchar("SX");
+            SQL += ColMap.GetUpdateSQL();
+            SQL += " where att_sqlno=" + Getatt_sqlno;
+            conn.ExecuteNonQuery(SQL);
+        } else {
+            SQL = "insert into attcase_dmt ";
+            ColMap.Clear();
+            ColMap["in_scode"] = Util.dbchar(ReqVal.TryGet("in_scode"));
+            ColMap["in_no"] = Util.dbchar(ReqVal.TryGet("in_no"));
+            ColMap["case_no"] = Util.dbchar(ReqVal.TryGet("case_no"));
+            ColMap["pr_scode"] = Util.dbchar(Sys.GetSession("scode"));
+            ColMap["in_date"] = Util.dbchar(DateTime.Today.ToShortDateString());
+            ColMap["seq"] = Util.dbchar(ReqVal.TryGet("seq"));
+            ColMap["seq1"] = Util.dbchar(ReqVal.TryGet("seq1"));
+            ColMap["remark"] = Util.dbchar(ReqVal.TryGet("job_remark"));
+            ColMap["sign_stat"] = Util.dbchar("SX");
+            ColMap["todo_sqlno"] = Util.dbnull(ReqVal.TryGet("todo_sqlno"));
+            SQL += ColMap.GetInsertSQL();
+            conn.ExecuteNonQuery(SQL);
+        }
+        
         //銷管制期限
         if (ReqVal.TryGet("rsqlno") != "") {
             string[] ar = ReqVal.TryGet("rsqlno").Split(';');

@@ -8,6 +8,8 @@
 
 <script runat="server">
     protected OpenXmlHelper Rpt = new OpenXmlHelper();
+    protected StringBuilder strOut = new StringBuilder();
+    
     protected int right = 0;
     protected string se_scode;
     protected string cgrs;
@@ -269,16 +271,21 @@
                     }
                 }
 
-            }
+                Rpt.CopyPageFoot("rpt");//複製頁尾/邊界
+                Rpt.Flush(docFileName);
 
-            Rpt.CopyPageFoot("rpt");//複製頁尾/邊界
-            Rpt.Flush(docFileName);
-
-            //更新為已列印
-            if (updRsNo.Count > 0) {
-                SQL = "update step_dmt set new='Y' where rs_no in('" + string.Join("','", updRsNo.ToArray()) + "')";
-                conn.ExecuteNonQuery(SQL);
-                conn.Commit();
+                //更新為已列印
+                if (updRsNo.Count > 0) {
+                    SQL = "update step_dmt set new='Y' where rs_no in('" + string.Join("','", updRsNo.ToArray()) + "')";
+                    conn.ExecuteNonQuery(SQL);
+                    conn.Commit();
+                }
+            } else {
+                strOut.AppendLine("<script language=\"javascript\">");
+                strOut.AppendLine("    alert(\"無資料需產生\");");
+                strOut.AppendLine("    window.close();");
+                strOut.AppendLine("<" + "/script>");
+                Response.Write(strOut.ToString());
             }
         }
     }

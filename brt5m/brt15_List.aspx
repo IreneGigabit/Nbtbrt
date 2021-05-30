@@ -115,7 +115,7 @@
     }
 
     protected string GetLink(DataRow row) {
-        string url = Page.ResolveUrl("~/Brt5m/Brt15showFP.aspx") + "?cust_area=" + row.SafeRead("cust_area", "") + "&seq=" + row.SafeRead("seq", "") + "&seq1=" + row.SafeRead("seq1", "");
+        string url = Page.ResolveUrl("~/Brt5m/Brt15showFP.aspx") + "?prgid="+prgid+"&cust_area=" + row.SafeRead("cust_area", "") + "&seq=" + row.SafeRead("seq", "") + "&seq1=" + row.SafeRead("seq1", "");
         if (ReqVal.TryGet("submittask") == "Q") {
             return url + "&submittask=Q";
         } else {

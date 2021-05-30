@@ -326,14 +326,9 @@
         if (prgid == "brta78") {
             //產生客收進度
             //取得收發文序號
-            SQL = "select isnull(max(seq1),0)+1 rs_no from cust_code where code_type='Z' and cust_code='" + Session["seBranch"] + "TCR'";
-            objResult = conn.ExecuteScalar(SQL);
             string main_rs_no = "";
-            string rs_no = (objResult == DBNull.Value || objResult == null) ? "_" : objResult.ToString();
+            string rs_no = Sys.getRsNo(conn, "CR");
             if (main_rs_no == "") main_rs_no = rs_no;
-
-            SQL = " update cust_code set sql = sql + 1 where code_type='Z' and cust_code='" + Session["seBranch"] + "TCR'";
-            conn.ExecuteNonQuery(SQL);
 
             string Getrs_sqlno = Insert_Step(Request["tfx_seq"], ltfx_seq1, 1, main_rs_no, rs_no);
 
@@ -979,14 +974,7 @@
         int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
         if (cnt == 0) {
             //收文序號
-            SQL = "select isnull(max(seq1),0)+1 rs_no from cust_code where code_type='Z' and cust_code='" + Session["seBranch"] + "TZZ'";
-            objResult = conn.ExecuteScalar(SQL);
-            string zzrs_no = (objResult == DBNull.Value || objResult == null) ? "_" : objResult.ToString();
-            zzrs_no = "ZZ" + zzrs_no.PadLeft(8, '0');
-
-            //流水號加一
-            SQL = " update cust_code set sql = sql + 1 where code_type='Z' and cust_code='" + Session["seBranch"] + "TZZ'";
-            conn.ExecuteNonQuery(SQL);
+            string zzrs_no = Sys.getRsNo(conn, "ZZ");
 
             //新增進度0
             SQL = "insert into step_dmt(rs_no,branch,seq,seq1,step_grade,step_date,main_rs_no,cg,rs,rs_detail) values (";

@@ -164,7 +164,7 @@
                     + "&homelist=" + Request["homelist"]
                     + "&ctrl_date=" + Eval("ctrl_date", "{0:yyyy/M/d}");
                 return "<span style='cursor: pointer;color:darkblue' onmouseover='this.style.color=\"red\"' onmouseout='this.style.color=\"darkblue\"' title=" + Eval("opt_sqlno") + ">" +
-                "<a href='" + Page.ResolveUrl(urlasp) + "' target='Eblank'>[抽件]</a></span>";
+                "<a href='" + urlasp + "' target='Eblank'>[抽件]</a></span>";
             }
         }
         return "";

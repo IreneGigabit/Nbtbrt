@@ -21,6 +21,7 @@
     protected string emg_scode = "";
     protected string emg_agscode = "";
 
+    protected string FrameBlank = "";
     protected string html_rprtkind = "";
     protected string html_sscode1 = "";
 
@@ -42,6 +43,7 @@
         cgrs = (Request["cgrs"] ?? "").ToUpper();
         step_date = (Request["step_date"] ?? "");
         rs_no = (Request["rs_no"] ?? "").ToUpper();
+        FrameBlank = (Request["FrameBlank"] ?? "");
         
         if (cgrs == "CS") HTProgCap = "<font color=blue>客戶</font>";
         if (cgrs == "GS") HTProgCap = "<font color=blue>官方</font>";
@@ -58,6 +60,10 @@
     }
 
     private void PageLayout() {
+        if (FrameBlank != "") {
+            StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>";
+        }
+        
         if ((HTProgRight & 32) > 0) {
             StrFormBtn += "<input type=\"button\" id=\"btnSubmit\" value=\"列　印\" class=\"cbutton bsubmit\" />\n";
             
@@ -72,9 +78,9 @@
         if (prgid == "brta51m") {
             FormName = "官方發文回條：不顯示收據種類為電子收據之資料<BR>\n";
         }
-        
-        emg_scode = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), "T", "mg_pror");//總管處程序人員-正本
-        emg_agscode = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), "T", "mg_prorm");//總管處程序人員-副本
+
+        emg_scode = Sys.getRoleScode("M", Sys.GetSession("syscode"), "T", "mg_pror");//總管處程序人員-正本
+        emg_agscode = Sys.getRoleScode("M", Sys.GetSession("syscode"), "T", "mg_prorm");//總管處程序人員-副本
         
         //報表種類
         DataTable dtkind = Sys.getCustCode("rpt_" + cgrs.ToLower() + "_t", "", "");

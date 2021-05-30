@@ -160,11 +160,13 @@
 
     protected string GetTodoLink(RepeaterItem Container) {
             return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13_ListA.aspx") +
-                    "?in_scode=" + Eval("in_scode") +
+                    "?prgid=" + prgid +
+                    "&in_scode=" + Eval("in_scode") +
                     "&in_no=" + Eval("in_no") +
                     "&homelist=" + Request["homelist"] +
                     "&qs_dept=T' target='Eblank'>簽核</a>";
-    }</script>
+    }
+</script>
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
@@ -266,7 +268,11 @@
 		            <td align="center">
                         <%#Convert.ToDecimal(Eval("discount"))>0 ? Eval("discount","{0:0.##}")+"%":""%>
                     </TD>
-	                <td class="whitetablebg" align="center" title="主管簽核說明"><%#GetTodoLink(Container)%></td>
+	                <td class="whitetablebg" align="center" title="主管簽核說明">
+                        <A href="<%#Page.ResolveUrl("~/Brt4m/brt13_ListA.aspx?prgid=" + prgid+"&in_scode="+Eval("in_scode")+"&in_no="+Eval("in_no")+"&qs_dept=T&homelist="+Request["homelist"])%>" target="Eblank">
+                        簽核
+                        </A>
+                    </td>
 				</tr>
 			</ItemTemplate>
 <FooterTemplate>

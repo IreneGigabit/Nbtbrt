@@ -28,7 +28,7 @@
     DBHelper connm = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        if (connm != null) conn.Dispose();
+        if (connm != null) connm.Dispose();
     }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -810,16 +810,10 @@
                     }
 
                     //取得收發文序號
-                    SQL = "select isnull(sql,0)+1 from cust_code where code_type='Z' and cust_code='" + Session["sebranch"] + "TZR'";
-                    objResult = conn.ExecuteScalar(SQL);
-                    string rs_no = (objResult == DBNull.Value || objResult == null) ? "1" : objResult.ToString();
-                    rs_no = "ZR" + rs_no.PadLeft(8, '0');
+                    string rs_no = Sys.getRsNo(conn, "ZR");
                     if (main_rs_no == "") {
                         main_rs_no = rs_no;
                     }
-                    //流水號加一
-                    SQL = " update cust_code set sql = sql + 1 where code_type='Z' and cust_code='" + Session["sebranch"] + "TZR'";
-                    conn.ExecuteNonQuery(SQL);
 
                     SQL = "insert into step_dmt (rs_no,branch,seq,seq1,step_grade,main_rs_no,step_date,cg,rs,rs_type,rs_class,rs_code,act_code,rs_detail";
                     SQL += ",pr_status,new,tran_date,tran_scode) values ('" + rs_no + "','" + Session["sebranch"] + "'";
@@ -1509,16 +1503,10 @@
             Insert_stepZZ(seq, seq1);
         }
         //取得收發文序號
-        SQL = "select isnull(sql,0)+1 from cust_code where code_type='Z' and cust_code='" + Session["sebranch"] + "TCR'";
-        objResult = conn.ExecuteScalar(SQL);
-        string rs_no = (objResult == DBNull.Value || objResult == null) ? "1" : objResult.ToString();
-        rs_no = "CR" + rs_no.PadLeft(8, '0');
+        string rs_no = Sys.getRsNo(conn, "CR");
         if (main_rs_no == "") {
             main_rs_no = rs_no;
         }
-
-        SQL = " update cust_code set sql = sql + 1 where code_type='Z' and cust_code='" + Session["sebranch"] + "TCR'";
-        conn.ExecuteNonQuery(SQL);
 
         //取得交辦單號
         string case_no = "", tot_num = "", back_flag = "", back_remark = "";
@@ -1615,14 +1603,7 @@
 
         if (cnt == 0) {
             //收文序號
-            SQL = "select isnull(sql,0)+1 from cust_code where code_type='Z' and cust_code='" + Session["sebranch"] + "TZZ'";
-            objResult = conn.ExecuteScalar(SQL);
-            string zzrs_no = (objResult == DBNull.Value || objResult == null) ? "1" : objResult.ToString();
-            zzrs_no = "ZZ" + zzrs_no.PadLeft(8, '0');
-
-            //流水號加一
-            SQL = " update cust_code set sql = sql + 1 where code_type='Z' and cust_code='" + Session["sebranch"] + "TZZ'";
-            conn.ExecuteNonQuery(SQL);
+            string zzrs_no = Sys.getRsNo(conn, "ZZ");
 
             //新增進度0
             SQL = "insert into step_dmt(rs_no,branch,seq,seq1,step_grade,step_date,main_rs_no,cg,rs,rs_detail) values ";

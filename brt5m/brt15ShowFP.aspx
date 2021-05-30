@@ -4,7 +4,7 @@
 <script runat="server">
     protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "Brt15ShowFP";//程式檔名前綴
-    protected string HTProgCode =  "brt15";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode =  HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼//brt51客收確認,brta24官收確認,brta78轉案確認
     protected int HTProgRight = 0;
     protected string DebugStr = "";
@@ -110,8 +110,8 @@
         }
 
         if (prgid == "brta78") {
-            emg_scodelist = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), "T", "mg_prorm1");//總管處程序組主管
-            emg_scodelist1 = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), "T", "mg_pror");//總管處程序組主管
+            emg_scodelist = Sys.getRoleScode("M", Sys.GetSession("syscode"), "T", "mg_prorm1");//總管處程序組主管
+            emg_scodelist1 = Sys.getRoleScode("M", Sys.GetSession("syscode"), "T", "mg_pror");//總管處程序組主管
         }
 
         //代理人
@@ -1291,7 +1291,7 @@
         getClass();
     }
 
-        //*****依商品名稱計算類別
+    //*****依商品名稱計算類別
     function good_name_count(nRow) {
         var MyString = $("#tfx_goodname_" + nRow).val().trim();
         MyString = MyString.replace(/;/gm, "；");

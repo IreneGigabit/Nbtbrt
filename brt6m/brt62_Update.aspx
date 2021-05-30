@@ -229,14 +229,7 @@
 
         if (cnt == 0) {
             //收文序號
-            SQL = "select isnull(sql,0)+1 from cust_code where code_type='Z' and cust_code='" + Session["sebranch"] + "TZZ'";
-            objResult = conn.ExecuteScalar(SQL);
-            string zzrs_no = (objResult == DBNull.Value || objResult == null) ? "1" : objResult.ToString();
-            zzrs_no = "ZZ" + zzrs_no.PadLeft(8, '0');
-
-            //流水號加一
-            SQL = " update cust_code set sql = sql + 1 where code_type='Z' and cust_code='" + Session["sebranch"] + "TZZ'";
-            conn.ExecuteNonQuery(SQL);
+            string zzrs_no = Sys.getRsNo(conn, "ZZ");
 
             //新增進度0
             SQL = "insert into step_dmt(rs_no,branch,seq,seq1,step_grade,step_date,main_rs_no,cg,rs,rs_detail) values ";

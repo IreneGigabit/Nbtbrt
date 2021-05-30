@@ -408,7 +408,7 @@ main.bind = function () {
         var fld = $("#uploadfield").val();
         $("#tabfile" + fld + ">tbody").empty();
         $("#" + fld + "_filenum").val("0");
-        upload_form.appendAttach(jMain.case_attach);//顯示上傳文件資料
+        upload_form.bind(jMain.case_attach);//顯示上傳文件資料
         /*$.each(jMain.case_attach, function (i, item) {
             upload_form.appendFile();//增加一筆
             var nRow = $("#" + fld + "_filenum").val();

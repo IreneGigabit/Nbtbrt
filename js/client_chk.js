@@ -86,18 +86,6 @@ function chkNull2(pFieldName,pObj)
     return "";
 }
 
-//check field integer:檢查物件值不可為小數
-function chkInt(pFieldName,pObj){
-    if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
-    if (Math.floor(pObj.value) === pObj.value) {
-        return false;
-    }else{
-        alert(pFieldName+"必須為整數，請重新輸入!!!");
-        return true;
-    }
-}
-
-
 //檢查日期格式
 function ChkDate(pObj) {//=chkdateformat
     if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
@@ -135,6 +123,7 @@ function chkNum(pValue, pmsg) {
 }
 
 function chkNum1(pObj, pmsg) {
+    if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
     if (pObj.value != "") {
         if (!IsNumeric(pObj.value)) {
             alert(pmsg + "必須為數值!!!");
@@ -143,6 +132,19 @@ function chkNum1(pObj, pmsg) {
         }
     }
     return false;
+}
+
+//check field integer:檢查物件值不可為小數
+function chkInt(pObj, pFieldName) {
+    if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
+
+    var num=parseFloat(pObj.value || 0, 10);
+    if (Math.floor(num) ===num) {
+        return false;
+    } else {
+        alert(pFieldName + "必須為整數，請重新輸入!!!");
+        return true;
+    }
 }
 
 function chkRadio(pFieldName, pmsg){

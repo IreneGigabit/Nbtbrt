@@ -35,12 +35,12 @@
         dowhat = (Request["dowhat"] ?? "").ToUpper();
 
         if (qs_dept == "t") {
-            HTProgCode = "brt13";
+            //HTProgCode = "brt13";
             apcode = "'Si04W02','brt31','Brt51','brt63','brta38'";
             tblname = "todo_dmt";
             todo_type = "Ttodo";
         } else if (qs_dept == "e") {
-            HTProgCode = "ext13";
+            //HTProgCode = "ext13";
             apcode = "'Si04W06','ext34','Ext51','Ext61','ext613','opte22'";
             tblname = "todo_ext";
             todo_type = "TEtodo";

@@ -36,7 +36,7 @@
 
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
-        HTProgCap = myToken.Title+"-查詢";
+        HTProgCap = myToken.Title + "-官收未銷管法定查詢";
 
         if (HTProgRight >= 0) {
             QueryData();
@@ -183,7 +183,7 @@
     </div>
 </form>
 
-	<input type="text" id="seqnum" name="seqnum" value="<%=Request["seqnum"]%>"><!--文件掃描新增作業用-->
+	<input type="hidden" id="seqnum" name="seqnum" value="<%=Request["seqnum"]%>"><!--文件掃描新增作業用-->
 
     <div align="center" id="noData" style="display:<%#page.totRow==0?"":"none"%>">
 	    <font color="red">=== 查無案件資料 ===</font>
@@ -191,7 +191,7 @@
 
     <asp:Repeater id="dataRepeater" runat="server">
     <HeaderTemplate>
-        <div class=whitetablebg align="left">本所編號：<%=fseq%></div>
+        <div class=whitetablebg align="left" style="display:<%#page.totRow==0?"none":""%>">本所編號：<%=fseq%></div>
         <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="98%" align="center" id="dataList">
 	        <thead>
                 <TR>
@@ -285,7 +285,7 @@
         } else if ("<%=prgid%>" == "brt611") {
             $("#step_grade_" + seqnum, window.opener.document).val($("#step_grade_" + pno).val());
             $("#cgrs_nm_" + seqnum, window.opener.document).val($("#cgrs_nm_" + pno).val());
-            $("#span_rs_detail_" + seqnum, window.opener.document).html($("#cgrs_nm_" + pno).val());
+            $("#span_rs_detail_" + seqnum, window.opener.document).html($("#rs_detail_" + pno).val());
         } else if ("<%=prgid%>" == "brt51") {
             if (CInt(seqnum) == 0) {
                 alert("期限管制種類尚未選取「法定期限」，系統無法將選取法定期限資料帶回！！");

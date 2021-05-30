@@ -108,12 +108,13 @@
         $("#job_case").val(jData.job_case);
         $("#job_no").val(jData.job_no);
         $("input[name='job_type'][value='" + jData.job_type + "']").prop("checked", true).triggerHandler("click");
-        $("#toadd").val(jData.job_case).triggerHandler("change");
+        $("#toadd option[value='" + jData.job_case + "']").prop("selected", true);
+        $("#toadd").triggerHandler("change");
         $("#pre_date").val(jData.pre_date);
         $("#sales_remark").val(jData.sales_remark);
         $("#ocs_report").val(jData.cs_report);
         $("input[name='cs_report'][value='" + jData.cs_report + "']").prop("checked", true).triggerHandler("click");
-        upload_form.appendAttach(jAttach);//顯示上傳文件
+        upload_form.bind(jAttach);//顯示上傳文件
 
         if (jData.job_type == "case" && jData.job_no != "") {
             $("input[name='job_type']").lock();

@@ -158,16 +158,8 @@
                 if (cnt == 0) {
                     throw new Exception("接洽序號" + arr_todo_sqlno[i] + "-官方發文失敗(流程狀態已異動，請重新整理畫面)");
                 } else {
-
                     //發文序號
-                    SQL = "select isnull(sql,0)+1 from cust_code where code_type='Z' and cust_code='" + Session["sebranch"] + "TGS'";
-                    objResult = conn.ExecuteScalar(SQL);
-                    string rs_no = (objResult == DBNull.Value || objResult == null) ? "1" : objResult.ToString();
-                    rs_no = "GS" + rs_no.PadLeft(8, '0');
-
-                    //流水號加一
-                    SQL = " update cust_code set sql=sql+1 where code_type='Z' and cust_code='" + Session["seBranch"] + "TGS'";
-                    conn.ExecuteNonQuery(SQL);
+                    string rs_no =Sys.getRsNo(conn, "GS");
 
                     if (arr_case_no[i] != "") {
                         //新增 fees_dmt，2013/3/22因收入寫入智產系統增加支出次數

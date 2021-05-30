@@ -244,7 +244,7 @@
         var i = 0;
         var i0 = 0;
         var maxLen = 0;
-        var menuHeight = 8;
+        var menuHeight = 0;
         var menuWidth = 0;
         var menuHtm = "";
         for (i = 0 ; i < zmenu.length ; i++) {
@@ -252,7 +252,7 @@
                 if (zmenu[i].Bar == "Y" && i0 > 0) {
                     //menuHtm += "<hr style=\"height: 1px; color: #a0a0a0; background-color: #a0a0a0\" />";
                     menuHtm += "<hr class=\"style-one\"/>";
-                    menuHeight += 10;
+                    menuHeight += 2;
                 }
                 //if (zmenu[i].Name.CodeLength() > maxLen) maxLen = zmenu[i].Name.CodeLength();
                 maxLen = Math.max(zmenu[i].Name.CodeLength(), maxLen)
@@ -260,19 +260,20 @@
                 //menuHtm += "<div style=\"margin: 0px 0px 0px 0px;padding: 2px 1px 1px 1px;color: #000;background-color: #f0f0f0;cursor: pointer;height: 18px;\" " +
 				//	"onmouseover=\"javascript:PopMenuOver(this)\" onmouseout=\"javascript:PopMenuOut(this)\" " +
 				//	"onclick=\"javascript:PopMenuClick(" + i.toString() + ")\">" + zmenu[i].Name + "&nbsp;</div>";
-                menuHtm += "<div style=\"margin: 0px 0px 0px 0px;padding: 2px 1px 1px 1px;color: #000;cursor: pointer;height: 18px;\" " +
+                menuHtm += "<div style=\"margin: 1px 0px 1px 0px;padding: 1px 1px 1px 1px;color: #000;cursor: pointer;height: 18px;\" " +
 					"onmouseover=\"javascript:PopMenuOver(this,'" + mi + "')\" onmouseout=\"javascript:PopMenuOut(this,'" + mi + "')\" " +
 					"onclick=\"javascript:PopMenuClick(" + i.toString() + ")\">" + zmenu[i].Name + "&nbsp;</div>";
-                menuHeight += 20;
+                menuHeight += 22;
                 i0++;
             }
         }
+        menuHeight += 4;
 
-        menuWidth = 20 + 8 * maxLen;
+        menuWidth = 20 + 7 * maxLen;
         mLeft = pos.left + 1 + menuWidth;
 
         $("#oPopBody").css("margin", "0px 0px 0px 0px");
-        $("#oPopBody").css("padding", "2px 4px 2px 8px");
+        $("#oPopBody").css("padding", "2px 5px 2px 5px");
         $("#oPopBody").css("background-color", "#f0f0f0");
         //$("#oPopBody").css("background-color", "#eaf9f5");
         $("#oPopBody").css("font-size", "10pt");

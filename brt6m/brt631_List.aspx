@@ -372,7 +372,7 @@
     }
     //案件主檔
     function CapplClick(x1,x2) {
-        var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + x1 + "&seq1=" + x2 + "&submittask=Q";
+        var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=Q";
         //window.showModalDialog(url, "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
         $('#dialog').html('<iframe style="border: 0px;" src="' + url + '" width="100%" height="100%"></iframe>')
         .dialog({autoOpen: true,modal: true,height: 540,width: 800,title: "案件主檔"});

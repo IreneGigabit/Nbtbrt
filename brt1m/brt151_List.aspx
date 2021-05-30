@@ -171,7 +171,7 @@
             rtn += "[後續交辦]";
         } else {
             //rtn += " onClick=\"Formshow('" + Session["seBranch"] + "','" + Eval("cust_seq") + "','<%=toadd%>','" + Eval("job_no") + "')\" >";
-            string urlasp =  Page.ResolveUrl(Sys.getCase11Aspx(prgid, job_no, "", "Show"));
+            string urlasp =  Sys.getCase11Aspx(prgid, job_no, "", "Show");
             rtn += " onClick=\"Formshow('" + urlasp + "')\" >";
             rtn += "[查詢]";
         }
@@ -320,7 +320,7 @@
     //////////////////////
     //案件主檔查詢
     function CapplClick(pseq, pseq1) {
-        window.showModalDialog(getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q", "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
+        window.showModalDialog(getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q", "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
     }
 
     function Formadd(x, y, ar_from, prt_code, new_form, k, a, b, pmark_code) {

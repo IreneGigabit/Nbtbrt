@@ -256,13 +256,15 @@
 
     //選單
     $("input[name$=_001]").click(function () {
+        /*
         var a = this;
         var ss = "input[name^=" + a.name.substr(0, a.name.length - 3) + "][type='checkbox']";
         if (a.checked) {
             ss += ":lt(6)";
             $(ss).prop('checked', true);
-        } else
+        } else {
             $(ss).prop('checked', false);
+        }*/
     });
 
     //全選

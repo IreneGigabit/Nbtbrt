@@ -30,19 +30,10 @@
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         submitTask = (Request["submittask"] ?? "").Trim().ToUpper();
 
-        SQL = "select a.scode,b.sc_name,a.sort ";
-        SQL += " from sysctrl.dbo.scode_roles a ";
-        SQL += " inner join sysctrl.dbo.scode b on a.scode=b.scode ";
-        SQL += " where a.dept = '" + Session["dept"] + "' and syscode = '" + Session["syscode"] + "' and prgid = 'brta21' ";
-        SQL += " and roles = 'process' and branch = '" + Session["seBranch"] + "' ";
-        SQL += " order by sort ";
-        DataTable prDT = new DataTable();
-        conn.DataTable(SQL, prDT);
-        
         html_send_cl = Sys.getCustCode("SEND_CL", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_send_sel = Sys.getCustCode("SEND_SEL", "", "cust_code").Option("{cust_code}", "{code_name}");
-        html_pr_scode = prDT.Option("{scode}", "{scode}_{sc_name}", "", true, "", "sort=01");
-        html_rfees_stat = Sys.getCustCode("fees_stat", "", "sql").Radio("rfees_stat", "{cust_code}", "{code_name}", "class=\""+Lock.TryGet("QLock")+"\" onclick=\"fees_stat_onclick()\"");
+        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", true, "", "sort=01");
+        html_rfees_stat = Sys.getCustCode("fees_stat", "", "sql").Radio("rfees_stat", "{cust_code}", "{code_name}", "class=\"" + Lock.TryGet("QLock") + "\" onclick=\"fees_stat_onclick()\"");
         html_send_way = Sys.getCustCode("GSEND_WAY", "", "sortfld").Option("{cust_code}", "{code_name}");
 
         opt_branch=Sys.GetSession("seBranch");
@@ -97,7 +88,7 @@
 			<input type="text" name="case_change" id="case_change" value="N"><!--交辦異動註記，預設未異動-->
 			<input type="text" name="case_arcase_class" id="case_arcase_class"><!--交辦結構分類-->
 			<input type="text" name="case_arcase" id="case_arcase"><!--交辦結構分類-->
-            <select name="rs_class" id="rs_class" class="Lock"></select>
+            <select name="rs_class" id="rs_class" class="<%=Lock.TryGet("QLock")%>"></select>
 			案性：
 			<!--一案多件之子本所編號修改入檔用 -->
 			<input type=text id="hrs_class" name="hrs_class">
@@ -109,7 +100,7 @@
 			</span><br>
 			處理事項：
 			<input type="text" id="act_sqlno" name="act_sqlno">
-			<select name="act_code" id="act_code" class="Lock"></select>
+			<select name="act_code" id="act_code" class="<%=Lock.TryGet("QLock")%>"></select>
 		</TD>
 		<TD class=lightbluetable align=right>本次狀態：</TD>
 		<TD class=whitetablebg><input type="text" id="ncase_stat" name="ncase_stat">
@@ -117,7 +108,7 @@
     </TR>
     <TR>
 		<TD class=lightbluetable align=right>發文內容：</TD>
-		<TD class=whitetablebg colspan=3><input type="text" id="rs_detail" name="rs_detail" size=60 <%=Lock.TryGet("QLock")%>></TD>
+		<TD class=whitetablebg colspan=3><input type="text" id="rs_detail" name="rs_detail" size=60 class="<%=Lock.TryGet("QLock")%>"></TD>
 	    <TD class=lightbluetable align=right>發文出名代理：</TD>
 		<TD class=whitetablebg ><input type=text id="rs_agt_no" name="rs_agt_no">
 		    <input type="text" id="rs_agt_nonm" name="rs_agt_nonm" size=15 class=sedit readonly>
@@ -142,7 +133,7 @@
 		</TD>
 		<TD class=lightbluetable align=right>規費支出：</TD>
 		<TD class=whitetablebg <%if ((HTProgRight & 128)==0 && (HTProgRight & 256)==0) Response.Write("colspan=3"); %>>
-			<input type="text" id="fees" name="fees" size="6" <%=Lock.TryGet("QLock")%> style='text-align:right;' onblur="brta311form.chkfees()">
+			<input type="text" id="fees" name="fees" size="6" class="<%=Lock.TryGet("QLock")%>" style='text-align:right;' onblur="brta311form.chkfees()">
 		</TD>
         <%if ((HTProgRight & 128)!=0 || (HTProgRight & 256)!=0){%>
 		    <TD class=lightbluetable align=right>
@@ -207,7 +198,7 @@
 	            ##.
 		    </td>
 		    <td class="whitetablebg" align=center>
-	            <input type=text size=10 maxlength=10 id=case_no_## name=case_no_## <%if(submitTask!="D") Response.Write("onblur='getmoney(\"##\")'");%> class='<%=Lock.TryGet("QLock")%>' >
+	            <input type=text size=10 maxlength=10 id=case_no_## name=case_no_## <%if (submitTask != "D") Response.Write("onblur='brta311form.getmoney(\"##\")'");%> class='<%=Lock.TryGet("QLock")%>' >
 	            <input type=text id=oldcase_no_## name=oldcase_no_##>
 	            <input type=button value='查' class='cbutton <%=Lock.TryGet("QLock")%>' id='btncase_no_##' name='btncase_no_##' onclick='brta311form.btncase_no("##")' title='查詢交辦編號'>
 	            <input type='text' id=rs_type_## name=rs_type_##>
@@ -294,6 +285,59 @@
         $("input[name='opt_branch'][value='<%#opt_branch%>']").prop("checked",true);
     }
 
+    brta311form.bind = function (jData) {
+        $("#rs_no").val(jData.rs_no);
+        $("#cgrs").val(jData.cgrs).triggerHandler("change");
+        $("#step_date").val(jData.step_date);
+        $("#mp_date").val(jData.mp_date);
+        $("#send_cl option[value='" + jData.send_cl + "']").prop("selected", true);
+        $("#send_cl1 option[value='" + jData.send_cl1 + "']").prop("selected", true);
+        $("#send_sel option[value='" + jData.send_sel + "']").prop("selected", true);
+        $("#rs_type").val(jData.rs_type).triggerHandler("change");
+        $("#rs_class_name").val(jData.rs_class_name);
+        $("#rs_code_name").val(jData.rs_code_name);
+        $("#act_code_name").val(jData.act_code_name);
+        $("#case_arcase_class").val(jData.rs_class);
+        $("#case_arcase").val(jData.rs_code);
+        $("#rs_class option[value='" + jData.rs_class + "']").prop("selected", true);
+        $("#rs_class").triggerHandler("change");
+        $("#hrs_class").val(jData.rs_class);
+        $("#hrs_code").val(jData.rs_code);
+        $("#hact_code").val(jData.act_code);
+        $("#hmarkb").val(jData.markb);
+        $("#rs_code option[value='" + jData.rs_code + "']").prop("selected", true);
+        $("#rs_code").triggerHandler("change");
+        $("#act_sqlno").val(jData.act_sqlno);
+        if ((jData.act_code||"") == "") {
+            $("#act_code option[value='_']").prop("selected", true);
+        } else {
+            $("#act_code option[value='" + jData.act_code + "']").prop("selected", true);
+        }
+        $("#act_code").triggerHandler("change");
+        if (jData.ncase_stat != undefined) $("#ncase_stat").val(jData.ncase_stat);
+        if (jData.ncase_statnm != undefined) $("#ncase_statnm").val(jData.ncase_statnm);
+        if (jData.rs_detail != undefined) $("#rs_detail").val(jData.rs_detail);
+        $("#send_way option[value='" + jData.send_way + "']").prop("selected", true);
+        if (jData.old_send_way != undefined) {
+            $("#old_send_way").val(jData.old_send_way);
+        } else {
+            $("#old_send_way").val(jData.send_way);
+        }
+        $("#rs_agt_no").val(jData.rs_agt_no);
+        $("#rs_agt_nonm").val(jData.rs_agt_nonm);
+        $("#pr_scode option[value='" + jData.pr_scode + "']").prop("selected", true);
+        $("#fees").val(jData.fees);
+        $("#fees_stat").val(jData.fees_stat);
+        if ((main.right & 128) != 0 || (main.right & 256) != 0) {
+            $("input[name='rfees_stat'][value='" + jData.fees_stat + "']").prop("checked", true);
+        }
+        $("#receipt_type option[value='" + jData.receipt_type + "']").prop("selected", true);
+        $("#receipt_title option[value='" + jData.receipt_title + "']").prop("selected", true);
+        $("#rectitle_name").val(jData.rectitle_name);
+        $("input[name='opt_branch'][value='" + jData.opt_branch + "']").prop("checked", true);
+        $("#span_chk_type").html(jData.chk_typestr);
+    }
+
     //官發、客發 控制畫面
     $("#cgrs").change(function () {
         if($("#cgrs").val()=="GS"){
@@ -327,13 +371,11 @@
 
         $("#rs_code").getOption({//案性代碼
             url: getRootPath() + "/ajax/json_rs_code.aspx",
-            data: { cgrs: "GS", rs_type: $("#rs_type").val(),submittask: $("#submittask").val()||"" },
+            data: { cgrs: "GS", rs_class: $("#rs_class").val(), rs_type: $("#rs_type").val(), submittask: $("#submittask").val() || "" },
             valueFormat: "{rs_code}",
             textFormat: "{rs_detail}",
             attrFormat: "vrs_class='{rs_class}' vfees='{fees}' vmark='{mark}' vrs_agtno='{rsagtno}' vrs_agtnm='{receipt}_{rsagtnm}'"
         });
-
-        $("#rs_code").triggerHandler("change");
     });
 
     //依案性帶處理事項
@@ -348,13 +390,14 @@
 
         $("#act_code").getOption({//處理事項
             url: getRootPath() + "/ajax/json_act_code.aspx",
-            data: { cgrs: "GS", cg:"G", rs:"S", rs_class: $("#rs_class").val(), rs_code: $("#rs_code").val() },
+            data: { cgrs: "GS", rs_class: $("#rs_class").val(), rs_code: $("#rs_code").val() },
             valueFormat: "{act_code}",
             textFormat: "{act_code_name}",
             attrFormat: "spe_ctrl='{spe_ctrl}'"
         });
         $("#ncase_statnm").val("");
-        $("#act_code").val("_").triggerHandler("change");
+        $("#act_code option[value='_']").prop("selected", true);
+        $("#act_code").triggerHandler("change");
 
         //規費收費標準
         if ($("#submittask").val() == "A" && $("#prgid1").val() != "brta81") {
@@ -425,8 +468,8 @@
 
         $("#ncase_stat,#ncase_statnm").val("");
         $("#rs_detail").val($("#rs_code option:selected").text());
-        if ($("#act_code option:selected").text()!=""&&$("#act_code option:selected").text()!="_"){
-            $("#rs_detail").val($("#rs_code option:selected").text()+$("#act_code option:selected").text());
+        if ($("#act_code option:selected").val() != "" && $("#act_code option:selected").val() != "_") {
+            $("#rs_detail").val($("#rs_code option:selected").text() + $("#act_code option:selected").text());
         }
 
         //2010/7/26因應承辦交辦發文不用管制期限，增加判斷prgid=brt63不抓期限管制
@@ -448,9 +491,7 @@
                     $("#ncase_statnm").val(item.case_statnm);
                     $("#spe_ctrl").val(item.spe_ctrl);
                     $("#act_sqlno").val(item.ctrl_sqlno);
-                    if ($("#submittask").val() != "U" && $("#submittask").val() != "Q" && $("#submittask").val() != "D" && $("#submittask").val() != "A") {
-                        $("#send_way").val("M");
-                    }
+
                     if ($("#spe_ctrl").val() != "") {
                         var spe_ctrl = $("#spe_ctrl").val().split(",");
                         $("#spe_ctrl").val(spe_ctrl[3]);
@@ -459,6 +500,14 @@
                             if ($("#submittask").val() != "U" && $("#submittask").val() != "Q" && $("#submittask").val() != "D" && $("#submittask").val() != "A") {
                                 $("#send_way").val($("#spe_ctrl").val());
                             }
+                        }else{
+                            if ($("#submittask").val() != "U" && $("#submittask").val() != "Q" && $("#submittask").val() != "D" && $("#submittask").val() != "A") {
+                                $("#send_way option[value='M']").prop("selected", true);
+                            }
+                        }
+                    } else {
+                        if ($("#submittask").val() != "U" && $("#submittask").val() != "Q" && $("#submittask").val() != "D" && $("#submittask").val() != "A") {
+                            $("#send_way option[value='M']").prop("selected", true);
                         }
                     }
                 })
@@ -904,7 +953,7 @@
                 $("#dialog").dialog({ title: '抓取案件主檔失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
-        var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + $("#dseq_"+nRow).val() + "&seq1=" + $("#dseq1A_"+nRow).val() + "&submittask=Q";
+        var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + $("#dseq_" + nRow).val() + "&seq1=" + $("#dseq1A_" + nRow).val() + "&submittask=Q";
         window.showModalDialog(url, "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
     }
 

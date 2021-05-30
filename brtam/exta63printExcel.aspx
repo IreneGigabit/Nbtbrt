@@ -180,7 +180,7 @@
         SQL += " left outer join apcust b on a.cust_area=b.cust_area and a.cust_seq=b.cust_seq ";
         SQL += " left outer join [next] d on a.seq=d.seq and a.seq1=d.seq1 ";
         if (qagent_nm != "") {
-            SQL += " left outer join agent c on a.agt_no=c.agent_no and a.agt_no1=c.agent_no1 ";
+            SQL += " left outer join agent23 c on a.agt_no=c.agent_no and a.agt_no1=c.agent_no1 ";
         }
         SQL += " where 1=1 ";
         if (seq != "") SQL += " and a.seq = '" + seq + "' ";

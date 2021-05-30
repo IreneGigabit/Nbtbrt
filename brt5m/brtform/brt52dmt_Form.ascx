@@ -781,7 +781,7 @@
                 from_fld="";
             }
             //***todo
-            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + value1 + "&seq1=" + value2 + "&from_fld=" + from_fld + "&submittask=Q&prgid=Brt51&end_type=012", "", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
+            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + value1 + "&seq1=" + value2 + "&from_fld=" + from_fld + "&submittask=Q&prgid=Brt51&end_type=012", "", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
         }
     }
     //案件進度查詢
@@ -798,7 +798,7 @@
     dmt_form.Updseqclick = function(pseq,pseq1) {
         if (pseq!=""&&pseq1!=""){
             //***todo
-            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + pseq + "&seq1=" + pseq1 +"&submittask=U&prgid=Brt51&closewin=Y", "myWindowOneu", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
+            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=U&prgid=Brt51&closewin=Y", "myWindowOneu", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
         }else{
             alert("請先輸入本所編號再執行維護功能!!!");
             return false;

@@ -101,56 +101,81 @@
     }
     
     private void QueryData() {
-        //預設值
         Dictionary<string, string> add_cr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        //交辦檔
-        DataTable dtCaseMain = Sys.GetCaseDmtMain(conn, Request["in_no"]);
-        
-        if (dtCaseMain.Rows.Count > 0) {
-            add_cr["step_date"] = DateTime.Today.ToShortDateString();
-            add_cr["cg"] = "C";
-            add_cr["rs"] = "R";
+        if (submitTask == "A") {
+            add_cr["code"] = Request["code"];
+            add_cr["in_no"] = Request["in_no"];
+            add_cr["in_scode"] = Request["in_scode"];
+            add_cr["cust_area"] = Request["cust_area"];
+            add_cr["cust_seq"] = Request["cust_seq"];
+            add_cr["endflag51"] = Request["endflag51"];
+            add_cr["end_date51"] = Request["end_date51"];
+            add_cr["end_code51"] = Request["end_code51"];
+            add_cr["end_type51"] = Request["end_type51"];
+            add_cr["end_remark51"] = Request["end_remark51"];
+            add_cr["seqend_flag"] = Request["seqend_flag"];
+
             add_cr["cgrs"] = "CR";
+            add_cr["seq1"] = "_";
+            add_cr["step_date"] = DateTime.Today.ToShortDateString();
             add_cr["send_cl"] = "1";
-            add_cr["act_code"] = "_";
+            add_cr["step_grade"] = "1";
+            
+            //交辦檔
+            DataTable dtCaseMain = Sys.GetCaseDmtMain(conn, Request["in_no"]);
+            if (dtCaseMain.Rows.Count > 0) {
+                DataRow dr = dtCaseMain.Rows[0];
+                add_cr["seq"] = dr.SafeRead("seq", "");
+                add_cr["seq1"] = dr.SafeRead("seq1", "");
+                //進度序號
+                SQL = "select isnull(step_grade,0)+1 from dmt where seq = '" + add_cr["seq"] + "' and seq1 = '" + add_cr["seq1"] + "'";
+                object objResult = conn.ExecuteScalar(SQL);
+                string nstep_grade = (objResult == DBNull.Value || objResult == null) ? "1" : objResult.ToString();
+                add_cr["step_grade"] = nstep_grade;
+                
+                //收文代碼
+ 		        add_cr["rs_code"]  = dr.SafeRead("arcase","");
+		        add_cr["codemark"]  = dr.SafeRead("codemark","");//收文代碼備註：B爭救案
+		        add_cr["dmt_term1"]  = dr.GetDateTimeString("dmt_term1","yyyy/M/d");//專用期限起日check非創申案有期限者提醒需註記註冊費繳費狀態
+		        add_cr["dmt_term2"]  = dr.GetDateTimeString("dmt_term2","yyyy/M/d");//專用期限迄日
+                add_cr["act_code"] = "_";
+               
+                SQL = " select rs_type,rs_class,rs_code,rs_detail,case_stat,case_stat_name,spe_ctrl ";
+                SQL += "from vcode_act ";
+                SQL += "where rs_code = '" + dr.SafeRead("arcase", "") + "' and act_code = '_' ";
+                SQL += "and rs_type = '" + dr.SafeRead("arcase_type", "") + "'";
+                SQL += "and cg = 'C' and rs = 'R'";
+                add_cr["spe_ctrl3"] = "N";//Y:案性需管制法定期限
+                using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                    if (dr0.Read()) {
+                        add_cr["rs_type"] = dr0.SafeRead("rs_type", "");
+                        add_cr["rs_class"] = dr0.SafeRead("rs_class", "");
+                        add_cr["rs_detail"] = dr0.SafeRead("rs_detail", "");
+                        add_cr["case_stat"] = dr0.SafeRead("case_stat", "");
+                        add_cr["case_statnm"] = dr0.SafeRead("case_stat_name", "");
 
-            string spe_ctrl3 = "N";//Y:案性需管制法定期限
-            string seq = dtCaseMain.Rows[0].SafeRead("seq", "");
-            string seq1 = dtCaseMain.Rows[0].SafeRead("seq1", "");
-            //收文代碼
-            SQL = " select rs_type,rs_class,rs_code,rs_detail,case_stat,case_stat_name,spe_ctrl ";
-            SQL += "from vcode_act ";
-            SQL += "where rs_code = '" + dtCaseMain.Rows[0].SafeRead("arcase", "") + "' and act_code = '_' ";
-            SQL += "and rs_type = '" + dtCaseMain.Rows[0].SafeRead("arcase_type", "") + "'";
-            SQL += "and cg = 'C' and rs = 'R'";
-            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                if (dr.Read()) {
-                    add_cr["rs_type"] = dr.SafeRead("rs_type", "");
-                    add_cr["rs_class"] = dr.SafeRead("rs_class", "");
-                    add_cr["rs_code"] = dr.SafeRead("rs_code", "");
-                    add_cr["rs_detail"] = dr.SafeRead("rs_detail", "");
-                    add_cr["case_stat"] = dr.SafeRead("case_stat", "");
-                    add_cr["case_statnm"] = dr.SafeRead("case_stat_name", "");
+                        if (dr0.SafeRead("back_flag", "") == "Y") {
+                            add_cr["rs_detail"] += "(請復案)";
+                        }
+                        if (dr0.SafeRead("end_flag", "") == "Y") {
+                            add_cr["rs_detail"] += "(請結案)";
+                        }
 
-                    if (dtCaseMain.Rows[0].SafeRead("back_flag", "") == "Y") {
-                        add_cr["rs_detail"] += "(請復案)";
+                        string[] spe_ctrl = dr0.SafeRead("spe_ctrl", "").Split(',');//抓取案性控制
+                        if (spe_ctrl.Length >= 3) add_cr["spe_ctrl3"] = (spe_ctrl[2] == "" ? "N" : spe_ctrl[2]);//Y:案性需管制法定期限
                     }
-                    if (dtCaseMain.Rows[0].SafeRead("end_flag", "") == "Y") {
-                        add_cr["rs_detail"] += "(請結案)";
-                    }
-
-                    string[] spe_ctrl = dr.SafeRead("spe_ctrl", "").Split(',');//抓取案性控制
-                    if (spe_ctrl.Length >= 3) spe_ctrl3 = (spe_ctrl[2] == "" ? "N" : spe_ctrl[2]);//是否為爭救案
                 }
+                //20160910 收文方式改由營洽登錄帶入值
+                add_cr["send_way"] = dr.SafeRead("send_way", "");
+                //客戶期限
+                add_cr["cust_date"] = dr.GetDateTimeString("cust_date", "yyyy/M/d");
+                //承辦期限
+                add_cr["pr_date"] = dr.GetDateTimeString("pr_date", "yyyy/M/d");
+                //營洽輸入法定期限
+                add_cr["case_last_date"] = dr.GetDateTimeString("last_date", "yyyy/M/d");
             }
-            add_cr["spe_ctrl3"] = spe_ctrl3;
 
-            //進度序號
-            SQL = "select isnull(step_grade,0)+1 from dmt where seq = '" + seq + "' and seq1 = '" + seq1 + "'";
-            object objResult = conn.ExecuteScalar(SQL);
-            int nstep_grade = (objResult == DBNull.Value || objResult == null) ? 1 : Convert.ToInt32(objResult);
-            add_cr["step_grade"] = nstep_grade.ToString();
-        }        
+        }
         
         var settings = new JsonSerializerSettings()
         {
@@ -160,7 +185,6 @@
         };
         Response.Write("{");
         Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
-        Response.Write(",\"case_main\":" + JsonConvert.SerializeObject(dtCaseMain, settings).ToUnicode() + "\n");
         Response.Write(",\"add_cr\":" + JsonConvert.SerializeObject(add_cr, settings).ToUnicode() + "\n");//交辦官發預設值
         Response.Write("}");
         Response.End();
@@ -305,58 +329,30 @@
     }
     
     main.bind = function () {
-        $("#codemark").val(jMain.case_main[0].codemark);
-        $("#dmt_term1").val(dateReviver(jMain.case_main[0].dmt_term1,'yyyy/M/d'));
-        $("#dmt_term2").val(dateReviver(jMain.case_main[0].dmt_term2,'yyyy/M/d'));
-        $("#case_last_date").val(jMain.case_main[0].last_date);
-        $("#seq").val(jMain.case_main[0].seq);
-        $("#seq1").val(jMain.case_main[0].seq1);
+        $("#codemark").val(jMain.add_cr.codemark);
+        $("#dmt_term1").val(dateReviver(jMain.add_cr.dmt_term1,'yyyy/M/d'));
+        $("#dmt_term2").val(dateReviver(jMain.add_cr.dmt_term2,'yyyy/M/d'));
+        $("#case_last_date").val(jMain.add_cr.last_date);
+        $("#seq").val(jMain.add_cr.seq);
+        $("#seq1").val(jMain.add_cr.seq1);
         $("#spe_ctrl3").val(jMain.add_cr.spe_ctrl3);
-        //add_cr
-        $("#rs_type").val(jMain.add_cr.rs_type);//結構分類
-        $("#rs_type").triggerHandler("change");
-        $("#code").val(main.code);
-        $("#in_no").val(jMain.case_main[0].in_no);
-        $("#in_scode").val(jMain.case_main[0].in_scode);
-        $("#change").val(main.change);
-        $("#cust_area,#cust_area1").val(main.cust_area);
-        $("#cust_seq,#cust_seq1").val(main.cust_seq);
-        $("#rs_no").val(jMain.add_cr.rs_no);
-        $("#nstep_grade").val(jMain.add_cr.step_grade);
-        $("#cgrs").val(jMain.add_cr.cgrs);
-        $("#step_date").val(jMain.add_cr.step_date);
-        $("#receive_no").val(jMain.add_cr.receive_no);
-        $("#hrs_class,#rs_class").val(jMain.add_cr.rs_class);
-        $("#rs_class").triggerHandler("change");
-        $("#hrs_code,#rs_code").val(jMain.add_cr.rs_code);
-        $("#rs_code").triggerHandler("change");
-        $("#hact_code,#act_code").val(jMain.add_cr.act_code);
-        $("#act_code").triggerHandler("change");
-        $("#ocase_stat,#ncase_stat").val(jMain.add_cr.case_stat);
-        $("#ncase_statnm").val(jMain.add_cr.case_statnm);
-        $("#rs_detail").val(jMain.add_cr.rs_detail);
-        $("#doc_detail").val(jMain.add_cr.doc_detail);
-        $("#old_receipt_type,#receipt_type").val(jMain.case_main[0].receipt_type);
-        $("#old_receipt_title,#receipt_title").val(jMain.case_main[0].receipt_title);
-        $("#old_send_way,#send_way").val(jMain.case_main[0].send_way);
-        $("#send_sel").val(jMain.add_cr.send_sel);
-        if (main.submittask == "A") {
-            $("input[name='opt_stat'][value='N']").prop("checked", true);//需交辦
-            $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
-        }
-        $("input[name='opt_stat'][value='" + jMain.add_cr.opt_stat + "']").prop("checked", true);
+        $("#cust_area").val(jMain.add_cr.cust_area);
+        $("#cust_seq").val(jMain.add_cr.cust_seq);
 
-        if(main.submittask=="A"){
-            if($("#hrs_code").val()=="FC11"||$("#hrs_code").val()=="FC21"||$("#hrs_code").val()=="FC6"||$("#hrs_code").val()=="FC7"||$("#hrs_code").val()=="FC8"||$("#hrs_code").val()=="FC5"
-                ||$("#hrs_code").val()=="FCI"||$("#hrs_code").val()=="FCH"||$("#hrs_code").val()=="FT2"||$("#hrs_code").val()=="FL5"||$("#hrs_code").val()=="FL6"){
-                brt511form.getdseq();//一案多件
-            }
-            if($("#hrs_code").val().Left(2)=="FD"){
-                brt511form.getdseq1();//分割
-            }
-            brt511form.getCtrl();
-        }
+        brt511form.bind(jMain.add_cr);//收文資料
+        brta212form.bind(jMain.add_cr,null);//管制資料
         
+        if (main.submittask == "A") {
+            if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FC5"
+                || $("#hrs_code").val() == "FCI" || $("#hrs_code").val() == "FCH" || $("#hrs_code").val() == "FT2" || $("#hrs_code").val() == "FL5" || $("#hrs_code").val() == "FL6") {
+                brt511form.getdseq(jMain.add_cr);//一案多件
+            }
+            if ($("#hrs_code").val().Left(2) == "FD") {
+                brt511form.getdseq1(jMain.add_cr);//分割
+            }
+            brt511form.getCtrl(jMain.add_cr);//產生預設期限
+        }
+
         //顯示爭救案交辦欄位
         if ($("#codemark").val()=="B"){
             document.all.show_optstat.style.display=""
@@ -365,20 +361,21 @@
                 $("#btnqrygrlastdate").show();//顯示[查官收未銷法定期限按鈕]
                 brta212form.add_ctrl();
                 $("#ctrl_type_"+$("#ctrlnum").val()).val("A1");
-                getgrlast_date();
+                getgrlast_date();//抓取官收最小法定期限A1
             }
         }
+  
         //顯示註冊費繳費狀態，當非創申案立新案
-        if(main.submittask=="A"){
-            if(CInt($("#nstep_grade").val())==1){
-                if ($("#hrs_class").val()!="A1"){
+        if (main.submittask == "A") {
+            if (CInt($("#nstep_grade").val()) == 1) {
+                if ($("#hrs_class").val() != "A1") {
                     $("#show_paytimes").show();
                 }
-            }else{
-                if($("#seqend_flag").val()=="Y"){//2010/10/6修改為結案註記有勾選結案才顯示
+            } else {
+                if ($("#seqend_flag").val() == "Y") {//2010/10/6修改為結案註記有勾選結案才顯示
                     $("#show_endstat").show();
-                }else{
-                    $("input[name='end_stat']").prop("checked",false);
+                } else {
+                    $("input[name='end_stat']").prop("checked", false);
                 }
             }
         }

@@ -444,12 +444,7 @@
     //承辦
     protected string GetOptPrScode(RepeaterItem Container) {
         string pr_scode = DataBinder.Eval(Container.DataItem, "pr_scode").ToString();
-        SQL="select a.scode,b.sc_name,a.sort ";
-        SQL += " from scode_roles a inner join scode b on a.scode=b.scode";
-        SQL += " where a.dept = '" + Session["dept"] + "' and syscode = '" + Session["seBranch"] + "TBRT' and prgid = 'brta21' ";
-        SQL += " and roles = 'process' and branch = '" + Session["seBranch"] + "'";
-        SQL += " order by sort";
-        return Util.Option(cnn, SQL, "{scode}", "{scode}_{sc_name}", true, pr_scode);
+        return Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", true, pr_scode);
     }
 
     //收據種類

@@ -75,8 +75,8 @@
     private void PageLayout() {
         Lock["Qdisabled"] = "Lock";
 
-        StrFormBtnTop += "<font style=\"cursor: pointer;color:darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"Help_Click()\">[說明]</font>";
         StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
+        StrFormBtnTop += "<font style=\"cursor: pointer;color:darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"Help_Click()\">[說明]</font>";
 
         if (submitTask == "U" && prgid == "brt152") {
             FormName = "備註:<br>\n";
@@ -120,6 +120,8 @@
     }
 
     private void QueryData() {
+        Dictionary<string, string> add_gr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        /*
         Dictionary<string, string> add_gr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase){
         {"grconf_sqlno",""},{"rs_sqlno",""},
         //Brta21form案件主檔
@@ -136,7 +138,7 @@
         {"ectrlnum",""},
         //brt15form營洽後續作業
         {"job_case",""},{"job_no",""},{"job_type",""},{"pre_date",""},{"sales_remark",""},{"cs_report",""}
-        };
+        };*/
         
         SQL = "select a.*,c.branch,c.cappl_name as appl_name,c.csd_flag as scsd_flag,c.cs_remark,c.pmail_date";
         SQL += ",c.step_date,c.mp_date,c.rs_detail,c.rs_no,c.cg,c.rs,c.send_cl,c.rs_class,c.rs_code,c.act_code";
@@ -185,7 +187,8 @@
             //取得案件狀態
             SQL = " select rs_type,rs_class,rs_code,act_code,case_stat,case_stat_name ";
             SQL += "from vcode_act ";
-            SQL += "where rs_code = '" + add_gr["rs_code"] + "' and act_code = '" + add_gr["act_code"] + "' ";
+            SQL += "where rs_code = '" + add_gr["rs_code"] + "' ";
+            SQL += "and act_code = '" + add_gr["act_code"] + "' ";
             SQL += "and rs_type = '" + add_gr["rs_type"] + "'";
             SQL += "and cg = 'G' and rs = 'R'";
             using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {

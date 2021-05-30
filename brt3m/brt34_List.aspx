@@ -141,7 +141,7 @@
         urlasp += "&homelist=" + Request["homelist"];
         urlasp+= "&ctrl_date=" + row.GetDateTimeString("ctrl_date", "yyyy/M/d");
 
-        return Page.ResolveUrl(urlasp);
+        return urlasp;
     }
 </script>
 

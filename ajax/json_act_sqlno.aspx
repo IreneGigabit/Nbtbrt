@@ -25,6 +25,8 @@
         act_code = Request["act_code"] ?? "";
         submittask = (Request["submittask"] ?? "").ToUpper();
 
+        if (cgrs == "ZS") cgrs = "CR";
+        
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
             SQL = "select a.csflg,a.cs_detail,a.spe_ctrl,b.sqlno ctrl_sqlno,b.act_sqlno,b.ctrl_type,b.date_ctrl,b.ad,b.days,b.md,b.remark ctrl_remark ";

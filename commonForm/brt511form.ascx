@@ -27,15 +27,7 @@
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         submitTask = (Request["submittask"] ?? "").Trim().ToUpper();
 
-        SQL = "select a.scode,b.sc_name,a.sort ";
-        SQL += " from sysctrl.dbo.scode_roles a ";
-        SQL += " inner join sysctrl.dbo.scode b on a.scode=b.scode ";
-        SQL += " where a.dept = '" + Session["dept"] + "' and syscode = '" + Session["syscode"] + "' and prgid = 'brta21' ";
-        SQL += " and roles = 'process' and branch = '" + Session["seBranch"] + "' ";
-        SQL += " order by sort ";
-        DataTable prDT = new DataTable();
-        conn.DataTable(SQL, prDT);
-        html_pr_scode = prDT.Option("{scode}", "{scode}_{sc_name}", "", false, "", "sort=01");
+        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", false, "", "sort=01");
         html_send_sel = Sys.getCustCode("SEND_SEL", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_pay_times = Sys.getCustCode(Sys.GetSession("dept") + "PAY_TIMES", "", "sortfld").Option("{cust_code}", "{code_name}");
 
@@ -115,7 +107,7 @@
 		<TD class=lightbluetable align=right>承辦：</TD>
 		<TD class=whitetablebg colspan=3>
 			<SELECT name="pr_scode" id="pr_scode" class="<%=Lock.TryGet("Qdisabled")%>">
-			<%=html_pr_scode%><option value="" style="color:blue">不需承辦</option>
+			<option value="" style="color:blue">不需承辦</option><%=html_pr_scode%>
 			</SELECT>
 		</TD>
 		<TD class=lightbluetable align=right>官方號碼：</TD>
@@ -127,7 +119,7 @@
 		<TD class=lightbluetable align=right><font color=darkblue>※爭救案交辦：</font></TD>
 		<TD class=whitetablebg colspan=5>
 			<input type=radio name="opt_stat" value="N" class="<%=Lock.TryGet("Qdisabled_opt")%>">需交辦
-			<input type=radio name="opt_stat" value="X" class="<%=Lock.TryGet("Qdisabled_opt")%>">不需交辦				
+			<input type=radio name="opt_stat" value="X" class="<%=Lock.TryGet("Qdisabled_opt")%>">不需交辦
 			<span id="sp_optstat" style="display:none">
 			<input type=radio name="opt_stat" value="Y" class="<%=Lock.TryGet("Qdisabled_opt")%>">已交辦
 			</span>
@@ -224,6 +216,51 @@
     brt511form.init = function () {
     }
 
+    brt511form.bind = function (jData) {
+        $("#code").val(jData.code);
+        $("#in_no").val(jData.in_no);
+        $("#in_scode").val(jData.in_scode);
+        $("#change").val(jData.change);
+        $("#cust_area,#cust_area1").val(jData.cust_area);
+        $("#cust_seq,#cust_seq1").val(jData.cust_seq);
+        $("#rs_no").val(jData.rs_no);
+        $("#nstep_grade").val(jData.step_grade);
+        $("#cgrs").val(jData.cgrs);
+        $("#step_date").val(jData.step_date);
+        $("#receive_no").val(jData.receive_no);
+        $("#rs_type").val(jData.rs_type);//結構分類
+        $("#rs_type").triggerHandler("change");
+        $("#hrs_class").val(jData.rs_class);
+        $("#rs_class option[value='" + jData.rs_class + "']").prop("selected", true);
+        $("#rs_class").triggerHandler("change");
+        $("#hrs_code").val(jData.rs_code);
+        $("#rs_code option[value='" + jData.rs_code + "']").prop("selected", true);
+        $("#rs_code").triggerHandler("change");
+        $("#act_sqlno").val(jData.act_sqlno);
+        $("#hact_code").val(jData.act_code);
+        $("#act_code option[value='" + jData.act_code + "']").prop("selected", true);
+        $("#act_code").triggerHandler("change");
+        $("#ocase_stat,#ncase_stat").val(jData.case_stat);
+        $("#ncase_statnm").val(jData.case_statnm);
+        $("#rs_detail").val(jData.rs_detail);
+        $("#pr_scode option[value='" + jData.pr_scode + "']").prop("selected", true);
+        $("#send_sel option[value='" + jData.send_sel + "']").prop("selected", true);
+        $("input[name='opt_stat'][value='" + jData.opt_stat + "']").prop("checked", true);
+        $("#pay_times option[value='" + jData.pay_times + "']").prop("selected", true);
+        $("#pay_date").val(jData.pay_date);
+        $("#old_send_way").val(jData.send_way);
+        $("#send_way option[value='" + jData.send_way + "']").prop("selected", true);
+        $("#old_receipt_type").val(jData.receipt_type);
+        $("#receipt_type option[value='" + jData.receipt_type + "']").prop("selected", true);
+        $("#old_receipt_title").val(jData.receipt_title);
+        $("#receipt_title option[value='" + jData.receipt_title + "']").prop("selected", true);
+
+        if (main.submittask == "A") {
+            $("input[name='opt_stat'][value='N']").prop("checked", true);//需交辦
+            $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
+        }
+    }
+
     //依rs_type帶結構分類
     $("#rs_type").change(function () {
         $("#rs_class").getOption({
@@ -241,7 +278,7 @@
     $("#rs_class").change(function () {
         $("#rs_code").getOption({//案性代碼
             url: getRootPath() + "/ajax/json_rs_code.aspx",
-            data: { cgrs: "CR", rs_type: $("#rs_type").val() },
+            data: { cgrs: "CR", rs_class: $("#rs_class").val(), rs_type: $("#rs_type").val() },
             valueFormat: "{rs_code}",
             textFormat: "{rs_detail}",
             attrFormat: "vrs_class='{rs_class}'"
@@ -287,7 +324,7 @@
     }
 
     //一案多件時取得子案本所編號
-    brt511form.getdseq = function () {
+    brt511form.getdseq = function (jData) {
         //案性為一案多件時, 要顯示 sub seq 的畫面
         $("#tabar1").show();
         if ($("#rs_code").val() == "FC11" || $("#rs_code").val() == "FC5" || $("#rs_code").val() == "FC7" || $("#rs_code").val() == "FCH") {
@@ -310,15 +347,15 @@
         //產生母案案號
         brt511form.add_sub();
         var spl_num =1;
-        $("#dseq_" + spl_num).val(jMain.case_main[0].seq);
-        $("#dseq1A_" + spl_num).val(jMain.case_main[0].seq1);
-        $("#s_mark_" + spl_num).val(jMain.case_main[0].s_marknm);
-        $("#dclass_" + spl_num).val(jMain.case_main[0].class);
-        $("#appl_name_" + spl_num).val(jMain.case_main[0].appl_name);
+        $("#dseq_" + spl_num).val(jData.seq);
+        $("#dseq1A_" + spl_num).val(jData.seq1);
+        $("#s_mark_" + spl_num).val(jData.s_marknm);
+        $("#dclass_" + spl_num).val(jData.class);
+        $("#appl_name_" + spl_num).val(jData.appl_name);
         if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
-            $("#dref_no_" + spl_num).val(jMain.case_main[0].apply_no);
+            $("#dref_no_" + spl_num).val(jData.apply_no);
         } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
-            $("#dref_no_" + spl_num).val(jMain.case_main[0].issue_no);
+            $("#dref_no_" + spl_num).val(jData.issue_no);
         }
 
         //取得一案多件子案
@@ -360,7 +397,7 @@
     }
 
     //分割時取得子案本所編號
-    brt511form.getdseq1 = function () {
+    brt511form.getdseq1 = function (jData) {
         //案性為一案多件時, 要顯示 sub seq 的畫面
         $("#tabar1").show();
         if ($("#rs_code").val() == "FD1") {
@@ -406,18 +443,18 @@
     }
 
     //產生預設期限
-    brt511form.getCtrl = function () {
-        if(jMain.case_main[0].cust_date!=""){
+    brt511form.getCtrl = function (jData) {
+        if(jData.cust_date!=""){
             //新增客戶期限
             brta212form.add_ctrl();
             $("#ctrl_type_"+$("#ctrlnum").val()).val("A2");
-            $("#ctrl_date_"+$("#ctrlnum").val()).val(dateReviver(jMain.case_main[0].cust_date,'yyyy/M/d'));
+            $("#ctrl_date_"+$("#ctrlnum").val()).val(jData.cust_date);
         }
-        if(jMain.case_main[0].pr_date!=""){
+        if(jData.pr_date!=""){
             //新增承辦期限
             brta212form.add_ctrl();
             $("#ctrl_type_"+$("#ctrlnum").val()).val("B2");
-            $("#ctrl_date_"+$("#ctrlnum").val()).val(dateReviver(jMain.case_main[0].pr_date,'yyyy/M/d'));
+            $("#ctrl_date_"+$("#ctrlnum").val()).val(jData.pr_date);
         }
         //2010/10/6修改為結案註記有勾選結案才顯示
         if($("#seqend_flag").val()=="Y"){

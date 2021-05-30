@@ -84,7 +84,7 @@
         if (submitTask == "D") HTProgCap += "-<font color=blue>刪除</font>";
 
         if (cgrs == "CR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta4m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>\n";
-        if (cgrs == "GR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta41m.aspx") + "?prgid=brta41m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>\n";
+        if (cgrs == "GR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta4m.aspx") + "?prgid=brta41m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>\n";
         StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
         StrFormBtnTop += "<font style=\"cursor: pointer;color:darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"Help_Click()\">[說明]</font>\n";
 
@@ -102,8 +102,8 @@
             }
         }
 
-        emg_scode = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), Sys.GetSession("dept"), "mg_pror");//總管處程序人員-正本
-        emg_agscode = Sys.getRoleScode(Sys.GetSession("seBranch"), Sys.GetSession("syscode"), Sys.GetSession("dept"), "mg_prorm");//總管處程序人員-副本
+        emg_scode = Sys.getRoleScode("M", Sys.GetSession("syscode"), Sys.GetSession("dept"), "mg_pror");//總管處程序人員-正本
+        emg_agscode = Sys.getRoleScode("M", Sys.GetSession("syscode"), Sys.GetSession("dept"), "mg_prorm");//總管處程序人員-副本
     }
 
     //將共用參數傳給子控制項
@@ -114,6 +114,8 @@
     }
 
     private void QueryData() {
+        Dictionary<string, string> add_gr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        /*
         Dictionary<string, string> add_gr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase){
         {"smgt_temp_mark",""},{"from_flag",""},
         //Brta21form案件主檔
@@ -128,7 +130,10 @@
         {"pmail_date",""},{"mail_date",""},{"mail_scode",""},{"mwork_date",""},{"mail_scname",""},{"print_date",""},
         //brta212管制資料
         {"ectrlnum",""}
-        };
+        };*/
+
+        add_gr["rs_no"] = "";
+        add_gr["cs_rs_no"] = "";
 
         //案件主檔
         DataTable dtDmt = Sys.GetDmt(conn, seq, seq1);
@@ -202,7 +207,7 @@
                 SQL = "select code_name from cust_code where code_type='" + add_gr["rs_type"] + "' and cust_code='" + add_gr["rs_class"] + "'";
                 objResult = conn.ExecuteScalar(SQL);
                 add_gr["rs_class_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                SQL = "select rs_detail from code_br where rs_type='" + add_gr["rs_type"] + "' and rs_code='" + add_gr["rs_code"] + "' and gs='Y' ";
+                SQL = "select rs_detail from code_br where rs_type='" + add_gr["rs_type"] + "' and rs_code='" + add_gr["rs_code"] + "' and gr='Y' ";
                 objResult = conn.ExecuteScalar(SQL);
                 add_gr["rs_code_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
                 SQL = "select code_name from cust_code where code_type='tact_code' and cust_code='" + add_gr["act_code"] + "'";
@@ -212,7 +217,8 @@
                 //取得案件狀態
                 SQL = " select rs_type,rs_class,rs_code,act_code,case_stat,case_stat_name ";
                 SQL += "from vcode_act ";
-                SQL += "where rs_code = '" + add_gr["rs_code"] + "' and act_code = '" + add_gr["act_code"] + "' ";
+                SQL += "where rs_code = '" + add_gr["rs_code"] + "' ";
+                SQL += "and act_code = '" + add_gr["act_code"] + "' ";
                 SQL += "and rs_type = '" + add_gr["rs_type"] + "'";
                 SQL += "and cg = 'G' and rs = 'R'";
                 using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
@@ -353,6 +359,7 @@
     <INPUT TYPE="text" id=havectrl name=havectrl value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
     <INPUT TYPE="text" id=cansave name=cansave value="N"><!--判斷有核對案件主檔，N:資料不符無,Y:資料相符-->
     <input type="text" id=temp_rs_sqlno name=temp_rs_sqlno value="<%=Request["temp_rs_sqlno"]%>"><!--step_mgt_temp.temp_rs_sqlno-->
+    <INPUT TYPE="text" id=qryfrom_flag name=qryfrom_flag value="<%=Request["qryfrom_flag"]%>">
     <input type="text" id=emg_scode name=emg_scode value="<%=emg_scode%>"><!--Email通知總管處人員，正本收件者-->
     <input type="text" id=emg_agscode name=emg_agscode value="<%=emg_agscode%>"><!--Email通知總管處人員，副本收件者-->
     <input type="text" id=mg_end_date name=mg_end_date value="<%=Request["mg_end_date"]%>"><!--總收發之結案日期-->
@@ -537,48 +544,100 @@
                     }
                 }
             }
-            //////////////////////////////////////////////////
-            if($("input[name='job_type']:checked").length==0){
-                alert("作業處理必須點選!!!");
+
+            //檢核案件主檔資料與管制期限資料是否相符
+            if($("#new_seq").val()!=""){
+                if($("input[name='domark'][value='X']").prop("checked")==true){
+                    brta21form.btnmgdmt('chk');
+                }else{
+                    $("#cansave").val("Y");
+                }
+            }else{
+                brta21form.btnmgdmt('chk');
+            }
+            if($("#cansave").val()=="N"){
                 return false;
             }
 
-            if($("input[name='job_type']:checked").val()=="case"){//接洽客戶後續案性
-                if($("#job_case").val()==""){
-                    alert("洽案登錄案性必須點選!!!");
-                    $("#toadd").focus();
+            //檢核區所與總收發文結案日期
+            if($("#end_date").val()!=$("#mg_end_date").val()){
+                if($("#end_date").val()==""&&$("#mg_end_date").val()!=""){
+                    alert("本所編號："+jMain.add_gr.fseq+"尚未結案但總收發已結案，無法確認！如確定未結案，請先Email通知總管處程序人員修改後，再執行官收確認！");
                     return false;
                 }
-                if(chkNull("預計處理日期",$("#pre_date"))) return false;
-            }
-
-            if($("input[name='cs_report']:checked").length==0){
-                alert("自行客戶報導必須點選!!!");
-                return false;
-            }
-
-            if($("input[name='cs_report']:checked").val()=="Y"){//自行客戶報導:是
-                var fld=$("#uploadfield").val();
-                if($("#"+fld+"_filenum").val()==""||$("#"+fld+"_filenum").val()=="0"){
-                    alert("自行客戶報導需至少新增一筆上傳文件！");
-                    return false;
-                }else{
-                    var filename_flag=false;
-                    for (var pnum = 1; pnum <= CInt($("#"+fld+"_filenum").val()) ; pnum++) {
-                        if($("#"+fld+"_filenum").val()!=""){
-                            filename_flag=true;
-                            break;
-                        }
+                if($("#end_date").val()!=""&&$("#mg_end_date").val()==""){
+                    var answer="本所編號："+jMain.add_gr.fseq+"已結案但總收發未結案，是否確定案件已結案並要執行確認？";
+                    if (!confirm(answer)) {
+                        return false;
+                    }else{
+                        $("#end_flag").val("Y");
                     }
+                }
+            }
 
-                    if (filename_flag=false){
-                        alert("自行客戶報導需至少上傳一筆文件！")
+            //管制，有管制期限，至少需輸入一筆
+            if ($("#ctrl_flg").val()=="Y"){
+                $("#havectrl").val("N");
+                for (var n = 1; n <= CInt($("#ctrlnum").val()) ;n++) {
+                    var ctrl_type= $("#ctrl_type_" + n).val();
+                    var ctrl_date= $("#ctrl_date_" + n).val();
+                    if(ctrl_type!=""&&ctrl_date!=""){
+                        $("#havectrl").val("Y");
+                        break;
+                    }
+                }
+                if ($("#havectrl").val()=="N"){
+                    var answer="此進度代碼有管制期限確定不輸入嗎???";
+                    if(!confirm(answer)){
                         return false;
                     }
                 }
             }
+
+            //註冊費繳納期數與發文案性關聯性檢查
+            switch ($("#act_code").val()) {
+                case "F1":
+                    if ($("#pay_times").val() != "1") {
+                        var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第一期 』?");
+                        if (ans != true) {
+                            $("#act_code").focus();
+                            return false;
+                        } else {
+                            $("#pay_times").val("1");
+                            $("#hpay_times").val("1");
+                            $("#pay_date").val($("#step_date").val());
+                        }
+                    }
+                    break;
+                case "F2":
+                    if ($("#pay_times").val() != "2") {
+                        var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第二期 』?");
+                        if (ans != true) {
+                            $("#act_code").focus();
+                            return false;
+                        } else {
+                            $("#pay_times").val("2");
+                            $("#hpay_times").val("2");
+                            $("#pay_date").val($("#step_date").val());
+                        }
+                    }
+                    break;
+                case "F0":
+                    if ($("#pay_times").val() != "A") {
+                        var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 全期 』?");
+                        if (ans != true) {
+                            $("#act_code").focus();
+                            return false;
+                        } else {
+                            $("#pay_times").val("A");
+                            $("#hpay_times").val("A");
+                            $("#pay_date").val($("#step_date").val());
+                        }
+                    }
+                    break;
+            }
         }
-        postForm("Brta24Update.aspx?task=conf");
+        postForm("Brta24_Update.aspx?task=conf");
     }
 
     //退件處理
@@ -594,14 +653,14 @@
                 return false;
             }
 
-            postForm("Brta24Update.aspx?task=back");
+            postForm("Brta24_Update.aspx?task=back");
         }
     }
 
     //刪除
     function formDelSubmit(){
         if(confirm("是否確定刪除!!!")){
-            postForm("Brta21Update.aspx");
+            postForm("Brta21_Update.aspx");
         }
     }
 
@@ -615,11 +674,6 @@
             $("#dialog").html(xhr.responseText);
             $("#dialog").dialog({
                 title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
-                ,buttons: {
-                    確定: function() {
-                        $(this).dialog("close");
-                    }
-                }
                 ,close:function(event, ui){
                     if(status=="success"){
                         if(!$("#chkTest").prop("checked")){
@@ -657,7 +711,7 @@
             strbcc = "";
         }
         %>
-        var tsubject = "國內所商標網路系統－官收資料修正通知（區所編號：" + jMain.add_gr.fseq + "，總收發進度：" + jMain.add_gr.mg_step_grade + " ）";//主旨
+        var tsubject = "國內所商標網路系統－官收資料修正通知（區所編號：" + jMain.add_gr.fseq + " ）";//主旨
         var strto = "<%=strto%>";//收件者
         var strcc = "<%=strcc%>";//副本
         var strbcc = "<%=strbcc%>";//密件副本
