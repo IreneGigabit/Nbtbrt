@@ -55,7 +55,7 @@
         }
         
         TokenN myToken = new TokenN(HTProgCode);
-        myToken.CheckMe(false);
+        HTProgRight = myToken.CheckMe();
         if (HTProgRight >= 0) {
             PageLayout();
             QueryData();

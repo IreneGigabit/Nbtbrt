@@ -116,12 +116,12 @@
                     strOut.AppendLine("<div align='center'><h1>官方發文退回成功!!!</h1></div>");
                 }
 
-                //conn.Commit();
-                //connm.Commit();
-                //conni2.Commit();
-                conn.RollBack();
-                connm.RollBack();
-                conni2.RollBack();
+                conn.Commit();
+                connm.Commit();
+                conni2.Commit();
+                //conn.RollBack();
+                //connm.RollBack();
+                //conni2.RollBack();
             }
             catch (Exception ex) {
                 conn.RollBack();
@@ -560,8 +560,8 @@
         SQL += ",pr_scode='" + Request["pr_scode"] + "',opt_branch='" + Request["opt_branch"] + "'";
         SQL += ",tot_num=" + tot_num + ",rs_agt_no='" + Request["rs_agt_no"] + "'";
         SQL += ",tran_date=getdate(),tran_scode='" + Session["scode"] + "'";
-        SQL += ",receipt_type='" + receipt_type + "'";
-        SQL += ",receipt_title='" + receipt_title + "'";
+        SQL += ",receipt_type=" + Util.dbchar(receipt_type);
+        SQL += ",receipt_title=" + Util.dbchar(receipt_title);
         SQL += ",rectitle_name=" + Util.dbchar(rectitle_name);
         SQL += " where rs_no='" + rs_no + "'";
         conn.ExecuteNonQuery(SQL);
@@ -644,7 +644,7 @@
                 SQL = "update dmt set now_arcase_type=" + Util.dbnull(Request["rs_type"]);
                 SQL += ", now_arcase=" + Util.dbchar(Request["rs_code"]);
                 SQL += ",now_grade=" + Util.dbzero(Request["nstep_grade"]);
-                SQL += "now_stat=" + Util.dbchar(Request["ncase_stat"]);
+                SQL += ",now_stat=" + Util.dbchar(Request["ncase_stat"]);
                 SQL += ",now_arcase_class=" + Util.dbchar(Request["rs_class"]);
                 SQL += ",now_act_code=" + Util.dbchar(Request["act_code"]);
                 SQL += " where seq=" + Request["seq"] + " and seq1='" + Request["seq1"] + "'";
@@ -737,7 +737,7 @@
 
                         if (dr_rs_no != "") {//已存在進度檔, 修改即可
                             //新增 step_dmt_Log 檔
-                            Sys.insert_log_table(conn, "D", HTProgCode, "step_dmt", "rs_no", dr_rs_no, logReason);
+                            Sys.insert_log_table(conn, "U", HTProgCode, "step_dmt", "rs_no", dr_rs_no, logReason);
                             //更新step_dmt
                             SQL = "update step_dmt set step_date=" + Util.dbnull(Request["step_date"]);
                             SQL += ",rs_type=" + Util.dbnull(Request["rs_type"]);
@@ -748,9 +748,9 @@
                             SQL += ",pr_scode='" + Request["pr_scode"] + "'";
                             SQL += ",tot_num=" + tot_num;
                             SQL += ",tran_date=getdate(),tran_scode='" + Session["scode"] + "'";
-                            SQL += ",receipt_type='" + receipt_type + "'";
-                            SQL += ",receipt_title='" + receipt_title + "'";
-                            SQL += ",rectitle_name=" + Util.dbchar(rectitle_name);
+                            SQL += ",receipt_type=" + Util.dbnull(receipt_type);
+                            SQL += ",receipt_title=" + Util.dbnull(receipt_title);
+                            SQL += ",rectitle_name=" + Util.dbnull(rectitle_name);
                             SQL += " where rs_no='" + dr_rs_no + "'";
                             conn.ExecuteNonQuery(SQL);
                             //修改總收發文資料
@@ -911,6 +911,14 @@
             }
         }
 
+
+	    //入帳款 區所account db:先刪除array.account.plus_temp.chk_type='N',2008/11/20修改再加上為mstat_flag is null or ='NN'的資料再新增
+	    //2014/11/4增加入log，因改至網路account
+        Sys.insert_log_table(conni2, "D", prgid, "plus_temp", "branch;dept;rs_no;chk_type", Session["seBranch"] + ";" + Session["dept"] + ";" + rs_no + ";N", logReason);
+        SQL = "delete from plus_temp where branch='" + Session["seBranch"] + "' and dept='" + Session["dept"] + "'";
+        SQL += " and rs_no='" + rs_no + "' and chk_type='N' and (mstat_flag is null or mstat_flag='NN')";
+        conni2.ExecuteNonQuery(SQL);
+        
         //入帳款 區所account.plus_temp
         for (int i = 1; i <= Convert.ToInt32("0" + Request["arnum"]); i++) {
             if (ReqVal.TryGet("case_no_" + i) != "") {
@@ -923,7 +931,7 @@
                 //2012/12/18因電子申請的mstat_flag=YE，狀況等同一般送件mstat_flag=YY，所以增加判斷
                 SQL = "select count(*) from plus_temp where branch='" + Session["seBranch"] + "' and dept='" + Session["dept"] + "'";
                 SQL += " and rs_no='" + rs_no + "' and case_no='" + Request["case_no_" + i] + "' and (chk_type='Y' or mstat_flag='YY' or mstat_flag='YE')";
-                objResult = conn.ExecuteScalar(SQL);
+                objResult = conni2.ExecuteScalar(SQL);
                 int plus_temp_count = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
                 string chk_type = "N";
                 if (plus_temp_count > 0) chk_type = "Y";
@@ -993,7 +1001,7 @@
         //新增 ctrl_dmt
         SQL = "insert into ctrl_dmt(rs_no,branch,seq,seq1,step_grade,ctrl_type,ctrl_remark,ctrl_date,tran_date,tran_scode) ";
         SQL += "select rs_no,branch,seq,seq1,step_grade,ctrl_type,ctrl_remark,ctrl_date,getdate(),'" + Session["scode"] + "' ";
-        SQL += "from resp_dmt where where seq=" + Request["seq"] + " and seq1='" + Request["seq1"] + "' and step_grade='" + Request["nstep_grade"] + "'";
+        SQL += "from resp_dmt where seq=" + Request["seq"] + " and seq1='" + Request["seq1"] + "' and step_grade='" + Request["nstep_grade"] + "'";
         conn.ExecuteNonQuery(SQL);
         //刪除 resp_dmt
         SQL = "delete from resp_dmt where seq=" + Request["seq"] + " and seq1='" + Request["seq1"] + "' and step_grade='" + Request["nstep_grade"] + "'";
@@ -1023,7 +1031,7 @@
         //新增 step_dmt_Log 檔
         Sys.insert_log_table(conn, "D", HTProgCode, "step_dmt", "rs_no", rs_no, logReason);
         //刪除 step_dmt
-        SQL = "delete step_dmt where rs_no=''" + rs_no + "'";
+        SQL = "delete step_dmt where rs_no='" + rs_no + "'";
         conn.ExecuteNonQuery(SQL);
 
         //若案件主檔案件狀態進度序號等於進度序號，則修改案件狀態
@@ -1095,16 +1103,16 @@
                     //判斷是否已存在 step_dmt 案件主檔
                     SQL = " select * from step_dmt where main_rs_no = '" + rs_no + "' ";
                     SQL += " and seq=" + dseq + " and seq1 = '" + dseq1A + "' ";
-                    if (Request["hrs_no_"+i] !=""){
-					    SQL+= " and rs_no = '" +Request["hrs_no_"+i]+ "'";
-				    }
+                    if (Request["hrs_no_" + i] != "") {
+                        SQL += " and rs_no = '" + Request["hrs_no_" + i] + "'";
+                    }
                     using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
                         if (dr0.Read()) {//已存在進度檔, 將之刪除
                             //刪除發文主檔
                             //新增 step_dmt_Log 檔
                             Sys.insert_log_table(conn, "D", HTProgCode, "step_dmt", "rs_no", dr0.SafeRead("rs_no", ""), logReason);
                             //刪除 step_dmt
-                            SQL = "delete step_dmt where rs_no=''" + dr0.SafeRead("rs_no", "") + "'";
+                            SQL = "delete step_dmt where rs_no='" + dr0.SafeRead("rs_no", "") + "'";
                             conn.ExecuteNonQuery(SQL);
 
                             //若案件主檔案件狀態進度序號等於進度序號，則修改案件狀態
@@ -1360,7 +1368,7 @@
             ColMap["fees"] = Util.dbzero(fees);
             ColMap["step_date"] = Util.dbnull(ReqVal.TryGet("step_date"));
             ColMap["mp_date"] = Util.dbnull(ReqVal.TryGet("mp_date"));
-            ColMap["cappl_name"] = Util.dbchar(dr.SafeRead("cappl_name", ""));
+            ColMap["cappl_name"] = Util.dbchar(dr.SafeRead("appl_name", ""));
             ColMap["eappl_name"] = Util.dbchar(dr.SafeRead("eappl_name", ""));
             ColMap["s_mark1"] = Util.dbchar(dr.SafeRead("s_mark", ""));
             ColMap["apply_date"] = Util.dbnull(dr.GetDateTimeString("apply_date", "yyyy/M/d"));

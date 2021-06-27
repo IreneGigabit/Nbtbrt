@@ -355,7 +355,7 @@
 
         //顯示爭救案交辦欄位
         if ($("#codemark").val()=="B"){
-            document.all.show_optstat.style.display=""
+            $("#show_optstat").show();
             //2013/11/5修改，爭救案性預設帶官收法定期限
             if(CInt($("#nstep_grade"))!=1){
                 $("#btnqrygrlastdate").show();//顯示[查官收未銷法定期限按鈕]

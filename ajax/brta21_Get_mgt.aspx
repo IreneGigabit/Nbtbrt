@@ -156,8 +156,8 @@
                 }
             }
 
-            //conn.Commit();
-            conn.RollBack();
+            conn.Commit();
+            //conn.RollBack();
             strOut.AppendLine("alert('總收發案件及官收資料抓取成功！');");
             strOut.AppendLine("goSearch();");
         }

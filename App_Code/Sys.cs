@@ -34,8 +34,8 @@ public partial class Sys
     /// </summary>
     public static string SIServer {
         get {
-            if (Host == "web10") return "web01";
-            if (Host == "web08") return "web02";
+            //if (Host == "web10") return "web01";
+            //if (Host == "web08") return "web02";
             switch (Host.Substring(0, 1)) {
                 case "w":
                 case "b":
@@ -78,11 +78,11 @@ public partial class Sys
     /// </summary>
     public static string Sysmenu {
         get {
-            if (Host == "sinn05") return "nntbrt";//正式環境
-            if (Host == "sic10") return "nctbrt";//正式環境
-            if (Host == "sis10") return "nstbrt";//正式環境
-            if (Host == "sik10") return "nktbrt";//正式環境
-            return "nntbrt";//開發環境
+            if (Host == "sinn05") return "nnbrt";//正式環境
+            if (Host == "sic10") return "ncbrt";//正式環境
+            if (Host == "sis10") return "nsbrt";//正式環境
+            if (Host == "sik10") return "nkbrt";//正式環境
+            return "nnbrt";//開發環境
         }
     }
 

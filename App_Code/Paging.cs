@@ -122,7 +122,7 @@ public class Paging
     public string GetHiddenText(string exclud) {
         string rtn = "";
         string[] excludArray = exclud.Split(',');
-
+        
         Dictionary<string, string> ReqVal = Util.GetRequestParam(HttpContext.Current);
         foreach (KeyValuePair<string, string> p in ReqVal) {
             var pos = Array.FindIndex(excludArray

@@ -156,7 +156,7 @@
     </tr>	
     <tr>
 	    <td class="lightbluetable" colspan="8" valign="top"><INPUT type="radio" id="ttz1_R9Code" name="ttz1_RCode" value="R9" onclick="br_form.CopyStr1(reg.tfz1_remark2,'1',this)">其他<input TYPE="text" id="ttz1_R9" NAME="ttz1_R9" SIZE="50" onchange="br_form.CopyStr1(reg.tfz1_remark2,'0',this)">
-	    <input TYPE="text" id="tfz1_remark2" NAME="tfz1_remark2" value="">
+	    <input TYPE="hidden" id="tfz1_remark2" NAME="tfz1_remark2" value="">
 	    </td>
     </tr>
     <tr>
@@ -845,13 +845,14 @@
             }
 
             //**商標種類2
-            if (jMain.case_main[0].s_mark2 == "H") {
-                $("input[name=tfz1_s_mark2][value='H']").prop("checked", true);//位置
-            } else if (jMain.case_main[0].s_mark2 == "I") {
-                $("input[name=tfz1_s_mark2][value='I']").prop("checked", true);//氣味
-            } else if (jMain.case_main[0].s_mark2 == "J") {
-                $("input[name=tfz1_s_mark2][value='J']").prop("checked", true);//觸覺
-            }
+            $("input[name=tfz1_s_mark2][value='" + jMain.case_main[0].s_mark2 + "']").prop("checked", true);
+            //if (jMain.case_main[0].s_mark2 == "H") {
+            //    $("input[name=tfz1_s_mark2][value='H']").prop("checked", true);//位置
+            //} else if (jMain.case_main[0].s_mark2 == "I") {
+            //    $("input[name=tfz1_s_mark2][value='I']").prop("checked", true);//氣味
+            //} else if (jMain.case_main[0].s_mark2 == "J") {
+            //    $("input[name=tfz1_s_mark2][value='J']").prop("checked", true);//觸覺
+            //}
         }
     }
 </script>

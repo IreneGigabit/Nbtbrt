@@ -79,7 +79,7 @@
     }
 
     protected void APcatResults_ItemDataBound(System.Object sender, System.Web.UI.WebControls.RepeaterItemEventArgs e) {
-        if ((e.Item.ItemType == ListItemType.Item) | (e.Item.ItemType == ListItemType.AlternatingItem)) {
+        if ((e.Item.ItemType == ListItemType.Item) || (e.Item.ItemType == ListItemType.AlternatingItem)) {
             Repeater tempRpt = (Repeater)e.Item.FindControl("APResults");
 
             if ((tempRpt != null)) {

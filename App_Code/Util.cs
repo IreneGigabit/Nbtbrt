@@ -352,7 +352,7 @@ public static partial class Util
 
     public static Dictionary<string, string> GetRequestParam(HttpContext context, bool debug) {
         if (debug) {
-            context.Response.Write(context.Request.RawUrl+"<HR>\n");
+            context.Response.Write(context.Request.RawUrl + "<HR>\n");
         }
         var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         NameValueCollection col = null;
@@ -363,16 +363,20 @@ public static partial class Util
                 context.Response.Write(string.Format("{0}:{1}<br>\n", key, col[key.ToString()]));
             }
             //dict[key.ToString()] = col[key.ToString()].ToBig5().TrimEnd();
-            dict[key.ToString()] = col[key.ToString()].TrimEnd();
+            //dict[key.ToString()] = col[key.ToString()].TrimEnd();
+            dict[key.ToString()] = col[key.ToString()].TrimEnd(new char[] { ' ' });
         }
 
         col = context.Request.QueryString;//get,如果get跟post有同名參數.Request["xxx"]會抓到Get值
         foreach (var key in col.Keys) {
-            if (debug) {
-                context.Response.Write(string.Format("{0}:{1}<br>\n", key, col[key.ToString()]));
+            if (key != null) {
+                if (debug) {
+                    context.Response.Write(string.Format("{0}:{1}<br>\n", key, col[key.ToString()]));
+                }
+                //dict[key.ToString()] = col[key.ToString()].ToBig5().TrimEnd();
+                //dict[key.ToString()] = col[key.ToString()].TrimEnd();
+                dict[key.ToString()] = col[key.ToString()].TrimEnd(new char[] { ' ' });
             }
-            //dict[key.ToString()] = col[key.ToString()].ToBig5().TrimEnd();
-            dict[key.ToString()] = col[key.ToString()].TrimEnd();
         }
         if (debug) context.Response.Write("<HR>\n");
 
@@ -399,6 +403,21 @@ public static partial class Util
 
         return dict;
     }*/
+    #endregion
+
+    #region ParseQueryString - 將Request Post參數轉成Get參數
+    /// <summary>  
+    /// 將Request Post參數轉成Get參數
+    /// </summary>  
+    public static string ParseQueryString(this NameValueCollection col) {
+        string rtn = "";
+        foreach (var key in col.Keys) {
+            rtn += string.Format("&{0}={1}", key, col[key.ToString()]);
+        }
+        if (rtn != "") rtn = rtn.Substring(1);
+
+        return rtn;
+    }
     #endregion
 
     #region IsNumeric - 判斷是否為數值

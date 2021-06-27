@@ -83,8 +83,8 @@
             SQL += " and dowhat='DC' and job_status='NN' and approve_scode is null";
             conn.ExecuteNonQuery(SQL);
             
-            //conn.Commit();
-            conn.RollBack();
+            conn.Commit();
+            //conn.RollBack();
             
             strOut.AppendLine("<div align='center'><h1>資料更新成功</h1></div>");
         }

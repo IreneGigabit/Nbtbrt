@@ -74,6 +74,7 @@
             StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Eblank\">[申請人新增]</a>\n";
             if((Request["cust_seq"]??"")!=""){
                 StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
+                StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt11_1.aspx") + "?prgid=" + prgid + "&cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"_blank\">[案件查詢]</a>\n";
             }
             if((Request["homelist"]??"")!="homelist"){
                 StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";

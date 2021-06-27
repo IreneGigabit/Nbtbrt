@@ -51,8 +51,8 @@
                 
                 doUpdateDB();
                 strOut.AppendLine("<div align='center'><h1>國內案不發文註記取消成功</h1></div>");
-                //conn.Commit();
-                conn.RollBack();
+                conn.Commit();
+                //conn.RollBack();
             }
             catch (Exception ex) {
                 conn.RollBack();

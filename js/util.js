@@ -107,7 +107,7 @@ function ajaxByPost(url, param) {
         type: "post",
         cache: false,
         async: false,
-        data: JSON.stringify(param)
+        data: param
     });
 }
 //#endregion

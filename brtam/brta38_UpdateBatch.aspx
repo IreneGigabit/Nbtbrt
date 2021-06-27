@@ -121,12 +121,12 @@
                     doUpdateDB();
                     strOut.AppendLine("<div align='center'><h1>官方發文成功!!!</h1></div>");
                 }
-                //conn.Commit();
-                //connm.Commit();
-                //conni2.Commit();
-                conn.RollBack();
-                connm.RollBack();
-                conni2.RollBack();
+                conn.Commit();
+                connm.Commit();
+                conni2.Commit();
+                //conn.RollBack();
+                //connm.RollBack();
+                //conni2.RollBack();
             }
             catch (Exception ex) {
                 conn.RollBack();

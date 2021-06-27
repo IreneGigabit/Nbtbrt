@@ -146,7 +146,7 @@
 	        <tr id="tr_send_way">
 		        <td class="lightbluetable" align="right">發文方式：</td>
 		        <td class="whitetablebg" align="left" colspan=3>
-			        <input type="text" id="hsend_way" name="hsend_way" value="">
+			        <input type="hidden" id="hsend_way" name="hsend_way" value="">
 			        <input type="radio" name="send_way" id="send_wayM" value="M"><label for="send_wayM">非電子送件</label>
 			        <input type="radio" name="send_way" id="send_wayE" value="E"><label for="send_wayE">電子送件</label>
 			        <input type="radio" name="send_way" id="send_wayEA" value="EA"><label for="send_wayEA">註冊費電子送件</label>

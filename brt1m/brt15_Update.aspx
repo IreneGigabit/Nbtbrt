@@ -148,8 +148,8 @@
         SQL += " where temp_rs_sqlno=" + Request["grconf_sqlno"] + " and dowhat='SALES_GR' and job_status like 'N%'";
         conn.ExecuteNonQuery(SQL);
 
-        //conn.Commit();
-        conn.RollBack();
+        conn.Commit();
+        //conn.RollBack();
 
         string fseq = Sys.formatSeq1(seq, seq1, "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
         strOut.AppendLine("<div align='center'><h3><font color=blue>案件編號：" + fseq + "<font color=red>官方收文確認成功</font>" +

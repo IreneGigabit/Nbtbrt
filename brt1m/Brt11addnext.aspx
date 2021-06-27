@@ -101,24 +101,24 @@
 </table>
 
 <form style="margin:0;" id="reg" name="reg" method="post">
-<INPUT TYPE=hidden name=submitTask value="">
-<INPUT TYPE=hidden name=prgid value="<%=prgid%>">
-<INPUT TYPE=hidden name=tscode value="<%=F_tscode%>">
-<INPUT TYPE=hidden name=cust_area value="<%=cust_area%>">
-<INPUT TYPE=hidden name=cust_seq value="<%=cust_seq%>">
-<INPUT TYPE=hidden name=in_no value="<%=in_no%>">
-<INPUT TYPE=hidden name=ar_form value="<%=ar_Form%>">
-<INPUT TYPE=hidden name=prt_code value="<%=prt_code%>">
-<INPUT TYPE=hidden name=new_form value="<%=new_form%>">
-<INPUT TYPE=hidden name=add_arcase value="<%=add_arcase%>">
-<INPUT TYPE=hidden name=seq value="<%=seq%>">
-<INPUT TYPE=hidden name=seq1 value="<%=seq1%>">
-<INPUT TYPE=hidden name=code_type value="<%=code_type%>">
-<INPUT TYPE=hidden name=uploadtype value="case">
+<INPUT TYPE=hidden id=submitTask name=submitTask value="">
+<INPUT TYPE=hidden id=prgid name=prgid value="<%=prgid%>">
+<INPUT TYPE=hidden id=tscode name=tscode value="<%=F_tscode%>">
+<INPUT TYPE=hidden id=cust_area name=cust_area value="<%=cust_area%>">
+<INPUT TYPE=hidden id=cust_seq name=cust_seq value="<%=cust_seq%>">
+<INPUT TYPE=hidden id=in_no name=in_no value="<%=in_no%>">
+<INPUT TYPE=hidden id=ar_form name=ar_form value="<%=ar_Form%>">
+<INPUT TYPE=hidden id=prt_code name=prt_code value="<%=prt_code%>">
+<INPUT TYPE=hidden id=new_form name=new_form value="<%=new_form%>">
+<INPUT TYPE=hidden id=add_arcase name=add_arcase value="<%=add_arcase%>">
+<INPUT TYPE=hidden id=seq name=seq value="<%=seq%>">
+<INPUT TYPE=hidden id=seq1 name=seq1 value="<%=seq1%>">
+<INPUT TYPE=hidden id=code_type name=code_type value="<%=code_type%>">
+<INPUT TYPE=hidden id=uploadtype name=uploadtype value="case">
 
-<INPUT TYPE=hidden name=fromprg value="addnext">
-<INPUT TYPE=hidden name=tfx_cust_area value="<%=cust_area%>">
-<INPUT TYPE=hidden name=tfx_cust_seq value="<%=cust_seq%>">
+<INPUT TYPE=hidden id=fromprg name=fromprg value="addnext">
+<INPUT TYPE=hidden id=tfx_cust_area name=tfx_cust_area value="<%=cust_area%>">
+<INPUT TYPE=hidden id=tfx_cust_seq name=tfx_cust_seq value="<%=cust_seq%>">
 </form>
     <table border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
         <tr>
@@ -146,7 +146,8 @@
         }
     });
 
-    function AddForm(){
+    function AddForm() {
+        $("#in_no").val("");
         reg.action = "Brt11Add" + reg.new_form.value + ".aspx";
         reg.submitTask.value = "Add";
         reg.submit();
@@ -159,9 +160,8 @@
     }
 	
     function QueryForm() {
-        //***todo
-        reg.action = "Brt11ListA.aspx";
-        //reg.action = "Brt12List.aspx";
+        $("#prgid").val("brt12");
+        reg.action = "Brt12_List.aspx";
         reg.submit();
     }
 </script>

@@ -71,10 +71,10 @@
                         doBack();
                         strOut.AppendLine("<div align='center'><h3><font color=blue>案件編號：" + fseq + "<font color=red>官方收文退回總管處成功</font></h3></div>");
                     }
-                    //conn.Commit();
-                    //connm.Commit();
-                    conn.RollBack();
-                    connm.RollBack();
+                    conn.Commit();
+                    connm.Commit();
+                    //conn.RollBack();
+                    //connm.RollBack();
                 }
             }
             catch (Exception ex) {

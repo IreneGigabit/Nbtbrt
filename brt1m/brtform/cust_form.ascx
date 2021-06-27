@@ -124,6 +124,10 @@
 	<TD class=whitetablebg><INPUT TYPE=text id=F_tacc_fax size=15 maxlength=15 class="SEdit" readonly></TD>
 </TR>
 <TR>
+	<TD class=lightbluetable align="right">商標會計手機：</TD>
+	<TD class=whitetablebg colspan=3><INPUT TYPE=text id=F_tacc_mobile size=22 maxlength=30 class="SEdit" readonly></TD>
+</TR>
+<TR>
 	<TD class=lightbluetable align="right">專利對帳聯絡人：</TD>
 	<TD class=whitetablebg><INPUT TYPE=text id=F_acc_attention size=40 maxlength=60 class="SEdit" readonly></TD>
 	<TD class=lightbluetable align="right">專利對帳聯絡人職稱：</TD>
@@ -148,6 +152,10 @@
 	</TD>
 	<TD class=lightbluetable align="right">專利會計傳真：</TD>
 	<TD class=whitetablebg><INPUT TYPE=text id=F_acc_fax size=15 maxlength=15 class="SEdit" readonly></TD>
+</TR>
+<TR>
+	<TD class=lightbluetable align="right">專利會計手機：</TD>
+	<TD class=whitetablebg colspan=3><INPUT TYPE=text id=F_acc_mobile size=22 maxlength=30 class="SEdit" readonly></TD>
 </TR>
 <TR>
 	<TD class=lightbluetable align="right">郵寄雜誌：</TD>
@@ -271,6 +279,7 @@
                 $("#F_acc_attention").val(jCust.pacc_attention);
                 $("#F_acc_title").val(jCust.pacc_title);
                 $("#F_acc_email").val(jCust.pacc_email);
+                $("#F_acc_mobile").val(jCust.acc_mobile);
 
                 $("#F_tacc_zip").val(jCust.tacc_zip);
                 $("#F_tacc_addr1").val(jCust.tacc_addr1);
@@ -282,6 +291,7 @@
                 $("#F_tacc_attention").val(jCust.tacc_attention);
                 $("#F_tacc_title").val(jCust.tacc_title);
                 $("#F_tacc_email").val(jCust.tacc_email);
+                $("#F_tacc_mobile").val(jCust.tacc_mobile);
 
                 $("#F_mark").val(jCust.cust_remark);
                 attent_form.getatt($("#F_cust_area").val(), $("#F_cust_seq").val());//重新抓聯諾人

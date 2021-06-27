@@ -181,15 +181,15 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-	<input type="text" id="submittask" name="submittask" value="<%=submitTask%>">
-	<input type="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <input type="text" id="brtran_sqlno" name="brtran_sqlno" value="<%=brtran_sqlno%>"><!--轉案流水號-->
-    <input type="text" id="old_brtran_sqlno" name="old_brtran_sqlno" value="<%=old_brtran_sqlno%>"><!--原始單位轉案流水號-->
-    <input type="text" id="todo_sqlno" name="todo_sqlno" value="<%=todo_sqlno%>"><!--轉案todo流水號-->
-    <input type="text" id="emg_scodelist" name="emg_scodelist" value="<%=emg_scodelist%>"><!--Email通知總管處人員正本-->
-    <input type="text" id="emg_scodelist1" name="emg_scodelist1" value="<%=emg_scodelist1%>"><!--Email通知總管處人員副本-->
-    <input type="text" id="emg_flag" name="emg_flag" value="N"><!--是否通知總管處,是Y否N-->
-    <input type="text" id="tran_seq_date" name="tran_seq_date" value="<%=tran_seq_date%>"><!--原單位通知轉案日期-->
+	<input type="hidden" id="submittask" name="submittask" value="<%=submitTask%>">
+	<input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <input type="hidden" id="brtran_sqlno" name="brtran_sqlno" value="<%=brtran_sqlno%>"><!--轉案流水號-->
+    <input type="hidden" id="old_brtran_sqlno" name="old_brtran_sqlno" value="<%=old_brtran_sqlno%>"><!--原始單位轉案流水號-->
+    <input type="hidden" id="todo_sqlno" name="todo_sqlno" value="<%=todo_sqlno%>"><!--轉案todo流水號-->
+    <input type="hidden" id="emg_scodelist" name="emg_scodelist" value="<%=emg_scodelist%>"><!--Email通知總管處人員正本-->
+    <input type="hidden" id="emg_scodelist1" name="emg_scodelist1" value="<%=emg_scodelist1%>"><!--Email通知總管處人員副本-->
+    <input type="hidden" id="emg_flag" name="emg_flag" value="N"><!--是否通知總管處,是Y否N-->
+    <input type="hidden" id="tran_seq_date" name="tran_seq_date" value="<%=tran_seq_date%>"><!--原單位通知轉案日期-->
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>

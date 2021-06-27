@@ -42,8 +42,8 @@
                 //if (prgid == "brt52") {//沒有路走到這裡
                 //    logReason = "brt52國內案交辦資料維護作業";//(未客收確認)
                 //    doUpdateDB1();
-                //    //conn.Commit();
-                //    conn.RollBack();
+                //    conn.Commit();
+                //    //conn.RollBack();
                 //
                 //    strOut.AppendLine("<div align='center'><h1>資料更新成功</h1></div>");
                 //} else {
@@ -255,6 +255,7 @@
         SQL = "Delete dmt_temp_ap where in_no='" + Request["in_no"] + "' and case_sqlno=0";
         conn.ExecuteNonQuery(SQL);
         for (int i = 1; i <= Convert.ToInt32("0" + Request["apnum"]); i++) {
+            SQL = "insert into dmt_temp_ap ";
             ColMap.Clear();
             ColMap["in_no"] = Util.dbchar(Request["in_no"]);
             ColMap["case_sqlno"] = "0";
@@ -281,9 +282,9 @@
             ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
             ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
             ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+            ColMap["ap_sort"] = Util.dbnull(Request["ap_sort_" + i]);
 
-            SQL = "insert into dmt_temp_ap " + ColMap.GetInsertSQL();
-            //Response.Write(SQL + "<HR>");
+            SQL += ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
         }
 
@@ -408,6 +409,8 @@
             ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
             ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
             ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+            ColMap["ap_sort"] = Util.dbnull(Request["ap_sort_" + i]);
+            
             SQL += ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
         }

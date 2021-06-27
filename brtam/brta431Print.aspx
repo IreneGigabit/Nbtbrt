@@ -157,7 +157,7 @@
 	<asp:Repeater id="grpRepeater" runat="server" OnItemDataBound="grpRepeater_ItemDataBound" Visible='<%#bool.Parse((grpRepeater.Items.Count>0).ToString())%>'>
     <HeaderTemplate>
         <table border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%">	
-			<tr align="center" height="20" class="lightbluetable" style="font-size:12pt">
+			<tr align="center" class="lightbluetable" style="font-size:12pt">
 		        <td nowrap>本所編號</td>
 		        <td nowrap>進度</td>
 		        <td>商標名稱</td>
@@ -169,28 +169,22 @@
 	<ItemTemplate>
 		<tr class="<%#Eval("tclass")%>">
 		    <td nowrap align="center"><%#Eval("fseq")%></td>
-		    <td nowrap align="center">&nbsp;<%#Eval("step_grade")%></td>
+		    <td nowrap align="center"><%#Eval("step_grade")%></td>
 		    <td align="center">&nbsp;<%#Eval("cappl_name")%></td>
-		    <td nowrap align="center">&nbsp;<%#Eval("rs_detail")%></td>
+		    <td align="center">&nbsp;<%#Eval("rs_detail")%></td>
 		    <td nowrap align="center">&nbsp;<%#Eval("scodenm")%></td>
 	        <asp:Repeater id="dtlRepeater" runat="server" OnItemDataBound="dtlRepeater_ItemDataBound">
                 <ItemTemplate>
-                <asp:Panel runat="server" Visible='<%#Container.ItemIndex == 0 %>'><!--第1筆期限要顯示在上一層-->
-                    <td nowrap align=left>
-                        <font color="<%#Eval("tcolor")%>"><%#Eval("code_name").ToString().Left(2)%>&nbsp;<%#Eval("ctrl_date","{0:yyyy/M/d}")%></font>
-                    </td>
-		        </tr>
-                </asp:Panel>
-                <asp:Panel runat="server" Visible='<%#Container.ItemIndex != 0 %>'><!--其餘期限顯示在下層-->
+                <asp:Panel runat="server" Visible='<%#Container.ItemIndex != 0 %>'><!--第1筆期限要顯示在上一層,其餘期限顯示在下層(要補前面的空格)-->
 		        <tr class="<%#DataBinder.Eval(((RepeaterItem)Container.Parent.Parent).DataItem, "tclass") %>">
 			        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
-                    <td nowrap align=left>
-                        <font color="<%#Eval("tcolor")%>"><%#Eval("code_name").ToString().Left(2)%>&nbsp;<%#Eval("ctrl_date","{0:yyyy/M/d}")%></font>
-                    </td>
-		        </tr>
                 </asp:Panel>
+                <td nowrap align=left>
+                    <font color="<%#Eval("tcolor")%>"><%#Eval("code_name").ToString().Left(2)%>&nbsp;<%#Eval("ctrl_date","{0:yyyy/M/d}")%></font>
+                </td>
                 </ItemTemplate>
             </asp:Repeater>
+		</tr>
     </ItemTemplate>
     <FooterTemplate>
             <tr class="lightbluetable" style="font-size:10pt;color:DarkBlue">

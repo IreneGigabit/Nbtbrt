@@ -32,7 +32,8 @@
 
         html_send_cl = Sys.getCustCode("SEND_CL", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_send_sel = Sys.getCustCode("SEND_SEL", "", "cust_code").Option("{cust_code}", "{code_name}");
-        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", true, "", "sort=01");
+        //html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", true, "", "sort=01");
+        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "vsort='{sort}'",true);
         html_rfees_stat = Sys.getCustCode("fees_stat", "", "sql").Radio("rfees_stat", "{cust_code}", "{code_name}", "class=\"" + Lock.TryGet("QLock") + "\" onclick=\"fees_stat_onclick()\"");
         html_send_way = Sys.getCustCode("GSEND_WAY", "", "sortfld").Option("{cust_code}", "{code_name}");
 
@@ -60,7 +61,7 @@
 			<input type="text" id="scgrs" name="scgrs" size=4 class=sedit readonly>
 		</TD>
 		<TD class=lightbluetable align=right>發文日期：</TD>
-		<TD class=whitetablebg><input type="text" id="step_date" name="step_date" size="10" class="dateField <%=Lock.TryGet("QLock")%>"></TD>
+		<TD class=whitetablebg><input type="text" id="step_date" name="step_date" size="10" class="dateField <%=Lock.TryGet("QLock")%>"><input type="text" id="old_step_date" name="old_step_date"></TD>
 		<TD class=lightbluetable align=right>總發文日期：</TD>
 		<TD class=whitetablebg><input type="text" id="mp_date" name="mp_date" size="10" class="dateField <%=Lock.TryGet("QLock")%>"></TD>
 	</TR>
@@ -285,6 +286,120 @@
         $("input[name='opt_branch'][value='<%#opt_branch%>']").prop("checked",true);
     }
 
+    brta311form.bind = function (jData, jFees) {
+        $("#rs_no").val(jData.rs_no);
+        $("#cgrs").val(jData.cgrs).triggerHandler("change");
+        $("#old_step_date").val(jData.step_date);
+        if (jData.step_grade != undefined) $("#nstep_grade").val(jData.step_grade);
+        $("#step_date").val(jData.step_date);
+        $("#mp_date").val(jData.mp_date);
+        $("#send_cl option[value='" + jData.send_cl + "']").prop("selected", true);
+        $("#send_cl1 option[value='" + jData.send_cl1 + "']").prop("selected", true);
+        $("#send_sel option[value='" + jData.send_sel + "']").prop("selected", true);
+        $("#rs_type").val(jData.rs_type).triggerHandler("change");
+        $("#rs_class_name").val(jData.rs_class_name);
+        $("#rs_code_name").val(jData.rs_code_name);
+        $("#act_code_name").val(jData.act_code_name);
+        $("#case_arcase_class").val(jData.rs_class);
+        $("#case_arcase").val(jData.rs_code);
+        $("#rs_class option[value='" + jData.rs_class + "']").prop("selected", true);
+        $("#rs_class").triggerHandler("change");
+        $("#hrs_class").val(jData.rs_class);
+        $("#hrs_code").val(jData.rs_code);
+        $("#hact_code").val(jData.act_code);
+        $("#hmarkb").val(jData.markb);
+        $("#rs_code option[value='" + jData.rs_code + "']").prop("selected", true);
+        $("#rs_code").triggerHandler("change");
+        $("#act_sqlno").val(jData.act_sqlno);
+        if ((jData.act_code || "") == "") {
+            $("#act_code option[value='_']").prop("selected", true);
+        } else {
+            $("#act_code option[value='" + jData.act_code + "']").prop("selected", true);
+        }
+        $("#act_code").triggerHandler("change");
+        if (jData.ncase_stat != undefined) $("#ncase_stat").val(jData.ncase_stat);
+        if (jData.ncase_statnm != undefined) $("#ncase_statnm").val(jData.ncase_statnm);
+        if (jData.rs_detail != undefined) $("#rs_detail").val(jData.rs_detail);
+        $("#send_way option[value='" + jData.send_way + "']").prop("selected", true);
+        if (jData.old_send_way != undefined) {
+            $("#old_send_way").val(jData.old_send_way);
+        } else {
+            $("#old_send_way").val(jData.send_way);
+        }
+        $("#rs_agt_no").val(jData.rs_agt_no);
+        $("#rs_agt_nonm").val(jData.rs_agt_nonm);
+        if (jData.pr_scode != undefined) {
+            $("#pr_scode option[value='" + jData.pr_scode + "']").prop("selected", true);
+        } else {
+            $("#pr_scode option[vsort='01']").prop("selected", true);//預設值
+        }
+        $("#fees").val(jData.fees);
+        $("#fees_stat").val(jData.fees_stat);
+        $("input[name='rfees_stat'][value='" + jData.fees_stat + "']").prop("checked", true);
+        //if (main.submittask == "A") {
+        //    if ((main.right & 128) != 0 || (main.right & 256) != 0) {
+        //        $("input[name='rfees_stat']:eq(0)").prop("checked", true);
+        //    }
+        //} else {
+        //    if ((main.right & 128) != 0 || (main.right & 256) != 0) {
+        //        $("input[name='rfees_stat'][value='" + jData.fees_stat + "']").prop("checked", true);
+        //    }
+        //}
+        $("#receipt_type option[value='" + jData.receipt_type + "']").prop("selected", true);
+        $("#receipt_title option[value='" + jData.receipt_title + "']").prop("selected", true);
+        $("#rectitle_name").val(jData.rectitle_name);
+        $("input[name='opt_branch'][value='" + jData.opt_branch + "']").prop("checked", true);
+        $("#span_chk_type").html(jData.chk_typestr);
+
+        if (main.prgid1 == "brta81" || main.prgid == "brta38") {
+            if (jData.case_no != "") {
+                brta311form.add_ar();//增加一筆交辦單號
+            }
+            brta311form.get_dstep(jData.rs_no);//取得一案多件子本所編號資料
+        } else {
+            if (main.submittask == "A") {
+                brta311form.add_ar();//增加一筆交辦單號
+            }
+
+            if (main.submittask == "U" || main.submittask == "Q" || main.submittask == "D") {
+                brta311form.appendFees(jFees);//交辦單號明細
+                brta311form.get_dstep(jData.rs_no);//取得一案多件子本所編號資料
+            }
+        }
+    }
+
+    brta311form.appendFees = function (jData) {
+        $.each(jData, function (i, item) {
+            brta311form.add_ar();//增加一筆交辦單號
+            var nRow = $("#arnum").val();
+            if (CInt(nRow) == 1) {
+                $("#case_change").val(item.change);
+                $("#case_arcase_class").val(item.arcase_class);
+                $("#case_arcase").val(item.arcase);
+            }
+
+            $("#case_no_" + nRow).val(item.case_no);
+            $("#oldcase_no_" + nRow).val(item.case_no);
+            $("#rs_type_" + nRow).val(item.arcase_type);
+            $("#gs_fees_" + nRow).val(item.fees);
+            $("#tot_fees").val(CInt($("#tot_fees").val())+CInt(item.fees));
+            $("#hngs_fees_" + nRow).val(item.fees);
+            $("#arcasenm_" + nRow).val(item.arcasenm);
+            $("#fees_" + nRow).val(item.case_fees);
+            $("#hgs_fees_" + nRow).val(CInt(item.gs_fees)+CInt(item.fees));
+            $("#service_" + nRow).val(item.service);
+            if(CInt(item.gs_curr)>=1){
+                $("#gs_curr_" + nRow).val(CInt(item.gs_curr)-1);//不包含自己
+            }else{
+                $("#gs_curr_" + nRow).val(item.gs_curr);
+            }
+            $("#ar_marknm_" + nRow).val(item.ar_marknm);
+            $("#case_agt_no_" + nRow).val(item.agt_no);
+            $("#agt_nonm_" + nRow).val(item.receipt+"_"+item.agt_name);
+        });
+        $("#oldarnum").val(jData.length);
+    }
+    /*
     brta311form.bind = function (jData) {
         $("#rs_no").val(jData.rs_no);
         $("#cgrs").val(jData.cgrs).triggerHandler("change");
@@ -325,11 +440,21 @@
         }
         $("#rs_agt_no").val(jData.rs_agt_no);
         $("#rs_agt_nonm").val(jData.rs_agt_nonm);
-        $("#pr_scode option[value='" + jData.pr_scode + "']").prop("selected", true);
+        if (jData.pr_scode != undefined) {
+            $("#pr_scode option[value='" + jData.pr_scode + "']").prop("selected", true);
+        } else {
+            $("#pr_scode option[vsort='01']").prop("selected", true);//預設值
+        }
         $("#fees").val(jData.fees);
         $("#fees_stat").val(jData.fees_stat);
-        if ((main.right & 128) != 0 || (main.right & 256) != 0) {
-            $("input[name='rfees_stat'][value='" + jData.fees_stat + "']").prop("checked", true);
+        if (main.submittask == "A") {
+            if ((main.right & 128) != 0 || (main.right & 256) != 0) {
+                $("input[name='rfees_stat']:eq(0)").prop("checked", true);
+            }
+        } else {
+            if ((main.right & 128) != 0 || (main.right & 256) != 0) {
+                $("input[name='rfees_stat'][value='" + jData.fees_stat + "']").prop("checked", true);
+            }
         }
         $("#receipt_type option[value='" + jData.receipt_type + "']").prop("selected", true);
         $("#receipt_title option[value='" + jData.receipt_title + "']").prop("selected", true);
@@ -337,6 +462,7 @@
         $("input[name='opt_branch'][value='" + jData.opt_branch + "']").prop("checked", true);
         $("#span_chk_type").html(jData.chk_typestr);
     }
+    */
 
     //官發、客發 控制畫面
     $("#cgrs").change(function () {
@@ -350,7 +476,6 @@
             $("#scgrs").val("客發");
         }
     });
-
 
     //依rs_type帶結構分類
     $("#rs_type").change(function () {
@@ -634,6 +759,14 @@
         }
     }
 
+   //顯示交辦單號
+    brta311form.getcase_no_data1 = function (case_no) {
+        if (case_no != "") {
+            $("#case_no_1").val(case_no);
+            brta311form.getmoney(1);
+        }
+    }
+
     //依交辦單號抓取服務費、規費
     brta311form.getmoney = function (nRow) {
         var case_no=$("#case_no_"+nRow).val();
@@ -771,7 +904,7 @@
         }
     }
 
-    //取得子案
+    //取得子案案號
     brta311form.get_dseq = function (pcase_no) {
         if ($("#rs_code").val() == null) return;
         if ($("#rs_code").val() == "FC11"||$("#rs_code").val() == "FC21" || $("#rs_code").val().Left(2) == "FD"
@@ -962,6 +1095,68 @@
             $("#dseqdel_"+nRow).val("D");
         }else{
             $("#dseqdel_"+nRow).val("");
+        }
+    }
+
+    //取得發文進度子案
+    brta311form.get_dstep = function (rs_no) {
+        if ($("#rs_code").val() == null) return;
+        if ($("#rs_code").val() == "FC11" || $("#rs_code").val() == "FC21" || $("#rs_code").val().Left(2) == "FD"
+            || $("#rs_code").val() == "FC5" || $("#rs_code").val() == "FC6" || $("#rs_code").val() == "FC7" || $("#rs_code").val() == "FC8"
+            || $("#rs_code").val() == "FCH" || $("#hrs_code").val() == "FCI" || $("#hrs_code").val() == "FL5" || $("#hrs_code").val() == "FL6"
+             || $("#hrs_code").val() == "FT2") {
+
+            var isql = "select * from vstep_dmt where main_rs_no ='" + rs_no + "'";
+            isql += " and main_rs_no <> rs_no order by rs_no";
+            $.ajax({
+                type: "get",
+                url: getRootPath() + "/ajax/JsonGetSqlData.aspx",
+                data: { sql: isql },
+                async: false,
+                cache: false,
+                success: function (json) {
+                    var jSeq = $.parseJSON(json);
+                    if (jSeq.length > 0) {
+                        $("#tabar1").show();
+                    }
+                    $.each(jSeq, function (i, item) {
+                        brta311form.dseqAdd("Y");
+                        var tot_num = $("#tot_num").val();
+                        $("#dseq_" + tot_num).val(item.seq);
+                        $("#dseq1A_" + tot_num).val(item.seq1);
+                        $("#hrs_no_" + tot_num).val(item.rs_no);
+                        $("#keydseq_" + tot_num).val("Y");
+                        $("#btndseq_ok_" + tot_num).lock();
+                        var smark = "商標";
+                        if (item.s_mark == "S") {
+                            smark = "服務";
+                        } else if (item.s_mark == "L") {
+                            smark = "證明";
+                        } else if (item.s_mark == "M") {
+                            smark = "團體標章";
+                        } else if (item.s_mark == "N") {
+                            smark = "團體商標";
+                        } else if (item.s_mark == "K") {
+                            smark = "產地證明標章";
+                        }
+                        $("#s_mark_" + tot_num).val(smark);
+                        $("#appl_name_" + tot_num).val(item.cappl_name);
+
+                        if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH" || $("#hrs_code").val() == "FD1") {
+                            $("#dref_no_" + tot_num).val(item.apply_no);
+                        } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FD2" || $("#hrs_code").val() == "FD3"
+                            || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI"
+                            || $("#hrs_code").val() == "FL5" || $("#hrs_code").val() == "FL6" || $("#hrs_code").val() == "FT2") {
+                            $("#dref_no_" + tot_num).val(item.issue_no);
+                        }
+                        $("#dclass_" + tot_num).val(item.class);
+                    })
+                },
+                error: function (xhr) {
+                    $("#dialog").html("<a href='" + this.url + "' target='_new'>取得發文進度子案失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                    $("#dialog").dialog({ title: '取得發文進度子案失敗！', modal: true, maxHeight: 500, width: "90%" });
+                }
+            });
         }
     }
 

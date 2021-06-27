@@ -54,7 +54,6 @@
         if (menu != "Y") {
             if(prgid=="brta21"||prgid=="brta31"||prgid=="brta32"){//brta21國內案官方收文作業//brta31國內案官方發文作業//brta32國內案客戶發文作業
                 StrFormBtnTop += "<a href="+prgid+"_edit.aspx?submittask="+submitTask+"&prgid=" + prgid + "&cgrs=" + cgrs + ">[新增]</a>";
-                
             }
         } else {
             submitTask = "Q";
@@ -85,12 +84,12 @@
         
         //營洽清單
         if ((HTProgRight & 64) != 0) {
-            td_tscode = "<input type=text id=scode1 name=scode1>";
+            td_tscode = "<input type=hidden id=scode1 name=scode1>";
             td_tscode += "<select id='sscode1' name='sscode1' onchange='reg.scode1.value=this.value'>";
             td_tscode += Sys.getLoginGrpSales().Option("{scode}", "{scode}_{sc_name}");
             td_tscode += "</select>";
         } else {
-            td_tscode = "<input type='text' id='scode1' name='scode1' value='" + Session["scode"] + "'>";
+            td_tscode = "<input type='hidden' id='scode1' name='scode1' value='" + Session["scode"] + "'>";
             td_tscode = "<input id=sscode1 name=sscode1 readonly class=SEdit size=5 value='" + Session["scode"] + "'>" + Session["sc_name"];
         }
         
@@ -170,12 +169,11 @@
 		        <TD class=lightbluetable align=right><span class="rsnotitle">收/發文</span>種類：</TD>
 		        <TD class=whitetablebg align=left colspan=3>
 			    <select id=cgrs name=cgrs>
-			        <!--<option value="CR">客收</option>-->
-			        <!--<option value="GR">官收</option>-->
-			        <option value="GS">官發</option>
-			        <option value="CS">客發</option>
-			        <!--<option value="ZR">本收</option>-->
-			        <option value="ZS">本發</option>
+			        <option value="CR">客收</option><!--brta22-->
+			        <option value="GR">官收</option><!--brta21-->
+			        <option value="GS">官發</option><!--brta31-->
+			        <option value="CS">客發</option><!--brta22-->
+			        <option value="ZS">本發</option><!--brta34-->
 			    </select>
 		        </TD>
 	        </TR>
@@ -217,7 +215,7 @@
 		        </td>
 		        <TD class=lightbluetable align=right>承辦人員：</TD>
 		        <td class=whitetablebg align="left">
-			        <input type=text id=pr_scode name=pr_scode>
+			        <input type=hidden id=pr_scode name=pr_scode>
 			        <span id=span_pr_scode>
 			        <select id='spr_scode' name='spr_scode' onchange="reg.pr_scode.value=this.value">
 			        <%#html_pr_scode%>
@@ -261,7 +259,7 @@
         $("#sstep_date").val(Today().format("yyyy/M/1"));
         $("#estep_date").val(Today().format("yyyy/M/d"));
 
-        //$("#cgrs").triggerHandler("change");
+        $("#cgrs").triggerHandler("change");
 
         $("#cust_area").val("<%=Session["seBranch"]%>");
         $("#qrycgrs option[value='" + $("#cgrs").val() + "']").prop("selected", true);
@@ -340,11 +338,22 @@
             }
         }
 
-        if ($("#cgrs").val() == "CS") {
+        reg.action = "brta21_List.aspx";
+
+        if ($("#cgrs").val() == "CR") {//客收
+            $("#prgid").val("brta22");
+            reg.action = "brta21_List_cr.aspx";
+        } else if ($("#cgrs").val() == "GR") {//官收
+            $("#prgid").val("brta21");
+        } else if ($("#cgrs").val() == "GS") {//官發
+            $("#prgid").val("brta31");
+        } else if ($("#cgrs").val() == "CS") {//客發
+            $("#prgid").val("brta22");
             reg.action = "brta21_List_cs.aspx";
-        } else {
-            reg.action = "brta21_List.aspx";
+        } else if ($("#cgrs").val() == "ZS") {//本發
+            $("#prgid").val("brta34");
         }
+
         reg.submit();
     });
 </script>

@@ -50,7 +50,8 @@
 
     private void PageLayout() {
         //StrFormBtnTop += "<a href=\"" + HTProgPrefix + ".aspx?prgid=" + prgid + "\" >[查詢]</a>";
-        StrFormBtnTop += "<a href=\"javascript:window.history.back()\" >[查詢]</a>";
+        StrFormBtnTop += "<a href=\"" + HTProgPrefix + ".aspx?prgid=" + prgid + "\" >[回查詢]</a>";
+        //StrFormBtnTop += "<a href=\"javascript:window.history.back()\" >[查詢]</a>";
     }
 
     private void QueryData() {
@@ -100,7 +101,7 @@
     }
 
     protected void dataRepeater_ItemDataBound(object sender, RepeaterItemEventArgs e) {
-        if ((e.Item.ItemType == ListItemType.Item) | (e.Item.ItemType == ListItemType.AlternatingItem)) {
+        if ((e.Item.ItemType == ListItemType.Item) || (e.Item.ItemType == ListItemType.AlternatingItem)) {
             Repeater rsRepeater = (Repeater)e.Item.FindControl("rsRepeater");
             if ((rsRepeater != null)) {
                 rsRepeater.DataSource = ds.Tables[1];
@@ -185,8 +186,8 @@
 		            <td align="center"><%#Eval("ap_cname1")%></td>
 		            <td align="center"><%#Eval("ap_crep")%></td>
 		            <td align="center"><%#Eval("id_no")%></td>
-		            <td align="center"><%#Util.parseDBDate(Eval("in_date").ToString(),"yyyy/M/d")%></td>
-		            <td align="center"><%#Util.parseDBDate(Eval("dmt_date").ToString(),"yyyy/M/d")%></td>
+		            <td align="center"><%#Eval("in_date","{0:yyyy/M/d}")%></td>
+		            <td align="center"><%#Eval("dmt_date","{0:yyyy/M/d}")%></td>
 		            <td align="center">
                         <asp:Repeater id="rsRepeater" runat="server">
                             <HeaderTemplate>
@@ -199,8 +200,8 @@
                         </asp:Repeater>
 		            </td>
 		            <td align="center">
-                        [<a href="Brt11_1.asp?cust_area=<%#Eval("cust_area")%>&cust_seq=<%#Eval("cust_seq")%>&prgid=brt11&Type=Brt"><font color="blue">舊案檢索</font></a>]
-                        [<a href="Brt11ListA.aspx?cust_area=<%#Eval("cust_area")%>&cust_seq=<%#Eval("cust_seq")%>"><font color="blue">維護/交辦</font></a>]
+                        [<a href="Brt11_1.aspx?cust_area=<%#Eval("cust_area")%>&cust_seq=<%#Eval("cust_seq")%>&prgid=<%#prgid%>&Type=Brt"><font color="blue">舊案檢索</font></a>]
+                        [<a href="brt12_List.aspx?tfx_cust_area=<%#Eval("cust_area")%>&tfx_cust_seq=<%#Eval("cust_seq")%>&prgid=<%#prgid%>"><font color="blue">維護/交辦</font></a>]
 		            </td>
 				</tr>
 			</ItemTemplate>

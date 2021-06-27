@@ -204,6 +204,7 @@
                 add_zs["opt_branch"] = dr.SafeRead("opt_branch", "");
                 add_zs["rs_agt_no"] = dr.SafeRead("rs_agt_no", "");
 
+                add_zs["cr_rs_no"] = "";
                 DataTable dtStepCR= Sys.StepDmt(conn, add_zs["seq"], add_zs["seq1"], "and zs_rs_sqlno='" + dr.SafeRead("rs_sqlno", "") + "'");
                 if (dtStepCR.Rows.Count > 0) {
                     add_zs["case_no"] = dtStepCR.Rows[0].SafeRead("case_no", "");

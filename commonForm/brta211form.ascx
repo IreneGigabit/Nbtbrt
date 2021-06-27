@@ -272,6 +272,12 @@
         $("#mwork_date").val(jData.mwork_date);
         $("#mail_scname").val(jData.mail_scname);
         $("#print_date").val(jData.print_date);
+
+        if ($("#cs_remark").val() != "") {
+            $("#tr_csremark").show();
+        } else {
+            $("#tr_csremark").hide();
+        }
     }
 
     //依rs_type帶結構分類

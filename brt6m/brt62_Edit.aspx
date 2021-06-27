@@ -58,7 +58,7 @@
                 StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt6m/brt62_Edit.aspx") + "?prgid=" + prgid + "&submittask=A&seq=" + ReqVal.TryGet("seq") + "&seq1=" + ReqVal.TryGet("seq1") + "\" target=\"Eblank\">[新增附件]</a>";
             }
         }
-        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt6m/brta62.aspx") + "?prgid="+prgid+"\" target=\"Etop\">[查詢畫面]</a>";
+        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt6m/brt62.aspx") + "?prgid="+prgid+"\" target=\"Etop\">[查詢畫面]</a>";
         StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
         
         string uploadfield = "", uploadsource="";

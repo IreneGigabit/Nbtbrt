@@ -43,8 +43,8 @@
         if (HTProgRight >= 0) {
             try {
                 doUpdateDB();
-                //conn.Commit();
-                conn.RollBack();
+                conn.Commit();
+                //conn.RollBack();
                 strOut.AppendLine("<div align='center'><h1>資料更新成功</h1></div>");
             }
             catch (Exception ex) {
@@ -365,6 +365,8 @@
             ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
             ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
             ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+            ColMap["ap_sort"] = Util.dbnull(Request["ap_sort_" + i]);
+            
             SQL += ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
         }
@@ -492,6 +494,8 @@
                 ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
                 ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
                 ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+                ColMap["ap_sort"] = Util.dbnull(Request["ap_sort_" + i]);
+                
                 SQL += ColMap.GetInsertSQL();
                 conn.ExecuteNonQuery(SQL);
             }

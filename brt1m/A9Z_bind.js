@@ -32,7 +32,9 @@ main.bind = function () {
             //取得客戶聯人清單
             attent_form.getatt(jMain.cust[0].cust_area, jMain.cust[0].cust_seq);
             //$("#tfy_att_sql").val(jMain.case_main[0].att_sql);
-            $("#tfy_att_sql").val(jMain.cust[0].att_sql).triggerHandler("change");;
+            //$("#tfy_att_sql").val(jMain.cust[0].att_sql).triggerHandler("change");;
+            $("#tfy_att_sql option[value='" + jMain.cust[0].att_sql + "']").prop("selected", true);
+            $("#tfy_att_sql").triggerHandler("change");
             //申請人
             apcust_form.getapp(jMain.cust[0].apcust_no, main.in_no);
         }
@@ -83,8 +85,11 @@ main.bind = function () {
         $("#nfy_tot_case").val(jMain.case_main[0].nfy_tot_case);//案性數
         //取得客戶聯人清單
         attent_form.getatt(jMain.case_main[0].cust_area, jMain.case_main[0].cust_seq);
-        $("#tfy_att_sql").val(jMain.case_main[0].att_sql).triggerHandler("change");;
+        //$("#tfy_att_sql").val(jMain.case_main[0].att_sql).triggerHandler("change");;
+        $("#tfy_att_sql option[value='" + jMain.case_main[0].att_sql + "']").prop("selected", true);
+        $("#tfy_att_sql").triggerHandler("change");
         $("#oatt_sql").val(jMain.case_main[0].att_sql);
+
         //****申請人
         apcust_form.getapp("", jMain.case_main[0].in_no);
         for (var r = 1; r <= CInt($("#apnum").val()) ; r++) {

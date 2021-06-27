@@ -123,13 +123,13 @@
                 <input type=button id='btn<%#uploadfield%>_D_##' name='btn<%#uploadfield%>_D_##' class='cbutton <%=Lock.TryGet("Qup")%>' value='刪除' onclick="upload_form.DelAttach('##')">
                 <input type=button id='btn<%#uploadfield%>_S_##' name='btn<%#uploadfield%>_S_##' class='cbutton' value='檢視' onclick="upload_form.PreviewAttach('##')">
                 <input type='hidden' id='<%#uploadfield%>_size_##' name='<%#uploadfield%>_size_##'>
-                <input type='text' id='<%#uploadfield%>_##' name='<%#uploadfield%>_##'>
+                <input type='hidden' id='<%#uploadfield%>_##' name='<%#uploadfield%>_##'>
                 <input type='hidden' id='tstep_grade_##' name='tstep_grade_##'>
                 <input type='hidden' id='attach_sqlno_##' name='attach_sqlno_##'>
                 <input type='hidden' id='attach_flag_##' name='attach_flag_##'>
                 <span id="span_source_##"><BR>原始檔名：<input type='text' id='source_name_##' name='source_name_##' class=sedit readonly size=50></span>
                 <input type='hidden' id='attach_no_##' name='attach_no_##' value='##'>
-                <input type='text' id='old_<%#uploadfield%>_name_##' name='old_<%#uploadfield%>_name_##'>
+                <input type='hidden' id='old_<%#uploadfield%>_name_##' name='old_<%#uploadfield%>_name_##'>
                 <input type='hidden' id='doc_type_mark_##' name='doc_type_mark_##'>
                 <input type='hidden' id='attach_flagtran_##' name='attach_flagtran_##'><!--2014/12/13柳月for異動作業增加-->
                 <input type='hidden' id='tran_sqlno_##' name='tran_sqlno_##' value='0'><!--2014/12/13柳月for異動作業增加-->
@@ -137,8 +137,8 @@
                 <input type='hidden' id='attach_old_branch_##' name='attach_old_branch_##'>
                 <br>檔案說明：<select id='doc_type_##' name='doc_type_##' class="<%=Lock.TryGet("Qup")%>" onchange="upload_form.getfiledoc('##')"><%#html_doc%></select>
                 <input type=text id='<%#uploadfield%>_desc_##' name='<%#uploadfield%>_desc_##' class="<%=Lock.TryGet("Qup")%>" size=50 maxlength=60 onblur="fChkDataLen(this,'檔案說明')" >
-                <label id="span_branch_##" style="display:none"><input type=checkbox id='<%#uploadfield%>_branch_##' name='<%#uploadfield%>_branch_##' class="<%=Lock.TryGet("Qup")%>" value='B'><font color='blue'>交辦專案室</font></label>
-                <label id="span_edoc_##" style="display:none"><input type=checkbox id='doc_flag_##' name='doc_flag_##' class="<%=Lock.TryGet("Qup")%>" value='E'><font color='blue'>電子送件文件檔(pdf)</font></label>
+                <label id="span_branch_##" style="display:none"><br /><input type=checkbox id='<%#uploadfield%>_branch_##' name='<%#uploadfield%>_branch_##' class="<%=Lock.TryGet("Qup")%>" value='B'><font color='blue'>交辦專案室</font></label>
+                <label id="span_edoc_##" style="display:none"><br /><input type=checkbox id='doc_flag_##' name='doc_flag_##' class="<%=Lock.TryGet("Qup")%>" value='E'><font color='blue'>電子送件文件檔(pdf)</font></label>
 			</TD>
 		</TR>
     </script>
@@ -311,9 +311,9 @@
             $("#span_branch_" + nRow).show();//交辦專案室
         } else {
             //不是發文畫面會出錯,增加判斷
-            if (document.getElementsByName("cgrs").length > 0 && document.getElementById("cgrs").value == "GS") {
+            //if (document.getElementsByName("cgrs").length > 0 && document.getElementById("cgrs").value == "GS") {
                 $("#span_edoc_" + nRow).show();//電子送件文件檔
-            }
+            //}
         }
 
         $("#attach_flagtran_" + nRow).val("N");

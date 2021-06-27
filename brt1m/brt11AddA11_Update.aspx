@@ -247,6 +247,7 @@
                 ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
                 ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
                 ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+                ColMap["ap_sort"] = Util.dbnull(Request["ap_sort_" + i]);
 
                 SQL = "insert into dmt_temp_ap " + ColMap.GetInsertSQL();
                 //Response.Write(SQL + "<HR>");

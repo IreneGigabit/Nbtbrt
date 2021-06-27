@@ -111,14 +111,14 @@
                     doBack();
                     strOut.AppendLine("<div align='center'><h1>官方發文退件確認成功!!!</h1></div>");
                 }
-                //conn.Commit();
-                //connm.Commit();
-                //conni2.Commit();
-                //conniacc.Commit();
-                conn.RollBack();
-                connm.RollBack();
-                conni2.RollBack();
-                conniacc.RollBack();
+                conn.Commit();
+                connm.Commit();
+                conni2.Commit();
+                conniacc.Commit();
+                //conn.RollBack();
+                //connm.RollBack();
+                //conni2.RollBack();
+                //conniacc.RollBack();
             }
             catch (Exception ex) {
                 conn.RollBack();

@@ -17,6 +17,13 @@
     protected string td_tscode = "";
     protected string pfx_Arcase = "";
 
+    DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    private void Page_Unload(System.Object sender, System.EventArgs e) {
+        if (conn != null) conn.Dispose();
+        if (cnn != null) cnn.Dispose();
+    }
+
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
@@ -40,17 +47,15 @@
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
         }
 
-        using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
-           //營洽清單
-            if ((HTProgRight & 64) != 0) {
-                td_tscode = "<select id='tfx_Scode' name='tfx_Scode' >";
-                td_tscode += Sys.getDmtScode("","").Option("{scode}", "{star}{scode}_{sc_name}", "style='color:{color}'", true);
-                td_tscode += "<option value='" + Sys.GetSession("seBranch") + Sys.GetSession("dept") + "'>" + Sys.GetSession("seBranch") + Sys.GetSession("dept").ToUpper() + "_部門(開放客戶)</option>";
-                td_tscode+="</select>";
-            } else {
-                td_tscode = "<input type='hidden' id='tfx_Scode' name='tfx_Scode' readonly class='SEdit' value='" + Session["se_scode"] + "'>";
-                td_tscode = "<input type='text' id='ScodeName' name='ScodeName' readonly class='SEdit' value='" + Session["sc_name"] + "'>";
-            }
+        //營洽清單
+        if ((HTProgRight & 64) != 0) {
+            td_tscode = "<select id='tfx_Scode' name='tfx_Scode' >";
+            td_tscode += Sys.getDmtScode("", "").Option("{scode}", "{star}{scode}_{sc_name}", "style='color:{color}'", true);
+            td_tscode += "<option value='" + Sys.GetSession("seBranch") + Sys.GetSession("dept") + "'>" + Sys.GetSession("seBranch") + Sys.GetSession("dept").ToUpper() + "_部門(開放客戶)</option>";
+            td_tscode += "</select>";
+        } else {
+            td_tscode = "<input type='hidden' id='tfx_Scode' name='tfx_Scode' readonly class='SEdit' value='" + Session["se_scode"] + "'>";
+            td_tscode = "<input type='text' id='ScodeName' name='ScodeName' readonly class='SEdit' value='" + Session["sc_name"] + "'>";
         }
     }
 </script>

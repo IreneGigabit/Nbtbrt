@@ -27,7 +27,8 @@
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         submitTask = (Request["submittask"] ?? "").Trim().ToUpper();
 
-        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", false, "", "sort=01");
+        //html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", false, "", "sort=01");
+        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", false);
         html_send_sel = Sys.getCustCode("SEND_SEL", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_pay_times = Sys.getCustCode(Sys.GetSession("dept") + "PAY_TIMES", "", "sortfld").Option("{cust_code}", "{code_name}");
 
@@ -411,7 +412,7 @@
         var jSub = {};
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/json_get_dmt_temp_sub.aspx?prgid=" + main.prgid + "&in_no=" + main.in_no,
+            url: getRootPath() + "/ajax/json_get_dmt_temp_sub.aspx?prgid=" + main.prgid + "&in_no=" + $("#in_no").val(),
             async: false,
             cache: false,
             success: function (json) {

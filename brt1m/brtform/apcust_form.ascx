@@ -246,6 +246,7 @@
                     $("#ap_eaddr2_" + nRow).val(item.ap_eaddr2);
                     $("#ap_eaddr3_" + nRow).val(item.ap_eaddr3);
                     $("#ap_eaddr4_" + nRow).val(item.ap_eaddr4);
+                    $("#ap_sort_" + nRow).val(item.ap_sort);
                     $("#apatt_zip_" + nRow).val(item.apatt_zip);
                     $("#apatt_addr1_" + nRow).val(item.apatt_addr1);
                     $("#apatt_addr2_" + nRow).val(item.apatt_addr2);

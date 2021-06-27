@@ -82,11 +82,11 @@ public class TokenN
     }
 
     public int CheckMe() {
-        return CheckMe(1, false, false);
+        return CheckMe(2, false, false);
     }
 
     public int CheckMe(bool chkRef) {
-        return CheckMe(1, chkRef, false);
+        return CheckMe(2, chkRef, false);
     }
 
     public int CheckMe(int chkRight) {
@@ -94,7 +94,7 @@ public class TokenN
     }
 
     public int CheckMe(bool chkRef, bool rtnJson) {
-        return CheckMe(1, chkRef, rtnJson);
+        return CheckMe(2, chkRef, rtnJson);
     }
 
     public int CheckMe(int chkRight, bool rtnJson) {
@@ -184,7 +184,7 @@ public class TokenN
                         this.C = ((this.Rights & chkRight) == 258) ? true : false;
                         this.Debug = ((this.Rights & chkRight) == 512) ? true : false;
 
-                        myRights = ((this.Rights & chkRight) == 1) ? true : false;
+                        myRights = ((this.Rights & chkRight) > 0) ? true : false;
                         //HttpContext.Current.Response.Write(this.Rights + "/" + chkRight);
                         //HttpContext.Current.Response.End();
                     }

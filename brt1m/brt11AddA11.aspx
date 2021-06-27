@@ -164,14 +164,14 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-	<input type="text" id="submittask" name="submittask" value="<%=submitTask%>">
-	<input type="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="text" id="ar_form" name="ar_form" value="<%=ar_form%>">
-    <INPUT TYPE="text" id=prt_code name=prt_code value="<%=prt_code%>">
-    <INPUT TYPE="text" id=new_form name=new_form value="<%=new_form%>">
-    <INPUT TYPE="text" id=add_arcase name=add_arcase value="<%=add_arcase%>">
-    <INPUT TYPE="text" id=tfy_case_stat name=tfy_case_stat value="<%=case_stat%>"><!--案件狀態-->
-    <input type="text" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
+	<input type="hidden" id="submittask" name="submittask" value="<%=submitTask%>">
+	<input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <INPUT TYPE="hidden" id="ar_form" name="ar_form" value="<%=ar_form%>">
+    <INPUT TYPE="hidden" id=prt_code name=prt_code value="<%=prt_code%>">
+    <INPUT TYPE="hidden" id=new_form name=new_form value="<%=new_form%>">
+    <INPUT TYPE="hidden" id=add_arcase name=add_arcase value="<%=add_arcase%>">
+    <INPUT TYPE="hidden" id=tfy_case_stat name=tfy_case_stat value="<%=case_stat%>"><!--案件狀態-->
+    <input type="hidden" id="draw_attach_file" name="draw_attach_file"><!--2013/11/25商標圖檔改虛擬路徑增加-->
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
@@ -218,9 +218,9 @@
     </tr>
     </table>
     <br />
-	<INPUT TYPE="text" id=in_scode name=in_scode>
-	<INPUT TYPE="text" id=in_no name=in_no>
-    <INPUT TYPE="text" id=in_date name=in_date size="8">
+	<INPUT TYPE="hidden" id=in_scode name=in_scode>
+	<INPUT TYPE="hidden" id=in_no name=in_no>
+    <INPUT TYPE="hidden" id=in_date name=in_date size="8">
 
     <%#DebugStr%>
 </form>

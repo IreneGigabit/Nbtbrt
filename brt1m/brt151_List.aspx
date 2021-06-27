@@ -39,7 +39,7 @@
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
         TokenN myToken = new TokenN(HTProgCode);
-        myToken.CheckMe(false);
+        HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {

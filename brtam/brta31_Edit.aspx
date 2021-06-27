@@ -103,11 +103,13 @@
         Brta21form.Lock = new Dictionary<string, string>(Lock);
         Brta311form.Lock = new Dictionary<string, string>(Lock);
         Brta212form.Lock = new Dictionary<string, string>(Lock);
+        Brta311form.HTProgRight = HTProgRight;
     }
 
     private void QueryData() {
         Dictionary<string, string> add_gs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+        add_gs["cgrs"] = cgrs;
         if (prgid1 != "brta81") {//正常的官發作業
             if (submitTask == "A") {
                 add_gs["seq"] = "";
@@ -144,6 +146,7 @@
                     add_gs["seq"] = dr.SafeRead("seq", "");
                     add_gs["seq1"] = dr.SafeRead("seq1", "");
                     add_gs["fseq"] = Sys.formatSeq(add_gs["seq"], add_gs["seq1"], "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
+                    add_gs["step_grade"] = dr.SafeRead("step_grade", "");
                     add_gs["step_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
                     add_gs["mp_date"] = dr.GetDateTimeString("mp_date", "yyyy/M/d");
                     add_gs["send_cl"] = dr.SafeRead("send_cl", "");
@@ -249,9 +252,86 @@
             conn.DataTable(SQL, dtStep);
             if (dtStep.Rows.Count > 0) {
                 DataRow dr = dtStep.Rows[0];
+                add_gs["rs_no"] = dr.SafeRead("rs_no", "");
+                add_gs["branch"] = dr.SafeRead("branch", "");
+                add_gs["seq"] = dr.SafeRead("seq", "");
+                add_gs["seq1"] = dr.SafeRead("seq1", "");
+                add_gs["fseq"] = Sys.formatSeq(add_gs["seq"], add_gs["seq1"], "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
+                add_gs["step_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
+                add_gs["Send_dept"] = dr.SafeRead("Send_dept", "");
+                add_gs["mp_date"] = dr.GetDateTimeString("mp_date", "yyyy/M/d");
+                add_gs["send_cl"] = dr.SafeRead("send_cl", "");
+                add_gs["send_cl1"] = dr.SafeRead("send_cl1", "");
+                add_gs["send_sel"] = dr.SafeRead("send_sel", "");
+                add_gs["opt_sqlno"] = dr.SafeRead("opt_sqlno", "");
+                add_gs["rs_type"] = Sys.getRsType();
+                add_gs["rs_class"] = dr.SafeRead("rs_class", "");
+                add_gs["rs_code"] = dr.SafeRead("rs_code", "");
+                add_gs["act_code"] = dr.SafeRead("act_code", "");
+
+                //取得案件狀態
+                SQL = " select rs_type,rs_class,rs_code,act_code,case_stat,case_stat_name ";
+                SQL += "from vcode_act ";
+                SQL += "where rs_code = '" + add_gs["rs_code"] + "' ";
+                SQL += "and act_code = '" + add_gs["act_code"] + "' ";
+                SQL += "and rs_type = '" + add_gs["rs_type"] + "'";
+                SQL += "and cg = '" + dr.SafeRead("cg", "") + "' ";
+                SQL += "and rs = '" + dr.SafeRead("rs", "") + "' ";
+                using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                    if (dr0.Read()) {
+                        add_gs["ncase_stat"] = dr0.SafeRead("case_stat", "");
+                        add_gs["ncase_statnm"] = dr0.SafeRead("case_stat_name", "");
+                    }
+                }
+                add_gs["rs_detail"] = dr.SafeRead("rs_detail", "");
+                add_gs["fees"] = dr.SafeRead("fees", "");
+                add_gs["fees_stat"] = dr.SafeRead("fees_stat", "");
+                add_gs["case_no"] = dr.SafeRead("case_no", "");
+                add_gs["pr_scode"] = dr.SafeRead("pr_scode", "");
+                add_gs["rs_agt_no"] = dr.SafeRead("rs_agt_no", "");
+                //取得發文出名代理人
+                SQL = "select treceipt+'_'+agt_name from agt where agt_no='" + add_gs["rs_agt_no"] + "'";
+                objResult = conn.ExecuteScalar(SQL);
+                add_gs["rs_agt_nonm"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+                //檢查array.account.plus_temp.chk_type='Y'表會計已確認，只要有一筆 ="Y"就要有警語
+                add_gs["chk_typestr"] = "";
+                using (DBHelper conni = new DBHelper(Conn.account).Debug(Request["chkTest"] == "TEST")) {
+                    SQL = "select case_no from plus_temp where branch='" + Session["seBranch"] + "' and dept='" + Session["dept"] + "'";
+                    SQL += " and rs_no='" + add_gs["rs_no"] + "' and chk_type='Y'";
+                    using (SqlDataReader dr0 = conni.ExecuteReader(SQL)) {
+                        if (dr0.HasRows) {
+                            while (dr0.Read()) {
+                                add_gs["chk_typestr"] += "," + dr0.SafeRead("case_no", "");
+                            }
+                            add_gs["chk_typestr"] = "(會計已確認:" + add_gs["chk_typestr"].Substring(1) + ")";
+                        }
+                    }
+                }
             }
         }
 
+        //抓取規費明細
+        SQL = " select a.*,b.arcase,b.arcase_type,b.arcase_class,(b.fees+b.add_fees) as case_fees,b.change";
+        SQL += ",b.gs_fees,(b.service+b.add_service) as service,b.ar_mark,b.gs_curr,c.agt_no";
+        SQL += ",(select agt_name from agt where agt_no=c.agt_no) as agt_name";
+        SQL += ",(select treceipt from agt where agt_no=c.agt_no) as receipt";
+        SQL += ",(SELECT rs_detail FROM code_br WHERE rs_type=b.arcase_type and rs_code=b.arcase AND dept= 'T' AND gs='Y') as arcasenm";
+        SQL += ",(select code_name from cust_code where code_type='AR_MARK' and cust_code = b.ar_mark) as ar_marknm";
+        SQL += " from fees_dmt a,case_dmt b,dmt_temp c where rs_no='" + add_gs["rs_no"] + "'";
+        SQL += " and a.case_no = b.case_no and b.in_no=c.in_no and c.case_sqlno=0";
+        SQL += " order by a.case_no";
+        DataTable dtFees = new DataTable();
+        conn.DataTable(SQL, dtFees);
+
+        //管制資料
+        DataTable dtCtrl = new DataTable();
+        //抓取該進度之法定期限
+        SQL = " select sqlno,ctrl_type,ctrl_remark,ctrl_date,null as resp_date,null as resp_grade from ctrl_dmt ";
+        SQL+= " where rs_no='"+ add_gs["rs_no"] + "'";
+        SQL+= " union select sqlno,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_grade from resp_dmt ";
+        SQL+= " where rs_no='" + add_gs["rs_no"] + "'";
+        SQL+= " order by ctrl_date";
+        conn.DataTable(SQL, dtCtrl);
 
         var settings = new JsonSerializerSettings()
         {
@@ -262,6 +342,8 @@
         Response.Write("{");
         Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
         Response.Write(",\"add_gs\":" + JsonConvert.SerializeObject(add_gs, settings).ToUnicode() + "\n");//官發維護預設值
+        Response.Write(",\"fees\":" + JsonConvert.SerializeObject(dtFees, settings).ToUnicode() + "\n");//規費明細
+        Response.Write(",\"gs_ctrl\":" + JsonConvert.SerializeObject(dtCtrl, settings).ToUnicode() + "\n");//管制資料
         Response.Write("}");
         Response.End();
     }
@@ -287,6 +369,7 @@
 <script language="javascript" type="text/javascript">
     var main = {};
     main.prgid = "<%#prgid%>";
+    main.prgid1 = "<%#prgid1%>";
     main.right = <%#HTProgRight%>;
     main.submittask = "<%#submitTask%>";
     main.in_no = "<%#ReqVal.TryGet("in_no")%>";
@@ -372,7 +455,7 @@
         //取得交辦資料
         $.ajax({
             type: "get",
-            url: "brt63_edit.aspx?json=Y&<%#Request.QueryString%>",
+            url: "brta31_edit.aspx?json=Y&<%#Request.QueryString%>",
             //url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
             async: false,
             cache: false,
@@ -398,508 +481,404 @@
     }
     
     main.bind = function () {
-        $("#span_fseq").html(jMain.add_gs.fseq);
-        $("#in_scode").val(jMain.add_gs.in_scode);
-        $("#span_rs_no").html("發文序號："+jMain.add_gs.rs_sqlno);
-        $("#job_remark").val(jMain.add_gs.remark);
-        $("#contract_flag").val(jMain.add_gs.contract_flag);
-
         brta21form.bind(jMain.add_gs);//主檔資料
-        brta311form.bind(jMain.add_gs);//發文資料
-        brta212form.bind(jMain.add_gs,null);//管制資料
+        brta311form.bind(jMain.add_gs,jMain.fees);//發文資料/交辦明細
+        brta212form.bind(jMain.add_gs,jMain.gs_ctrl);//管制資料
 
-        //顯示交辦單號
-        brta311form.add_ar();//增加一筆交辦單號
-        $("#case_no_1").val(jMain.add_gs.case_no);
-        brta311form.getmoney(1);//依交辦單號抓取服務費、規費
-
-        openread();	//控制特定欄位不能修改
-        if($("#submittask").val()=="A"){
-            if(main.task=="cancel"){
-                $("#tabgs").hide();//發文資料
-                $("#tr_respdate").show();//期限銷管
-            }
-        }else{
-            $("#task").val("conf");
-        }
-
-        if($("#submittask").val()=="U") {
-            $("#span_rs_no").show();
-        }
-        if($("#submittask").val()!="Q"){
-            if (jMain.add_gs.contract_flag=="Y" && main.task=="pr"){
-                $("#div_sign").show();
+        if(main.prgid1!="brta81"){
+            if(main.submittask=="A"){
+                $("#send_sel option[value='1']").prop("selected", true);//官方號碼:申請號
+                brta212form.add_ctrl();//增加一筆管制
+                $("#ctrl_type_1").val("A1");//管制種類:法定期限
+                brta212form.add_ctrl();//增加一筆管制
+                $("#ctrl_type_2").val("B1");//管制種類:自管期限
+            }else{
+                openread("N");	//控制特定欄位不能修改
+                if(main.submittask=="U" && (main.prgid=="brta31"||main.prgid=="brta2m")){//官發維護
+                    if((main.right&256)==0){
+                        $("#receipt_type,#receipt_title").lock();
+                    }else{//權限C才可修改
+                        $("#receipt_type,#receipt_title").unlock();
+                    }
+                }
             }
         }
+
+        if(main.prgid1=="brta81"){
+            if(jMain.add_gs.case_no!=""){
+                $("#case_no_1").val(jMain.add_gs.case_no);
+                brta311form.getmoney(1);//依交辦單號抓取服務費、規費
+            }
+            if ((main.right & 128) != 0 || (main.right & 256) != 0) {
+                $("input[name='rfees_stat'][value='" + jMain.add_gs.fees_stat + "']").prop("checked", true);
+            }
+            openread("B");
+            $("#button1").val("確　認");
+        }
+
+        $("#span_fseq").html(jMain.add_gs.fseq);
+        $("#opt_sqlno").val(jMain.add_gs.opt_sqlno);
+        $("#Send_dept").html(jMain.add_gs.send_dept);
+        $("#rs_sqlno").val(jMain.add_gs.rs_sqlno);
     }
 
     //存檔
     function formAddSubmit(){
         if($("#submittask").val()=="A"||$("#submittask").val()=="U"){
-            //20161212增加word申請書附件檢查
-            if (document.getElementById('task').value=="conf" && document.getElementById("send_way").value=="E"){
-                //未檢查通過
-                if (!document.getElementById('button0').disabled){
-                    alert("請先執行電子申請附件檢查!!");
-                    return false;
-                }
-            }
-		
-            if (document.getElementById('task').value==""){
-                alert( "系統無法判斷存檔後的執行作業，請回系統首頁再重新進入本項作業，若仍無法處哩，請通知資訊部！");
+            if($("#keyseq").val()=="N"){
+                alert("本所編號變動過，請按[確定]按鈕，重新抓取資料!!!");
                 return false;
             }
-            if (document.getElementById('task').value== "cancel"){	//不需發文
-                if(chkNull("不需發文說明",document.getElementById('job_remark'))) return false;
-                var ans = confirm("是否確定不需發文？");
-                if (ans!=true){
+
+            if(chkNull("本所編號",$("#seq"))) return false;
+            if(chkNull("本所編號副碼",$("#seq1"))) return false;
+            if(chkNull("發文日期",$("#step_date"))) return false;
+            if(chkNull("案性代碼",$("#rs_code"))) return false;
+            if(chkNull("處理事項",$("#act_code"))) return false;
+            if(chkNull("發文方式",$("#send_way"))) return false;
+
+            if($("#spe_ctrl").val()=="E"){
+                if($("#send_way").val()!="E"){
+                    alert("電子申請案性之發文方式必須為電子送件，請檢查！");
                     return false;
                 }
-            }else{  //交辦發文 or發文確認
-                if(document.getElementById('keyseq').value=="N"){
-                    alert( "本所編號變動過，請按[確定]按鈕，重新抓取資料!!!");
+            }else if($("#spe_ctrl_4").val() != ""){
+                if ($("#spe_ctrl_4").val().indexOf($("#send_way").val())==-1){
+                    alert("此案性發文方式不可選擇["+$("#send_way option:selected" ).text()+"]，請檢查！\n若需修改，則請通知程序至國內案客戶收文作業修改後再發文。");
                     return false;
                 }
-                if(chkNull("本所編號",document.getElementById('seq'))) return false;
-                if(chkNull("本所編號副碼",document.getElementById('seq1'))) return false;
-                if(chkNull("發文日期",document.getElementById('step_date'))) return false;
-                if(chkNull("案性代碼",document.getElementById('rs_code'))) return false;
-                if(chkNull("處理事項",document.getElementById('act_code'))) return false;
-                if(chkNull("發文方式",document.getElementById('send_way'))) return false;//2012/12/12因應電子申請增加發文方式修改
-                if (document.getElementById('send_way').value ==""){
-                    alert("發文方式不可空白！");
+                if ($("#send_way").val()!=$("#old_send_way").val()){
+                    alert("若需修改發文方式，請通知程序至國內案客戶收文作業修改後再發文。");
                     return false;
                 }
-                if(document.getElementById('spe_ctrl').value == "E"){
-                    if (document.getElementById('send_way').value !="E"){
-                        alert("電子申請案性之發文方式必須為電子送件，請檢查！");
+            }else{
+                if ($("#send_way").val()!="M"||$("#send_way").val()!=$("#old_send_way").val()){
+                    alert("非電子申請案性之發文方式應為親送，若確定要修改發文方式，則請通知程序至國內案客戶收文作業修改後再發文！");
+                    return false;
+                }
+            }
+
+            //20180525增加檢查發文日期如有異動要增加提醒
+            if($("#send_way").val()=="E"){
+                if( CDate($('#step_date').val()).getTime() !=  CDate($('#old_step_date').val()).getTime()){
+                    alert("有修改發文日期，請通知資訊部處理電子送件檔案！");
+                }
+            }
+
+            if($("#submittask").val()=="U"){
+                if ($("#case_change").val()=="C"&&$("#rs_code").val()!=$("#case_arcase").val()){
+                    if ($("#rs_class").val()!=$("#case_arcase_class").val()){
+                        alert("發文結構分類與對應交辦結構分類不同，請重新輸入！");
                         return false;
                     }
-                }else if(document.getElementById('spe_ctrl_4').value != ""){
-                    if (document.getElementById('spe_ctrl_4').value.indexOf(document.getElementById('send_way').value)==-1){
-                        alert("此案性發文方式不可選擇["+$("#send_way option:selected" ).text()+"]，請檢查！\n若需修改，則請通知程序至國內案客戶收文作業修改後再發文。");
+                    if ($("#rs_code").val()!=$("#case_arcase").val()){
+                        alert("發文案性代碼與對應交辦案性代碼不同，請重新輸入！");
                         return false;
                     }
-                    if (document.getElementById('send_way').value!=document.getElementById('old_send_way').value){
-                        alert("若需修改發文方式，請通知程序至國內案客戶收文作業修改後再發文。");
-                        return false;
-                    }
-                }else{
-                    if (document.getElementById('send_way').value!="M"||document.getElementById('send_way').value!=document.getElementById('old_send_way').value){
-                        alert("非電子申請案性之發文方式應為親送，若確定要修改發文方式，則請通知程序至國內案客戶收文作業修改後再發文！");
+                }
+            }
+
+            if ($("#cgrs").val()=="GS"){
+                if(chkNull("發文對象",$("#send_cl"))) return false;
+                if ($("#rs_class option:selected").attr("vref_code")!="A"){	//2012/12/24因應電子申請修改(不是新申請案要選擇官方號碼)
+                    if(chkNull("官方號碼",$("#send_sel"))) return false;
+                }
+                //2006/7/11爭救案由專案室發文可不列入內商承辦統計，一般官發作業才需控制要輸入承辦
+                if(main.prgid1!="brta81"){//正常的官發作業
+                    if(chkNull("承辦",$("#pr_scode"))) return false;
+                }
+                if ((main.right & 128) != 0 || (main.right & 256) != 0) {
+                    if($("input[name='rfees_stat']:checked").length==0){
+                        alert("收費管制必須點選!!!");
                         return false;
                     }
                 }
 
-                //20180525增加檢查發文日期/總發文日期不可小於系統日
-                var sdate = CDate($('#step_date').val());
-                var mdate = CDate($('#mp_date').val());
-                if(sdate.getTime()< Today().getTime() || mdate.getTime()<Today().getTime()){
-                    alert("發文日期或總發文日期不可小於系統日！");
-                    return false;
-                }
-
-                //交辦發文檢查
-                if (document.getElementById('task').value=="pr"){
-                    //20161226 增加檢查非pdf檔不可勾選電子送件
-                    //20161227 增加檢查須上傳電子申請書word檔
-                    if (document.getElementById("send_way").value=="E"){
-                        var fldname=reg.uploadfield.value;
-                        var filenum=document.getElementById(fldname+"_filenum").value;
-                        var hasWord=false;
-                        for (p = 1; p <= filenum; p++) { 
-                            var filename=document.getElementById(fldname+"_name_" + p).value.toLowerCase();
-                            if (document.getElementById("doc_flag_" + p).checked==true) {
-                                if (filename.substr(filename.length-4)!=".pdf"){
-                                    alert("(文件"+p+")檔案類型為 "+filename.substr(filename.length-4)+" 不可勾選電子送件文件檔!");
-                                    return false;
-                                }
-                            }else{
-                                var names = filename.split(".");
-                                if ((names[names.length-1]=="doc"||names[names.length-1]=="docx") && document.getElementById(fldname+"_desc_" + p).value.indexOf("申請書")>-1){
-                                    hasWord=true;
-                                }
-                            }
-                        }
-                        if (!hasWord){
-                            alert("請上傳電子申請書word檔，且檔案說明須含有「申請書」字樣!");
-                            return false;
-                        }
-                    }
-                    //若契約書尚未後補完成，則需轉區所主管簽核
-                    if (document.getElementById('contract_flag').value=="Y"){
-                        if (document.getElementsByName("usesign")[0].checked){
-                            document.getElementById('signid').value = document.getElementById('Msign').value;
-                        }else{
-                            if (document.getElementsByName("Osign")[0].checked){
-                                if (document.getElementById('selectsign').value == ""){
-                                    alert("請選擇主管");
-                                    document.getElementById('selectsign').focus();
-                                    return false;
-                                }
-                                document.getElementById('signid').value = document.getElementById('selectsign').value;
-                            }else{
-                                if (document.getElementById('Nsign').value == ""){
-                                    alert("薪號欄位不得為空白");
-                                    document.getElementById('Nsign').focus();
-                                    return false;
-                                }
-                                document.getElementById('signid').value = document.getElementById('Nsign').value;
-                            }
-                        }
-                        if (document.getElementById('signid').value==""){
-                            alert("本筆交辦為契約書後補，需經主管簽核，請選擇主管！");
+                //2006/6/13配合爭救案系統提醒發文方式
+                if ($("#hmarkb").val()=="L"){
+                    if ($("input[name='opt_branch']:eq(0)").prop("checked") == true) {
+                        if (confirm("發文爭救案性確定自行發文，不需轉法律處發文？")!=true){
+                            $("input[name='opt_branch']:eq(0)").focus();
                             return false;
                         }
                     }
                 }
-			
-                //發文確認檢查
-                if (document.getElementById('task').value=="conf"){
-                    if (document.getElementById("send_way").value=="E"){
-                        var fldname=reg.uploadfield.value;
-                        var filenum=document.getElementById(fldname+"_filenum").value;
-                        if (filenum=="0"){
-                            alert("電子申請案性必須上傳電子送件文件，請上傳！");
-                            return false;
-                        }
-                        var efilenum=0;	//電子送件文件
-                        for (p = 1; p <= filenum; p++) { 
-                            if (document.getElementById("doc_flag_" + p).checked==true) {
-                                var filename=document.getElementById(fldname+"_name_" + p).value.toLowerCase();
-                                if (filename.substr(filename.length-4)!=".pdf"){
-                                    alert("勾選電子送件文件檔之附件，副檔名須為.pdf！(檔案"+p+")");
-                                    return false;
-                                }
-                                efilenum += 1;
-                            }
-                        }
-                        if (efilenum==0){
-                            alert("上傳文件皆無電子送件文件檔，請檢查！");
-                            return false;
-                        }
-                        //電子送件文件種類檢查(xx改用申請書檢核)
-                        //if (document.getElementById("edoc_type").value!=""){
-                        //    var edoc_type=document.getElementById("edoc_type").value.split(",");
-                        //
-                        //    for(j = 0; j < edoc_type.length; j++)
-                        //    {
-                        //        var ctype_flag=false;
-                        //        for(p = 1; p <= filenum; p++)
-                        //        {
-                        //            if (document.getElementById("doc_flag_" + p).checked==true) {
-                        //                if (edoc_type[j]==document.getElementById("doc_type_"+p).value){
-                        //                    ctype_flag=true;
-                        //                    break;
-                        //                }
-                        //            }
-                        //        }
-                        //        if (ctype_flag==false){
-                        //            edoc_name=getdocname(edoc_type[j]);
-                        //            alert("電子送件文件檔未上傳「" + edoc_name + "」或檔案種類未選擇「" + edoc_name + "」或未勾選「電子送件文件檔」，請檢查！");
-                        //            return false;
-                        //        }
-                        //    }
-                        //}
-                    }
-                    //非電子送件不可選擇電子收據
-                    if (document.getElementById("send_way").value!="E"&&document.getElementById("send_way").value!="EA"){
-                        if (document.getElementById("receipt_type").value=="E"){
-                            alert("非電子送件不可選擇電子收據");
-                            return false;
-                        }
-                    }
-                }
-
-                if (document.getElementById("cgrs").value=="GS"){
-                    if(chkNull("發文對象",document.getElementById('send_cl'))) return false;
-                    //if reg.rs_class.value<>"A1" and reg.rs_class.value<>"A0" then
-                    if ($("#rs_class option:selected").attr("vref_code")!="A"){	//2012/12/24因應電子申請修改(不是新申請案要選擇官方號碼)
-                        if(chkNull("官方號碼",document.getElementById('send_sel'))) return false;
-                    }
-                    if(chkNull("承辦",document.getElementById('pr_scode'))) return false;
-				
-                    if ((main.right & 128) != 0 || (main.right & 256) != 0) {
-                        if($("input[name='rfees_stat']:checked").length==0){
-                            alert("收費管制必須點選!!!");
-                            return false;
-                        }
-                    }
-
-                    //2006/6/13配合爭救案系統提醒發文方式
-                    if (document.getElementById("hmarkb").value == "L"){
-                        if (document.getElementsByName("opt_branch")[0].checked==true){
-                            if (confirm("發文爭救案性確定自行發文，不需轉法律處發文？")!=true){
-                                document.getElementsByName("opt_branch")[1].focus();
-                                return false;
-                            }
-                        }
-                    }
-                    //不可同一筆官發重覆輸入同一case_no
-                    for (j = 1; j <= document.getElementById('arnum').value; j++) {
-                        var tcase_no1=$.trim(document.getElementById('case_no_'+j).value);
-                        if (tcase_no1!=""){
-                            for (k=1; k<= document.getElementById('arnum').value; k++) {
-                                var tcase_no2=$.trim(document.getElementById('case_no_'+k).value);
-                                if (tcase_no2!=""){
-                                    if (j!=k){
-                                        if (tcase_no1==tcase_no2){
-                                            alert("同一筆官發不可重覆輸入同一筆交辦單號!!!");
-                                            document.getElementById("case_no_"+j).focus();
-                                            return false;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        //若無交辦單號，本次支出大於0，不可存檔
-                        var tgs_fees=document.getElementById('gs_fees_'+j).value;
-                        if (tgs_fees!=""){
-                            if (parseInt(tgs_fees,10)>0 && tcase_no1==""){
-                                alert("若無交辦單號，本次支出不可大於零!!!");
-                                document.getElementById("gs_fees_"+j).value=0;
-                                return false;
-                            }
-                        }
-                        //2008/1/14聖島四合一，檢查對應之交辦單之出名代理人要相同
-                        if (j==1){
-                            var tmp_agt_no=document.getElementById("case_agt_no_" + j).value;
-                            //檢查交辦與發文出名代理人不一樣，顯示提示訊息
-                            if (tmp_agt_no != ""){
-                                if ($.trim(tmp_agt_no)!=$.trim(document.getElementById("rs_agt_no").value)){
-                                    var answer=confirm("該交辦案件之出名代理人與發文出名代理人不同，是否確定要發文？(如需修改出名代理人請至交辦維護作業)");
-                                    if (answer !=true){
+                //不可同一筆官發重覆輸入同一case_no
+                for (j = 1; j <= CInt($("#arnum").val()); j++) {
+                    var tcase_no1=$.trim($('#case_no_'+j).val());
+                    if (tcase_no1!=""){
+                        for (k=1; k<=  CInt($("#arnum").val()); k++) {
+                            var tcase_no2=$.trim($('#case_no_'+k).val());
+                            if (tcase_no2!=""){
+                                if (j!=k){
+                                    if (tcase_no1==tcase_no2){
+                                        alert("同一筆官發不可重覆輸入同一筆交辦單號!!!");
+                                        $("#case_no_"+j).focus();
                                         return false;
                                     }
                                 }
                             }
-                        }else{
-                            var cur_agt_no=document.getElementById('case_agt_no_' + j).value;
-                            if ($.trim(tmp_agt_no)!=$.trim(document.getElementById("mcur_agt_no"))){
-                                alert("同一筆官發所對應交辦之出名代理人必須相同！");
-                                return false;
-                            }
                         }
                     }
-				
-                    brta311form.countfees();
-                    if((main.right&128)!=0||(main.right&256)!=0){
-                        if(document.getElementsByName("rfees_stat")[0].checked==true){//已交辦
-                            if (CInt(document.getElementById("fees").value)!=CInt(document.getElementById("tot_fees").value)){
-                                alert("交辦單本次規費支出合計("+CInt(document.getElementById("tot_fees").value)+")需等於官發規費支出("+CInt(document.getElementById("fees").value)+")!!!\n\n若交辦單本次規費支出合計須等於官發規費支出，請按確定!!!");
-                                return false;
+                    //若無交辦單號，本次支出大於0，不可存檔
+                    var tgs_fees=$('#gs_fees_'+j).val();
+                    if (tgs_fees!=""){
+                        if (CInt(tgs_fees)>0 && tcase_no1==""){
+                            alert("若無交辦單號，本次支出不可大於零!!!");
+                            $("#gs_fees_"+j).val(0);
+                            return false;
+                        }
+                    }
+                    //2008/1/14聖島四合一，檢查對應之交辦單之出名代理人要相同
+                    if (j==1){
+                        var tmp_agt_no=$("#case_agt_no_" + j).val();
+                        //檢查交辦與發文出名代理人不一樣，顯示提示訊息
+                        if (tmp_agt_no != ""){
+                            if ($.trim(tmp_agt_no)!=$.trim($("#rs_agt_no").val())){
+                                var answer=confirm("該交辦案件之出名代理人與發文出名代理人不同，是否確定要發文？(如需修改出名代理人請至交辦維護作業)");
+                                if (answer !=true){
+                                    return false;
+                                }
                             }
                         }
                     }else{
-                        if (CInt(document.getElementById("fees").value)!=CInt(document.getElementById("tot_fees").value)){
-                            alert("交辦單本次規費支出合計("+CInt(document.getElementById("tot_fees").value)+")需等於官發規費支出("+CInt(document.getElementById("fees").value)+")!!!\n\n若交辦單本次規費支出合計須等於官發規費支出，請按確定!!!");
+                        var cur_agt_no=$("#case_agt_no_" + j).val();
+                        if ($.trim(tmp_agt_no)!=$.trim(cur_agt_no)){
+                            alert("同一筆官發所對應交辦之出名代理人必須相同！");
                             return false;
                         }
                     }
-                    //官發出名代理人依交辦案件為主
-                    if (document.getElementById("arnum").value > 0){
-                        if ($.trim(document.getElementById("case_agt_no_1").value) != "") {
-                            document.getElementById("rs_agt_no").value=document.getElementById("case_agt_no_1").value;
+                }
+				
+                brta311form.countfees();
+                if((main.right&128)!=0||(main.right&256)!=0){
+                    if($("input[name='rfees_stat']:eq(0)").prop("checked")==true){//已交辦
+                        if (CInt($("#fees").val())!=CInt($("#tot_fees").val())){
+                            alert("交辦單本次規費支出合計("+CInt($("#tot_fees").val())+")需等於官發規費支出("+CInt($("#fees").val())+")!!!\n\n若交辦單本次規費支出合計須等於官發規費支出，請按確定!!!");
+                            return false;
                         }
                     }
+                }else{
+                    if (CInt($("#fees").val())!=CInt($("#tot_fees").val())){
+                        alert("交辦單本次規費支出合計("+CInt($("#tot_fees").val())+")需等於官發規費支出("+CInt($("#fees").val())+")!!!\n\n若交辦單本次規費支出合計須等於官發規費支出，請按確定!!!");
+                        return false;
+                    }
                 }
+                //官發出名代理人依交辦案件為主
+                if (CInt($("#arnum").val()) > 0){
+                    if ($.trim($("#case_agt_no_1").val()) != "") {
+                        $("#rs_agt_no").val($("#case_agt_no_1").val());
+                    }
+                }
+            }
 			
-                //註冊費繳納期數與發文案性關聯性檢查
-                switch (document.getElementById("rs_code").value) {
-                    case "FF1":
-                        document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                        if ($.trim(document.getElementById("pay_times").value) != "1") {
-                            var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第一期 』?");
-                            if (ans != true) {
-                                document.getElementById("rs_code").focus();
-                                return false;
-                            }else{
-                                document.getElementById("pay_times").value = "1";
-                                document.getElementById("hpay_times").value = "1";
-                                document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                            }
-                        }
+            //管制，有管制期限，至少需輸入一筆
+            if ($("#ctrl_flg").val()=="Y"){
+                $("#havectrl").val("N");
+                for (var n = 1; n <= CInt($("#ctrlnum").val()) ;n++) {
+                    var ctrl_type= $("#ctrl_type_" + n).val();
+                    var ctrl_date= $("#ctrl_date_" + n).val();
+                    if(ctrl_type!=""&&ctrl_date!=""){
+                        $("#havectrl").val("Y");
                         break;
-                    case "FF2":
-                        document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                        if ($.trim(document.getElementById("pay_times").value) != "2") {
-                            var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第二期 』?");
-                            if (ans != true) {
-                                document.getElementById("rs_code").focus();
-                                return false;
-                            }else{
-                                document.getElementById("pay_times").value = "2";
-                                document.getElementById("hpay_times").value = "2";
-                                document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                            }
-                        }
-                        break;
-                    case "FF3":
-                        document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                        if ($.trim(document.getElementById("pay_times").value) != "2") {
-                            var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第二期 』?");
-                            if (ans != true) {
-                                document.getElementById("rs_code").focus();
-                                return false;
-                            }else{
-                                document.getElementById("pay_times").value = "2";
-                                document.getElementById("hpay_times").value = "2";
-                                document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                            }
-                        }
-                        break;
-                    case "FF0":
-                        document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                        if ($.trim(document.getElementById("pay_times").value) != "A") {
-                            var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 全期 』?");
-                            if (ans != true) {
-                                document.getElementById("rs_code").focus();
-                                return false;
-                            }else{
-                                document.getElementById("pay_times").value = "A";
-                                document.getElementById("hpay_times").value = "A";
-                                document.getElementById("pay_date").value = document.getElementById("step_date").value;
-                            }
-                        }
-                        break;
+                    }
                 }
+                if ($("#havectrl").val()=="N"){
+                    var answer="此進度代碼有管制期限確定不輸入嗎???";
+                    if(!confirm(answer)){
+                        return false;
+                    }
+                }
+            }
+
+            //註冊費繳納期數與發文案性關聯性檢查
+            switch ($("#rs_code").val()) {
+                case "FF1":
+                    if ($.trim($("#pay_times").val()) != "1") {
+                        var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第一期 』?");
+                        if (ans != true) {
+                            $("#rs_code").focus();
+                            return false;
+                        }else{
+                            $("#pay_times").val( "1");
+                            $("#hpay_times").val("1");
+                            $("#pay_date").val($("#step_date").val());
+                        }
+                    }
+                    break;
+                case "FF2":
+                    if ($.trim($("#pay_times").val()) != "2") {
+                        var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第二期 』?");
+                        if (ans != true) {
+                            $("#rs_code").focus();
+                            return false;
+                        }else{
+                            $("#pay_times").val( "2");
+                            $("#hpay_times").val("2");
+                            $("#pay_date").val($("#step_date").val());
+                        }
+                    }
+                    break;
+                case "FF3":
+                    if ($.trim($("#pay_times").val()) != "2") {
+                        var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第二期 』?");
+                        if (ans != true) {
+                            $("#rs_code").focus();
+                            return false;
+                        }else{
+                            $("#pay_times").val( "2");
+                            $("#hpay_times").val("2");
+                            $("#pay_date").val($("#step_date").val());
+                        }
+                    }
+                    break;
+                case "FF0":
+                    if ($.trim($("#pay_times").val()) != "A") {
+                        var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 全期 』?");
+                        if (ans != true) {
+                            $("#rs_code").focus();
+                            return false;
+                        }else{
+                            $("#pay_times").val( "A");
+                            $("#hpay_times").val("A");
+                            $("#pay_date").val($("#step_date").val());
+                        }
+                    }
+                    break;
+            }
 			
-                if(document.getElementById("rs_code").value == "FC11" || document.getElementById("rs_code").value == "FC21" 
-                || document.getElementById("rs_code").value == "FC5"  || document.getElementById("rs_code").value == "FC6" 
-                || document.getElementById("rs_code").value == "FC7"  || document.getElementById("rs_code").value == "FC8" 
-                || document.getElementById("rs_code").value == "FCH"  || document.getElementById("rs_code").value == "FCI"){
-                    if (document.getElementById("tot_num").value == "0"){
-                        alert("您所選的案性為一案多件, 但您發文件數僅一件, 請重新選取發文案性!!");
-                        document.getElementById("rs_code").focus();
-                        return false;
-                    }
+            if($("#rs_code").val() == "FC11" || $("#rs_code").val() == "FC21" 
+            || $("#rs_code").val() == "FC5"  || $("#rs_code").val() == "FC6" 
+            || $("#rs_code").val() == "FC7"  || $("#rs_code").val() == "FC8" 
+            || $("#rs_code").val() == "FCH"  || $("#rs_code").val() == "FCI"){
+                if ($("#tot_num").val() == "0"){
+                    alert("您所選的案性為一案多件, 但您發文件數僅一件, 請重新選取發文案性!!");
+                    $("#rs_code").focus();
+                    return false;
                 }
-                if (document.getElementById("rs_code").value.substr(0,2) == "FD"){
-                    if (document.getElementById("tot_num").value == "0"){
-                        alert("您所選的案性為分割, 但您分割案件件數為零, 請重新選取發文案性!!");
-                        document.getElementById("rs_code").focus();
-                        return false;
-                    }
+            }
+            if ($("#rs_code").val().substr(0,2) == "FD"){
+                if ($("#tot_num").val() == "0"){
+                    alert("您所選的案性為分割, 但您分割案件件數為零, 請重新選取發文案性!!");
+                    $("#rs_code").focus();
+                    return false;
                 }
-                //變更案入檔時子本所編號檢查
-                if(document.getElementById("rs_code").value == "FC11"  || document.getElementById("rs_code").value == "FC21" 
-                || document.getElementById("hrs_code").value == "FC11" || document.getElementById("hrs_code").value == "FC21" 
-                || document.getElementById("rs_code").value == "FC5"   || document.getElementById("rs_code").value == "FC6" 
-                || document.getElementById("rs_code").value == "FC7"   || document.getElementById("rs_code").value == "FC8" 
-                || document.getElementById("rs_code").value == "FCH"   || document.getElementById("rs_code").value == "FCI"){
-                    // a.子本所編號確定是否都有按
-                    // b.子本所編號不可重複 也不可與主要本所編號相同
-                    var delcnt = 0;
-                    for(i = 1; i < document.getElementById("tot_num").value; i++){
-                        var dseq = $.trim(document.getElementById('dseq_'+i).value) + "" + $.trim(document.getElementById('dseq1A_'+i).value);
-                        if (document.getElementById('dseqdel_'+i).value!="D"){
-                            if (document.getElementById('keydseq_'+i).value != "Y"){
-                                alert("共同變更之本所編號尚未確認, 請按確定按鈕!!");
-                                document.getElementById('dseq_'+i).focus();
-                                return false;
-                            }
-                            for(j = 1; j < document.getElementById("tot_num").value; j++){
-                                if (i != j && document.getElementById('dseqdel_'+j).value != "D"){
-                                    if ( $.trim(document.getElementById('dseq_'+i).value) == $.trim(document.getElementById('dseq_'+j).value)
-                                    &&	$.trim(document.getElementById('dseq1A_'+i).value) == $.trim(document.getElementById('dseq1A_'+j).value) ){
-                                        alert("共同變更之本所不可重覆, 請刪除重覆的資料!! 重覆之本所編號為 : " + dseq);
-                                        document.getElementById('dseq_'+i).focus();
-                                        return false;
-                                    }
-                                }
-                            }
-                            if ( $.trim(document.getElementById('dseq_'+i).value) == $.trim(document.getElementById('seq').value) 
-                                && $.trim(document.getElementById('dseq1A_'+i).value) == $.trim(document.getElementById('seq1').value) ){
-                                alert("共同變更之本所不可與主要本所編號相同!!");
-                                document.getElementById('dseq_'+i).focus();
-                                return false;
-                            }
-                        }else{
-                            delcnt += 1;
+            }
+            //變更案入檔時子本所編號檢查
+            if($("#rs_code").val() == "FC11"  || $("#rs_code").val() == "FC21" 
+            || $("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC21" 
+            || $("#rs_code").val() == "FC5"   || $("#rs_code").val() == "FC6" 
+            || $("#rs_code").val() == "FC7"   || $("#rs_code").val() == "FC8" 
+            || $("#rs_code").val() == "FCH"   || $("#rs_code").val() == "FCI"){
+                // a.子本所編號確定是否都有按
+                // b.子本所編號不可重複 也不可與主要本所編號相同
+                var delcnt = 0;
+                for(i = 1; i < CInt($("#tot_num").val()); i++){
+                    var dseq = $.trim($('#dseq_'+i).val()) + "" + $.trim($('#dseq1A_'+i).val());
+                    if ($('#keydseq_'+i).val()!="D"){
+                        if ($('#keydseq_'+i).val() != "Y"){
+                            alert("共同變更之本所編號尚未確認, 請按確定按鈕!!");
+                            $('#dseq_'+i).focus();
+                            return false;
                         }
-                    }
-                    if (document.getElementById('tot_num').value - delcnt > 49){
-                        alert("總變更件數不可超過五十筆!!");
-                        return false;
-                    }
-                }
-
-                //分割案入檔時子本所編號檢查
-                if (document.getElementById("rs_code").value.substr(0,2) == "FD"){
-                    // 子本所編號不可重複 也不可與主要本所編號相同
-                    var delcnt = 0;
-                    for(i = 1; i < document.getElementById("tot_num").value; i++){
-                        var dseq = $.trim(document.getElementById('dseq_'+i).value) + "" + $.trim(document.getElementById('dseq1A_'+i).value);
-                        if (document.getElementById('dseqdel_'+i).value!="D"){
-                            for(j = 1; j < document.getElementById("tot_num").value; j++){
-                                if (i != j && document.getElementById('dseqdel_'+j).value != "D"){
-                                    if ( $.trim(document.getElementById('dseq_'+i).value) == $.trim(document.getElementById('dseq_'+j).value)
-                                    &&	$.trim(document.getElementById('dseq1A_'+i).value) == $.trim(document.getElementById('dseq1A_'+j).value) ){
-                                        alert("分割案之本所不可重覆, 請刪除重覆的資料!! 重覆之本所編號為 : " + dseq);
-                                        document.getElementById('dseq_'+i).focus();
-                                        return false;
-                                    }
-                                }
-                            }
-                            if ( $.trim(document.getElementById('dseq_'+i).value) == $.trim(document.getElementById('seq').value) 
-                                && $.trim(document.getElementById('dseq1A_'+i).value) == $.trim(document.getElementById('seq1').value) ){
-                                alert("分割案子案之本所不可與主要本所編號相同!!");
-                                document.getElementById('dseq_'+i).focus();
-                                return false;
-                            }
-                        }else{
-                            delcnt += 1;
-                        }
-                    }
-                    if (document.getElementById('tot_num').value - delcnt > 30){
-                        alert("總變更件數不可超過三十筆!!");
-                        return false;
-                    }
-                }
-
-                //2019/5/17李協理提出
-                //20210412增加延展案發文檢查.不可小於最小法定期限-半年
-                if($("#rs_code").val() == "FR1"){
-                    if($("#a_last_date").val()!=""){
-                        var ldate = CDate($('#a_last_date').val()).addMonths(-6);//最小法定期限-半年
-                        var sdate = CDate($('#step_date').val());//發文日期
-                        if(sdate.getTime()< ldate.getTime()){
-                            if ($('#task').val()=="pr"){//交辦發文時只提醒
-                                if(!confirm("延展案發文日期不可早於最小法定期限減半年！\n是否確認交辦發文?")){
+                        for(j = 1; j < CInt($("#tot_num").val()); j++){
+                            if (i != j && $('#dseqdel_'+j).val() != "D"){
+                                if ( $.trim($('#dseq_'+i).val()) == $.trim($('#dseq_'+j).val())
+                                &&	$.trim($('#dseq1A_'+i).val()) == $.trim($('#dseq1A_'+j).val()) ){
+                                    alert("共同變更之本所不可重覆, 請刪除重覆的資料!! 重覆之本所編號為 : " + dseq);
+                                    $('#dseq_'+i).focus();
                                     return false;
                                 }
-                            }else if ($('#task').val()=="conf"){//發文確認時擋住
-                                alert("延展案發文日期不可早於最小法定期限減半年！");
+                            }
+                        }
+                        if ( $.trim($('#dseq_'+i).val()) == $.trim($('#seq').val()) 
+                            && $.trim($('#dseq1A_'+i).val()) == $.trim($('#seq1').val()) ){
+                            alert("共同變更之本所不可與主要本所編號相同!!");
+                            $('#dseq_'+i).focus();
+                            return false;
+                        }
+                    }else{
+                        delcnt += 1;
+                    }
+                }
+                if (CInt($("#tot_num").val()) - delcnt > 49){
+                    alert("總變更件數不可超過五十筆!!");
+                    return false;
+                }
+            }
+
+            //分割案入檔時子本所編號檢查
+            if ($("#rs_code").val().substr(0,2) == "FD"){
+                // 子本所編號不可重複 也不可與主要本所編號相同
+                var delcnt = 0;
+                for(i = 1; i < CInt($("#tot_num").val()); i++){
+                    var dseq = $.trim($('#dseq_'+i).val()) + "" + $.trim($('#dseq1A_'+i).val());
+                    if ($('#keydseq_'+i).val()!="D"){
+                        for(j = 1; j < CInt($("#tot_num").val()); j++){
+                            if (i != j && $('#dseqdel_'+j).val() != "D"){
+                                if ( $.trim($('#dseq_'+i).val()) == $.trim($('#dseq_'+j).val())
+                                &&	$.trim($('#dseq1A_'+i).val()) == $.trim($('#dseq1A_'+j).val()) ){
+                                    alert("分割案之本所不可重覆, 請刪除重覆的資料!! 重覆之本所編號為 : " + dseq);
+                                    $('#dseq_'+i).focus();
+                                    return false;
+                                }
+                            }
+                        }
+                        if ( $.trim($('#dseq_'+i).val()) == $.trim($('#seq').val()) 
+                            && $.trim($('#dseq1A_'+i).val()) == $.trim($('#seq1').val()) ){
+                            alert("分割案子案之本所不可與主要本所編號相同!!");
+                            $('#dseq_'+i).focus();
+                            return false;
+                        }
+                    }else{
+                        delcnt += 1;
+                    }
+                }
+                if (CInt($('#tot_num').val()) - delcnt > 30){
+                    alert("總變更件數不可超過三十筆!!");
+                    return false;
+                }
+            }
+
+            //非電子送件不可選擇電子收據
+            if ($("#send_way").val()!="E"&&$("#send_way").val()!="EA"){
+                if ($("#receipt_type").val()=="E"){
+                    alert("非電子送件不可選擇電子收據");
+                    return false;
+                }
+            }
+
+            //2019/5/17李協理提出
+            //20210412增加延展案發文檢查.不可小於最小法定期限-半年
+            if($("#rs_code").val() == "FR1"){
+                if($("#a_last_date").val()!=""){
+                    var ldate = CDate($('#a_last_date').val()).addMonths(-6);//最小法定期限-半年
+                    var sdate = CDate($('#step_date').val());//發文日期
+                    if(sdate.getTime()< ldate.getTime()){
+                        if ($('#task').val()=="pr"){//交辦發文時只提醒
+                            if(!confirm("延展案發文日期不可早於最小法定期限減半年！\n是否確認交辦發文?")){
                                 return false;
                             }
+                        }else if ($('#task').val()=="conf"){//發文確認時擋住
+                            alert("延展案發文日期不可早於最小法定期限減半年！");
+                            return false;
                         }
                     }
                 }
             }
-            //判斷task的end if
 		
-            //***todo
-            //if ($("#submittask").val()=="U" and chk_type="Y" then%>
-            //alert("<=rs_no%>進度會計已確認，若有修改「發文日期」、「應繳規費」、「交辦單號」，\n請通知會計更正帳款資料，謝謝 !!!");
-            //end if%>
-            if (document.getElementById('task').value == "pr" //自行發文
-            ||  document.getElementById('task').value == "cancel" //不需發文
-            ||  document.getElementById('task').value == "prsave"){//發文維護
-                $("#submittask").val("A");
-                postForm(getRootPath() + "/brt6m/Brt63_Update.aspx");
-            }else if (document.getElementById('task').value == "conf"){//官發確認
-                //為入官發進度，修改submittask=A
-                $("#submittask").val("A");
-                postForm(getRootPath() + "/brtam/Brta31_Update.aspx");
+            if(main.submittask=="U" &$("#span_chk_type").html()!=""){
+                alert($("#rs_no").val()+"進度會計已確認，若有修改「發文日期」、「應繳規費」、「交辦單號」、「發文案性」，\n請通知會計更正帳款資料，謝謝 !!!")
             }
+            
+            postForm(getRootPath() + "/brtam/Brta31_Update.aspx");
         }
     }
 
-    function formRejectSubmit(){
-        var ans = confirm("是否確定退回!!!");
+    function formDelSubmit(){
+        var ans = confirm("是否確定刪除!!!");
         if (ans == true){
-            if(chkNull("退回說明",document.getElementById('approve_desc'))) return false;
-            $("#submittask").val("R");
+            $("#submittask").val("D");
             postForm(getRootPath() + "/brtam/Brta31_Update.aspx");
         }
     }
@@ -931,16 +910,29 @@
         });
     }
 
-    function openread(){
+    function openread(pchk){
         $("#btnQuery").hide();
         $("#seq,#seq1,#rs_class,#rs_code").lock();
         
+        if(pchk=="B"){//爭救案
+            $("#step_date,#mp_date,#send_cl,#send_cl1,#send_sel").lock();
+            $("#rs_class,#rs_code,#act_code,#rs_detail").lock();
+        }else{
+            $("#rs_class,#rs_code").lock();
+            if(main.submittask=="U" && (main.prgid=="brta31"||main.prgid=="brta2m")){
+                //2012/12/24因應電子申請A0與創設申請A1可互相修改案性，所以有異動案性時要開放結構分類及案性代碼
+                if($("#case_change").val()=="C"&&$("#rs_code").val()!=$("#case_arcase").val()){
+                    $("#rs_class,#rs_code").unlock();
+                }
+            }
+        }
+
         if((main.right&128)!=0||(main.right&256)!=0){
             $("input[name='rfees_stat']").lock();
         }
         $("#arAdd_button,#arres_button").lock();
-
-        if(CInt($("#arnum").val())>0){
+        
+        if($("#case_no_1").val()!=""){
             $("#btncase_no_1").hide();
             $("#case_no_1,#gs_fees_1").lock();
         }else{
@@ -950,47 +942,8 @@
         }
     }
 
-    //for不需發文之銷管期限
-    $("#btnresp").click(function() {
-        window.open(getRootPath() + "/brtam/brta21disEdit.aspx?prgid=<%=prgid%>&branch=<%=Session["seBranch"]%>&seq="+$("#seq").val()+"&seq1="+$("#seq1").val()+"&qtype=N&rsqlno="+$("#rsqlno").val()+"&step_grade="+$("#nstep_grade").val()+"&submitTask=A","","width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
-    });
-
-    function toselect() {
-        $("input[name=Osign]").prop("checked",false);
-    }
-
-    //20161212 檢查電子送件word檔【附送書件】vs文件上傳附件是否相符
-    function chkAttach(){
-        if (document.getElementById('task').value!="conf" || document.getElementById("send_way").value!="E"){
-            return false;
-        }
-	
-        jQuery.support.cors = true;
-        $.ajax({ 
-            url: getRootPath() + "/brt6m/Brt63checkWordN.aspx",
-            type: 'GET', 
-            dataType : "text",//回傳的格式為text
-            data: { 
-                uploadfield: $("#uploadfield").val(),
-                seq: $('#seq').val() ,
-                seq1: $('#seq1').val() ,
-                branch: "<%=Session["seBranch"]%>" ,
-                att_sqlno: $("#att_sqlno").val(),
-                source: "cgrs",
-                debug: "n",
-                seed: Math.random()
-            }, 
-            beforeSend: function(xhr) { 
-                $('#msg').html("檢查中..");
-            }, 
-            error: function(xhr) { 
-                $('#msg').html("<Font align=left color='red' size=3>檢查【附送書件】發生未知錯誤，請聯繫資訊人員!!</font>");
-                alert('檢查【附送書件】發生錯誤!!'); 
-            },
-            success: function(response) {
-                eval(response);
-            }
-        }); 
+    function Help_Click(){
+        window.open(getRootPath() + "/brtam/國內案發收文系統操作手冊.htm","","width=700, height=500, top=50, left=50, toolbar=no, menubar=no, location=no, directories=no, resizeable=no, status=no, scrollbars=yes");
     }
 </script>
 

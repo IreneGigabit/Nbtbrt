@@ -78,7 +78,8 @@
                 StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Eblank\">[聯絡人新增]</a>\n";
                 StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Eblank\">[申請人新增]</a>\n";
                 if ((Request["cust_seq"] ?? "") != "") {
-                    StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
+                    //StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
+                    StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt11_1.aspx") + "?prgid=" + prgid + "&cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"_blank\">[案件查詢]</a>\n";
                 }
             }
         }
@@ -342,7 +343,7 @@
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
 
         var formData = new FormData($('#reg')[0]);
-        ajaxByForm("<%=HTProgPrefix%>EditA9Z_Update.aspx",formData)
+        ajaxByForm("<%=HTProgPrefix%>EditA11_Update.aspx",formData)
         .complete(function( xhr, status ) {
             $("#dialog").html(xhr.responseText);
             $("#dialog").dialog({

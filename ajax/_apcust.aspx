@@ -64,7 +64,7 @@
             SQL += ",d.apcust_no,a.Apclass,a.Ap_country,a.Ap_crep,a.Ap_erep,a.Ap_addr1,a.Ap_addr2";//20180130改抓dmt_temp_ap.apcust_no
             SQL += ",a.Ap_eaddr1,a.Ap_eaddr2,a.Ap_eaddr3,a.Ap_eaddr4";
             SQL += ",a.Apatt_zip,a.Apatt_addr1,a.Apatt_addr2,a.Apatt_tel0";
-            SQL += ",a.Apatt_tel,a.Apatt_tel1,a.Apatt_fax,a.Ap_zip";
+            SQL += ",a.Apatt_tel,a.Apatt_tel1,a.Apatt_fax,a.Ap_zip,d.ap_sort";
             SQL += " From dmt_temp_ap as d  ";
             SQL += " inner join apcust as a on d.apsqlno=a.apsqlno ";
             SQL += " Where d.in_no = '" + in_no + "' and d.case_sqlno=0 ";

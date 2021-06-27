@@ -55,8 +55,8 @@
         if (HTProgRight >= 0) {
             try {
                 doUpdateDB();
-                //conn.Commit();
-                conn.RollBack();
+                conn.Commit();
+                //conn.RollBack();
                 strOut.AppendLine("<div align='center'><h1>資料更新成功</h1></div>");
             }
             catch (Exception ex) {
@@ -403,7 +403,7 @@
     /// 將檔案更改檔名
     /// </summary>
     private string move_file(string drawValue, string suffix, string Ofile) {
-        if (drawValue.Trim() == "" || drawValue == null)
+        if (drawValue == null || drawValue.Trim() == "")
             return "";
 
         string in_no = Request["in_no"] ?? "";
@@ -654,6 +654,7 @@
             ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
             ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
             ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+            ColMap["ap_sort"] = Util.dbchar(Request["ap_sort_" + i]);
             SQL += ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
         }
@@ -1573,6 +1574,7 @@
             ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
             ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
             ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+            ColMap["ap_sort"] = Util.dbnull(Request["ap_sort_" + i]);
             SQL += ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
         }
@@ -1801,6 +1803,7 @@
             ColMap["ap_eaddr2"] = Util.dbchar(Request["ap_eaddr2_" + i]);
             ColMap["ap_eaddr3"] = Util.dbchar(Request["ap_eaddr3_" + i]);
             ColMap["ap_eaddr4"] = Util.dbchar(Request["ap_eaddr4_" + i]);
+            ColMap["ap_sort"] = Util.dbnull(Request["ap_sort_" + i]);
             SQL += ColMap.GetInsertSQL();
             conn.ExecuteNonQuery(SQL);
         }

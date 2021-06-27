@@ -158,10 +158,12 @@
 
         //分頁完再處理其他資料才不會虛耗資源
         for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
-            SQL = "Select remark from cust_code where cust_code='__' and code_type='" + page.pagedTable.Rows[i]["arcase_type"] + "'";
+            DataRow dr = page.pagedTable.Rows[i];
+            
+            SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
             object objResult = conn.ExecuteScalar(SQL);
             string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-            page.pagedTable.Rows[i]["link_remark"] = link_remark;//案性版本連結
+            dr["link_remark"] = link_remark;//案性版本連結
 
             int T_Service = 0;//交辦服務費
             int T_Fees = 0;//交辦規費
@@ -170,54 +172,54 @@
             SQL = "select a.item_service as case_service,a.item_fees as case_fees, service*item_count as fee_service,fees*item_count AS fee_Fees ";
             SQL += "from caseitem_dmt a ";
             SQL += "inner join case_fee b on a.item_arcase=b.rs_code ";
-            SQL += "where a.in_no='" + page.pagedTable.Rows[i].SafeRead("in_no", "") + "' ";
+            SQL += "where a.in_no='" + dr.SafeRead("in_no", "") + "' ";
             SQL += "and b.dept='T' and b.country='T' and getdate() between b.beg_date and b.end_date";
-            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                if (dr.Read()) {
-                    T_Service += dr.SafeRead("case_service", 0);
-                    P_Service += dr.SafeRead("Fee_service", 0);
-                    T_Fees += dr.SafeRead("Case_Fees", 0);
-                    P_Fees += dr.SafeRead("Fee_Fees", 0);
+            using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                if (dr0.Read()) {
+                    T_Service += dr0.SafeRead("case_service", 0);
+                    P_Service += dr0.SafeRead("Fee_service", 0);
+                    T_Fees += dr0.SafeRead("Case_Fees", 0);
+                    P_Fees += dr0.SafeRead("Fee_Fees", 0);
                 }
             }
             SQL = "select a.oth_arcase,a.oth_money,b.service ";
             SQL += "from case_dmt a ";
             SQL += "inner join case_fee b on  a.oth_arcase=b.rs_code ";
-            SQL += "where in_no='" + page.pagedTable.Rows[i].SafeRead("in_no", "") + "' ";
+            SQL += "where in_no='" + dr.SafeRead("in_no", "") + "' ";
             SQL += "and b.dept='T' and b.country='T' and getdate() between b.beg_date and b.end_date";
-            using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                if (dr.Read()) {
-                    T_Service += dr.SafeRead("oth_money", 0);
-                    P_Service += dr.SafeRead("service", 0);
+            using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                if (dr0.Read()) {
+                    T_Service += dr0.SafeRead("oth_money", 0);
+                    P_Service += dr0.SafeRead("service", 0);
                 }
             }
-            page.pagedTable.Rows[i]["T_Service"]=T_Service;
-            page.pagedTable.Rows[i]["T_Fees"]=T_Fees;
-            page.pagedTable.Rows[i]["P_Service"]=P_Service;
-            page.pagedTable.Rows[i]["P_Fees"]=P_Fees;
+            dr["T_Service"]=T_Service;
+            dr["T_Fees"]=T_Fees;
+            dr["P_Service"]=P_Service;
+            dr["P_Fees"]=P_Fees;
                 
-            page.pagedTable.Rows[i]["cust_name"] = page.pagedTable.Rows[i].SafeRead("cust_name", "").Left(5);
-            page.pagedTable.Rows[i]["fseq"] = page.pagedTable.Rows[i].SafeRead("seq", "") + (page.pagedTable.Rows[i].SafeRead("seq1", "_") != "_" ? "-" + page.pagedTable.Rows[i].SafeRead("seq1", "") : "");
+            dr["cust_name"] = dr.SafeRead("cust_name", "").Left(5);
+            dr["fseq"] = Sys.formatSeq1(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
 
-            string new_form = Sys.getCaseDmtAspx(page.pagedTable.Rows[i].SafeRead("arcase_type", ""), page.pagedTable.Rows[i].SafeRead("arcase", ""));//連結的aspx
+            string new_form = Sys.getCaseDmtAspx(dr.SafeRead("arcase_type", ""), dr.SafeRead("arcase", ""));//連結的aspx
             //SQL = "SELECT c.remark ";
             //SQL += "FROM Cust_code c ";
             //SQL += "inner join code_br b on b.rs_type=c.Code_type and b.rs_class=c.Cust_code ";
             ////SQL += "WHERE c.form_name is not null ";
             //SQL += "WHERE 1=1 ";
-            //SQL += "and b.rs_type='" + page.pagedTable.Rows[i]["arcase_type"] + "' ";
-            //SQL += "and b.rs_code='" + page.pagedTable.Rows[i]["arcase"] + "' ";
-            //using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-            //    if (dr.Read()) {
-            //        new_form = dr.SafeRead("remark", "");
+            //SQL += "and b.rs_type='" + dr["arcase_type"] + "' ";
+            //SQL += "and b.rs_code='" + dr["arcase"] + "' ";
+            //using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+            //    if (dr0.Read()) {
+            //        new_form = dr0.SafeRead("remark", "");
             //    }/* else {
-            //        dr.Close();
+            //        dr0.Close();
             //        SQL = "SELECT c.remark ";
             //        SQL += "FROM Cust_code c ";
             //        SQL += "inner join code_br b on b.rs_type=c.Code_type and left(b.rs_class,1)=c.Cust_code ";
             //        SQL += "WHERE c.form_name is not null ";
-            //        SQL += "and b.rs_type='" + page.pagedTable.Rows[i]["arcase_type"] + "' ";
-            //        SQL += "and b.rs_code='" + page.pagedTable.Rows[i]["arcase"] + "' ";
+            //        SQL += "and b.rs_type='" + dr["arcase_type"] + "' ";
+            //        SQL += "and b.rs_code='" + dr["arcase"] + "' ";
             //        using (SqlDataReader dr1 = conn.ExecuteReader(SQL)) {
             //            if (dr1.Read()) {
             //                new_form += dr1.SafeRead("remark", "");
@@ -225,45 +227,45 @@
             //        }
             //    }*/
             //}
-            string ar_form = page.pagedTable.Rows[i].SafeRead("ar_form", "");//rs_class
-            string prt_name = page.pagedTable.Rows[i].SafeRead("reportp", "");//列印程式
+            string ar_form = dr.SafeRead("ar_form", "");//rs_class
+            string prt_name = dr.SafeRead("reportp", "");//列印程式
             bool FlagPrint = (prt_name != "" ? true : false);
-            if (page.pagedTable.Rows[i].SafeRead("prt_code", "") == "D9Z" || page.pagedTable.Rows[i].SafeRead("prt_code", "") == "ZZ") {
+            if (dr.SafeRead("prt_code", "") == "D9Z" || dr.SafeRead("prt_code", "") == "ZZ") {
                 //2014/4/29因有部份類別在洽案登錄為大類別，如C救濟案，但編修時值皆抓rs_class=C2，則會造成若要改C1下的案性，就會選不到，增加下列判斷重抓洽案登錄大類別
-                SQL = "select cust_code from cust_code where code_type='" + page.pagedTable.Rows[i]["arcase_type"] + "' and form_name is not null and cust_code='" + ar_form + "'";
-                using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
-                    if (!dr.HasRows) {
-                        dr.Close();
-                        SQL = "select cust_code from cust_code where code_type='" + page.pagedTable.Rows[i]["arcase_type"] + "' and form_name is not null and cust_code like '" + ar_form.Left(1) + "%' ";
+                SQL = "select cust_code from cust_code where code_type='" + dr["arcase_type"] + "' and form_name is not null and cust_code='" + ar_form + "'";
+                using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                    if (!dr0.HasRows) {
+                        dr0.Close();
+                        SQL = "select cust_code from cust_code where code_type='" + dr["arcase_type"] + "' and form_name is not null and cust_code like '" + ar_form.Left(1) + "%' ";
                         using (SqlDataReader dr1 = conn.ExecuteReader(SQL)) {
                             if (dr1.Read()) {
-                                page.pagedTable.Rows[i]["ar_form"] = dr1.SafeRead("cust_code", "");
+                                dr["ar_form"] = dr1.SafeRead("cust_code", "");
                             }
                         }
                     }
                 }
             } else {
-                if (page.pagedTable.Rows[i].SafeRead("prt_code", "") == "D3"
-                    || page.pagedTable.Rows[i].SafeRead("prt_code", "") == ""
-                    || page.pagedTable.Rows[i].SafeRead("arcase", "") == "DE2"
-                    || page.pagedTable.Rows[i].SafeRead("arcase", "") == "AD7"
+                if (dr.SafeRead("prt_code", "") == "D3"
+                    || dr.SafeRead("prt_code", "") == ""
+                    || dr.SafeRead("arcase", "") == "DE2"
+                    || dr.SafeRead("arcase", "") == "AD7"
                     )
                     FlagPrint = false;
             }
             string urlasp = "";//連結的url
             urlasp = Page.ResolveUrl("~/brt1m" + link_remark + "/Brt11Edit" + new_form + ".aspx?prgid="+prgid);
-            urlasp += "&in_scode=" + page.pagedTable.Rows[i]["in_scode"];
-            urlasp += "&in_no=" + page.pagedTable.Rows[i]["in_no"];
-            urlasp += "&add_arcase=" + page.pagedTable.Rows[i]["arcase"];
-            urlasp += "&cust_area=" + page.pagedTable.Rows[i]["cust_area"];
-            urlasp += "&cust_seq=" + page.pagedTable.Rows[i]["cust_seq"];
-            urlasp += "&ar_form=" + page.pagedTable.Rows[i]["ar_form"];
+            urlasp += "&in_scode=" + dr["in_scode"];
+            urlasp += "&in_no=" + dr["in_no"];
+            urlasp += "&add_arcase=" + dr["arcase"];
+            urlasp += "&cust_area=" + dr["cust_area"];
+            urlasp += "&cust_seq=" + dr["cust_seq"];
+            urlasp += "&ar_form=" + dr["ar_form"];
             urlasp += "&new_form=" + new_form;
-            urlasp += "&code_type=" + page.pagedTable.Rows[i]["arcase_type"];
+            urlasp += "&code_type=" + dr["arcase_type"];
             urlasp += "&homelist=" + Request["homelist"];
             urlasp += "&uploadtype=case";
 
-            if (Sys.GetSession("scode") == page.pagedTable.Rows[i].SafeRead("in_scode", "") || (HTProgRight & 128) != 0)
+            if (Sys.GetSession("scode") == dr.SafeRead("in_scode", "") || (HTProgRight & 128) != 0)
                 urlasp += "&submittask=Edit";
             else
                 urlasp += "&submittask=Show";
@@ -390,12 +392,12 @@
 </div>
 
 <form style="margin:0;" id="reg" name="reg" method="post">
-<input type="text" id="prgid" name="prgid" value="<%=prgid%>">
-<input type=text id=signid name=signid>
-<input type=text id=in_no1 name=in_no1>
-<input type=text id=in_scode1 name=in_scode1>
-<input type=text id=C1 name=C1 value="Y"> 
-<input type=text id=row name=row value="<%#page.pagedTable.Rows.Count%>"> 
+<input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+<input type=hidden id=signid name=signid>
+<input type=hidden id=in_no1 name=in_no1>
+<input type=hidden id=in_scode1 name=in_scode1>
+<input type=hidden id=C1 name=C1 value="Y"> 
+<input type=hidden id=row name=row value="<%#page.pagedTable.Rows.Count%>"> 
 
 <asp:Repeater id="dataRepeater" runat="server">
 <HeaderTemplate>
@@ -480,7 +482,7 @@
 <table border="0" width="70%" cellspacing="1" cellpadding="0" align="center" >			
 	<TR>										 
 		<td ><input type=radio name="usesign" id="usesignM" checked><strong>正常簽核:</strong></td>
-		<td><strong>直屬主管:</strong><%=mSC_name%><input type=text name=Msign id=Msign value="<%=mSC_code%>"></td>
+		<td><strong>直屬主管:</strong><%=mSC_name%><input type=hidden name=Msign id=Msign value="<%=mSC_code%>"></td>
 		<td><strong>管制日期:</strong>
 		<input type=text id="signdate" name="signdate" size=10 readonly class="dateField">
 		</td>
@@ -497,7 +499,7 @@
 		</td>
 	</TR>
 </table>
-<input type=text id="GrpID" name="GrpID" value="<%=se_Grpid%>">
+<input type=hidden id="GrpID" name="GrpID" value="<%=se_Grpid%>">
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 	<tr><td width="100%">     
 	<p align="center">        

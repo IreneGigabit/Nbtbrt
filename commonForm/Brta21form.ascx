@@ -13,7 +13,7 @@
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//功能權限代碼
     protected string SQL = "";
 
-    protected string html_pr_scode="",html_send_sel = "", html_pay_times = "";
+    protected string html_pay_times = "";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
@@ -28,8 +28,6 @@
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         submitTask = (Request["submittask"] ?? "").Trim().ToUpper();
 
-        html_pr_scode = Sys.getPrScode().Option("{scode}", "{scode}_{sc_name}", "", false, "", "sort=01");
-        html_send_sel = Sys.getCustCode("SEND_SEL", "", "cust_code").Option("{cust_code}", "{code_name}");
         html_pay_times = Sys.getCustCode(Sys.GetSession("dept") + "PAY_TIMES", "", "sortfld").Option("{cust_code}", "{code_name}");
 
         PageLayout();
@@ -37,17 +35,23 @@
     }
 
     private void PageLayout() {
-        if (prgid != "brta21" && prgid != "brta24") {
-            Lock["QLock"] = "Lock";
+        if ((prgid == "brta21" || prgid == "brta24") && submitTask != "D") {//官收維護/官收確認
+            Lock["QLock"] = "";
+        } else {
+            if (prgid != "brta21" && prgid != "brta24") {
+                Lock["QLock"] = "Lock";
+            } else {
+                Lock["QLock"] = Lock.TryGet("Qdisabled");
+            }
         }
     }
 </script>
 
 <%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
-<input type="text" id="now_grade" name="now_grade">
-<input type="text" id="now_arcase" name="now_arcase">
-<input type="text" id="now_stat" name="now_stat">
-<input type="text" id="new_seq" name="new_seq">
+<input type="hidden" id="now_grade" name="now_grade">
+<input type="hidden" id="now_arcase" name="now_arcase">
+<input type="hidden" id="now_stat" name="now_stat">
+<input type="hidden" id="new_seq" name="new_seq">
 
 <TABLE id=tabbr style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
 	<%if (prgid=="brta24"){%><!--官收確認****todo-->
@@ -58,7 +62,7 @@
 			<input type=button class="c1button" name="btnnewseq" id="btnnewseq" value="子案立案" onclick="brta21form.btnnewseq()">
 			<input type=radio name=domark id=domarkB value="B" onclick="brta21form.domark(this.value)">已立案
 			<input type=radio name=domark id=domarkX value="X" onclick="brta21form.domark(this.value)">本案收文
-		    <input type=text id="hdomark" name="hdomark" value="X">
+		    <input type=hidden id="hdomark" name="hdomark" value="X">
 		</TD>
 		<TD align=right  class=whitetablebg>
 			<input type=button name="getmgdmt" id="getmgdmt" class="cbutton" value="核對總收發主檔檢核資料" onclick="brta21form.btnmgdmt('')"><!--***todo brta21form.btnmgdmt('')-->
@@ -73,12 +77,12 @@
 	<TR>
 		<TD class=lightbluetable align=right nowrap>本所編號：</TD>
 		<TD class=whitetablebg>
-			<input type="text" id="keyseq" name="keyseq" value="N">
-			<input type="text" id="oldseq" name="oldseq">
-			<input type="text" id="oldseq1" name="oldseq1">
-			<input type="text" id="s_mark" name="s_mark">
-			<input type="text" id="grseq" name="grseq"><!--官收案號for官收立子案之原案號-->
-			<input type="text" id="grseq1" name="grseq1"><!--官收案號for官收立子案之原案號-->
+			<input type="hidden" id="keyseq" name="keyseq" value="N">
+			<input type="hidden" id="oldseq" name="oldseq">
+			<input type="hidden" id="oldseq1" name="oldseq1">
+			<input type="hidden" id="s_mark" name="s_mark">
+			<input type="hidden" id="grseq" name="grseq"><!--官收案號for官收立子案之原案號-->
+			<input type="hidden" id="grseq1" name="grseq1"><!--官收案號for官收立子案之原案號-->
 			<input type="text" id="seq" name="seq" size=6 maxlength="<%#Sys.DmtSeq%>">-
 			<input type="text" id="seq1" name="seq1" size=1 maxlength="<%#Sys.DmtSeq1%>">
 			<input type=button class="cbutton" id="btnseq" name="btnseq" value ="確定" onclick="brta21form.btnseq()">
@@ -108,7 +112,7 @@
 	<TR>
 		<TD class=lightbluetable align=right>客戶名稱：</TD>
 		<TD class=whitetablebg colspan=4>
-			<input type="text" id="att_sql" name="att_sql">
+			<input type="hidden" id="att_sql" name="att_sql">
 			<input type="text" id="cust_area" name="cust_area" class="sedit" readonly size=1>-
 			<input type="text" id="cust_seq" name="cust_seq" size=6 class="sedit" readonly>
 			<input type="text" id="cust_name" name="cust_name" class="sedit" size=40 readonly>
@@ -120,8 +124,8 @@
 	<TR>
 		<TD class=lightbluetable align=right>申請人：</TD>
 		<TD class=whitetablebg colspan=4>
-			<input type="text" id="apcust_no" name="apcust_no" class="sedit" readonly size=11>
-			<input type="text" id="ap_cname" name="ap_cname" class="sedit" size=40 readonly>
+			<input type="hidden" id="apcust_no" name="apcust_no" class="sedit" readonly size=11>
+			<input type="hidden" id="ap_cname" name="ap_cname" class="sedit" size=40 readonly>
 			<input type="text" id="dmtap_cname" name="dmtap_cname" class="sedit" size=60 readonly>
 		</TD>	
 		<TD class=lightbluetable align=right rowspan=2>案件狀態：</TD>	
@@ -170,7 +174,7 @@
 		<TD class=lightbluetable align=right>結案日期：</TD>
 		<TD class=whitetablebg><input type="text" id="end_date" name="end_date" size=10 class="sedit" readonly>-
 			<input type="text" id="end_code" name="end_code" size=1 class="sedit" readonly>
-			<input type="text" id="end_name" name="end_name" >
+			<input type="hidden" id="end_name" name="end_name" >
 			原因：<input type="text" id="end_remark" name="end_remark" size=20 class="sedit" readonly>
 		</TD>
 		</TR>
@@ -185,10 +189,10 @@
 		<TD class=whitetablebg><input type="text" id="renewal" name="renewal" class="<%#Lock.TryGet("QLock")%>" size=2 maxlength=2 /></TD>
 		<TD class=lightbluetable align=right>註冊費已繳：</TD>
 		<TD class=whitetablebg>
-			<input type="text" id="opay_times" name="opay_times">
-			<input type="text" id="hpay_times" name="hpay_times">
+			<input type="hidden" id="opay_times" name="opay_times">
+			<input type="hidden" id="hpay_times" name="hpay_times">
 	   		<Select NAME="pay_times" id="pay_times" class="Lock"><%#html_pay_times%></SELECT>
-			<input type="text" id="opay_date" name="opay_date" size=10 maxlength=10 class="sedit" readonly>
+			<input type="hidden" id="opay_date" name="opay_date" size=10 maxlength=10 class="sedit" readonly>
 			<input type="text" id="pay_date" name="pay_date" size=10 maxlength=10 class="sedit" readonly>
 		</TD>
 	</TR>
@@ -284,9 +288,9 @@
         $("#scode").val(dmt_data[0].scodenm);
         $("#apply_date").val(dateReviver(dmt_data[0].apply_date,'yyyy/M/d'));
         $("#apply_no").val(dmt_data[0].apply_no);
-        var ar_ref=dmt_data[0].ref_no1.split("-");
-        if(ar_ref.count>=1) $("#ref_no1").val(ar_ref[0]);
-        if(ar_ref.count>=2) $("#ref_no11").val(ar_ref[1]);
+        var ar_ref = dmt_data[0].ref_no1.split("-");
+        if (ar_ref.length >= 1) $("#ref_no1").val(ar_ref[0]);
+        if (ar_ref.length >= 2) $("#ref_no11").val(ar_ref[1]);
         $("#issue_date").val(dateReviver(dmt_data[0].issue_date,'yyyy/M/d'));
         $("#issue_no").val(dmt_data[0].issue_no);
         $("#step_grade").val(dmt_data[0].step_grade);

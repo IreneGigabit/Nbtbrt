@@ -52,8 +52,8 @@
                     doDel();
                     strOut.AppendLine("<div align='center'><h1>客戶發文刪除成功!!!發文序號:(" + rs_no + ")</h1></div>");
                 }
-                //conn.Commit();
-                conn.RollBack();
+                conn.Commit();
+                //conn.RollBack();
             }
             catch (Exception ex) {
                 conn.RollBack();
@@ -97,12 +97,13 @@
         rs_no = Request["rs_no"];
 
         //新增 cs_dmt_Log 檔
-        SQL = " insert into cs_dmt_log(ud_flg,rs_no,branch,seq,seq1,cust_seq,att_sql,step_date,";
-        SQL += "send_way,rs_type,rs_class,rs_code,act_code,rs_detail,mark,tran_date,tran_scode)";
-        SQL += " select 'U',rs_no,branch,seq,seq1,cust_seq,att_sql,step_date,send_way,";
-        SQL += "rs_type,rs_class,rs_code,act_code,rs_detail,mark,tran_date,tran_scode";
-        SQL += " from vcs_dmt where rs_no = '" + rs_no + "'";
-        conn.ExecuteNonQuery(SQL);
+        Sys.insert_log_table(conn, "U", HTProgCode, "cs_dmt", "rs_no", rs_no, logReason);
+        //SQL = " insert into cs_dmt_log(ud_flg,rs_no,branch,seq,seq1,cust_seq,att_sql,step_date,";
+        //SQL += "send_way,rs_type,rs_class,rs_code,act_code,rs_detail,mark,tran_date,tran_scode)";
+        //SQL += " select 'U',rs_no,branch,seq,seq1,cust_seq,att_sql,step_date,send_way,";
+        //SQL += "rs_type,rs_class,rs_code,act_code,rs_detail,mark,getdate(),'" + Session["scode"] + "'";
+        //SQL += " from vcs_dmt where rs_no = '" + rs_no + "'";
+        //conn.ExecuteNonQuery(SQL);
 
         //更新cs_dmt
         SQL = "update cs_dmt set ";
@@ -139,12 +140,13 @@
         rs_no = Request["rs_no"];
 
         //新增 cs_dmt_Log 檔
-        SQL = " insert into cs_dmt_log(ud_flg,rs_no,branch,seq,seq1,cust_seq,att_sql,step_date";
-        SQL += ",send_way,rs_type,rs_class,rs_code,act_code,rs_detail,mark,tran_date,tran_scode)";
-        SQL += "select 'D',rs_no,branch,seq,seq1,cust_seq,att_sql,step_date,send_way";
-        SQL += ",rs_type,rs_class,rs_code,act_code,rs_detail,mark,tran_date,tran_scode";
-        SQL += " from vcs_dmt where rs_no = '" + rs_no + "'";
-        conn.ExecuteNonQuery(SQL);
+        Sys.insert_log_table(conn, "D", HTProgCode, "cs_dmt", "rs_no", rs_no, logReason);
+        //SQL = " insert into cs_dmt_log(ud_flg,rs_no,branch,seq,seq1,cust_seq,att_sql,step_date";
+        //SQL += ",send_way,rs_type,rs_class,rs_code,act_code,rs_detail,mark,tran_date,tran_scode)";
+        //SQL += "select 'D',rs_no,branch,seq,seq1,cust_seq,att_sql,step_date,send_way";
+        //SQL += ",rs_type,rs_class,rs_code,act_code,rs_detail,mark,getdate(),'" + Session["scode"] + "'";
+        //SQL += " from vcs_dmt where rs_no = '" + rs_no + "'";
+        //conn.ExecuteNonQuery(SQL);
 
         //刪除cs_dmt
         SQL = "delete from cs_dmt where rs_no='" + rs_no + "'";

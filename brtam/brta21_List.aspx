@@ -228,9 +228,6 @@
             editaspx = "brta31_edit.aspx";
         } else if (cgrs == "CS") {//客發
             editaspx = "brta32_edit.aspx";
-        } else if (cgrs == "ZR") {//本收
-            act = "UQ";
-            editaspx = "brta35_edit.aspx";
         } else if (cgrs == "ZS") {//本發
             act = "UQ";
             editaspx = "brta34_edit.aspx";

@@ -96,12 +96,12 @@
                     strOut.AppendLine("<div align='center'><h1>案件主檔刪除成功!!!</h1></div>");
                 }
 
-                //conn.Commit();
-                //connbr.Commit();
-                //connm.Commit();
-                conn.RollBack();
-                connbr.RollBack();
-                connm.RollBack();
+                conn.Commit();
+                connbr.Commit();
+                connm.Commit();
+                //conn.RollBack();
+                //connbr.RollBack();
+                //connm.RollBack();
             }
             catch (Exception ex) {
                 conn.RollBack();

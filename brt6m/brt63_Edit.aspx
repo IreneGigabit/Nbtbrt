@@ -10,7 +10,7 @@
 <%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內案承辦交辦發文作業";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -607,17 +607,14 @@
         $("#contract_flag").val(jMain.add_gs.contract_flag);
 
         brta21form.bind(jMain.add_gs);//主檔資料
-        brta311form.bind(jMain.add_gs);//發文資料
+        brta311form.bind(jMain.add_gs,null);//發文資料
         if (typeof brta212form !== "undefined") brta212form.bind(jMain.add_gs,null);//管制資料
         if (typeof upload_form !== "undefined") upload_form.bind(jMain.case_attach);//顯示上傳文件資料
 
-        //顯示交辦單號
-        brta311form.add_ar();//增加一筆交辦單號
-        $("#case_no_1").val(jMain.add_gs.case_no);
-        brta311form.getmoney(1);//依交辦單號抓取服務費、規費
-
         openread();	//控制特定欄位不能修改
+
         if($("#submittask").val()=="A"){
+            brta311form.getcase_no_data1(jMain.add_gs.case_no);//顯示交辦單號
             if(main.task=="cancel"){
                 $("#tabgs").hide();//發文資料
                 $("#tr_respdate").show();//期限銷管

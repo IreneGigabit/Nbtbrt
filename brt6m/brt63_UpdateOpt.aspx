@@ -51,10 +51,10 @@
                 connOptK = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
 
                 doUpdateDB();
-                //conn.Commit();
-                //connOptK.Commit();
-                conn.RollBack();
-                connOptK.RollBack();
+                conn.Commit();
+                connOptK.Commit();
+                //conn.RollBack();
+                //connOptK.RollBack();
 
                 //發mail通知
                 //CreateMail(case_no);

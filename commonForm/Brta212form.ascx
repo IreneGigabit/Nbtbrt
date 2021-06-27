@@ -52,11 +52,11 @@
 			        <%if (submitTask == "A" || prgid == "brta24" || prgid == "brta38") {%><!--國內案官收確認作業//國內案官發確認作業-->
 				        <input type=button value ="減少一筆管制" class="cbutton <%=Lock.TryGet("Qdisabled")%>" id=res_button name=res_button onclick="brta212form.del_ctrl()">
 			        <%}%>
-			        <input type="text" name="rsqlno" id="rsqlno">
 			        <%if (prgid != "brt51" && prgid != "brta22" && prgid != "brta78") {%><!--國內案客戶收文確認//國內案客戶收文作業//國內案確認轉案作業-->
 			            <input type=button class="c1button <%=Lock.TryGet("Qdisabled")%>" id="btndis" name="btndis" value="進度查詢及銷管制" onclick="brta212form.btndis()" />
 			        <%}%>
 			        <input type="button" class="c1button" value="查官收未銷法定期限" onclick="brta212form.queryjob()" style="display:none" id="btnqrygrlastdate">
+			        <input type="hidden" name="rsqlno" id="rsqlno">
 		        </TD>
 	        </TR>
 	    <%} else {%>
@@ -130,7 +130,7 @@
     }
 
     brta212form.bind = function (jData,jCtrl) {
-        if (jData.ectrlnum != "") {
+        if ((jData.ectrlnum||"") != "") {
             $("#btndis").val("進度查詢及銷管制(" + jData.ectrlnum + "件)");
         }
         brta212form.appendCtrl(jCtrl);//管制資料append到畫面

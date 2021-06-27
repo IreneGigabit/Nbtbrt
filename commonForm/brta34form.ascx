@@ -164,6 +164,7 @@
     brta34form.bind = function (jData,jCase) {
         $("#rs_no").val(jData.rs_no);
         $("#cgrs").val(jData.cgrs).triggerHandler("change");
+        if (jData.step_grade != undefined) $("#nstep_grade").val(jData.step_grade);
         $("#step_date").val(jData.step_date);
         $("#gov_date").val(jData.gov_date);
         $("#receive_way option[value='" + jData.receive_way + "']").prop("selected", true);

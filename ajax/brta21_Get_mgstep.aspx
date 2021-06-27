@@ -127,8 +127,8 @@
                 }
             }
 
-            //conn.Commit();
-            conn.RollBack();
+            conn.Commit();
+            //conn.RollBack();
             strOut.AppendLine("alert('總收發收文資料抓取成功！');");
             if (prgid == "brta24") {//程序官收確認
                 strOut.AppendLine("location.reload();");

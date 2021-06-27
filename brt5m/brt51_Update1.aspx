@@ -490,8 +490,8 @@
             }
         }
 
-        //conn.Commit();
-        conn.RollBack();
+        conn.Commit();
+        //conn.RollBack();
 
         strOut.AppendLine("<div align='center'><h1>客戶收文入檔成功！本所編號:" + msgseq.Substring(1) + "，客收序號:" + main_rs_no + "！</h1></div>");
     }
@@ -759,15 +759,16 @@
                 }
 
                 SQL = "insert into dmt_ap (branch,seq,seq1,apsqlno,server_flag,apcust_no,ap_cname,ap_ename,tran_date,tran_scode,ap_fcname,ap_lcname,ap_fename,ap_lename";
-                SQL += ",ap_sql,ap_zip,ap_addr1,ap_addr2,ap_eaddr1,ap_eaddr2,ap_eaddr3,ap_eaddr4) values (";
+                SQL += ",ap_sql,ap_zip,ap_addr1,ap_addr2,ap_eaddr1,ap_eaddr2,ap_eaddr3,ap_eaddr4,ap_sort) values (";
                 SQL += "'" + Session["seBranch"] + "'," + seq + ",'" + seq1 + "'," + Util.dbnull(dr2.Rows[n].SafeRead("apsqlno", ""));
-                SQL +=  "," + Util.dbchar(dr2.Rows[n].SafeRead("server_flag", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("apcust_no", ""));
+                SQL += "," + Util.dbchar(dr2.Rows[n].SafeRead("server_flag", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("apcust_no", ""));
                 SQL += "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_cname", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_ename", ""));
-                SQL +=",getdate(),'" + Session["scode"] + "'," + Util.dbchar(dr2.Rows[n].SafeRead("ap_fcname", ""));
+                SQL += ",getdate(),'" + Session["scode"] + "'," + Util.dbchar(dr2.Rows[n].SafeRead("ap_fcname", ""));
                 SQL += "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_lcname", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_fename", ""));
-               SQL += "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_lename", "")) + "," + Util.dbzero(ap_sql) + "";
+                SQL += "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_lename", "")) + "," + Util.dbzero(ap_sql) + "";
                 SQL += "," + Util.dbchar(ap_zip) + "," + Util.dbchar(ap_addr1) + "," + Util.dbchar(ap_addr2) + "";
-                SQL += "," + Util.dbchar(ap_eaddr1) + "," + Util.dbchar(ap_eaddr2) + "," + Util.dbchar(ap_eaddr3) + "," + Util.dbchar(ap_eaddr4) + ")";
+                SQL += "," + Util.dbchar(ap_eaddr1) + "," + Util.dbchar(ap_eaddr2) + "," + Util.dbchar(ap_eaddr3) + "," + Util.dbchar(ap_eaddr4) + "";
+                SQL += "," + Util.dbnull(dr2.Rows[n].SafeRead("ap_sort", "")) + ")";
                 conn.ExecuteNonQuery(SQL);
 
                 SQL = "update apcust set dmt_seq='" + tseq + "',ap_code='NO'";
@@ -1103,12 +1104,12 @@
                                 ap_eaddr4 = dr2.Rows[n].SafeRead("ap_ap_eddr4", "");
                             }
 
-                            SQL = "insert into dmt_ap (branch,seq,seq1,apsqlno,server_flag,apcust_no,ap_cname,ap_ename,tran_date,tran_scode,ap_fcname,ap_lcname,ap_fename,ap_lename,ap_sql,ap_zip,ap_addr1,ap_addr2,ap_eaddr1,ap_eaddr2,ap_eaddr3,ap_eaddr4) values (";
+                            SQL = "insert into dmt_ap (branch,seq,seq1,apsqlno,server_flag,apcust_no,ap_cname,ap_ename,tran_date,tran_scode,ap_fcname,ap_lcname,ap_fename,ap_lename,ap_sql,ap_zip,ap_addr1,ap_addr2,ap_eaddr1,ap_eaddr2,ap_eaddr3,ap_eaddr4,ap_sort) values (";
                             SQL += "'" + Session["seBranch"] + "'," + seq + ",'" + seq1 + "'," + Util.dbnull(dr2.Rows[n].SafeRead("apsqlno", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("server_flag", "")) + "";
                             SQL += "," + Util.dbchar(dr2.Rows[n].SafeRead("apcust_no", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_cname", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_ename", "")) + ",getdate(),'" + Session["scode"] + "'";
                             SQL += "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_fcname", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_lcname", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_fename", "")) + "," + Util.dbchar(dr2.Rows[n].SafeRead("ap_lename", "")) + "";
                             SQL += "," + Util.dbzero(ap_sql) + "," + Util.dbchar(ap_zip) + "," + Util.dbchar(ap_addr1) + "," + Util.dbchar(ap_addr2) + "";
-                            SQL += "," + Util.dbchar(ap_eaddr1) + "," + Util.dbchar(ap_eaddr2) + "," + Util.dbchar(ap_eaddr3) + "," + Util.dbchar(ap_eaddr4) + ")";
+                            SQL += "," + Util.dbchar(ap_eaddr1) + "," + Util.dbchar(ap_eaddr2) + "," + Util.dbchar(ap_eaddr3) + "," + Util.dbchar(ap_eaddr4) + "," + Util.dbnull(dr2.Rows[n].SafeRead("ap_sort", "")) + ")";
                             conn.ExecuteNonQuery(SQL);
                         }
                     } else {
@@ -1373,12 +1374,12 @@
                                 ap_eaddr4 = dr2.SafeRead("ap_ap_eddr4", "");
                             }
 
-                            SQL = "insert into dmt_ap (branch,seq,seq1,apsqlno,server_flag,apcust_no,ap_cname,ap_ename,tran_date,tran_scode,ap_fcname,ap_lcname,ap_fename,ap_lename,ap_sql,ap_zip,ap_addr1,ap_addr2,ap_eaddr1,ap_eaddr2,ap_eaddr3,ap_eaddr4) values (";
+                            SQL = "insert into dmt_ap (branch,seq,seq1,apsqlno,server_flag,apcust_no,ap_cname,ap_ename,tran_date,tran_scode,ap_fcname,ap_lcname,ap_fename,ap_lename,ap_sql,ap_zip,ap_addr1,ap_addr2,ap_eaddr1,ap_eaddr2,ap_eaddr3,ap_eaddr4,ap_sort) values (";
                             SQL += "'" + Session["seBranch"] + "'," + seq + ",'" + seq1 + "'," + Util.dbnull(dr2.SafeRead("apsqlno", "")) + "," + Util.dbchar(dr2.SafeRead("server_flag", "")) + "";
                             SQL += "," + Util.dbchar(dr2.SafeRead("apcust_no", "")) + "," + Util.dbchar(dr2.SafeRead("ap_cname", "")) + "," + Util.dbchar(dr2.SafeRead("ap_ename", "")) + ",getdate(),'" + Session["scode"] + "'";
                             SQL += "," + Util.dbchar(dr2.SafeRead("ap_fcname", "")) + "," + Util.dbchar(dr2.SafeRead("ap_lcname", "")) + "," + Util.dbchar(dr2.SafeRead("ap_fename", "")) + "," + Util.dbchar(dr2.SafeRead("ap_lename", "")) + "";
                             SQL += "," + Util.dbzero(ap_sql) + "," + Util.dbchar(ap_zip) + "," + Util.dbchar(ap_addr1) + "," + Util.dbchar(ap_addr2) + "";
-                            SQL += "," + Util.dbchar(ap_eaddr1) + "," + Util.dbchar(ap_eaddr2) + "," + Util.dbchar(ap_eaddr3) + "," + Util.dbchar(ap_eaddr4) + ")";
+                            SQL += "," + Util.dbchar(ap_eaddr1) + "," + Util.dbchar(ap_eaddr2) + "," + Util.dbchar(ap_eaddr3) + "," + Util.dbchar(ap_eaddr4) + "," + Util.dbnull(dr2.SafeRead("ap_sort", "")) + ")";
                             conn.ExecuteNonQuery(SQL);
                         }
                     } else {

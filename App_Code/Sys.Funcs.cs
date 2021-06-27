@@ -4,6 +4,8 @@ using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 /// <summary>  
 /// 原Server_code.vbs
@@ -446,7 +448,7 @@ public partial class Sys
     public static string formatSeq(string seq, string seq1, string country, string branch, string dept) {
         string lseq = (seq != "" ? branch.ToUpper() + dept.ToUpper() : "");
         lseq += (lseq != "" ? "-" : "") + seq;
-        lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
+        lseq += (seq1.Trim() != "_" && seq1.Trim() != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
         return lseq;
     }
@@ -458,7 +460,7 @@ public partial class Sys
     /// </summary>  
     public static string formatSeq1(string seq, string seq1, string country, string branch, string dept) {
         string lseq = (seq != "" ? branch.ToUpper() + dept.ToUpper() + seq : "");
-        lseq += (seq1 != "_" && seq1 != "" ? ("-" + seq1) : "");
+        lseq += (seq1.Trim() != "_" && seq1.Trim() != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
         return lseq;
     }
@@ -948,6 +950,21 @@ public partial class Sys
                     }
                     break;
             }
+        } else {
+            switch (pDept.ToUpper()) {
+                //期限稽催列印規則設定 日管制日期超過2天的顯示紅色
+                //管制日期 <= 2 日內顯示紅色
+                case "T":
+                    if (Util.str2Dateime(pDate) >= today.AddDays(2)) {
+                        Color = "red";
+                    }
+                    break;
+                case "P":
+                    if (Util.str2Dateime(pDate) >= today.AddDays(2)) {
+                        Color = "red";
+                    }
+                    break;
+            }
         }
 
         return Color;
@@ -1192,13 +1209,24 @@ public partial class Sys
                 usql += wsql;
                 break;
             case "fees_dmt":
-                usql = "insert into " + table + "_log(ud_flg," + tfield_str + ")";
-                usql += " SELECT " + Util.dbnull(ud_flag) + "," + tfield_str;
+                usql = "insert into " + table + "_log(ud_flg,ud_date,ud_scode,prgid," + tfield_str + ")";
+                usql += " SELECT " + Util.dbnull(ud_flag) + ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + Util.dbnull(prgid) + "," + tfield_str;
                 usql += " FROM " + table;
                 usql += " WHERE 1=1 ";
                 usql += wsql;
                 break;
-           default:
+            case "cs_dmt":
+                usql = " insert into " + table + "_log(ud_flg,rs_no,branch,seq,seq1,cust_seq,att_sql,step_date,send_way";
+                usql += ",rs_type,rs_class,rs_code,act_code,rs_detail,mark,tran_date,tran_scode";
+                usql += ",print_date,mail_date,mail_scode,mwork_date)";
+                usql += " select " + Util.dbnull(ud_flag) + ",rs_no,branch,seq,seq1,cust_seq,att_sql,step_date,send_way";
+                usql += ",rs_type,rs_class,rs_code,act_code,rs_detail,mark,getdate()," + Util.dbnull(Sys.GetSession("scode"));
+                usql += ",print_date,mail_date,mail_scode,mwork_date";
+                usql += " from vcs_dmt";
+                usql += " WHERE 1=1 ";
+                usql += wsql;
+                break;
+            default:
                 usql = "insert into " + table + "_log(ud_flag,ud_date,ud_scode,prgid," + tfield_str + ")";
                 usql += " SELECT " + Util.dbnull(ud_flag) + ",GETDATE()," + Util.dbnull(Sys.GetSession("scode")) + "," + Util.dbnull(prgid) + "," + tfield_str;
                 usql += " FROM " + table;

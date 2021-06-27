@@ -195,8 +195,8 @@
         SQL += " where grconf_sqlno=" + Request["grconf_sqlno"];
         conn.ExecuteNonQuery(SQL);
 
-        //conn.Commit();
-        conn.RollBack();
+        conn.Commit();
+        //conn.RollBack();
 
         string fseq = Sys.formatSeq1(seq, seq1, "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
         strOut.AppendLine("<div align='center'><h3><font color=blue>案件編號：" + fseq + "<font color=red>營洽已官方收文維護成功</font>" +
