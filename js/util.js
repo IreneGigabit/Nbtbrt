@@ -41,6 +41,26 @@ if (!Object.keys) {
 }
 //#endregion
 
+//#region NumberToChinese - 數字轉成國字
+function NumberToChinese(SendNumber) {
+    var chnNumChar = ["零", "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖"];
+
+    return chnNumChar[SendNumber];
+}
+//#endregion
+
+//#region NumberToCh - 數字轉大寫
+function NumberToCh(SendNumber) {
+    var chnNumChar = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"
+        , "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九"
+        , "二十", "二十一", "二十二", "二十三", "二十四", "二十五", "二十六", "二十七", "二十八", "二十九"
+        , "三十", "三十一", "三十二", "三十三", "三十四", "三十五", "三十六", "三十七", "三十八", "三十九"
+    ];
+
+    return chnNumChar[SendNumber];
+}
+//#endregion
+
 //#region getRootPath - 獲取web ap根路徑 ex:http://web02/nOpt
 function getRootPath() {
     var strFullPath = window.document.location.href;
@@ -57,17 +77,6 @@ function getRootDir() {
     var strPath = window.document.location.pathname;
     var postPath = strPath.substring(0, strPath.substr(1).indexOf('/') + 1);
     return postPath;
-}
-//#endregion
-
-//#region isJson - 判斷是否為json格式
-function isJson(str) {
-    try {
-        $.parseJSON(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
 }
 //#endregion
 
@@ -263,15 +272,17 @@ function Today() {
 
 //#region getJoinValue - 串接明細欄位
 //ex: $("#rows_chk").val(getJoinValue("#dataList>tbody input[id^='chk_']"));
-function getJoinValue(selector) {
-    return "\f" + $(selector).map(function () {
+function getJoinValue(selector,symbol) {
+    var s = "\f";
+    if (typeof symbol !== "undefined") { s = symbol; }
+    return s + $(selector).map(function () {
         $this = $(this);
         if ($this.prop("type") == "checkbox") {
             return $(this).prop("checked") ? $this.val() : "";
         } else {
             return $this.val();
         }
-    }).get().join('\f');//\f是換頁鍵Chr(12)
+    }).get().join(s);//\f是換頁鍵Chr(12)
 }
 //#endregion
 
@@ -451,11 +462,42 @@ function showBlockUI(param) {
 }
 //#endregion
 
-//#region $.maskStart & $.maskStop - 遮罩控制
-//靜態函式
-//$(document).ajaxStart(function () { $.maskStart("資料載入中"); });
-//$(document).ajaxStop(function () { $.maskStop(); });
 (function ($) {
+    //#region $.isDate 判斷是否為日期
+    $.isDate = function (strDate) {
+        //alert(strDate);
+        if (strDate == null) return false;
+        if (strDate == undefined) return false;
+        var dt_reg = new RegExp(/^\d{4}(\D)\d{1,2}(\D)\d{1,2}$/);
+        var b = dt_reg.test(strDate);
+        var s1 = "-";
+        var s2 = "-";
+        //console.log(strDate,b);
+        if (b) {
+            var dareDec = dt_reg.exec(strDate);
+            s1 = dareDec[1];
+            s2 = dareDec[2];
+            var nn = Date.parse(strDate.replace(/\D/g, "/"));
+            //alert(nn);
+            if (isNaN(nn))
+                b = false;
+            else
+                b = true;
+        } else b = false;
+
+        if (b) {
+            //console.log(strDate, b);
+            var nndt = new Date(strDate.replace(/\D/g, "/"));
+            var str2 = nndt.getFullYear() + s1 + (nndt.getMonth() + 1) + s2 + nndt.getDate();
+            //alert(str2);
+            b = false;
+            if (str2 == strDate.replace(s1 + "0", s1).replace(s2 + "0", s2)) b = true;
+        }
+
+        return b;
+    }
+    //#endregion
+
     //#region $.maskStart 顯示遮罩
     $.maskStart = function (msg) {
         var w = Math.max($(window).width(), $(document).width());
@@ -517,8 +559,437 @@ function showBlockUI(param) {
         $("body").css("cursor", "default");
     }
     //#endregion
+
+    //#region labelfor 把radio/checkbox加上labelfor
+    $.fn.labelfor = function () {
+        var selectedObjects = this;
+        $(selectedObjects).each(function () {
+            var input = $(this);
+            if (input.type == "radio" || input.type == "checkbox") {
+                if ($(input).attr("id") != "") {
+                    $(input).next("label").attr("for", $(input).attr("id"));
+                }
+            }
+        });
+        return selectedObjects;
+    }
+    //#endregion
+
+    //#region lock 指定唯讀模式
+    $.fn.lock = function (cond) {
+        var selectedObjects = this;
+        $(selectedObjects).each(function () {
+            var input = $(this);
+            if (typeof cond === "undefined" || cond) {//符合條件 或 沒給條件
+                if ($(input).hasClass("dateField")) {
+                    //$(input).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+                    $(input).datepick('destroy');
+                }
+                if (this.type == "text" || this.type == "textarea" || this.type == "hidden") {
+                    $(input).prop('readonly', true).addClass('SEdit');
+                } else {
+                    $(input).prop('disabled', true);
+                }
+            } else {
+                if ($(input).hasClass("dateField")) {
+                    //$(input).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+                    $(input).datepick('destroy');
+                }
+                $(input).prop('readonly', false).removeClass('SEdit').prop('disabled', false);
+            }
+        });
+        return selectedObjects;
+    }
+    //#endregion
+
+    //#region unlock 指定解鎖模式
+    $.fn.unlock = function (cond) {
+        var selectedObjects = this;
+        $(selectedObjects).each(function () {
+            var input = $(this);
+            if (typeof cond === "undefined" || cond) {//符合條件 或 沒給條件
+                if ($(input).hasClass("dateField")) {
+                    //$(input).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+                    $(input).datepick();
+                }
+                $(input).prop('readonly', false).removeClass('SEdit').prop('disabled', false);
+            } else {
+                if ($(input).hasClass("dateField")) {
+                    //$(input).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+                    $(input).datepick();
+                }
+                if (this.type == "text" || this.type == "textarea" || this.type == "hidden") {
+                    $(input).prop('readonly', true).addClass('SEdit');
+                } else {
+                    $(input).prop('disabled', true);
+                }
+            }
+        });
+        return selectedObjects;
+    }
+    //#endregion
+
+    //#region hideFor 指定隱藏模式
+    $.fn.hideFor = function (cond) {
+        var selectedObjects = this;
+        $(selectedObjects).each(function () {
+            var input = $(this);
+            if (typeof cond === "undefined" || cond) {//符合條件 或 沒給條件
+                if ($(input).hasClass("dateField")) {
+                    $(input).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+                }
+                $(input).hide();
+            } else {
+                if ($(input).hasClass("dateField")) {
+                    $(input).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+                }
+                $(input).show();
+            }
+        });
+        return selectedObjects;
+    }
+    //#endregion
+
+    //#region showFor 指定顯示模式
+    $.fn.showFor = function (cond) {
+        var selectedObjects = this;
+        $(selectedObjects).each(function () {
+            var input = $(this);
+            if (typeof cond === "undefined" || cond) {//符合條件 或 沒給條件
+                if ($(input).hasClass("dateField")) {
+                    $(input).datepick("option", "showOnFocus", true).next(".datepick-trigger:first").show();
+                }
+                $(input).show();
+            } else {
+                if ($(input).hasClass("dateField")) {
+                    $(input).datepick("option", "showOnFocus", false).next(".datepick-trigger:first").hide();
+                }
+                $(input).hide();
+            }
+        });
+        return selectedObjects;
+    }
+    //#endregion
+
+    //#region getOption
+    $.fn.extend({
+        getOption: function (option) {
+            var obj = $(this);
+            var defaults = {
+                debug: false,
+                url: "",
+                data: null,
+                dataList: null,
+                showEmpty: true,//顯示"請選擇"
+                valueFormat: "",//option的value格式,用{}包住欄位,ex:{scode}
+                textFormat: "",//option的文字格式,用{}包住欄位,ex:{scode}_{sc_name}
+                attrFormat: "",//option的attribute格式,用{}包住欄位,ex:value1='{scode1}' value2='{sscode}'
+                firstOpt: "",//要在最上面額外增加option,ex:<option value='*'>全部<option>
+                lastOpt: "",//要在最下面額外增加option,ex:<option value='*'>全部<option>
+                setValue: ""//預設值
+            };
+            var settings = $.extend(defaults, option || {});  //初始化
+
+            var debugurl = settings.url + "?";// + unescape(unescape($.param(settings.data)));
+            if (settings.data != null) debugurl += unescape(unescape($.param(settings.data)));
+            if (settings.debug) {
+                if ($("body").find("#divDebug").length == 0) {
+                    $("body").append("<div id=\"divDebug\" style=\"display:none;color:#1B3563\"></div>");
+                }
+                $("#divDebug").html("<a href=\"" + debugurl + "\" target=\"_blank\">Open getOption Debug Win<a>");
+                $("#divDebug").show();
+                $("#divDebug").fadeOut(5000);
+            }
+
+            return this.each(function () {
+                var obj = $(this);
+                obj.empty();
+
+                if (settings.dataList == null) {
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "get",
+                        data: settings.data,
+                        url: settings.url,
+                        success: function (json) {
+                            settings.dataList = $.parseJSON(json);
+                        },
+                        beforeSend: function (jqXHR, settings) {
+                            jqXHR.url = settings.url;
+                            //toastr.info("<a href='" + jqXHR.url + "' target='_new'>debug！\n" + jqXHR.url + "</a>");
+                        },
+                        error: function (xhr) {
+                            $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getOption)！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                            $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getOption)！', modal: true, maxHeight: 500, width: "90%" });
+                        }
+                    });
+                }
+
+                if (settings.firstOpt != "") {
+                    obj.append(settings.firstOpt);
+                }
+                if (settings.showEmpty) {
+                    obj.append("<option value='' style='COLOR:blue'>請選擇</option>");
+                }
+                $.each(settings.dataList, function (i, item) {
+                    //處理value
+                    var val = settings.valueFormat;
+                    //Object.keys(item).forEach(function (key) {
+                    //    var re = new RegExp("{" + key + "}", "ig");
+                    //    val = val.replace(re, item[key]);
+                    //});
+                    jQuery.each(Object.keys(item), function (ix, key) {
+                        var re = new RegExp("{" + key + "}", "ig");
+                        val = val.replace(re, item[key]);
+                    });
+
+                    //處理text
+                    var txt = settings.textFormat;
+                    //Object.keys(item).forEach(function (key) {
+                    //    var re = new RegExp("{" + key + "}", "ig");
+                    //    txt = txt.replace(re, item[key]);
+                    //});
+                    jQuery.each(Object.keys(item), function (ix, key) {
+                        var re = new RegExp("{" + key + "}", "ig");
+                        txt = txt.replace(re, item[key]);
+                    });
+
+                    //處理attribute
+                    var attr = settings.attrFormat;
+                    //Object.keys(item).forEach(function (key) {
+                    //    var re = new RegExp("{" + key + "}", "ig");
+                    //    attr = attr.replace(re, item[key]);
+                    //});
+                    jQuery.each(Object.keys(item), function (ix, key) {
+                        var re = new RegExp("{" + key + "}", "ig");
+                        attr = attr.replace(re, item[key]);
+                    });
+
+                    obj.append("<option value='" + val + "' " + attr + ">" + txt + "</option>");
+                });
+                if (settings.lastOpt != "") {
+                    obj.append(settings.lastOpt);
+                }
+
+                obj.val(settings.setValue);
+
+
+            });
+        }
+    });
+    //#endregion
+
+    //#region getRadio
+    $.fn.extend({
+        getRadio: function (option) {
+            var obj = $(this);
+            var defaults = {
+                debug: false,
+                url: "",
+                data: null,
+                dataList: null,
+                mod: null,//幾個換行(<br>)
+                objName: "",//radio的name(群組名)
+                valueFormat: "",//radio的value格式,用{}包住欄位,ex:{scode}
+                textFormat: "",//radio的文字格式,用{}包住欄位,ex:{scode}_{sc_name}
+                attrFormat: "",//radio的attribute格式,用{}包住欄位,ex:value1='{scode1}' value2='{sscode}'
+                setValue: ""//預設值
+            };
+            var settings = $.extend(defaults, option || {});  //初始化
+
+            var debugurl = settings.url + "?";// + unescape(unescape($.param(settings.data)));
+            if (settings.data != null) debugurl += unescape(unescape($.param(settings.data)));
+            if (settings.debug) {
+                if ($("body").find("#divDebug").length == 0) {
+                    $("body").append("<div id=\"divDebug\" style=\"display:none;color:#1B3563\"></div>");
+                }
+                $("#divDebug").html("<a href=\"" + debugurl + "\" target=\"_blank\">Open getRadio Debug Win<a>");
+                $("#divDebug").show();
+                $("#divDebug").fadeOut(5000);
+            }
+
+            return this.each(function () {
+                var obj = $(this);
+                obj.empty();
+
+                if (settings.dataList == null) {
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "get",
+                        data: settings.data,
+                        url: settings.url,
+                        success: function (json) {
+                            settings.dataList = $.parseJSON(json);
+                        },
+                        beforeSend: function (jqXHR, settings) {
+                            jqXHR.url = settings.url;
+                            //toastr.info("<a href='" + jqXHR.url + "' target='_new'>debug！\n" + jqXHR.url + "</a>");
+                        },
+                        error: function (xhr) {
+                            $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getRadio)！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                            $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getRadio)！', modal: true, maxHeight: 500, width: "90%" });
+                        }
+                    });
+                }
+
+                $.each(settings.dataList, function (i, item) {
+                    //處理value
+                    var val = settings.valueFormat;
+                    //Object.keys(item).forEach(function (key) {
+                    //    var re = new RegExp("{" + key + "}", "ig");
+                    //    val = val.replace(re, item[key]);
+                    //});
+                    jQuery.each(Object.keys(item), function (ix, key) {
+                        var re = new RegExp("{" + key + "}", "ig");
+                        val = val.replace(re, item[key]);
+                    });
+
+                    //處理text
+                    var txt = settings.textFormat;
+                    //Object.keys(item).forEach(function (key) {
+                    //    var re = new RegExp("{" + key + "}", "ig");
+                    //    txt = txt.replace(re, item[key]);
+                    //});
+                    jQuery.each(Object.keys(item), function (ix, key) {
+                        var re = new RegExp("{" + key + "}", "ig");
+                        txt = txt.replace(re, item[key]);
+                    });
+
+                    //處理attribute
+                    var attr = settings.attrFormat;
+                    //Object.keys(item).forEach(function (key) {
+                    //    var re = new RegExp("{" + key + "}", "ig");
+                    //    attr = attr.replace(re, item[key]);
+                    //});
+                    jQuery.each(Object.keys(item), function (ix, key) {
+                        var re = new RegExp("{" + key + "}", "ig");
+                        attr = attr.replace(re, item[key]);
+                    });
+
+                    if (val.toLowerCase() == settings.setValue.toLowerCase())
+                        obj.append("<label><input type='radio' id='" + settings.objName + val + "' name='" + settings.objName + "' value='" + val + "' " + attr + " checked>" + txt + "</label>");
+                    else
+                        obj.append("<label><input type='radio' id='" + settings.objName + val + "' name='" + settings.objName + "' value='" + val + "' " + attr + ">" + txt + "</label>");
+
+                    if (settings.mod != null) {
+                        if ((i + 1) % settings.mod == 0 && (i + 1) < settings.dataList.length) {
+                            obj.append("<BR>");
+                        }
+                    }
+                });
+            });
+        }
+    });
+    //#endregion
+
+    //#region getCheckbox
+    $.fn.extend({
+        getCheckbox: function (option) {
+            var obj = $(this);
+            var defaults = {
+                debug: false,
+                url: "",
+                data: null,
+                dataList: null,
+                mod: null,//幾個換行(<br>)
+                objName: "",//checkbox的name(群組名)
+                valueFormat: "",//checkbox的value格式,用{}包住欄位,ex:{scode}
+                textFormat: "",//checkbox的文字格式,用{}包住欄位,ex:{scode}_{sc_name}
+                attrFormat: "",//checkbox的attribute格式,用{}包住欄位,ex:value1='{scode1}' value2='{sscode}'
+                setValue: ""//預設值
+            };
+            var settings = $.extend(defaults, option || {});  //初始化
+
+            var debugurl = settings.url + "?";// + unescape(unescape($.param(settings.data)));
+            if (settings.data != null) debugurl += unescape(unescape($.param(settings.data)));
+            if (settings.debug) {
+                if ($("body").find("#divDebug").length == 0) {
+                    $("body").append("<div id=\"divDebug\" style=\"display:none;color:#1B3563\"></div>");
+                }
+                $("#divDebug").html("<a href=\"" + debugurl + "\" target=\"_blank\">Open getcheckbox Debug Win<a>");
+                $("#divDebug").show();
+                $("#divDebug").fadeOut(5000);
+            }
+
+            return this.each(function () {
+                var obj = $(this);
+                obj.empty();
+
+                if (settings.dataList == null) {
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "get",
+                        data: settings.data,
+                        url: settings.url,
+                        success: function (json) {
+                            settings.dataList = $.parseJSON(json);
+                        },
+                        beforeSend: function (jqXHR, settings) {
+                            jqXHR.url = settings.url;
+                            //toastr.info("<a href='" + jqXHR.url + "' target='_new'>debug！\n" + jqXHR.url + "</a>");
+                        },
+                        error: function (xhr) {
+                            $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getCheckbox)！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                            $("#dialog").dialog({ title: '載入查詢清單發生錯誤(getCheckbox)！', modal: true, maxHeight: 500, width: "90%" });
+                        }
+                    });
+                }
+
+                $.each(settings.dataList, function (i, item) {
+                    //處理value
+                    var val = settings.valueFormat;
+                    //Object.keys(item).forEach(function (key) {
+                    //    var re = new RegExp("{" + key + "}", "ig");
+                    //    val = val.replace(re, item[key]);
+                    //});
+                    jQuery.each(Object.keys(item), function (ix, key) {
+                        var re = new RegExp("{" + key + "}", "ig");
+                        val = val.replace(re, item[key]);
+                    });
+
+                    //處理text
+                    var txt = settings.textFormat;
+                    //Object.keys(item).forEach(function (key) {
+                    //    var re = new RegExp("{" + key + "}", "ig");
+                    //    txt = txt.replace(re, item[key]);
+                    //});
+                    jQuery.each(Object.keys(item), function (ix, key) {
+                        var re = new RegExp("{" + key + "}", "ig");
+                        txt = txt.replace(re, item[key]);
+                    });
+
+                    //處理attribute
+                    var attr = settings.attrFormat;
+                    //Object.keys(item).forEach(function (key) {
+                    //    var re = new RegExp("{" + key + "}", "ig");
+                    //    attr = attr.replace(re, item[key]);
+                    //});
+                    jQuery.each(Object.keys(item), function (ix, key) {
+                        var re = new RegExp("{" + key + "}", "ig");
+                        attr = attr.replace(re, item[key]);
+                    });
+
+                    if (val.toLowerCase() == settings.setValue.toLowerCase())
+                        obj.append("<label><input type='checkbox' id='" + settings.objName + val + "' name='" + settings.objName + "' value='" + val + "' " + attr + " checked>" + txt + "</label>");
+                    else
+                        obj.append("<label><input type='checkbox' id='" + settings.objName + val + "' name='" + settings.objName + "' value='" + val + "' " + attr + ">" + txt + "</label>");
+
+                    if (settings.mod != null) {
+                        if ((i + 1) % settings.mod == 0 && (i + 1) < settings.dataList.length) {
+                            obj.append("<BR>");
+                        }
+                    }
+                });
+            });
+        }
+    });
+    //#endregion
+
 })(jQuery);
-//#endregion
+
 
 //#region 畫面載入時綁定function & 行為
 $(function () {

@@ -1,23 +1,15 @@
-﻿//判斷字串是否為JSON格式
-function isJSON(str) {
-    if (typeof str == 'string') {
-        try {
-            var obj = JSON.parse(str);
-            if (typeof obj == 'object' && obj) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (e) {
-            return false;
-        }
+﻿//#region isJson - 檢查是否為json格式
+function isJson(str) {
+    try {
+        $.parseJSON(str);
+    } catch (e) {
+        return false;
     }
-    return false;
+    return true;
 }
+//#endregion
 
-//pStr:字串
-//pLen:資料最大長度,若傳入0則傳回資料長度
-//pmsg:欄位名稱,若Error則回傳 ""
+//#region fDataLen - 檢查字串長度
 function fDataLen(pObj) {
     if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
     var tLen = pObj.value.CodeLength();
@@ -30,7 +22,9 @@ function fDataLen(pObj) {
         return true;
     }
 }
+//#endregion
 
+//#region fDataLenX - 檢查字串長度
 //pStr:字串
 //pLen:資料最大長度,若傳入0則傳回資料長度
 //pmsg:欄位名稱,若Error則回傳 ""
@@ -43,7 +37,9 @@ function fDataLenX(pStr, pLen, pmsg) {
         return "";
     }
 }
+//#endregion
 
+//#region fChkDataLen - 檢查字串長度
 //pObj:檢查長度之物件
 //pmsg:欄位名稱,若Error則回傳 ""
 function fChkDataLen(pObj,pmsg){
@@ -62,8 +58,9 @@ function fChkDataLen(pObj,pmsg){
         return "";
     }
 }
+//#endregion
 
-//check field null:檢查物件值不可為空白
+//#region chkNull - 檢查物件值不可為空白
 function chkNull(pFieldName,pObj)
 {
     if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
@@ -74,8 +71,9 @@ function chkNull(pFieldName,pObj)
     }
     return false;
 }
+//#endregion
 
-//check field null:檢查物件值不可為空白
+//#region chkNull2 - 檢查物件值不可為空白
 function chkNull2(pFieldName,pObj)
 {
     if (pObj.value=="") {
@@ -85,8 +83,9 @@ function chkNull2(pFieldName,pObj)
     $(pObj).removeClass("chkError");
     return "";
 }
+//#endregion
 
-//檢查日期格式
+//#region ChkDate - 檢查日期格式=chkdateformat
 function ChkDate(pObj) {//=chkdateformat
     if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
     if (pObj.value=="")return false;
@@ -96,11 +95,9 @@ function ChkDate(pObj) {//=chkdateformat
         return true;
     }
 }
+//#endregion
 
-/*
-chkSEDate: 起始日不可大於迄止日
-chkEDate:	檢查西元年輸入正確否
-*/
+//#region chkSEDate - 檢查起始日不可大於迄止日
 function chkSEDate(pSdate, pEdate, pmsg){
     if (pSdate == "" || pEdate == "") {
         return true;
@@ -111,7 +108,9 @@ function chkSEDate(pSdate, pEdate, pmsg){
     }
     return true;
 }
+//#endregion
 
+//#region chkNum - 檢查必須為數值(可空白)
 function chkNum(pValue, pmsg) {
     if (pValue != "") {
         if (!IsNumeric(pValue)) {
@@ -121,7 +120,9 @@ function chkNum(pValue, pmsg) {
     }
     return false;
 }
+//#endregion
 
+//#region chkNum1 - 檢查必須為數值(可空白)
 function chkNum1(pObj, pmsg) {
     if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
     if (pObj.value != "") {
@@ -133,8 +134,9 @@ function chkNum1(pObj, pmsg) {
     }
     return false;
 }
+//#endregion
 
-//check field integer:檢查物件值不可為小數
+//#region chkInt - 檢查物件值不可為小數
 function chkInt(pObj, pFieldName) {
     if (pObj instanceof jQuery) pObj = pObj[0];//jquery selector要加[0]
 
@@ -146,8 +148,10 @@ function chkInt(pObj, pFieldName) {
         return true;
     }
 }
+//#endregion
 
-function chkRadio(pFieldName, pmsg){
+//#region chkRadio - 檢查Radio須任取一
+function chkRadio(pFieldName, pmsg) {
     if($("input[name='"+pFieldName+"']:checked").length!=0){
         return true;
     }else{
@@ -155,8 +159,9 @@ function chkRadio(pFieldName, pmsg){
         return false;
     }
 }
+//#endregion
 
-//連結內商查詢期限管制、進度查詢及交辦內容
+//#region dmt_IMG_Click - 連結內商查詢期限管制、進度查詢及交辦內容
 function dmt_IMG_Click(pType) {
     if ($("#seq").val() != "") {
         switch (pType) {
@@ -171,17 +176,18 @@ function dmt_IMG_Click(pType) {
         alert("請先輸入本所編號後再執行查詢功能!!");
     }
 }
+//#endregion
 
-//內商申請號與註冊號之不足位數補0
+//#region chkgno - 內商申請號與註冊號之不足位數補
 function chkgno(pvalue, plen) {
     pvalue = pvalue.trim();//2012/12/12修改，因發現輸入有空白，所以trim掉後補足
     if (pvalue == "") return "";
     return padLeft(pvalue,plen,"0");//左邊補0
 }
+//#endregion
 
-
-//檢查申請號並補足9碼
-function chk_dmt_applyno(pobject,plen){
+//#region chk_dmt_applyno - 檢查申請號並補足
+function chk_dmt_applyno(pobject, plen) {
     var pvalue=pobject.value;
     
     if (chkNum(pvalue,"申請號")) return false;
@@ -189,8 +195,9 @@ function chk_dmt_applyno(pobject,plen){
     var tno=chkgno(pvalue,plen);
     pobject.value=tno;
 }
+//#endregion
 
-//檢查註冊號號並補足8碼
+//#region chk_dmt_issueno - 檢查註冊號號並補足
 function chk_dmt_issueno(pobject, plen) {
     var pvalue = pobject.value;
 
@@ -199,8 +206,9 @@ function chk_dmt_issueno(pobject, plen) {
     var tno = chkgno(pvalue, plen);
     pobject.value = tno;
 }
+//#endregion
 
-//檢查核駁號並補足7碼
+//#region chk_dmt_rejno - 檢查核駁號並補足7碼
 function chk_dmt_rejno(pobject, plen) {
     var pvalue = pobject.value;
 
@@ -209,8 +217,9 @@ function chk_dmt_rejno(pobject, plen) {
     var tno = chkgno(pvalue, plen);
     pobject.value = tno;
 }
+//#endregion
 
-//檢查本所編號
+//#region fseq_chk - 檢查本所編號7碼
 function fseq_chk(pObject) {
     if (pObject.value != "") {
         var b = pObject.value.trim();
@@ -230,3 +239,4 @@ function fseq_chk(pObject) {
         }
     }
 }
+//#endregion

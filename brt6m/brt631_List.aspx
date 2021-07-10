@@ -130,31 +130,32 @@
             //案號
             dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
             //交辦案號連結
-            dr["urlasp"] = GetCaseLink(dr);
+            //dr["urlasp"] = GetCaseLink(dr);
+            dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
         }
 
         dataRepeater.DataSource = page.pagedTable;
         dataRepeater.DataBind();
     }
 
-    protected string GetCaseLink(DataRow row) {
-        string urlasp = "";//連結的url
-        string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
-        urlasp = Page.ResolveUrl("~/brt1m" + row.SafeRead("link_remark", "") + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
-        urlasp += "&in_scode=" + row["in_scode"];
-        urlasp += "&in_no=" + row["in_no"];
-        urlasp += "&add_arcase=" + row["arcase"];
-        urlasp += "&cust_area=" + row["cust_area"];
-        urlasp += "&cust_seq=" + row["cust_seq"];
-        urlasp += "&ar_form=" + row["ar_form"];
-        urlasp += "&new_form=" + new_form;
-        urlasp += "&code_type=" + row["arcase_type"];
-        urlasp += "&homelist=" + Request["homelist"];
-        urlasp += "&uploadtype=case";
-        urlasp += "&submittask=Show";
-
-        return urlasp;
-    }
+    //protected string GetCaseLink(DataRow row) {
+    //    string urlasp = "";//連結的url
+    //    string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
+    //    urlasp = Page.ResolveUrl("~/brt1m" + row.SafeRead("link_remark", "") + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
+    //    urlasp += "&in_scode=" + row["in_scode"];
+    //    urlasp += "&in_no=" + row["in_no"];
+    //    urlasp += "&add_arcase=" + row["arcase"];
+    //    urlasp += "&cust_area=" + row["cust_area"];
+    //    urlasp += "&cust_seq=" + row["cust_seq"];
+    //    urlasp += "&ar_form=" + row["ar_form"];
+    //    urlasp += "&new_form=" + new_form;
+    //    urlasp += "&code_type=" + row["arcase_type"];
+    //    urlasp += "&homelist=" + Request["homelist"];
+    //    urlasp += "&uploadtype=case";
+    //    urlasp += "&submittask=Show";
+    //
+    //    return urlasp;
+    //}
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -171,9 +172,7 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
 </head>
 <script language="javascript" type="text/javascript">
     var main = {};

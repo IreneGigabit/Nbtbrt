@@ -15,6 +15,8 @@ public class DBHelper : IDisposable
     public string ConnString { get; set; }
     private bool _debug = false;
     private bool _isTran = true;
+    public List<string> allSQL = null;
+    public List<string> querySQL = null;
     public List<string> exeSQL = null;
     public DBHelper(string connectionString) : this(connectionString, true) { }
 
@@ -22,6 +24,8 @@ public class DBHelper : IDisposable
         //this._debug = showDebugStr;
         this.ConnString = connectionString;
         this._isTran = isTransaction;
+        this.allSQL = new List<string>();
+        this.querySQL = new List<string>();
         this.exeSQL = new List<string>();
 
         this._conn = new SqlConnection(this.ConnString);
@@ -87,7 +91,8 @@ public class DBHelper : IDisposable
             //if (this._debug) {
             //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
             //}
-            //this.exeSQL.Add(commandText);
+            this.allSQL.Add(commandText);
+            this.querySQL.Add(commandText);
             this._cmd.CommandText = commandText;
             SqlDataReader dr = this._cmd.ExecuteReader();
             return dr;
@@ -107,6 +112,7 @@ public class DBHelper : IDisposable
             if (this._debug) {
                 HttpContext.Current.Response.Write(commandText + "<HR>\n");
             }
+            this.allSQL.Add(commandText);
             this.exeSQL.Add(commandText);
             this._cmd.CommandText = commandText;
             return this._cmd.ExecuteNonQuery();
@@ -126,7 +132,8 @@ public class DBHelper : IDisposable
             //if (this._debug) {
             //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
             //}
-            //this.exeSQL.Add(commandText);
+            this.allSQL.Add(commandText);
+            this.querySQL.Add(commandText);
             this._cmd.CommandText = commandText;
             return this._cmd.ExecuteScalar();
         }
@@ -145,7 +152,8 @@ public class DBHelper : IDisposable
             //if (this._debug) {
             //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
             //}
-            //this.exeSQL.Add(commandText);
+            this.allSQL.Add(commandText);
+            this.querySQL.Add(commandText);
             using (SqlDataAdapter adapter = new SqlDataAdapter(commandText, this._conn)) {
                 if (this._isTran) {
                     adapter.SelectCommand.Transaction = this._tran;
@@ -168,7 +176,8 @@ public class DBHelper : IDisposable
             //if (this._debug) {
             //    HttpContext.Current.Response.Write(commandText + "<HR>\n");
             //}
-            //this.exeSQL.Add(commandText);
+            this.allSQL.Add(commandText);
+            this.querySQL.Add(commandText);
             using (SqlDataAdapter adapter = new SqlDataAdapter(commandText, this._conn)) {
                 if (this._isTran) {
                     adapter.SelectCommand.Transaction = this._tran;
@@ -192,6 +201,7 @@ public class DBHelper : IDisposable
             if (this._debug) {
                 HttpContext.Current.Response.Write(commandText + "<HR>\n");
             }
+            this.allSQL.Add(commandText);
             this.exeSQL.Add(commandText);
 
             using (SqlDataAdapter adapter = new SqlDataAdapter(this._cmd)) {
@@ -223,6 +233,7 @@ public class DBHelper : IDisposable
             if (this._debug) {
                 HttpContext.Current.Response.Write(commandText + "<HR>\n");
             }
+            this.allSQL.Add(commandText);
             this.exeSQL.Add(commandText);
 
             this._cmd.CommandType = CommandType.StoredProcedure;

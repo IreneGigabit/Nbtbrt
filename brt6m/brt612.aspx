@@ -68,9 +68,7 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
 </head>
 
 <body>
@@ -221,6 +219,7 @@
         ajaxScriptByGet("檢查承辦單筆數", url);
         if (jCount == 0) {//由ajaxScriptByGet呼叫的程式指定值
             alert("無資料需產生");
+            return false;
         } else if (jCount > 50) {
             alert("承辦單超過50筆，請縮小範圍列印!!!");
             return false;

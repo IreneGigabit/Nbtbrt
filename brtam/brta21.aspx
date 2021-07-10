@@ -90,7 +90,7 @@
             td_tscode += "</select>";
         } else {
             td_tscode = "<input type='hidden' id='scode1' name='scode1' value='" + Session["scode"] + "'>";
-            td_tscode = "<input id=sscode1 name=sscode1 readonly class=SEdit size=5 value='" + Session["scode"] + "'>" + Session["sc_name"];
+            td_tscode += "<input id=sscode1 name=sscode1 readonly class=SEdit size=5 value='" + Session["scode"] + "'>" + Session["sc_name"];
         }
         
         //承辦人員
@@ -111,9 +111,7 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
 </head>
 
 <body>

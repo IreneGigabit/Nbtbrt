@@ -32,8 +32,8 @@
 		<td class="lightbluetable" valign="top" ><strong>參、代理人</strong></td>
 		<td class="whitetablebg" colspan="7" >
 		    <select id="tfg1_agt_no1" NAME="tfg1_agt_no1"><%#tfg1_agt_no1%></select>
-		    <input type="text" id="tfg2_agt_no1" name="tfg2_agt_no1">
-            <!--input type="text" id="tfzd_agt_no" name="tfzd_agt_no"-->
+		    <input type="hidden" id="tfg2_agt_no1" name="tfg2_agt_no1">
+            <!--input type="hidden" id="tfzd_agt_no" name="tfzd_agt_no"-->
 		</td>
 	</tr>
     <tr>

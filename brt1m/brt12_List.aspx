@@ -63,8 +63,10 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a href=\"javascript:location.reload()\" >[重新整理]</a>";
-        StrFormBtnTop += "<a href=\"javascript:window.history.back()\" >[回上頁]</a>";
+        //StrFormBtnTop += "<a href=\"javascript:location.reload()\" >[重新整理]</a>";
+        StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>";
+        //StrFormBtnTop += "<a href=\"javascript:window.history.back()\" >[回上頁]</a>";
+        StrFormBtnTop += "<a href=\"" + HTProgPrefix + ".aspx?prgid=" + prgid + "\" >[回查詢]</a>";
 
         //簽核用
         /*
@@ -152,7 +154,7 @@
 
         //處理分頁
         int nowPage = Convert.ToInt32(Request["GoPage"] ?? "1"); //第幾頁
-        int PerPageSize = Convert.ToInt32(Request["PerPage"] ?? "30"); //每頁筆數
+        int PerPageSize = Convert.ToInt32(Request["PerPage"] ?? "20"); //每頁筆數
         page = new Paging(nowPage, PerPageSize, SQL);
         page.GetPagedTable(dt);
 
@@ -197,8 +199,8 @@
             dr["T_Fees"]=T_Fees;
             dr["P_Service"]=P_Service;
             dr["P_Fees"]=P_Fees;
-                
-            dr["cust_name"] = dr.SafeRead("cust_name", "").Left(5);
+
+            dr["cust_name"] = dr.SafeRead("cust_name", "").ToUnicode().Left(5);
             dr["fseq"] = Sys.formatSeq1(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
 
             string new_form = Sys.getCaseDmtAspx(dr.SafeRead("arcase_type", ""), dr.SafeRead("arcase", ""));//連結的aspx
@@ -253,22 +255,26 @@
                     FlagPrint = false;
             }
             string urlasp = "";//連結的url
-            urlasp = Page.ResolveUrl("~/brt1m" + link_remark + "/Brt11Edit" + new_form + ".aspx?prgid="+prgid);
-            urlasp += "&in_scode=" + dr["in_scode"];
-            urlasp += "&in_no=" + dr["in_no"];
-            urlasp += "&add_arcase=" + dr["arcase"];
-            urlasp += "&cust_area=" + dr["cust_area"];
-            urlasp += "&cust_seq=" + dr["cust_seq"];
-            urlasp += "&ar_form=" + dr["ar_form"];
-            urlasp += "&new_form=" + new_form;
-            urlasp += "&code_type=" + dr["arcase_type"];
-            urlasp += "&homelist=" + Request["homelist"];
-            urlasp += "&uploadtype=case";
+            //urlasp = Page.ResolveUrl("~/brt1m" + link_remark + "/Brt11Edit" + new_form + ".aspx?prgid="+prgid);
+            //urlasp += "&in_scode=" + dr["in_scode"];
+            //urlasp += "&in_no=" + dr["in_no"];
+            //urlasp += "&add_arcase=" + dr["arcase"];
+            //urlasp += "&cust_area=" + dr["cust_area"];
+            //urlasp += "&cust_seq=" + dr["cust_seq"];
+            //urlasp += "&ar_form=" + dr["ar_form"];
+            //urlasp += "&new_form=" + new_form;
+            //urlasp += "&code_type=" + dr["arcase_type"];
+            //urlasp += "&homelist=" + Request["homelist"];
+            //urlasp += "&uploadtype=case";
 
-            if (Sys.GetSession("scode") == dr.SafeRead("in_scode", "") || (HTProgRight & 128) != 0)
-                urlasp += "&submittask=Edit";
-            else
-                urlasp += "&submittask=Show";
+            if (Sys.GetSession("scode") == dr.SafeRead("in_scode", "") || (HTProgRight & 128) != 0) {
+                //urlasp += "&submittask=Edit";
+                urlasp = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Edit");
+            } else {
+                //urlasp += "&submittask=Show";
+                urlasp = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
+            }
+
             page.pagedTable.Rows[i]["urlasp"] = urlasp;
         }
 
@@ -319,8 +325,9 @@
     protected string GetNXLink(RepeaterItem Container) {
         string stat_code = DataBinder.Eval(Container.DataItem, "stat_code").ToString();
         if (stat_code == "NX")//**todo
-            return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13ListA.aspx") + 
-                    "?in_scode="+DataBinder.Eval(Container.DataItem, "in_scode").ToString()+
+            return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13_ListA.aspx") +
+                    "?prgid=" + prgid +
+                    "&in_scode=" + DataBinder.Eval(Container.DataItem, "in_scode").ToString() +
                     "&in_no="+DataBinder.Eval(Container.DataItem, "in_no").ToString()+
                     "&ar_form=" + DataBinder.Eval(Container.DataItem, "ar_form").ToString() +
                     "&homelist="+Request["homelist"]+
@@ -342,7 +349,6 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 </head>
 
 <body>

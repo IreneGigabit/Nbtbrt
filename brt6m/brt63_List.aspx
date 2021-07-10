@@ -291,18 +291,19 @@
         if (row.SafeRead("opt_stat", "") == "N") {
             todo_name = "專案室發文";
             string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
-            todo_link = Page.ResolveUrl("~/brt1m" + row.SafeRead("link_remark", "") + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
-            todo_link += "&in_scode=" + row["in_scode"];
-            todo_link += "&in_no=" + row["in_no"];
-            todo_link += "&add_arcase=" + row["arcase"];
-            todo_link += "&cust_area=" + row["cust_area"];
-            todo_link += "&cust_seq=" + row["cust_seq"];
-            todo_link += "&ar_form=" + row["ar_form"];
-            todo_link += "&new_form=" + new_form;
-            todo_link += "&code_type=" + row["arcase_type"];
-            todo_link += "&homelist=" + Request["homelist"];
-            todo_link += "&uploadtype=case";
-            todo_link += "&submittask=Show";
+            //todo_link = Page.ResolveUrl("~/brt1m" + row.SafeRead("link_remark", "") + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
+            //todo_link += "&in_scode=" + row["in_scode"];
+            //todo_link += "&in_no=" + row["in_no"];
+            //todo_link += "&add_arcase=" + row["arcase"];
+            //todo_link += "&cust_area=" + row["cust_area"];
+            //todo_link += "&cust_seq=" + row["cust_seq"];
+            //todo_link += "&ar_form=" + row["ar_form"];
+            //todo_link += "&new_form=" + new_form;
+            //todo_link += "&code_type=" + row["arcase_type"];
+            //todo_link += "&homelist=" + Request["homelist"];
+            //todo_link += "&uploadtype=case";
+            //todo_link += "&submittask=Show";
+            todo_link = Sys.getCase11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Show");
             todo_link += "&todo_sqlno=" + row["todo_sqlno"];
             todo_link += "&rs_no=" + row["rs_no"];
             todo_link += "&seq=" + row["seq"];
@@ -351,29 +352,31 @@
 
     protected string GetCaseLink(DataRow row) {
         string urlasp = "";//連結的url
-        string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
+        //string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
+        //
+        //urlasp = Page.ResolveUrl("~/brt5m" + row["link_remark"] + "/Brt52EDIT" + new_form + ".aspx?prgid=brt52");
+        //urlasp += "&in_scode=" + row["in_scode"];
+        //urlasp += "&in_no=" + row["in_no"];
+        //urlasp += "&case_no=" + row["case_no"];
+        //urlasp += "&seq=" + row["seq"];
+        //urlasp += "&seq1=" + row["seq1"];
+        //urlasp += "&add_arcase=" + row["arcase"];
+        //urlasp += "&cust_area=" + row["cust_area"];
+        //urlasp += "&cust_seq=" + row["cust_seq"];
+        //urlasp += "&ar_form=" + row["ar_form"];
+        //urlasp += "&new_form=" + new_form;
+        //urlasp += "&code_type=" + row["arcase_type"];
+        //urlasp += "&ar_code=" + row["ar_code"];
+        //urlasp += "&mark=" + row["case_mark"];
+        //urlasp += "&ar_service=" + row["ar_service"];
+        //urlasp += "&ar_fees=" + row["ar_fees"];
+        //urlasp += "&ar_curr=" + row["ar_curr"];
+        //urlasp += "&step_grade=" + row["step_grade"];
+        //urlasp += "&uploadtype=case";
+        //urlasp += "&submittask=Edit";
 
-        urlasp = Page.ResolveUrl("~/brt5m" + row["link_remark"] + "/Brt52EDIT" + new_form + ".aspx?prgid=brt52");
-        urlasp += "&in_scode=" + row["in_scode"];
-        urlasp += "&in_no=" + row["in_no"];
-        urlasp += "&case_no=" + row["case_no"];
-        urlasp += "&seq=" + row["seq"];
-        urlasp += "&seq1=" + row["seq1"];
-        urlasp += "&add_arcase=" + row["arcase"];
-        urlasp += "&cust_area=" + row["cust_area"];
-        urlasp += "&cust_seq=" + row["cust_seq"];
-        urlasp += "&ar_form=" + row["ar_form"];
-        urlasp += "&new_form=" + new_form;
-        urlasp += "&code_type=" + row["arcase_type"];
-        urlasp += "&ar_code=" + row["ar_code"];
-        urlasp += "&mark=" + row["case_mark"];
-        urlasp += "&ar_service=" + row["ar_service"];
-        urlasp += "&ar_fees=" + row["ar_fees"];
-        urlasp += "&ar_curr=" + row["ar_curr"];
-        urlasp += "&step_grade=" + row["step_grade"];
-        urlasp += "&uploadtype=case";
-        urlasp += "&submittask=Edit";
-              
+        urlasp = Sys.getCase11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Edit");
+  
         return urlasp;
     }
     
@@ -548,9 +551,7 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
 </head>
 <script language="javascript" type="text/javascript">
     var main = {};

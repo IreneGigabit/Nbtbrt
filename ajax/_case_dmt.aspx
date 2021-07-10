@@ -94,6 +94,7 @@
         //Response.Write(",\"step_dmt_cr\":" + JsonConvert.SerializeObject(GetStepCR(ref dtStepDmtCR), settings).ToUnicode() + "\n");//對應客收進度
         //Response.Write(",\"attcase_dmt\":" + JsonConvert.SerializeObject(GetAttCaseDmt(ref dtAttCaseDmt), settings).ToUnicode() + "\n");//對應交辦發文檔
         //Response.Write(",\"step_gs\":" + JsonConvert.SerializeObject(AddGS(), settings).ToUnicode() + "\n");//交辦官發預設值
+        //Response.Write(",\"t_sql\":" + JsonConvert.SerializeObject(conn.querySQL, settings).ToUnicode() + "\n");//執行的sql
         Response.Write("}");
 
         //Response.Write(JsonConvert.SerializeObject(dt, settings).ToUnicode());
@@ -115,12 +116,16 @@
             br_in_scname = dt.Rows[0].SafeRead("in_scodenm", "");
 
             if (submitTask == "AddNext") {//圖様改為新檔名
+                code_type = (Request["code_type"] ?? "").Trim();
+
                 if (dt.Rows[0].SafeRead("draw_file", "") != "") {
                     System.IO.FileInfo sFi = new System.IO.FileInfo(HttpContext.Current.Server.MapPath(Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("draw_file", ""))));
                     string strpath1 = sfile.gbrWebDir + "/temp";
                     string newName = br_in_scode + "-" + Path.GetFileName(dt.Rows[0].SafeRead("draw_file", ""));
-                    sFi.CopyTo(Server.MapPath(Sys.Path2Nbtbrt(strpath1 + "/" + newName)), true);
-                    dt.Rows[0]["draw_file"] = Sys.Path2Nbtbrt(strpath1 + "/" + newName);
+                    if (Sys.CheckFile(Sys.Path2Nbtbrt(strpath1 + "/" + newName))) {
+                        sFi.CopyTo(Server.MapPath(Sys.Path2Nbtbrt(strpath1 + "/" + newName)), true);
+                        dt.Rows[0]["draw_file"] = Sys.Path2Nbtbrt(strpath1 + "/" + newName);
+                    }
                 }
             }
 

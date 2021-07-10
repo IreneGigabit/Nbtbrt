@@ -49,14 +49,14 @@
 </script>
 
 <%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
-<input type=text name=job_case id=job_case>
+<input type=hidden name=job_case id=job_case>
 <TABLE id=tab15 style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
 	<TR>
 		<TD align=center colspan=6 class=lightbluetable1><font color=white>後&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;續&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;資&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;料</font></TD>
 	</TR>  
 	<TR >
 		<TD class=lightbluetable align=right >作業處理：</TD>
-		<TD class=whitetablebg colspan=5 ><input type=text name="job_no" id="job_no">
+		<TD class=whitetablebg colspan=5 ><input type=hidden name="job_no" id="job_no">
 			<label><input type=radio name="job_type" value="case" class="<%#Lock.TryGet("brt15Lock")%>" onclick="brt15form.showtr()">接洽客戶後續案性</label>
 			<label><input type=radio name="job_type" value="endr" class="<%#Lock.TryGet("brt15Lock")%>" onclick="brt15form.showtr()">結辦歸檔</label>
 		</td>
@@ -87,7 +87,7 @@
     </TR>
 	<TR >
 		<TD class=lightbluetable align=right >自行客戶報導：</TD>
-		<TD class=whitetablebg colspan=5><input type=text name="ocs_report" id="ocs_report">
+		<TD class=whitetablebg colspan=5><input type=hidden name="ocs_report" id="ocs_report">
 			<label><input type=radio name="cs_report" value="Y" class="<%#Lock.TryGet("brt15Lock")%>" onclick="brt15form.cs_report_onclick1(this.value)">需</label>
 			<label><input type=radio name="cs_report" value="N" class="<%#Lock.TryGet("brt15Lock")%>" onclick="brt15form.cs_report_onclick1(this.value)">不需</label>
 		</td>

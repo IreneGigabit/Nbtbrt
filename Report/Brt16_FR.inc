@@ -47,7 +47,7 @@
 	SET RAreg=nothing
  
  if flag=3 then
-    Response.Write "<script language="javascript" type="text/javascript">" &chr(13)
+    Response.Write "<script language='javascript' type='text/javascript'>" &chr(13)
     Response.Write " alert('請到案件主檔維護新增案件內容!');" &chr(13)
     Response.Write " window.parent.location='/Customers/Brt15.asp';" &chr(13)
     Response.Write "</script>" &chr(13)

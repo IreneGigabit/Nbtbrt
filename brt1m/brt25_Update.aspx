@@ -14,6 +14,8 @@
     protected string submitTask = "";
     protected string SQL = "";
 
+    protected string logReason = "brt25契約書後補修改";
+
     protected string uploadfield = "";
     protected string tlink = "";
     protected string seq =  "";
@@ -37,6 +39,13 @@
 
     protected StringBuilder strOut = new StringBuilder();
 
+    DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    private void Page_Unload(System.Object sender, System.EventArgs e) {
+        if (conn != null) conn.Dispose();
+        if (cnn != null) cnn.Dispose();
+    }
+
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
@@ -54,11 +63,9 @@
         in_no = (Request["in_no"] ?? "").Trim();
         step_grade = (Request["step_grade"] ?? "").Trim();
 
-        using (DBHelper cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST")) {
-            SQL = "select scode from sysctrl.dbo.scode_roles where branch='" + Session["SeBranch"] + "' and dept='T' and roles='account' and sort='01'";
-            object objResult = cnn.ExecuteScalar(SQL);
-            acc_scode = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-        }
+        SQL = "select scode from sysctrl.dbo.scode_roles where branch='" + Session["SeBranch"] + "' and dept='T' and roles='account' and sort='01'";
+        object objResult = cnn.ExecuteScalar(SQL);
+        acc_scode = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
 
         if (prgid.Left(3) == "brt") {
             casetable = "case_dmt";
@@ -77,14 +84,13 @@
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
-            DBHelper conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
             try {
                 //判斷狀態是否已異動,防止開雙視窗
                 SQL = "select count(*) from " + todo_table + " ";
                 SQL += " where sqlno='" + todo_sqlno + "' and syscode='" + Session["syscode"] + "'";
                 SQL += " and seq=" + seq + " and seq1='" + seq1 + "'";
                 SQL += " and dowhat like 'contractL%' and substring(job_status,1,1)='N'";
-                object objResult = conn.ExecuteScalar(SQL);
+                objResult = conn.ExecuteScalar(SQL);
                 int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
 
                 if (cnt == 0) {
@@ -149,7 +155,7 @@
             //更換檔名
             string straa = (Request[uploadfield + "_name"] ?? "");//上傳檔名
             if (straa != "") {
-                string strpath = sfile.gbrWebDir + "/" + Request[uploadfield+"_path"];
+                string strpath = sfile.gbrWebDir + "/" + Request[uploadfield + "_path"];
                 string sExt = System.IO.Path.GetExtension(straa);//副檔名
                 string attach_name = "";//資料庫檔名
                 string newattach_path = "";//資料庫路徑
@@ -233,7 +239,7 @@
             //更換檔名
             string straa = (Request[uploadfield + "_name"] ?? "");//上傳檔名
             if (straa != "") {
-                string strpath = sfile.gbrWebDir + "/" + Request[uploadfield+"_path"];
+                string strpath = sfile.gbrWebDir + "/" + Request[uploadfield + "_path"];
                 string sExt = System.IO.Path.GetExtension(straa);//副檔名
                 string attach_name = "";//資料庫檔名
                 string newattach_path = "";//資料庫路徑
@@ -313,9 +319,9 @@
     private void doCancel(DBHelper conn) {
         //---------------[取消(送會計)]：表取消後至會計契約書檢核
         if (prgid.Left(3) == "brt") {
-            Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "brt25契約書後補修改");
+            Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
         } else if (prgid.Left(3) == "ext") {
-            Sys.insert_log_table(conn, "U", prgid, "case_ext", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "brt25契約書後補修改");
+            Sys.insert_log_table(conn, "U", prgid, "case_ext", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
         }
 
         //註記契約書後補完成日期
@@ -334,9 +340,9 @@
     //[不需後補]：契約書已上傳，不需後補
     private void doNothing(DBHelper conn) {
         if (prgid.Left(3) == "brt") {
-            Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "brt25契約書後補修改");
+            Sys.insert_log_table(conn, "U", prgid, "case_dmt", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
         } else if (prgid.Left(3) == "ext") {
-            Sys.insert_log_table(conn, "U", prgid, "case_ext", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], "brt25契約書後補修改");
+            Sys.insert_log_table(conn, "U", prgid, "case_ext", "in_scode;in_no", Request["in_scode"] + ";" + Request["in_no"], logReason);
         }
 
         //註記契約書後補完成日期
@@ -389,7 +395,7 @@
                 SQL = "insert into resp_dmt(sqlno,rs_no,branch,seq,seq1,step_grade,resp_grade,ctrl_type,ctrl_remark,ctrl_date,";
                 SQL += "resp_date,resp_type,resp_remark,tran_date,tran_scode)";
                 SQL += " values(" + sqlno + ",'" + dt.Rows[i].SafeRead("rs_no", "") + "','" + dt.Rows[i].SafeRead("branch", "") + "'," + seq + ",'" + seq1 + "'," + step_grade + ",";
-                SQL += "0,'" + dt.Rows[i].SafeRead("ctrl_type", "") + "','" + dt.Rows[i].SafeRead("ctrl_remark", "") + "','" + Util.parseDBDate(dt.Rows[i].SafeRead("ctrl_date", ""),"yyyy/M/d") + "',";
+                SQL += "0,'" + dt.Rows[i].SafeRead("ctrl_type", "") + "','" + dt.Rows[i].SafeRead("ctrl_remark", "") + "','" + Util.parseDBDate(dt.Rows[i].SafeRead("ctrl_date", ""), "yyyy/M/d") + "',";
                 SQL += "'" + DateTime.Today.ToShortDateString() + "','','契約書後補作業銷管',";
                 SQL += "getdate(),'" + Session["scode"] + "')";
                 conn.ExecuteNonQuery(SQL);
@@ -429,7 +435,8 @@
         List<string> strCC = new List<string>();
         List<string> strBCC = new List<string>();
         switch (Sys.Host) {
-            case "web08": case "localhost":
+            case "web08":
+            case "localhost":
                 strTo.Add(Session["scode"] + "@saint-island.com.tw");
                 break;
             case "web10":

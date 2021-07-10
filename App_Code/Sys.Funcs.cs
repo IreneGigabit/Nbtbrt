@@ -12,19 +12,6 @@ using Newtonsoft.Json.Linq;
 /// </summary>  
 public partial class Sys
 {
-    #region showLog - 顯示除錯訊息
-    /// <summary>  
-    /// 顯示除錯訊息,有設定在web.config內DebugScode者才會顯示訊息
-    /// </summary>  
-    public static void showLog(string msg) {
-        if (IsDebug()) {
-            //if (HttpContext.Current.Request["chkTest"] == "TEST") {
-                HttpContext.Current.Response.Write(msg + "<hr>");
-            //}
-        }
-    }
-    #endregion
-
     #region getTeamScode - 抓取組主管所屬營洽
     /// <summary>  
     /// 抓取組主管所屬營洽
@@ -551,6 +538,81 @@ public partial class Sys
             return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
         }
     }
+    public static void getCaseDmtAspx(string rsType, string rsCode, out string ar_form, out string prt_code, out string classp, out string new_form) {
+        //rsType=case_dmt.arcase_type
+        //rsCode=case_dmt.arcase
+
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            object objResult = null;
+            string SQL = "";
+
+            //目前版本
+            string arcase_type = Sys.getRsType();
+
+            //rs_class(ar_form)=結構分類
+            SQL = "SELECT rs_class FROM code_br WHERE rs_code = '" + rsCode + "' AND dept = 'T' AND cr = 'Y' and rs_type='" + rsType + "' ";
+            objResult = conn.ExecuteScalar(SQL);
+            ar_form = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+            //prt_code=交辦內容對應的form
+            SQL = "SELECT prt_code FROM code_br WHERE rs_code = '" + rsCode + "' AND dept = 'T' AND cr = 'Y' and rs_type='" + rsType + "' ";
+            objResult = conn.ExecuteScalar(SQL);
+            prt_code = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+            //classp=承辦交辦發文對應電子申請書.aspx
+            SQL = "SELECT classp FROM code_br WHERE rs_code = '" + rsCode + "' AND dept = 'T' AND cr = 'Y' and rs_type='" + rsType + "' ";
+            objResult = conn.ExecuteScalar(SQL);
+            classp = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+            //new_form=新版.net對應aspx入口
+            SQL = "SELECT c.remark ";
+            SQL += "FROM Cust_code c ";
+            SQL += "inner join code_br b on b.rs_type=c.Code_type and b.rs_class=c.Cust_code ";
+            SQL += "WHERE 1=1 ";
+            SQL += "and b.rs_type='" + rsType + "' ";
+            SQL += "and b.rs_code='" + rsCode + "' ";
+            objResult = conn.ExecuteScalar(SQL);
+            new_form = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+            //案性版本連結
+            SQL = "Select remark from cust_code where cust_code='__' and code_type='" + rsType + "'";
+            objResult = conn.ExecuteScalar(SQL);
+            string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+            //舊版對應到新版的form
+            if (link_remark == "92") {
+                ar_form = classp;
+
+                SQL = "Select form_name as prt_code1 from cust_code  WHERE code_type='" + arcase_type + "' and cust_code='" + classp + "' ";
+                objResult = conn.ExecuteScalar(SQL);
+                prt_code = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+
+                SQL = "SELECT c.remark ";
+                SQL += "FROM Cust_code c ";
+                SQL += "inner join code_br b on b.rs_type='" + rsType + "' and b.classp=c.cust_code ";
+                SQL += "WHERE 1=1 ";
+                SQL += "and b.rs_code='" + rsCode + "' AND b.dept = 'T' AND b.cr = 'Y' and c.code_type='" + arcase_type + "'";
+                objResult = conn.ExecuteScalar(SQL);
+                new_form = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+            }
+
+            //判斷有無大類別，如DE1_申請聽證的結構分類為B5，但洽案登錄時案性清單是以大類別的案性都抓(B爭議案)，重抓洽案登錄大類別
+            SQL = "select cust_code from cust_code where code_type='" + arcase_type + "' and form_name is not null and cust_code='" + ar_form + "'";
+            using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                if (!dr0.HasRows) {
+                    dr0.Close();
+                    SQL = "select cust_code from cust_code where code_type='" + arcase_type + "' and form_name is not null and cust_code like '" + ar_form.Left(1) + "%' ";
+                    using (SqlDataReader dr1 = conn.ExecuteReader(SQL)) {
+                        if (dr1.Read()) {
+                            ar_form = dr1.SafeRead("cust_code", "");
+                        }
+                    }
+                }
+            }
+
+
+        }
+    }
     #endregion
 
     #region getCase11Aspx - 國內案營洽交辦畫面aspx
@@ -572,11 +634,14 @@ public partial class Sys
             conn.DataTable(SQL, dt);
             if (dt.Rows.Count > 0) {
                 DataRow dr = dt.Rows[0];
-                string new_form = Sys.getCaseDmtAspx(dr.SafeRead("arcase_type", ""), dr.SafeRead("arcase", ""));//連結的aspx
+                //string new_form = Sys.getCaseDmtAspx(dr.SafeRead("arcase_type", ""), dr.SafeRead("arcase", ""));//連結的aspx
+                string ar_form, prt_code, classp, new_form;
+                Sys.getCaseDmtAspx(dr.SafeRead("arcase_type", ""), dr.SafeRead("arcase", ""), out ar_form, out prt_code, out classp, out new_form);
 
-                SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
-                objResult = conn.ExecuteScalar(SQL);
-                string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();//連結的版本
+                string link_remark = "";
+                //SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
+                //objResult = conn.ExecuteScalar(SQL);
+                //link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();//連結的版本
 
                 //抓取對應客收進度
                 SQL = "select step_grade from step_dmt where seq='" + dr["seq"] + "' and seq1='" + dr["seq1"] + "' and case_no='" + dr["case_no"] + "' and cg='C' and rs='R' ";
@@ -593,9 +658,9 @@ public partial class Sys
                 urlasp += "&add_arcase=" + dr["arcase"];
                 urlasp += "&cust_area=" + dr["cust_area"];
                 urlasp += "&cust_seq=" + dr["cust_seq"];
-                urlasp += "&ar_form=" + dr["ar_form"];
+                urlasp += "&ar_form=" + ar_form;// dr["ar_form"];
                 urlasp += "&new_form=" + new_form;
-                urlasp += "&code_type=" + dr["arcase_type"];
+                urlasp += "&code_type=" + Sys.getRsType();//dr["arcase_type"];
                 urlasp += "&ar_code=" + dr["ar_code"];
                 urlasp += "&mark=" + dr["mark"];
                 urlasp += "&ar_service=" + dr["ar_service"];
@@ -634,11 +699,14 @@ public partial class Sys
             conn.DataTable(SQL, dt);
             if (dt.Rows.Count > 0) {
                 DataRow dr = dt.Rows[0];
-                string new_form = Sys.getCaseDmtAspx(dr.SafeRead("arcase_type", ""), dr.SafeRead("arcase", ""));//連結的aspx
+                //string new_form = Sys.getCaseDmtAspx(dr.SafeRead("arcase_type", ""), dr.SafeRead("arcase", ""));//連結的aspx
+                string ar_form, prt_code, classp, new_form;
+                Sys.getCaseDmtAspx(dr.SafeRead("arcase_type", ""), dr.SafeRead("arcase", ""), out ar_form, out prt_code, out classp, out new_form);
 
-                SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
-                objResult = conn.ExecuteScalar(SQL);
-                string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();//連結的版本
+                string link_remark = "";
+                //SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
+                //objResult = conn.ExecuteScalar(SQL);
+                //link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();//連結的版本
 
                 SQL = "select step_grade from step_dmt where seq='" + dr["seq"] + "' and seq1='" + dr["seq1"] + "' and case_no='" + dr["case_no"] + "' and cg='C' and rs='R' ";
                 objResult = conn.ExecuteScalar(SQL);
@@ -654,9 +722,9 @@ public partial class Sys
                 urlasp += "&add_arcase=" + dr["arcase"];
                 urlasp += "&cust_area=" + dr["cust_area"];
                 urlasp += "&cust_seq=" + dr["cust_seq"];
-                urlasp += "&ar_form=" + dr["ar_form"];
+                urlasp += "&ar_form=" + ar_form;// dr["ar_form"];
                 urlasp += "&new_form=" + new_form;
-                urlasp += "&code_type=" + dr["arcase_type"];
+                urlasp += "&code_type=" + Sys.getRsType(); //dr["arcase_type"];
                 urlasp += "&ar_code=" + dr["ar_code"];
                 urlasp += "&mark=" + dr["mark"];
                 urlasp += "&ar_service=" + dr["ar_service"];
@@ -740,6 +808,17 @@ public partial class Sys
         SQL += " and cust_code = '" + pCustCode + "' ";
         object objResult = conn.ExecuteScalar(SQL);
         return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString(); ;
+    }
+    #endregion
+
+    #region getCodeName - 抓取代碼資料或特定欄位資料(取第一欄第一列)
+    /// <summary>  
+    /// 抓取代碼資料或特定欄位資料(取第一欄第一列)
+    /// </summary>  
+    public static string getCodeName(DBHelper conn, string table, string column, string where) {
+        string SQL = "select " + column + " from " + table + " " + where;
+        object objResult = conn.ExecuteScalar(SQL);
+        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
     }
     #endregion
 
@@ -916,17 +995,6 @@ public partial class Sys
 
             return dt;
         }
-    }
-    #endregion
-
-    #region getCodeName - 抓取代碼資料或特定欄位資料(取第一欄第一列)
-    /// <summary>  
-    /// 抓取代碼資料或特定欄位資料(取第一欄第一列)
-    /// </summary>  
-    public static string getCodeName(DBHelper conn, string table, string column, string where) {
-        string SQL = "select " + column + " from " + table + " " + where;
-        object objResult = conn.ExecuteScalar(SQL);
-        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
     }
     #endregion
 

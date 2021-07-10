@@ -302,8 +302,9 @@
     protected string GetNXLink(DataRow row) {
         string stat_code = row.SafeRead("stat_code", "");
         if (stat_code == "NX")
-            return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13ListA.aspx") +
-                    "?in_scode=" + row.SafeRead("in_scode", "") +
+            return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13_ListA.aspx") +
+                    "?prgid="+prgid+
+                    "&in_scode=" + row.SafeRead("in_scode", "") +
                     "&in_no=" + row.SafeRead("in_no", "") +
                     "&ar_form=" + row.SafeRead("ar_form", "") +
                     "&homelist=" + Request["homelist"] +

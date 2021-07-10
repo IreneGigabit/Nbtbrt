@@ -628,7 +628,8 @@ public static class DataExt
         var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var key in col.Keys) {
-            dict.Add(key.ToString(), col[key.ToString()].ToBig5().TrimEnd());
+            //dict.Add(key.ToString(), col[key.ToString()].ToBig5().TrimEnd());
+            dict.Add(key.ToString(), col[key.ToString()].ToBig5().TrimEnd(new char[] { ' ' }));
         }
 
         return dict;
@@ -639,7 +640,8 @@ public static class DataExt
     public static string TryGet<TKey, TValue>(this Dictionary<TKey, TValue> input, TKey key) {
         TValue val;
         if (input.TryGetValue(key, out val)) {
-            return val.ToString().TrimEnd();
+            //return val.ToString().TrimEnd();
+            return val.ToString().TrimEnd(new char[] { ' ' });
         }
 
         return "";

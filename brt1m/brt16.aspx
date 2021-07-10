@@ -55,7 +55,7 @@
                 td_tscode = "<select id='tfx_in_Scode' name='tfx_in_Scode'><option value='' style='color:blue'>全部</option>" + dt.Option("{scode}", "{scode}_{sc_name}",false,Sys.GetSession("scode")) + "</select>";
             } else {
                 td_tscode = "<input type='text' id='tfx_in_Scode' name='tfx_in_Scode' readonly class='SEdit' value='" + Session["se_scode"] + "'>";
-                td_tscode = "<input type='text' id='ScodeName' name='ScodeName' readonly class='SEdit' value='" + Session["sc_name"] + "'>";
+                td_tscode += "<input type='text' id='ScodeName' name='ScodeName' readonly class='SEdit' value='" + Session["sc_name"] + "'>";
             }
         }
     }
@@ -74,9 +74,7 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
 </head>
 
 <body>

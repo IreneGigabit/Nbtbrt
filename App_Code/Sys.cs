@@ -29,6 +29,7 @@ public partial class Sys
     public static int ExtSeq = 5;
     public static int ExtSeq1 = 1;
 
+    #region SIServer - 聖島人主機
     /// <summary>
     /// 聖島人主機
     /// </summary>
@@ -44,7 +45,9 @@ public partial class Sys
             }
         }
     }
+    #endregion
 
+    #region MG_IIS - 總收發IIS主機
     /// <summary>
     /// 總收發IIS主機
     /// </summary>
@@ -60,7 +63,9 @@ public partial class Sys
             }
         }
     }
+    #endregion
 
+    #region Opt_IIS - 爭救案IIS主機
     /// <summary>
     /// 爭救案IIS主機
     /// </summary>
@@ -72,8 +77,10 @@ public partial class Sys
                 return Host;//開發環境
         }
     }
+    #endregion
 
-   /// <summary>
+    #region Sysmenu - menu/權限使用的syscode
+    /// <summary>
     /// menu/權限使用的syscode
     /// </summary>
     public static string Sysmenu {
@@ -85,9 +92,11 @@ public partial class Sys
             return "nnbrt";//開發環境
         }
     }
+    #endregion
 
+    #region Syscode - db使用的syscode,ex:todo(為了要與舊資料一致)
     /// <summary>
-    /// 程式使用的syscode(ex:流程,要與舊資料一致)
+    /// db使用的syscode,ex:流程(為了要與舊資料一致)
     /// </summary>
     public static string Syscode {
         get {
@@ -98,7 +107,9 @@ public partial class Sys
             return "NTBRT";//開發環境
         }
     }
+    #endregion
 
+    #region Project - Project名稱,ex:國內所商標網路作業系統
     /// <summary>
     /// Project名稱
     /// </summary>
@@ -107,7 +118,9 @@ public partial class Sys
             return "國內所商標網路作業系統";
         }
     }
+    #endregion
 
+    #region bName - 區所名稱,ex:台北所
     /// <summary>
     /// 區所名稱
     /// </summary>
@@ -119,7 +132,9 @@ public partial class Sys
         if (pBranch.ToUpper() == "K") rtnStr = "高雄所";
         return rtnStr;
     }
+    #endregion
 
+    #region tdbname - 區所案件資料庫名稱,ex:sinn05.sindbs.dbo
     /// <summary>
     /// 區所案件資料庫名稱,ex:sinn05.sindbs.dbo
     /// </summary>
@@ -141,17 +156,44 @@ public partial class Sys
         }
         return rtnStr;
     }
+    #endregion
 
     ////////////////////////////////////////////////////////////////////////
+    #region showLog - 顯示除錯訊息
     /// <summary>  
-    /// 取得某個Session值  
+    /// 顯示除錯訊息,有設定在web.config內DebugScode者才會顯示訊息
+    /// </summary>  
+    public static void showLog(string msg) {
+        if (IsDebug()) {
+            //if (HttpContext.Current.Request["chkTest"] == "TEST") {
+            HttpContext.Current.Response.Write(msg + "<hr>");
+            //}
+        }
+    }
+    /// <summary>  
+    /// 顯示除錯訊息,有設定在web.config內DebugScode者才會顯示訊息
+    /// </summary>  
+    public static void showLog(int msg) {
+        if (IsDebug()) {
+            //if (HttpContext.Current.Request["chkTest"] == "TEST") {
+            HttpContext.Current.Response.Write(msg + "<hr>");
+            //}
+        }
+    }
+    #endregion
+
+    #region GetSession - 取得某個Session值
+    /// <summary>  
+    /// 取得某個Session值
     /// </summary>  
     /// <param name="strSessionName">Session對象名稱</param>  
     /// <returns>Session值</returns>  
     public static string GetSession(string strSessionName) {
         return (HttpContext.Current.Session[strSessionName] ?? "").ToString();
     }
+    #endregion
 
+    #region GetSessionID - 取得Session ID
     /// <summary>  
     /// 取得Session ID
     /// </summary>  
@@ -159,7 +201,9 @@ public partial class Sys
     public static string GetSessionID() {
         return HttpContext.Current.Session.SessionID;
     }
+    #endregion
 
+    #region SetSession - 設定Session值
     /// <summary>  
     /// 設定Session值
     /// </summary>  
@@ -167,7 +211,9 @@ public partial class Sys
     public static void SetSession(string strSessionName, object sessionValue) {
         HttpContext.Current.Session[strSessionName] = sessionValue;
     }
+    #endregion
 
+    #region GetRootDir - 取得應用程式在伺服器上虛擬應用程式根路徑ex:/nbtbrt
     /// <summary>  
     /// 取得應用程式在伺服器上虛擬應用程式根路徑ex:/nbtbrt
     /// </summary>  
@@ -175,7 +221,9 @@ public partial class Sys
     public static string GetRootDir() {
         return HttpContext.Current.Request.ApplicationPath;
     }
+    #endregion
 
+    #region GetAscxPath - 取得ASCX在伺服器上的路徑
     /// <summary>  
     /// 取得ASCX在伺服器上的路徑
     /// </summary>  
@@ -198,26 +246,51 @@ public partial class Sys
             return "";
         }
     }
+    #endregion
 
+    #region IsAdmin - 判斷是否為admin(id=admin或group like admin)
+    /// <summary>  
+    /// 判斷是否為admin(id=admin或group like admin)
+    /// </summary>  
     public static bool IsAdmin() {
         bool b = (GetSession("scode").ToLower() == "admin" || GetSession("LoginGrp").ToLower().IndexOf("admin") > -1);
         return b;
     }
+    #endregion
 
+    #region IsDebug - 判斷是否為除錯人員(設定於web.config內DebugScode的人員)
+    /// <summary>  
+    /// 判斷是否為除錯人員(設定於web.config內DebugScode的人員)
+    /// </summary>  
     public static bool IsDebug() {
         if (GetSession("scode").ToLower() == "") 
             return false;
         return (Sys.getAppSetting("DebugScode").ToLower().IndexOf(GetSession("scode").ToLower()) > -1);
     }
+    #endregion
 
+    #region getConnString - 取得於web.config內的connectionString值
+    /// <summary>  
+    /// 取得於web.config內的connectionString
+    /// </summary>  
     public static string getConnString(string parameter) {
         return ConfigurationManager.ConnectionStrings[parameter] == null ? "" : ConfigurationManager.ConnectionStrings[parameter].ConnectionString;
     }
+    #endregion
 
+    #region getAppSetting - 取得於web.config內的appSettings值
+    /// <summary>  
+    /// 取得於web.config內的appSettings值
+    /// </summary>  
     public static string getAppSetting(string parameter) {
         return ConfigurationManager.AppSettings[parameter] ?? "";
     }
+    #endregion
 
+    #region errorLog - 寫入錯誤記錄至error_log
+    /// <summary>  
+    /// 寫入錯誤記錄至error_log
+    /// </summary>  
     public static string errorLog(Exception ex, string sqlStr, string prgID) {
         List<string> sqlList = new List<string>();
         sqlList.Add(sqlStr);
@@ -233,7 +306,7 @@ public partial class Sys
             eSQL = eSQL + "'" + (GetSession("scode") == "" ? HttpContext.Current.Request.UserHostName : GetSession("scode")) + "',";
             eSQL = eSQL + "'" + (Sys.Sysmenu == "" ? GetRootDir().Replace("/", "") : Sys.Sysmenu) + "',";
             eSQL = eSQL + "'" + prgID + "',";
-            eSQL = eSQL + "'" + ex.Message.Replace("'", "''") + "',";
+            eSQL = eSQL + "'" + (ex.InnerException != null ? ex.InnerException.Message : ex.Message).Replace("'", "''") + "',";
             //eSQL = eSQL + "'" + string.Join("\r\n-----\r\n", sqlList.ToArray()).Replace("'", "''") + "',";
             eSQL = eSQL + "'" + (sqlList.LastOrDefault() ?? "").Replace("'", "''") + "',";//只記錄最後一個sql
             eSQL = eSQL + "'" + (ex.StackTrace ?? "").Replace("'", "''") + "')";
@@ -250,7 +323,9 @@ public partial class Sys
             return sqlno;
         }
     }
+    #endregion
 
+    #region DoSendMail - 發送郵件
     /// <summary>
     /// 發送郵件
     /// </summary>
@@ -318,4 +393,5 @@ public partial class Sys
             MailMsg.Dispose();//釋放訊息
         }
     }
+    #endregion
 }

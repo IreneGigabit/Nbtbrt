@@ -44,7 +44,7 @@
         string Uid = Request["tfx_scode"] ?? "";//帳號
         string sys_pwd = Request["sys_pwd"] ?? "";//密碼
         string tfx_sys_password = Request["tfx_sys_password"] ?? "";//明碼
-        Sys.errorLog(new Exception("tfx_scode(ref:" + HttpContext.Current.Request.UrlReferrer + ")"), Uid, "checklogin");
+        //Sys.errorLog(new Exception("tfx_scode(ref:" + HttpContext.Current.Request.UrlReferrer + ")"), Uid, "checklogin");
         if (tfx_sys_password != "") {
             sys_pwd = Util.GetHashValueMD5(tfx_sys_password.ToLower());//明碼轉md5
         }

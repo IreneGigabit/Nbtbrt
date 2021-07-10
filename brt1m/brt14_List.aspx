@@ -125,17 +125,20 @@
 
             //分頁完再處理其他資料才不會虛耗資源
             for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
-                SQL = "Select remark from cust_code where cust_code='__' and code_type='" + page.pagedTable.Rows[i]["arcase_type"] + "'";
+                DataRow dr = page.pagedTable.Rows[i];
+                
+                SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
                 object objResult = conn.ExecuteScalar(SQL);
                 string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                page.pagedTable.Rows[i]["link_remark"] = link_remark;//案性版本連結
+                dr["link_remark"] = link_remark;//案性版本連結
 
-                page.pagedTable.Rows[i]["fseq"] = Sys.formatSeq1(page.pagedTable.Rows[i].SafeRead("seq", "") ,page.pagedTable.Rows[i].SafeRead("seq1", ""),"",Sys.GetSession("seBranch"),Sys.GetSession("dept"));
-                page.pagedTable.Rows[i]["fcust_name"] = page.pagedTable.Rows[i].SafeRead("cust_name", "").ToUnicode().Left(5);
-                page.pagedTable.Rows[i]["fappl_name"] = page.pagedTable.Rows[i].SafeRead("appl_name", "").ToUnicode().Left(20);
+                dr["fseq"] = Sys.formatSeq1(dr.SafeRead("seq", "") ,dr.SafeRead("seq1", ""),"",Sys.GetSession("seBranch"),Sys.GetSession("dept"));
+                dr["fcust_name"] = dr.SafeRead("cust_name", "").ToUnicode().Left(5);
+                dr["fappl_name"] = dr.SafeRead("appl_name", "").ToUnicode().Left(20);
 
-                page.pagedTable.Rows[i]["urlasp"] = GetLink(page.pagedTable.Rows[i]);
-                page.pagedTable.Rows[i]["prturl"] = GetPrintLink(page.pagedTable.Rows[i]);
+                //dr["urlasp"] = GetLink(dr);
+                dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
+                dr["prturl"] = GetPrintLink(dr);
             }
 
             dataRepeater.DataSource = page.pagedTable;
@@ -143,24 +146,24 @@
         }
     }
 
-    protected string GetLink(DataRow row) {
-        string urlasp = "";//連結的url
-        string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
-        urlasp = Page.ResolveUrl("~/brt1m" + row["link_remark"] + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
-        urlasp += "&in_scode=" + row["in_scode"];
-        urlasp += "&in_no=" + row["in_no"];
-        urlasp += "&add_arcase=" + row["arcase"];
-        urlasp += "&cust_area=" + row["cust_area"];
-        urlasp += "&cust_seq=" + row["cust_seq"];
-        urlasp += "&ar_form=" + row["ar_form"];
-        urlasp += "&new_form=" + new_form;
-        urlasp += "&code_type=" + row["arcase_type"];
-        urlasp += "&homelist=" + Request["homelist"];
-        urlasp += "&uploadtype=case";
-        urlasp += "&submittask=Show";
-        
-        return urlasp;
-    }
+    //protected string GetLink(DataRow row) {
+    //    string urlasp = "";//連結的url
+    //    string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
+    //    urlasp = Page.ResolveUrl("~/brt1m" + row["link_remark"] + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
+    //    urlasp += "&in_scode=" + row["in_scode"];
+    //    urlasp += "&in_no=" + row["in_no"];
+    //    urlasp += "&add_arcase=" + row["arcase"];
+    //    urlasp += "&cust_area=" + row["cust_area"];
+    //    urlasp += "&cust_seq=" + row["cust_seq"];
+    //    urlasp += "&ar_form=" + row["ar_form"];
+    //    urlasp += "&new_form=" + new_form;
+    //    urlasp += "&code_type=" + row["arcase_type"];
+    //    urlasp += "&homelist=" + Request["homelist"];
+    //    urlasp += "&uploadtype=case";
+    //    urlasp += "&submittask=Show";
+    //    
+    //    return urlasp;
+    //}
     
     protected string GetPrintLink(DataRow row) {
         string prtUrl = "";//列印的url
@@ -195,7 +198,6 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 </head>
 
 <body>

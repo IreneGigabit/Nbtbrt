@@ -342,8 +342,6 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
 </head>
 <script language="javascript" type="text/javascript">
@@ -449,9 +447,7 @@
 </table>
 <br />
 <table border="0" width="98%" cellspacing="0" cellpadding="0">
-<tr class="FormName">
-    <td><div align="left" style="color:blue"><%#FormName%></div></td>
-</tr>
+<tr class="FormName"><td><div align="left" style="color:blue"><%#FormName%></div></td></tr>
 </table>
 
 <div id="dialog"></div>

@@ -69,7 +69,7 @@
                 td_tscode = "<select id='scode' name='scode' >" + dt.Option("{in_scode}", "{sc_name}") + "</select>";
             } else {
                 td_tscode = "<input type='text' id='scode' name='scode' readonly class='SEdit' value='" + Session["se_scode"] + "'>";
-                td_tscode = "<span='span_tscode'>" + Session["sc_name"] + "</span>";
+                td_tscode += "<span='span_tscode'>" + Session["sc_name"] + "</span>";
             }
             //案性
             SQL = "SELECT RS_code, RS_detail FROM code_br WHERE dept = 'T' AND cr = 'Y' AND no_code='N' ";
@@ -93,9 +93,7 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.Snoopy.date.js")%>"></script>
 </head>
 
 <body>

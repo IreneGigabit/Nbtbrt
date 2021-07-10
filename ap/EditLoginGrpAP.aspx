@@ -51,7 +51,7 @@
         }
 
         using (DBHelper conn = new DBHelper(Conn.ODBCDSN, false).Debug(false)) {
-            SQL = "SELECT * FROM APcat WHERE SYScode='" + Session["Syscode"].ToString() + "' ORDER BY APseq; ";
+            SQL = "SELECT * FROM APcat WHERE SYScode='" +Sys.Sysmenu +"' ORDER BY APseq; ";
             SQL += "SELECT a.SYScode,a.APcat, a.APcode, a.APNameC,isnull(g.rights,0)rights ";
             SQL += ",CONVERT(varchar(10), g.beg_date, 111) AS 'beg_date' ";
             SQL += ",CONVERT(varchar(10), g.end_date, 111) AS 'end_date' ";
@@ -102,7 +102,6 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
 </head>
 <body>

@@ -7,7 +7,7 @@
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內交辦案主管簽核作業";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string HTProgPrefix = "brt31";//程式檔名前綴
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -21,8 +21,8 @@
 
     protected string StrFormBtnTop = "";
     protected string StrFormBtn = "";
-
     protected string FormName = "";
+    
     protected string apcode = "";
     protected string qs_dept = "";
     
@@ -278,7 +278,8 @@
                     dr["contract_flag"] = "N";//契約書後補註記
                 }
 
-                dr["urlasp"] = GetLink(dr); ;
+                //dr["urlasp"] = GetLink(dr); ;
+                dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
                 dr["ctrl_rowspan"] = ctrl_rowspan;
 
                 //簽准層級grplevel=2部門主管→11會計→1區所主管→0商標經理
@@ -354,24 +355,24 @@
         }
     }
 
-    protected string GetLink(DataRow row) {
-        string urlasp = "";//連結的url
-        string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
-        urlasp = Page.ResolveUrl("~/brt1m" + row["link_remark"] + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
-        urlasp += "&in_scode=" + row["in_scode"];
-        urlasp += "&in_no=" + row["in_no"];
-        urlasp += "&add_arcase=" + row["arcase"];
-        urlasp += "&cust_area=" + row["cust_area"];
-        urlasp += "&cust_seq=" + row["cust_seq"];
-        urlasp += "&ar_form=" + row["ar_form"];
-        urlasp += "&new_form=" + new_form;
-        urlasp += "&code_type=" + row["arcase_type"];
-        urlasp += "&homelist=" + Request["homelist"];
-        urlasp += "&uploadtype=case";
-        urlasp += "&submittask=Show";
-        
-        return urlasp;
-    }
+    //protected string GetLink(DataRow row) {
+    //    string urlasp = "";//連結的url
+    //    string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
+    //    urlasp = Page.ResolveUrl("~/brt1m" + row["link_remark"] + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
+    //    urlasp += "&in_scode=" + row["in_scode"];
+    //    urlasp += "&in_no=" + row["in_no"];
+    //    urlasp += "&add_arcase=" + row["arcase"];
+    //    urlasp += "&cust_area=" + row["cust_area"];
+    //    urlasp += "&cust_seq=" + row["cust_seq"];
+    //    urlasp += "&ar_form=" + row["ar_form"];
+    //    urlasp += "&new_form=" + new_form;
+    //    urlasp += "&code_type=" + row["arcase_type"];
+    //    urlasp += "&homelist=" + Request["homelist"];
+    //    urlasp += "&uploadtype=case";
+    //    urlasp += "&submittask=Show";
+    //    
+    //    return urlasp;
+    //}
 
     protected string GetArMark(object oItem) {
         string rtn = "";
@@ -432,7 +433,6 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 </head>
 
 <body>

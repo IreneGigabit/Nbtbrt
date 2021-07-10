@@ -187,30 +187,32 @@
         string link_remark = row.SafeRead("link_remark", "");
 
         if (row.SafeRead("stat_code", "") == "YY") {//已簽准.未客收確認
-            urlasp = Page.ResolveUrl("~/brt1m" + link_remark + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
+            //urlasp = Page.ResolveUrl("~/brt1m" + link_remark + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
+            urlasp = Sys.getCase11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Edit");
         } else {
-            urlasp = Page.ResolveUrl("~/brt5m" + link_remark + "/Brt52EDIT" + new_form + ".aspx?prgid=" + prgid);
+            //urlasp = Page.ResolveUrl("~/brt5m" + link_remark + "/Brt52EDIT" + new_form + ".aspx?prgid=" + prgid);
+            urlasp = Sys.getCase52Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Edit");
         }
 
-        urlasp += "&in_scode=" + row["in_scode"];
-        urlasp += "&in_no=" + row["in_no"];
-        urlasp += "&case_no=" + row["case_no"];
-        urlasp += "&seq=" + row["seq"];
-        urlasp += "&seq1=" + row["seq1"];
-        urlasp += "&add_arcase=" + row["arcase"];
-        urlasp += "&cust_area=" + row["cust_area"];
-        urlasp += "&cust_seq=" + row["cust_seq"];
-        urlasp += "&ar_form=" + row["ar_form"];
-        urlasp += "&new_form=" + new_form;
-        urlasp += "&code_type=" + row["arcase_type"];
-        urlasp += "&ar_code=" + row["ar_code"];
-        urlasp += "&mark=" + row["mark"];
-        urlasp += "&ar_service=" + row["ar_service"];
-        urlasp += "&ar_fees=" + row["ar_fees"];
-        urlasp += "&ar_curr=" + row["ar_curr"];
-        urlasp += "&step_grade=" + row["step_grade"];
-        urlasp += "&uploadtype=case";
-        urlasp += "&submittask=Edit";
+        //urlasp += "&in_scode=" + row["in_scode"];
+        //urlasp += "&in_no=" + row["in_no"];
+        //urlasp += "&case_no=" + row["case_no"];
+        //urlasp += "&seq=" + row["seq"];
+        //urlasp += "&seq1=" + row["seq1"];
+        //urlasp += "&add_arcase=" + row["arcase"];
+        //urlasp += "&cust_area=" + row["cust_area"];
+        //urlasp += "&cust_seq=" + row["cust_seq"];
+        //urlasp += "&ar_form=" + row["ar_form"];
+        //urlasp += "&new_form=" + new_form;
+        //urlasp += "&code_type=" + row["arcase_type"];
+        //urlasp += "&ar_code=" + row["ar_code"];
+        //urlasp += "&mark=" + row["mark"];
+        //urlasp += "&ar_service=" + row["ar_service"];
+        //urlasp += "&ar_fees=" + row["ar_fees"];
+        //urlasp += "&ar_curr=" + row["ar_curr"];
+        //urlasp += "&step_grade=" + row["step_grade"];
+        //urlasp += "&uploadtype=case";
+        //urlasp += "&submittask=Edit";
 
         return urlasp;
     }
@@ -219,7 +221,8 @@
         string stat_code = Eval("stat_code").ToString();
         if (stat_code != "NN")
             return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13_ListA.aspx") +
-                    "?in_scode=" + Eval("in_scode") +
+                    "?prgid=" + prgid +
+                    "&in_scode=" + Eval("in_scode") +
                     "&in_no=" + Eval("in_no") +
                     "&qs_dept=T' target='Eblank'>"+Eval("Nstat_code")+"</a>";
         return "";
@@ -239,7 +242,6 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 </head>
 
 <body>

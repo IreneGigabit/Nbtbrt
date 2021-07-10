@@ -4,7 +4,7 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 
 <script runat="server">
-    protected string HTProgCap = "案件交辦進度查詢";//HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "案件交辦簽核查詢";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "Brt13";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -156,7 +156,6 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 </head>
 
 <body>

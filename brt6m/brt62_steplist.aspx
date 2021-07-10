@@ -140,7 +140,6 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/jquery.irene.form.js")%>"></script>
 </head>
 
 <body>
@@ -191,7 +190,7 @@
 
     <asp:Repeater id="dataRepeater" runat="server">
     <HeaderTemplate>
-        <div class=whitetablebg align="left" style="display:<%#page.totRow==0?"none":""%>">本所編號：<%=fseq%></div>
+        <div class=whitetablebg align="left" style="display:<%#page.totRow==0?"none":""%>"><br />本所編號：<%=fseq%></div>
         <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="98%" align="center" id="dataList">
 	        <thead>
                 <TR>
@@ -227,8 +226,8 @@
 				        <td nowrap><%#Eval("step_date","{0:yyyy/M/d}")%></td>
 				        <td align=left ><%#Eval("rs_detail")%></td>
 			            <%if (prgid=="brt51" || prgid=="brt19"){%>
-				            <td align=left ><%#Eval("ctrl_date")%>
-				                <input type="text" id="ctrl_date_<%#(Container.ItemIndex+1)%>" name="ctrl_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("ctrl_date")%>">
+				            <td align=left ><%#Eval("ctrl_date","{0:yyyy/M/d}")%>
+				                <input type="hidden" id="ctrl_date_<%#(Container.ItemIndex+1)%>" name="ctrl_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("ctrl_date","{0:yyyy/M/d}")%>">
                             </td>
 			            <%}%>
 				        <td nowrap align="center">
@@ -266,7 +265,7 @@
     //取回進度項目
     function getstep(pno) {
         var seqnum=$("#seqnum").val();
-        if ("<%=prgid%>" == "brt62") {
+        if ("<%=prgid%>" == "brt62") {//國內案文件上傳作業
             window.opener.reg.step_grade.value = $("#step_grade_" + pno).val();
             window.opener.reg.attach_step_grade.value = $("#step_grade_" + pno).val();
             window.opener.reg.pcg.value = $("#pcg_" + pno).val();
@@ -282,11 +281,11 @@
                 window.opener.reg.uploadsource.value = "CASE";
             }
             window.opener.getSeq();
-        } else if ("<%=prgid%>" == "brt611") {
+        } else if ("<%=prgid%>" == "brt611") {//國內案文件掃描新增作業
             $("#step_grade_" + seqnum, window.opener.document).val($("#step_grade_" + pno).val());
             $("#cgrs_nm_" + seqnum, window.opener.document).val($("#cgrs_nm_" + pno).val());
             $("#span_rs_detail_" + seqnum, window.opener.document).html($("#rs_detail_" + pno).val());
-        } else if ("<%=prgid%>" == "brt51") {
+        } else if ("<%=prgid%>" == "brt51") {//國內案客戶收文確認
             if (CInt(seqnum) == 0) {
                 alert("期限管制種類尚未選取「法定期限」，系統無法將選取法定期限資料帶回！！");
             } else {
@@ -296,13 +295,13 @@
                 $("#ctrl_date_" + seqnum, window.opener.document).prop("disabled", true);
                 $("#imgctrldate_" + seqnum, window.opener.document).prop("disabled", true);
             }
-        } else if ("<%=prgid%>" == "brt19") {
-            window.opener.reg.last_date.value = $("#ctrl_date_" + pno).val();
-            window.opener.reg.from_step_grade.value = $("#step_grade_" + pno).val();
-            window.opener.reg.from_rs_no.value = $("#rs_no_" + pno).val();
-            window.opener.reg.last_date.disabled = true;
-            window.opener.reg.imglastdate.disabled = true;
-            window.opener.reg.from_flag.value = "Y";
+        } else if ("<%=prgid%>" == "brt19") {//國內爭救案交辦查詢作業
+            $("#Last_date", window.opener.document).val($("#ctrl_date_" + pno).val());
+            $("#from_step_grade", window.opener.document).val($("#step_grade_" + pno).val());
+            $("#from_rs_no", window.opener.document).val($("#rs_no_" + pno).val());
+            //$("#Last_date", window.opener.document).lock();
+            window.opener.lockjob();
+            $("#from_flag", window.opener.document).val("Y");
         }
         window.close();
     }
