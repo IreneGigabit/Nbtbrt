@@ -2,6 +2,8 @@
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
+<%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
+
 
 <script runat="server">
     protected string HTProgCap = "國內案案件進度-查詢";//HttpContext.Current.Request["prgname"];//功能名稱
@@ -132,14 +134,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/inc/setstyle.css")%>" />
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.css")%>" />
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/toastr.css")%>" />
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-1.12.4.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
+    <uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body>
@@ -190,7 +185,7 @@
 
     <asp:Repeater id="dataRepeater" runat="server">
     <HeaderTemplate>
-        <div class=whitetablebg align="left" style="display:<%#page.totRow==0?"none":""%>"><br />本所編號：<%=fseq%></div>
+        <div align="left" style="display:<%#page.totRow==0?"none":""%>"><br />本所編號：<%=fseq%></div>
         <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="98%" align="center" id="dataList">
 	        <thead>
                 <TR>
@@ -300,6 +295,7 @@
             $("#from_step_grade", window.opener.document).val($("#step_grade_" + pno).val());
             $("#from_rs_no", window.opener.document).val($("#rs_no_" + pno).val());
             //$("#Last_date", window.opener.document).lock();
+            //$("#Last_date", window.opener.document).datepick('destroy');
             window.opener.lockjob();
             $("#from_flag", window.opener.document).val("Y");
         }

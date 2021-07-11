@@ -104,9 +104,10 @@
             
             //分頁完再處理其他資料才不會虛耗資源
             for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
-                page.pagedTable.Rows[i]["fseq"] = page.pagedTable.Rows[i].SafeRead("seq", "") + (page.pagedTable.Rows[i].SafeRead("seq1", "_") != "_" ? "-" + page.pagedTable.Rows[i].SafeRead("seq1", "") : "");
-                page.pagedTable.Rows[i]["cust_area"] = page.pagedTable.Rows[i].SafeRead("cust_area", "").Left(1);
-                page.pagedTable.Rows[i]["url"] = GetLink(page.pagedTable.Rows[i]); ;
+                DataRow dr = page.pagedTable.Rows[i];
+                dr["fseq"] = dr.SafeRead("seq", "") + (dr.SafeRead("seq1", "_") != "_" ? "-" + dr.SafeRead("seq1", "") : "");
+                dr["cust_area"] = dr.SafeRead("cust_area", "").Left(1);
+                dr["url"] = GetLink(dr); ;
             }
             
             dataRepeater.DataSource = page.pagedTable;

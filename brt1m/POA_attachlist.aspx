@@ -2,6 +2,8 @@
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
+<%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
+
 
 <script runat="server">
     protected string HTProgCap = "";//HttpContext.Current.Request["prgname"];//功能名稱
@@ -98,30 +100,31 @@
 
             //分頁完再處理其他資料才不會虛耗資源
             for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
-                if (page.pagedTable.Rows[i].SafeRead("sign_flag", "") == "S")
-                    page.pagedTable.Rows[i]["sign_flagnm"] = "單一";
-                else if (page.pagedTable.Rows[i].SafeRead("sign_flag", "") == "M")
-                    page.pagedTable.Rows[i]["sign_flagnm"] = "多個";
+                DataRow dr = page.pagedTable.Rows[i];
+                if (dr.SafeRead("sign_flag", "") == "S")
+                    dr["sign_flagnm"] = "單一";
+                else if (dr.SafeRead("sign_flag", "") == "M")
+                    dr["sign_flagnm"] = "多個";
 
-                if (page.pagedTable.Rows[i].SafeRead("attach_flag", "") == "E") {
-                    page.pagedTable.Rows[i]["attach_flagnm"] = "停用";
+                if (dr.SafeRead("attach_flag", "") == "E") {
+                    dr["attach_flagnm"] = "停用";
                 } else {
-                    if (page.pagedTable.Rows[i].GetDateTime("use_datee") >= DateTime.Today) {
-                        page.pagedTable.Rows[i]["attach_flagnm"] = "使用中";
+                    if (dr.GetDateTime("use_datee") >= DateTime.Today) {
+                        dr["attach_flagnm"] = "使用中";
                     } else {
-                        page.pagedTable.Rows[i]["attach_flagnm"] = "已到期";
+                        dr["attach_flagnm"] = "已到期";
                     }
                 }
 
-                if (page.pagedTable.Rows[i].SafeRead("agent_no1", "") != "_") {
-                    page.pagedTable.Rows[i]["agent_no"] += "-" + page.pagedTable.Rows[i].SafeRead("agent_no1", "");
+                if (dr.SafeRead("agent_no1", "") != "_") {
+                    dr["agent_no"] += "-" + dr.SafeRead("agent_no1", "");
                 }
 
                 string ref_cust_seq = "", ref_cust_seqnm = "", ref_cust_seqtitle = "";
                 if (source == "contract") {
                     SQL = "select a.apsqlno,b.cust_area,b.cust_seq,(b.ap_cname1+isnull(b.ap_cname2,'')) as ap_cname";
                     SQL += " From apcust_attach_ref a left join apcust b on b.apsqlno=a.apsqlno";
-                    SQL += " where apattach_sqlno='" + page.pagedTable.Rows[i].SafeRead("apattach_sqlno", "") + "'";
+                    SQL += " where apattach_sqlno='" + dr.SafeRead("apattach_sqlno", "") + "'";
                     DataTable dt1 = new DataTable();
                     conn.DataTable(SQL, dt1);
                     for (int d = 0; d < dt1.Rows.Count; d++) {
@@ -132,7 +135,7 @@
                 } else {
                     SQL = "select a.apsqlno,b.apcust_no,(b.ap_cname1+isnull(b.ap_cname2,'')) as ap_cname";
                     SQL += " From apcust_attach_ref a left join apcust b on b.apsqlno=a.apsqlno";
-                    SQL += " where apattach_sqlno='" + page.pagedTable.Rows[i].SafeRead("apattach_sqlno", "") + "'";
+                    SQL += " where apattach_sqlno='" + dr.SafeRead("apattach_sqlno", "") + "'";
                     DataTable dt1 = new DataTable();
                     conn.DataTable(SQL, dt1);
                     for (int d = 0; d < dt1.Rows.Count; d++) {
@@ -141,13 +144,11 @@
                         ref_cust_seqtitle += (ref_cust_seqtitle != "" ? "、" : "") + dt1.Rows[i]["apcust_no"] + dt1.Rows[i]["ap_cname"];
                     }
                 }
-                page.pagedTable.Rows[i]["ref_cust_seq"] = ref_cust_seq;
-                page.pagedTable.Rows[i]["ref_cust_seqnm"] = ref_cust_seqnm;
-                page.pagedTable.Rows[i]["ref_cust_seqtitle"] = ref_cust_seqtitle;
+                dr["ref_cust_seq"] = ref_cust_seq;
+                dr["ref_cust_seqnm"] = ref_cust_seqnm;
+                dr["ref_cust_seqtitle"] = ref_cust_seqtitle;
 
-
-                page.pagedTable.Rows[i]["attach_path"] = Sys.Path2Nbtbrt(page.pagedTable.Rows[i].SafeRead("attach_path", ""));
-
+                dr["attach_path"] = Sys.Path2Nbtbrt(dr.SafeRead("attach_path", ""));
             }
 
             dataRepeater.DataSource = page.pagedTable;
@@ -160,14 +161,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/inc/setstyle.css")%>" />
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.css")%>" />
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/toastr.css")%>" />
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-1.12.4.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
+    <uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body>

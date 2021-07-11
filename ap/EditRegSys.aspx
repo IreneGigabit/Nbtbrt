@@ -2,6 +2,8 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Linq" %>
+<%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
+
 
 <script runat="server">
     protected string HTProgCap = "編修權限群組";//HttpContext.Current.Request["prgname"];//功能名稱
@@ -84,15 +86,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><%=HTProgCap%></title>
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/inc/setstyle.css")%>" />
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.css")%>" />
-<link rel="stylesheet" type="text/css" href="<%=Page.ResolveUrl("~/js/lib/toastr.css")%>" />
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery-1.12.4.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/jquery.datepick-zh-TW.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/lib/toastr.min.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/util.js")%>"></script>
-<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk.js")%>"></script>
+    <uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
@@ -211,13 +205,16 @@
 
     //選單
     $("input[name$=_001]").click(function () {
+        /*
         var a = this;
         var ss = "input[name^=" + a.name.substr(0, a.name.length - 3) + "][type='checkbox']";
         if (a.checked) {
             ss += ":lt(6)";
             $(ss).prop('checked', true);
-        } else
+        } else{
             $(ss).prop('checked', false);
+        }
+        */
     });
 
     //全選

@@ -4,6 +4,8 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Import Namespace = "Newtonsoft.Json"%>
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
+<%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
+
 
 <script runat="server">
     protected string SQL = "";
@@ -477,10 +479,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>今日工作清單</title>
-    <link href="inc/setstyle.css" rel="stylesheet" />
-    <script type="text/javascript" src="js/lib/jquery-1.12.4.min.js"></script>
-    <script type="text/javascript" src="js/util.js"></script>
-    <script type="text/javascript" src="js/client_chk.js"></script>
+    <uc1:head_inc_form runat="server" ID="head_inc_form" />
     <style type="text/css">
         .enter{cursor:pointer;background-color: #ffffcc;}
     </style>

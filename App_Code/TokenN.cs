@@ -82,11 +82,11 @@ public class TokenN
     }
 
     public int CheckMe() {
-        return CheckMe(2, false, false);
+        return CheckMe(1, false, false);
     }
 
     public int CheckMe(bool chkRef) {
-        return CheckMe(2, chkRef, false);
+        return CheckMe(1, chkRef, false);
     }
 
     public int CheckMe(int chkRight) {
@@ -94,7 +94,7 @@ public class TokenN
     }
 
     public int CheckMe(bool chkRef, bool rtnJson) {
-        return CheckMe(2, chkRef, rtnJson);
+        return CheckMe(1, chkRef, rtnJson);
     }
 
     public int CheckMe(int chkRight, bool rtnJson) {
@@ -157,7 +157,7 @@ public class TokenN
             //HttpContext.Current.Response.Write(HttpContext.Current.Session["Password"] + "<BR>");
 
             if (_Passworded) {
-                bool myRights = false;
+                bool hasRights = false;
                 SqlConnection cn = new SqlConnection(this.ConnectionString);
                 SqlDataReader dr = null;
                 string SQL = "SELECT Rights FROM LoginAP" +
@@ -184,7 +184,7 @@ public class TokenN
                         this.C = ((this.Rights & chkRight) == 258) ? true : false;
                         this.Debug = ((this.Rights & chkRight) == 512) ? true : false;
 
-                        myRights = ((this.Rights & chkRight) > 0) ? true : false;
+                        hasRights =( ((this.Rights & 1) > 0) || ((this.Rights & 2) > 0) || ((this.Rights & chkRight) > 0)) ? true : false;
                         //HttpContext.Current.Response.Write(this.Rights + "/" + chkRight);
                         //HttpContext.Current.Response.End();
                     }
@@ -202,7 +202,7 @@ public class TokenN
                     dr.Close();
                     cn.Close();
 
-                    if (!myRights) throw new Exception("該作業未授權 !");
+                    if (!hasRights) throw new Exception("該作業未授權 !");
                 }
                 catch (Exception ex) {
                     throw;

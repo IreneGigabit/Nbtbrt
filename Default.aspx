@@ -1,5 +1,7 @@
 ﻿<%@ Page Language="C#" %>
 <%@ Import Namespace = "System.Data"  %>
+<%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
+
 <!DOCTYPE html>
 
 <script runat="server">
@@ -136,11 +138,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=10">
     <title>台北所商標網路作業系統(<%#Sys.Host%>)</title>
-    <link href="inc/setstyle.css" rel="stylesheet" />
-    <script type="text/javascript" src="js/lib/jquery-1.12.4.min.js"></script>
-    <%--<script type="text/javascript"  src="js/lib/json2.js"></script>--%>
-    <%--<script type="text/javascript" src="js/lib/toastr.min.js"></script>--%>
-    <script type="text/javascript" src="js/util.js"></script>
+    <uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 <body style="margin:0px 0px 0px 0px;overflow:hidden;background:url('images/top/back5.gif');background-repeat: no-repeat;">
     <table id="toptable" cellspacing="0" cellpadding="0" width="100%" border="0">
