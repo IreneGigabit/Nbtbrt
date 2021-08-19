@@ -1,5 +1,8 @@
 ﻿<%@ Page Language="C#" CodePage="65001"%>
 
+<%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
+
+
 <script runat="server">
     protected string draw_file = "";
     protected string file_name = "";
@@ -32,7 +35,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
-<meta http-equiv="x-ua-compatible" content="ie=10">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>檢視圖檔</title>
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
+
     <%=strOut.ToString()%>
 </html>

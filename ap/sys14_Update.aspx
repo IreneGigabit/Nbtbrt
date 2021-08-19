@@ -76,16 +76,16 @@
         SQL = " INSERT into sysctrl ";
         SQL += "(scode,branch,dept,sysdefault,syscode,logingrp,beg_date,end_date,tran_date,mark";
         SQL += ")VALUES(";
-        SQL += " " + Util.dbnull(Request["tfx_scode"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_branch"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_dept"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_sysdefault"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_syscode"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_logingrp"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["dfx_beg_date"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["dfx_end_date"].ToBig5()) + "";
+        SQL += " " + Util.dbnull(Request["tfx_scode"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_branch"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_dept"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_sysdefault"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_syscode"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_logingrp"]) + "";
+        SQL += "," + Util.dbnull(Request["dfx_beg_date"]) + "";
+        SQL += "," + Util.dbnull(Request["dfx_end_date"]) + "";
         SQL += ",getdate()";
-        SQL += "," + Util.dbnull(Request["tfx_mark"].ToBig5()) + "";
+        SQL += "," + Util.dbnull(Request["tfx_mark"]) + "";
         SQL += ")";
         cnn.ExecuteNonQuery(SQL);
         
@@ -99,16 +99,16 @@
 
     private void doUpdate(DBHelper cnn) {
         SQL = " Update sysctrl set";
-        SQL += " scode = " + Util.dbnull(Request["tfx_scode"].ToBig5()) + "";
-        SQL += ",branch = " + Util.dbnull(Request["tfx_branch"].ToBig5()) + "";
-        SQL += ",dept = " + Util.dbnull(Request["tfx_dept"].ToBig5()) + "";
-        SQL += ",sysdefault = " + Util.dbnull(Request["tfx_sysdefault"].ToBig5()) + "";
-        SQL += ",syscode = " + Util.dbnull(Request["tfx_syscode"].ToBig5()) + "";
-        SQL += ",logingrp = " + Util.dbnull(Request["tfx_logingrp"].ToBig5()) + "";
-        SQL += ",beg_date = " + Util.dbnull(Request["dfx_beg_date"].ToBig5()) + "";
-        SQL += ",end_date = " + Util.dbnull(Request["dfx_end_date"].ToBig5()) + "";
+        SQL += " scode = " + Util.dbnull(Request["tfx_scode"]) + "";
+        SQL += ",branch = " + Util.dbnull(Request["tfx_branch"]) + "";
+        SQL += ",dept = " + Util.dbnull(Request["tfx_dept"]) + "";
+        SQL += ",sysdefault = " + Util.dbnull(Request["tfx_sysdefault"]) + "";
+        SQL += ",syscode = " + Util.dbnull(Request["tfx_syscode"]) + "";
+        SQL += ",logingrp = " + Util.dbnull(Request["tfx_logingrp"]) + "";
+        SQL += ",beg_date = " + Util.dbnull(Request["dfx_beg_date"]) + "";
+        SQL += ",end_date = " + Util.dbnull(Request["dfx_end_date"]) + "";
         SQL += ",tran_date = getdate()";
-        SQL += ",mark = " + Util.dbnull(Request["tfx_mark"].ToBig5()) + "";
+        SQL += ",mark = " + Util.dbnull(Request["tfx_mark"]) + "";
         SQL += " where sqlno='" + sqlno + "'";
         cnn.ExecuteNonQuery(SQL);
           

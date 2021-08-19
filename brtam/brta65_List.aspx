@@ -237,7 +237,7 @@
 </table>
 
 <form style="margin:0;" id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
@@ -258,7 +258,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>
@@ -310,7 +310,7 @@
 			        <td nowrap><%#Eval("issue_no")%></td>	
 			        <td nowrap><%#Eval("term2","{0:yyyy/M/d}")%></td>		
 			        <td nowrap><%#Eval("lscode")%></td>
-			        <td nowrap><a href="brta61Edit.aspx?submitTask=Q&prgid=<%=prgid%>&aseq=<%#Eval("seq")%>&aseq1=<%#Eval("seq1")%>&FrameBlank=50" target="Eblank">[查詢]</a></td><!--***todo-->
+			        <td nowrap><a href="brta61_Edit.aspx?submitTask=Q&prgid=<%=prgid%>&aseq=<%#Eval("seq")%>&aseq1=<%#Eval("seq1")%>&FrameBlank=50" target="Eblank">[查詢]</a></td><!--***todo-->
 				</tr>
 			</ItemTemplate>
 <FooterTemplate>

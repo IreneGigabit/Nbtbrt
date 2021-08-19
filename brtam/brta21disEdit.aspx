@@ -6,11 +6,12 @@
 
 
 <script runat="server">
-    protected string HTProgCap = "進度查詢及銷案設定";//HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "管制查詢及銷案設定";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brta21";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
+    protected string DebugStr = "";
     protected string Title = "";
 
     protected string SQL = "";
@@ -18,7 +19,7 @@
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Paging page = null;
 
-    protected string qtype = "";
+    protected string branch = "", qtype = "";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
@@ -30,6 +31,8 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
+        branch = Request["branch"] ?? "";
+        if (branch == "") branch = Sys.GetSession("SeBranch");
         qtype = Request["qtype"] ?? "";
         
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
@@ -38,6 +41,7 @@
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         Title = myToken.Title;
+        DebugStr = myToken.DebugStr;
 
         if (HTProgRight >= 0) {
             QueryData();
@@ -46,19 +50,19 @@
     }
 
     private void QueryData() {
-        if (qtype == "N") {
+        if (qtype == "N") {//尚未銷管
             SQL = "select a.cs_rs_no,b.rs_no,b.sqlno,a.seq,a.seq1,b.step_grade,a.cg,a.rs,a.step_date,a.rs_detail,b.ctrl_type,b.ctrl_date, '' as resp_date, '' as resp_grade, b.ctrl_remark";
             SQL += ",''rownum,''lcgrs,''cs_flag,''nctrl_type,'N'nctrl_type_mark,''ldisabled ";
             SQL += "  from step_dmt a inner join ctrl_dmt b on a.rs_no = b.rs_no ";
-            SQL += " where a.branch = '" + Request["branch"] + "'";
+            SQL += " where a.branch = '" + branch + "'";
             SQL += "   and a.seq = '" + Request["seq"] + "'";
             SQL += "   and a.seq1 = '" + Request["seq1"] + "'";
             SQL += " order by  a.seq,a.seq1,a.step_grade,b.ctrl_date";
-        } else if (qtype == "A") {
+        } else if (qtype == "A") {//全部進度
             SQL = "select cs_rs_no,a.rs_no,1 as sqlno,a.seq,a.seq1,a.step_grade,cg,rs,a.step_date,rs_detail,b.ctrl_type, b.ctrl_date,b.resp_date,b.resp_grade,b. ctrl_remark";
             SQL += ",''rownum,''lcgrs,''cs_flag,''nctrl_type,'N'nctrl_type_mark,''ldisabled ";
             SQL += "  from step_dmt a inner join resp_dmt b on a.seq = b.seq and a.seq1 = b.seq1 and a.step_grade = b.step_grade ";
-            SQL += " where a.branch = '" + Request["branch"] + "'";
+            SQL += " where a.branch = '" + branch + "'";
             SQL += "   and a.seq = '" + Request["seq"] + "'";
             SQL += "   and a.seq1 = '" + Request["seq1"] + "'";
             SQL += "   and a.step_grade not in (select distinct step_grade from ctrl_dmt where seq = '" + Request["seq"] + "' and seq1 = '" + Request["seq1"] + "'";
@@ -67,15 +71,15 @@
             SQL += "select a.cs_rs_no,b.rs_no,b.sqlno,a.seq,a.seq1,b.step_grade,a.cg,a.rs,a.step_date,a.rs_detail,b.ctrl_type,b.ctrl_date, '' as resp_date, '' as resp_grade, b.ctrl_remark";
             SQL += ",''rownum,''lcgrs,''cs_flag,''nctrl_type,'N'nctrl_type_mark,''ldisabled ";
             SQL += "  from step_dmt a inner join ctrl_dmt b on a.rs_no = b.rs_no ";
-            SQL += " where a.branch = '" + Request["branch"] + "'";
+            SQL += " where a.branch = '" + branch + "'";
             SQL += "   and a.seq = '" + Request["seq"] + "'";
             SQL += "   and a.seq1 = '" + Request["seq1"] + "'";
             SQL += " order by  a.seq,a.seq1,a.step_grade,b.ctrl_date";
-        } else if (qtype == "R") {
+        } else if (qtype == "R") {//本進度銷管
             SQL = "select a.cs_rs_no,b.rs_no,b.sqlno,a.seq,a.seq1,b.step_grade,a.cg,a.rs,a.step_date,a.rs_detail,b.ctrl_type,b.ctrl_date, b.resp_date, b.resp_grade, b.ctrl_remark";
             SQL += ",''rownum,''lcgrs,''cs_flag,''nctrl_type,'N'nctrl_type_mark,''ldisabled ";
             SQL += "  from step_dmt a inner join resp_dmt b on a.rs_no = b.rs_no ";
-            SQL += " where a.branch = '" + Request["branch"] + "'";
+            SQL += " where a.branch = '" + branch + "'";
             SQL += "   and a.seq = '" + Request["seq"] + "'";
             SQL += "   and a.seq1 = '" + Request["seq1"] + "'";
             SQL += "   and b.resp_grade = '" + Request["step_grade"] + "'";
@@ -158,15 +162,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
-        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%><%=Title%>】<span style="color:blue"><%=HTProgCap%></span></td>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%><%=HTProgCap%>】<span style="color:blue"><%=Title%></span></td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <a class="imgCls" href="javascript:void(0);" >[關閉視窗]</a>
         </td>
@@ -177,12 +180,12 @@
 </table>
 <form id="regPage" name="regPage" method="post" action="brta21disEdit.aspx">
     <input type="hidden" id=row name=row value="<%#page.pagedTable.Rows.Count%>"> 
-    <table border="0" width="100%" cellspacing="1" cellpadding="0" align="center">  
+    <table border="0" width="98%" cellspacing="1" cellpadding="0" align="center">  
 		<tr>
 			<td width="100%" colspan="6" class="FormRtext">
 				<input type="hidden" name="prgid" id="prgid" value="<%=prgid%>">
 				<input type="hidden" name="rtnCol" id="rtnCol" value="<%=Request["rtnCol"]%>">
-				<input type="hidden" name="branch" id="branch" value="<%=Request["branch"]%>">
+				<input type="hidden" name="branch" id="branch" value="<%=branch%>">
 				<input type="hidden" name="seq" id="seq" value="<%=Request["seq"]%>">
 				<input type="hidden" name="seq1" id="seq1" value="<%=Request["seq1"]%>">
 				<input type="hidden" name="qtype" id="qtype" value="<%=Request["qtype"]%>">
@@ -218,7 +221,7 @@
                  <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
                 </select>
                 <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-                </font>
+                </font><%#DebugStr%>
             </td>
         </tr>
     </TABLE>

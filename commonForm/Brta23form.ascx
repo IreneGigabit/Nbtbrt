@@ -3,6 +3,7 @@
 <%@ Import Namespace = "System.Data"%>
 
 <script runat="server">
+    //期限管制明細欄位畫面
     //父控制項傳入的參數
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -126,12 +127,13 @@
             Repeater dtlRpt = (Repeater)e.Item.FindControl("dtlRepeater");
 
             if ((dtlRpt != null)) {
-                string seq = ((DataRowView)e.Item.DataItem).Row["seq"].ToString();
-                string seq1 = ((DataRowView)e.Item.DataItem).Row["seq1"].ToString();
-                string step_grade = ((DataRowView)e.Item.DataItem).Row["step_grade"].ToString();
-                string opt_sqlno = ((DataRowView)e.Item.DataItem).Row["opt_sqlno"].ToString();
-                string opt_stat = ((DataRowView)e.Item.DataItem).Row["opt_stat"].ToString();
-                string rs_no = ((DataRowView)e.Item.DataItem).Row["rs_no"].ToString();
+                string seq = DataBinder.Eval(e.Item.DataItem, "seq").ToString();
+                string seq1 = DataBinder.Eval(e.Item.DataItem, "seq1").ToString();
+                string step_grade = DataBinder.Eval(e.Item.DataItem, "step_grade").ToString();
+                string opt_sqlno = DataBinder.Eval(e.Item.DataItem, "opt_sqlno").ToString();
+                string opt_stat = DataBinder.Eval(e.Item.DataItem, "opt_stat").ToString();
+                string rs_no = DataBinder.Eval(e.Item.DataItem, "rs_no").ToString();
+                
                 DataTable dtDtl = new DataTable();
                 SQL = "select a.sqlno,ctrl_type,ctrl_date,ctrl_remark,'' as resp_date,'' as resp_grade,code_name,'' as resp_type,'' as resp_remark ";
                 SQL += ",convert(varchar(20),b.remark) ctrl_type_mark,''ctrl_type_mname ";
@@ -212,21 +214,15 @@
   		        <input type=hidden id=qtype name=qtype value="<%=qtype%>">
 		        <input type=hidden id=aseq name=aseq value="<%=Request["aseq"]%>">
 		        <input type=hidden id=aseq1 name=aseq1 value="<%=Request["aseq1"]%>">
-                <label><input type=radio name=RQType value="A" onclick="brta23form.RQTypeClick()"><font size=2>所有進度</font></label>&nbsp;&nbsp;&nbsp;
+                <label><input type=radio name=RQType value="A" onclick="brta23form.RQTypeClick()"><font size=2>所有進度</font></label>&nbsp;
 		        <label><input type=radio name=RQType value="N" onclick="brta23form.RQTypeClick()"><font size=2>尚未銷管</font></label>
+                &nbsp;&nbsp;&nbsp;
                 <font size="2" color="#3f8eba"> 
                 第<font color="red"><span id="NowPage"><%#page.nowPage%></span>/<span id="TotPage"><%#page.totPage%></span></font>頁
                 | 資料共 <font color="red"><span id="TotRec"><%#page.totRow%></span></font> 筆
                 | 跳至第<select id="GoPage" name="GoPage" style="color:#FF0000"><%#page.GetPageList()%></select>頁
                 <span id="PageUp" style="display:<%#page.nowPage>1?"":"none"%>">| <a href="javascript:void(0)" class="pgU" v1="<%#page.nowPage-1%>">上一頁</a></span>
                 <span id="PageDown" style="display:<%#page.nowPage<page.totPage?"":"none"%>">| <a href="javascript:void(0)" class="pgD" v1="<%#page.nowPage+1%>">下一頁</a></span>
-                | 每頁筆數:
-                <select id="PerPage" name="PerPage" style="color:#FF0000">
-                 <option value="10" <%#page.perPage==10?"selected":""%>>10</option>
-                 <option value="20" <%#page.perPage==20?"selected":""%>>20</option>
-                 <option value="30" <%#page.perPage==30?"selected":""%>>30</option>
-                 <option value="30" <%#page.perPage==40?"selected":""%>>40</option>
-                </select>
                 <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
                 </font>
             </td>
@@ -335,7 +331,7 @@
 
     //進度內容
     brta23form.StepGradeClick = function (seq, seq1, rs_no, cgrs) {
-        var url = getRootPath() + "/brt1m/brta61QStep.aspx?prgid=<%=prgid%>&submitTask=Q&seq=" + seq + "&seq1=" + seq1 + "&rs_no=" + rs_no + "&cgrs=" + cgrs;
+        var url = getRootPath() + "/brtam/brta61_QStep.aspx?prgid=<%=prgid%>&submitTask=Q&seq=" + seq + "&seq1=" + seq1 + "&rs_no=" + rs_no + "&cgrs=" + cgrs;
         //***todo
         window.showModalDialog(url, "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
     }

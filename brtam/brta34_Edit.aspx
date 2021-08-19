@@ -115,116 +115,116 @@
     }
 
     private void QueryData() {
-        Dictionary<string, string> add_zs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        Dictionary<string, string> step_data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         //案件主檔
         DataTable dtDmt = Sys.GetDmt(conn, seq, seq1);
-        if (dtDmt.Rows.Count > 0) add_zs["ectrlnum"] = dtDmt.Rows[0].SafeRead("ectrlnum", "0");
+        if (dtDmt.Rows.Count > 0) step_data["ectrlnum"] = dtDmt.Rows[0].SafeRead("ectrlnum", "0");
 
-        add_zs["cgrs"] = Request["cgrs"];
+        step_data["cgrs"] = Request["cgrs"];
         if (submitTask == "A") {
-            add_zs["case_no"] = Request["case_no"];
-            add_zs["cr_rs_no"] = Request["cr_rs_no"];
-            add_zs["rs_no"] = "";
-            add_zs["seq"] = Request["seq"];
-            add_zs["seq1"] = Request["seq1"];
-            add_zs["fseq"] = Sys.formatSeq(add_zs["seq"], add_zs["seq1"], "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
-            add_zs["fees"] = "0";
-            add_zs["fees_stat"] = "N";
-            add_zs["step_date"] = DateTime.Today.ToShortDateString();
+            step_data["case_no"] = Request["case_no"];
+            step_data["cr_rs_no"] = Request["cr_rs_no"];
+            step_data["rs_no"] = "";
+            step_data["seq"] = Request["seq"];
+            step_data["seq1"] = Request["seq1"];
+            step_data["fseq"] = Sys.formatSeq(step_data["seq"], step_data["seq1"], "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
+            step_data["fees"] = "0";
+            step_data["fees_stat"] = "N";
+            step_data["step_date"] = DateTime.Today.ToShortDateString();
             //總收發文日期
             //台北所總收發當天就會發文
-            add_zs["mp_date"] = DateTime.Today.ToShortDateString();
+            step_data["mp_date"] = DateTime.Today.ToShortDateString();
             if (Sys.GetSession("seBranch") != "N") {
                 switch (DateTime.Today.DayOfWeek) {
-                    case DayOfWeek.Friday: add_zs["mp_date"] = DateTime.Today.AddDays(3).ToShortDateString(); break;//星期五加三天
-                    case DayOfWeek.Saturday: add_zs["mp_date"] = DateTime.Today.AddDays(2).ToShortDateString(); break;//星期六加兩天
-                    default: add_zs["mp_date"] = DateTime.Today.AddDays(1).ToShortDateString(); break;//加一天
+                    case DayOfWeek.Friday: step_data["mp_date"] = DateTime.Today.AddDays(3).ToShortDateString(); break;//星期五加三天
+                    case DayOfWeek.Saturday: step_data["mp_date"] = DateTime.Today.AddDays(2).ToShortDateString(); break;//星期六加兩天
+                    default: step_data["mp_date"] = DateTime.Today.AddDays(1).ToShortDateString(); break;//加一天
                 }
             }
 
-            add_zs["rs_type"] = Sys.getRsType();
-            add_zs["opt_branch"] = Sys.GetSession("seBranch");
-            add_zs["receive_way"] = "R6";
-            add_zs["send_cl"] = "A";
+            step_data["rs_type"] = Sys.getRsType();
+            step_data["opt_branch"] = Sys.GetSession("seBranch");
+            step_data["receive_way"] = "R6";
+            step_data["send_cl"] = "A";
 
             //取得本筆客收進度代碼資料
             DataTable dtStepDmtCR = Sys.StepDmt(conn, "", "", "and rs_sqlno='" + Request["cr_rs_sqlno"] + "'");
             if (dtStepDmtCR.Rows.Count > 0) {
                 DataRow dr = dtStepDmtCR.Rows[0];
-                add_zs["rs_class"] = dr.SafeRead("rs_class", "");
-                add_zs["rs_code"] = dr.SafeRead("rs_code", "");
-                add_zs["act_code"] = dr.SafeRead("act_code", "");
+                step_data["rs_class"] = dr.SafeRead("rs_class", "");
+                step_data["rs_code"] = dr.SafeRead("rs_code", "");
+                step_data["act_code"] = dr.SafeRead("act_code", "");
             }
         }
 
         if (submitTask == "U" || submitTask == "Q" || submitTask == "D") {
-            SQL = "SELECT * from vstep_dmt where rs_no='" + Request["rs_no"] + "'";
+            SQL = "SELECT * from vstep_dmt where rs_sqlno='" + Request["zs_rs_sqlno"] + "'";
             DataTable dtAttCase = new DataTable();
             conn.DataTable(SQL, dtAttCase);
             if (dtAttCase.Rows.Count > 0) {
                 DataRow dr = dtAttCase.Rows[0];
-                add_zs["rs_no"] = dr.SafeRead("rs_no", "");
-                add_zs["branch"] = dr.SafeRead("branch", "");
-                add_zs["seq"] = dr.SafeRead("seq", "");
-                add_zs["seq1"] = dr.SafeRead("seq1", "");
-                add_zs["step_grade"] = dr.SafeRead("step_grade", "");
-                add_zs["step_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
-                add_zs["mp_date"] = dr.GetDateTimeString("mp_date", "yyyy/M/d");
-                add_zs["gov_date"] = dr.GetDateTimeString("gov_date", "yyyy/M/d");
-                add_zs["send_cl"] = dr.SafeRead("send_cl", "");
-                add_zs["send_cl1"] = dr.SafeRead("send_cl1", "");
-                add_zs["send_sel"] = dr.SafeRead("send_sel", "");
-                add_zs["send_way"] = dr.SafeRead("send_way", "");
-                add_zs["receive_way"] = dr.SafeRead("receive_way", "");
-                add_zs["rs_type"] = Sys.getRsType();
-                add_zs["rs_class"] = dr.SafeRead("rs_class", "");
-                add_zs["rs_code"] = dr.SafeRead("rs_code", "");
-                add_zs["act_code"] = dr.SafeRead("act_code", "");
+                step_data["rs_no"] = dr.SafeRead("rs_no", "");
+                step_data["branch"] = dr.SafeRead("branch", "");
+                step_data["seq"] = dr.SafeRead("seq", "");
+                step_data["seq1"] = dr.SafeRead("seq1", "");
+                step_data["step_grade"] = dr.SafeRead("step_grade", "");
+                step_data["step_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
+                step_data["mp_date"] = dr.GetDateTimeString("mp_date", "yyyy/M/d");
+                step_data["gov_date"] = dr.GetDateTimeString("gov_date", "yyyy/M/d");
+                step_data["send_cl"] = dr.SafeRead("send_cl", "");
+                step_data["send_cl1"] = dr.SafeRead("send_cl1", "");
+                step_data["send_sel"] = dr.SafeRead("send_sel", "");
+                step_data["send_way"] = dr.SafeRead("send_way", "");
+                step_data["receive_way"] = dr.SafeRead("receive_way", "");
+                step_data["rs_type"] = Sys.getRsType();
+                step_data["rs_class"] = dr.SafeRead("rs_class", "");
+                step_data["rs_code"] = dr.SafeRead("rs_code", "");
+                step_data["act_code"] = dr.SafeRead("act_code", "");
 
                 //取得案件狀態
                 SQL = " select rs_type,rs_class,rs_code,act_code,case_stat,case_stat_name ";
                 SQL += "from vcode_act ";
-                SQL += "where rs_code = '" + add_zs["rs_code"] + "' ";
-                SQL += "and act_code = '" + add_zs["act_code"] + "' ";
-                SQL += "and rs_type = '" + add_zs["rs_type"] + "'";
+                SQL += "where rs_code = '" + step_data["rs_code"] + "' ";
+                SQL += "and act_code = '" + step_data["act_code"] + "' ";
+                SQL += "and rs_type = '" + step_data["rs_type"] + "'";
                 SQL += "and cg = '" + dr.SafeRead("cg", "") + "' ";
                 SQL += "and rs = '" + dr.SafeRead("rs", "") + "'";
                 using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
                     if (dr0.Read()) {
-                        add_zs["ncase_stat"] = dr0.SafeRead("case_stat", "");
-                        add_zs["ncase_statnm"] = dr0.SafeRead("case_stat_name", "");
+                        step_data["ncase_stat"] = dr0.SafeRead("case_stat", "");
+                        step_data["ncase_statnm"] = dr0.SafeRead("case_stat_name", "");
                     }
                 }
 
-                add_zs["rs_detail"] = dr.SafeRead("rs_detail", "");
-                add_zs["doc_detail"] = dr.SafeRead("doc_detail", "");
-                add_zs["fees"] = dr.SafeRead("fees", "");
-                add_zs["case_no"] = dr.SafeRead("case_no", "");
-                add_zs["fees_stat"] = dr.SafeRead("fees_stat", "");
-                add_zs["pr_scode"] = dr.SafeRead("pr_scode", "");
-                add_zs["opt_branch"] = dr.SafeRead("opt_branch", "");
-                add_zs["rs_agt_no"] = dr.SafeRead("rs_agt_no", "");
+                step_data["rs_detail"] = dr.SafeRead("rs_detail", "");
+                step_data["doc_detail"] = dr.SafeRead("doc_detail", "");
+                step_data["fees"] = dr.SafeRead("fees", "");
+                step_data["case_no"] = dr.SafeRead("case_no", "");
+                step_data["fees_stat"] = dr.SafeRead("fees_stat", "");
+                step_data["pr_scode"] = dr.SafeRead("pr_scode", "");
+                step_data["opt_branch"] = dr.SafeRead("opt_branch", "");
+                step_data["rs_agt_no"] = dr.SafeRead("rs_agt_no", "");
 
-                add_zs["cr_rs_no"] = "";
-                DataTable dtStepCR= Sys.StepDmt(conn, add_zs["seq"], add_zs["seq1"], "and zs_rs_sqlno='" + dr.SafeRead("rs_sqlno", "") + "'");
+                step_data["cr_rs_no"] = "";
+                DataTable dtStepCR = Sys.StepDmt(conn, step_data["seq"], step_data["seq1"], "and zs_rs_sqlno='" + dr.SafeRead("rs_sqlno", "") + "'");
                 if (dtStepCR.Rows.Count > 0) {
-                    add_zs["case_no"] = dtStepCR.Rows[0].SafeRead("case_no", "");
-                    add_zs["cr_rs_no"] = dtStepCR.Rows[0].SafeRead("rs_no", "");
+                    step_data["case_no"] = dtStepCR.Rows[0].SafeRead("case_no", "");
+                    step_data["cr_rs_no"] = dtStepCR.Rows[0].SafeRead("rs_no", "");
                 }
             }
         }
 
         //對應客收交辦
-        DataTable dtCaseCR = Sys.GetCaseDmtMain(conn, seq, seq1, add_zs["case_no"]);
+        DataTable dtCaseCR = Sys.GetCaseDmtMain(conn, seq, seq1, step_data.TryGet("case_no"));
 
         //管制資料
         DataTable dtCtrl = new DataTable();
         //抓取客收進度之法定期限
 		SQL = " select sqlno,ctrl_type,ctrl_remark,ctrl_date,null as resp_date,null as resp_grade from ctrl_dmt ";
-        SQL += " where rs_no='" + add_zs["cr_rs_no"] + "' and ctrl_type='A1' ";
+        SQL += " where rs_no='" + step_data["cr_rs_no"] + "' and ctrl_type='A1' ";
 		SQL+= " union select sqlno,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_grade from resp_dmt ";
-        SQL += " where rs_no='" + add_zs["cr_rs_no"] + "' and ctrl_type='A1' ";
+        SQL += " where rs_no='" + step_data["cr_rs_no"] + "' and ctrl_type='A1' ";
         SQL += " order by ctrl_date";
         conn.DataTable(SQL, dtCtrl);
 
@@ -243,9 +243,9 @@
         };
         Response.Write("{");
         Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
-        Response.Write(",\"add_zs\":" + JsonConvert.SerializeObject(add_zs, settings).ToUnicode() + "\n");//交辦本發預設值
-        Response.Write(",\"case_cr\":" + JsonConvert.SerializeObject(dtCaseCR, settings).ToUnicode() + "\n");//對應客收交辦
-        Response.Write(",\"zs_ctrl\":" + JsonConvert.SerializeObject(dtCtrl, settings).ToUnicode() + "\n");//管制資料
+        Response.Write(",\"step_data\":" + JsonConvert.SerializeObject(step_data, settings).ToUnicode() + "\n");//交辦本發預設值
+        Response.Write(",\"cr_case\":" + JsonConvert.SerializeObject(dtCaseCR, settings).ToUnicode() + "\n");//對應客收交辦
+        Response.Write(",\"ctrl_data\":" + JsonConvert.SerializeObject(dtCtrl, settings).ToUnicode() + "\n");//管制資料
         Response.Write(",\"case_attach\":" + JsonConvert.SerializeObject(dtCaseAttach, settings).ToUnicode() + "\n");//附件檔
         Response.Write("}");
         Response.End();
@@ -273,9 +273,9 @@
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
         <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
-		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;&nbsp;
-		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;&nbsp;
-		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;
 		案件編號：<span id="span_fseq"></span>&nbsp;&nbsp;<span id="span_rs_no" style="display:none">發文序號：</span>
         </td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
@@ -288,18 +288,18 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="text" id="prgid1" name="prgid1" value="<%=Request["prgid1"]%>">
-    <INPUT TYPE="text" id="submittask" name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <INPUT TYPE="hidden" id="prgid1" name="prgid1" value="<%=Request["prgid1"]%>">
+    <INPUT TYPE="hidden" id="submittask" name=submittask value="<%=submitTask%>">
 
-    <input type="text" id="cr_rs_no" name="cr_rs_no" value="<%=Request["cr_rs_no"]%>">
-    <input type="text" id="cr_rs_sqlno" name="cr_rs_sqlno" value="<%=Request["cr_rs_sqlno"]%>">
-    <input type="text" id="cr_step_grade" name="cr_step_grade" value="<%=Request["cr_step_grade"]%>">
-    <INPUT TYPE="text" id="ctrl_flg" name="ctrl_flg" value="Y"><!--判斷有無預設期限管制 N:無,Y:有,本發有客收之期限管制-->
-    <INPUT TYPE="text" id="havectrl" name="havectrl" value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
-    <INPUT TYPE="text" id="menu" name="menu" value="<%=Request["menu"]%>">
-    <input type="text" id="emg_scode" name="emg_scode" value="<%=emg_scode%>"><!--Email通知總管處人員，正本收件者-->
-    <input type="text" id="emg_agscode" name="emg_agscode" value="<%=emg_agscode%>"><!--Email通知總管處人員，副本收件者-->
+    <input type="hidden" id="cr_rs_no" name="cr_rs_no" value="<%=Request["cr_rs_no"]%>">
+    <input type="hidden" id="cr_rs_sqlno" name="cr_rs_sqlno" value="<%=Request["cr_rs_sqlno"]%>">
+    <input type="hidden" id="cr_step_grade" name="cr_step_grade" value="<%=Request["cr_step_grade"]%>">
+    <INPUT TYPE="hidden" id="ctrl_flg" name="ctrl_flg" value="Y"><!--判斷有無預設期限管制 N:無,Y:有,本發有客收之期限管制-->
+    <INPUT TYPE="hidden" id="havectrl" name="havectrl" value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
+    <INPUT TYPE="hidden" id="menu" name="menu" value="<%=Request["menu"]%>">
+    <input type="hidden" id="emg_scode" name="emg_scode" value="<%=emg_scode%>"><!--Email通知總管處人員，正本收件者-->
+    <input type="hidden" id="emg_agscode" name="emg_agscode" value="<%=emg_agscode%>"><!--Email通知總管處人員，副本收件者-->
 
     <uc1:Brta21form runat="server" id="Brta21form" /><!--案件主檔欄位畫面，與收文共同-->
     <uc1:brta34form runat="server" ID="Brta34form" /><!--本發欄位畫面-->
@@ -323,8 +323,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
-<div id="msg" style='text-align:left;height:100px'></div>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -353,7 +352,7 @@
         $.ajax({
             type: "get",
             url: "brta34_edit.aspx?json=Y&<%#Request.QueryString%>",
-            //url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
+            //url: getRootPath() + "/ajax/_vstep_dmt.aspx?<%#Request.QueryString%>",
             async: false,
             cache: false,
             success: function (json) {
@@ -376,12 +375,17 @@
         main.bind();//資料綁定
         $(".Lock").lock();
         $(".Hide").hide();
+
+        if(main.submittask=="A"){
+            $("#seq,#seq1").lock();
+            $("#btnseq,#btnQuery").hide();//[確定]/[查詢本所編號]
+        }
     }
     
     main.bind = function () {
-        brta21form.bind(jMain.add_zs);//主檔資料
-        brta34form.bind(jMain.add_zs,jMain.case_cr);//發文資料/對應客收交辦
-        brta212form.bind(jMain.add_zs,jMain.zs_ctrl);//管制資料
+        brta21form.bind(jMain.step_data);//主檔資料
+        brta34form.bind(jMain.step_data,jMain.cr_case);//發文資料/對應客收交辦
+        brta212form.bind(jMain.step_data,jMain.ctrl_data);//管制資料
         upload_form.bind(jMain.case_attach);//顯示上傳文件資料
 
         if($("#submittask").val()=="A"){

@@ -8,7 +8,7 @@
 <script runat="server">
     protected string HTProgCap = "國內案收發進度維護作業";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
-    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode = "brta2m";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
@@ -68,27 +68,29 @@
         
         //結構分類
         rs_type = Sys.getRsType();
-        SQL="select cust_code,code_name from cust_code where code_type='" +rs_type+ "' and mark is null and ref_code is null ";
+        SQL="select cust_code,code_name from cust_code where code_type='" +rs_type+ "' and mark is null";
         html_rs_class = Util.Option(conn, SQL, "{cust_code}", "{cust_code}_{code_name}");
 
         //案性代碼
-        SQL = "select rs_code,rs_detail from code_br where dept='T' and cr='Y' order by rs_code";
-        html_rs_code = Util.Option(conn, SQL, "{rs_code}", "{rs_code}_{rs_detail}");
-
-        //處理事項
-        SQL= "select distinct b.act_code, c.code_name, c.sql ";
-        SQL+="from  code_br  a ";
-        SQL+="inner join code_act b on a.sqlno = b.code_sqlno ";
-        SQL+="inner join cust_code c on b.act_code = c.cust_code ";
-		SQL+=" where a.dept = 'T' and a.cr = 'Y' and c.code_type = 'TACT_Code'";
-        SQL += " order by c.sql";
-        html_act_code = Util.Option(conn, SQL, "{act_code}", "{act_code}_{code_name}");
+        //SQL = "select rs_code,rs_detail from code_br where dept='T' and cr='Y' order by rs_code";
+        //html_rs_code = Util.Option(conn, SQL, "{rs_code}", "{rs_code}_{rs_detail}");
+        //
+        ////處理事項
+        //SQL= "select distinct b.act_code, c.code_name, c.sql ";
+        //SQL+="from  code_br  a ";
+        //SQL+="inner join code_act b on a.sqlno = b.code_sqlno ";
+        //SQL+="inner join cust_code c on b.act_code = c.cust_code ";
+		//SQL+=" where a.dept = 'T' and a.cr = 'Y' and c.code_type = 'TACT_Code'";
+        //SQL += " order by c.sql";
+        //html_act_code = Util.Option(conn, SQL, "{act_code}", "{act_code}_{code_name}");
         
         //營洽清單
         if ((HTProgRight & 64) != 0) {
             td_tscode = "<input type=hidden id=scode1 name=scode1>";
             td_tscode += "<select id='sscode1' name='sscode1' onchange='reg.scode1.value=this.value'>";
-            td_tscode += Sys.getLoginGrpSales().Option("{scode}", "{scode}_{sc_name}");
+            //td_tscode += Sys.getLoginGrpSales().Option("{scode}", "{scode}_{sc_name}");
+            td_tscode += Sys.getDmtScode("", "").Option("{scode}", "{star}{scode}_{sc_name}", "style='color:{color}'", true);
+            td_tscode += "<option value='" + Sys.GetSession("seBranch") + Sys.GetSession("dept") + "'>" + Sys.GetSession("seBranch") + Sys.GetSession("dept").ToUpper() + "_部門(開放客戶)</option>";
             td_tscode += "</select>";
         } else {
             td_tscode = "<input type='hidden' id='scode1' name='scode1' value='" + Session["scode"] + "'>";
@@ -163,7 +165,7 @@
 			        <option value="GR">官收</option><!--brta21-->
 			        <option value="GS">官發</option><!--brta31-->
 			        <option value="CS">客發</option><!--brta22-->
-			        <option value="ZS">本發</option><!--brta34-->
+			        <!--<option value="ZS">本發</option>brta34已有維護-->
 			    </select>
 		        </TD>
 	        </TR>
@@ -199,7 +201,7 @@
 		        </td>
 	        </TR>
 	        <tr id="tr_scode">
-		        <td class=lightbluetable align="right" id=salename  width="15%">洽案營洽：</td>
+		        <td class=lightbluetable align="right" id=salename  width="15%">營　　洽：</td>
 		        <td class=whitetablebg align="left">
 			        <%#td_tscode%>
 		        </td>
@@ -229,7 +231,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -283,7 +285,7 @@
             url: getRootPath() + "/ajax/json_rs_code.aspx",
             data: { cgrs: $("#cgrs").val(), rs_type: $("#rs_type").val(), rs_class: $("#rs_class").val() },
             valueFormat: "{rs_code}",
-            textFormat: "{rs_detail}",
+            textFormat: "{rs_code}_{rs_detail}",
             attrFormat: "vrs_class='{rs_class}'"
         });
         $("#rs_code").triggerHandler("change");
@@ -295,7 +297,7 @@
             url: getRootPath() + "/ajax/json_act_code.aspx",
             data: { cgrs: $("#cgrs").val(), rs_class: $("#rs_class").val(), rs_code: $("#rs_code").val() },
             valueFormat: "{act_code}",
-            textFormat: "{act_code_name}",
+            textFormat: "{act_code}_{act_code_name}",
             attrFormat: "spe_ctrl='{spe_ctrl}'"
         });
         $("#act_code").triggerHandler("change");
@@ -338,7 +340,7 @@
         } else if ($("#cgrs").val() == "GS") {//官發
             $("#prgid").val("brta31");
         } else if ($("#cgrs").val() == "CS") {//客發
-            $("#prgid").val("brta22");
+            $("#prgid").val("brta32");
             reg.action = "brta21_List_cs.aspx";
         } else if ($("#cgrs").val() == "ZS") {//本發
             $("#prgid").val("brta34");

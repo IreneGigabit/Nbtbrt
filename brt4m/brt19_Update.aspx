@@ -24,11 +24,11 @@
     protected StringBuilder strOut = new StringBuilder();
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
-    DBHelper optconn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper connopt = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        if (optconn != null) optconn.Dispose();
+        if (connopt != null) connopt.Dispose();
         if (cnn != null) cnn.Dispose();
     }
 
@@ -45,21 +45,21 @@
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
             conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-            optconn = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
+            connopt = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
             try {
                 doUpdate();
                 CreateMail();
 
-                optconn.Commit();
+                connopt.Commit();
                 conn.Commit();
-                //optconn.RollBack();
+                //connopt.RollBack();
                 //conn.RollBack();
                 strOut.AppendLine("<div align='center'><h1>爭救案法定期限資料維護成功!!</h1></div>");
             }
             catch (Exception ex) {
-                optconn.RollBack();
+                connopt.RollBack();
                 conn.RollBack();
-                Sys.errorLog(ex, optconn.exeSQL, prgid);
+                Sys.errorLog(ex, connopt.exeSQL, prgid);
                 Sys.errorLog(ex, conn.exeSQL, prgid);
                 //strOut.AppendLine("<div align='center'><h1>爭救案法定期限修改失敗("+ex.Message+")</h1></div>");
                 throw;
@@ -77,11 +77,11 @@
         SQL += "('" + prgid + "'," + Util.dbchar(ReqVal.TryGet("opt_sqlno")) + "," + Util.dbchar(ReqVal.TryGet("Branch")) + "," + Util.dbchar(ReqVal.TryGet("Bseq"));
         SQL += "," + Util.dbchar(ReqVal.TryGet("Bseq1")) + ",'Last_date'," + Util.dbchar(ReqVal.TryGet("old_Last_date")) + "," + Util.dbchar(ReqVal.TryGet("Last_date"));
         SQL += ",getdate(),'" + Session["scode"] + "')";
-        optconn.ExecuteNonQuery(SQL);
+        connopt.ExecuteNonQuery(SQL);
 
         SQL = "Update br_opt Set Last_date=" + Util.dbnull(ReqVal.TryGet("Last_date"));
         SQL += " Where opt_sqlno=" + Request["opt_sqlno"];
-        optconn.ExecuteNonQuery(SQL);
+        connopt.ExecuteNonQuery(SQL);
 
         //修改區所客收進度法定期限
         if (ReqVal.TryGet("bstep_grade") != "" && ReqVal.TryGet("ctrl_date") != "") {
@@ -114,7 +114,7 @@
         //爭救案人員
         SQL = "select scode from sysctrl.dbo.scode_roles where branch='" + Session["SeBranch"] + "' and dept='T' and roles='opt'";
         DataTable dt = new DataTable();
-        optconn.DataTable(SQL, dt);
+        connopt.DataTable(SQL, dt);
 
         switch (Sys.Host) {
             case "web08":

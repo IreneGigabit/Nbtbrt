@@ -119,8 +119,9 @@
             Repeater dtl0Rpt = (Repeater)e.Item.FindControl("dtl0Repeater");
 
             if ((dtl0Rpt != null)) {
-                string cust_area = ((DataRowView)e.Item.DataItem).Row["cust_area"].ToString();
-                string cust_seq = ((DataRowView)e.Item.DataItem).Row["cust_seq"].ToString();
+                string cust_area = DataBinder.Eval(e.Item.DataItem, "cust_area").ToString();
+                string cust_seq = DataBinder.Eval(e.Item.DataItem, "cust_seq").ToString();
+
                 var rows = dtRpt.Select("cust_area='" + cust_area + "' and cust_seq='" + cust_seq + "'");
                 var dtDtl = rows.Any() ? rows.CopyToDataTable() : dtRpt.Clone();
                 dtl0Rpt.DataSource = dtDtl;
@@ -144,9 +145,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body onload="window.focus();">

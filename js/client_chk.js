@@ -165,12 +165,24 @@ function chkRadio(pFieldName, pmsg) {
 function dmt_IMG_Click(pType) {
     if ($("#seq").val() != "") {
         switch (pType) {
-            case "1": break;//期限管制
-            case "2": //收發進度
-                //***todo
-                window.open(getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + $("#seq").val() + "&aseq1=" + $("#seq1").val(), "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+            case 1://期限管制
+                var url=getRootPath() + "/brtam/brta21disEdit.aspx?prgid=" + $("#prgid").val() + "&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&qtype=A&rsqlno=&step_grade=&submitTask=Q";
+                window.open(url, "myWindowOneN", "width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+                //$('#dialog').html('<iframe style="border: 0px;" src="' + url + '" width="100%" height="100%"></iframe>')
+                //.dialog({ autoOpen: true, modal: true, height: 490, width: 780, title: "期限管制" });
                 break;
-            case "4": break;//交辦內容
+            case 2: //收發進度
+                var url = getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&closewin=Y&winact=1&aseq=" + $("#seq").val() + "&aseq1=" + $("#seq1").val();
+                window.open(url, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+                //$('#dialog').html('<iframe style="border: 0px;" src="' + url + '" width="100%" height="100%"></iframe>')
+                //.dialog({ autoOpen: true, modal: true, height: 680, width: 900, title: "收發進度" });
+                break;
+            case 4://交辦內容
+                var url = getRootPath() + "/brt4m/brt13_List.aspx?prgid=" + $("#prgid").val() + "&pfx_seq=" + $("#seq").val() + "&pfx_seq1=" + $("#seq1").val() + "&submitTask=Q";
+                window.open(url, "myWindowOneN", "width=780 height=490 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+                //$('#dialog').html('<iframe style="border: 0px;" src="' + url + '" width="100%" height="100%"></iframe>')
+                //.dialog({ autoOpen: true, modal: true, height: 490, width: 780, title: "期限管制" });
+                break;
         }
     } else {
         alert("請先輸入本所編號後再執行查詢功能!!");

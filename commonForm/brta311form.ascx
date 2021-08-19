@@ -44,6 +44,10 @@
     }
 
     private void PageLayout() {
+        Lock["Lock38"] = Lock.TryGet("QLock");
+        if (prgid == "brta38") {
+            Lock["Lock38"] = "Lock";
+        }
     }
 </script>
 
@@ -55,13 +59,16 @@
 	<TR>
 		<TD class=lightbluetable align=right>進度序號：</TD>
 		<TD class=whitetablebg>
-			<input type="text" id="rs_no" name="rs_no">
+			<input type="hidden" id="rs_no" name="rs_no">
 			<input type="text" id="nstep_grade" name="nstep_grade" size=3 class=sedit readonly>
-			<input type="text" id="cgrs" name="cgrs">
+			<input type="hidden" id="cgrs" name="cgrs">
 			<input type="text" id="scgrs" name="scgrs" size=4 class=sedit readonly>
 		</TD>
 		<TD class=lightbluetable align=right>發文日期：</TD>
-		<TD class=whitetablebg><input type="text" id="step_date" name="step_date" size="10" class="dateField <%=Lock.TryGet("QLock")%>"><input type="text" id="old_step_date" name="old_step_date"></TD>
+		<TD class=whitetablebg>
+            <input type="text" id="step_date" name="step_date" size="10" class="dateField <%=Lock.TryGet("QLock")%>">
+            <input type="hidden" id="old_step_date" name="old_step_date">
+		</TD>
 		<TD class=lightbluetable align=right>總發文日期：</TD>
 		<TD class=whitetablebg><input type="text" id="mp_date" name="mp_date" size="10" class="dateField <%=Lock.TryGet("QLock")%>"></TD>
 	</TR>
@@ -82,36 +89,36 @@
 	<TR>
 		<TD class=lightbluetable align=right>發文代碼：</TD>
 		<TD class=whitetablebg colspan=3>結構分類：
-			<input type="text" name="rs_type" id="rs_type">
-			<input type="text" name="rs_class_name" id="rs_class_name">
-			<input type="text" name="rs_code_name" id="rs_code_name">
-			<input type="text" name="act_code_name" id="act_code_name">
-			<input type="text" name="case_change" id="case_change" value="N"><!--交辦異動註記，預設未異動-->
-			<input type="text" name="case_arcase_class" id="case_arcase_class"><!--交辦結構分類-->
-			<input type="text" name="case_arcase" id="case_arcase"><!--交辦結構分類-->
+			<input type="hidden" name="rs_type" id="rs_type">
+			<input type="hidden" name="rs_class_name" id="rs_class_name">
+			<input type="hidden" name="rs_code_name" id="rs_code_name">
+			<input type="hidden" name="act_code_name" id="act_code_name">
+			<input type="hidden" name="case_change" id="case_change" value="N"><!--交辦異動註記，預設未異動-->
+			<input type="hidden" name="case_arcase_class" id="case_arcase_class"><!--交辦結構分類-->
+			<input type="hidden" name="case_arcase" id="case_arcase"><!--交辦結構分類-->
             <select name="rs_class" id="rs_class" class="<%=Lock.TryGet("QLock")%>"></select>
 			案性：
 			<!--一案多件之子本所編號修改入檔用 -->
-			<input type=text id="hrs_class" name="hrs_class">
-			<input type=text id="hrs_code" name="hrs_code">
-			<input type=text id="hact_code" name="hact_code">
-			<input type=text id="hmarkb" name="hmarkb">
+			<input type=hidden id="hrs_class" name="hrs_class">
+			<input type=hidden id="hrs_code" name="hrs_code">
+			<input type=hidden id="hact_code" name="hact_code">
+			<input type=hidden id="hmarkb" name="hmarkb">
 			<span id=span_rs_code>
                 <select name="rs_code" id="rs_code" class="Lock"></select>
 			</span><br>
 			處理事項：
-			<input type="text" id="act_sqlno" name="act_sqlno">
+			<input type="hidden" id="act_sqlno" name="act_sqlno">
 			<select name="act_code" id="act_code" class="<%=Lock.TryGet("QLock")%>"></select>
 		</TD>
 		<TD class=lightbluetable align=right>本次狀態：</TD>
-		<TD class=whitetablebg><input type="text" id="ncase_stat" name="ncase_stat">
+		<TD class=whitetablebg><input type="hidden" id="ncase_stat" name="ncase_stat">
 			<input type="text" id="ncase_statnm" name="ncase_statnm" size="10" class=sedit readonly></TD>
     </TR>
     <TR>
 		<TD class=lightbluetable align=right>發文內容：</TD>
-		<TD class=whitetablebg colspan=3><input type="text" id="rs_detail" name="rs_detail" size=60 class="<%=Lock.TryGet("QLock")%>"></TD>
+		<TD class=whitetablebg colspan=3><input type="text" id="rs_detail" name="rs_detail" style="width:95%" class="<%=Lock.TryGet("QLock")%>"></TD>
 	    <TD class=lightbluetable align=right>發文出名代理：</TD>
-		<TD class=whitetablebg ><input type=text id="rs_agt_no" name="rs_agt_no">
+		<TD class=whitetablebg ><input type=hidden id="rs_agt_no" name="rs_agt_no">
 		    <input type="text" id="rs_agt_nonm" name="rs_agt_nonm" size=15 class=sedit readonly>
 		</td>
 	</TR>
@@ -121,9 +128,9 @@
 			<select id="send_way" name="send_way" class="<%=Lock.TryGet("QLock")%>" >
                 <%=html_send_way%>
 			</select>
-			<input type="text" id="spe_ctrl" name="spe_ctrl">	
-			<input type="text" id="spe_ctrl_4" name="spe_ctrl_4">	
-			<input type="text" id="old_send_way" name="old_send_way">
+			<input type="hidden" id="spe_ctrl" name="spe_ctrl">	
+			<input type="hidden" id="spe_ctrl_4" name="spe_ctrl_4">	
+			<input type="hidden" id="old_send_way" name="old_send_way">
 		</TD>
 	</tr>
 	<TR id=tr_case>	
@@ -138,7 +145,7 @@
 		</TD>
         <%if ((HTProgRight & 128)!=0 || (HTProgRight & 256)!=0){%>
 		    <TD class=lightbluetable align=right>
-		        <input type="text" id="fees_stat" name="fees_stat">
+		        <input type="hidden" id="fees_stat" name="fees_stat">
 		        收費管制：
 		    </TD>
 		    <TD class=whitetablebg>
@@ -163,19 +170,19 @@
 				<option value="B">空白</option>
 				<option value="C">案件申請人(代繳人)</option>
 			</select>
-			<input type="text" id="rectitle_name" name="rectitle_name">
+			<input type="hidden" id="rectitle_name" name="rectitle_name">
 		</TD>
 	</TR>
 	<TR id="show_optbranch" style="display:">
 		<TD class=lightbluetable align=right><font color=darkblue>※發文單位：</font></TD>
 		<TD class=whitetablebg colspan=5>
-			<input type=radio id="opt_branch<%=opt_branch%>" name="opt_branch" value="<%=opt_branch%>">自行發文
-			<input type=radio id="opt_branchL" name="opt_branch" value="L">轉法律所發文
+			<input type=radio id="opt_branch<%=opt_branch%>" name="opt_branch" value="<%=opt_branch%>" class="<%=Lock.TryGet("Qdisabled_opt")%>">自行發文
+			<input type=radio id="opt_branchL" name="opt_branch" value="L" class="<%=Lock.TryGet("Qdisabled_opt")%>">轉法律所發文
 		</TD>
 	</tr>
 </table>
-<input type="text" id=arnum name=arnum value=0><!--支出筆數-->
-<input type="text" id=oldarnum name=oldarnum value=0><!--支出筆數，修改時，刪除筆數要將case_dmt減回去-->
+<input type="hidden" id=arnum name=arnum value=0><!--支出筆數-->
+<input type="hidden" id=oldarnum name=oldarnum value=0><!--支出筆數，修改時，刪除筆數要將case_dmt減回去-->
 <TABLE id=tabar border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
     <thead>
 	<TR>
@@ -200,13 +207,13 @@
 		    </td>
 		    <td class="whitetablebg" align=center>
 	            <input type=text size=10 maxlength=10 id=case_no_## name=case_no_## <%if (submitTask != "D") Response.Write("onblur='brta311form.getmoney(\"##\")'");%> class='<%=Lock.TryGet("QLock")%>' >
-	            <input type=text id=oldcase_no_## name=oldcase_no_##>
+	            <input type=hidden id=oldcase_no_## name=oldcase_no_##>
 	            <input type=button value='查' class='cbutton <%=Lock.TryGet("QLock")%>' id='btncase_no_##' name='btncase_no_##' onclick='brta311form.btncase_no("##")' title='查詢交辦編號'>
-	            <input type='text' id=rs_type_## name=rs_type_##>
+	            <input type='hidden' id=rs_type_## name=rs_type_##>
 		    </td>
 		    <td class=whitetablebg align=center>
 	            <input type=text size=6 maxlength=6 id=gs_fees_## name=gs_fees_## onblur='brta311form.chkmoney("##")' class='<%=Lock.TryGet("QLock")%>' style='text-align:right;'>
-	            <input type='text' size=6 maxlength=6 id=hngs_fees_## name=hngs_fees_##>
+	            <input type='hidden' size=6 maxlength=6 id=hngs_fees_## name=hngs_fees_##>
 		    </td>
 		    <td class=whitetablebg align=center>
 	            <input type=text size=16 maxlength=16 style='text-align:center;width:80px' readonly class=sedit id=arcasenm_## name=arcasenm_##>
@@ -218,25 +225,25 @@
 	            <input type=text size=6 maxlength=6 style='text-align:center;' readonly class=sedit id=hgs_fees_## name=hgs_fees_##>
 		    </td>
 		    <td class=whitetablebg align=center>
-	            <input type='text' id=service_## name=service_##>
+	            <input type='hidden' id=service_## name=service_## style='width:95%'>
 	            <input type=text size=2 maxlength=2 style='text-align:center;' readonly class=sedit id=gs_curr_## name=gs_curr_##>
 		    </td>
 		    <td class=whitetablebg align=center>
 	            <input type=text size=12 maxlength=16 style='text-align:center;' readonly class=sedit id=ar_marknm_## name=ar_marknm_##>
 		    </td>
 		    <td class=whitetablebg align=center>
-	            <input type='text' id=case_agt_no_## name=case_agt_no_##>
+	            <input type='hidden' id=case_agt_no_## name=case_agt_no_##>
 	            <input type=text size=16 maxlength=16 style='text-align:center;' readonly class=sedit id=agt_nonm_## name=agt_nonm_##>
 		    </td>
 	    </tr>
     </script>
 </table>
-<input type="text" id=tot_num name=tot_num value=0><!--一案多件筆數-->
+<input type="hidden" id=tot_num name=tot_num value=0><!--一案多件筆數-->
 <TABLE id=tabar1 border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%" style="display:none">
     <thead>
 		<TR>
 			<TD class=whitetablebg colspan=7><span id="span_seqdesc">一案多件附屬本所編號：</span>
-				<input type=button value ="增加一筆" style="display:none" class="cbutton <%=Lock.TryGet("QLock")%>" id=dseqAdd_button name=dseqAdd_button onclick="brta311form.dseqAdd('N')" >
+				<input type=button value="增加一筆" style="display:none" class="cbutton <%=Lock.TryGet("QLock")%>" id=dseqAdd_button name=dseqAdd_button onclick="brta311form.dseqAdd('N')" >
 			</TD>
 		</TR>
 		<TR align=center class=lightbluetable>
@@ -251,26 +258,25 @@
 		    <td class=whitetablebg align=center>
 	            ##.
 		    </td>
-		    <td class="whitetablebg rs_code_FD" align=center>
-		        <input type=text size=5 maxlength=5 id=dseq_## name=dseq_## onchange='brta311form.btndseqchange(##)' class='FD_lock'>
-		        -<input type=text size=1 maxlength=1 id=dseq1A_## name=dseq1A_## class='FD_lock' value='_' >
-		        <input type=text id=hrs_no_## name=hrs_no_##>
-		        &nbsp;<input type=button value ='確定' class='cbutton FD_lock' id='btndseq_ok_##' name='btndseq_ok_##' onclick='brta311form.btndseq("##")' title='本所編號確認'>
-		        &nbsp;<input type=button value ='查詢' class='cbutton FD_lock' id='btndseqq1_##' name='btndseqq1_##' onclick='brta311form.btndseqq1("##")' title='查詢本所編號'>
-		        &nbsp;<input type=button value ='主檔' class='cbutton <%=Lock.TryGet("QLock")%>' id='btndseqq2_##' name='btndseqq2_##' onclick='brta311form.btndseqq2("##")' title='查詢案件主檔'>
-		        <input type='text' id='keydseq_##' name='keydseq_##'>
+		    <td class="whitetablebg rs_code_FD" align=center nowrap>
+		        <input type=text size=5 maxlength=5 id=dseq_## name=dseq_## onchange='brta311form.btndseqchange(##)' class='FD_lock'>-<input type=text size=1 maxlength=1 id=dseq1A_## name=dseq1A_## class='FD_lock' value='_' >
+		        <input type=hidden id=hrs_no_## name=hrs_no_##>
+		        <input type=button value ='確定' class='cbutton FD_lock' id='btndseq_ok_##' name='btndseq_ok_##' onclick='brta311form.btndseq("##")' title='本所編號確認'>
+		        <input type=button value ='查詢' class='cbutton FD_lock' id='btndseqq1_##' name='btndseqq1_##' onclick='brta311form.btndseqq1("##")' title='查詢本所編號'>
+		        <input type=button value ='主檔' class='cbutton <%=Lock.TryGet("QLock")%>' id='btndseqq2_##' name='btndseqq2_##' onclick='brta311form.btndseqq2("##")' title='查詢案件主檔'>
+		        <input type='hidden' id='keydseq_##' name='keydseq_##'>
 		    </td>
 		    <td class=whitetablebg align=center>
-	            <input type=text id='s_mark_##' name=s_mark_## style='text-align:left;' readonly class='SEdit'>
+	            <input type=text id='s_mark_##' name=s_mark_## style='text-align:center;width:95%' readonly class='SEdit'>
 		    </td>
 		    <td class=whitetablebg align=center>
-	            <input type=text id=dclass_## name=dclass_## style='text-align:left;' readonly class='SEdit'>
+	            <input type=text id=dclass_## name=dclass_## style='text-align:left;width:95%' readonly class='SEdit'>
 		    </td>
 		    <td class=whitetablebg align=center>
-		        <input type=text id=appl_name_## name=appl_name_## style='text-align:left;' readonly class='SEdit'>
+		        <input type=text id=appl_name_## name=appl_name_## style='text-align:left;width:95%' readonly class='SEdit'>
 		    </td>
 		    <td class=whitetablebg align=center>
-		        <input type=text id=dref_no_## name=dref_no_## style='text-align:center;' readonly class='SEdit'>
+		        <input type=text id=dref_no_## name=dref_no_## style='text-align:center;width:95%' readonly class='SEdit'>
 		    </td>
 		    <td class=whitetablebg align=center>
 		        <input type=checkbox id=dseqdel_## name=dseqdel_## value='' onclick='brta311form.dseqdel("##")' <%if (prgid=="brt63" || prgid=="brta38"){%> disabled <%}%>>
@@ -287,8 +293,9 @@
     }
 
     brta311form.bind = function (jData, jFees) {
+        brta311form.empty_ar();//交辦單號清空
         $("#rs_no").val(jData.rs_no);
-        $("#cgrs").val(jData.cgrs).triggerHandler("change");
+        $("#cgrs").val(jData.cgrs.toUpperCase()).triggerHandler("change");
         $("#old_step_date").val(jData.step_date);
         if (jData.step_grade != undefined) $("#nstep_grade").val(jData.step_grade);
         $("#step_date").val(jData.step_date);
@@ -369,35 +376,37 @@
     }
 
     brta311form.appendFees = function (jData) {
-        $.each(jData, function (i, item) {
-            brta311form.add_ar();//增加一筆交辦單號
-            var nRow = $("#arnum").val();
-            if (CInt(nRow) == 1) {
-                $("#case_change").val(item.change);
-                $("#case_arcase_class").val(item.arcase_class);
-                $("#case_arcase").val(item.arcase);
-            }
+        if (jData != null) {
+            $.each(jData, function (i, item) {
+                brta311form.add_ar();//增加一筆交辦單號
+                var nRow = $("#arnum").val();
+                if (CInt(nRow) == 1) {
+                    $("#case_change").val(item.change);
+                    $("#case_arcase_class").val(item.arcase_class);
+                    $("#case_arcase").val(item.arcase);
+                }
 
-            $("#case_no_" + nRow).val(item.case_no);
-            $("#oldcase_no_" + nRow).val(item.case_no);
-            $("#rs_type_" + nRow).val(item.arcase_type);
-            $("#gs_fees_" + nRow).val(item.fees);
-            $("#tot_fees").val(CInt($("#tot_fees").val())+CInt(item.fees));
-            $("#hngs_fees_" + nRow).val(item.fees);
-            $("#arcasenm_" + nRow).val(item.arcasenm);
-            $("#fees_" + nRow).val(item.case_fees);
-            $("#hgs_fees_" + nRow).val(CInt(item.gs_fees)+CInt(item.fees));
-            $("#service_" + nRow).val(item.service);
-            if(CInt(item.gs_curr)>=1){
-                $("#gs_curr_" + nRow).val(CInt(item.gs_curr)-1);//不包含自己
-            }else{
-                $("#gs_curr_" + nRow).val(item.gs_curr);
-            }
-            $("#ar_marknm_" + nRow).val(item.ar_marknm);
-            $("#case_agt_no_" + nRow).val(item.agt_no);
-            $("#agt_nonm_" + nRow).val(item.receipt+"_"+item.agt_name);
-        });
-        $("#oldarnum").val(jData.length);
+                $("#case_no_" + nRow).val(item.case_no);
+                $("#oldcase_no_" + nRow).val(item.case_no);
+                $("#rs_type_" + nRow).val(item.arcase_type);
+                $("#gs_fees_" + nRow).val(item.fees);//本次支出
+                $("#hngs_fees_" + nRow).val(item.fees);//本次支出
+                $("#tot_fees").val(CInt($("#tot_fees").val()) + CInt(item.fees));
+                $("#arcasenm_" + nRow).val(item.arcasenm);//委辦案性
+                $("#fees_" + nRow).val(item.case_fees);//規費
+                $("#hgs_fees_" + nRow).val(CInt(item.gs_fees) - CInt(item.fees));//已支出規費
+                if (CInt(item.gs_curr) >= 1) {//已支出次數
+                    $("#gs_curr_" + nRow).val(CInt(item.gs_curr) - 1);//不包含自己
+                } else {
+                    $("#gs_curr_" + nRow).val(CInt(item.gs_curr));
+                }
+                $("#service_" + nRow).val(item.service);
+                $("#ar_marknm_" + nRow).val(item.ar_marknm);//請款註記
+                $("#case_agt_no_" + nRow).val(item.agt_no);//出名代理人
+                $("#agt_nonm_" + nRow).val(item.receipt + "_" + item.agt_name);//出名代理人
+            });
+            $("#oldarnum").val(jData.length);
+        }
     }
     /*
     brta311form.bind = function (jData) {
@@ -524,7 +533,7 @@
         $("#act_code option[value='_']").prop("selected", true);
         $("#act_code").triggerHandler("change");
 
-        //規費收費標準
+        //抓規費收費標準
         if ($("#submittask").val() == "A" && $("#prgid1").val() != "brta81") {
             $("#fees").val($('option:selected', this).attr('vfees'));
         }
@@ -644,7 +653,7 @@
         });
     });
 
-    //取得案性管制設定
+    //產生預設期限/案性管制設定
     brta311form.getCtrl = function () {
         $.ajax({
             type: "get",
@@ -656,7 +665,7 @@
                 $.each(jCtrl, function (i, item) {
                     if (item.sqlflg == "A") {
                         $("#act_sqlno").val(item.ctrl_sqlno);
-                        brta212form.add_ctrl();
+                        brta212form.add_ctrl(true);
                         $("#ctrl_type_" + $("#ctrlnum").val()).val(item.ctrl_type);//管制種類
                         $("#ctrl_remark_" + $("#ctrlnum").val()).val(item.ctrl_remark);//管制內容
                         var days = 0;//管制天數
@@ -705,9 +714,9 @@
                         $("#ncase_statnm").val(item.case_statnm);
                     } else {
                         //無預設期限管制, 新增法定期限及自管期限
-                        brta212form.add_ctrl();
+                        brta212form.add_ctrl(false);
                         $("#ctrl_type_1").val("A1");
-                        brta212form.add_ctrl();
+                        brta212form.add_ctrl(false);
                         $("#ctrl_type_2").val("B1");
                         $("#ncase_stat").val(item.case_stat);
                         $("#ncase_statnm").val(item.case_statnm);
@@ -721,6 +730,11 @@
         });
     }
 
+    //清空交辦單號
+    brta311form.empty_ar = function () {
+        $("#tabar tbody").empty();
+        $("#arnum").val("0");
+    }
     //增加一筆交辦單號
     brta311form.add_ar = function () {
         var nRow = CInt($("#arnum").val()) + 1;
@@ -909,8 +923,8 @@
         if ($("#rs_code").val() == null) return;
         if ($("#rs_code").val() == "FC11"||$("#rs_code").val() == "FC21" || $("#rs_code").val().Left(2) == "FD"
             || $("#rs_code").val() == "FC5" || $("#rs_code").val() == "FC6"|| $("#rs_code").val() == "FC7"|| $("#rs_code").val() == "FC8"
-            || $("#rs_code").val() == "FCH" || $("#hrs_code").val() == "FCI"|| $("#hrs_code").val() == "FL5" || $("#hrs_code").val() == "FL6"
-             || $("#hrs_code").val() == "FT2" ) {
+            || $("#rs_code").val() == "FCH" || $("#rs_code").val() == "FCI" || $("#rs_code").val() == "FL5" || $("#rs_code").val() == "FL6"
+             || $("#rs_code").val() == "FT2") {
 
             $.ajax({
                 type: "get",
@@ -1105,6 +1119,8 @@
             || $("#rs_code").val() == "FC5" || $("#rs_code").val() == "FC6" || $("#rs_code").val() == "FC7" || $("#rs_code").val() == "FC8"
             || $("#rs_code").val() == "FCH" || $("#hrs_code").val() == "FCI" || $("#hrs_code").val() == "FL5" || $("#hrs_code").val() == "FL6"
              || $("#hrs_code").val() == "FT2") {
+
+            $("#dseqAdd_button").show();
 
             var isql = "select * from vstep_dmt where main_rs_no ='" + rs_no + "'";
             isql += " and main_rs_no <> rs_no order by rs_no";

@@ -369,11 +369,11 @@
             Repeater childRpt = (Repeater)e.Item.FindControl("childRepeater");
 
             if ((childRpt != null)) {
-                string mfseq = ((DataRowView)e.Item.DataItem).Row["fseq"].ToString();
-                string main_flag = ((DataRowView)e.Item.DataItem).Row["main_flag"].ToString();
-                string rs_no = ((DataRowView)e.Item.DataItem).Row["rs_no"].ToString();
-                string seq = ((DataRowView)e.Item.DataItem).Row["seq"].ToString();
-                string seq1 = ((DataRowView)e.Item.DataItem).Row["seq1"].ToString();
+                string mfseq = DataBinder.Eval(e.Item.DataItem, "fseq").ToString();
+                string main_flag = DataBinder.Eval(e.Item.DataItem, "main_flag").ToString();
+                string rs_no = DataBinder.Eval(e.Item.DataItem, "rs_no").ToString();
+                string seq = DataBinder.Eval(e.Item.DataItem, "seq").ToString();
+                string seq1 = DataBinder.Eval(e.Item.DataItem, "seq1").ToString();
 
                 SQL = "select a.temp_rs_sqlno,a.seq_area as branch,a.seq,a.seq1,a.step_grade,a.rs_detail,a.apply_date as mg_apply_date,a.apply_no as mg_apply_no,a.reject_reason,a.mg_in_date";
                 SQL += ",a.mg_send_grade,a.mg_send_rs_sqlno,a.mg_pr_remark,b.cust_seq,b.att_sql,b.cappl_name as appl_name,b.rs_no,b.main_rs_no,b.step_date,b.mp_date,b.apply_no";
@@ -852,7 +852,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -958,7 +958,7 @@
     //案件進度查詢
     function QstepClick(pseq,pseq1) {
         //***todo
-        window.open(getRootPath() + "/brtam/brta61Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
     //客函選項
     function show_send_way(t){

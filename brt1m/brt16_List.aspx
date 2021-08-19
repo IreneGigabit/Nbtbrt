@@ -99,7 +99,7 @@
                 dr["link_remark"] = link_remark;//案性版本連結
 
                 dr["cust_name"] = dr.SafeRead("cust_name", "").Left(20);
-                dr["fseq"] = dr.SafeRead("seq", "") + (dr.SafeRead("seq1", "_") != "_" ? "-" + dr.SafeRead("seq1", "") : "");
+                dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", "", "");
 
                 string new_form = "";//連結的aspx
                 SQL = "SELECT c.remark ";

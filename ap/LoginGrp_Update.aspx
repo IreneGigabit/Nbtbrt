@@ -80,15 +80,15 @@
         SQL = " INSERT into LoginGrp ";
         SQL += "(SYScode,LoginGrp,GrpName,GrpType,WorkType,HomeGif,remark,beg_date,end_date,tran_date,tran_scode";
         SQL += ")VALUES(";
-        SQL += " " + Util.dbnull(Request["pfx_Syscode"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["pfx_LoginGrp"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_GrpName"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_GrpType"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_WorkType"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_HomeGif"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_remark"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["dfx_beg_date"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["dfx_end_date"].ToBig5()) + "";
+        SQL += " " + Util.dbnull(Request["pfx_Syscode"]) + "";
+        SQL += "," + Util.dbnull(Request["pfx_LoginGrp"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_GrpName"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_GrpType"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_WorkType"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_HomeGif"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_remark"]) + "";
+        SQL += "," + Util.dbnull(Request["dfx_beg_date"]) + "";
+        SQL += "," + Util.dbnull(Request["dfx_end_date"]) + "";
         SQL += ",getdate()";
         SQL += ",'" + Session["scode"] + "'";
         SQL += ")";
@@ -101,13 +101,13 @@
 
     private void doUpdate(DBHelper cnn) {
         SQL = " Update LoginGrp set";
-        SQL += " GrpName = " + Util.dbnull(Request["tfx_GrpName"].ToBig5()) + "";
-        SQL += ",GrpType = " + Util.dbnull(Request["tfx_GrpType"].ToBig5()) + "";
-        SQL += ",WorkType = " + Util.dbnull(Request["tfx_WorkType"].ToBig5()) + "";
-        SQL += ",HomeGif = " + Util.dbnull(Request["tfx_HomeGif"].ToBig5()) + "";
-        SQL += ",remark = " + Util.dbnull(Request["tfx_remark"].ToBig5()) + "";
-        SQL += ",beg_date = " + Util.dbnull(Request["dfx_beg_date"].ToBig5()) + "";
-        SQL += ",end_date = " + Util.dbnull(Request["dfx_end_date"].ToBig5()) + "";
+        SQL += " GrpName = " + Util.dbnull(Request["tfx_GrpName"]) + "";
+        SQL += ",GrpType = " + Util.dbnull(Request["tfx_GrpType"]) + "";
+        SQL += ",WorkType = " + Util.dbnull(Request["tfx_WorkType"]) + "";
+        SQL += ",HomeGif = " + Util.dbnull(Request["tfx_HomeGif"]) + "";
+        SQL += ",remark = " + Util.dbnull(Request["tfx_remark"]) + "";
+        SQL += ",beg_date = " + Util.dbnull(Request["dfx_beg_date"]) + "";
+        SQL += ",end_date = " + Util.dbnull(Request["dfx_end_date"]) + "";
         SQL += ",tran_date = getdate()";
         SQL += ",tran_scode = '" + Session["scode"] + "'";
         SQL += " where syscode='" + syscode + "' AND LoginGrp='" + LoginGrp + "'";

@@ -87,16 +87,16 @@
         SQL += " and c.job_status = 'NN' and c.dowhat = '" + todo + "'";
 
         if (sdate != "" && edate != "") {
-            SQL += " and A.in_date between '" + sdate + " 00:00:00' and '" + edate + " 23:59:59'";
+            SQL += " and c.in_date between '" + sdate + " 00:00:00' and '" + edate + " 23:59:59'";
         }
         if (ReqVal.TryGet("sin_no") != "") {
-            SQL += " and A.in_no >= '" + ReqVal.TryGet("sin_no") + "'";
+            SQL += " and c.in_no >= '" + ReqVal.TryGet("sin_no") + "'";
         }
         if (ReqVal.TryGet("ein_no") != "") {
-            SQL += " and A.in_no <= '" + ReqVal.TryGet("ein_no") + "'";
+            SQL += " and c.in_no <= '" + ReqVal.TryGet("ein_no") + "'";
         }
         if (ReqVal.TryGet("scode") != "*" && ReqVal.TryGet("scode") != "") {
-            SQL += " and A.case_in_scode = '" + ReqVal.TryGet("scode") + "'";
+            SQL += " and c.case_in_scode = '" + ReqVal.TryGet("scode") + "'";
         }
         if (ReqVal.TryGet("qryOrder") != "") {
             SQL += " order by " + ReqVal.TryGet("qryOrder");
@@ -125,7 +125,7 @@
             dr["fcust_name"] = dr.SafeRead("cust_name", "").ToUnicode().Left(5);
             dr["fappl_name"] = dr.SafeRead("appl_name", "").ToUnicode().Left(20);
             //dr["urlasp"] = GetLink(dr);
-            dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Edit");
+            dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Edit") + "&code=" + dr["sqlno"];//todo.sqlno
         }
 
         dataRepeater.DataSource = page.pagedTable;
@@ -194,7 +194,7 @@
 </table>
 
 <form style="margin:0;" id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
@@ -215,7 +215,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>

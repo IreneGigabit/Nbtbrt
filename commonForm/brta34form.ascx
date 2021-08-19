@@ -37,6 +37,10 @@
     }
 
     private void PageLayout() {
+        if (submitTask == "Q" || submitTask == "D") {
+            Lock["QLock"] = "Lock";
+            Lock["Qdisabled"] = "Lock";
+        }
     }
 </script>
 
@@ -48,9 +52,9 @@
 	<TR>
 		<TD class=lightbluetable align=right>進度序號：</TD>
 		<TD class=whitetablebg>
-			<input type="text" id="rs_no" name="rs_no">
+			<input type="hidden" id="rs_no" name="rs_no">
 			<input type="text" id="nstep_grade" name="nstep_grade" size=3 class=sedit readonly>
-			<input type="text" id="cgrs" name="cgrs">
+			<input type="hidden" id="cgrs" name="cgrs">
 			<input type="text" id="scgrs" name="scgrs" size=4 class=sedit readonly>
 		</TD>
 		<TD class=lightbluetable align=right>發文日期：</TD>
@@ -71,26 +75,26 @@
 	<TR>
 		<TD class=lightbluetable align=right>發文代碼：</TD>
 		<TD class=whitetablebg colspan=3>結構分類：
-			<input type="text" name="rs_type" id="rs_type">
-			<input type="text" name="rs_class_name" id="rs_class_name">
-			<input type="text" name="rs_code_name" id="rs_code_name">
-			<input type="text" name="act_code_name" id="act_code_name">
+			<input type="hidden" name="rs_type" id="rs_type">
+			<input type="hidden" name="rs_class_name" id="rs_class_name">
+			<input type="hidden" name="rs_code_name" id="rs_code_name">
+			<input type="hidden" name="act_code_name" id="act_code_name">
             <select name="rs_class" id="rs_class" class="<%=Lock.TryGet("QLock")%>"></select>
 			案性：
 			<!--一案多件之子本所編號修改入檔用 -->
-			<input type=text id="hrs_class" name="hrs_class">
-			<input type=text id="hrs_code" name="hrs_code">
-			<input type=text id="hact_code" name="hact_code">
-			<input type=text id="hmarkb" name="hmarkb">
+			<input type=hidden id="hrs_class" name="hrs_class">
+			<input type=hidden id="hrs_code" name="hrs_code">
+			<input type=hidden id="hact_code" name="hact_code">
+			<input type=hidden id="hmarkb" name="hmarkb">
 			<span id=span_rs_code>
                 <select name="rs_code" id="rs_code" class="<%=Lock.TryGet("QLock")%>"></select>
 			</span><br>
 			處理事項：
-			<input type="text" id="act_sqlno" name="act_sqlno">
+			<input type="hidden" id="act_sqlno" name="act_sqlno">
 			<select name="act_code" id="act_code" class="<%=Lock.TryGet("QLock")%>"></select>
 		</TD>
 		<TD class=lightbluetable align=right>本次狀態：</TD>
-		<TD class=whitetablebg><input type="text" id="ncase_stat" name="ncase_stat">
+		<TD class=whitetablebg><input type="hidden" id="ncase_stat" name="ncase_stat">
 			<input type="text" id="ncase_statnm" name="ncase_statnm" size="10" class=sedit readonly>
 		</TD>
     </TR>
@@ -103,7 +107,7 @@
 		<TD class=whitetablebg colspan=5><input type="text" id="doc_detail" name="doc_detail" size=60 maxlength=60 class="<%=Lock.TryGet("QLock")%>"></TD>
 	</TR>
 </table>
-<input type="text" id=arnum name=arnum value=0><!--支出筆數-->
+<input type="hidden" id=arnum name=arnum value=0><!--支出筆數-->
 <TABLE id=tabar border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
     <thead>
 	<TR>
@@ -132,7 +136,7 @@
 	            <input type='hidden' id=rs_class_## name=rs_class_##>
 		    </td>
 		    <td class=whitetablebg align=center>
-	            <input type=text size=16 maxlength=16 style='text-align:center;width:80px' readonly class=sedit id=arcasenm_## name=arcasenm_##>
+	            <input type=text size=16 maxlength=16 style='text-align:center;width:95%' readonly class=sedit id=arcasenm_## name=arcasenm_##>
 		    </td>
 		    <td class=whitetablebg align=center>
 	            <input type=text size=6 maxlength=6 style='text-align:center;' readonly class=sedit id=fees_## name=fees_##>
@@ -141,14 +145,14 @@
 	            <input type=text size=6 maxlength=6 style='text-align:center;' readonly class=sedit id=gs_fees_## name=gs_fees_##>
 	        </td>
 		    <td class=whitetablebg align=center>
-	            <input type='text' id=service_## name=service_##>
+	            <input type='hidden' id=service_## name=service_##>
 	            <input type=text size=2 maxlength=2 style='text-align:center;' readonly class=sedit id=gs_curr_## name=gs_curr_##>
 	        </td>
 		    <td class=whitetablebg align=center>
 	            <input type=text size=12 maxlength=16 style='text-align:center;' readonly class=sedit id=ar_marknm_## name=ar_marknm_##>
 		    </td>
 		    <td class=whitetablebg align=center>
-	            <input type='text' id=case_agt_no_## name=case_agt_no_##>
+	            <input type='hidden' id=case_agt_no_## name=case_agt_no_##>
 	            <input type=text size=16 maxlength=16 style='text-align:center;' readonly class=sedit id=agt_nonm_## name=agt_nonm_##>
 		    </td>
 	    </tr>
@@ -163,7 +167,7 @@
 
     brta34form.bind = function (jData,jCase) {
         $("#rs_no").val(jData.rs_no);
-        $("#cgrs").val(jData.cgrs).triggerHandler("change");
+        $("#cgrs").val(jData.cgrs.toUpperCase()).triggerHandler("change");
         if (jData.step_grade != undefined) $("#nstep_grade").val(jData.step_grade);
         $("#step_date").val(jData.step_date);
         $("#gov_date").val(jData.gov_date);

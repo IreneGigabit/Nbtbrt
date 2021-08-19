@@ -26,8 +26,8 @@
         strOut.AppendLine("var obj = $('#" + fld2 + "')");
         strOut.AppendLine("obj.empty();");
         strOut.AppendLine("obj.append(\"<option value='' style='COLOR:blue'>請選擇</option>\");");
-        using (DBHelper optconn = new DBHelper(Conn.optK)) {
-            using (SqlDataReader dr = optconn.ExecuteReader(SQL)) {
+        using (DBHelper connopt = new DBHelper(Conn.optK)) {
+            using (SqlDataReader dr = connopt.ExecuteReader(SQL)) {
                 if (dr.Read()) {
                     strOut.AppendLine("obj.append(\"<option value='" + dr.SafeRead("in_scode", "") + "'>" + dr.SafeRead("sc_name", "") + "</option>\");");
                 }

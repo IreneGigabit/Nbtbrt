@@ -66,7 +66,8 @@ public static class DataExt
         //內容
         for (int i = 0; i < table.Rows.Count; i++) {
             rtnStr += (rtnStr != "" ? concatStr : "");
-            rtnStr += table.Rows[i][columnName].ToString().Trim();
+            //rtnStr += table.Rows[i][columnName].ToString().Trim();
+            rtnStr += table.Rows[i][columnName].ToString().TrimEnd(new char[] { ' ' });
         }
 
         return rtnStr;
@@ -261,7 +262,11 @@ public static class DataExt
             if (obj == null || obj == System.DBNull.Value)
                 return defaultValue;
 
-            return (T)Convert.ChangeType(obj, defaultValue.GetType());
+            if (defaultValue.GetType().Name == "String") {
+                return (T)Convert.ChangeType(obj.ToString().TrimEnd(new char[] { ' ' }), defaultValue.GetType());
+            } else {
+                return (T)Convert.ChangeType(obj, defaultValue.GetType());
+            }
         }
         catch {
             return defaultValue;
@@ -275,7 +280,9 @@ public static class DataExt
     /// <returns></returns>  
     public static string GetString(this IDataReader dr, string colName) {
         if (dr[colName] != DBNull.Value && dr[colName] != null)
-            return dr[colName].ToString().Trim();
+            return dr[colName].ToString().TrimEnd(new char[] { ' ' });
+            //return dr[colName].ToString().Trim();
+
         return String.Empty;
     }
     /// <summary>
@@ -431,7 +438,8 @@ public static class DataExt
         //內容
         while (dr.Read()) {
             rtnStr += (rtnStr != "" ? concatStr : "");
-            rtnStr += dr[columnName].ToString().Trim();
+            //rtnStr += dr[columnName].ToString().Trim();
+            rtnStr += dr[columnName].ToString().TrimEnd(new char[] { ' ' });
         }
 
         return rtnStr;
@@ -461,7 +469,11 @@ public static class DataExt
             if (obj == null || obj == System.DBNull.Value)
                 return defaultValue;
 
-            return (T)Convert.ChangeType(obj, defaultValue.GetType());
+            if (defaultValue.GetType().Name == "String") {
+                return (T)Convert.ChangeType(obj.ToString().TrimEnd(new char[] { ' ' }), defaultValue.GetType());
+            } else {
+                return (T)Convert.ChangeType(obj, defaultValue.GetType());
+            }
         }
         catch {
             return defaultValue;
@@ -475,7 +487,8 @@ public static class DataExt
     /// <returns></returns>  
     public static string GetString(this DataRow dr, string colName) {
         if (dr[colName] != DBNull.Value && dr[colName] != null)
-            return dr[colName].ToString().Trim();
+            return dr[colName].ToString().TrimEnd(new char[] { ' ' });
+            //return dr[colName].ToString().Trim();
         return String.Empty;
     }
     /// <summary>

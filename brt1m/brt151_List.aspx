@@ -93,10 +93,10 @@
         }
         if (ReqVal.TryGet("kind_date") != "") {
             if (ReqVal.TryGet("sdate") != "") {
-                SQL += " and a." + Request["kind_date"] + " = '" + Request["sdate"] + "'";
+                SQL += " and a." + Request["kind_date"] + " >= '" + Request["sdate"] + "'";
             }
             if (ReqVal.TryGet("edate") != "") {
-                SQL += " and a." + Request["kind_date"] + " = '" + Request["edate"] + "'";
+                SQL += " and a." + Request["kind_date"] + " <= '" + Request["edate"] + "'";
             }
         }
 
@@ -105,7 +105,7 @@
             SQL += " order by " + ReqVal.TryGet("qryOrder");
         }
 
-        //Sys.showLog(SQL);
+        Sys.showLog(SQL);
         conn.DataTable(SQL, dt);
 
         //處理分頁

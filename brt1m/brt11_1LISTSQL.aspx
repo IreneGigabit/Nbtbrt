@@ -13,6 +13,7 @@
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
+    protected string DebugStr = "";
 
     protected string SQL = "";
 
@@ -50,6 +51,7 @@
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
+        DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
             QueryData();
             PageLayout();
@@ -201,7 +203,7 @@
 </form>
 
 <form id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
 
       <table width="60%" cellspacing="1" cellpadding="0" align="center">
@@ -231,7 +233,7 @@
                  <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
                 </select>
                 <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-                </font>
+                </font><%#DebugStr%>
             </td>
         </tr>
     </TABLE>

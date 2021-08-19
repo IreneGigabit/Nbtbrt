@@ -117,22 +117,6 @@
 
     private void QueryData() {
         Dictionary<string, string> add_gr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        /*
-        Dictionary<string, string> add_gr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase){
-        {"smgt_temp_mark",""},{"from_flag",""},
-        //Brta21form案件主檔
-        {"new_seq",""}, {"branch",""},{"seq",""},{"seq1",""},{"fseq",""},
-        //brta211form收文資料
-        {"mg_step_grade",""},{"mg_rs_sqlno",""},{"rs_no",""},{"nstep_grade",""},{"cgrs",""},{"step_date",""},{"mp_date",""},
-        {"send_cl",""},{"receive_no",""},{"receive_way",""},{"mg_rs_detail",""},{"pdfsource",""},{"rs_type",""},{"rs_class_name",""},
-        {"rs_code_name",""},{"act_code_name",""},{"rs_class",""},{"rs_code",""},{"act_sqlno",""},{"act_code",""},
-        {"ocase_stat",""},{"ncase_stat",""},{"ncase_statnm",""},{"rs_detail",""},{"doc_detail",""},
-        {"pr_scan",""},{"pr_scan_page",""},{"pr_scan_remark",""},{"pr_scan_path",""},{"cs_flag",""},{"csd_flag",""},
-        {"cs_rs_no",""},{"send_way",""},{"pr_scode",""},{"cs_remark_code",""},{"cs_remark",""},{"cs_detail",""},
-        {"pmail_date",""},{"mail_date",""},{"mail_scode",""},{"mwork_date",""},{"mail_scname",""},{"print_date",""},
-        //brta212管制資料
-        {"ectrlnum",""}
-        };*/
 
         add_gr["rs_no"] = "";
         add_gr["cs_rs_no"] = "";
@@ -300,7 +284,7 @@
         Response.Write("{");
         Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
         Response.Write(",\"add_gr\":" + JsonConvert.SerializeObject(add_gr, settings).ToUnicode() + "\n");//交辦官發預設值
-        Response.Write(",\"mg_attach\":" + JsonConvert.SerializeObject(dtMGAttach, settings).ToUnicode() + "\n");//總管處官收文件
+        Response.Write(",\"mg_attach\":" + JsonConvert.SerializeObject(dtMGAttach, settings).ToUnicode() + "\n");//總管處官收電子公文檔
         Response.Write(",\"gr_ctrl\":" + JsonConvert.SerializeObject(dtCtrl, settings).ToUnicode() + "\n");//管制資料
         Response.Write("}");
         Response.End();
@@ -327,9 +311,9 @@
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
         <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
-		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;&nbsp;
-		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;&nbsp;
-		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;
 		案件編號：<span id="span_fseq"></span>
         &nbsp;&nbsp;<span id="span_rs_no"></span>
         </td>
@@ -343,19 +327,19 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="text" id="submittask" name=submittask value="<%=submitTask%>">
-    <INPUT TYPE="text" id=ctrl_flg name=ctrl_flg value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
-    <INPUT TYPE="text" id=havectrl name=havectrl value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
-    <INPUT TYPE="text" id=cansave name=cansave value="N"><!--判斷有核對案件主檔，N:資料不符無,Y:資料相符-->
-    <input type="text" id=temp_rs_sqlno name=temp_rs_sqlno value="<%=Request["temp_rs_sqlno"]%>"><!--step_mgt_temp.temp_rs_sqlno-->
-    <INPUT TYPE="text" id=qryfrom_flag name=qryfrom_flag value="<%=Request["qryfrom_flag"]%>">
-    <input type="text" id=emg_scode name=emg_scode value="<%=emg_scode%>"><!--Email通知總管處人員，正本收件者-->
-    <input type="text" id=emg_agscode name=emg_agscode value="<%=emg_agscode%>"><!--Email通知總管處人員，副本收件者-->
-    <input type="text" id=mg_end_date name=mg_end_date value="<%=Request["mg_end_date"]%>"><!--總收發之結案日期-->
-    <input type="text" id=end_flag name=end_flag value="N"><!--總收發之待結案註記，N:無，Y:寫入總收發待結案處理-->
-    <input type="text" id=smgt_temp_mark name=smgt_temp_mark><!--收檢發註冊證註記IS:檢發註冊證-->
-    <INPUT TYPE="text" id=from_flag name=from_flag><!--step_mgt_temp.from_flag進度來源-->
+    <INPUT TYPE="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <INPUT TYPE="hidden" id="submittask" name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="hidden" id=ctrl_flg name=ctrl_flg value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
+    <INPUT TYPE="hidden" id=havectrl name=havectrl value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
+    <INPUT TYPE="hidden" id=cansave name=cansave value="N"><!--判斷有核對案件主檔，N:資料不符無,Y:資料相符-->
+    <input type="hidden" id=temp_rs_sqlno name=temp_rs_sqlno value="<%=Request["temp_rs_sqlno"]%>"><!--step_mgt_temp.temp_rs_sqlno-->
+    <INPUT TYPE="hidden" id=qryfrom_flag name=qryfrom_flag value="<%=Request["qryfrom_flag"]%>">
+    <input type="hidden" id=emg_scode name=emg_scode value="<%=emg_scode%>"><!--Email通知總管處人員，正本收件者-->
+    <input type="hidden" id=emg_agscode name=emg_agscode value="<%=emg_agscode%>"><!--Email通知總管處人員，副本收件者-->
+    <input type="hidden" id=mg_end_date name=mg_end_date value="<%=Request["mg_end_date"]%>"><!--總收發之結案日期-->
+    <input type="hidden" id=end_flag name=end_flag value="N"><!--總收發之待結案註記，N:無，Y:寫入總收發待結案處理-->
+    <input type="hidden" id=smgt_temp_mark name=smgt_temp_mark><!--收檢發註冊證註記IS:檢發註冊證-->
+    <INPUT TYPE="hidden" id=from_flag name=from_flag><!--step_mgt_temp.from_flag進度來源-->
     <center>
         <uc1:Brta21form runat="server" id="Brta21form" /><!--案件主檔欄位畫面，與收文共同-->
         <uc1:brta211form runat="server" id="Brta211form" /><!--官收欄位畫面-->
@@ -387,8 +371,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
-<div id="msg" style='text-align:left;height:100px'></div>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 

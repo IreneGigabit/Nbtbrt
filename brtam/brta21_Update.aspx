@@ -44,13 +44,13 @@
             try {
                 if (ReqVal.TryGet("submittask") == "A") {
                     doAdd();
-                    strOut.AppendLine("<div align='center'><h1>客戶發文新增成功!!!發文序號:(" + rs_no + ")</h1></div>");
+                    strOut.AppendLine("<div align='center'><h1>官方收文新增成功!!!發文序號:(" + rs_no + ")</h1></div>");
                 } else if (ReqVal.TryGet("submittask") == "U") {
                     doUpdate();
-                    strOut.AppendLine("<div align='center'><h1>客戶發文維護成功!!!發文序號:(" + rs_no + ")</h1></div>");
+                    strOut.AppendLine("<div align='center'><h1>官方收文維護成功!!!發文序號:(" + rs_no + ")</h1></div>");
                 } else if (ReqVal.TryGet("submittask") == "D") {
                     doDel();
-                    strOut.AppendLine("<div align='center'><h1>客戶發文刪除成功!!!發文序號:(" + rs_no + ")</h1></div>");
+                    strOut.AppendLine("<div align='center'><h1>官方收文刪除成功!!!發文序號:(" + rs_no + ")</h1></div>");
                 }
                 conn.Commit();
                 //conn.RollBack();

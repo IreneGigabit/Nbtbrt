@@ -82,14 +82,16 @@
             if (Request["chkTest"] != "TEST") {
                 strOut.AppendLine("<script language='javascript' type='text/javascript'>");
             }
-
-            strOut.AppendLine("document.location.href='Brt11addnext.aspx?prgid=" + prgid +
-                "&cust_area=" + Request["tfy_cust_area"] + "&cust_seq=" + Request["tfy_cust_seq"] +
-                "&in_no=" + RSno + "&add_arcase=" + Request["tfy_arcase"] + "&ar_form=" + Request["ar_form"] +
-                "&code_type=" + Request["code_type"] + "&F_tscode=" + Request["F_tscode"] +
-                "&seq=" + Request["tfzb_seq"] + "&seq1=" + Request["tfzb_seq1"] +
-                "&prt_code=" + Request["prt_code"] + "&new_form=" + Request["new_form"] + "'");
-
+            if (prgid == "brt151") {//國內案接洽客戶後續查詢作業
+                strOut.AppendLine("window.parent.Etop.goSearch();");//清單重新整理
+            } else {
+                strOut.AppendLine("document.location.href='Brt11addnext.aspx?prgid=" + prgid +
+                    "&cust_area=" + Request["tfy_cust_area"] + "&cust_seq=" + Request["tfy_cust_seq"] +
+                    "&in_no=" + RSno + "&add_arcase=" + Request["tfy_arcase"] + "&ar_form=" + Request["ar_form"] +
+                    "&code_type=" + Request["code_type"] + "&F_tscode=" + Request["F_tscode"] +
+                    "&seq=" + Request["tfzb_seq"] + "&seq1=" + Request["tfzb_seq1"] +
+                    "&prt_code=" + Request["prt_code"] + "&new_form=" + Request["new_form"] + "'");
+            }
             if (Request["chkTest"] != "TEST") {
                 strOut.AppendLine("<" + "/script>");
             }
@@ -157,17 +159,21 @@
         string aa = drawValue.ToLower();
         string newfilename = "";
         if (aa != "") {
-            //2013/11/26修改可以中文檔名上傳及虛擬路徑
-            //string strpath = "/btbrt/" + Session["seBranch"] + "T/temp";
-            string strpath = sfile.gbrWebDir + "/temp";
-            //string attach_name = RSno + System.IO.Path.GetExtension(aa);//重新命名檔名
-            //string attach_name = filename + System.IO.Path.GetExtension(aa);//重新命名檔名
-            string attach_name = RSno + suffix + System.IO.Path.GetExtension(aa);//重新命名檔名
-            newfilename = strpath + "/" + attach_name;//存在資料庫路徑
-            if (aa.IndexOf("/") > -1 || aa.IndexOf("\\") > -1)
-                Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
-            else
-                Sys.RenameFile(strpath + "/" + aa, strpath + "/" + attach_name, true);
+            //if (aa.IndexOf("/temp") > -1) {//若是舊案(不是/temp)則不處理
+                //2013/11/26修改可以中文檔名上傳及虛擬路徑
+                //string strpath = "/btbrt/" + Session["seBranch"] + "T/temp";
+                string strpath = sfile.gbrWebDir + "/temp";
+                //string attach_name = RSno + System.IO.Path.GetExtension(aa);//重新命名檔名
+                //string attach_name = filename + System.IO.Path.GetExtension(aa);//重新命名檔名
+                string attach_name = RSno + suffix + System.IO.Path.GetExtension(aa);//重新命名檔名
+                newfilename = strpath + "/" + attach_name;//存在資料庫路徑
+                if (aa.IndexOf("/") > -1 || aa.IndexOf("\\") > -1)
+                    Sys.RenameFile(Sys.Path2Nbtbrt(aa), strpath + "/" + attach_name, true);
+                else
+                    Sys.RenameFile(strpath + "/" + aa, strpath + "/" + attach_name, true);
+            //} else {
+            //    newfilename=Sys.Path2Nbtbrt(aa);
+            //}
         }
         return newfilename;
     }
@@ -177,9 +183,12 @@
     /// </summary>
     private void insert_dmt_temp(DBHelper conn, string RSno) {
         //將檔案更改檔名
-        //drawFilename = move_file(RSno, Request["draw_file1"], "");
-        drawFilename = move_file(RSno, Request["draw_file"], "");
-
+        //舊案不處理
+        if ((Request["tfy_case_stat"] ?? "") == "OO") {
+            drawFilename = Sys.Path2Nbtbrt(Request["draw_file"]);
+        } else {
+            drawFilename = move_file(RSno, Request["draw_file"], "");
+        }
         //*****若為新案則新增至案件檔,舊案則不用
         ColMap.Clear();
         foreach (var key in Request.Form.Keys) {
@@ -526,7 +535,7 @@
         //後續交辦作業，更新營洽官收確認紀錄檔grconf_dmt.job_no
         if ((Request["grconf_sqlno"] ?? "") != "") {
             SQL = "update grconf_dmt set job_no = '" + RSno + "' ";
-            SQL += "finish_date = getdate() ";
+            SQL += ",finish_date = getdate() ";
             SQL += "where grconf_sqlno = '" + Request["grconf_sqlno"] + "' ";
             //Response.Write(SQL + "<HR>");
             conn.ExecuteNonQuery(SQL);
@@ -599,6 +608,7 @@
                 conn1.ExecuteNonQuery(SQL);
             }
             conn1.Commit();
+            //conn1.RollBack();
         }
     }
     

@@ -121,8 +121,8 @@
             Repeater dtlRpt = (Repeater)e.Item.FindControl("dtlRepeater");
 
             if ((dtlRpt != null)) {
-                string branch = ((DataRowView)e.Item.DataItem).Row["branch"].ToString();
-                string send_cl = ((DataRowView)e.Item.DataItem).Row["send_cl"].ToString();
+                string branch = DataBinder.Eval(e.Item.DataItem, "branch").ToString();
+                string send_cl = DataBinder.Eval(e.Item.DataItem, "send_cl").ToString();
                 //DataTable dtDtl = dtRpt.Select("branch='" + branch + "' and send_cl='" + send_cl + "'").CopyToDataTable();
                 var rows = dtRpt.Select("branch='" + branch + "' and send_cl='" + send_cl + "'");
                 var dtDtl = rows.Any() ? rows.CopyToDataTable() : dtRpt.Clone();
@@ -144,14 +144,14 @@
             countnum += 1;//小計件數
             totcnt += 1;//總計件數
 
-            if (((DataRowView)e.Item.DataItem).Row["rs_no"].ToString() != ((DataRowView)e.Item.DataItem).Row["main_rs_no"].ToString()) {
+            if (DataBinder.Eval(e.Item.DataItem, "rs_no").ToString()!= DataBinder.Eval(e.Item.DataItem, "main_rs_no").ToString()) {
                 subcount += 1;//小計併案件數
                 tot_subcount += 1;//總計併案件數
             }
             
-            if (((DataRowView)e.Item.DataItem).Row["sendmark"].ToString() == "正本") {
-                fees += Convert.ToInt32(((DataRowView)e.Item.DataItem).Row["fees"].ToString());//小計規費
-                totfees += Convert.ToInt32(((DataRowView)e.Item.DataItem).Row["fees"].ToString());//總計規費
+            if (DataBinder.Eval(e.Item.DataItem, "sendmark").ToString() == "正本") {
+                fees += Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "fees"));//小計規費
+                totfees += Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "fees"));//總計規費
             }
         }
     }
@@ -194,9 +194,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body>

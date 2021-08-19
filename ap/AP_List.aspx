@@ -14,6 +14,7 @@
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string Title = "";
+    protected string DebugStr = "";
 
     protected string SQL = "";
 
@@ -35,6 +36,7 @@
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         Title = myToken.Title;
+        DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
             QueryData();
             
@@ -97,7 +99,7 @@
     </tr>
 </table>
 <form id="regSYS" name="regSYS" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
@@ -118,7 +120,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>

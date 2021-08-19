@@ -3,6 +3,7 @@
 <%@ Import Namespace = "System.Data"%>
 
 <script runat="server">
+    //官收欄位畫面
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -58,11 +59,11 @@
 	<TR>
 		<TD class=lightbluetable align=right>進度序號：</TD>
 		<TD class=whitetablebg>
-			<input type="text" id="mg_step_grade" name="mg_step_grade" />
-			<input type="text" id="mg_rs_sqlno" name="mg_rs_sqlno" />
-			<input type="text" id="rs_no" name="rs_no">
+			<input type="hidden" id="mg_step_grade" name="mg_step_grade" />
+			<input type="hidden" id="mg_rs_sqlno" name="mg_rs_sqlno" />
+			<input type="hidden" id="rs_no" name="rs_no">
 			<input type="text" id="nstep_grade" name="nstep_grade" size="2" class="SEdit" readonly>
-			<input type="text" id="cgrs" name="cgrs">
+			<input type="hidden" id="cgrs" name="cgrs">
 			<select id=scgrs name=scgrs class="<%=Lock.TryGet("Qdisabled")%>">
 				<option value="GR">官收</option>
 			</select> 
@@ -91,23 +92,23 @@
             <span id="span_mg_attach"></span>
             <script type="text/html" id="mg_attach_template"><!--收文文件樣版-->
                 <img id="imgdetail1Doc_##" name="imgdetail1Doc_##" onclick="brta211form.pdf_click(##)" src="../images/top/doc.gif" border="0"  style="cursor:pointer">
-                <input type="text" id="pdfpath_##" name="pdfpath_##">
-                <input type="text" id="pdfname_##" name="pdfname_##" />
-                <input type="text" id="preview_pdfpath_##" name="preview_pdfpath_##">
-                <input type="text" id="pdfviewflag_##" name="pdfviewflag_##" value="N"><!--有無點選電子檔-->
+                <input type="hidden" id="pdfpath_##" name="pdfpath_##">
+                <input type="hidden" id="pdfname_##" name="pdfname_##" />
+                <input type="hidden" id="preview_pdfpath_##" name="preview_pdfpath_##">
+                <input type="hidden" id="pdfviewflag_##" name="pdfviewflag_##" value="N"><!--有無點選電子檔-->
             </script>
-			<input type="text" id="pdfcnt" name="pdfcnt">
-			<input type="text" id="pdfchkflag" name="pdfchkflag">
-			<input type="text" id="pdfsource" name="pdfsource">
+			<input type="hidden" id="pdfcnt" name="pdfcnt">
+			<input type="hidden" id="pdfchkflag" name="pdfchkflag">
+			<input type="hidden" id="pdfsource" name="pdfsource">
 		</TD>
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>收文代碼：</TD>
 		<TD class=whitetablebg colspan=5>結構分類：
-			<input type="text" name="rs_type" id="rs_type">
-			<input type="text" name="rs_class_name" id="rs_class_name">
-			<input type="text" name="rs_code_name" id="rs_code_name">
-			<input type="text" name="act_code_name" id="act_code_name">
+			<input type="hidden" name="rs_type" id="rs_type">
+			<input type="hidden" name="rs_class_name" id="rs_class_name">
+			<input type="hidden" name="rs_code_name" id="rs_code_name">
+			<input type="hidden" name="act_code_name" id="act_code_name">
 			<span id=span_rs_class>
 			    <select name="rs_class" id="rs_class" class="<%=Lock.TryGet("Qdisabled")%>"></select>
 			</span>
@@ -116,13 +117,13 @@
 				<select name="rs_code" id="rs_code" class="<%=Lock.TryGet("Qdisabled")%>"></select>
 			</span><br>
 			處理事項：
-			<input type="text" name="act_sqlno" id="act_sqlno">
+			<input type="hidden" name="act_sqlno" id="act_sqlno">
 			<span id=span_act_code>
 				<select name="act_code" id="act_code" class="<%=Lock.TryGet("Qdisabled")%>"></select>
 			</span>
 			&nbsp;&nbsp;&nbsp;&nbsp;本次狀態：
-			<input type="text" name="ocase_stat" id="ocase_stat" size="10">
-			<input type="text" name="ncase_stat" id="ncase_stat" size="10">
+			<input type="hidden" name="ocase_stat" id="ocase_stat" size="10">
+			<input type="hidden" name="ncase_stat" id="ncase_stat" size="10">
 			<input type="text" name="ncase_statnm" id="ncase_statnm" size="10" class="sedit <%=Lock.TryGet("Qdisabled")%>" readonly>
 		</TD>
     </TR>
@@ -141,7 +142,7 @@
             <label><input type="radio" name="pr_scan" value="N" class="<%=Lock.TryGet("Qdisabled")%>">不需要</label>
             ，共<input type=text name="pr_scan_page" id="pr_scan_page" size=3 class="<%=Lock.TryGet("Qdisabled")%>" >頁&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             說明：<input type=text name="pr_scan_remark" id="pr_scan_remark" class="<%=Lock.TryGet("Qdisabled")%>" size=60 ></label>
-            <input type=text name="pr_scan_path" id="pr_scan_path">
+            <input type=hidden name="pr_scan_path" id="pr_scan_path">
             <input type=button value="檢視" class="cbutton" onclick="brta211form.Previewprscan()">
 		</TD>
 	</tr>
@@ -151,8 +152,8 @@
             <label><input type=radio name=csflg class="<%=Lock.TryGet("Qdisabled")%>" value="Y" onclick="brta211form.csflg_onclick()">需要</label>
             <label><input type=radio name=csflg class="<%=Lock.TryGet("Qdisabled")%>" value="N" onclick="brta211form.csflg_onclick()">不需要</label>
             <input type=checkbox name=csd_flag id=csd_flag class="<%=Lock.TryGet("Qdisabled")%>" value="Y" onclick="brta211form.csd_flag_onclick()">要延期客發
-            <input type="text" name="cs_rs_no" id="cs_rs_no">
-            <input type="text" name="cs_flag" id="cs_flag" value="N"><!--是否有制式客函,N無,Y有-->
+            <input type="hidden" name="cs_rs_no" id="cs_rs_no">
+            <input type="hidden" name="cs_flag" id="cs_flag" value="N"><!--是否有制式客函,N無,Y有-->
 			<input id="btnPreviewcsreport" type=button value="檢視" class="cbutton" onclick="brta211form.Previewcsreport()"> 
 		</TD>							   
 		<TD class=lightbluetable align=right>發文方式：</TD>
@@ -179,18 +180,18 @@
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>客戶報導主旨：</TD>
-		<TD class=whitetablebg colspan=3><input type="text" name="cs_detail" id="cs_detail" size=60 maxlength=60 class="<%=Lock.TryGet("Qdisabled")%>"></TD>
+		<TD class=whitetablebg colspan=3><input type="text" name="cs_detail" id="cs_detail" maxlength=60 style="width:95%" class="<%=Lock.TryGet("Qdisabled")%>"></TD>
 		<TD class=lightbluetable align=right>預定寄發日期：</TD>
 		<TD class=whitetablebg><input type="text" name="pmail_date" id="pmail_date" size="10" class="dateField <%=Lock.TryGet("Qdisabled")%>"></TD>
 	</TR>
 	<tr id="tr_csmail_date" style="display:none">
 		<TD class=lightbluetable align=right>寄出日期：</TD>
 		<TD class=whitetablebg colspan=3><input type="text" name="mail_date" id="mail_date" size="10" readonly class="sedit">
-	    <input type=text name="mail_scode" id="mail_scode">
-	    (確認日期：<input type="text" name="mwork_date" id="mwork_date" size="22" readonly class="sedit">，
-		 確認人員：<input type="text" name="mail_scname" id="mail_scname" size="10" readonly class="sedit">)</td>
+	    <input type=hidden name="mail_scode" id="mail_scode">
+	    (確認日期：<input type="text" name="mwork_date" id="mwork_date" size="24" readonly class="sedit">，
+		 確認人員：<input type="text" name="mail_scname" id="mail_scname" size="8" readonly class="sedit">)</td>
 		<TD class=lightbluetable align=right>列印日期：</TD>
-		<TD class=whitetablebg ><input type="text" name="print_date" id="print_date" size="22" readonly class="sedit"></td> 
+		<TD class=whitetablebg ><input type="text" name="print_date" id="print_date" style="width:95%" readonly class="sedit"></td> 
 	</tr>
 </table>
 
@@ -214,16 +215,18 @@
         $("#receive_way option[value='" + jData.receive_way + "']").prop("selected", true);
         //總管處收文內容
         $("#mg_rs_detail").val(jData.mg_rs_detail);
-        $("#pdfcnt").val(jMGAttach.length);
-        $("#pdfchkflag").val(jMGAttach.length > 0 ? "Y" : "N");
         $("#pdfsource").val(jData.pdfsource);
-        if (jMGAttach.length > 0) {
-            if (jData.pdfsource == "EGR") {
-                $("#span_mg_attach").append("<font color=red>智慧局公文電子檔：</font>");
-            } else {
-                $("#span_mg_attach").append("<font color=red>Email/上傳公文電子檔：</font>");
+        if (jMGAttach != null) {
+            $("#pdfcnt").val(jMGAttach.length);
+            $("#pdfchkflag").val(jMGAttach.length > 0 ? "Y" : "N");
+            if (jMGAttach.length > 0) {
+                if (jData.pdfsource == "EGR") {
+                    $("#span_mg_attach").append("<font color=red>智慧局公文電子檔：</font>");
+                } else {
+                    $("#span_mg_attach").append("<font color=red>Email/上傳公文電子檔：</font>");
+                }
+                brta211form.appendMGAttach(jMGAttach);//總管處文件append到畫面
             }
-            brta211form.appendMGAttach(jMGAttach);//總管處文件append到畫面
         }
         $("#rs_type").val(jData.rs_type).triggerHandler("change");
         $("#rs_class_name").val(jData.rs_class_name);
@@ -329,95 +332,97 @@
 
         brta211form.getCtrl();//帶預設期限
 
-        //註冊費繳納期數與發文案性關聯性檢查
-        switch ($("#act_code").val()) {
-            case "F1":
-                if ($("#opay_times").val() != "" && $("#opay_times").val() != "1") {
-                    var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第一期 』?");
-                    if (ans != true) {
-                        $("#act_code").focus();
-                        return false;
+        if (main.submittask != "Q") {
+            //註冊費繳納期數與發文案性關聯性檢查
+            switch ($("#act_code").val()) {
+                case "F1":
+                    if ($("#opay_times").val() != "" && $("#opay_times").val() != "1") {
+                        var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第一期 』?");
+                        if (ans != true) {
+                            $("#act_code").focus();
+                            return false;
+                        } else {
+                            $("#pay_times").val("1");
+                            $("#hpay_times").val("1");
+                            $("#pay_date").val($("#step_date").val());
+                        }
                     } else {
+                        //2009/1/9相同則依案件主檔，案件主檔無日期才依官收日期
                         $("#pay_times").val("1");
                         $("#hpay_times").val("1");
-                        $("#pay_date").val($("#step_date").val());
+                        if ($("#opay_date").val() == "") {
+                            $("#pay_date").val($("#step_date").val());
+                        } else {
+                            $("#pay_date").val($("#opay_date").val());
+                        }
                     }
-                } else {
-                    //2009/1/9相同則依案件主檔，案件主檔無日期才依官收日期
-                    $("#pay_times").val("1");
-                    $("#hpay_times").val("1");
-                    if ($("#opay_date").val() == "") {
-                        $("#pay_date").val($("#step_date").val());
-                    } else {
-                        $("#pay_date").val($("#opay_date").val());
-                    }
-                }
-                break;
-            case "F2":
-                if ($("#opay_times").val() != "1" && $("#opay_times").val() != "2") {
-                    var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第二期 』?");
-                    if (ans != true) {
-                        $("#act_code").focus();
-                        return false;
+                    break;
+                case "F2":
+                    if ($("#opay_times").val() != "1" && $("#opay_times").val() != "2") {
+                        var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 第二期 』?");
+                        if (ans != true) {
+                            $("#act_code").focus();
+                            return false;
+                        } else {
+                            $("#pay_times").val("2");
+                            $("#hpay_times").val("2");
+                            $("#pay_date").val($("#step_date").val());
+                        }
                     } else {
                         $("#pay_times").val("2");
                         $("#hpay_times").val("2");
-                        $("#pay_date").val($("#step_date").val());
+                        //2009/1/9相同則依案件主檔，案件主檔無日期才依官收日期
+                        if ($("#opay_date").val() == "") {
+                            $("#pay_date").val($("#step_date").val());
+                        } else {
+                            $("#pay_date").val($("#opay_date").val());
+                        }
                     }
-                } else {
-                    $("#pay_times").val("2");
-                    $("#hpay_times").val("2");
-                    //2009/1/9相同則依案件主檔，案件主檔無日期才依官收日期
-                    if ($("#opay_date").val() == "") {
-                        $("#pay_date").val($("#step_date").val());
-                    } else {
-                        $("#pay_date").val($("#opay_date").val());
-                    }
-                }
-                break;
-            case "F0":
-                if ($("#opay_times").val() != "" && $("#opay_times").val() != "A") {
-                    var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 全期 』?");
-                    if (ans != true) {
-                        $("#act_code").focus();
-                        return false;
+                    break;
+                case "F0":
+                    if ($("#opay_times").val() != "" && $("#opay_times").val() != "A") {
+                        var ans = confirm("註冊費已繳期數與發文案性不符, 是否將註冊費已繳期數更正為『 全期 』?");
+                        if (ans != true) {
+                            $("#act_code").focus();
+                            return false;
+                        } else {
+                            $("#pay_times").val("A");
+                            $("#hpay_times").val("A");
+                            $("#pay_date").val($("#step_date").val());
+                        }
                     } else {
                         $("#pay_times").val("A");
                         $("#hpay_times").val("A");
-                        $("#pay_date").val($("#step_date").val());
+                        //2009/1/9相同則依案件主檔，案件主檔無日期才依官收日期
+                        if ($("#opay_date").val() == "") {
+                            $("#pay_date").val($("#step_date").val());
+                        } else {
+                            $("#pay_date").val($("#opay_date").val());
+                        }
                     }
-                } else {
-                    $("#pay_times").val("A");
-                    $("#hpay_times").val("A");
-                    //2009/1/9相同則依案件主檔，案件主檔無日期才依官收日期
-                    if ($("#opay_date").val() == "") {
-                        $("#pay_date").val($("#step_date").val());
-                    } else {
-                        $("#pay_date").val($("#opay_date").val());
+                    break;
+                case "Y0":
+                    if ($("#opay_times").val() == "") {
+                        $("#pay_times").val("1");
+                        $("#hpay_times").val("1");
+                        //2009/1/9相同則依案件主檔，案件主檔無日期才依官收日期
+                        if ($("#opay_date").val() == "") {
+                            $("#pay_date").val($("#step_date").val());
+                        } else {
+                            $("#pay_date").val($("#opay_date").val());
+                        }
                     }
-                }
-                break;
-            case "Y0":
-                if ($("#opay_times").val() == "") {
-                    $("#pay_times").val("1");
-                    $("#hpay_times").val("1");
-                    //2009/1/9相同則依案件主檔，案件主檔無日期才依官收日期
-                    if ($("#opay_date").val() == "") {
-                        $("#pay_date").val($("#step_date").val());
-                    } else {
-                        $("#pay_date").val($("#opay_date").val());
-                    }
-                }
-                break;
-            default:
-                $("#pay_times").val($("#opay_times").val());
-                $("#hpay_times").val($("#opay_times").val());
-                $("#pay_date").val($("#opay_date").val());
-                break;
+                    break;
+                default:
+                    $("#pay_times").val($("#opay_times").val());
+                    $("#hpay_times").val($("#opay_times").val());
+                    $("#pay_date").val($("#opay_date").val());
+                    break;
+            }
         }
     });
 
-    //產生預設期限
+    //產生預設期限/案性管制設定
     brta211form.getCtrl = function () {
         if(main.submittask=="A"){
             brta212form.empty_ctrl();//onchange觸發多次會有多筆.先清空管制期限
@@ -433,7 +438,7 @@
                         if(item.sqlflg=="A"){
                             $("#ctrl_flg").val("Y");//有預設期限管制
                             $("#act_sqlno").val(item.ctrl_sqlno);
-                            brta212form.add_ctrl();
+                            brta212form.add_ctrl(true);
                             $("#ctrl_type_"+$("#ctrlnum").val()).val(item.ctrl_type);//管制種類
                             $("#ctrl_remark_"+$("#ctrlnum").val()).val(item.ctrl_remark);//管制內容
                             var days=0;//管制天數
@@ -490,7 +495,7 @@
                             $("#ncase_statnm").val(item.case_statnm);
                         }else{
                             $("#ctrl_flg").val("N");//無預設期限管制
-                            brta212form.add_ctrl();
+                            brta212form.add_ctrl(false);
                             $("#ctrl_type_1").val("A1");//新增一筆法定期限
                             if(item.csflg=="Y"){
                                 $("input[name='csflg'][value='Y']").prop("checked",true);
@@ -532,7 +537,7 @@
                             if(main.prgid=="brta24"){//程序官收確認
                                 $("#ctrl_flg").val("Y");//有預設期限管制
                                 $("#act_sqlno").val(item.ctrl_sqlno);
-                                brta212form.add_ctrl();
+                                brta212form.add_ctrl(true);
                                 $("#ctrl_type_"+$("#ctrlnum").val()).val(item.ctrl_type);//管制種類
                                 $("#ctrl_remark_"+$("#ctrlnum").val()).val(item.ctrl_remark);//管制內容
                                 var days=0;//管制天數

@@ -28,10 +28,10 @@
     protected StringBuilder strOut = new StringBuilder();
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
-    DBHelper optconn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper connopt = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        if (optconn != null) optconn.Dispose();
+        if (connopt != null) connopt.Dispose();
     }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -40,7 +40,7 @@
         Response.Expires = -1;
 
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-        optconn = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
+        connopt = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
         row = (Request["row"] ?? "").Trim();
@@ -72,17 +72,17 @@
                     else
                         strOut.AppendLine("<div align='center'><h1>"+msg+"</h1></div>");
                 }
-                optconn.Commit();
-                //optconn.RollBack();
+                connopt.Commit();
+                //connopt.RollBack();
             }
             catch (Exception ex) {
-                optconn.RollBack();
-                Sys.errorLog(ex, optconn.exeSQL, prgid);
+                connopt.RollBack();
+                Sys.errorLog(ex, connopt.exeSQL, prgid);
                 //strOut.AppendLine("<div align='center'><h1>資料更新失敗("+ex.Message+")</h1></div>");
                 throw;
             }
             finally {
-                optconn.Dispose();
+                connopt.Dispose();
             }
             this.DataBind();
         }
@@ -99,7 +99,7 @@
 
                 //判斷狀態是否已異動,防止開雙視窗
                 SQL = "select count(*) from cancel_opt where opt_sqlno='" + opt_sqlno + "' and sqlno='" + cancel_sqlno + "' and tran_status='DT'";
-                objResult = optconn.ExecuteScalar(SQL);
+                objResult = connopt.ExecuteScalar(SQL);
                 int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
 
                 if (cnt == 0) {
@@ -109,7 +109,7 @@
                     //更新分案主檔狀態
                     SQL = "Update br_opt Set stat_code='DD'";
                     SQL += " where opt_sqlno='" + opt_sqlno + "'";
-                    optconn.ExecuteNonQuery(SQL);
+                    connopt.ExecuteNonQuery(SQL);
 
                     //更新註銷記錄檔
                     SQL = "Update cancel_opt Set tran_status='DY'";
@@ -118,13 +118,13 @@
                     SQL += ",tran_date=getdate()";
                     SQL += " where opt_sqlno='" + opt_sqlno + "'";
                     SQL += " and sqlno='" + cancel_sqlno + "'";
-                    optconn.ExecuteNonQuery(SQL);
+                    connopt.ExecuteNonQuery(SQL);
 
                     //找todo
                     SQL = "Select max(sqlno) as maxsqlno from todo_opt where syscode='" + Session["syscode"] + "'";
                     SQL += " and apcode='brt1a' and opt_sqlno='" + opt_sqlno + "'";
                     SQL += " and dowhat='DT'";
-                    objResult = optconn.ExecuteScalar(SQL);
+                    objResult = connopt.ExecuteScalar(SQL);
                     string pre_sqlno = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
                     //更新todo
                     SQL = "update todo_opt set approve_scode='" + Session["scode"] + "'";
@@ -134,14 +134,14 @@
                     SQL += " where apcode='brt1a' and opt_sqlno='" + opt_sqlno + "'";
                     SQL += " and dowhat='DT' and syscode='" + Session["syscode"] + "'";
                     SQL += " and sqlno=" + pre_sqlno;
-                    optconn.ExecuteNonQuery(SQL);
+                    connopt.ExecuteNonQuery(SQL);
 
                     //入流程控制檔
                     SQL = " insert into todo_opt(pre_sqlno,syscode,apcode,opt_sqlno,branch,case_no,in_scode,in_date";
                     SQL += ",dowhat,job_scode,job_status) values (";
                     SQL += "'" + pre_sqlno + "','" + Session["syscode"] + "','" + prgid + "'," + opt_sqlno + ",'" + branch + "','" + case_no + "'";
                     SQL += ",'" + Session["scode"] + "',getdate(),'DD','','NN')";
-                    optconn.ExecuteNonQuery(SQL);
+                    connopt.ExecuteNonQuery(SQL);
                 }
             }
         }
@@ -164,7 +164,7 @@
 
                 //判斷狀態是否已異動,防止開雙視窗
                 SQL = "select count(*) from cancel_opt where opt_sqlno='" + opt_sqlno + "' and sqlno='" + cancel_sqlno + "' and tran_status='DT'";
-                objResult = optconn.ExecuteScalar(SQL);
+                objResult = connopt.ExecuteScalar(SQL);
                 int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
 
                 if (cnt == 0) {
@@ -178,13 +178,13 @@
                     SQL += ",tran_date=getdate()";
                     SQL += " where opt_sqlno='" + opt_sqlno + "'";
                     SQL += " and sqlno='" + cancel_sqlno + "'";
-                    optconn.ExecuteNonQuery(SQL);
+                    connopt.ExecuteNonQuery(SQL);
 
                     //找todo
                     SQL = "Select max(sqlno) as maxsqlno from todo_opt where syscode='" + Session["syscode"] + "'";
                     SQL += " and apcode='brt1a' and opt_sqlno='" + opt_sqlno + "'";
                     SQL += " and dowhat='DT'";
-                    objResult = optconn.ExecuteScalar(SQL);
+                    objResult = connopt.ExecuteScalar(SQL);
                     string pre_sqlno = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
                     
                     //更新todo
@@ -195,7 +195,7 @@
                     SQL += " where apcode='brt1a' and opt_sqlno='" + opt_sqlno + "'";
                     SQL += " and dowhat='DT' and syscode='" + Session["syscode"] + "'";
                     SQL += " and sqlno=" + pre_sqlno;
-                    optconn.ExecuteNonQuery(SQL);
+                    connopt.ExecuteNonQuery(SQL);
 
                     if (input_scode != "") {
                         strTo.Add(input_scode + "@saint-island.com.tw");
@@ -218,7 +218,7 @@
         //爭救案人員
         SQL = "select scode from sysctrl.dbo.scode_roles where branch='" + Session["SeBranch"] + "' and dept='T' and roles='opt'";
         DataTable dt = new DataTable();
-        optconn.DataTable(SQL, dt);
+        connopt.DataTable(SQL, dt);
 
         switch (Sys.Host) {
             case "web08":
@@ -248,7 +248,7 @@
         List<string> strBCC = new List<string>();
         SQL = "select scode from sysctrl.dbo.scode_roles where branch='" + Session["SeBranch"] + "' and dept='T' and roles='opt'";
         DataTable dt = new DataTable();
-        optconn.DataTable(SQL, dt);
+        connopt.DataTable(SQL, dt);
 
         switch (Sys.Host) {
             case "web08":
@@ -280,7 +280,7 @@
                 SQL = "select Bseq,Bseq1,in_scode,scode_name,cust_area,cust_seq";
                 SQL += " ,appl_name,arcase_name,Last_date from vbr_opt where branch='" + Session["seBranch"] + "' and case_no='" + Request["case_no_" + i] + "'";
                 fseq = "";
-                using (SqlDataReader dr = optconn.ExecuteReader(SQL)) {
+                using (SqlDataReader dr = connopt.ExecuteReader(SQL)) {
                     if (dr.Read()) {
                         fseq = Sys.formatSeq(dr.SafeRead("bseq", ""), dr.SafeRead("bseq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
                         in_scode = dr.SafeRead("in_scode", "");

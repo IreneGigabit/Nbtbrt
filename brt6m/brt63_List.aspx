@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" CodePage="65001"%>
+﻿<%@ Page Language="C#" CodePage="65001" %>
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "System.Data" %>
 <%@ Import Namespace = "System.Collections.Generic"%>
@@ -116,7 +116,7 @@
         SQL += ",e.reportp  AS reportp,t.in_date as step_date,t.sqlno as todo_sqlno,s.rs_no,s.step_grade,s.step_date,s.opt_stat ";
         SQL += ",e.classp as erpt_code,isnull(at.att_sqlno,0) as att_sqlno ";
         SQL += ",(select code_name from cust_code where code_type='rpt_pr_t' and cust_code=e.classp) as report_name ";
-        SQL += ",(select min(ctrl_date) from ctrl_dmt where rs_no=s.rs_no and branch=s.branch and seq=s.seq and seq1=s.seq1 and step_grade=s.step_grade and ctrl_type='A1') as ctrl_date ";
+        SQL += ",(select min(ctrl_date) from ctrl_dmt where seq=s.seq and seq1=s.seq1 and ctrl_type like 'A%') as ctrl_date ";
         SQL += ",a.service + a.fees+ a.oth_money AS othsum ";
         SQL += ",isnull(s.send_sel,at.send_sel)send_sel,isnull(at.pr_scode,s.pr_scode)pr_scode ";
         SQL += ",''link_remark,''button,''urlasp,''rs_agt_no,''rs_agt_nonm ";
@@ -569,9 +569,9 @@
     <table border="0" cellspacing="1" cellpadding="2" width="100%">
         <tr>
 	        <td class="text9">
-		        ◎發文方式:<input type="radio" name="qrysend_way" id="qrysend_wayM" value="M" <%#ReqVal.TryGet("qrysend_way")=="M"?"checked":""%>><label for="qrysend_wayM">非電子送件<%#pcount%></label>
-		                   <input type="radio" name="qrysend_way" id="qrysend_wayE" value="E" <%#ReqVal.TryGet("qrysend_way")=="E"?"checked":""%>><label for="qrysend_wayE">電子送件<%#ecount%></label>
-		                   <input type="radio" name="qrysend_way" id="qrysend_wayEA" value="EA" <%#ReqVal.TryGet("qrysend_way")=="EA"?"checked":""%>><label for="qrysend_wayEA">註冊費電子送件<%#rcount%></label>
+		        ◎發文方式:<label><input type="radio" name="qrysend_way" value="M" <%#ReqVal.TryGet("qrysend_way")=="M"?"checked":""%>>非電子送件<%#pcount%></label>
+		                  <label><input type="radio" name="qrysend_way" value="E" <%#ReqVal.TryGet("qrysend_way")=="E"?"checked":""%>>電子送件<%#ecount%></label>
+		                  <label><input type="radio" name="qrysend_way" value="EA" <%#ReqVal.TryGet("qrysend_way")=="EA"?"checked":""%>>註冊費電子送件<%#rcount%></label>
 	        </td>
 	        <td class="text9">
 		        ◎承辦人員: <SELECT name="qryjob_scode" id="qryjob_scode"><%#html_job_scode%></SELECT>
@@ -616,7 +616,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>
@@ -685,12 +685,12 @@
 		                作業
 	                <%}%>
 	                </td>
-	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="a.seq,a.seq1">本所編號</td>
-	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="a.in_scode,a.in_no">營洽薪號-接洽序號</td>
-	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="a.case_date">交辦日期</td>
-	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="t.in_date,a.case_date">客收確認日</td>
-	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="d.cust_name">客戶名稱</td> 
-	                <td  class="lightbluetable" nowrap align="center">法定期限</td> 
+	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="a.seq,a.seq1">本所編號</u></td>
+	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="a.in_scode,a.in_no">營洽薪號-接洽序號</u></td>
+	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="a.case_date">交辦日期</u></td>
+	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="t.in_date,a.case_date">客收確認日</u></td>
+	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="d.cust_name">客戶名稱</u></td> 
+	                <td  class="lightbluetable" nowrap align="center"><u class="setOdr" v1="ctrl_date">法定期限</u></td> 
 	                <td  class="lightbluetable" nowrap align="center">案件名稱</td> 
 	                <td  class="lightbluetable" nowrap align="center">類別</td>
 	                <td  class="lightbluetable" nowrap align="center">案性</td> 
@@ -828,7 +828,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -896,7 +896,7 @@
     //顯示收發進度
     function showStep(seq,seq1){
         //***todo
-        window.open(getRootPath() + "/brtam/brta61Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" +seq+ "&aseq1=" +seq1,"myWindowOne", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" +seq+ "&aseq1=" +seq1,"myWindowOne", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 
     //20180323 改用.net產生電子申請書

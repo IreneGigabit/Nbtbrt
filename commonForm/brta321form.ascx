@@ -96,7 +96,7 @@
 
     brta321form.bind = function (jData) {
         $("#rs_no").val(jData.rs_no);
-        $("#cgrs").val(jData.cgrs).triggerHandler("change");
+        $("#cgrs").val(jData.cgrs.toUpperCase()).triggerHandler("change");
         $("#step_date").val(jData.step_date);
         $("#rs_type").val(jData.rs_type).triggerHandler("change");
         $("#rs_class_name").val(jData.rs_class_name);

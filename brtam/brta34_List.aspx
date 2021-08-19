@@ -110,6 +110,10 @@
         if (ReqVal.TryGet("qrySeq1") != "") {
             SQL += "AND a.Seq1='" + ReqVal["qrySeq1"] + "' ";
         }
+        
+        if (ReqVal.TryGet("zs_flag") != "") {//已本發
+            SQL += "AND isnull(a.zs_rs_sqlno,0)>0 ";
+        }
 
         ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder", "a.case_no"));
         if (ReqVal.TryGet("qryOrder") != "") {
@@ -194,6 +198,7 @@
             upd_flag = "Y";
 
             SQL = "select count(*) from step_dmt where rs_sqlno = '" + zs_rs_sqlno + "' and conf_date is not null";
+            objResult = conn.ExecuteScalar(SQL);
             int cc = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
             if (cc > 0) {
                 upd_flag = "N";
@@ -204,23 +209,22 @@
             if ((HTProgRight & 8) != 0) {
                 if (zs_flag == "N") {
                     if (last_date == "") {
-                        url = "<img src=\"../images/alarm.gif\">";
+                        url += "<img src=\"../images/alarm.gif\">";
                     } else {
-                        url = "<a href=\"brta34_edit.aspx?submitTask=A&prgid=" + prgid + "&cgrs=CR&cr_rs_no=" + Eval("rs_no") + "&cr_rs_sqlno=" + Eval("rs_sqlno") + "&cr_step_grade=" + Eval("step_grade") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&zs_rs_sqlno=" + Eval("zs_rs_sqlno") + "&case_no=" + Eval("case_no") + "\" target=\"Eblank\">[本發]</a>";
+                        url += "<a href=\"brta34_edit.aspx?submitTask=A&prgid=" + prgid + "&cgrs=CR&cr_rs_no=" + Eval("rs_no") + "&cr_rs_sqlno=" + Eval("rs_sqlno") + "&cr_step_grade=" + Eval("step_grade") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&zs_rs_sqlno=" + Eval("zs_rs_sqlno") + "&case_no=" + Eval("case_no") + "\" target=\"Eblank\">[本發]</a>";
                     }
                 } else {
                     if (upd_flag == "Y") {
-                        url = "<a href=\"brta34_edit.aspx?submitTask=U&prgid=" + prgid + "&cgrs=CR&cr_rs_no=" + Eval("rs_no") + "&cr_rs_sqlno=" + Eval("rs_sqlno") + "&cr_step_grade=" + Eval("step_grade") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&zs_rs_sqlno=" + Eval("zs_rs_sqlno") + "&case_no=" + Eval("case_no") + "\" target=\"Eblank\">[維護]</a>";
-                    } else {
-                        url = "<a href=\"brta34_edit.aspx?submitTask=Q&prgid=" + prgid + "&cgrs=CR&cr_rs_no=" + Eval("rs_no") + "&cr_rs_sqlno=" + Eval("rs_sqlno") + "&cr_step_grade=" + Eval("step_grade") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&zs_rs_sqlno=" + Eval("zs_rs_sqlno") + "&case_no=" + Eval("case_no") + "\" target=\"Eblank\">[已本發]</a>";
+                        url += "<a href=\"brta34_edit.aspx?submitTask=U&prgid=" + prgid + "&cgrs=CR&cr_rs_no=" + Eval("rs_no") + "&cr_rs_sqlno=" + Eval("rs_sqlno") + "&cr_step_grade=" + Eval("step_grade") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&zs_rs_sqlno=" + Eval("zs_rs_sqlno") + "&case_no=" + Eval("case_no") + "\" target=\"Eblank\">[維護]</a>";
                     }
+                    url += "<a href=\"brta34_edit.aspx?submitTask=Q&prgid=" + prgid + "&cgrs=CR&cr_rs_no=" + Eval("rs_no") + "&cr_rs_sqlno=" + Eval("rs_sqlno") + "&cr_step_grade=" + Eval("step_grade") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&zs_rs_sqlno=" + Eval("zs_rs_sqlno") + "&case_no=" + Eval("case_no") + "\" target=\"Eblank\">[已本發]</a>";
                 }
             }
         } else {
             if (zs_flag == "N") {
-                url = "<a href=\"brta22_edit.aspx?submitTask=Q&prgid=" + prgid + "&cgrs=CR&cr_rs_no=" + Eval("rs_no") + "&cr_rs_sqlno=" + Eval("rs_sqlno") + "&cr_step_grade=" + Eval("step_grade") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&case_no=" + Eval("case_no") + "\" target=\"Eblank\">[客收查詢]</a>";
+                url += "<a href=\"brta22_edit.aspx?submitTask=Q&prgid=" + prgid + "&cgrs=CR&cr_rs_no=" + Eval("rs_no") + "&cr_rs_sqlno=" + Eval("rs_sqlno") + "&cr_step_grade=" + Eval("step_grade") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&case_no=" + Eval("case_no") + "\" target=\"Eblank\">[客收查詢]</a>";
             } else {
-                url = "<a href=\"brta34_edit.aspx?submitTask=Q&prgid=" + prgid + "&cgrs=CR&cr_rs_no=" + Eval("rs_no") + "&cr_rs_sqlno=" + Eval("rs_sqlno") + "&cr_step_grade=" + Eval("step_grade") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&zs_rs_sqlno=" + Eval("zs_rs_sqlno") + "&case_no=" + Eval("case_no") + "\" target=\"Eblank\">[本發查詢]</a>";
+                url += "<a href=\"brta34_edit.aspx?submitTask=Q&prgid=" + prgid + "&cgrs=CR&cr_rs_no=" + Eval("rs_no") + "&cr_rs_sqlno=" + Eval("rs_sqlno") + "&cr_step_grade=" + Eval("step_grade") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "&zs_rs_sqlno=" + Eval("zs_rs_sqlno") + "&case_no=" + Eval("case_no") + "\" target=\"Eblank\">[本發查詢]</a>";
             }
         }
         
@@ -264,7 +268,8 @@
 		    <TD class=whitetablebg align=left >
                 ◎客戶編號：
 			    <INPUT type="text" id="qrycust_area" name="qrycust_area" size="1" class=SEdit readonly maxlength="1" value="<%#Session["seBranch"]%>">-
-			    <INPUT type="text" id="qrycust_seq" name="qrycust_seq" size="6" maxlength="6">
+			    <INPUT type="text" id="qrycust_seq" name="qrycust_seq" size="6" maxlength="6" value="<%#ReqVal.TryGet("qrycust_seq")%>">
+                &nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" id="zs_flag" name="zs_flag" value="Y" <%#ReqVal.TryGet("zs_flag")!=""?"checked":""%>>已本發</label>
 		    </TD>
         </tr>
         <tr>
@@ -272,7 +277,7 @@
 		        ◎洽案營洽: <%#td_tscode%>
 	        </td>
 	        <td class="text9">
-		        ◎本所編號:<input type="text" name="qrySeq" id="qrySeq" size="30" value="">-<input type="text" name="qrySeq1" id="qrySeq1" size="2" value="">
+		        ◎本所編號:<input type="text" name="qrySeq" id="qrySeq" size="30" value="<%#ReqVal.TryGet("qrySeq")%>">-<input type="text" name="qrySeq1" id="qrySeq1" size="2" value="<%#ReqVal.TryGet("qrySeq1")%>">
 	        </td>
 	        <td class="text9">
 		        <input type="button" value="查詢" class="cbutton" onClick="$('#GoPage').val('1');goSearch()" id="qrybutton" name="qrybutton">
@@ -380,7 +385,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 

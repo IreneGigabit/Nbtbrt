@@ -12,7 +12,7 @@
 
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內案官方收文營洽確認作業";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -123,24 +123,6 @@
 
     private void QueryData() {
         Dictionary<string, string> add_gr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        /*
-        Dictionary<string, string> add_gr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase){
-        {"grconf_sqlno",""},{"rs_sqlno",""},
-        //Brta21form案件主檔
-        {"new_seq",""}, {"branch",""},{"seq",""},{"seq1",""},{"fseq",""},
-        //brta211form收文資料
-        {"mg_step_grade",""},{"mg_rs_sqlno",""},{"rs_no",""},{"nstep_grade",""},{"cgrs",""},{"step_date",""},{"mp_date",""},
-        {"send_cl",""},{"receive_no",""},{"receive_way",""},{"mg_rs_detail",""},{"pdfsource",""},{"rs_type",""},{"rs_class_name",""},
-        {"rs_code_name",""},{"act_code_name",""},{"rs_class",""},{"rs_code",""},{"act_sqlno",""},{"act_code",""},
-        {"ocase_stat",""},{"ncase_stat",""},{"ncase_statnm",""},{"rs_detail",""},{"doc_detail",""},
-        {"pr_scan",""},{"pr_scan_page",""},{"pr_scan_remark",""},{"pr_scan_path",""},{"cs_flag",""},{"csd_flag",""},
-        {"cs_rs_no",""},{"send_way",""},{"pr_scode",""},{"cs_remark_code",""},{"cs_remark",""},{"cs_detail",""},
-        {"pmail_date",""},{"mail_date",""},{"mail_scode",""},{"mwork_date",""},{"mail_scname",""},{"print_date",""},
-        //brta212管制資料
-        {"ectrlnum",""},
-        //brt15form營洽後續作業
-        {"job_case",""},{"job_no",""},{"job_type",""},{"pre_date",""},{"sales_remark",""},{"cs_report",""}
-        };*/
         
         SQL = "select a.*,c.branch,c.cappl_name as appl_name,c.csd_flag as scsd_flag,c.cs_remark,c.pmail_date";
         SQL += ",c.step_date,c.mp_date,c.rs_detail,c.rs_no,c.cg,c.rs,c.send_cl,c.rs_class,c.rs_code,c.act_code";
@@ -248,8 +230,8 @@
             add_gr["scs_detail"] = dr.SafeRead("scs_detail", "");
             add_gr["cs_send_way"] = dr.SafeRead("cs_send_way", "");
             add_gr["last_date"] = dr.GetDateTimeString("last_date", "yyyy/M/d");
-            add_gr["sales_csd_flag"] = dr.SafeRead("csd_flag", "");
-            add_gr["csd_remark"] = dr.SafeRead("csd_remark", "");
+            //add_gr["sales_csd_flag"] = dr.SafeRead("csd_flag", "");
+            //add_gr["csd_remark"] = dr.SafeRead("csd_remark", "");
             add_gr["pstep_date"] = dr.GetDateTimeString("pstep_date", "yyyy/M/d");
             add_gr["job_type"] = dr.SafeRead("job_type", "");
             add_gr["job_case"] = dr.SafeRead("job_case", "");
@@ -257,13 +239,13 @@
             add_gr["sales_remark"] = dr.SafeRead("sales_remark", "");
             add_gr["cs_report"] = dr.SafeRead("cs_report", "");
             add_gr["job_no"] = dr.SafeRead("job_no", "");
-            add_gr["finish_date"] = dr.GetDateTimeString("finish_date", "yyyy/M/d");
+            //add_gr["finish_date"] = dr.GetDateTimeString("finish_date", "yyyy/M/d");
             //客戶報導資料
             add_gr["csd_flag"] = dr.SafeRead("scsd_flag", "");
             add_gr["cs_remark"] = dr.SafeRead("cs_remark", "");
             add_gr["pmail_date"] = dr.GetDateTimeString("pmail_date", "yyyy/M/d");
             //20170828增加客戶卷號
-            add_gr["cust_prod"] = dr.SafeRead("cust_prod", "");
+            //add_gr["cust_prod"] = dr.SafeRead("cust_prod", "");
         }
 
         add_gr["pdfsource"] = "GR";
@@ -294,7 +276,7 @@
             }
         }
 
-        //官收確認文件
+        //官收確認自行客戶報導文件
         DataTable dtGRAttach = new DataTable();
         SQL = "select *,''view_path from dmt_attach where seq='" + seq + "' and seq1='" + seq1 + "' and step_grade=" + add_gr["nstep_grade"] + " and source='grconf_cs' and attach_flag<>'D' order by attach_sqlno ";
         conn.DataTable(SQL, dtGRAttach);
@@ -324,8 +306,8 @@
         Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
         Response.Write(",\"add_gr\":" + JsonConvert.SerializeObject(add_gr, settings).ToUnicode() + "\n");//交辦官發預設值
         Response.Write(",\"gr_ctrl\":" + JsonConvert.SerializeObject(dtCtrl, settings).ToUnicode() + "\n");//管制資料
-        Response.Write(",\"mg_attach\":" + JsonConvert.SerializeObject(dtMGAttach, settings).ToUnicode() + "\n");//總管處官收文件
-        Response.Write(",\"gr_attach\":" + JsonConvert.SerializeObject(dtGRAttach, settings).ToUnicode() + "\n");//官收確認文件
+        Response.Write(",\"mg_attach\":" + JsonConvert.SerializeObject(dtMGAttach, settings).ToUnicode() + "\n");//總管處官收電子公文檔
+        Response.Write(",\"gr_attach\":" + JsonConvert.SerializeObject(dtGRAttach, settings).ToUnicode() + "\n");//官收確認自行客戶報導文件
         Response.Write("}");
         Response.End();
     }
@@ -352,9 +334,9 @@
     <tr>
         <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
             &nbsp;&nbsp;<span id="span_rs_no"></span>
-		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;&nbsp;
-		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;&nbsp;
-		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;
 		案件編號：<span id="span_fseq"></span>
         </td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
@@ -367,12 +349,12 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id=ctrl_flg name=ctrl_flg value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
-    <INPUT TYPE="text" id=havectrl name=havectrl value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
-    <INPUT TYPE="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="text" id="submittask" name=submittask value="<%=submitTask%>">
-    <INPUT TYPE="text" id=grconf_sqlno name=grconf_sqlno>
-    <INPUT TYPE="text" id=rs_sqlno name=rs_sqlno>
+    <INPUT TYPE="hidden" id=ctrl_flg name=ctrl_flg value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
+    <INPUT TYPE="hidden" id=havectrl name=havectrl value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
+    <INPUT TYPE="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <INPUT TYPE="hidden" id="submittask" name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="hidden" id=grconf_sqlno name=grconf_sqlno>
+    <INPUT TYPE="hidden" id=rs_sqlno name=rs_sqlno>
 
     <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
@@ -444,8 +426,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
-<div id="msg" style='text-align:left;height:100px'></div>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -476,7 +457,6 @@
         $.ajax({
             type: "get",
             url: "brt15_edit.aspx?json=Y&<%#Request.QueryString%>",
-            //url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
             async: false,
             cache: false,
             success: function (json) {

@@ -146,13 +146,10 @@
 
             //分頁完再處理其他資料才不會虛耗資源
             for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
+                DataRow dr = page.pagedTable.Rows[i];
+
                 //組本所編號
-                page.pagedTable.Rows[i]["fseq"] = Sys.formatSeq(
-                    page.pagedTable.Rows[i].SafeRead("seq", "")
-                    , page.pagedTable.Rows[i].SafeRead("seq1", "")
-                    , ""
-                    , ""
-                    , "");
+                dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", "", "");
             }
 
             var settings = new JsonSerializerSettings()

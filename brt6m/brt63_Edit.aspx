@@ -104,11 +104,6 @@
             Lock["QLock"] = "Lock";
         }
 
-        Lock["Lock38"] = Lock.TryGet("QLock");
-        if (prgid == "brta38") {
-            Lock["Lock38"] = "Lock";
-        }
-
         StrFormBtnTop += "<a href=\"" + Sys.getCase52Aspx("brt52", in_no, in_scode, "Edit") + "\" target=\"Eblank\">[交辦維護作業]</a>\n";
         StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>";
 
@@ -424,9 +419,9 @@
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
         <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
-		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;&nbsp;
-		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;&nbsp;
-		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;
+		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;
 		案件編號：<span id="span_fseq"></span>&nbsp;&nbsp;<span id="span_rs_no" style="display:none">發文序號：</span>
         </td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
@@ -439,20 +434,20 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id="submittask" name=submittask value="<%=submitTask%>">
-    <INPUT TYPE="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="text" id="prgid1" name="prgid1" value="<%=Request["prgid1"]%>">
-    <INPUT TYPE="text" id="todo_sqlno" name="todo_sqlno" value="<%=Request["todo_sqlno"]%>"><!--承辦交辦發文或程序官發確認todo_dmt.sqlno-->
-    <INPUT TYPE="text" id="in_scode" name="in_scode" value="<%=in_scode%>"><!--對應交辦case_dmt.in_scode-->
-    <INPUT TYPE="text" id="in_no" name="in_no" value="<%=in_no%>"><!--對應交辦case_dmt.in_no-->
-    <INPUT TYPE="text" id="case_no" name="case_no" value="<%=case_no%>"><!--對應交辦case_dmt.case_no-->
-    <INPUT TYPE="text" id="att_sqlno" name="att_sqlno" value="<%=Request["att_sqlno"]%>"><!--對應交辦發文attcase_dmt.att_sqlno-->
-    <INPUT TYPE="text" id="ctrl_flg" name="ctrl_flg" value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
-    <INPUT TYPE="text" id="havectrl" name="havectrl" value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
-    <INPUT TYPE="text" id="task" name="task" value="<%=Request["task"]%>"><!--prsave:承辦發文維護,pr:承辦自行發文,cancel:不需發文,conf:確認-->
-    <input type="text" id="edoc_type" name="edoc_type"><!--判斷要檢查的電子送件文件種類xx,改用申請書檢核-->
-    <input type="text" id="report_name" name="report_name"><!--案性對應申請書名稱xx,改用上傳檔名-->
-    <input type="text" id="contract_flag" name="contract_flag"><!--契約書後補註記N:無或已後補,Y:有-->
+    <INPUT TYPE="hidden" id="submittask" name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <INPUT TYPE="hidden" id="prgid1" name="prgid1" value="<%=Request["prgid1"]%>">
+    <INPUT TYPE="hidden" id="todo_sqlno" name="todo_sqlno" value="<%=Request["todo_sqlno"]%>"><!--承辦交辦發文或程序官發確認todo_dmt.sqlno-->
+    <INPUT TYPE="hidden" id="in_scode" name="in_scode" value="<%=in_scode%>"><!--對應交辦case_dmt.in_scode-->
+    <INPUT TYPE="hidden" id="in_no" name="in_no" value="<%=in_no%>"><!--對應交辦case_dmt.in_no-->
+    <INPUT TYPE="hidden" id="case_no" name="case_no" value="<%=case_no%>"><!--對應交辦case_dmt.case_no-->
+    <INPUT TYPE="hidden" id="att_sqlno" name="att_sqlno" value="<%=Request["att_sqlno"]%>"><!--對應交辦發文attcase_dmt.att_sqlno-->
+    <INPUT TYPE="hidden" id="ctrl_flg" name="ctrl_flg" value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
+    <INPUT TYPE="hidden" id="havectrl" name="havectrl" value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
+    <INPUT TYPE="hidden" id="task" name="task" value="<%=Request["task"]%>"><!--prsave:承辦發文維護,pr:承辦自行發文,cancel:不需發文,conf:確認-->
+    <input type="hidden" id="edoc_type" name="edoc_type"><!--判斷要檢查的電子送件文件種類xx,改用申請書檢核-->
+    <input type="hidden" id="report_name" name="report_name"><!--案性對應申請書名稱xx,改用上傳檔名-->
+    <input type="hidden" id="contract_flag" name="contract_flag"><!--契約書後補註記N:無或已後補,Y:有-->
 
     <uc1:Brta21form runat="server" id="Brta21form" /><!--案件主檔欄位畫面，與收文共同-->
     <uc1:brta311form runat="server" ID="Brta311form" /><!--官發欄位畫面-->
@@ -535,7 +530,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 <div id="msg" style='text-align:left;height:100px'></div>
 </body>
 </html>
@@ -592,7 +587,7 @@
     main.bind = function () {
         $("#span_fseq").html(jMain.add_gs.fseq);
         $("#in_scode").val(jMain.add_gs.in_scode);
-        $("#span_rs_no").html("發文序號："+jMain.add_gs.rs_sqlno);
+        $("#span_rs_no").html("發文序號："+jMain.add_gs.rs_no);
         $("#job_remark").val(jMain.add_gs.remark);
         $("#contract_flag").val(jMain.add_gs.contract_flag);
 
@@ -603,19 +598,18 @@
 
         openread();	//控制特定欄位不能修改
 
+        brta311form.getcase_no_data1(jMain.add_gs.case_no);//顯示交辦單號
         if($("#submittask").val()=="A"){
-            brta311form.getcase_no_data1(jMain.add_gs.case_no);//顯示交辦單號
             if(main.task=="cancel"){
                 $("#tabgs").hide();//發文資料
                 $("#tr_respdate").show();//期限銷管
             }
+            $("#fees").val($("#tot_fees").val());
         }else{
             $("#task").val("conf");
-        }
-
-        if($("#submittask").val()=="U") {
             $("#span_rs_no").show();
         }
+
         if($("#submittask").val()!="Q"){
             if (jMain.add_gs.contract_flag=="Y" && main.task=="pr"){
                 $("#div_sign").show();

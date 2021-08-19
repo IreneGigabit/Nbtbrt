@@ -134,7 +134,7 @@
         <ItemTemplate>
         <tr>
             <td align="left" class="apname">&nbsp;
-                <a href="sys14_List.aspx?prgid=<%#prgid%>&Syscode=<%#Eval("Syscode")%>&LoginGrp=<%#Eval("LoginGrp")%>">
+                <a href="javascript:void(0)" onclick="openwin(this)" v1="sys14_List.aspx?prgid=<%#prgid%>&Syscode=<%#Eval("Syscode")%>&LoginGrp=<%#Eval("LoginGrp")%>&ff=1">
                 <%#Eval("LoginGrp")%>_<%#Eval("GrpName")%>(<%#Eval("gcount")%>)
                 </a>
             </td>
@@ -190,7 +190,9 @@
 </tr>
 </table>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<div id="dialog"></div>
+
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -239,4 +241,10 @@
         reg.target = "ActFrame";
         reg.submit();
     });
+
+    function openwin(linkObj) {
+        $('#dialog')
+            .html('<iframe style="border: 0px;" src="' + $(linkObj).attr("v1") + '" width="100%" height="100%"></iframe>')
+            .dialog({autoOpen: true,modal: true,height: 420,width: 700,title: "查詢群組人員"});
+    }
 </script>

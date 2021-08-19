@@ -45,29 +45,25 @@
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
-        
+
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
-        
+
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
         submitTask = ReqVal.TryGet("submittask").ToUpper();
-        
+
         json = (Request["json"] ?? "").Trim().ToUpper();
         seq = ReqVal.TryGet("seq");
         seq1 = ReqVal.TryGet("seq1");
         cgrs = ReqVal.TryGet("cgrs");
-        
+
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
-            if (json == "Y") {
-                QueryData();
-            } else {
-                PageLayout();
-                ChildBind();
-            }
+            PageLayout();
+            ChildBind();
             this.DataBind();
         }
     }
@@ -104,194 +100,6 @@
         Brta211form.Lock = new Dictionary<string, string>(Lock);
         Brta212form.Lock = new Dictionary<string, string>(Lock);
     }
-
-    private void QueryData() {
-        Dictionary<string, string> add_gr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-        add_gr["rs_no"] = "";
-        add_gr["cs_rs_no"] = "";
-
-        //案件主檔
-        DataTable dtDmt = Sys.GetDmt(conn, seq, seq1);
-        if (dtDmt.Rows.Count > 0) add_gr["ectrlnum"] = dtDmt.Rows[0].SafeRead("ectrlnum", "0");
-
-        if (submitTask == "A") {
-            add_gr["seq1"] = "_";
-            add_gr["step_date"] = DateTime.Today.ToString("yyyy/M/d");
-            switch (DateTime.Today.DayOfWeek) {
-                case DayOfWeek.Saturday: add_gr["mp_date"] = DateTime.Today.AddDays(-1).ToShortDateString(); break;//星期六減一天
-                case DayOfWeek.Sunday: add_gr["mp_date"] = DateTime.Today.AddDays(-2).ToShortDateString(); break;//星期日減二天
-                case DayOfWeek.Monday: add_gr["mp_date"] = DateTime.Today.AddDays(-3).ToShortDateString(); break;//星期一減三天
-                default: add_gr["mp_date"] = DateTime.Today.AddDays(-1).ToShortDateString(); break;//減一天
-            }
-            add_gr["send_cl"] = "1";
-            add_gr["rs_type"] = Sys.getRsType();
-        }
-
-        if ((submitTask == "U" || submitTask == "Q" || submitTask == "D") || (submitTask == "A" && prgid == "brta21")) {
-            SQL = "Select * From vstep_dmt Where RS_No = '" + Request["rs_no"] + "'";
-            DataTable dtStepMgt = new DataTable();
-            conn.DataTable(SQL, dtStepMgt);
-
-            if (dtStepMgt.Rows.Count > 0) {
-                DataRow dr = dtStepMgt.Rows[0];
-
-                add_gr["rs_no"] = dr.SafeRead("rs_no", "");
-                add_gr["branch"] = dr.SafeRead("branch", "");
-                add_gr["seq"] = dr.SafeRead("seq", "");
-                add_gr["seq1"] = dr.SafeRead("seq1", "");
-                add_gr["fseq"] = Sys.formatSeq(add_gr["seq"], add_gr["seq1"], "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
-                add_gr["step_grade"] = dr.SafeRead("step_grade", "");
-                add_gr["nstep_grade"] = dr.SafeRead("step_grade", "");
-                add_gr["cgrs"] = dr.SafeRead("cg", "") + dr.SafeRead("rs", "");
-                add_gr["step_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
-                add_gr["mp_date"] = dr.GetDateTimeString("mp_date", "yyyy/M/d");
-                add_gr["send_cl"] = dr.SafeRead("send_cl", "");
-                add_gr["receive_no"] = dr.SafeRead("receive_no", "");
-                add_gr["receive_way"] = dr.SafeRead("receive_way", "");
-                add_gr["rs_type"] = Sys.getRsType();
-                add_gr["rs_class"] = dr.SafeRead("rs_class", "");
-                add_gr["rs_code"] = dr.SafeRead("rs_code", "");
-                add_gr["act_code"] = dr.SafeRead("act_code", "");
-                add_gr["oact_code"] = dr.SafeRead("act_code", "");
-
-                //取得結構分類、代碼、處理事項名稱
-                SQL = "select code_name from cust_code where code_type='" + add_gr["rs_type"] + "' and cust_code='" + add_gr["rs_class"] + "'";
-                objResult = conn.ExecuteScalar(SQL);
-                add_gr["rs_class_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                SQL = "select rs_detail from code_br where rs_type='" + add_gr["rs_type"] + "' and rs_code='" + add_gr["rs_code"] + "' and gr='Y' ";
-                objResult = conn.ExecuteScalar(SQL);
-                add_gr["rs_code_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                SQL = "select code_name from cust_code where code_type='tact_code' and cust_code='" + add_gr["act_code"] + "'";
-                objResult = conn.ExecuteScalar(SQL);
-                add_gr["act_code_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-
-                //取得案件狀態
-                SQL = " select rs_type,rs_class,rs_code,act_code,case_stat,case_stat_name ";
-                SQL += "from vcode_act ";
-                SQL += "where rs_code = '" + add_gr["rs_code"] + "' ";
-                SQL += "and act_code = '" + add_gr["act_code"] + "' ";
-                SQL += "and rs_type = '" + add_gr["rs_type"] + "'";
-                SQL += "and cg = 'G' and rs = 'R'";
-                using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
-                    if (dr0.Read()) {
-                        add_gr["ocase_stat"] = dr0.SafeRead("case_stat", "");
-                        add_gr["ncase_stat"] = dr0.SafeRead("case_stat", "");
-                        add_gr["ncase_statnm"] = dr0.SafeRead("case_stat_name", "");
-                    }
-                }
-                add_gr["rs_detail"] = dr.SafeRead("rs_detail", "");
-                add_gr["doc_detail"] = dr.SafeRead("doc_detail", "");
-                add_gr["cs_rs_no"] = dr.SafeRead("cs_rs_no", "");
-                add_gr["cs_detail"] = "";
-                if (add_gr["cs_rs_no"] != "") {
-                    SQL = " select rs_no,rs_detail,send_way,print_date,mail_date,mail_scode,mwork_date";
-                    SQL += ",(select sc_name from sysctrl.dbo.scode where scode=mail_scode) as mail_scname ";
-                    SQL += "from cs_dmt ";
-                    SQL += "where rs_no = '" + add_gr["cs_rs_no"] + "' ";
-                    using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
-                        if (dr0.Read()) {
-                            add_gr["cs_detail"] = dr0.SafeRead("rs_detail", "");
-                            add_gr["send_way"] = dr0.SafeRead("send_way", "");
-                            add_gr["print_date"] = dr0.SafeRead("print_date", "");
-                            add_gr["mail_date"] = dr0.GetDateTimeString("mail_date", "yyyy/M/d");
-                            add_gr["mail_scode"] = dr0.SafeRead("mail_scode", "");
-                            add_gr["mail_scname"] = dr0.SafeRead("mail_scname", "");
-                            add_gr["mwork_date"] = dr0.SafeRead("mwork_date", "");
-                        }
-                    }
-                }
-                add_gr["pr_scode"] = dr.SafeRead("pr_scode", "");
-                add_gr["pr_scan"] = dr.SafeRead("pr_scan", "");
-                add_gr["pr_scan_page"] = dr.SafeRead("pr_scan_page", "");
-                add_gr["pr_scan_remark"] = dr.SafeRead("pr_scan_remark", "");
-                add_gr["pr_scan_path"] = dr.SafeRead("pr_scan_path", "");
-                add_gr["csd_flag"] = dr.SafeRead("csd_flag", "");
-                add_gr["cs_remark"] = dr.SafeRead("cs_remark", "");
-                add_gr["pmail_date"] = dr.GetDateTimeString("pmail_date", "yyyy/M/d");
-                add_gr["cust_prod"] = dr.SafeRead("cust_prod", "");
-
-                //取得總收發文收文內容
-                add_gr["mg_rs_detail"] = "";
-                if (dr.SafeRead("mg_rs_sqlno", "") != "") {
-                    SQL = " select rs_detail from step_mgt_temp where mg_step_rs_sqlno='" + dr.SafeRead("mg_rs_sqlno", "") + "' ";
-                    using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
-                        if (dr0.Read()) {
-                            add_gr["mg_rs_detail"] = dr0.SafeRead("rs_detail", "");
-                        }
-                    }
-                }
-
-                //抓取文件掃描資料
-                //因電子收文有公文檔，所以掃描不一定放第一順位，改用order by抓第一筆掃描資料
-                SQL = " select chk_page,attach_path,attach_desc from dmt_attach where seq=" + add_gr["seq"] + " and seq1='" + add_gr["seq1"] + "' and step_grade=" + add_gr["nstep_grade"] + " and source='scan' and chk_status like 'Y%' order by attach_no ";
-                using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
-                    if (dr0.Read()) {
-                        add_gr["pr_scan"] = "Y";
-                        add_gr["pr_scan_page"] = dr0.SafeRead("chk_page", "");
-                        add_gr["pr_scan_path"] = Sys.Path2Nbtbrt(dr0.SafeRead("attach_path", ""));
-                        add_gr["pr_scan_remark"] = dr0.SafeRead("attach_desc", "");
-                    }
-                }
-            }
-        }
-
-        add_gr["pdfsource"] = "GR";
-        //2019/6/18修改，電子公文rsreive_way=R9其source=EGGR，其餘皆為GR，路徑只有電子公文會不同須判斷，其餘都直接連到總管處顯示
-        if (add_gr["receive_way"] == "R9") {//R9_電子公文
-            add_gr["pdfsource"] = "EGR";
-        }
-
-        //2019/6/20因官收作業進入無案件編號  
-        DataTable dtMGAttach = new DataTable();
-        SQL = "select attach_path,attach_name,source,''view_path from dmt_attach where seq=" + add_gr["seq"] + " and seq1='" + add_gr["seq1"] + "' and step_grade=" + add_gr["nstep_grade"] + " and source='" + add_gr["pdfsource"] + "' and attach_flag<>'D' order by attach_sqlno ";
-        conn.DataTable(SQL, dtMGAttach);
-        for (int i = 0; i < dtMGAttach.Rows.Count; i++) {
-            DataRow dr = dtMGAttach.Rows[i];
-            string attach_path = Sys.Path2Nbtbrt(dr.SafeRead("attach_path", ""));
-            string viewserver = "http://" + Sys.Host;
-
-            //若區所主機找不到就找總所主機
-            if (Sys.CheckFile(attach_path) == false) {
-                viewserver = "http://" + Sys.MG_IIS;
-                if (add_gr["pdfsource"] == "EGR") {
-                    attach_path = attach_path.Replace("/nbtbrt/", "/MG/");
-                }
-            }
-            dr["attach_path"] = attach_path;
-            dr["view_path"] = viewserver + attach_path;
-        }
-
-        //管制資料
-        DataTable dtCtrl = new DataTable();
-        if (prgid == "brta21" && add_gr.TryGet("from_flag") == "C") {//官收電子收文
-            SQL = " select tctrl_sqlno as sqlno,ctrl_type,ctrl_remark,ctrl_date,null as resp_date,null as resp_grade ";
-            SQL += " from ctrl_mgt_temp where temp_rs_sqlno=" + Request["temp_rs_sqlno"] + " and ctrl_type like 'A%' ";
-            SQL += " union select null as sqlno,ctrl_type,ctrl_remark,ctrl_date,resp_date,mg_resp_step_grade as resp_grade ";
-            SQL += " from resp_mgt_temp where temp_rs_sqlno=" + Request["temp_rs_sqlno"] + " and ctrl_type like 'A%' ";
-        } else {
-            SQL = " select sqlno,ctrl_type,ctrl_remark,ctrl_date,null as resp_date,null as resp_grade from ctrl_dmt ";
-            SQL += " where rs_no='" + add_gr["rs_no"] + "'";
-            SQL += " union select sqlno,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_grade from resp_dmt ";
-            SQL += " where rs_no='" + add_gr["rs_no"] + "'";
-            SQL += " order by ctrl_date";
-        }
-        conn.DataTable(SQL, dtCtrl);
-
-        var settings = new JsonSerializerSettings()
-        {
-            Formatting = Formatting.Indented,
-            ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
-            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
-        };
-        Response.Write("{");
-        Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
-        Response.Write(",\"add_gr\":" + JsonConvert.SerializeObject(add_gr, settings).ToUnicode() + "\n");//交辦官發預設值
-        Response.Write(",\"gr_ctrl\":" + JsonConvert.SerializeObject(dtCtrl, settings).ToUnicode() + "\n");//管制資料
-        Response.Write(",\"mg_attach\":" + JsonConvert.SerializeObject(dtMGAttach, settings).ToUnicode() + "\n");//總管處官收文件
-        Response.Write("}");
-        Response.End();
-    }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
@@ -314,11 +122,11 @@
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
         <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
-		<img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;&nbsp;
-		<img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;&nbsp;
-		<img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;&nbsp;
-		案件編號：<span id="span_fseq"></span>
-        &nbsp;&nbsp;<span id="span_rs_no"></span>
+		    <img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;
+		    <img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;
+		    <img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;
+		    案件編號：<span id="span_fseq"></span>
+            &nbsp;&nbsp;<span id="span_rs_no"></span>
         </td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <%#StrFormBtnTop%>
@@ -330,12 +138,12 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id="prgid" name="prgid" value="<%=prgid%>">
-    <INPUT TYPE="text" id="submittask" name=submittask value="<%=submitTask%>">
-    <INPUT TYPE="text" id=ctrl_flg name=ctrl_flg value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
-    <INPUT TYPE="text" id=havectrl name=havectrl value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
-    <INPUT TYPE="text" id=oact_code name=oact_code>
-    <INPUT TYPE="text" id=csmail_flag name=csmail_flag value="N">
+    <INPUT TYPE="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <INPUT TYPE="hidden" id="submittask" name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="hidden" id=ctrl_flg name=ctrl_flg value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
+    <INPUT TYPE="hidden" id=havectrl name=havectrl value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
+    <INPUT TYPE="hidden" id=oact_code name=oact_code>
+    <INPUT TYPE="hidden" id=csmail_flag name=csmail_flag value="N">
     <center>
         <uc1:Brta21form runat="server" id="Brta21form" /><!--案件主檔欄位畫面，與收文共同-->
         <uc1:brta211form runat="server" id="Brta211form" /><!--官收欄位畫面-->
@@ -360,8 +168,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
-<div id="msg" style='text-align:left;height:100px'></div>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -391,8 +198,8 @@
         //取得收文資料
         $.ajax({
             type: "get",
-            url: "brta21_edit.aspx?json=Y&<%#Request.QueryString%>",
-            //url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
+            //url: "brta21_edit.aspx?json=Y&<%#Request.QueryString%>",
+            url: getRootPath() + "/ajax/_vstep_dmt.aspx?<%#Request.QueryString%>",
             async: false,
             cache: false,
             success: function (json) {
@@ -413,21 +220,20 @@
         $("input.dateField").datepick();
         main.bind();//資料綁定
 
-
         $(".Lock").lock();
         $(".Hide").hide();
     }
     
     main.bind = function () {
-        $("#oact_code").val(jMain.add_gr.oact_code);
-        $("#span_fseq").html(jMain.add_gr.fseq);
+        $("#oact_code").val(jMain.step_data.oact_code);
+        $("#span_fseq").html(jMain.step_data.fseq);
 
-        brta21form.bind(jMain.add_gr);//主檔資料
-        brta211form.bind(jMain.add_gr,jMain.mg_attach);//收文資料
-        brta212form.bind(jMain.add_gr,jMain.gr_ctrl);//管制資料
+        brta21form.bind(jMain.step_data);//主檔資料
+        brta211form.bind(jMain.step_data,jMain.mg_attach);//收文資料
+        brta212form.bind(jMain.step_data,jMain.ctrl_data);//管制資料
 
         if(main.submittask!="A"){
-            $("#span_rs_no").html("收文序號："+jMain.add_gr.rs_no).show();
+            $("#span_rs_no").html("收文序號："+jMain.step_data.rs_no).show();
         }
 
         if(main.submittask=="U"||main.submittask=="Q"||main.submittask=="D"){
@@ -576,6 +382,11 @@
             $("#dialog").html(xhr.responseText);
             $("#dialog").dialog({
                 title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
+                ,buttons: {
+                    確定: function() {
+                        $(this).dialog("close");
+                    }
+                }
                 ,close:function(event, ui){
                     if(status=="success"){
                         if(!$("#chkTest").prop("checked")){

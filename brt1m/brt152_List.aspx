@@ -67,7 +67,7 @@
         //權限A:組主管
         //權限B:部門主管
         //權限A+B：區所、總管處主管
-        if ((HTProgRight & 64) != 0 && (HTProgRight & 128) != 0) {
+        /*if ((HTProgRight & 64) != 0 && (HTProgRight & 128) != 0) {
             SQL = "select distinct scode,sc_name,scode1 from vscode_roles";
             SQL += " where branch='" + Session["SeBranch"] + "' and dept='" + Session["Dept"] + "' and syscode='" + Session["syscode"] + "' and roles='sales'";
             SQL += " order by scode1 ";
@@ -87,8 +87,28 @@
             SQL = "select distinct scode,sc_name,scode1 from vscode_roles ";
             SQL += " where branch='" + Session["SeBranch"] + "' and dept='" + Session["Dept"] + "' and syscode='" + Session["syscode"] + "' and roles='sales'";
             SQL += " order by scode1 ";
+        }*/
+        string wSQL = " where a.sales_status='YY' and c.dmt_scode is not null ";
+        if ((HTProgRight & 64) != 0 && (HTProgRight & 128) != 0) {
+            wSQL += "";
+        } else if ((HTProgRight & 128) != 0) {
+            wSQL += "";
+        } else if ((HTProgRight & 64) != 0) {//組員
+            wSQL += " and c.dmt_scode in(" + Sys.getTeamScode(Sys.GetSession("seBranch"), Sys.GetSession("scode")) + ")";
+        } else {//自己
+            wSQL += " and c.dmt_scode ='" + Sys.GetSession("scode") + "'";
         }
-        html_qryscode = Util.Option(cnn, SQL, "{scode}", "{scode}_{sc_name}", true, Sys.GetSession("scode"));
+        SQL = " select distinct c.dmt_scode,b.sc_name,b.end_date ";
+        SQL += ",case when b.end_date<getdate() then '*' else '' end star ";
+        SQL += ",case when b.end_date<getdate() then 'red' else '' end color ";
+        SQL += " from grconf_dmt a ";
+        SQL += " inner join vstep_dmt c on a.seq=c.seq and a.seq1=c.seq1 and a.step_grade=c.step_grade ";
+        SQL += " left join sysctrl.dbo.scode b on c.dmt_scode=b.scode ";
+        SQL += wSQL;
+        SQL += "order by c.dmt_scode ";
+
+        //html_qryscode = Util.Option(cnn, SQL, "{scode}", "{scode}_{sc_name}", true, Sys.GetSession("scode"));
+        html_qryscode = Util.Option(conn, SQL, "{dmt_scode}", "{star}{dmt_scode}_{sc_name}", "style='color:{color}'", true, ReqVal.TryGet("qryscode"));
     }
 
     private void QueryData() {
@@ -325,7 +345,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 

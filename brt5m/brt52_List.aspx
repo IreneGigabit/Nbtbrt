@@ -25,10 +25,10 @@
     protected string FormName = "";
     
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
-    DBHelper optconn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper connopt = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        if (optconn != null) optconn.Dispose();
+        if (connopt != null) connopt.Dispose();
     }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -37,7 +37,7 @@
         Response.Expires = -1;
 
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-        optconn = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
+        connopt = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
         TokenN myToken = new TokenN(HTProgCode);
@@ -114,37 +114,39 @@
 
             //分頁完再處理其他資料才不會虛耗資源
             for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
-                SQL = "Select remark from cust_code where cust_code='__' and code_type='" + page.pagedTable.Rows[i]["arcase_type"] + "'";
+                DataRow dr = page.pagedTable.Rows[i];
+                
+                SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
                 object objResult = conn.ExecuteScalar(SQL);
                 string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                page.pagedTable.Rows[i]["link_remark"] = link_remark;//案性版本連結
+                dr["link_remark"] = link_remark;//案性版本連結
 
-                page.pagedTable.Rows[i]["fseq"] = Sys.formatSeq1(page.pagedTable.Rows[i].SafeRead("seq", ""), page.pagedTable.Rows[i].SafeRead("seq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
-                page.pagedTable.Rows[i]["fappl_name"] = page.pagedTable.Rows[i].SafeRead("appl_name", "").ToUnicode().Left(20);
+                dr["fseq"] = Sys.formatSeq1(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
+                dr["fappl_name"] = dr.SafeRead("appl_name", "").ToUnicode().Left(20);
 
-                if (page.pagedTable.Rows[i].SafeRead("ar_code", "").Trim() == "N") {
-                    page.pagedTable.Rows[i]["arcodenm"] = "未請款完畢";
-                } else if (page.pagedTable.Rows[i].SafeRead("ar_code", "").Trim() == "M") {
-                    page.pagedTable.Rows[i]["arcodenm"] = "大陸案另行請款";
-                } else if (page.pagedTable.Rows[i].SafeRead("ar_code", "").Trim() == "X") {
-                    page.pagedTable.Rows[i]["arcodenm"] = "不需請款";
-                } else if (page.pagedTable.Rows[i].SafeRead("ar_code", "").Trim() == "Y") {
-                    page.pagedTable.Rows[i]["arcodenm"] = "已請款完畢";
+                if (dr.SafeRead("ar_code", "").Trim() == "N") {
+                    dr["arcodenm"] = "未請款完畢";
+                } else if (dr.SafeRead("ar_code", "").Trim() == "M") {
+                    dr["arcodenm"] = "大陸案另行請款";
+                } else if (dr.SafeRead("ar_code", "").Trim() == "X") {
+                    dr["arcodenm"] = "不需請款";
+                } else if (dr.SafeRead("ar_code", "").Trim() == "Y") {
+                    dr["arcodenm"] = "已請款完畢";
                 }
 
-                page.pagedTable.Rows[i]["opt_stat"] = GetOptStat(page.pagedTable.Rows[i]);
+                dr["opt_stat"] = GetOptStat(dr);
 
                 //抓取客收進度for文件上傳
                 SQL = "select step_grade from step_dmt ";
-                SQL += "where seq='" + page.pagedTable.Rows[i]["seq"] + "' ";
-                SQL += "and seq1='" + page.pagedTable.Rows[i]["seq1"] + "' ";
-                SQL += "and case_no='" + page.pagedTable.Rows[i]["case_no"] + "' ";
+                SQL += "where seq='" + dr["seq"] + "' ";
+                SQL += "and seq1='" + dr["seq1"] + "' ";
+                SQL += "and case_no='" + dr["case_no"] + "' ";
                 SQL += "and cg='C' and rs='R'";
                 objResult = conn.ExecuteScalar(SQL);
                 string step_grade = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                page.pagedTable.Rows[i]["step_grade"] = step_grade;
+                dr["step_grade"] = step_grade;
                 
-                page.pagedTable.Rows[i]["urlasp"] = GetLink(page.pagedTable.Rows[i]);
+                dr["urlasp"] = GetLink(dr);
             }
 
             dataRepeater.DataSource = page.pagedTable;
@@ -169,7 +171,7 @@
             }
             if (opt_stat == "Y" && opt_over_date == "") {//已交辦專案室但區所未確認發文
                 SQL = "select stat_code from br_opt where opt_sqlno=" + opt_sqlno;
-                using (SqlDataReader dr = optconn.ExecuteReader(SQL)) {
+                using (SqlDataReader dr = connopt.ExecuteReader(SQL)) {
                     if (dr.Read()) {
                         switch (dr.SafeRead("stat_code", "")) {
                             case "YS": opt_stat = "S"; break;//已發文
@@ -251,7 +253,7 @@
 </table>
 
 <form style="margin:0;" id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
@@ -272,7 +274,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>

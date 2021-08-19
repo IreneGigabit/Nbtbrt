@@ -129,7 +129,7 @@
             //dt.Rows[0]["end_codenm"] = getCodeName("ENDCODE", dt.Rows[0].SafeRead("end_code", ""));
             //brt51客收確認，移轉案傳入結案原因012_已另案移轉
             if(prgid=="brt51"&&Request["end_type"]!=""){
-                dt.Rows[0]["end_type"] = Request["end_type"].ToString();
+                dt.Rows[0]["end_type"] = (Request["end_type"]??"").ToString();
             }
         }
         
@@ -205,7 +205,7 @@
         SQL += " and rs_code = '" + pRsCode + "' ";
         SQL += " and rs_type = '" + pRsType + "' ";
         object objResult = conn.ExecuteScalar(SQL);
-        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString(); ;
+        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
     }
     #endregion
 
@@ -215,7 +215,7 @@
         SQL += "where code_type = 'TCase_Stat' ";
         SQL += " and cust_code = '" + pStat + "' ";
         object objResult = conn.ExecuteScalar(SQL);
-        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString(); ;
+        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
     }
     #endregion
 
@@ -225,7 +225,7 @@
         SQL += "where code_type = '" + pCodeType + "' ";
         SQL += " and cust_code = '" + pCustCode + "' ";
         object objResult = conn.ExecuteScalar(SQL);
-        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString(); ;
+        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
     }
     #endregion
 </script>

@@ -30,11 +30,11 @@
     protected string case_no = "";
     
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
-    DBHelper optconn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper connopt = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        if (optconn != null) optconn.Dispose();
+        if (connopt != null) connopt.Dispose();
         if (cnn != null) cnn.Dispose();
     }
 
@@ -44,7 +44,7 @@
         Response.Expires = -1;
 
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-        optconn = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
+        connopt = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
         cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
         
@@ -99,7 +99,7 @@
         SQL += " FROM vbr_opt a ";
         SQL += " inner join " + Sys.tdbname(Sys.GetSession("seBranch")) + ".apcust as b on a.cust_area=b.cust_area and a.cust_seq=b.cust_seq";
         SQL += " where a.Bmark in ('N') and (a.case_no is not null) and opt_sqlno='" + opt_sqlno + "'";
-        optconn.DataTable(SQL, dt);
+        connopt.DataTable(SQL, dt);
         if (dt.Rows.Count > 0) {
             DataRow dr = dt.Rows[0];
 
@@ -228,7 +228,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 

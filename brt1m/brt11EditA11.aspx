@@ -77,7 +77,9 @@
     private void PageLayout() {
         if (submitTask != "Show") {
             if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
+                //***todo
                 StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Eblank\">[聯絡人新增]</a>\n";
+                //***todo
                 StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Eblank\">[申請人新增]</a>\n";
                 if ((Request["cust_seq"] ?? "") != "") {
                     //StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
@@ -129,9 +131,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10"><!--如果用window.open會跑成ie5,強制修改(iis設定的)-->
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_agtno.js")%>"></script><!--檢查輸入出名代理人是否與預設出名代理人相同-->
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_doctype.js")%>"></script><!--檢查契約書種類與上傳文件-->
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_custwatch.js")%>"></script><!--檢查是否為雙邊代理查照對象-->
@@ -245,7 +246,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 

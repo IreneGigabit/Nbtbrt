@@ -164,12 +164,6 @@
     upload_form.init = function () {
         var fld = $("#uploadfield").val();
 
-        if(main.prgid=="brta38"||main.prgid=="brt63"){
-            if(CInt($("#att_sqlno").val())>0){
-                $("#file_Del_button").hide();//官發確認
-            }
-        }
-
         if (main.prgid == "brt81") {
             $("#uploadTitle").html("交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;相&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;關&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件");
         } else {
@@ -181,6 +175,7 @@
 
     //附件資料append到畫面
     upload_form.bind = function (jData) {
+        upload_form.emptyFile();//清空附件清單
         $.each(jData, function (i, item) {
             var fld = $("#uploadfield").val();
             upload_form.appendFile();//增加一筆
@@ -210,6 +205,12 @@
 
             $("input[name='doc_flag_" + nRow + "'][value='" + item.doc_flag + "']").prop("checked", true);//電子送件文件檔(pdf)
         });
+
+        if (main.prgid == "brta38" || main.prgid == "brt63") {
+            if (CInt($("#att_sqlno").val()) > 0) {
+                $("#file_Del_button").hide();//官發確認
+            }
+        }
     }
 
     //[多檔上傳]
@@ -276,6 +277,14 @@
         }
     }
 
+    //清空附件清單
+    upload_form.emptyFile = function () {
+        var fld = $("#uploadfield").val();
+        $("#tabfile" + fld + ">thead>tr:gt(1)").remove();
+        $("#tabfile" + fld + ">tbody").empty();
+        $("#" + fld + "_filenum").val("0");
+    }
+
     //[增加一筆]
     upload_form.appendFile = function () {
         var fld = $("#uploadfield").val();
@@ -311,9 +320,11 @@
             $("#span_branch_" + nRow).show();//交辦專案室
         } else {
             //不是發文畫面會出錯,增加判斷
-            //if (document.getElementsByName("cgrs").length > 0 && document.getElementById("cgrs").value == "GS") {
+            if ($("#cgrs").val() == "GS") {
+                //if (document.getElementsByName("cgrs").length > 0 && document.getElementById("cgrs").value == "GS") {
                 $("#span_edoc_" + nRow).show();//電子送件文件檔
-            //}
+                //}
+            }
         }
 
         $("#attach_flagtran_" + nRow).val("N");

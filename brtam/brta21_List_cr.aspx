@@ -228,7 +228,7 @@
             }
 
             //[查詢]
-            link += "<a href=\"brta32_edit.aspx?submitTask=Q&prgid=" + prgid + "&rs_no=" + Eval("rs_no") + "&cgrs=" + cgrs + "&FrameBlank=50\" target=\"Eblank\">[查詢]</a>";
+            link += "<a href=\"brta22_edit.aspx?submitTask=Q&prgid=" + prgid + "&rs_no=" + Eval("rs_no") + "&cgrs=" + cgrs + "&FrameBlank=50\" target=\"Eblank\">[查詢]</a>";
         }
 
         //[列印]
@@ -294,7 +294,7 @@
 <br />
 
 <form style="margin:0;" id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
@@ -315,7 +315,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>
@@ -395,7 +395,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 

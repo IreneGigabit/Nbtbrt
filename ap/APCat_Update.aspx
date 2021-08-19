@@ -85,11 +85,11 @@
         SQL = " INSERT into APcat ";
         SQL += "(syscode,APcatID,apcatcname,apcatename,apseq";
         SQL += ")VALUES(";
-        SQL += " " + Util.dbnull(Request["pfx_syscode"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["pfx_APcatID"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_APcatCName"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["tfx_APcatEName"].ToBig5()) + "";
-        SQL += "," + Util.dbnull(Request["nfx_APseq"].ToBig5()) + "";
+        SQL += " " + Util.dbnull(Request["pfx_syscode"]) + "";
+        SQL += "," + Util.dbnull(Request["pfx_APcatID"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_APcatCName"]) + "";
+        SQL += "," + Util.dbnull(Request["tfx_APcatEName"]) + "";
+        SQL += "," + Util.dbnull(Request["nfx_APseq"]) + "";
         SQL += ")";
         cnn.ExecuteNonQuery(SQL);
         
@@ -100,9 +100,9 @@
 
     private void doUpdate(DBHelper cnn) {
         SQL = " Update APcat set";
-        SQL += " apcatcname = " + Util.dbnull(Request["tfx_APcatCName"].ToBig5()) + "";
-        SQL += ",apcatename = " + Util.dbnull(Request["tfx_APcatEName"].ToBig5()) + "";
-        SQL += ",apseq = " + Util.dbnull(Request["nfx_APseq"].ToBig5()) + "";
+        SQL += " apcatcname = " + Util.dbnull(Request["tfx_APcatCName"]) + "";
+        SQL += ",apcatename = " + Util.dbnull(Request["tfx_APcatEName"]) + "";
+        SQL += ",apseq = " + Util.dbnull(Request["nfx_APseq"]) + "";
         SQL += " where syscode='" + syscode + "' AND APcatID='" + APcatID + "'";
         cnn.ExecuteNonQuery(SQL);
         

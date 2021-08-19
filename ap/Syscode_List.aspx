@@ -14,6 +14,7 @@
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string Title = "";
+    protected string DebugStr = "";
 
     protected string SQL = "";
 
@@ -33,6 +34,7 @@
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         Title = myToken.Title;
+        DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
             QueryData();
             
@@ -82,7 +84,7 @@
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
-        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%><%=Title%>】<span style="color:blue"><%=HTProgCap%></span>查詢結果清單</td>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%><%=HTProgCap%>】<span style="color:blue"><%=Title%></span>查詢結果清單</td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <a class="imgAdd" href="<%#HTProgPrefix%>_Edit.aspx?prgid=<%=prgid%>&prgname=<%#HTProgCap%>&submittask=A" target="Eblank">[新增]</a>
             <a href="<%#prgid%>.aspx?prgid=<%=prgid%>&SYScode=<%=syscode%>">[查詢]</a>
@@ -94,7 +96,7 @@
     </tr>
 </table>
 <form id="reg" name="reg" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
@@ -115,7 +117,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>

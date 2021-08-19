@@ -73,10 +73,12 @@
         html_rprtkind = dtkind.Radio("rprtkind", "{cust_code}", "{code_name}", "onclick=\"rprtkind_onclick('{cust_code}','{mark1}',this.value)\"", 3);
 
         //洽案營洽
-        SQL = "select scode,sc_name from vscode_type where branch='" + Session["seBranch"] + "' and grpid like '" + Session["Dept"] + "%' and work_type='sales' order by scode";
-        DataTable dtscode = new DataTable();
-        cnn.DataTable(SQL, dtscode);
-        html_sscode1 = dtscode.Option("{scode}", "{scode}_{sc_name}");
+        //SQL = "select scode,sc_name from vscode_type where branch='" + Session["seBranch"] + "' and grpid like '" + Session["Dept"] + "%' and work_type='sales' order by scode";
+        //DataTable dtscode = new DataTable();
+        //cnn.DataTable(SQL, dtscode);
+        //html_sscode1 = dtscode.Option("{scode}", "{scode}_{sc_name}");
+        html_sscode1 += Sys.getDmtScode("", "").Option("{scode}", "{star}{scode}_{sc_name}", "style='color:{color}'", false);
+        html_sscode1 += "<option value='" + Sys.GetSession("seBranch") + Sys.GetSession("dept") + "'>" + Sys.GetSession("seBranch") + Sys.GetSession("dept").ToUpper() + "_部門(開放客戶)</option>";
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -151,7 +153,7 @@
 		        </td>
 	        </tr>
 	        <tr id="tr_scode1">
-		        <td class=lightbluetable align="right" id=salename  width="15%">洽案營洽：</td>
+		        <td class=lightbluetable align="right" id=salename  width="15%">營　　洽：</td>
 		        <td class=whitetablebg align="left" colspan=3>
 			        <input type=hidden name=scode1 id=scode1>
 			        <select id='sscode1' name='sscode1' onchange="reg.scode1.value=this.value">
@@ -216,7 +218,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 

@@ -108,8 +108,8 @@
 		        <TD class=whitetablebg colspan=3>
 	                <label>&nbsp;<input type="radio" name='qrySTAT_kind' checked value=''>不指定</label>
 	                <label>&nbsp;<input type="radio" name='qrySTAT_kind' value='Yes'>指定</label>
-	                <label>&nbsp;<input type="checkbox" name="qSTAT_CODE" value='RR'>尚未分案</label>
-	                <label>&nbsp;<input type="checkbox" name="qSTAT_CODE" value='NN'>承辦中</label>
+	                <label>&nbsp;<input type="checkbox" name="qSTAT_CODE" value='RR;RX'>尚未分案</label>
+	                <label>&nbsp;<input type="checkbox" name="qSTAT_CODE" value='NN;NX'>承辦中</label>
 	                <label>&nbsp;<input type="checkbox" name="qSTAT_CODE" value='NY'>承辦完成</label>
 	                <label>&nbsp;<input type="checkbox" name="qSTAT_CODE" value='YY'>判行完成</label>
 	                <label>&nbsp;<input type="checkbox" name="qSTAT_CODE" value='YS'>已發文</label>
@@ -134,7 +134,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -210,6 +210,6 @@
         $("#qrySTAT_CODE").val(getJoinValue("input[name='qSTAT_CODE']:checked", ";").substr(1));
 
         reg.action = "<%=HTProgPrefix%>_List.aspx";
-        //reg.submit();
+        reg.submit();
     });
 </script>

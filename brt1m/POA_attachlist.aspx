@@ -11,7 +11,7 @@
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
-    protected string Title = "";
+    protected string DebugStr = "";
 
     protected string SQL = "";
 
@@ -25,7 +25,6 @@
     protected string source = "";
     protected string dept = "";
     protected string upload_tabname = "";
-
     
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -43,7 +42,8 @@
 
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
-        Title = myToken.Title;
+        HTProgCap = myToken.Title;
+        DebugStr = myToken.DebugStr;
 
         if (source == "contract")
             Title = "客戶契約書清單";
@@ -159,15 +159,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
-        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%><%=Title%>】<span style="color:blue"><%=HTProgCap%></span></td>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%><%=HTProgCap%>】<span style="color:blue"><%=HTProgCap%></span></td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <a class="imgCls" href="javascript:void(0);" >[關閉視窗]</a>
         </td>
@@ -177,7 +176,7 @@
     </tr>
 </table>
 <form id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
         <tr>
@@ -197,7 +196,7 @@
                  <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
                 </select>
                 <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-                </font>
+                </font><%#DebugStr%>
             </td>
         </tr>
     </TABLE>

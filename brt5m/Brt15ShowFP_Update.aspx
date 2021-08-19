@@ -5,7 +5,7 @@
 <%@ Import Namespace = "System.Linq"%>
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "案件主檔維護-入檔";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "Brt15ShowFP";//程式檔名前綴
     protected string HTProgCode = "brt15";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼//brt51客收確認,brta24官收確認,brta78轉案確認

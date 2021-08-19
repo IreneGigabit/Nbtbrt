@@ -3,6 +3,7 @@
 <%@ Import Namespace = "System.Data"%>
 
 <script runat="server">
+    //客收欄位畫面
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -52,16 +53,16 @@
 	<TR>
 		<TD class=lightbluetable align=right>進度序號：</TD>
 		<TD class=whitetablebg>
-			<input type="text" id="closewin" name="closewin" value="N">
-			<input type="text" id="code" name="code"><!--todo.sqlno-->
-			<input type="text" id="in_no" name="in_no">
-			<input type="text" id="in_scode" name="in_scode">
-			<input type="text" id="change" name="change">
-			<input type="text" id="cust_area1" name="cust_area1">
-			<input type="text" id="cust_seq1" name="cust_seq1">
-			<input type="text" id="rs_no" name="rs_no">
+			<input type="hidden" id="closewin" name="closewin" value="N">
+			<input type="hidden" id="code" name="code"><!--todo.sqlno-->
+			<input type="hidden" id="in_no" name="in_no">
+			<input type="hidden" id="in_scode" name="in_scode">
+			<input type="hidden" id="change" name="change">
+			<input type="hidden" id="cust_area1" name="cust_area1">
+			<input type="hidden" id="cust_seq1" name="cust_seq1">
+			<input type="hidden" id="rs_no" name="rs_no">
 			<input type="text" id="nstep_grade" name="nstep_grade" size="2" class="SEdit" readonly>
-			<input type="text" id="cgrs" name="cgrs">
+			<input type="hidden" id="cgrs" name="cgrs">
 			<select id=scgrs name=scgrs class="<%=Lock.TryGet("Qdisabled")%>">
 				<option value="CR">客收</option>
 			</select>
@@ -74,25 +75,25 @@
 	<TR>
 		<TD class=lightbluetable align=right>收文代碼：</TD>
 		<TD class=whitetablebg colspan=5>結構分類：
-			<input type="text" name="rs_type" id="rs_type">
+			<input type="hidden" name="rs_type" id="rs_type">
 			<span id=span_rs_class>
-			<input type="text" name="hrs_class" id="hrs_class">
+			<input type="hidden" name="hrs_class" id="hrs_class">
 			<select name="rs_class" id="rs_class"  class="Lock"></select>
 			</span>
 			案性代碼：
 			<span id=span_rs_code>
-				<input type="text" name="hrs_code" id="hrs_code">
+				<input type="hidden" name="hrs_code" id="hrs_code">
 				<select name="rs_code" id="rs_code" class="Lock"></select>
 			</span><br>
 			處理事項：
-			<input type="text" name="act_sqlno" id="act_sqlno">
+			<input type="hidden" name="act_sqlno" id="act_sqlno">
 			<span id=span_act_code>
-				<input type="text" name="hact_code" id="hact_code">
+				<input type="hidden" name="hact_code" id="hact_code">
 				<select name="act_code" id="act_code" class="Lock"></select>
 			</span>
 			&nbsp;&nbsp;&nbsp;&nbsp;本次狀態：
-			<input type="text" name="ocase_stat" id="ocase_stat">
-			<input type="text" name="ncase_stat" id="ncase_stat">
+			<input type="hidden" name="ocase_stat" id="ocase_stat">
+			<input type="hidden" name="ncase_stat" id="ncase_stat">
 			<input type="text" name="ncase_statnm" id="ncase_statnm" size="10" class="Lock">
 		</TD>
     </TR>
@@ -146,24 +147,24 @@
 	<%}%>
 	<TR><!--20160923 增加維護發文方式-->
 		<TD class=lightbluetable align=right>發文方式：</TD>
-		<TD class=whitetablebg colspan=5><input type="text" id="old_send_way" name="old_send_way">
-		<SELECT id="send_way" name="send_way"></select>
+		<TD class=whitetablebg colspan=5><input type="hidden" id="old_send_way" name="old_send_way">
+		<SELECT id="send_way" name="send_way" class="<%=Lock.TryGet("Qdisabled")%>"></select>
 		</TD>
 	</TR>
-	<%if(prgid=="brta22"){%>
+	<%if(submitTask=="U"||submitTask=="Q"){%><!--prgid=="brta22"-->
 	    <TR><!--20160923 增加維護發文方式-->
 		    <!--20180712 增加客收維護可修改收據種類-->
 		    <TD class=lightbluetable align=right>官發收據種類：</TD>
-		    <TD class=whitetablebg><input type="text" id="old_receipt_type" name="old_receipt_type">
-			    <select id="receipt_type" name="receipt_type">
+		    <TD class=whitetablebg><input type="hidden" id="old_receipt_type" name="old_receipt_type">
+			    <select id="receipt_type" name="receipt_type" class="<%=Lock.TryGet("Qdisabled")%>">
 				    <option value="" style="color:blue">請選擇</option>
 				    <option value="P">紙本收據</option>
 				    <option value="E">電子收據</option>
 			    </select>
 		    </TD>
 		    <TD class=lightbluetable align=right>收據抬頭：</TD>
-		    <TD class=whitetablebg colspan=3><input type="text" id="old_receipt_title" name="old_receipt_title">
-			    <select id="receipt_title" name="receipt_title">
+		    <TD class=whitetablebg colspan=3><input type="hidden" id="old_receipt_title" name="old_receipt_title">
+			    <select id="receipt_title" name="receipt_title" class="<%=Lock.TryGet("Qdisabled")%>">
 				    <option value="" style="color:blue">請選擇</option>
 				    <option value="A">案件申請人</option>
 				    <option value="B">空白</option>
@@ -173,7 +174,7 @@
 	    </TR>
 	<%}%>
 </table>
-<input type="text" name=tot_num id=tot_num value=0><!--一案多件筆數-->
+<input type="hidden" name=tot_num id=tot_num value=0><!--一案多件筆數-->
 <TABLE id=tabar1 style="display:none" border=0 class="bluetable" cellspacing=1 cellpadding=2 width="100%">
     <thead>
 	<TR>
@@ -193,7 +194,7 @@
 		    <td class="whitetablebg rs_code_FD" align=center>
 		        <input type=text size=5 id=dseq_## name=dseq_## class='sedit' readonly>
 		        -<input type=text size=1 id=dseq1A_## name=dseq1A_## class='sedit' readonly value='_' >
-		        <input type=text name=hrs_no_## id=hrs_no_##>
+		        <input type=hidden name=hrs_no_## id=hrs_no_##>
 		    </td>
 		    <td class=whitetablebg align=center>
 	            <input type=text id='s_mark_##' name=s_mark_## style='text-align:left;' readonly class='SEdit'>
@@ -256,7 +257,8 @@
         $("#old_receipt_title").val(jData.receipt_title);
         $("#receipt_title option[value='" + jData.receipt_title + "']").prop("selected", true);
 
-        if (main.submittask == "A") {
+        if (main.submittask == "A") {//客收確認
+            $("#pr_scode option[value!='']").eq(0).prop("selected", true);//預設第1個承辦
             $("input[name='opt_stat'][value='N']").prop("checked", true);//需交辦
             $("input[name='end_stat'][value='B61']").prop("checked", true);//送會計確認
         }
@@ -346,54 +348,54 @@
         }
 
         //產生母案案號
-        brt511form.add_sub();
-        var spl_num =1;
-        $("#dseq_" + spl_num).val(jData.seq);
-        $("#dseq1A_" + spl_num).val(jData.seq1);
-        $("#s_mark_" + spl_num).val(jData.s_marknm);
-        $("#dclass_" + spl_num).val(jData.class);
-        $("#appl_name_" + spl_num).val(jData.appl_name);
-        if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
-            $("#dref_no_" + spl_num).val(jData.apply_no);
-        } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
-            $("#dref_no_" + spl_num).val(jData.issue_no);
-        }
+        //brt511form.add_sub();
+        //var spl_num =1;
+        //$("#dseq_" + spl_num).val(jData.seq);
+        //$("#dseq1A_" + spl_num).val(jData.seq1);
+        //$("#s_mark_" + spl_num).val(jData.s_marknm);
+        //$("#dclass_" + spl_num).val(jData.class);
+        //$("#appl_name_" + spl_num).val(jData.appl_name);
+        //if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
+        //    $("#dref_no_" + spl_num).val(jData.apply_no);
+        //} else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
+        //    $("#dref_no_" + spl_num).val(jData.issue_no);
+        //}
 
-        //取得一案多件子案
-        var jDmt1 = {};
+        //取得一案多件
+        //var jDmt1 = {};
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/json_get_dmt_temp_sub.aspx?prgid=" + main.prgid + "&in_no=" + main.in_no,
+            //url: getRootPath() + "/ajax/json_get_dmt_temp_sub.aspx?prgid=" + main.prgid + "&in_no=" + $("#in_no").val(),
+            url: getRootPath() + "/ajax/json_get_seq.aspx?prgid=" + main.prgid + "&in_no=" + $("#in_no").val(),
             async: false,
             cache: false,
             success: function (json) {
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(json_get_dmt_temp_sub)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-                jSub = $.parseJSON(json);
+                toastr.info("<a href='" + this.url + "' target='_new'>Debug(取得一案多件)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                var jDmt1 = $.parseJSON(json);
+                $.each(jDmt1, function (i, item) {
+                    //產生一案多件
+                    brt511form.add_sub();
+                    //var spl_num = (i + 2);//1是母案,從2開始
+                    var spl_num = (i + 1);
+                    $("#dseq_" + spl_num).val(item.seq);
+                    $("#dseq1A_" + spl_num).val(item.seq1);
+                    $.each(item.get_dmt, function (x, xitem) {
+                        $("#s_mark_" + spl_num).val(xitem.s_marknm);
+                        $("#dclass_" + spl_num).val(xitem.class);
+                        $("#appl_name_" + spl_num).val(xitem.appl_name);
+                        if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
+                            $("#dref_no_" + spl_num).val(xitem.apply_no);
+                        } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
+                            $("#dref_no_" + spl_num).val(xitem.issue_no);
+                        }
+                    });
+                });
             },
             error: function (xhr) {
-                $("#dialog").html("<a href='" + this.url + "' target='_new'>取得分割子案失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '取得分割子案失敗！', modal: true, maxHeight: 500, width: "90%" });
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>取得一案多件失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '取得一案多件失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
-
-        $.each(jDmt1, function (i, item) {
-            //產生一案多件子案案號
-            brt511form.add_sub();
-            var spl_num = (i + 2);//1是母案,從2開始
-            $("#dseq_" + spl_num).val(item.seq);
-            $("#dseq1A_" + spl_num).val(item.seq1);
-            $.each(item.get_dmt, function (x, xitem) {
-                $("#s_mark_" + spl_num).val(xitem.s_marknm);
-                $("#dclass_" + spl_num).val(xitem.class);
-                $("#appl_name_" + spl_num).val(xitem.appl_name);
-                if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC5" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FCH") {
-                    $("#dref_no_" + spl_num).val(xitem.apply_no);
-                } else if ($("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FCI") {
-                    $("#dref_no_" + spl_num).val(xitem.issue_no);
-                }
-            });
-        });
-
         $(".rs_code_FD").show();
     }
 
@@ -416,7 +418,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(json_get_dmt_temp_sub)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                toastr.info("<a href='" + this.url + "' target='_new'>Debug(取得分割子案)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 jSub = $.parseJSON(json);
             },
             error: function (xhr) {
@@ -443,24 +445,24 @@
         $(".rs_code_FD").hide();
     }
 
-    //產生預設期限
+    //產生預設期限/案性管制設定
     brt511form.getCtrl = function (jData) {
         if(jData.cust_date!=""){
             //新增客戶期限
-            brta212form.add_ctrl();
+            brta212form.add_ctrl(false);
             $("#ctrl_type_"+$("#ctrlnum").val()).val("A2");
             $("#ctrl_date_"+$("#ctrlnum").val()).val(jData.cust_date);
         }
         if(jData.pr_date!=""){
             //新增承辦期限
-            brta212form.add_ctrl();
+            brta212form.add_ctrl(false);
             $("#ctrl_type_"+$("#ctrlnum").val()).val("B2");
             $("#ctrl_date_"+$("#ctrlnum").val()).val(jData.pr_date);
         }
         //2010/10/6修改為結案註記有勾選結案才顯示
         if($("#seqend_flag").val()=="Y"){
             //新增結案完成期限
-            brta212form.add_ctrl();
+            brta212form.add_ctrl(false);
             $("#ctrl_type_"+$("#ctrlnum").val()).val("B61");
             $("#ctrl_date_"+$("#ctrlnum").val()).val(Today().addMonths(3).format("yyyy/M/d"));
             $("#ctrl_remark_"+$("#ctrlnum").val()).val("程序確認結案暨掃描完成期限");
@@ -475,11 +477,12 @@
             success: function (json) {
                 var jCtrl = $.parseJSON(json);
                 $.each(jCtrl, function (i, item) {
-                    if(item.sqlflg=="A"&&item.ctrl_type!="A2"&&item.ctrl_type!="B2"){
+                    if (item.sqlflg == "A" && item.ctrl_type != "A2" && item.ctrl_type != "B2") {
+                        var nRow = $("#ctrlnum").val();
                         $("#act_sqlno").val(item.ctrl_sqlno);
-                        brta212form.add_ctrl();
-                        $("#ctrl_type_"+$("#ctrlnum").val()).val(item.ctrl_type);//管制種類
-                        $("#ctrl_remark_"+$("#ctrlnum").val()).val(item.ctrl_remark);//管制內容
+                        brta212form.add_ctrl(true);
+                        $("#ctrl_type_"+nRow).val(item.ctrl_type);//管制種類
+                        $("#ctrl_remark_"+nRow).val(item.ctrl_remark);//管制內容
                         var days=0;//管制天數
                         if(item.ad=="A"){//日期基礎:A:加，D:減 
                             days=CInt(item.days);
@@ -521,7 +524,7 @@
                             }
                         }
 
-                        $("#ctrl_date_"+$("#ctrlnum").val()).val(Cdate_ctrl.format("yyyy/M/d"));//管制日期
+                        $("#ctrl_date_"+nRow).val(Cdate_ctrl.format("yyyy/M/d"));//管制日期
                         $("#ncase_stat").val(item.case_stat);
                         $("#ncase_statnm").val(item.case_statnm);
                     }

@@ -3,7 +3,7 @@
 <%@ Import Namespace = "System.Data"%>
 
 <script runat="server">
-    //案件主檔欄位畫面，與收文共同
+    //案件主檔欄位畫面
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -92,7 +92,7 @@
 			<input type=button class="cbutton" id="btncase" name="btncase"  value ="案件主檔查詢" onclick="brta21form.btncase()">
 		</TD>
 		<TD class=lightbluetable align=right nowrap>客戶卷號：</TD>
-		<TD class=whitetablebg><input type="text" id="cust_prod" name="cust_prod" class="sedit" readonly size=25></TD>
+		<TD class=whitetablebg><input type="text" id="cust_prod" name="cust_prod" class="sedit" readonly style="width:95%"></TD>
 		<TD class=lightbluetable align=right nowrap>立案日期：</TD>
 		<TD class=whitetablebg>
 		<input type="text" id="in_date" name="in_date" class="sedit" readonly size=10>
@@ -126,7 +126,7 @@
 		<TD class=whitetablebg colspan=4>
 			<input type="hidden" id="apcust_no" name="apcust_no" class="sedit" readonly size=11>
 			<input type="hidden" id="ap_cname" name="ap_cname" class="sedit" size=40 readonly>
-			<input type="text" id="dmtap_cname" name="dmtap_cname" class="sedit" size=60 readonly>
+			<input type="text" id="dmtap_cname" name="dmtap_cname" class="sedit" style="width:95%" readonly>
 		</TD>	
 		<TD class=lightbluetable align=right rowspan=2>案件狀態：</TD>	
 		<TD class=whitetablebg><input type="text" id="now_arcasenm" name="now_arcasenm" size=20 class="sedit" readonly></TD>
@@ -140,7 +140,7 @@
 		</TR>
 	<TR>
 		<TD class=lightbluetable align=right>申請日期：</TD>
-		<TD class=whitetablebg>
+		<TD class=whitetablebg nowrap>
             <input type="text" id="apply_date" name="apply_date" size=10 maxlength=10 class="dateField <%#Lock.TryGet("QLock")%>">
 		</TD>
 		<TD class=lightbluetable align=right>申請號碼：</TD>
@@ -153,7 +153,7 @@
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>註冊日期：</TD>
-		<TD class=whitetablebg>
+		<TD class=whitetablebg nowrap>
             <input type="text" id="issue_date" name="issue_date" size=10 maxlength=10 class="dateField <%#Lock.TryGet("QLock")%>">
 		</TD>
 		<TD class=lightbluetable align=right>註冊號碼：</TD>
@@ -166,7 +166,7 @@
 	</TR>
 	<TR>
 		<TD class=lightbluetable align=right>公告日期：</TD>
-		<TD class=whitetablebg>
+		<TD class=whitetablebg nowrap>
             <input type="text" id="open_date" name="open_date" size=10 maxlength=10 class="dateField <%#Lock.TryGet("QLock")%>">
 		</TD>		
 		<TD class=lightbluetable align=right>核駁號碼：</TD>
@@ -192,13 +192,13 @@
 			<input type="hidden" id="opay_times" name="opay_times">
 			<input type="hidden" id="hpay_times" name="hpay_times">
 	   		<Select NAME="pay_times" id="pay_times" class="Lock"><%#html_pay_times%></SELECT>
-			<input type="hidden" id="opay_date" name="opay_date" size=10 maxlength=10 class="sedit" readonly>
+			<input type="hidden" id="opay_date" name="opay_date">
 			<input type="text" id="pay_date" name="pay_date" size=10 maxlength=10 class="sedit" readonly>
 		</TD>
 	</TR>
 	<tr>
 		<td class="lightbluetable"  align="right">轉案註記：</td>
-		<td class="whitetablebg" >
+		<td class="whitetablebg" nowrap>
 			<input type="radio" id="tran_flagA" name="tran_flag" value="A" disabled>轉出
 			<input type="radio" id="tran_flagB" name="tran_flag" value="B" disabled>轉入
 		</td>
@@ -211,7 +211,7 @@
 		</td>
 		<td class="lightbluetable"  align="right">轉案說明：</td>
 		<td class="whitetablebg" >
-			<input type="text" id="tran_remark" name="tran_remark" size="20" readonly class="sedit">
+			<input type="text" id="tran_remark" name="tran_remark" style="width:95%" readonly class="sedit">
 		</td>
 	</tr>
 </table>
@@ -328,8 +328,6 @@
                 //官發確認顯示本筆官發進度
                 $("#nstep_grade").val(CInt(dmt_data[0].step_grade) + 1);
             }
-
-            $("#nstep_grade").val(CInt(dmt_data[0].step_grade));
         }
         $("#rs_code").val($("#now_arcase").val());//.triggerHandler("change");
 
@@ -619,6 +617,6 @@
             return false;
         }
         //***todo
-        window.open(getRootPath() + "/brtam/brta61Edit.aspx?aseq=" + x1 + "&aseq1=" + x2 + "&branch=" + x3 + "&submittask=Q&FrameBlank=50&prgid=<%=prgid%>&closewin=Y&winact=1&type=brtran", "", "dialogHeight: 520px; dialogWidth: 960px; center: Yes;resizable: No; status: No;scrollbars=yes");
+        window.open(getRootPath() + "/brtam/brta61_Edit.aspx?aseq=" + x1 + "&aseq1=" + x2 + "&branch=" + x3 + "&submittask=Q&FrameBlank=50&prgid=<%=prgid%>&closewin=Y&winact=1&type=brtran", "", "dialogHeight: 520px; dialogWidth: 960px; center: Yes;resizable: No; status: No;scrollbars=yes");
     }
 </script>

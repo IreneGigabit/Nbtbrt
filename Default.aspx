@@ -136,8 +136,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="x-ua-compatible" content="IE=10">
-    <title>台北所商標網路作業系統(<%#Sys.Host%>)</title>
+    <title><%#Sys.Project%>(<%#Sys.Host%>)</title>
     <uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 <body style="margin:0px 0px 0px 0px;overflow:hidden;background:url('images/top/back5.gif');background-repeat: no-repeat;">
@@ -250,7 +249,7 @@
                 if (zmenu[i].Bar == "Y" && i0 > 0) {
                     //menuHtm += "<hr style=\"height: 1px; color: #a0a0a0; background-color: #a0a0a0\" />";
                     menuHtm += "<hr class=\"style-one\"/>";
-                    menuHeight += 2;
+                    menuHeight += 8;
                 }
                 //if (zmenu[i].Name.CodeLength() > maxLen) maxLen = zmenu[i].Name.CodeLength();
                 maxLen = Math.max(zmenu[i].Name.CodeLength(), maxLen)
@@ -261,7 +260,7 @@
                 menuHtm += "<div style=\"margin: 1px 0px 1px 0px;padding: 1px 1px 1px 1px;color: #000;cursor: pointer;height: 18px;\" " +
 					"onmouseover=\"javascript:PopMenuOver(this,'" + mi + "')\" onmouseout=\"javascript:PopMenuOut(this,'" + mi + "')\" " +
 					"onclick=\"javascript:PopMenuClick(" + i.toString() + ")\">" + zmenu[i].Name + "&nbsp;</div>";
-                menuHeight += 22;
+                menuHeight += 21;
                 i0++;
             }
         }

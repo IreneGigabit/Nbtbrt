@@ -86,9 +86,9 @@
     }
 
     private string QueryData() {
-        Dictionary<string, string> add_ctrl = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        add_ctrl["seq"] = "";
-        add_ctrl["seq1"] = "";
+        Dictionary<string, string> ctrl_data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        ctrl_data["seq"] = "";
+        ctrl_data["seq1"] = "";
 
         if (submitTask == "A") {
         }
@@ -101,8 +101,8 @@
             if (dtStepMgt.Rows.Count > 0) {
                 DataRow dr = dtStepMgt.Rows[0];
 
-                add_ctrl["seq"] = dr.SafeRead("seq", "");
-                add_ctrl["seq1"] = dr.SafeRead("seq1", "");
+                ctrl_data["seq"] = dr.SafeRead("seq", "");
+                ctrl_data["seq1"] = dr.SafeRead("seq1", "");
             }
         }
 
@@ -116,7 +116,7 @@
         string rtn = "";
         rtn += "{";
         rtn += "\\\"request\\\":" + JsonConvert.SerializeObject(ReqVal, settings).Replace("\\", "\\\\").Replace("\"", "\\\"");
-        rtn += ",\\\"add_ctrl\\\":" + JsonConvert.SerializeObject(add_ctrl, settings).Replace("\\", "\\\\").Replace("\"", "\\\"");
+        rtn += ",\\\"ctrl_data\\\":" + JsonConvert.SerializeObject(ctrl_data, settings).Replace("\\", "\\\\").Replace("\"", "\\\"");
         rtn += "}";
 
         return rtn;
@@ -153,9 +153,9 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id=prgid name=prgid value="<%=prgid%>">
-    <INPUT TYPE="text" id=submittask name=submittask value="<%=submitTask%>">
-    <INPUT TYPE="text" id=cgrs name=cgrs value="<%=cgrs%>">
+    <INPUT TYPE="hidden" id=prgid name=prgid value="<%=prgid%>">
+    <INPUT TYPE="hidden" id=submittask name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="hidden" id=cgrs name=cgrs value="<%=cgrs%>">
     <center>
         <uc1:Brta21form runat="server" ID="Brta21form" /><!--~/commonForm/brt21form.ascx-->
         <uc1:Brta23form runat="server" id="Brta23form" /><!--~/commonForm/brt23form.ascx-->
@@ -174,7 +174,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -223,7 +223,7 @@
     }
     
     main.bind = function () {
-        brta21form.bind(jMain.add_ctrl);//主檔資料
+        brta21form.bind(jMain.ctrl_data);//主檔資料
         brta23form.bind();//進度資料
     }
 </script>

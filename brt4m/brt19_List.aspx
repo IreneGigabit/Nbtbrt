@@ -29,11 +29,11 @@
 
     DataTable dt = new DataTable();
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
-    DBHelper optconn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper connopt = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        if (optconn != null) optconn.Dispose();
+        if (connopt != null) connopt.Dispose();
         if (cnn != null) cnn.Dispose();
     }
     
@@ -43,7 +43,7 @@
         Response.Expires = -1;
 
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-        optconn = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
+        connopt = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
         cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
 
         ReqVal = Util.GetRequestParam(Context,Request["chkTest"] == "TEST");
@@ -129,7 +129,7 @@
         if (ReqVal.TryGet("qryOrder") != "") {
             SQL += " order by " + ReqVal.TryGet("qryOrder");
         }
-        optconn.DataTable(SQL, dt);
+        connopt.DataTable(SQL, dt);
 
         //處理分頁
         int nowPage = Convert.ToInt32(Request["GoPage"] ?? "1"); //第幾頁
@@ -150,7 +150,7 @@
             SQL += ",(Select code_name from cust_code as b  where b.code_type='OTran_STAT' and a.tran_status=b.cust_code) as tran_status_name";
             SQL += " from cancel_opt as a where opt_sqlno='" + dr["opt_sqlno"] + "' and tran_status<>'DN'";
             SQL += " group by a.tran_status ";
-            using (SqlDataReader dr0 = optconn.ExecuteReader(SQL)) {
+            using (SqlDataReader dr0 = connopt.ExecuteReader(SQL)) {
                 if (dr0.Read()) {
                     tran_status = dr0.SafeRead("Tran_status", "");
                     tran_status_name = dr0.SafeRead("Tran_status_name", "");
@@ -203,7 +203,7 @@
 </table>
 
 <form style="margin:0;" id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
@@ -224,7 +224,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>
@@ -330,19 +330,4 @@
     };
     //////////////////////
 
-    //複製
-    function copycase(i) {
-        $("#tscode").val($("#tscode_" + i).val());
-        $("#cust_area").val($("#cust_area_" + i).val());
-        $("#cust_seq").val($("#cust_seq_" + i).val());
-        $("#in_no").val($("#in_no_" + i).val());
-        $("#ar_form").val($("#ar_form_" + i).val());
-        $("#prt_code").val($("#prt_code_" + i).val());
-        $("#new_form").val($("#new_form_" + i).val());
-        $("#add_arcase").val($("#add_arcase_" + i).val());
-
-        reg.action = getRootPath() + "/brt1m/Brt11Add" + $("#new_form").val() + ".aspx";
-        reg.submitTask.value = "AddNext";
-        reg.submit();
-    }
 </script>

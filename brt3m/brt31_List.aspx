@@ -106,7 +106,7 @@
         }
 
         DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), Request["job_scode"]);
-        MasterList.ShowTable();
+        //MasterList.ShowTable();
         
         //轉上級人員
         if (job_grplevel == "0") {//專商經理
@@ -127,19 +127,12 @@
         selManager = MasterList.Select("grplevel<=0", "up_level").CopyToDataTable().Option("{Master_scode}", "{master_type}--{Master_nm}", false);//只抓專案室以上(含)
         
         //程序人員
-        if (qs_dept == "t") {
-            SQL = "select b.scode,b.sc_name,a.grptype ";
-            SQL += "from scode_group a ";
-            SQL += "inner join scode b on a.scode=b.scode ";
-            SQL += "where a.grpclass='" + Session["seBranch"] + "' and grpid='T210' ";
-        } else {
-            SQL = "select b.scode,b.sc_name,a.grptype ";
-            SQL += "from scode_group a ";
-            SQL += "inner join scode b on a.scode=b.scode ";
-            SQL += "where a.grpclass='" + Session["seBranch"] + "' and grpid='T220' ";
-        }
         DataTable dtPrScode = new DataTable();
-        cnn.DataTable(SQL, dtPrScode);
+        if (qs_dept == "t") {
+            dtPrScode = Sys.GetGrpidScode(Sys.GetSession("seBranch"), "T210", "A");
+        } else {
+            dtPrScode = Sys.GetGrpidScode(Sys.GetSession("seBranch"), "T220", "A");
+        }
         selPrScode = dtPrScode.Option("{scode}", "{sc_name}", "", false,"", "grptype=F");
         
         //會計人員
@@ -223,6 +216,7 @@
             //分頁完再處理其他資料才不會虛耗資源
             for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
                 DataRow dr=page.pagedTable.Rows[i];
+                
                 int ctrl_rowspan = 1;
                 if (qs_dept == "t") {
                     SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
@@ -271,7 +265,7 @@
                     dr["T_Fees"] = T_Fees;
                     dr["P_Service"] = P_Service;
                     dr["P_Fees"] = P_Fees;
-                    dr["fseq"] = dr.SafeRead("seq", "") + (dr.SafeRead("seq1", "_") != "_" ? "-" + dr.SafeRead("seq1", "") : "");
+                    dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", "", "");
                 } else {
 
                 }
@@ -280,7 +274,7 @@
                     dr["contract_flag"] = "N";//契約書後補註記
                 }
 
-                //dr["urlasp"] = GetLink(dr); ;
+                //dr["urlasp"] = GetLink(dr);
                 dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
                 dr["ctrl_rowspan"] = ctrl_rowspan;
 
@@ -442,7 +436,7 @@
 </table>
 
 <form style="margin:0;" id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
@@ -463,7 +457,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>
@@ -477,8 +471,8 @@
 <form style="margin:0;" id="reg" name="reg" method="post">
 <asp:Repeater id="dataRepeater" runat="server" OnItemDataBound="rpt_ItemDataBound">
 <HeaderTemplate>
-    <input type=hidden id="GrpID" name="GrpID" value="<%=job_grpid%>">
-    <input type=hidden id="grplevel" name="grplevel" value="<%=job_grplevel%>">
+    <input type=hidden id="GrpID" name="GrpID" value="<%=job_grpid%>"><!--原始簽核者的Grpid-->
+    <input type=hidden id="grplevel" name="grplevel" value="<%=job_grplevel%>"><!--原始簽核者的層級-->
     <input type=hidden id="sign_level" name="sign_level" value=""><!--簽准層級-->
     <input type=hidden id="upload_flag" name="upload_flag" value="N"><!--專案請核單upload_chk=Y需經商標經理簽准-->
     <input type=hidden id="armark_flag" name="armark_flag" value="N"><!--扣收入ar_mark=D需經會計檢核-->
@@ -781,28 +775,39 @@
     function formupdate(){
         var url="";
         if($("input[name=signid][value='YY']").prop("checked")==true){
-            if ($("#upload_flag").val()== "Y" ||$("#disT_flag").val()== "Y"){
+            var sign_levl=CInt($("#sign_level").val());
+            if(sign_levl>=0)
+                sign_levl=CInt($("#sign_level").val().Left(1));
+            else
+                sign_levl=CInt($("#sign_level").val().Left(2));
+            var sign_flag=CInt($("#grplevel").val())>sign_levl;//判斷簽准層級夠不夠,true:不夠
+            if (($("#upload_flag").val()== "Y" ||$("#disT_flag").val()== "Y")&&sign_flag){
                 alert("需經區所主管簽核，請點選「轉上級簽核」並選擇簽核主管！");
                 $("input[name='signid'][value='YT']").prop("checked", true).triggerHandler("click");
                 return false;
             }
-            if ($("#armark_flag").val()== "Y"){
+            if ($("#armark_flag").val()== "Y"&&sign_flag){
                 alert("選取交辦案件依規定需經會計檢核，請點選「轉上級簽核」並選擇會計人員！");
                 $("input[name='signid'][value='YT']").prop("checked", true).triggerHandler("click");
                 return false;
             }
-            if ($("#armarkT_flag").val()== "Y"){
+            if ($("#armarkT_flag").val()== "Y"&&sign_flag){
                 alert("選取扣收入交辦案件依規定需經商標經理簽核，請點選「轉上級簽核」並選擇簽核主管！");
                 $("input[name='signid'][value='YT']").prop("checked", true).triggerHandler("click");
                 return false;
             }
-            if ($("#contract_flag").val()== "Y"){
+            if ($("#contract_flag").val()== "Y"&&sign_flag){
                 alert("選取契約書後補交辦案件依規定需經區所主管簽核，請點選「轉上級簽核」並選擇簽核主管！");
                 $("input[name='signid'][value='YT']").prop("checked", true).triggerHandler("click");
                 return false;
             }
-            if ($("#dis_flag").val()== "Y"){
+            if ($("#dis_flag").val()== "Y"&sign_flag){
                 alert("選取折扣低於8折交辦案件依規定需經區所主管簽核，請點選「轉上級簽核」並選擇簽核主管！");
+                $("input[name='signid'][value='YT']").prop("checked", true).triggerHandler("click");
+                return false;
+            }
+            if (sign_flag){
+                alert("簽准層級不夠，請點選「轉上級簽核」並選擇簽核主管！");
                 $("input[name='signid'][value='YT']").prop("checked", true).triggerHandler("click");
                 return false;
             }
@@ -857,7 +862,10 @@
                         }
                         ,close:function(event, ui){
                             if(status=="success"){
-                                window.location.href="<%=HTProgPrefix%>.aspx?prgid=<%#prgid%>&qs_dept=<%=qs_dept%>"
+                                //window.location.href="<%=HTProgPrefix%>.aspx?prgid=<%#prgid%>&qs_dept=<%=qs_dept%>"
+                                if(!$("#chkTest").prop("checked")){
+                                    goSearch();
+                                }
                             }
                         }
                     });

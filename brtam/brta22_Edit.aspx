@@ -54,12 +54,8 @@
         HTProgCap = myToken.Title.Replace("收文", "<font color=blue>收文</font>");
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
-            if (json == "Y") {
-                QueryData();
-            } else {
-                PageLayout();
-                ChildBind();
-            }
+            PageLayout();
+            ChildBind();
             this.DataBind();
         }
     }
@@ -98,136 +94,6 @@
     //將共用參數傳給子控制項
     private void ChildBind() {
     }
-
-    private void QueryData() {
-        Dictionary<string, string> add_cr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        if (submitTask == "A") {
-            add_cr["step_date"] = DateTime.Today.ToShortDateString();
-            add_cr["mp_date"] = DateTime.Today.AddDays(-1).ToShortDateString();
-            add_cr["send_cl"] = "1";
-            add_cr["rs_type"] = Sys.getRsType();
-        }
-
-        if (submitTask == "U" || submitTask == "Q" || submitTask == "D") {
-            SQL = "Select * From vstep_dmt Where RS_No = '" + Request["rs_no"] + "'";
-            DataTable dtStepMgt = new DataTable();
-            conn.DataTable(SQL, dtStepMgt);
-
-            if (dtStepMgt.Rows.Count > 0) {
-                DataRow dr = dtStepMgt.Rows[0];
-
-                add_cr["rs_no"] = dr.SafeRead("rs_no", "");
-                add_cr["branch"] = dr.SafeRead("branch", "");
-                add_cr["seq"] = dr.SafeRead("seq", "");
-                add_cr["seq1"] = dr.SafeRead("seq1", "");
-                add_cr["fseq"] = Sys.formatSeq(add_cr["seq"], add_cr["seq1"], "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
-                add_cr["step_grade"] = dr.SafeRead("step_grade", "");
-                add_cr["nstep_grade"] = dr.SafeRead("step_grade", "");
-                add_cr["cgrs"] = dr.SafeRead("cg", "") + dr.SafeRead("rs", "");
-                add_cr["step_date"] = dr.GetDateTimeString("step_date", "yyyy/M/d");
-                add_cr["mp_date"] = dr.GetDateTimeString("mp_date", "yyyy/M/d");
-                add_cr["send_cl"] = dr.SafeRead("send_cl", "");
-                add_cr["receive_no"] = dr.SafeRead("receive_no", "");
-                add_cr["rs_type"] = Sys.getRsType();
-                add_cr["rs_class"] = dr.SafeRead("rs_class", "");
-                add_cr["rs_code"] = dr.SafeRead("rs_code", "");
-                add_cr["act_code"] = dr.SafeRead("act_code", "");
-
-                //取得結構分類、代碼、處理事項名稱
-                SQL = "select code_name from cust_code where code_type='" + add_cr["rs_type"] + "' and cust_code='" + add_cr["rs_class"] + "'";
-                objResult = conn.ExecuteScalar(SQL);
-                add_cr["rs_class_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                SQL = "select rs_detail from code_br where rs_type='" + add_cr["rs_type"] + "' and rs_code='" + add_cr["rs_code"] + "' and cr='Y' ";
-                objResult = conn.ExecuteScalar(SQL);
-                add_cr["rs_code_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                SQL = "select code_name from cust_code where code_type='tact_code' and cust_code='" + add_cr["act_code"] + "'";
-                objResult = conn.ExecuteScalar(SQL);
-                add_cr["act_code_name"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-
-                //取得案件狀態
-                SQL = " select rs_type,rs_class,rs_code,act_code,case_stat,case_stat_name ";
-                SQL += "from vcode_act ";
-                SQL += "where rs_code = '" + add_cr["rs_code"] + "' ";
-                SQL += "and act_code = '" + add_cr["act_code"] + "' ";
-                SQL += "and rs_type = '" + add_cr["rs_type"] + "'";
-                SQL += "and cg = 'C' and rs = 'R'";
-                using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
-                    if (dr0.Read()) {
-                        add_cr["case_stat"] = dr0.SafeRead("case_stat", "");
-                        add_cr["case_statnm"] = dr0.SafeRead("case_stat_name", "");
-                    }
-                }
-                add_cr["rs_detail"] = dr.SafeRead("rs_detail", "");
-                add_cr["doc_detail"] = dr.SafeRead("doc_detail", "");
-                add_cr["cs_rs_no"] = dr.SafeRead("cs_rs_no", "");
-
-                add_cr["cs_detail"] = "";
-                add_cr["send_way"] = dr.SafeRead("send_way", "");
-                if (add_cr["cs_rs_no"] != "") {
-                    SQL = "select rs_no,rs_detail from cs_dmt where rs_no='" + add_cr["cs_rs_no"] + "'";
-                    add_cr["cs_detail"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                    SQL = "select rs_no,send_way from cs_dmt where rs_no='" + add_cr["cs_rs_no"] + "'";
-                    add_cr["send_way"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                }
-                add_cr["pr_scode"] = dr.SafeRead("pr_scode", "");
-                add_cr["opt_stat"] = dr.SafeRead("opt_stat", "");
-                add_cr["codemark"] = "";
-
-                if (add_cr["opt_stat"] == "") {
-                    SQL = "select mark from code_br where mark='B' and rs_type='" + add_cr["rs_type"] + "' and rs_class ='" + add_cr["rs_class"] + "'";
-                    SQL += " and " + add_cr["cgrs"] + "='Y' and rs_code = '" + add_cr["rs_code"] + "'";
-                    add_cr["codemark"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
-                } else {
-                    add_cr["codemark"] = "B";
-                }
-                add_cr["send_sel"] = dr.SafeRead("send_sel", "");
-                add_cr["case_no"] = dr.SafeRead("case_no", "");
-                add_cr["cust_prod"] = dr.SafeRead("cust_prod", "");
-
-                //取得in_no
-                //2014/6/18因case_dmt.arcase_class為程式連結並非皆與rs_class相同，所以增加抓取rs_class，以便異動修改客收代碼判斷
-                SQL = "select in_scode,in_no,arcase_type,arcase_class,arcase,change,receipt_type,receipt_title";
-                SQL += ",(select rs_class from code_br where rs_type=a.arcase_type and rs_code=a.arcase) as case_rs_class";
-                SQL += " from case_dmt a where case_no = '" + add_cr["case_no"] + "'";
-                using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
-                    if (dr0.Read()) {
-                        add_cr["in_scode"] = dr0.SafeRead("in_scode", "");
-                        add_cr["in_no"] = dr0.SafeRead("in_no", "");
-                        add_cr["arcase_type"] = dr0.SafeRead("arcase_type", "");
-                        add_cr["arcase_class"] = dr0.SafeRead("arcase_class", "");
-                        add_cr["case_rs_class"] = dr0.SafeRead("case_rs_class", "");
-                        add_cr["arcase"] = dr0.SafeRead("arcase", "");
-                        add_cr["change"] = dr0.SafeRead("change", "");
-                        //20180712增加顯示收據種類
-                        add_cr["receipt_type"] = dr0.SafeRead("receipt_type", "");
-                        add_cr["receipt_title"] = dr0.SafeRead("receipt_title", "");
-                    }
-                }
-            }
-        }
-
-        //管制資料
-        DataTable dtCtrl = new DataTable();
-        SQL = " select sqlno,ctrl_type,ctrl_remark,ctrl_date,null as resp_date,null as resp_grade from ctrl_dmt ";
-        SQL += " where rs_no='" + Request["rs_no"] + "'";
-        SQL += " union select sqlno,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_grade from resp_dmt ";
-        SQL += " where rs_no='" + Request["rs_no"] + "'";
-        SQL += " order by ctrl_date";
-        conn.DataTable(SQL, dtCtrl);
-
-        var settings = new JsonSerializerSettings()
-        {
-            Formatting = Formatting.Indented,
-            ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
-            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
-        };
-        Response.Write("{");
-        Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
-        Response.Write(",\"add_cr\":" + JsonConvert.SerializeObject(add_cr, settings).ToUnicode() + "\n");//交辦官發預設值
-        Response.Write(",\"cr_ctrl\":" + JsonConvert.SerializeObject(dtCtrl, settings).ToUnicode() + "\n");//管制資料
-        Response.Write("}");
-        Response.End();
-    }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
@@ -252,7 +118,14 @@
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
-        <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】</td>
+        <td class="text9">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
+		    <img src="<%=Page.ResolveUrl("~/images/icon1.gif")%>" style="cursor:pointer" align="absmiddle" title="期限管制" WIDTH="20" HEIGHT="20" onclick="dmt_IMG_Click(1)">&nbsp;
+		    <img src="<%=Page.ResolveUrl("~/images/icon2.gif")%>" style="cursor:pointer" align="absmiddle" title="收發進度" WIDTH="25" HEIGHT="20" onclick="dmt_IMG_Click(2)">&nbsp;
+		    <img src="<%=Page.ResolveUrl("~/images/icon4.gif")%>" style="cursor:pointer" align="absmiddle" title="交辦內容" WIDTH="18" HEIGHT="18" onclick="dmt_IMG_Click(4)">&nbsp;
+		    <br />案件編號：<span id="span_fseq"></span>
+            &nbsp;&nbsp;<span id="span_rs_no"></span>
+            &nbsp;&nbsp;交辦單號：<span id="span_case_no"></span>
+        </td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <%#StrFormBtnTop%>
         </td>
@@ -263,13 +136,13 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id=prgid name=prgid value="<%=prgid%>">
-    <INPUT TYPE="text" id=submittask name=submittask value="<%=submitTask%>">
-    <INPUT TYPE="text" id=ctrl_flg name=ctrl_flg value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
-    <INPUT TYPE="text" id=havectrl name=havectrl value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
-    <input type="text" id=codemark name=codemark>
-    <input type="text" id=oldopt_stat name=oldopt_stat>
-    <input type="text" id=case_no name=case_no>
+    <INPUT TYPE="hidden" id=prgid name=prgid value="<%=prgid%>">
+    <INPUT TYPE="hidden" id=submittask name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="hidden" id=ctrl_flg name=ctrl_flg value="N"><!--判斷有無預設期限管制 N:無,Y:有-->
+    <INPUT TYPE="hidden" id=havectrl name=havectrl value="N"><!--判斷有預設期限管制，需至少輸入一筆資料 N:無,Y:有-->
+    <input type="hidden" id=codemark name=codemark>
+    <input type="hidden" id=oldopt_stat name=oldopt_stat>
+    <input type="hidden" id=case_no name=case_no>
     <center>
         <uc1:Brta21form runat="server" ID="Brta21form" /><!--~/commonForm/brt21form.ascx-->
         <uc1:brt511form runat="server" ID="brt511form" /><!--~/commonForm/brt511form.ascx-->
@@ -289,7 +162,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -321,8 +194,8 @@
         //取得交辦資料
         $.ajax({
             type: "get",
-            url: "brta22_edit.aspx?json=Y&<%#Request.QueryString%>",
-            //url: getRootPath() + "/ajax/_case_dmt.aspx?<%=Request.QueryString%>",
+            //url: "brta22_edit.aspx?json=Y&<%#Request.QueryString%>",
+            url: getRootPath() + "/ajax/_vstep_dmt.aspx?<%#Request.QueryString%>",
             async: false,
             cache: false,
             success: function (json) {
@@ -344,17 +217,26 @@
         main.bind();//資料綁定
         $(".Lock").lock();
         $(".Hide").hide();
+
+        $("#seq,#seq1").lock();
+        $("#btnseq,#btnQuery").hide();//[確定]/[查詢本所編號]
     }
     
     main.bind = function () {
-        $("#codemark").val(jMain.add_cr.codemark);
-        $("#oldopt_stat").val(jMain.add_cr.oldopt_stat);
-        $("#case_no").val(jMain.add_cr.case_no);
+        $("#span_fseq").html(jMain.step_data.fseq);
+        $("#span_case_no").html(jMain.step_data.case_no);
+        $("#codemark").val(jMain.step_data.codemark);
+        $("#oldopt_stat").val(jMain.step_data.oldopt_stat);
+        $("#case_no").val(jMain.step_data.case_no);
 
-        brta21form.bind(jMain.add_cr);//主檔資料
-        brt511form.bind(jMain.add_cr);//收文資料
-        brta212form.bind(jMain.add_cr,jMain.cr_ctrl);//管制資料
+        brta21form.bind(jMain.step_data);//主檔資料
+        brt511form.bind(jMain.step_data);//收文資料
+        brta212form.bind(jMain.step_data,jMain.ctrl_data);//管制資料
         
+        if(main.submittask!="A"){
+            $("#span_rs_no").html("收文序號："+jMain.step_data.rs_no).show();
+        }
+
         if (jMain.opt_stat == "Y") {
             $("input[name='opt_stat']").lock();
         }
@@ -366,10 +248,10 @@
         if(main.submittask=="U"||main.submittask=="Q"||main.submittask=="D"){
             if ($("#hrs_code").val() == "FC11" || $("#hrs_code").val() == "FC21" || $("#hrs_code").val() == "FC6" || $("#hrs_code").val() == "FC7" || $("#hrs_code").val() == "FC8" || $("#hrs_code").val() == "FC5"
                 || $("#hrs_code").val() == "FCI" || $("#hrs_code").val() == "FCH" || $("#hrs_code").val() == "FT2" || $("#hrs_code").val() == "FL5" || $("#hrs_code").val() == "FL6") {
-                brt511form.getdseq(jMain.add_cr);//一案多件
+                brt511form.getdseq(jMain.step_data);//一案多件
             }
             if ($("#hrs_code").val().Left(2) == "FD") {
-                brt511form.getdseq1(jMain.add_cr);//分割
+                brt511form.getdseq1(jMain.step_data);//分割
             }
             
             //顯示爭救案交辦欄位
@@ -508,7 +390,7 @@
                     if(status=="success"){
                         if(!$("#chkTest").prop("checked")){
                             window.parent.tt.rows="100%,0%";
-                            window.parent.Etop.location.href= getRootPath() +'/brt5m/brt51_list.aspx?prgid=brt51';
+                            window.parent.Etop.goSearch();//重新整理
                         }
                     }
                 }

@@ -184,9 +184,11 @@ public class TokenN
                         this.C = ((this.Rights & chkRight) == 258) ? true : false;
                         this.Debug = ((this.Rights & chkRight) == 512) ? true : false;
 
-                        hasRights =( ((this.Rights & 1) > 0) || ((this.Rights & 2) > 0) || ((this.Rights & chkRight) > 0)) ? true : false;
-                        //HttpContext.Current.Response.Write(this.Rights + "/" + chkRight);
-                        //HttpContext.Current.Response.End();
+                        if (chkRight != 1 && chkRight != 2) {
+                            hasRights = ((this.Rights & chkRight) > 0) ? true : false;
+                        } else {
+                            hasRights = (((this.Rights & 1) > 0) || ((this.Rights & 2) > 0)) ? true : false;
+                        }
                     }
                     dr.Close();
 
@@ -224,7 +226,7 @@ public class TokenN
                 //HttpContext.Current.Response.End();
                 _Passworded = false;
                 Sys.SetSession("Password", false);
-                throw new Exception("系統停滯時間逾時，請重新登入(token)!");
+                throw new Exception("系統停滯時間逾時，請重新登入!");
             }
         }
         catch (Exception ex) {

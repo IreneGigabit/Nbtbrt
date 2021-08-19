@@ -4,7 +4,7 @@
 
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "案件主檔維護";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "Brt15ShowFP";//程式檔名前綴
     protected string HTProgCode =  HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼//brt51客收確認,brta24官收確認,brta78轉案確認
@@ -137,9 +137,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/client_chk_custwatch.js")%>"></script><!--檢查是否為雙邊代理查照對象-->
 </head>
 <script language="javascript" type="text/javascript">
@@ -195,16 +194,16 @@
     <tr>
         <td>
             <div class="tabCont" id="#dmt">
-                <input type="text" id="tfx_apcust_no" name="tfx_apcust_no">
-		        <input type="text" id="tfx_apsqlno" name="tfx_apsqlno">
-		        <input type="text" id="tfx_ap_cname" name="tfx_ap_cname">
-		        <input type="text" id="tfx_ap_ename" name="tfx_ap_ename">	
+                <input type="hidden" id="tfx_apcust_no" name="tfx_apcust_no">
+		        <input type="hidden" id="tfx_apsqlno" name="tfx_apsqlno">
+		        <input type="hidden" id="tfx_ap_cname" name="tfx_ap_cname">
+		        <input type="hidden" id="tfx_ap_ename" name="tfx_ap_ename">	
 	            <table border="0" class="bluetable" cellspacing="1" cellpadding="2" style="font-size: 9pt" width="100%">
 		            <tr>
 			            <td class="lightbluetable" width="15%" align="right">本所編號：</td>
 			            <td class="whitetablebg" >
-				            <input type="text" id="sendprgid" name="sendprgid" value="<%#prgid%>">
-				            <input type="text" id="keyseq1" name="keyseq1" value="N">
+				            <input type="hidden" id="sendprgid" name="sendprgid" value="<%#prgid%>">
+				            <input type="hidden" id="keyseq1" name="keyseq1" value="N">
                             <span id="spanbranch"><%#branch%><%#dept%></span>-
 				            <input type="text" id="tfx_seq" name="tfx_seq" size="<%#Sys.DmtSeq%>" readonly class="SEdit">-
 				            <input type="text" value="" id="tfx_seq1" name="tfx_seq1" size="<%#Sys.DmtSeq1%>" readonly class="SEdit" >
@@ -213,9 +212,9 @@
 			            </td>
 			            <td class="lightbluetable" width="15%" align="right">立案案性：</td>
 			            <td class="whitetablebg"   >
-					        <input type="text" id="arcase_type" name="arcase_type" >
-					        <input type="text" id="arcase_class" name="arcase_class" >
-					        <input type="text" id="tfx_arcase" name="tfx_arcase" size="10">
+					        <input type="hidden" id="arcase_type" name="arcase_type" >
+					        <input type="hidden" id="arcase_class" name="arcase_class" >
+					        <input type="hidden" id="tfx_arcase" name="tfx_arcase" size="10">
 					        <input type="text" id="tfx_arcasenm" name="tfx_arcasenm" size="20" readonly class="SEdit">
 			            </td>
 			            <td class="lightbluetable" width="15%" align="right">立案日期：</td>
@@ -223,7 +222,7 @@
 		            </tr>
 		            <tr>		
 			            <td class="lightbluetable" align="right">正商標號：</td>
-			            <td class="whitetablebg"><input type="text" id="tfx_tcn_ref" name="tfx_tcn_ref" size="7" <%=Lock["QClass"]%>></td>
+			            <td class="whitetablebg"><input type="text" id="tfx_tcn_ref" name="tfx_tcn_ref" size="7" class="<%=Lock["QClass"]%>"></td>
 			            <td class="lightbluetable" align="right">相關案號：</td>
 			            <td class="whitetablebg" >
 				            <input type="text" id="tfx_ref_no1" name="tfx_ref_no1" size="7" class="<%=Lock["QClass"]%>">
@@ -239,7 +238,7 @@
 		            <tr>		
 			            <td class="lightbluetable"  align="right" rowspan=2>商標種類：</td>
 			            <td class="whitetablebg" colspan=5>
-				            <input type="text" id="tfx_s_mark" name="tfx_s_mark">
+				            <input type="hidden" id="tfx_s_mark" name="tfx_s_mark">
 				            <input type="radio" name="s_mark" value="">商標
 				            <input type="radio" name="s_mark"  value="S">92年修正前服務標章
 				            <input type="radio" name="s_mark"  value="L">證明標章
@@ -249,7 +248,7 @@
 		            </tr>
 		            <tr >
 			            <td class="whitetablebg" colspan=5>
-				            <input type="text" id="tfx_s_mark2" name="tfx_s_mark2">
+				            <input type="hidden" id="tfx_s_mark2" name="tfx_s_mark2">
 			               <input type="radio" name="s_mark2" value="A">平面
 			               <input type="radio" name="s_mark2" value="B">立體
 			               <input type="radio" name="s_mark2" value="C">聲音
@@ -272,7 +271,7 @@
 		            <tr>
 			            <td class="lightbluetable" align="right">類別種類：</td>
 			            <td class="whitetablebg" colspan=3>
-				            <input type="text" id="tfx_class_type" name="tfx_class_type">
+				            <input type="hidden" id="tfx_class_type" name="tfx_class_type">
 				            <input type="radio" name="class_type" value="int">國際分類
 				            <input type="radio" name="class_type" value="old">舊類
 			            </td>
@@ -297,7 +296,7 @@
 				            <input type="text" id="tfx_cust_area" name="tfx_cust_area" size="1" readonly class="SEdit">
 				            <input type="text" id="tfx_cust_seq" name="tfx_cust_seq" size="5" class="<%=Lock["QclassRC"]%>">&nbsp;
 				            <input type="text" id="tfx_cust_name" name="tfx_cust_name" size="25" readonly class="SEdit">
-				            <input type="text" id="ocust_seq" name="ocust_seq">
+				            <input type="hidden" id="ocust_seq" name="ocust_seq">
 			            </td>
 			            <td class="lightbluetable" align="right">顧問：</td>
 			            <td class="whitetablebg"><input type="text" id="tfx_con_term" name="tfx_con_term" size="1" readonly class="SEdit"></td>
@@ -375,8 +374,8 @@
 		            </tr>
 		            <tr>
 			            <td class="lightbluetable"  align="right">結案說明：</td>
-			            <td class="whitetablebg" colspan=3><input type=text id="old_end_date" name="old_end_date" >
-				            結案日期：<input type="text" id="tfx_end_date" name="tfx_end_date" size="10" class="dateField <%=Lock["QclassRC"]%>">
+			            <td class="whitetablebg" colspan=3><input type=hidden id="old_end_date" name="old_end_date" >
+				            結案日期：<input type="hidden" id="tfx_end_date" name="tfx_end_date" size="10" class="dateField <%=Lock["QclassRC"]%>">
 			                <input type="text" id="tfx_end_name" name="tfx_end_name" size="20" readonly class="SEdit">
                             結案代碼：
 				            <Select NAME="tfx_end_code" id="tfx_end_code" class="<%=Lock["Qclass51"]%>" onchange="getEndCode()">
@@ -399,18 +398,18 @@
 			            <td class="lightbluetable"  align="right">目前案性：</td>
 			            <td class="whitetablebg" >
 					        <input type="text" id="tfx_now_grade" name="tfx_now_grade" size="2" readonly class="SEdit">
-					        <input type="text" id="now_arcase_type" name="now_arcase_type">
-					        <input type="text" id="now_arcase_class" name="now_arcase_class">
-					        <input type="text" id="now_arcase_classnm" name="now_arcase_classnm">
-					        <input type="text" id="tfx_now_arcase" name="tfx_now_arcase">
-					        <input type="text" id="now_act_code" name="now_act_code">
-					        <input type="text" id="now_act_codenm" name="now_act_codenm">
-					        <input type="text" id="now_rs_detail" name="now_rs_detail">
+					        <input type="hidden" id="now_arcase_type" name="now_arcase_type">
+					        <input type="hidden" id="now_arcase_class" name="now_arcase_class">
+					        <input type="hidden" id="now_arcase_classnm" name="now_arcase_classnm">
+					        <input type="hidden" id="tfx_now_arcase" name="tfx_now_arcase">
+					        <input type="hidden" id="now_act_code" name="now_act_code">
+					        <input type="hidden" id="now_act_codenm" name="now_act_codenm">
+					        <input type="hidden" id="now_rs_detail" name="now_rs_detail">
 					        <input type="text" id="tfx_now_arcasenm" name="tfx_now_arcasenm" size="20" readonly class="SEdit">
                         </td>
 			            <td class="lightbluetable"  align="right">案件狀態：</td>
 			            <td class="whitetablebg" >
-				            <input type="text" id="tfx_now_stat" name="tfx_now_stat">
+				            <input type="hidden" id="tfx_now_stat" name="tfx_now_stat">
 				            <input type="text" id="tfx_now_statnm" name="tfx_now_statnm" size="20" readonly class="SEdit">
 			            </td>
 		            </tr>
@@ -446,15 +445,15 @@
 	            </table>
             </div>
             <div class="tabCont" id="#ndmt">
-                <input type="text" id="in_scode" name="in_scode" >
-                <input type="text" id="in_no" name="in_no">
+                <input type="hidden" id="in_scode" name="in_scode" >
+                <input type="hidden" id="in_no" name="in_no">
 	                <table border="0" class="bluetable" cellspacing="1" cellpadding="2" style="font-size: 9pt" width="100%">
 	                  <tr>
      	                <td class="lightbluetable" align="right">本所編號：</td>
 		                <td class="whitetablebg"  colspan=3><%#branch%><%#dept%>-
 		                    <input type="text" id="Ifx_seq" name="Ifx_seq" size="<%#Sys.DmtSeq%>" readonly class="SEdit">-
 		                    <input type="text" id="seq1" name="seq1" size="<%#Sys.DmtSeq1%>" readonly class="SEdit">
-		                    <input type="text" id="tfx_branch" name="tfx_branch">
+		                    <input type="hidden" id="tfx_branch" name="tfx_branch">
 		                </td>
 	                  </tr>
   	                  <tr>
@@ -485,7 +484,7 @@
 	                  <tr>
 	                    <td class="lightbluetable" align="right">圖檔實際路徑：</td>
 	                    <td class="whitetablebg" colspan=3>
-                            <input TYPE="text" id="file" name="file">
+                            <input TYPE="hidden" id="file" name="file">
                             <input TYPE="text" id="tfx_draw_file" NAME="tfx_draw_file" SIZE="50" maxlength="50" readonly>
 			                <input type="button" class="cbutton <%=Lock["QClass"]%>" id="butUpload" name="butUpload" value="上傳" onclick="UploadAttach_photo()" >
                             <input type="button" class="cbutton" id="btnDisplay" name="btnDisplay" value="檢視" onclick="PreviewAttach_photo()" >
@@ -512,7 +511,7 @@
  	                  </tr>
  	                   <tr>
 	                  <td class="whitetablebg" colspan=5>
-		                <input type=text id=shownum name=shownum value=0> <!--進度筆數-->
+		                <input type=hidden id=shownum name=shownum value=0> <!--進度筆數-->
 		                <table id="tabshow" border="0" class="bluetable" cellspacing="1" cellpadding="2" style="font-size: 9pt" width="100%">
                             <thead>
 			                <TR class=whitetablebg align=center>
@@ -545,7 +544,7 @@
                     </tr>
 	                  <tr>
 	                  <td class="whitetablebg" colspan=5>
-		                <input type=text id=classnum name=classnum value=0> <!--進度筆數-->
+		                <input type=hidden id=classnum name=classnum value=0> <!--進度筆數-->
 		                <table id="tabclass" border="0" class="bluetable" cellspacing="1" cellpadding="2" style="font-size: 9pt" width="100%">
                             <thead>
 			                <TR class=whitetablebg align=center>
@@ -561,17 +560,17 @@
                             <script type="text/html" id="class_template"><!--類別樣板-->
 		                        <tr class="tr_class_##">
 				                    <td class="lightbluetable" align="center">
-                                        <input type=text id='tfx_sqlno_##' name='tfx_sqlno_##'>
+                                        <input type=hidden id='tfx_sqlno_##' name='tfx_sqlno_##'>
                                         <input type=text id='tfx_ctrlnum_##' name='tfx_ctrlnum_##' class=sedit readonly size=2 value='##'>
 				                    </td>
 				                    <td class="whitetablebg" align="center">
-                                        <INPUT type="text" id=tfx_class_## name=tfx_class_## size=3 onchange="getClass()">
+                                        <INPUT type="text" id=tfx_class_## name=tfx_class_## size=3 onchange="getClass()" class="<%=Lock["QClass"]%>">
 				                    </td>
 				                    <td class="whitetablebg" align="center">
-                                        <textarea style="height:100" id=tfx_grp_code_## name=tfx_grp_code_## class="<%=Lock["QClass"]%>"></textarea>
+                                        <textarea style="height:100px" id=tfx_grp_code_## name=tfx_grp_code_## class="<%=Lock["QClass"]%>"></textarea>
                                     </td>
 				                    <td class="whitetablebg" align="center">
-                                        <textarea style="height:100;width:300" id=tfx_goodname_## name=tfx_goodname_## class="<%=Lock["QClass"]%>" onchange="good_name_count('##')"></textarea>
+                                        <textarea style="height:100px;width:300px" id=tfx_goodname_## name=tfx_goodname_## class="<%=Lock["QClass"]%>" onchange="good_name_count('##')"></textarea>
                                     </td>
 				                    <td class="whitetablebg" align="center">
                                         <INPUT type="text" id=tfx_goodcount_## name=tfx_goodcount_## size=3 class=sedit value=0>
@@ -587,7 +586,7 @@
                     </table>
             </div>
             <div class="tabCont" id="#apcust">
-                <input type=text id=apnum name=apnum value=0><!--進度筆數-->
+                <input type=hidden id=apnum name=apnum value=0><!--進度筆數-->
 	            <table border="0" id=tabap class="bluetable" cellspacing="1" cellpadding="2" style="font-size: 9pt" width="100%">
                     <thead>
 		                <TR>
@@ -605,7 +604,7 @@
 		                    </TD>
 		                    <TD class=sfont9>
 			                    <select id="apclass_##" name="apclass_##" class="Lock"><%#html_apclass%></select>
-                                <input type="text" id="server_flag_##" name="server_flag_##" value="N">
+                                <input type="hidden" id="server_flag_##" name="server_flag_##" value="N">
 		                    </TD>
 		                    <TD class=lightbluetable align=right title="輸入編號並點選確定，即顯示申請人資料；若無資料，請直接輸入申請人資料。">
 			                    <span id="span_apcust_no_##" style="cursor:pointer;color:blue">申請人編號<br>(統一編號/身份證字號)：</span>
@@ -622,16 +621,16 @@
 		                    </TD>
 		                    <TD class=lightbluetable align=right>排序：</TD>
 		                    <TD class=sfont9>
-			                    <input type=text id="ap_sort_##" name="ap_sort_##" size=2 maxlength=2>
+			                    <input type=text id="ap_sort_##" name="ap_sort_##" size=2 maxlength=2 class="Lock">
 		                    </TD>
 	                    </TR>
 	                    <TR>
 		                    <TD class=lightbluetable align=right title="輸入關鍵字並點選申請人查詢，即顯示申請人資料清單。">申請人名稱(中)：</TD>
 		                    <TD class=sfont9 colspan=3>
-                                <input type=text id="ap_cname_##" name="ap_cname_##" SIZE=120 class="Lock">
-		                        <input type=text id="apsqlno_##" name="apsqlno_##">
-		                        <INPUT TYPE=text id="ap_cname1_##" name="ap_cname1_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)"><br>
-		                        <INPUT TYPE=text id="ap_cname2_##" name="ap_cname2_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)">
+                                <input type=text id="ap_cname_##" name="ap_cname_##" SIZE=120 class="Lock" style="width:95%">
+		                        <input type=hidden id="apsqlno_##" name="apsqlno_##">
+		                        <INPUT TYPE=text id="ap_cname1_##" name="ap_cname1_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)" class="Lock"><br>
+		                        <INPUT TYPE=text id="ap_cname2_##" name="ap_cname2_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)" class="Lock">
 		                    </TD>
 	                    </TR>
 	                    <TR>
@@ -652,9 +651,9 @@
                                 <input type=button class='cbutton' value='查詢' onclick="get_apnameaddr('##', '', '')">申請人名稱(英)：
 		                    </TD>
 		                    <TD class=sfont9 colspan=3>
-                                <input type=text id="ap_ename_##" name="ap_ename_##" size=120 class="Lock">
-		                        <INPUT TYPE=text id="ap_ename1_##" name="ap_ename1_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)"><br>
-		                        <INPUT TYPE=text id="ap_ename2_##" name="ap_ename2_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)">
+                                <input type=text id="ap_ename_##" name="ap_ename_##" size=120 class="Lock" style="width:95%">
+		                        <INPUT TYPE=text id="ap_ename1_##" name="ap_ename1_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)" class="Lock"><br>
+		                        <INPUT TYPE=text id="ap_ename2_##" name="ap_ename2_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)" class="Lock">
 	                        </TD>
 	                    </TR>
 	                    <TR>
@@ -680,17 +679,17 @@
 		                    <TD class=lightbluetable align=right>證照地址(中)：</TD>
 		                    <TD class=sfont9 colspan=3>
 		                        <INPUT TYPE=text id="ap_zip_##" name="ap_zip_##" SIZE=8 MAXLENGTH=8 class="Lock">
-		                        <INPUT TYPE=text id="ap_addr1_##" name="ap_addr1_##" SIZE=103 MAXLENGTH=120 class="Lock"><br>
-		                        <INPUT TYPE=text id="ap_addr2_##" name="ap_addr2_##" SIZE=103 MAXLENGTH=120 class="Lock">
+		                        <INPUT TYPE=text id="ap_addr1_##" name="ap_addr1_##" SIZE=103 MAXLENGTH=120 class="Lock" style="width:95%"><br>
+		                        <INPUT TYPE=text id="ap_addr2_##" name="ap_addr2_##" SIZE=103 MAXLENGTH=120 class="Lock" style="width:95%">
 		                    </TD>
 	                    </TR>
 	                    <TR>
 		                    <TD class=lightbluetable align=right>證照地址(英)：</TD>
 		                    <TD class=sfont9 colspan=3>
-		                        <INPUT TYPE=text id="ap_eaddr1_##" name="ap_eaddr1_##" SIZE=103 MAXLENGTH=120 class="Lock"><br>
-		                        <INPUT TYPE=text id="ap_eaddr2_##" name="ap_eaddr2_##" SIZE=103 MAXLENGTH=120 class="Lock"><br>
-		                        <INPUT TYPE=text id="ap_eaddr3_##" name="ap_eaddr3_##" SIZE=103 MAXLENGTH=120 class="Lock"><br>
-		                        <INPUT TYPE=text id="ap_eaddr4_##" name="ap_eaddr4_##" SIZE=103 MAXLENGTH=120 class="Lock">
+		                        <INPUT TYPE=text id="ap_eaddr1_##" name="ap_eaddr1_##" SIZE=103 MAXLENGTH=120 class="Lock" style="width:95%"><br>
+		                        <INPUT TYPE=text id="ap_eaddr2_##" name="ap_eaddr2_##" SIZE=103 MAXLENGTH=120 class="Lock" style="width:95%"><br>
+		                        <INPUT TYPE=text id="ap_eaddr3_##" name="ap_eaddr3_##" SIZE=103 MAXLENGTH=120 class="Lock" style="width:95%"><br>
+		                        <INPUT TYPE=text id="ap_eaddr4_##" name="ap_eaddr4_##" SIZE=103 MAXLENGTH=120 class="Lock" style="width:95%">
 		                    </TD>
 	                    </TR>
                     </script>
@@ -714,7 +713,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -752,8 +751,11 @@
             async: false,
             cache: false,
             success: function (json) {
-                //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(_dmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if (!isJson(json) || $("#chkTest").prop("checked")) {
+                    $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + json);
+                    $("#dialog").dialog({ title: 'Debug！', modal: true, maxHeight: 500, width: "90%" });
+                    return false;
+                }
                 jMain = $.parseJSON(json);
             },
             error: function (xhr) {
@@ -764,12 +766,7 @@
         $("#btnseq1,#btngetseq").hide();
         if(main.prgid=="brta24") $("#btnseq1").show();//[確定]
         if(main.prgid=="brta78") $("#btngetseq").show();//[抓取案號]
-        //類別☑刪除
-        if(main.submittask=="U"||main.submittask=="A"){
-            $(".class_del").show();
-        }else{
-            $(".class_del").hide();
-        }
+
         //-----------------
         main.bind();//資料綁定
         $("input.dateField").datepick();
@@ -1267,6 +1264,13 @@
         $("#tfx_class_count").val(CInt($("#tfx_class_count").val()) + 1);
         $("#tfx_class_countB").val($("#tfx_class_count").val());
         $(".dateField", $('#tr_class_' + nRow)).datepick();
+
+        //類別☑刪除
+        if(main.submittask=="U"||main.submittask=="A"){
+            $(".class_del").show();
+        }else{
+            $(".class_del").hide();
+        }
     });
     
     //刪除類別

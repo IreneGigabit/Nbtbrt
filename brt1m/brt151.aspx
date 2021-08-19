@@ -1,5 +1,6 @@
 ﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data" %>
+<%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
 
 
@@ -16,7 +17,8 @@
     protected string StrFormBtn = "";
     protected string SQL = "";
 
-    protected string html_scode = "", html_qjob_case="";
+    protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
+    protected string html_scode = "", html_qjob_case = "";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
@@ -29,6 +31,8 @@
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
+
+        ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
@@ -51,15 +55,30 @@
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
         }
 
+        //if ((HTProgRight & 64) != 0) {
+        //    SQL = "select distinct scode,sc_name,scode1 from vscode_roles ";
+        //    SQL += " where branch='" + Session["SeBranch"] + "' and dept='" + Session["Dept"] + "' and syscode='" + Session["syscode"] + "' and roles='sales'";
+        //    SQL += " order by scode1 ";
+        //} else {
+        //    SQL = "select distinct scode,sc_name,sscode scode1 from scode ";
+        //    SQL += " where scode='" + Session["scode"] + "'";
+        //}
+        string wSQL = " where a.sales_status='YY' and c.dmt_scode is not null ";
         if ((HTProgRight & 64) != 0) {
-            SQL = "select distinct scode,sc_name,scode1 from vscode_roles ";
-            SQL += " where branch='" + Session["SeBranch"] + "' and dept='" + Session["Dept"] + "' and syscode='" + Session["syscode"] + "' and roles='sales'";
-            SQL += " order by scode1 ";
-        } else {
-            SQL = "select distinct scode,sc_name,sscode scode1 from scode ";
-            SQL += " where scode='" + Session["scode"] + "'";
+            wSQL += "";
+        } else {//自己
+            wSQL += " and c.dmt_scode ='" + Sys.GetSession("scode") + "'";
         }
-        html_scode = Util.Option(cnn, SQL, "{scode}", "{scode}_{sc_name}");
+        SQL = " select distinct c.dmt_scode,b.sc_name,b.end_date ";
+        SQL += ",case when b.end_date<getdate() then '*' else '' end star ";
+        SQL += ",case when b.end_date<getdate() then 'red' else '' end color ";
+        SQL += " from grconf_dmt a ";
+        SQL += " inner join vstep_dmt c on a.seq=c.seq and a.seq1=c.seq1 and a.step_grade=c.step_grade ";
+        SQL += " left join sysctrl.dbo.scode b on c.dmt_scode=b.scode ";
+        SQL += wSQL;
+        SQL += "order by c.dmt_scode ";
+        //html_scode = Util.Option(cnn, SQL, "{scode}", "{scode}_{sc_name}");
+        html_scode = Util.Option(conn, SQL, "{dmt_scode}", "{star}{dmt_scode}_{sc_name}", "style='color:{color}'", true, ReqVal.TryGet("qryscode"));
 
         SQL = "SELECT Cust_code,Code_name,form_name,remark";
         SQL += " FROM Cust_code";

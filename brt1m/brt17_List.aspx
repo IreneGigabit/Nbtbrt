@@ -120,7 +120,7 @@
                 dr["P_Fees"] = P_Fees;
 
                 dr["cust_name"] = dr.SafeRead("cust_name", "").Left(20);
-                dr["fseq"] = dr.SafeRead("seq", "") + (dr.SafeRead("seq1", "_") != "_" ? "-" + dr.SafeRead("seq1", "") : "");
+                dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", "", "");
                 dr["case_num_txt"] = dr.SafeRead("stat_code", "") == "NX" ? "(" + dr.SafeRead("stat_code", "") + ")" : "";
                 dr["todoicon"] = GetTodoIcon(dr);
                 dr["sum_txt"] = GetSum(dr);

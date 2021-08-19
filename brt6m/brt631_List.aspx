@@ -193,7 +193,7 @@
 			    <input type="hidden" name="prgid" id="prgid" value="<%=prgid%>">
 			    ◎洽案營洽 :<select id="qscode" name="qscode"><%#html_qscode%></SELECT>
 			    <br>◎交辦日期：
-			    <input type="text" id="sdate" name="sdate" size="10" maxlength=10 value="<%#ReqVal.TryGet("sdate")%>" class="dateField">
+			    <input type="text" id="sdate" name="sdate" size="10" maxlength=10 value="<%#ReqVal.TryGet("sdate")%>" class="dateField">～
 			    <input type="text" id="edate" name="edate" size="10" maxlength=10 value="<%#ReqVal.TryGet("edate")%>" class="dateField">
 		    </td>
 		    <td class="text9">
@@ -208,7 +208,7 @@
         <tr>
 		    <td class="text9">
 			    ◎接洽序號：
-				<INPUT type="text" name="qsin_no" size="12" onblur="regPage.qein_no.value=this.value" value="<%#ReqVal.TryGet("qsin_no")%>">~
+				<INPUT type="text" name="qsin_no" size="12" onblur="regPage.qein_no.value=this.value" value="<%#ReqVal.TryGet("qsin_no")%>">～
 				<INPUT type="text" name="qein_no" size="12" value="<%#ReqVal.TryGet("qein_no")%>">
 		    </td>
 		    <td class="text9">
@@ -325,7 +325,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 

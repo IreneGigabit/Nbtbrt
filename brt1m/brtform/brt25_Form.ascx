@@ -245,8 +245,9 @@
 
         if (confirm("確定刪除上傳檔案？")) {
             $.ajax({
-                url: getRootPath() + "/sub/del_draw_file_new.aspx?type=doc&draw_file=" + file,
+                url: getRootPath() + "/sub/del_draw_file_new.aspx",
                 type: 'GET',
+                data: { type: "doc", draw_file: file },
                 dataType: "script",
                 async: false,
                 cache: false,

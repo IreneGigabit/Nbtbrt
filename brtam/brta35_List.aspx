@@ -237,7 +237,7 @@
 		    </td>
 		    <td align="center" >
 			    <font style="cursor: pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" onclick="CapplClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')" title="案件主檔查詢"><%#Eval("fseq")%></font>
-			    <font style="cursor: pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" onclick="QstepClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')" title="案件進度查詢"><img src="<%=Page.ResolveUrl("~/images/annex.gif")%>"></font>
+                <img src="<%=Page.ResolveUrl("~/images/annex.gif")%>" style="cursor:pointer" align="absmiddle" title="案件進度查詢" onclick="QstepClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')">
 			</td>
 		    <td ><%#Eval("cappl_name").ToString().ToUnicode().Left(20)%></td>
 		    <td nowrap align="center"><%#Eval("sc_name")%></td>
@@ -270,7 +270,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -312,7 +312,7 @@
     //案件進度查詢
     function QstepClick(pseq,pseq1) {
         //***todo
-        window.open(getRootPath() + "/brtam/brta61Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
     //全選
     function selectall(){

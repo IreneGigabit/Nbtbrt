@@ -5,7 +5,7 @@
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
 
 <script runat="server">
-    //管制欄位畫面，與收文共同
+    //管制欄位畫面
     //父控制項傳入的參數
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> Hide = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -48,7 +48,8 @@
 	    <%if (submitTask != "Q" && submitTask != "D") { %>
 	        <TR class=whitetablebg align=center id="ctrl_line1">
 		        <TD colspan=7>
-			        <input type=button value ="增加一筆管制" class="cbutton <%=Lock.TryGet("Qdisabled")%>" id=Add_button name=Add_button onclick="brta212form.add_ctrl()">
+                    <span style="color:red">※表示該筆管制期限為「系統預設」。</span>
+			        <input type=button value ="增加一筆管制" class="cbutton <%=Lock.TryGet("Qdisabled")%>" id=Add_button name=Add_button onclick="brta212form.add_ctrl(false)">
 			        <%if (submitTask == "A" || prgid == "brta24" || prgid == "brta38") {%><!--國內案官收確認作業//國內案官發確認作業-->
 				        <input type=button value ="減少一筆管制" class="cbutton <%=Lock.TryGet("Qdisabled")%>" id=res_button name=res_button onclick="brta212form.del_ctrl()">
 			        <%}%>
@@ -79,6 +80,7 @@
 	        <input type=hidden id='ctrl_rs_no_##' name='ctrl_rs_no_##'><!--客收之對應官收法定期限收文字號-->
 	        <input type=hidden id='sqlno_##' name='sqlno_##'>
 	        <input type=text id='ctrlnum_##' name='ctrlnum_##' class=SEdit readonly size=2 value='##'>.
+            <span id="preflag_##" style="color:red"></span>
 		</td>
 		<td class=whitetablebg align=center>
 	        <input type=hidden id='octrl_type_##' name='octrl_type_##'>
@@ -137,7 +139,8 @@
     }
 
     //管制期限增加一筆
-    brta212form.add_ctrl = function () {
+    //preFlag是否為預設期限,若是則加註※並lock
+    brta212form.add_ctrl = function (preFlag) {
         var nRow = CInt($("#ctrlnum").val()) + 1;
         //複製樣板
         var copyStr = $("#ctrl_template").text() || "";
@@ -158,6 +161,12 @@
         
         if (main.prgid == "brta2m" && $("#cgrs").val() == "ZS") {//國內案進度維護(本發)
             $(".ctrl_del").hide();
+        }
+
+        //預設期限加註※並lock
+        if (preFlag) {
+            $("#preflag_" + nRow).html("※");
+            $("#ctrl_type_" + nRow).lock();
         }
     }
 
@@ -268,7 +277,7 @@
     //管制資料append到畫面
     brta212form.appendCtrl = function (jData) {
         $.each(jData, function (i, item) {
-            brta212form.add_ctrl();//增加一筆
+            brta212form.add_ctrl(false);//增加一筆
             var nRow = $("#ctrlnum").val();
             $("#sqlno_" + nRow).val(item.sqlno);
             $("#octrl_type_" + nRow).val(item.ctrl_type);

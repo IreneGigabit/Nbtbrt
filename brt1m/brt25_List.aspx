@@ -190,56 +190,52 @@
 
         //分頁完再處理其他資料才不會虛耗資源
         for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
-            //組本所編號
-            page.pagedTable.Rows[i]["fseq"] = Sys.formatSeq(
-                page.pagedTable.Rows[i].SafeRead("Seq", "")
-                , page.pagedTable.Rows[i].SafeRead("Seq1", "")
-                , page.pagedTable.Rows[i].SafeRead("country", "")
-                , Sys.GetSession("SeBranch")
-                , "T" + ((prgid.ToLower().Left(2) == "ex") ? "E" : "")
-                );
+            DataRow dr = page.pagedTable.Rows[i];
 
-            SQL = "select rs_detail from " + page.pagedTable.Rows[i].SafeRead("step_table", "") + " ";
-            SQL += "where seq=" + page.pagedTable.Rows[i].SafeRead("Seq", "") + " ";
-            SQL += "and seq1='" + page.pagedTable.Rows[i].SafeRead("Seq1", "") + "' ";
-            SQL += "and step_grade = '" + page.pagedTable.Rows[i].SafeRead("step_grade", "") + "' ";
+            //組本所編號
+            dr["fseq"] = Sys.formatSeq(dr.SafeRead("Seq", ""), dr.SafeRead("Seq1", ""), dr.SafeRead("country", ""), Sys.GetSession("SeBranch"), "T" + ((prgid.ToLower().Left(2) == "ex") ? "E" : ""));
+
+            SQL = "select rs_detail from " + dr.SafeRead("step_table", "") + " ";
+            SQL += "where seq=" + dr.SafeRead("Seq", "") + " ";
+            SQL += "and seq1='" + dr.SafeRead("Seq1", "") + "' ";
+            SQL += "and step_grade = '" + dr.SafeRead("step_grade", "") + "' ";
             object objResult0 = conn.ExecuteScalar(SQL);
-            page.pagedTable.Rows[i]["rs_detail"] = ((objResult0 == DBNull.Value || objResult0 == null) ? "" : objResult0.ToString());
+            dr["rs_detail"] = ((objResult0 == DBNull.Value || objResult0 == null) ? "" : objResult0.ToString());
 
             //檢查是否已官發或聯發，因step_dmt沒記錄case_no且用attcase_dmt抓所費查詢成本較低，故商標改用attcase_dmt/attcase_ext
             if (prgid.ToLower().Left(3) == "brt") {
                 SQL = "select count(*) as gs_cnt from attcase_dmt ";
-                SQL += "where seq=" + page.pagedTable.Rows[i].SafeRead("Seq", "") + " ";
-                SQL += "and seq1='" + page.pagedTable.Rows[i].SafeRead("Seq1", "") + "' ";
-                SQL += "and case_no = '" + page.pagedTable.Rows[i].SafeRead("case_no", "") + "' ";
+                SQL += "where seq=" + dr.SafeRead("Seq", "") + " ";
+                SQL += "and seq1='" + dr.SafeRead("Seq1", "") + "' ";
+                SQL += "and case_no = '" + dr.SafeRead("case_no", "") + "' ";
                 SQL += "and sign_stat='SZ' ";
                 object objResult = conn.ExecuteScalar(SQL);
                 int gs_cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
-                page.pagedTable.Rows[i]["gs_flag"] = (gs_cnt >= 1 ? "Y" : "N");
+                dr["gs_flag"] = (gs_cnt >= 1 ? "Y" : "N");
             } else if (prgid.ToLower().Left(3) == "ext") {
                 SQL = "select count(*) as gs_cnt from attcase_ext ";
-                SQL += "where seq=" + page.pagedTable.Rows[i].SafeRead("Seq", "") + " ";
-                SQL += "and seq1='" + page.pagedTable.Rows[i].SafeRead("Seq1", "") + "' ";
-                SQL += "and case_no = '" + page.pagedTable.Rows[i].SafeRead("case_no", "") + "' ";
+                SQL += "where seq=" + dr.SafeRead("Seq", "") + " ";
+                SQL += "and seq1='" + dr.SafeRead("Seq1", "") + "' ";
+                SQL += "and case_no = '" + dr.SafeRead("case_no", "") + "' ";
                 SQL += "and sign_stat='SZ' ";
                 object objResult = conn.ExecuteScalar(SQL);
                 int gs_cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
-                page.pagedTable.Rows[i]["gs_flag"] = (gs_cnt >= 1 ? "Y" : "N");
+                dr["gs_flag"] = (gs_cnt >= 1 ? "Y" : "N");
             }
-            page.pagedTable.Rows[i]["totsum"] = GetSum(page.pagedTable.Rows[i]);
+            dr["totsum"] = GetSum(dr);
 
             //符號
             string sign = "";
-            if (page.pagedTable.Rows[i].SafeRead("dowhat", "") == "contractLB") sign += "◎";//會計退回
-            if (page.pagedTable.Rows[i].SafeRead("gs_flag", "") == "Y") sign += "※";//官發/聯發
-            page.pagedTable.Rows[i]["sign"] = sign;
+            if (dr.SafeRead("dowhat", "") == "contractLB") sign += "◎";//會計退回
+            if (dr.SafeRead("gs_flag", "") == "Y") sign += "※";//官發/聯發
+            dr["sign"] = sign;
 
-            //page.pagedTable.Rows[i]["urlasp"] = "brt25Edit.aspx?prgid="+prgid+"&seq="+page.pagedTable.Rows[i]["seq"]+"&seq1="+page.pagedTable.Rows[i]["seq1"]+
-            //    "&case_no="+page.pagedTable.Rows[i]["case_no"]+ "&todo_sqlno="+page.pagedTable.Rows[i]["todo_sqlno"]+ "&from_flag="+page.pagedTable.Rows[i]["from_flag"]+ 
-            //    "&in_no="+page.pagedTable.Rows[i]["in_no"]+ "&in_scode=" +page.pagedTable.Rows[i]["in_scode"];
-            string urlasp = "brt25_Edit.aspx?prgid=" + prgid + "&seq=" + page.pagedTable.Rows[i]["seq"] + "&seq1=" + page.pagedTable.Rows[i]["seq1"] +
-                "&case_no=" + page.pagedTable.Rows[i]["case_no"] + "&todo_sqlno=" + page.pagedTable.Rows[i]["todo_sqlno"] + "&from_flag=" + page.pagedTable.Rows[i]["from_flag"] +
-                "&in_no=" + page.pagedTable.Rows[i]["in_no"] + "&in_scode=" + page.pagedTable.Rows[i]["in_scode"];
+            //dr["urlasp"] = "brt25Edit.aspx?prgid="+prgid+"&seq="+dr["seq"]+"&seq1="+dr["seq1"]+
+            //    "&case_no="+dr["case_no"]+ "&todo_sqlno="+dr["todo_sqlno"]+ "&from_flag="+dr["from_flag"]+ 
+            //    "&in_no="+dr["in_no"]+ "&in_scode=" +dr["in_scode"];
+            string urlasp = "brt25_Edit.aspx?prgid=" + prgid + "&seq=" + dr["seq"] + "&seq1=" + dr["seq1"] +
+                "&case_no=" + dr["case_no"] + "&todo_sqlno=" + dr["todo_sqlno"] + "&from_flag=" + dr["from_flag"] +
+                "&in_no=" + dr["in_no"] + "&in_scode=" + dr["in_scode"];
 
             //按鈕
             string actbtn = "<a href=\"" + urlasp + "&submitTask=A\" target=\"Eblank\">[後補]</a>";
@@ -248,17 +244,17 @@
                 actbtn += "<a href=\"" + urlasp + "&submitTask=C\" target=\"Eblank\">[取消(送會計)]</a>";
                 actbtn += "<a href=\"" + urlasp + "&submitTask=D\" target=\"Eblank\">[不需後補]</a>";
             }
-            page.pagedTable.Rows[i]["actbtn"] = actbtn;
-            page.pagedTable.Rows[i]["armark_txt"] = page.pagedTable.Rows[i].SafeRead("ar_mark", "") != "N" ? "(" + page.pagedTable.Rows[i].SafeRead("ar_mark", "") + ")" : "";
+            dr["actbtn"] = actbtn;
+            dr["armark_txt"] = dr.SafeRead("ar_mark", "") != "N" ? "(" + dr.SafeRead("ar_mark", "") + ")" : "";
 
             //流程狀態查詢
             string todo_link = "";
             if (prgid.ToLower().Left(3) == "brt") {
-                todo_link = "../brtam/brta61list2.aspx?prgid=" + prgid + "&seq=" + page.pagedTable.Rows[i]["seq"] + "&seq1=" + page.pagedTable.Rows[i]["seq1"];
+                todo_link = "../brtam/brta61_list2.aspx?prgid=" + prgid + "&seq=" + dr["seq"] + "&seq1=" + dr["seq1"];
             } else if (prgid.ToLower().Left(3) == "ext") {
-                todo_link = "../brtam/exta61list2.aspx?prgid=" + prgid + "&seq=" + page.pagedTable.Rows[i]["seq"] + "&seq1=" + page.pagedTable.Rows[i]["seq1"];
+                todo_link = "../brtam/exta61list2.aspx?prgid=" + prgid + "&seq=" + dr["seq"] + "&seq1=" + dr["seq1"];
             }
-            page.pagedTable.Rows[i]["todo_link"] = todo_link;
+            dr["todo_link"] = todo_link;
         }
 
         var settings = new JsonSerializerSettings()
@@ -396,7 +392,7 @@
             <td align="center">{{oth_money}}</td>
             <td align="center">{{totsum}}</td>
             <td align="center">{{discount}}<font style="color:red">{{armark_txt}}</font></td>
-            <td align="center" title="流程狀態查詢"><a href="{{todo_link}}" target="Eblank"><img src="../images/ok.gif" border=0 ></a></td>
+            <td align="center" title="流程狀態查詢"><a href="{{todo_link}}" target="Eblank"><img src="<%=Page.ResolveUrl("~/images/ok.gif")%>" border=0 ></a></td>
        </tr>
     </script>
 </TABLE>

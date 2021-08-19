@@ -71,10 +71,12 @@ public partial class Sys
     /// </summary>
     public static string Opt_IIS {
         get {
-            if (Sys.Host.IndexOf("web") == -1)
-                return "sik10";//正式環境
-            else
-                return Host;//開發環境
+            switch (Host.Substring(0, 1)) {
+                case "w":
+                case "b":
+                case "l": return Host;//開發環境
+                default: return "sik10";//正式環境
+            }
         }
     }
     #endregion
@@ -120,9 +122,9 @@ public partial class Sys
     }
     #endregion
 
-    #region bName - 區所名稱,ex:台北所
+    #region bName - 指定區所名稱,ex:台北所
     /// <summary>
-    /// 區所名稱
+    /// 指定區所名稱
     /// </summary>
     public static string bName(string pBranch) {
         string rtnStr = "";
@@ -158,6 +160,29 @@ public partial class Sys
     }
     #endregion
 
+    #region webservername - 指定區所iis主機名稱,ex:sinn03
+    /// <summary>
+    /// 指定區所iis主機名稱
+    /// </summary>
+    public static string webservername(string pBranch) {
+        string rtnStr = "";
+        switch (Host) {
+            case "sik10": //正式環境
+                if (pBranch.ToUpper() == "N") rtnStr = "sinn03";
+                if (pBranch.ToUpper() == "C") rtnStr = "sic09";
+                if (pBranch.ToUpper() == "S") rtnStr = "sis09";
+                if (pBranch.ToUpper() == "K") rtnStr = "sik09";
+                break;
+            case "web10":
+                rtnStr = "web10";//測試環境
+                break;
+            default:
+                rtnStr = "web08";//開發環境
+                break;
+        }
+        return rtnStr;
+    }
+    #endregion
     ////////////////////////////////////////////////////////////////////////
     #region showLog - 顯示除錯訊息
     /// <summary>  

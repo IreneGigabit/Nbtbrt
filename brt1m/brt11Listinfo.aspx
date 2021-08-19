@@ -174,7 +174,7 @@
  		        <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 		            <td align="center">
                         <a href="../cust/cust11_mod.asp?modify=Q&gs_dept=t&cust_area=<%#Eval("cust_area")%>&cust_seq=<%#Eval("cust_seq")%>&apsqlno=<%#Eval("id_no")%>&hRight=2&att_sql=1">
-                            <%#Eval("cust_area")%>-<%#Eval("cust_seq")%>
+                            <%#Eval("cust_area")%>-<%#Eval("cust_seq")%><!--//***todo-->
                         </a>
                     </td>
 		            <td align="center"><%#Eval("ap_cname1")%></td>

@@ -12,7 +12,7 @@
 
 
 <script runat="server">
-    protected string HTProgCap = "國內案客收確認作業";//HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內案客收確認作業-畫面2";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt51";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -187,7 +187,7 @@
         };
         Response.Write("{");
         Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
-        Response.Write(",\"add_cr\":" + JsonConvert.SerializeObject(add_cr, settings).ToUnicode() + "\n");//交辦官發預設值
+        Response.Write(",\"add_cr\":" + JsonConvert.SerializeObject(add_cr, settings).ToUnicode() + "\n");//交辦客收預設值
         Response.Write("}");
         Response.End();
     }
@@ -226,23 +226,23 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-    <INPUT TYPE="text" id=submittask name=submittask value="<%=submitTask%>">
-    <INPUT TYPE="text" id=prgid name=prgid value="<%=prgid%>">
-    <input type="text" id=codemark name=codemark>
-    <input type="text" id=dmt_term1 name=dmt_term1>
-    <input type="text" id=dmt_term2 name=dmt_term2>
-    <input type="text" id=endflag51 name=endflag51 value="<%=Request["endflag51"]%>">
-    <input type="text" id=end_date51 name=end_date51 value="<%=Request["end_date51"]%>">
-    <input type="text" id=end_code51 name=end_code51 value="<%=Request["end_code51"]%>">
-    <input type="text" id=end_type51 name=end_type51 value="<%=Request["end_type51"]%>">
-    <input type="text" id=end_remark51 name=end_remark51 value="<%=Request["end_remark51"]%>">
-    <input type="text" id=seqend_flag name=seqend_flag value="<%=Request["seqend_flag"]%>"><!--結案註記-->
-    <input type="text" id=case_last_date name=case_last_date><!--營洽輸入法定期限-->
-    <input type="text" id=spe_ctrl3 name=spe_ctrl3><!--Y:案性需管制法定期限-->
-    <input type="text" id=seq name=seq>
-    <input type="text" id=seq1 name=seq1>
-    <input type="text" id="cust_area" name="cust_area">
-    <input type="text" id="cust_seq" name="cust_seq">
+    <INPUT TYPE="hidden" id=submittask name=submittask value="<%=submitTask%>">
+    <INPUT TYPE="hidden" id=prgid name=prgid value="<%=prgid%>">
+    <input type="hidden" id=codemark name=codemark>
+    <input type="hidden" id=dmt_term1 name=dmt_term1>
+    <input type="hidden" id=dmt_term2 name=dmt_term2>
+    <input type="hidden" id=endflag51 name=endflag51 value="<%=Request["endflag51"]%>">
+    <input type="hidden" id=end_date51 name=end_date51 value="<%=Request["end_date51"]%>">
+    <input type="hidden" id=end_code51 name=end_code51 value="<%=Request["end_code51"]%>">
+    <input type="hidden" id=end_type51 name=end_type51 value="<%=Request["end_type51"]%>">
+    <input type="hidden" id=end_remark51 name=end_remark51 value="<%=Request["end_remark51"]%>">
+    <input type="hidden" id=seqend_flag name=seqend_flag value="<%=Request["seqend_flag"]%>"><!--結案註記-->
+    <input type="hidden" id=case_last_date name=case_last_date><!--營洽輸入法定期限-->
+    <input type="hidden" id=spe_ctrl3 name=spe_ctrl3><!--Y:案性需管制法定期限-->
+    <input type="hidden" id=seq name=seq>
+    <input type="hidden" id=seq1 name=seq1>
+    <input type="hidden" id="cust_area" name="cust_area">
+    <input type="hidden" id="cust_seq" name="cust_seq">
     <center>
          <uc1:brt511form runat="server" ID="brt511form" /><!--~/commonForm/brt511form.ascx-->
          <uc1:brta212form runat="server" ID="brta212form" /><!--~/commonForm/brta212form.ascx-->
@@ -261,7 +261,7 @@
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -320,8 +320,8 @@
     
     main.bind = function () {
         $("#codemark").val(jMain.add_cr.codemark);
-        $("#dmt_term1").val(dateReviver(jMain.add_cr.dmt_term1,'yyyy/M/d'));
-        $("#dmt_term2").val(dateReviver(jMain.add_cr.dmt_term2,'yyyy/M/d'));
+        $("#dmt_term1").val(jMain.add_cr.dmt_term1);
+        $("#dmt_term2").val(jMain.add_cr.dmt_term2);
         $("#case_last_date").val(jMain.add_cr.last_date);
         $("#seq").val(jMain.add_cr.seq);
         $("#seq1").val(jMain.add_cr.seq1);
@@ -349,7 +349,7 @@
             //2013/11/5修改，爭救案性預設帶官收法定期限
             if(CInt($("#nstep_grade"))!=1){
                 $("#btnqrygrlastdate").show();//顯示[查官收未銷法定期限按鈕]
-                brta212form.add_ctrl();
+                brta212form.add_ctrl(false);
                 $("#ctrl_type_"+$("#ctrlnum").val()).val("A1");
                 getgrlast_date();//抓取官收最小法定期限A1
             }
@@ -413,6 +413,16 @@
             if (chkNull("收文日期", reg.step_date)) return false;
             if (chkNull("案性代碼", reg.rs_code)) return false;
             if (chkNull("處理事項", reg.act_code)) return false;
+
+            for (var n = 1; n <= CInt($("#ctrlnum").val()) ;n++) {
+                var ctrl_type= $("#ctrl_type_" + n).val();
+                var ctrl_date= $("#ctrl_date_" + n).val();
+                if(ctrl_date==""){
+                    alert("請輸入管制日期！！");
+                    $("#ctrl_date_" + n).focus();
+                    return false;
+                }
+            }
 
             //check交辦爭救案需管制一筆法定期限,2011/9/27檢查新立案且要管制法定期限案性，程序輸入期限需與營洽相同
             if(($("#codemark").val()=="B"&&$("input[name='opt_stat']:eq(0)").prop("checked") == true)

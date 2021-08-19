@@ -139,8 +139,8 @@
         if ((e.Item.ItemType == ListItemType.Item) || (e.Item.ItemType == ListItemType.AlternatingItem)) {
             Repeater dtlRpt = (Repeater)e.Item.FindControl("dtlRepeater");
             if ((dtlRpt != null)) {
-                string branch = ((DataRowView)e.Item.DataItem).Row["branch"].ToString();
-                string send_cl = ((DataRowView)e.Item.DataItem).Row["send_cl"].ToString();
+                string branch = DataBinder.Eval(e.Item.DataItem, "branch").ToString();
+                string send_cl = DataBinder.Eval(e.Item.DataItem, "send_cl").ToString();
                 
                 //DataTable dtlDtl = dtRpt.Select("branch='" + branch + "' and send_cl='" + send_cl + "'").CopyToDataTable();
                 var rows = dtRpt.Select("branch='" + branch + "' and send_cl='" + send_cl + "'");
@@ -154,8 +154,8 @@
     protected void dtlRepeater_ItemDataBound(object sender, RepeaterItemEventArgs e) {
         if ((e.Item.ItemType == ListItemType.Item) || (e.Item.ItemType == ListItemType.AlternatingItem)) {
             countnum += 1;
-            fees += Convert.ToInt32(((DataRowView)e.Item.DataItem).Row["fees"].ToString());
-            service += Convert.ToInt32(((DataRowView)e.Item.DataItem).Row["service1"].ToString());
+            fees += Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "fees"));
+            service += Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "service1"));
         }
     }
 </script>
@@ -163,9 +163,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body>

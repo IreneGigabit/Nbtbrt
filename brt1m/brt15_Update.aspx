@@ -4,7 +4,7 @@
 <%@ Import Namespace = "System.Data" %>
 
 <script runat="server">
-    protected string HTProgCap = "營洽官收確認入檔";//HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內案官方收文營洽確認作業-入檔";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt15";//程式檔名前綴
     protected string HTProgCode = "brt15";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼

@@ -68,7 +68,9 @@
             } else {
                 SQL += " order by f.seq ";
             }
-
+            //Sys.showLog(SQL);
+            //Response.End();
+                
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
 

@@ -25,10 +25,10 @@
     protected string FormName = "";
     
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
-    DBHelper optconn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper connopt = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        if (optconn != null) optconn.Dispose();
+        if (connopt != null) connopt.Dispose();
     }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -37,7 +37,7 @@
         Response.Expires = -1;
 
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-        optconn = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
+        connopt = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
         TokenN myToken = new TokenN(HTProgCode);
@@ -96,7 +96,7 @@
         }
         SQL += " order by a.Bseq,a.Bseq1";
         //Sys.showLog(SQL);
-        optconn.DataTable(SQL, dt);
+        connopt.DataTable(SQL, dt);
 
         //處理分頁
         int nowPage = Convert.ToInt32(Request["GoPage"] ?? "1"); //第幾頁
@@ -136,7 +136,7 @@
         SQL = "select * from todo_opt ";
         SQL += "where case_no='" + Eval("case_no") + "' and branch='" + Session["seBranch"] + "' and syscode='" + Session["seBranch"] + "TBRT' ";
         SQL += " and apcode='brt1a' and dowhat='DT' and job_status='XX'";
-        using (SqlDataReader dr0 = optconn.ExecuteReader(SQL)) {
+        using (SqlDataReader dr0 = connopt.ExecuteReader(SQL)) {
             if (dr0.Read()) {
                 todoBack = "Y";
             }
@@ -154,7 +154,7 @@
         string Bstat_code = Eval("Bstat_code").ToString();
 
         SQL = "Select max(Tran_status) as Tran_status from cancel_opt where opt_sqlno='" + Eval("opt_sqlno") + "'";
-        object objResult = optconn.ExecuteScalar(SQL);
+        object objResult = connopt.ExecuteScalar(SQL);
         string Tran_status = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
 
         if (Bstat_code != "YS") {
@@ -194,7 +194,7 @@
 </table>
 
 <form style="margin:0;" id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
@@ -215,7 +215,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>

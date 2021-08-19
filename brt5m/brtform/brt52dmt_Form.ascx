@@ -711,7 +711,8 @@
 
         if (confirm("確定刪除上傳圖檔？")) {
             $.ajax({
-                url: getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file").val() + "&btnname=butUpload" + pfld,
+                url: getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&btnname=butUpload" + pfld,
+                data: { draw_file: $("#draw_attach_file").val() },
                 type: 'GET',
                 dataType: "script",
                 async: false,
@@ -781,14 +782,14 @@
                 from_fld="";
             }
             //***todo
-            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + value1 + "&seq1=" + value2 + "&from_fld=" + from_fld + "&submittask=Q&prgid=Brt51&end_type=012", "", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
+            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + value1 + "&seq1=" + value2 + "&from_fld=" + from_fld + "&submittask=Q&end_type=012", "myWindowOneuN", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
         }
     }
     //案件進度查詢
     dmt_form.Qstepclick = function(pseq,pseq1) {
         if (pseq!=""&&pseq1!=""){
             //***todo
-            window.open(getRootPath() + "/brtam/brta61Edit.aspx?submitTask=Q&qtype=A&prgid=" + main.prgid + "&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+            window.open(getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=" + main.prgid + "&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
         }else{
             alert("請先輸入本所編號再執行維護功能!!!");
             return false;
@@ -798,7 +799,7 @@
     dmt_form.Updseqclick = function(pseq,pseq1) {
         if (pseq!=""&&pseq1!=""){
             //***todo
-            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=U&prgid=Brt51&closewin=Y", "myWindowOneu", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
+            window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=U&closewin=Y", "myWindowOneuN", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
         }else{
             alert("請先輸入本所編號再執行維護功能!!!");
             return false;

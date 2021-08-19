@@ -99,7 +99,8 @@
             Repeater dtlRpt = (Repeater)e.Item.FindControl("dtlRepeater");
 
             if ((dtlRpt != null)) {
-                string rs_no = ((DataRowView)e.Item.DataItem).Row["rs_no"].ToString();
+                string rs_no = DataBinder.Eval(e.Item.DataItem, "rs_no").ToString();
+
                 DataTable dtDtl = new DataTable();
                 SQL = "select ctrl_type,ctrl_date,code_name,''tcolor";
                 SQL += " from ctrl_dmt a inner join cust_code b on a.ctrl_type = b.cust_code and b.code_type = 'CT'";
@@ -130,9 +131,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body onload="window.focus();">

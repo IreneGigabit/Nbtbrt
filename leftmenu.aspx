@@ -538,7 +538,7 @@
 		</TR> 
 </HeaderTemplate>
 <ItemTemplate>
-    	<TR bgcolor="#FFFFFF" style="color:darkblue;" v0="Eblank" v1="brtam/Brta61edit.aspx?prgid=Brta61&qtype=N&submitTask=Q&gtype=B&homelist=homelist&seq=<%#Eval("seq")%>&seq1=<%#Eval("seq1")%>">
+    	<TR bgcolor="#FFFFFF" style="color:darkblue;" v0="Eblank" v1="brtam/brta61_Edit.aspx?prgid=Brta61&qtype=N&submitTask=Q&gtype=B&homelist=homelist&seq=<%#Eval("seq")%>&seq1=<%#Eval("seq1")%>">
 			<td title="<%#Eval("sc_name")%>" style="<%#Eval("scode_style")%>"><%#Eval("fseq")%></td>
 			<td style="<%#Eval("ctrl_style")%>"><%#Convert.ToDateTime(Eval("ctrl_date")).ToShortDateString()%></td>
 		</TR> 

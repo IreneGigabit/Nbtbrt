@@ -517,7 +517,7 @@ public partial class Sys
         SQL += " and rs_code = '" + pRsCode + "' ";
         SQL += " and rs_type = '" + pRsType + "' ";
         object objResult = conn.ExecuteScalar(SQL);
-        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString(); ;
+        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
     }
     #endregion
 
@@ -807,7 +807,7 @@ public partial class Sys
         SQL += "where code_type = '" + pCodeType + "' ";
         SQL += " and cust_code = '" + pCustCode + "' ";
         object objResult = conn.ExecuteScalar(SQL);
-        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString(); ;
+        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
     }
     #endregion
 
@@ -983,6 +983,25 @@ public partial class Sys
     }
     #endregion
 
+    #region getCustCode - 抓取cust_code
+    /// <summary>  
+    /// 抓取cust_code
+    /// </summary>  
+    /// <param name="pwh2">額外條件,ex:Mark='Y'</param>
+    /// <param name="sortField">排序欄位,若未指定則為cust_code</param>
+    public static DataTable getCustCode(DBHelper conn, string code_type, string pwh2, string sortField) {
+        string SQL = "select * from cust_code where code_type='" + code_type + "' " + pwh2;
+        if (sortField == "")
+            SQL += " order by cust_code";
+        else
+            SQL += " order by " + sortField;
+        DataTable dt = new DataTable();
+        conn.DataTable(SQL, dt);
+
+        return dt;
+    }
+    #endregion
+
     #region getBranchCode - 抓取指定單位代碼
     /// <summary>  
     /// 抓取指定單位代碼
@@ -1145,6 +1164,68 @@ public partial class Sys
 
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
+    #region GetGrpidScode - 指定grpid人員(抓取scode_group)
+    /// <summary>  
+    /// 指定grpid人員
+    /// </summary>  
+    public static DataTable GetGrpidScode(string grpclass, string grpid, string submitTask) {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            string SQL = "select a.*,b.sc_name ";
+            SQL += "from scode_group a ";
+            SQL += "inner join scode b on a.scode=b.scode ";
+            SQL += "where a.grpclass='" + grpclass + "' and grpid='" + grpid + "' ";
+            if (submitTask == "A") {
+                SQL += "and (b.end_date is null or b.end_date>=getdate()) ";
+            }
+            DataTable dt = new DataTable();
+            cnn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
+    #region GetOptPrScode - 爭議組承辦人員，2013/12/25增加判斷scode.end_date,for分案
+    /// <summary>  
+    /// 爭議組承辦人員
+    /// </summary>  
+    public static DataTable GetOptPrScode(string submitTask) {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            string SQL = "select c.scode,c.sc_name from grpid as a ";
+            SQL += " inner join scode_group as b on a.grpclass=b.grpclass and a.grpid=b.grpid ";
+            SQL += " inner join scode as c on b.scode=c.scode ";
+            SQL += " where a.grpclass='B' and a.grpid='T100'";
+            if (submitTask == "A") {
+                SQL += "and (c.end_date is null or c.end_date>=getdate()) ";
+            }
+            DataTable dt = new DataTable();
+            cnn.DataTable(SQL, dt);
+
+            return dt;
+        }
+    }
+    #endregion
+
+    #region GetOptBJPrScode - 北京聖島承辦人員，2013/12/25增加判斷scode.end_date,for分案
+    /// <summary>  
+    /// 北京聖島承辦人員
+    /// </summary>  
+    public static DataTable GetOptBJPrScode(string submitTask) {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            string SQL = "select c.scode,c.sc_name from scode_group as a ";
+            SQL += " inner join scode as c on a.scode=c.scode ";
+            if (submitTask == "A") {
+                SQL += "and (c.end_date is null or c.end_date>=getdate()) ";
+            }
+            SQL += " where a.grpclass='BJ' and a.grpid='T100' ";
+            DataTable dt = new DataTable();
+            cnn.DataTable(SQL, dt);
 
             return dt;
         }

@@ -11,7 +11,7 @@
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
-    protected string Title = "";
+    protected string DebugStr = "";
 
     protected string SQL = "";
 
@@ -24,9 +24,9 @@
     protected string scode_name = "";
 
     DataTable dt = new DataTable();
-    DBHelper optconn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper connopt = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
-        if (optconn != null) optconn.Dispose();
+        if (connopt != null) connopt.Dispose();
     }
    
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -34,7 +34,7 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
-        optconn = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
+        connopt = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
         
         case_no = (Request["case_no"] ?? "").Trim();
@@ -45,7 +45,8 @@
 
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
-        Title = myToken.Title;
+        HTProgCap = myToken.Title;
+        DebugStr = myToken.DebugStr;
 
         if (HTProgRight >= 0) {
             QueryData();
@@ -63,7 +64,7 @@
         SQL += " where case_no =  '" + case_no + "'";
         SQL += " and branch =  '" + branch + "'";
         //Sys.showLog(SQL);
-        optconn.DataTable(SQL, dt);
+        connopt.DataTable(SQL, dt);
 
         for (int i = 0; i < dt.Rows.Count; i++) {
         }
@@ -75,9 +76,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body>

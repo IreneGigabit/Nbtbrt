@@ -53,6 +53,9 @@
 
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
+        conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
+        cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
+        
         uploadfield = (Request["uploadfield"] ?? "").Trim();
         submitTask = (Request["submitTask"] ?? "").Trim();
         seq = (Request["seq"] ?? "").Trim();

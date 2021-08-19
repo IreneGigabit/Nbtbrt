@@ -14,6 +14,7 @@
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
+    protected string Title = "";
 
     protected string SQL = "";
 
@@ -50,7 +51,7 @@
 
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
-        HTProgCap = myToken.Title;
+        Title = myToken.Title;
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
             QueryData();
@@ -64,7 +65,9 @@
         //StrFormBtnTop += "<a href=\"javascript:location.reload()\" >[重新整理]</a>";
         StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>";
         //StrFormBtnTop += "<a href=\"javascript:window.history.back()\" >[回上頁]</a>";
-        StrFormBtnTop += "<a href=\"" + HTProgPrefix + ".aspx?prgid=" + prgid + "\" >[回查詢]</a>";
+        if (submitTask != "Q") {
+            StrFormBtnTop += "<a href=\"" + HTProgPrefix + ".aspx?prgid=" + prgid + "\" >[回查詢]</a>";
+        }
 
         if (homelist == "homelist") {
             FormName = "備註:<br>\n";
@@ -114,6 +117,10 @@
 
         if (ReqVal.TryGet("pfx_seq") != "") {
             SQL += "AND b.seq ='" + Request["pfx_seq"] + "' ";
+        }
+
+        if (ReqVal.TryGet("pfx_seq1") != "") {
+            SQL += "AND b.seq1 ='" + Request["pfx_seq1"] + "' ";
         }
 
         if (ReqVal.TryGet("scode") != ""&&ReqVal.TryGet("scode") != "*") {
@@ -318,7 +325,7 @@
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0" align="center">
     <tr>
-        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%> <%=HTProgCap%>】</td>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%><%=HTProgCap%>】<span style="color:blue"><%=Title%></span></td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <%#StrFormBtnTop%>
         </td>
@@ -329,7 +336,7 @@
 </table>
 
 <form style="margin:0;" id="regPage" name="regPage" method="post">
-    <%#page.GetHiddenText("GoPage,PerPage,SetOrder")%>
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
     <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
@@ -350,7 +357,7 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>

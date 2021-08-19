@@ -80,24 +80,23 @@
 
             //案號
             dr["fseq"] = Sys.formatSeq1(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", dr.SafeRead("Branch", ""), Sys.GetSession("dept"));
-            
+
             //來文方式
-            switch (dr.SafeRead("rway",""))
-	        {
-                case "R5":dr["rway_name"]="電子收文";break;
-                case "R9":dr["rway_name"]="電子公文";break;
-		        default: dr["rway_name"]="紙本收文";break;
-	        }
-            
+            switch (dr.SafeRead("rway", "")) {
+                case "R5": dr["rway_name"] = "電子收文"; break;
+                case "R9": dr["rway_name"] = "電子公文"; break;
+                default: dr["rway_name"] = "紙本收文"; break;
+            }
+
             //法定期限
             string ctrl_date = "";
-            SQL = "select ctrl_date from ctrl_dmt where rs_no='" +dr["rs_no"]+ "' and ctrl_type='A1' order by ctrl_date";
+            SQL = "select ctrl_date from ctrl_dmt where rs_no='" + dr["rs_no"] + "' and ctrl_type='A1' order by ctrl_date";
             using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
                 while (dr0.Read()) {
-                    ctrl_date+="<br>"+dr0.GetDateTimeString("ctrl_date","yyyy/M/d");
+                    ctrl_date += "<br>" + dr0.GetDateTimeString("ctrl_date", "yyyy/M/d");
                 }
             }
-            dr["ctrl_date"] = (ctrl_date != "" ? ctrl_date.Substring(1) : "");
+            dr["ctrl_date"] = (ctrl_date != "" ? ctrl_date.Substring(4) : "");
         }
 
         DataTable dtDate = dtRpt.DefaultView.ToTable(true, new string[] { "branch", "step_date" });
@@ -113,8 +112,8 @@
             Repeater rwayRpt = (Repeater)e.Item.FindControl("rwayRepeater");
 
             if ((rwayRpt != null)) {
-                string branch = ((DataRowView)e.Item.DataItem).Row["branch"].ToString();
-                string step_date = ((DataRowView)e.Item.DataItem).Row.GetDateTimeString("step_date", "yyyy/M/d");
+                string branch = DataBinder.Eval(e.Item.DataItem, "branch").ToString();
+                string step_date = DataBinder.Eval(e.Item.DataItem, "step_date", "{0:d}");
                 DataTable dtCL = dtRpt.Select("branch='" + branch + "' and step_date='" + step_date + "'").CopyToDataTable().DefaultView.ToTable(true, new string[] { "branch", "step_date", "rway", "rway_name" });
                 rwayRpt.DataSource = dtCL;
                 rwayRpt.DataBind();
@@ -126,12 +125,12 @@
         if (e.Item.ItemIndex == 0) {//因pagebind&repeater bind會讓repaeter觸發綁定2次.所以第一筆時總計要重算
             subcnt = 0;
         }
-        
+
         Repeater dtlRpt = (Repeater)e.Item.FindControl("dtlRepeater");
         if ((dtlRpt != null)) {
-            string branch = ((DataRowView)e.Item.DataItem).Row["branch"].ToString();
-            string step_date = ((DataRowView)e.Item.DataItem).Row.GetDateTimeString("step_date", "yyyy/M/d");
-            string rway = ((DataRowView)e.Item.DataItem).Row["rway"].ToString();
+            string branch = DataBinder.Eval(e.Item.DataItem, "branch").ToString();
+            string step_date = DataBinder.Eval(e.Item.DataItem, "step_date", "{0:d}");
+            string rway = DataBinder.Eval(e.Item.DataItem, "rway").ToString();
 
             //DataTable dtDtl = dtRpt.Select("branch='" + branch + "' and step_date='" + step_date + "' and rway='" + rway + "'").CopyToDataTable();
             var rows = dtRpt.Select("branch='" + branch + "' and step_date='" + step_date + "' and rway='" + rway + "'");
@@ -157,9 +156,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body>

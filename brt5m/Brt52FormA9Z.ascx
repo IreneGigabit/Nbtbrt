@@ -493,7 +493,8 @@
 
         if (confirm("確定刪除上傳圖檔？")) {
             $.ajax({
-                url: getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&draw_file=" + $("#draw_attach_file_"+pbtn).val() + "&btnname=butUpload" + pbtn,
+                url: getRootPath() + "/sub/del_draw_file_new.aspx?type=dmt_photo&folder_name=&btnname=butUpload" + pbtn,
+                data: { draw_file: $("#draw_attach_file_"+pbtn).val() },
                 type: 'GET',
                 dataType: "script",
                 async: false,

@@ -42,7 +42,7 @@ public partial class Sys
         DataTable dt = new DataTable();
         string SQL = "";
 
-        SQL = "select *,'' as old_branch ";
+        SQL = "select *,'' as old_branch,''view_path,''scan_flag,'Y' file_flag,''file_flagnm ";
         SQL += ",(select mark1 from cust_code where code_type='Tdoc' and cust_code=dmt_attach.doc_type) as doc_type_mark ";
         SQL += "from dmt_attach where attach_flag<>'D' ";
         SQL += where;
@@ -51,7 +51,32 @@ public partial class Sys
 
         for (int i = 0; i < dt.Rows.Count; i++) {
             DataRow dr = dt.Rows[i];
-            dr["attach_path"] = Sys.Path2Nbtbrt(dr.SafeRead("attach_path", ""));
+
+            string viewserver = "http://" + Sys.Host;
+            string attach_path = Sys.Path2Nbtbrt(dr.SafeRead("attach_path", ""));
+
+            if (dr.SafeRead("source", "") == "scan") {//掃描
+                dr["scan_flag"] = "Y";//尚未掃描
+                if (Sys.CheckFile(attach_path) == false) {
+                    dr["file_flag"] = "N";//檔案不存在
+                    dr["scan_flag"] = "N";
+                    dr["file_flagnm"] = "(尚未掃描)";
+                }
+            } else if (dr.SafeRead("source", "").ToUpper().IN("EGR,GR,EGS")) {//電子公文/電子收據
+                //若區所主機找不到就找總所主機
+                if (Sys.CheckFile(attach_path) == false) {
+                    dr["file_flag"] = "N";//檔案不存在
+                    viewserver = "http://" + Sys.MG_IIS;
+                    attach_path = attach_path.Replace("/nbtbrt/", "/MG/");
+                }
+            } else if (dr.SafeRead("source", "").ToUpper()=="OPT") {//爭救案上傳
+                viewserver = "http://" + Sys.Opt_IIS;
+                attach_path = attach_path.Replace(@"\opt\", @"\nopt\");
+            }
+
+            dr["attach_path"] = attach_path;
+            dr["view_path"] = viewserver + attach_path;
+
         }
 
         return dt;

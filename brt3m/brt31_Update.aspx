@@ -259,37 +259,41 @@
             }
 
             string body = dobody();
-            body += "<font color=blue>◎請至：商標網路作業系統－＞";
-            string tsub = "簽核";
-            if (Request["upload_flag"] == "Y") {
-                body += "主管簽核－＞" + qs_deptnm + "主管簽核作業，進行簽核</font>";
-                Subject += "商標網路作業系統~專案指定代理人之主管" + tsub + "通知";
-            } else if (Request["armark_flag"] == "Y") {
-                body += "智產請款－＞" + qs_deptnm + "扣收入會計檢核作業，進行檢核</font>";
-                Subject += "商標網路作業系統~扣收入交辦之會計檢核通知";
-            } else if (Request["armarkT_flag"] == "Y") {
-                body += "主管簽核－＞" + qs_deptnm + "主管簽核作業，進行簽核</font>";
-                Subject = "商標網路作業系統~扣收入交辦之主管" + tsub + "通知";
-            } else if (Request["contract_flag"] == "Y") {
-                body += "主管簽核－＞" + qs_deptnm + "主管簽核作業，進行簽核</font>";
-                Subject += "商標網路作業系統~契約書後補先行客收之主管" + tsub + "通知";
-            }
+            if (body != "") {
+                body += "<font color=blue>◎請至：商標網路作業系統－＞";
+                string tsub = "簽核";
+                if (Request["upload_flag"] == "Y") {
+                    body += "主管簽核－＞" + qs_deptnm + "主管簽核作業，進行簽核</font>";
+                    Subject += "商標網路作業系統~專案指定代理人之主管" + tsub + "通知";
+                } else if (Request["armark_flag"] == "Y") {
+                    body += "智產請款－＞" + qs_deptnm + "扣收入會計檢核作業，進行檢核</font>";
+                    Subject += "商標網路作業系統~扣收入交辦之會計檢核通知";
+                } else if (Request["armarkT_flag"] == "Y") {
+                    body += "主管簽核－＞" + qs_deptnm + "主管簽核作業，進行簽核</font>";
+                    Subject = "商標網路作業系統~扣收入交辦之主管" + tsub + "通知";
+                } else if (Request["contract_flag"] == "Y") {
+                    body += "主管簽核－＞" + qs_deptnm + "主管簽核作業，進行簽核</font>";
+                    Subject += "商標網路作業系統~契約書後補先行客收之主管" + tsub + "通知";
+                }
 
-            Sys.DoSendMail(Subject, body, strFrom, strTo, strCC, strBCC);
+                Sys.DoSendMail(Subject, body, strFrom, strTo, strCC, strBCC);
+            }
         }
     }
     
     //信件內容
     private string dobody() {
         string tbody = "";
-        tbody += "區所 : " + Sys.bName(Sys.GetSession("seBranch")) + "<br>";
-        if (Request["armark_flag"] == "Y") {
-            tbody += "本所編號 : " + string.Join("、", tseq.ToArray()) + "<br>";
+        if (tseq.Count > 0) {
+            tbody += "區所 : " + Sys.bName(Sys.GetSession("seBranch")) + "<br>";
+            if (Request["armark_flag"] == "Y") {
+                tbody += "本所編號 : " + string.Join("、", tseq.ToArray()) + "<br>";
+            }
+            tbody += "交辦單號 : " + string.Join("、", tCase_no.ToArray()) + "<br>";
+            tbody += "案件名稱 : " + string.Join("、", tappl_name.ToArray()) + "<br>";
+            tbody += "交辦案性 : " + string.Join("、", tcase_name.ToArray()) + "<br>";
+            tbody += "送簽件數 : 共  " + tot + " 件<br><br>";
         }
-        tbody += "交辦單號 : " + string.Join("、", tCase_no.ToArray()) + "<br>";
-        tbody += "案件名稱 : " + string.Join("、", tappl_name.ToArray()) + "<br>";
-        tbody += "交辦案性 : " + string.Join("、", tcase_name.ToArray()) + "<br>";
-        tbody += "送簽件數 : 共  " + tot + " 件<br><br>";
         return tbody;
     }
 </script>

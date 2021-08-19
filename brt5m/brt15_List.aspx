@@ -7,6 +7,7 @@
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
 
 <script runat="server">
+    protected string HTProgCap = "案件主檔維護";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
@@ -105,9 +106,10 @@
             //分頁完再處理其他資料才不會虛耗資源
             for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
                 DataRow dr = page.pagedTable.Rows[i];
-                dr["fseq"] = dr.SafeRead("seq", "") + (dr.SafeRead("seq1", "_") != "_" ? "-" + dr.SafeRead("seq1", "") : "");
+                
+                dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", "", "");
                 dr["cust_area"] = dr.SafeRead("cust_area", "").Left(1);
-                dr["url"] = GetLink(dr); ;
+                dr["url"] = GetLink(dr);
             }
             
             dataRepeater.DataSource = page.pagedTable;

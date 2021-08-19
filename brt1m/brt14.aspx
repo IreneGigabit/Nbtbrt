@@ -65,13 +65,12 @@
         cnn.DataTable(SQL, dtscode);
         if ((HTProgRight & 64) != 0) {
             td_tscode = "<select id='Scode' name='Scode'>";
-            td_tscode += dtscode.Option("{scode}", "{scode}_{sc_name}",true, Sys.GetSession("scode"));
+            td_tscode += dtscode.Option("{scode}", "{scode}_{sc_name}", true, Sys.GetSession("scode"));
             td_tscode += "</select>";
         } else {
             td_tscode = "<input type='hidden' id='Scode' name='Scode' value='" + Session["scode"] + "'>";
             td_tscode += "<input type='text' id='ScodeName' name='ScodeName' readonly class='SEdit' value='" + Session["sc_name"] + "'>";
         }
-
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >

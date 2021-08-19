@@ -25,10 +25,10 @@
     protected string Bdb = "";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
-    DBHelper optconn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
+    DBHelper connopt = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
-        if (optconn != null) optconn.Dispose();
+        if (connopt != null) connopt.Dispose();
     }
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
@@ -45,18 +45,18 @@
         if (HTProgRight >= 0) {
             try {
                 conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-                optconn = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
+                connopt = new DBHelper(Conn.optK).Debug(Request["chkTest"] == "TEST");
 
                 doUpdateDB();
                 
                 conn.Commit();
-                optconn.Commit();
+                connopt.Commit();
 
                 strOut.AppendLine("<div align='center'><h1>爭救案抽件申請成功!!</h1></div>");
             }
             catch (Exception ex) {
                 conn.RollBack();
-                optconn.RollBack();
+                connopt.RollBack();
                 Sys.errorLog(ex, conn.exeSQL, prgid);
                 //strOut.AppendLine("<div align='center'><h1>爭救案抽件申請失敗("+ex.Message+")</h1></div>");
                 throw;
@@ -86,14 +86,14 @@
         SQL = "insert into cancel_opt(input_scode,input_date,opt_sqlno,branch,seq,seq1,cap_scode,creason,tran_status,tran_date) values (";
         SQL += "'" + Session["scode"] + "','" + DateTime.Today.ToShortDateString() + "','" + opt_sqlno + "','" + Session["seBranch"] + "'," + seq + ",'" + seq1 + "'";
         SQL += ",'" + Job_Scode + "'," + Util.dbchar(creason) + ",'DT',getdate())";
-        optconn.ExecuteNonQuery(SQL);
+        connopt.ExecuteNonQuery(SQL);
 
         //入流程控制檔
         SQL = " insert into todo_opt(syscode,apcode,opt_sqlno,branch,case_no,in_scode,in_date";
         SQL += ",dowhat,job_scode,job_status) values (";
         SQL += "'" + Session["syscode"] + "','" + tprgid + "'," + opt_sqlno + ",'" + Session["seBranch"] + "','" + case_no + "'";
         SQL += ",'" + Session["scode"] + "',getdate(),'DT','" + Job_Scode + "','NN')";
-        optconn.ExecuteNonQuery(SQL);
+        connopt.ExecuteNonQuery(SQL);
         
         //發mail通知
         CreateMail(case_no,Job_Scode);
@@ -103,7 +103,7 @@
         string fseq = "", in_scode = "", in_scode_name = "", cust_area = "", cust_seq = "", cust_name = "", appl_name = "", arcase_name = "", last_date = "";
         SQL = "select Bseq,Bseq1,in_scode,scode_name,cust_area,cust_seq";
         SQL += " ,appl_name,arcase_name,Last_date from vbr_opt where branch='" + Session["seBranch"] + "' and case_no='" + case_no + "'";
-        using (SqlDataReader dr = optconn.ExecuteReader(SQL)) {
+        using (SqlDataReader dr = connopt.ExecuteReader(SQL)) {
             if (dr.Read()) {
                 fseq = Sys.formatSeq(dr.SafeRead("bseq", ""), dr.SafeRead("bseq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
                 in_scode = dr.SafeRead("in_scode", "");

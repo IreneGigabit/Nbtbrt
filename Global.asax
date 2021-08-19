@@ -12,10 +12,14 @@
 	}
 
 	void Application_Error(object sender, EventArgs e) {
-		// 發生未處理錯誤時執行的程式碼
-		//Exception ex = Server.GetLastError();
-		//server_code.exceptionLog(ex);//寫入LOG
-	}
+        // 發生未處理錯誤時執行的程式碼
+        Exception exp = Server.GetLastError();
+        if (exp is HttpUnhandledException) {
+            int hcode = ((HttpUnhandledException)exp).GetHttpCode();
+            if (hcode == 500) Server.Transfer("~/500-error.aspx");
+        }
+        //Server.Transfer("~/500-error.aspx");
+    }
 
 	void Session_Start(object sender, EventArgs e) {
 		// 啟動新工作階段時執行的程式碼

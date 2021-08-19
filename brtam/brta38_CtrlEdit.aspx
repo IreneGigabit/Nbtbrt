@@ -48,29 +48,28 @@
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
-                PageLayout();
+            PageLayout();
             this.DataBind();
         }
     }
 
     private void PageLayout() {
-        html_ctrl= Sys.getCustCode("CT", "", "").Option("{cust_code}", "{code_name}");
-        
-        submittask = (Request["submitTask"]??"").Trim();
+        html_ctrl = Sys.getCustCode("CT", "", "").Option("{cust_code}", "{code_name}");
+
+        submittask = (Request["submitTask"] ?? "").Trim();
         pno = (Request["pno"] ?? "").Trim();
-        step_sqlno=(Request["step_sqlno"]??"").Trim();
-        sqlno=(Request["sqlno"]??"").Trim();
-        seq=(Request["seq"]??"").Trim();
-        seq1=(Request["seq1"]??"").Trim();
+        step_sqlno = (Request["step_sqlno"] ?? "").Trim();
+        sqlno = (Request["sqlno"] ?? "").Trim();
+        seq = (Request["seq"] ?? "").Trim();
+        seq1 = (Request["seq1"] ?? "").Trim();
         step_grade = (Request["step_grade"] ?? "").Trim();
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%#HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body>

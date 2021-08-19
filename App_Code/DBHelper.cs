@@ -82,7 +82,7 @@ public class DBHelper : IDisposable
     }
     #endregion
 
-    #region 執行查詢，取得SqlDataReader +SqlDataReader ExecuteReader(string commandText)
+    #region +SqlDataReader ExecuteReader(string commandText) - 執行查詢，取得SqlDataReader
     /// <summary>
     /// 執行查詢，取得SqlDataReader；SqlDataReader使用後須Close，否則會Lock(強烈建議使用using)。
     /// </summary>
@@ -103,7 +103,7 @@ public class DBHelper : IDisposable
     }
     #endregion
 
-    #region 執行T-SQL，並傳回受影響的資料筆數 +int ExecuteNonQuery(string commandText)
+    #region +int ExecuteNonQuery(string commandText) - 執行T-SQL，並傳回受影響的資料筆數
     /// <summary>
     /// 執行T-SQL，並傳回受影響的資料筆數。
     /// </summary>
@@ -123,7 +123,7 @@ public class DBHelper : IDisposable
     }
     #endregion
 
-    #region 執行查詢，取得第一行第一欄資料，會忽略其他的資料行或資料列 +object ExecuteScalar(string commandText)
+    #region +object ExecuteScalar(string commandText) - 執行查詢，取得第一行第一欄資料，會忽略其他的資料行或資料列
     /// <summary>
     /// 執行查詢，取得第一行第一欄資料，會忽略其他的資料行或資料列。
     /// </summary>
@@ -143,7 +143,7 @@ public class DBHelper : IDisposable
     }
     #endregion
 
-    #region 執行查詢，並傳回DataTable +void DataTable(string commandText, DataTable dt)
+    #region +void DataTable(string commandText, DataTable dt) - 執行查詢，並傳回DataTable 
     /// <summary>
     /// 執行查詢，並傳回DataTable。
     /// </summary>
@@ -167,7 +167,7 @@ public class DBHelper : IDisposable
     }
     #endregion
 
-    #region 執行查詢，並傳回DataSet +void DataSet(string commandText, DataSet ds)
+    #region +void DataSet(string commandText, DataSet ds) - 執行查詢，並傳回DataSet
     /// <summary>
     /// 執行查詢，並傳回DataSet。
     /// </summary>
@@ -192,7 +192,7 @@ public class DBHelper : IDisposable
     }
     #endregion
 
-    #region 執行StoreProcedure，並傳回DataTable +void Procedure(string commandText, Dictionary<string, string> param, DataTable dt)
+    #region +void Procedure(string commandText, Dictionary<string, string> param, DataTable dt) - 執行StoreProcedure，並傳回DataTable
     /// <summary>
     /// 執行StoreProcedure，並傳回DataTable。
     /// </summary>
@@ -224,7 +224,7 @@ public class DBHelper : IDisposable
     }
     #endregion
 
-    #region 執行StoreProcedure，並傳回SqlDataReader +void Procedure(string commandText, Dictionary<string, string> param)
+    #region +void Procedure(string commandText, Dictionary<string, string> param) - 執行StoreProcedure，並傳回SqlDataReader
     /// <summary>
     /// 執行StoreProcedure，並傳回SqlDataReader。
     /// </summary>

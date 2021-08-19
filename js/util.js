@@ -174,7 +174,7 @@ function padRight(str, len, padStr) {
 }
 //#endregion
 
-//#region dateReviver - json日期格式返回new Date格式
+//#region dateConvert - json日期格式返回new Date格式
 //ex:dateConvert(jOpt.last_date);
 function dateConvert(value) {
     var a;
@@ -342,6 +342,28 @@ Date.prototype.addYears = function (years) {
 }
 //#endregion
 
+
+//#region Date.prototype.Year - 取得js日期年份
+//var y = Today().Year();
+Date.prototype.Year = function () {
+    return (this.getFullYear());
+}
+//#endregion
+
+//#region Date.prototype.Month - 取得js日期月份
+//var m = Today().Month();
+Date.prototype.Month = function () {
+    return (this.getMonth() + 1);
+}
+//#endregion
+
+//#region Date.prototype.Day - 取得js日期日
+//var d = Today().Day();
+Date.prototype.Day = function () {
+    return (this.getDate());
+}
+//#endregion
+
 //#region Number.prototype.format - 將數值轉換貨幣表示法
 /*
 n:取到小數第幾位
@@ -436,6 +458,21 @@ String.prototype.CodeLength = function () {
     return len;
     */
     return this.replace(/[^\x00-\xff]/g, "xx").length;
+}
+//#endregion
+
+//#region Array.prototype.remove - 刪除陣列元素
+Array.prototype.remove = function (item) {
+    var arr = this;
+    var i = 0;
+    while (i < arr.length) {
+        if (arr[i] === value) {
+            arr.splice(i, 1);
+        } else {
+            ++i;
+        }
+    }
+    return arr;
 }
 //#endregion
 
@@ -1059,6 +1096,9 @@ $(function () {
     //若有 ☑測試 預設打勾
     $("#ActFrame").hide();//取消使用ActFrame
     $("#chkTest").click(function (e) {
+        if ($(this).prop("checked") && typeof goSearch == 'function') {
+            //goSearch();
+        }
         $("#ActFrame").showFor($(this).prop("checked"));
         $(".bsubmit").prop("disabled", false);
     });

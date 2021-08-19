@@ -139,9 +139,9 @@
         if ((Request["type"] ?? "").ToLower() != "pdf") {
             Rpt.Flush(docFileName);
         } else {
-            string docxPath = Server.MapPath(@"~/ReportData/" + docFileName);
+            string docxPath = Server.MapPath(@"~/ReportData/" + DateTime.Today.ToString("yyyy/MM") + "/" + docFileName);
             string pdfFile = docFileName.Replace(".docx", ".pdf");
-            string pdfPath = Server.MapPath(@"~/ReportData/" + pdfFile);
+            string pdfPath = Server.MapPath(@"~/ReportData/" + DateTime.Today.ToString("yyyy/MM") + "/" + pdfFile);
             Rpt.SaveTo(docxPath);
 
             OpenXmlHelper.ConvertToPDF(docxPath, pdfPath);

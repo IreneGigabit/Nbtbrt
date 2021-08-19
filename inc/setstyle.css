@@ -78,6 +78,21 @@ hr
 	border-bottom: mediumblue;
 	background-color: #06d;
 }
+.greentable
+{
+	border-right: mediumblue;
+	border-top: mediumblue;
+	font-size: 10pt;
+	border-left: mediumblue;
+	color: #000000;
+	border-bottom: mediumblue;
+	background-color: #006666;
+}
+.greenths
+{
+    COLOR: black;
+    BACKGROUND-COLOR: #b3d9d1;
+}
 .lightbluetable
 {
     font-size: 10pt;

@@ -43,7 +43,7 @@
             StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"查　詢\" class=\"cbutton bsubmit\" />\n";
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
         }
-        using (DBHelper optconn = new DBHelper(Conn.optK).Debug(false)) {
+        using (DBHelper connopt = new DBHelper(Conn.optK).Debug(false)) {
             //主管清單
             DataTable dt = new DataTable();
             if ((HTProgRight & 256) != 0) {
@@ -61,7 +61,7 @@
                 SQL += "where (a.dowhat='DT') and a.syscode='" + Session["syscode"] + "' and (apcode='" + apcode + "') and a.job_status='NN' ";
                 SQL += "group by a.job_scode,b.grplevel,b.grpid,D.sc_name";
             }
-            optconn.DataTable(SQL, dt);
+            connopt.DataTable(SQL, dt);
 
             if (dt.Rows.Count > 0) {
                 if ((HTProgRight & 256) != 0) {
@@ -102,7 +102,7 @@
                 SQL += "group by a.in_scode,d.sc_name";
 
                 DataTable dtscode = new DataTable();
-                optconn.DataTable(SQL, dtscode);
+                connopt.DataTable(SQL, dtscode);
                 td_tscode = "<select id='form_scode' name='form_scode'>" + dtscode.Option("{IN_scode}", "{sc_name}") + "</select>";
             } else {
                 //營洽清單

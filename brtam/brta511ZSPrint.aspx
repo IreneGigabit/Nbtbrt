@@ -96,8 +96,8 @@
             Repeater dtlRpt = (Repeater)e.Item.FindControl("dtlRepeater");
 
             if ((dtlRpt != null)) {
-                string branch = ((DataRowView)e.Item.DataItem).Row["branch"].ToString();
-                string receive_way = ((DataRowView)e.Item.DataItem).Row["receive_way"].ToString();
+                string branch = DataBinder.Eval(e.Item.DataItem, "branch").ToString();
+                string receive_way = DataBinder.Eval(e.Item.DataItem, "receive_way").ToString();
                     
                 //DataTable dtDtl = dtRpt.Select("branch='" + branch + "' and receive_way='" + receive_way + "'").CopyToDataTable();
                 var rows = dtRpt.Select("branch='" + branch + "' and isnull(receive_way,'')='" + receive_way + "'");
@@ -126,9 +126,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=10">
 <title><%=HTProgCap%></title>
-    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+<uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
 <body>
