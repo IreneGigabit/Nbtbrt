@@ -42,9 +42,9 @@
         Response.Expires = -1;
 
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
-        
+
         submitTask = (Request["submitTask"] ?? "").Trim();
-        
+
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
@@ -58,20 +58,20 @@
             connbr = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
             //2011/3/10因轉案增加連結轉出區所connection
             if (prgid == "brta78") {
-                connbr = new DBHelper(Conn.brp(Request["branch"])).Debug(Request["chkTest"] == "TEST");
+                connbr = new DBHelper(Conn.brp(Request["tran_seq_branch"])).Debug(Request["chkTest"] == "TEST");
             }
 
-            if(ReqVal.TryGet("tfx_seq1")==""){
-                ltfx_seq1="_";
-            }else{
+            if (ReqVal.TryGet("tfx_seq1") == "") {
+                ltfx_seq1 = "_";
+            } else {
                 ltfx_seq1 = ReqVal.TryGet("tfx_seq1");
                 if (ltfx_seq1.Left(1) == "-") {
                     ltfx_seq1 = ltfx_seq1.Substring(1);
                 }
             }
-    
-            in_no=ReqVal.TryGet("in_no");
-            in_scode=ReqVal.TryGet("in_scode");
+
+            in_no = ReqVal.TryGet("in_no");
+            in_scode = ReqVal.TryGet("in_scode");
             if (in_no == "") {
                 SQL = "select max(in_no) as in_no,in_scode from dmt_temp ";
                 SQL += "where seq =" + Request["tfx_seq"] + " and seq1='" + ltfx_seq1 + "'";
@@ -83,7 +83,7 @@
                     }
                 }
             }
-    
+
             try {
                 if (submitTask == "A") {//新增
                     doAdd();
@@ -160,7 +160,7 @@
         ColMap["cust_area"] = Util.dbnull(Request["tfx_cust_area"]);
         ColMap["cust_seq"] = Util.dbnull(Request["tfx_cust_seq"]);
         ColMap["att_sql"] = Util.dbnull(Request["tfx_att_sql"]);
-        ColMap["apsqlno"] = Util.dbnull(Request["apsqlno1"]);
+        ColMap["apsqlno"] = Util.dbnull(Request["apsqlno_1"]);
         ColMap["apcust_no"] = Util.dbnull(Request["apcust_no_1"]);
         ColMap["agt_no"] = Util.dbnull(Request["tfx_agt_no"]);
         ColMap["apply_date"] = Util.dbnull(Request["tfx_apply_date"]);
@@ -528,7 +528,7 @@
             SQL += " where brtran_sqlno=" + Request["old_brtran_sqlno"];
             connbr.ExecuteNonQuery(SQL);
 
-            string job_scode = Sys.getCodeName(conn, "sysctrl.dbo.scode_group", "scode", "where grpclass='" + Request["tran_seq_branch"] + "' and grpid='T210' and grptype='F'");
+            string job_scode = Sys.getCodeName(connbr, "sysctrl.dbo.scode_group", "scode", "where grpclass='" + Request["tran_seq_branch"] + "' and grpid='T210' and grptype='F'");
             SQL = "insert into todo_dmt ";
             ColMap.Clear();
             ColMap["syscode"] = "'" + Request["tran_seq_branch"] + "TBRT'";
@@ -540,7 +540,7 @@
             ColMap["seq1"] = Util.dbchar(Request["tran_seq1"]);
             ColMap["in_scode"] = "'" + Session["scode"] + "'";
             ColMap["in_date"] = "getdate()";
-            ColMap["dowhat"] = Util.dbchar("TRAN_ED1");
+            ColMap["dowhat"] = Util.dbchar("TRAN_ED1");//原單位程序確認轉案完成
             ColMap["job_scode"] = Util.dbchar(job_scode);
             ColMap["job_team"] = Util.dbchar("T210");
             ColMap["job_status"] = Util.dbchar("NN");
@@ -1045,7 +1045,6 @@
                     strCC.Add(Request["tran_seq_scode"] + "@saint-island.com.tw");
                 }
                 strCC.Add(dept_scode + "@saint-island.com.tw");//部門主管
-                strCC = strCC.Distinct().ToList();
                 break;
         }
         string branchnm = Sys.getCodeName(conn, "sysctrl.dbo.branch_code", "branchname", "where branch='" + Request["tran_seq_branch"] + "'");
@@ -1058,6 +1057,8 @@
         body += "【客戶名稱】 : <B>" + Request["tfx_cust_name"] + "</B><br>";
         body += "【收文內容】 : <B>轉案</B><br>";
         body += "謹通知本案已轉案完成，請執行後續確認暨結案作業，謝謝。<br>";
+
+        Sys.DoSendMail(Subject, body, strFrom, strTo, strCC, strBCC);
     }
 </script>
 

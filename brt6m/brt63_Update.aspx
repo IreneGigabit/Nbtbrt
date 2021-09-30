@@ -390,12 +390,12 @@
                 SQL = "insert into resp_dmt(sqlno,rs_no,branch,seq,seq1,step_grade,resp_grade,ctrl_type,ctrl_remark,ctrl_date,resp_date,resp_remark,tran_date,tran_scode) ";
                 SQL += "select sqlno,rs_no,branch,seq,seq1,step_grade,0,ctrl_type,ctrl_remark,ctrl_date,'" + DateTime.Today.ToShortDateString() + "','交辦發文註記不發文',getdate(),'" + Session["scode"] + "' ";
                 SQL += "from ctrl_dmt where sqlno in(";
-                SQL += "select sqlno from ctrl_dmt where sqlno=" + ar[i];
+                SQL += "select sqlno from ctrl_dmt where sqlno='" + ar[i] + "'";
                 SQL += ")";
                 conn.ExecuteNonQuery(SQL);
 
                 SQL = "delete from ctrl_dmt where sqlno in(";
-                SQL += "select sqlno from ctrl_dmt where sqlno=" + ar[i];
+                SQL += "select sqlno from ctrl_dmt where sqlno='" + ar[i] + "'";
                 SQL += ")";
                 conn.ExecuteNonQuery(SQL);
             }
@@ -423,12 +423,11 @@
         Sys sfile = new Sys();
         sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
 
-        string fseq = seq.PadLeft(Sys.DmtSeq, '0');
         string aa = System.IO.Path.GetFileName(Request[uploadfield + "_name_" + nRow]);//上傳檔名
         string ar = System.IO.Path.GetExtension(aa);//副檔名
         string lname = string.Format("{0}-{1}-{2}-{3}-{4}{5}"//新檔名
                                     , Sys.GetSession("SeBranch") + Sys.GetSession("dept").ToUpper()//0
-                                    , fseq//1
+                                    , seq.PadLeft(Sys.DmtSeq, '0')//1
                                     , seq1 != "_" ? seq1 : ""//2
                                     , Convert.ToInt32(step_grade)//3
                                     , Request["attach_no_" + nRow]//4

@@ -1123,17 +1123,28 @@ main.savechkA4 = function () {
 
     //變更項目
     $("#tfgp_mod_agttype").val($("input[name='tfzr_mod_agttype']:checked").val() || "N");
+    //var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_pul", "mod_oth", "mod_oth1", "mod_oth2", "mod_dmt"];
+    //for (var m in arr_mod) {
+    //    if ($("#tfzr_" + arr_mod[m]).prop("checked") == true) {
+    //        $("#tfgp_" + arr_mod[m]).val("Y");
+    //    } else {
+    //        $("#tfgp_" + arr_mod[m]).val("N");
+    //        if (arr_mod[m] == "mod_agt") {
+    //            $("#tfgp_mod_agttype").val("N");
+    //        }
+    //    }
+    //}
     var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_pul", "mod_oth", "mod_oth1", "mod_oth2", "mod_dmt"];
-    for (var m in arr_mod) {
-        if ($("#tfzr_" + arr_mod[m]).prop("checked") == true) {
-            $("#tfgp_" + arr_mod[m]).val("Y");
+    $.each(arr_mod, function (i, m) {
+        if ($("#tfzr_" + m).prop("checked") == true) {
+            $("#tfgp_" + m).val("Y");
         } else {
-            $("#tfgp_" + arr_mod[m]).val("N");
-            if (arr_mod[m] == "mod_agt") {
+            $("#tfgp_" + m).val("N");
+            if (m == "mod_agt") {
                 $("#tfgp_mod_agttype").val("N");
             }
         }
-    }
+    });
 
     //檢查大陸案請款註記檢查&給值
     if (main.chkAr() == false) return false;
@@ -1630,36 +1641,57 @@ main.savechkA6 = function () {
     switch ($("#tfy_Arcase").val()) {
         case "FC1": case "FC10": case "FC9": case "FCA": case "FCB":
             //FC1form
-            var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"];
-            for (var m in arr_mod) {
-                if ($("#tfzr_" + arr_mod[m]).prop("checked") == true) {
-                    $("#tfg1_" + arr_mod[m]).val("Y");
+            //var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"];
+            //for (var m in arr_mod) {
+            //    if ($("#tfzr_" + arr_mod[m]).prop("checked") == true) {
+            //        $("#tfg1_" + arr_mod[m]).val("Y");
+            //    } else {
+            //        $("#tfg1_" + arr_mod[m]).val("N");
+            //    }
+            //}
+            $.each(["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"], function (i, m) {
+                if ($("#tfzr_" + m).prop("checked") == true) {
+                    $("#tfg1_" + m).val("Y");
                 } else {
-                    $("#tfg1_" + arr_mod[m]).val("N");
+                    $("#tfg1_" + m).val("N");
                 }
-            }
+            });
             break;
         case "FC11": case "FC5": case "FC7": case "FCH":
             //FC11form
-            var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"];
-            for (var m in arr_mod) {
-                if ($("#tfzr1_" + arr_mod[m]).prop("checked") == true) {
-                    $("#tfg1_" + arr_mod[m]).val("Y");
+            //var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"];
+            //for (var m in arr_mod) {
+            //    if ($("#tfzr1_" + arr_mod[m]).prop("checked") == true) {
+            //        $("#tfg1_" + arr_mod[m]).val("Y");
+            //    } else {
+            //        $("#tfg1_" + arr_mod[m]).val("N");
+            //    }
+            //}
+            $.each(["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"], function (i, m) {
+                if ($("#tfzr1_" + m).prop("checked") == true) {
+                    $("#tfg1_" + m).val("Y");
                 } else {
-                    $("#tfg1_" + arr_mod[m]).val("N");
+                    $("#tfg1_" + m).val("N");
                 }
-            }
+            });
             break;
         case "FC2": case "FC20": case "FC0": case "FCC": case "FCD": case "FCG":
             //FC2form
-            var arr_mod = ["mod_agt", "mod_oth", "mod_oth1", "mod_dmt", "mod_claim1", "mod_claim2"];
-            for (var m in arr_mod) {
-                if ($("#tfop_" + arr_mod[m]).prop("checked") == true) {
-                    $("#tfg2_" + arr_mod[m]).val("Y");
+            //var arr_mod = ["mod_agt", "mod_oth", "mod_oth1", "mod_dmt", "mod_claim1", "mod_claim2"];
+            //for (var m in arr_mod) {
+            //    if ($("#tfop_" + arr_mod[m]).prop("checked") == true) {
+            //        $("#tfg2_" + arr_mod[m]).val("Y");
+            //    } else {
+            //        $("#tfg2_" + arr_mod[m]).val("N");
+            //    }
+            //}
+            $.each(["mod_agt", "mod_oth", "mod_oth1", "mod_dmt", "mod_claim1", "mod_claim2"], function (i, m) {
+                if ($("#tfop_" + m).prop("checked") == true) {
+                    $("#tfg2_" + m).val("Y");
                 } else {
-                    $("#tfg2_" + arr_mod[m]).val("N");
+                    $("#tfg2_" + m).val("N");
                 }
-            }
+            });
 
             if ($("#tfy_Arcase").val() == "FCC") {
                 if ($("#tfg2_mod_agt").val() == "Y") {
@@ -1687,14 +1719,22 @@ main.savechkA6 = function () {
             break;
         case "FC21": case "FC8": case "FC6": case "FCI":
             //FC21form
-            var arr_mod = ["mod_agt", "mod_oth", "mod_oth1", "mod_dmt", "mod_claim1", "mod_claim2"];
-            for (var m in arr_mod) {
-                if ($("#tfop1_" + arr_mod[m]).prop("checked") == true) {
-                    $("#tfg2_" + arr_mod[m]).val("Y");
+            //var arr_mod = ["mod_agt", "mod_oth", "mod_oth1", "mod_dmt", "mod_claim1", "mod_claim2"];
+            //for (var m in arr_mod) {
+            //    if ($("#tfop1_" + arr_mod[m]).prop("checked") == true) {
+            //        $("#tfg2_" + arr_mod[m]).val("Y");
+            //    } else {
+            //        $("#tfg2_" + arr_mod[m]).val("N");
+            //    }
+            //}
+            $.each(["mod_agt", "mod_oth", "mod_oth1", "mod_dmt", "mod_claim1", "mod_claim2"], function (i, m) {
+                if ($("#tfop1_" + m).prop("checked") == true) {
+                    $("#tfg2_" + m).val("Y");
                 } else {
-                    $("#tfg2_" + arr_mod[m]).val("N");
+                    $("#tfg2_" + m).val("N");
                 }
-            }
+            });
+
             if ($("#tfop1_mod_agttypeC").prop("checked") == true) $("#tfg2_mod_agttypeC").prop("checked", true);
             if ($("#tfop1_mod_agttypeA").prop("checked") == true) $("#tfg2_mod_agttypeA").prop("checked", true);
             if ($("#tfop1_mod_agttypeD").prop("checked") == true) $("#tfg2_mod_agttypeD").prop("checked", true);

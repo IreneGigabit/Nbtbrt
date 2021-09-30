@@ -290,7 +290,7 @@
 		                    <input type="hidden" id=in_no_<%#(Container.ItemIndex+1)%> value="<%#Eval("in_no")%>">
 		                </td>
 		                <td nowrap align='center' style="cursor: pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'"  >
-                            <a href="#" onclick="CapplClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')"><%#Eval("fseq")%></a>
+                            <a href="javascript:void(0)" onclick="CapplClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')"><%#Eval("fseq")%></a>
 		                </td>
 		                <td align="center" ><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("in_no")%></a></td>		
 		                <td align="left"><%#Eval("case_date","{0:yyyy/M/d}")%></td>
@@ -366,7 +366,7 @@
         var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=Q";
         //window.showModalDialog(url, "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
         $('#dialog').html('<iframe style="border: 0px;" src="' + url + '" width="100%" height="100%"></iframe>')
-        .dialog({autoOpen: true,modal: true,height: 540,width: 800,title: "案件主檔"});
+        .dialog({autoOpen: true,modal: true,height: 540,width: 900,title: "案件主檔"});
     }
     //確認
     function formSubmit(){

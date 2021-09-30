@@ -92,7 +92,7 @@
             //Response.Write(SQL + "<HR>");
             conn.ExecuteNonQuery(SQL);
 
-            //*****todo依案性新增內商的案件內容
+            //*****依案性新增內商的案件內容
             string aa = Request["draw_file1"] ?? "";
             string newfilename = "";
             if (aa != "") {

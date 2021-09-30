@@ -91,7 +91,7 @@ public partial class Sys
             if (Host == "sic10") return "ncbrt";//正式環境
             if (Host == "sis10") return "nsbrt";//正式環境
             if (Host == "sik10") return "nkbrt";//正式環境
-            return "nnbrt";//開發環境
+            return "nnbrt";//開發環境**跨區所修改
         }
     }
     #endregion
@@ -106,7 +106,7 @@ public partial class Sys
             if (Host == "sic10") return "CTBRT";//正式環境
             if (Host == "sis10") return "STBRT";//正式環境
             if (Host == "sik10") return "KTBRT";//正式環境
-            return "NTBRT";//開發環境
+            return "NTBRT";//開發環境**跨區所修改
         }
     }
     #endregion
@@ -361,6 +361,10 @@ public partial class Sys
     public static void DoSendMail(string Subject, string Msg, string SendFrom, List<string> SendTo, List<string> SendCC, List<string> SendBCC, List<string[]> SendAttach) {
         MailMessage MailMsg = new MailMessage();
         MailMsg.From = new MailAddress(SendFrom);//寄件者
+        SendTo = SendTo.Distinct().ToList();
+        SendCC = SendCC.Distinct().ToList();
+        SendBCC = SendBCC.Distinct().ToList();
+
         foreach (string to in SendTo)//收件者
         {
             if (!string.IsNullOrEmpty(to)) {

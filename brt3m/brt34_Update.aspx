@@ -103,7 +103,7 @@
                 int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
 
                 if (cnt == 0) {
-                    msg = "該筆交辦資料(" + case_no + ")已簽核，請通知資訊部！";
+                    msg = "該筆交辦資料(" + case_no + ")簽核失敗！<BR>(流程狀態已異動，請重新整理畫面)";
                     return false;
                 } else {
                     //更新分案主檔狀態
@@ -168,7 +168,7 @@
                 int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
 
                 if (cnt == 0) {
-                    msg = "該筆交辦資料(" + case_no + ")已簽核，請通知資訊部！";
+                    msg = "該筆交辦資料(" + case_no + ")簽核失敗！<BR>(流程狀態已異動，請重新整理畫面)";
                     return false;
                 } else {
                     //更新註銷記錄檔

@@ -305,27 +305,6 @@
         $("#FD1_class_count_"+nSplit).val(Math.max(CInt($("#FD1_class_count_"+nSplit).val()), nclass.length));//回寫共N類
     }
 
-
-    //附件
-    br_form.AttachStr1 = function (selector, pfld, tar) {
-        var strRemark1 = "";
-        $(selector + " input:checkbox").each(function (index) {
-            var $this = $(this);
-            if ($this.prop("checked")) {
-                strRemark1 += $this.val()
-                //查有無份數欄位
-                if ($("#" + pfld + $this.val() + "C:text").length > 0) {
-                    strRemark1 += ";" + $("#" + pfld + $this.val() + "C").val();
-                }
-                else if ($("#" + pfld + $this.val() + "t").length > 0) {
-                    strRemark1 += ";" + $("#" + pfld + $this.val() + "t").val();
-                }
-                strRemark1 += "|";
-            }
-        });
-        tar.value = strRemark1;
-    }
-
     //原申請案號
     $("#fr1_apply_no").blur(function (e) {
         chk_dmt_applyno($(this)[0],9);

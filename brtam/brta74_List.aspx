@@ -321,7 +321,7 @@
 		        </td>
 		        <td align="center">
                     &nbsp;<span style="cursor: pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" onclick="QstepClick('<%#Eval("seq")%>', '<%#Eval("seq1")%>')"><%#Eval("now_step_grade")%></span>
-		            <img src="../images/ok.gif" onclick="TodoClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')" title="案件流程狀態查詢">
+		            <img src="../images/ok.gif" style="cursor: pointer;" onclick="TodoClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')" title="案件流程狀態查詢">
 		        </td>		
 		        <td align="left" title="<%#Eval("appl_name")%>">&nbsp;<%#Eval("appl_name").ToString().ToUnicode().CutData(20)%></td>
 		        <td align="left" title="<%#Eval("cust_name")%>">&nbsp;<%#Eval("cust_name").ToString().ToUnicode().CutData(20)%></td>
@@ -406,11 +406,10 @@
         var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=Q";
         //window.showModalDialog(url, "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
         $('#dialog').html('<iframe style="border: 0px;" src="' + url + '" width="100%" height="100%"></iframe>')
-        .dialog({autoOpen: true,modal: true,height: 540,width: 800,title: "案件主檔"});
+        .dialog({autoOpen: true,modal: true,height: 540,width: 900,title: "案件主檔"});
     }
     //案件進度查詢
     function QstepClick(pseq,pseq1) {
-        //***todo
         window.open(getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
     //案件流程狀態查詢

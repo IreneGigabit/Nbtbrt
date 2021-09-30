@@ -1,5 +1,5 @@
 --備份dmt_ap
-select * into dbo.dmt_ap_20201224 from dmt_ap
+select * into dbo.dmt_ap_20210903 from dmt_ap
 --dmt_ap增加排序欄位
 BEGIN TRANSACTION
 GO
@@ -11,7 +11,7 @@ GO
 COMMIT
 
 --備份dmt_ap_log
-select * into dbo.dmt_ap_log_20201224 from dmt_ap_log
+select * into dbo.dmt_ap_log_20210903 from dmt_ap_log
 --dmt_ap_log增加排序欄位
 BEGIN TRANSACTION
 GO
@@ -23,7 +23,7 @@ GO
 COMMIT
 
 --備份dmt_temp_ap
-select * into dbo.dmt_temp_ap_20201224 from dmt_temp_ap
+select * into dbo.dmt_temp_ap_20210903 from dmt_temp_ap
 --dmt_temp_ap增加排序欄位
 BEGIN TRANSACTION
 GO
@@ -35,7 +35,7 @@ GO
 COMMIT
 
 --備份dmt_temp_ap_log
-select * into dbo.dmt_temp_ap_log_20201224 from dmt_temp_ap_log
+select * into dbo.dmt_temp_ap_log_20210903 from dmt_temp_ap_log
 --dmt_temp_ap_log增加排序欄位
 BEGIN TRANSACTION
 GO

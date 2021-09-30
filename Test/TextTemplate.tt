@@ -16,7 +16,7 @@ namespace Saint.Btbrt//*******請修改對應的namespace
 {
 <#
 	//修改connection string
-	string connectionString = "Server=web08;Database=sindbs;User ID=web_usr;Password=web1823";//*******改這裡
+	string connectionString = "Server=web12;Database=sindbs;User ID=web_usr;Password=web1823";//*******改這裡
 	SqlConnection conn = new SqlConnection(connectionString); 
 	conn.Open(); 
 			

@@ -42,7 +42,7 @@ public partial class Sys
             string SQL = "SELECT scode_group.GrpID, GrpID.grplevel ";
             SQL += "FROM scode_group ";
             SQL += "INNER JOIN GrpID ON scode_group.GrpClass = GrpID.GrpClass AND scode_group.GrpID = GrpID.GrpID ";
-            SQL += "WHERE scode_group.scode = '" + scode + "' and scode_group.grpclass ='" + grpClass + "' ";
+            SQL += "WHERE scode_group.scode = '" + scode + "' and scode_group.grpclass in('" + grpClass + "') ";
             using (SqlDataReader dr = cnn.ExecuteReader(SQL)) {
                 if (dr.Read()) {
                     grpid = dr.SafeRead("grpid","");
@@ -64,7 +64,7 @@ public partial class Sys
     /// <param name="grpid">所屬grpid</param>
     /// <param name="master_scode">該單位主管</param>
     /// <param name="master_scname">譹單位主管名稱</param>
-    public static void getGrpidMaster(string grpClass, ref string grpid, ref string master_scode,ref string master_scname) {
+    public static void getGrpidMaster(string grpClass, string grpid, ref string master_scode,ref string master_scname) {
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
             string SQL = "select grpid,master_scode,sc_name ";
             SQL += "from grpid g ";
@@ -72,7 +72,6 @@ public partial class Sys
             SQL += "WHERE grpclass = '" + grpClass + "' and grpid='" + grpid + "' ";
             using (SqlDataReader dr = cnn.ExecuteReader(SQL)) {
                 if (dr.Read()) {
-                    grpid = dr.SafeRead("grpid", "");
                     master_scode = dr.SafeRead("master_scode", "");
                     master_scname = dr.SafeRead("sc_name", "");
                 }
@@ -84,6 +83,7 @@ public partial class Sys
     #region getGrpidUp - 依grpid向上抓取組織
     /// <summary>
     /// 依grpid向上抓取組織
+    /// <param>回傳datatable.grplevel,3=組主管,2=部門主管,1=區所主管,0=專商經理,-1=執委</param>
     /// </summary>
     /// <param name="grpId">空白=執委,zzz=專案室,其他=依行政組織</param>
     public static DataTable getGrpidUp(string grpClass, string grpId) {
@@ -330,6 +330,7 @@ public partial class Sys
     #region getMasterList - 向上抓取所有階層
     /// <summary>
     /// 向上抓取所有階層
+    /// <param>回傳datatable.grplevel,3=組主管,2=部門主管,1=區所主管,0=專商經理,-1=執委</param>
     /// </summary>
     public static DataTable getMasterList(string grpClass, string scode) {
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
@@ -435,7 +436,7 @@ public partial class Sys
     public static string formatSeq(string seq, string seq1, string country, string branch, string dept) {
         string lseq = (seq != "" ? branch.ToUpper() + dept.ToUpper() : "");
         lseq += (lseq != "" ? "-" : "") + seq;
-        lseq += (seq1.Trim() != "_" && seq1.Trim() != "" ? ("-" + seq1) : "");
+        lseq += (lseq != "" && seq1.Trim() != "_" && seq1.Trim() != "" ? ("-" + seq1) : "");
         lseq += (country != "" ? (" " + country.ToUpper()) : "");
         return lseq;
     }
@@ -480,6 +481,36 @@ public partial class Sys
         string rs_no = cgrs.ToUpper() + getZNo(conn, GetSession("sebranch") + "T" + cgrs).PadLeft(8, '0');
 
         return rs_no;
+    }
+    #endregion
+
+    #region getERsNo - 取收發文序號(依年度抓流水號)
+    /// <summary>  
+    /// 取收發文序號(依年度抓流水號)(year_num.num_type=??+年月)
+    /// </summary>  
+    /// <param name="cgrs">收發文種類,ex:CR</param>
+    /// <param name="premark">收發文種類說明,ex:國內所本所發文</param>
+    public static string getERsNo(DBHelper conn, string cgrs, string premark) {
+        string z_no = "";
+        string SQL = "select number from year_num where branch='" + GetSession("sebranch") + "' and dept='" + GetSession("dept") + "E' and num_type='" + cgrs + "' and num_yy = '" + DateTime.Today.Year + "'";
+        DataTable dt = new DataTable();
+        conn.DataTable(SQL, dt);
+        if (dt.Rows.Count > 0) {
+            z_no = cgrs.ToUpper() + DateTime.Today.Year.ToString().Right(2) + (Convert.ToInt32(dt.Rows[0].SafeRead("number", "0")) + 1).ToString().PadLeft(6, '0');
+
+            //流水號加一
+            SQL = "update year_num set number=number+1 where branch='" + GetSession("sebranch") + "' and dept='" + GetSession("dept") + "E' and num_type='" + cgrs + "' and num_yy = '" + DateTime.Today.Year + "' ";
+            conn.ExecuteNonQuery(SQL);
+        } else {
+            z_no = cgrs.ToUpper() + DateTime.Today.Year.ToString().Right(2) + "000001";
+
+            //新增流水號
+            SQL = "insert into year_num(branch,dept,num_type,num_yy,number,remark) values";
+            SQL += "('" + GetSession("sebranch") + "','" + GetSession("dept") + "E','" + cgrs + "','" + DateTime.Today.Year + "',1,'" + premark + "')";
+            conn.ExecuteNonQuery(SQL);
+        }
+
+        return z_no;
     }
     #endregion
 
@@ -617,8 +648,26 @@ public partial class Sys
 
     #region getCase11Aspx - 國內案營洽交辦畫面aspx
     /// <summary>  
-    /// 國內案營洽交辦畫面aspx
-    /// </summary>  
+    /// 國內案營洽交辦畫面aspx,內建參數如下
+    /// <para>in_scode</para> 
+    /// <para>in_no</para> 
+    /// <para>case_no</para> 
+    /// <para>seq</para> 
+    /// <para>seq1</para> 
+    /// <para>add_arcase</para> 
+    /// <para>cust_area</para> 
+    /// <para>cust_seq</para> 
+    /// <para>ar_form</para> 
+    /// <para>new_form</para> 
+    /// <para>code_type</para> 
+    /// <para>ar_code</para> 
+    /// <para>mark</para> 
+    /// <para>ar_service</para> 
+    /// <para>ar_fees</para> 
+    /// <para>ar_curr</para> 
+    /// <para>step_grade</para> 
+    /// <para>uploadtype=case</para> 
+        /// </summary>  
     public static string getCase11Aspx(string prgid, string in_no, string in_scode, string submittask) {
         object objResult = null;
         string urlasp = "";//連結的url
@@ -828,9 +877,7 @@ public partial class Sys
     /// </summary>  
     public static DataTable getEndCode() {
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
-            string SQL = "SELECT chrelno, chrelname ";
-            SQL += ",(select code_name from cust_code where code_type='ENDCODE' and cust_code=chrelno) end_codenm ";
-            SQL += "FROM relation where ChRelType = 'ENDCODE' ORDER BY sortfld";
+            string SQL = "select cust_code, code_name from cust_code where code_type='ENDCODE'";
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
 
@@ -1008,7 +1055,7 @@ public partial class Sys
     /// </summary>  
     public static DataTable getBranchCode() {
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
-            string SQL = "select branch,branchname from branch_code where mark='Y' and showcode='Y' order by sort ";
+            string SQL = "select branch,branchname,sort from branch_code where mark='Y' and showcode='Y' order by sort ";
             DataTable dt = new DataTable();
             cnn.DataTable(SQL, dt);
 
@@ -1063,12 +1110,27 @@ public partial class Sys
     /// <summary>  
     /// 抓取LoginGrp內的營洽(LoginGrp.worktype='sales')
     /// </summary>  
-    public static DataTable getLoginGrpSales() {
+    public static DataTable getLoginGrpSales(string submitTask, string pwh) {
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
-            string SQL = "SELECT distinct(scode)scode,sc_name,right('0000'+substring(scode,2,len(scode)),4) as a ";
-            SQL += " FROM vcust_scode ";
-            SQL += " WHERE dept='T' AND  Syscode = '" + Sys.GetSession("syscode") + "' and branch='" + Sys.GetSession("seBranch") + "'";
-            SQL += " and worktype='sales' order by a";
+            //string SQL = "SELECT distinct(scode)scode,sc_name,right('0000'+substring(scode,2,len(scode)),4) as a ";
+            //SQL += " FROM vcust_scode ";
+            //SQL += " WHERE dept='T' AND  Syscode = '" + Sys.GetSession("syscode") + "' and branch='" + Sys.GetSession("seBranch") + "'";
+            //SQL += " and worktype='sales' order by a";
+            //if (submitTask == "A") {
+            //    SQL += "and (c.end_date is null or c.end_date>=getdate()) ";
+            //}
+
+            string SQL = "SELECT distinct a.scode, b.sc_name,b.sscode ";
+            SQL += "FROM scode_group a ";
+            SQL += "JOIN scode b ON a.scode=b.scode ";
+            SQL += "JOIN grpid c ON a.grpclass=c.grpclass AND a.grpid=c.grpid ";
+            SQL += "WHERE c.work_type='sales' ";
+            SQL += "and c.grpclass='" + Sys.GetSession("sebranch") + "' and c.grpid not like '%x%' ";
+            SQL += "and (substring(c.grpid,1,1)='T' or c.grpid='000') " + pwh;
+            if (submitTask == "A") {
+                SQL += "and (b.end_date is null or b.end_date >=getdate()) ";
+            }
+            SQL += "order by b.sscode,a.scode,b.sc_name";
             DataTable dt = new DataTable();
             cnn.DataTable(SQL, dt);
 
@@ -1109,14 +1171,22 @@ public partial class Sys
         string strConn = Conn.btbrt;
         if (branch == "") Conn.brp(branch);
         using (DBHelper conn = new DBHelper(strConn, false)) {
-            string SQL = "select distinct a.scode,b.sc_name,b.end_date ";
+            //string SQL = "select distinct a.scode,b.sc_name,b.end_date ";
+            //SQL += ",case when b.end_date<getdate() then '*' else '' end star ";
+            //SQL += ",case when b.end_date<getdate() then 'red' else '' end color ";
+            //SQL += "from dmt a ";
+            //SQL += "inner join sysctrl.dbo.scode b on a.scode=b.scode ";
+            //SQL += "where (a.end_date is null or a.end_date = '') " + pwh;
+            //SQL += "order by a.scode ";
+            string SQL = "select distinct a.scode,b.end_date,b.sscode ";
+            SQL += ",(case rtrim(a.scode) when 'nt' then '部門(開放客戶)' when 'ct' then '部門(開放客戶)' when 'st' then '部門(開放客戶)' when 'kt' then '部門(開放客戶)' ";
+            SQL += "else isnull(b.sc_name,'') end) as sc_name ";
             SQL += ",case when b.end_date<getdate() then '*' else '' end star ";
             SQL += ",case when b.end_date<getdate() then 'red' else '' end color ";
             SQL += "from dmt a ";
-            SQL += "inner join sysctrl.dbo.scode b on a.scode=b.scode ";
+            SQL += "inner join sysctrl.dbo.scode b on a.scode=b.scode  ";
             SQL += "where (a.end_date is null or a.end_date = '') " + pwh;
-            SQL += "order by a.scode ";
-
+            SQL += "order by b.sscode,a.scode ";
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
 
@@ -1133,14 +1203,22 @@ public partial class Sys
         string strConn = Conn.btbrt;
         if (branch == "") Conn.brp(branch);
         using (DBHelper conn = new DBHelper(strConn, false)) {
-            string SQL = "select distinct a.scode,b.sc_name,b.end_date ";
+            //string SQL = "select distinct a.scode,b.sc_name,b.end_date ";
+            //SQL += ",case when b.end_date<getdate() then '*' else '' end star ";
+            //SQL += ",case when b.end_date<getdate() then 'red' else '' end color ";
+            //SQL += "from ext a ";
+            //SQL += "inner join sysctrl.dbo.scode b on a.scode=b.scode ";
+            //SQL += "where (a.end_date is null or a.end_date = '') " + pwh;
+            //SQL += "order by a.scode ";
+            string SQL = "select distinct a.scode,b.end_date,b.sscode ";
+            SQL += ",(case rtrim(a.scode) when 'nt' then '部門(開放客戶)' when 'ct' then '部門(開放客戶)' when 'st' then '部門(開放客戶)' when 'kt' then '部門(開放客戶)' ";
+            SQL += "else isnull(b.sc_name,'') end) as sc_name ";
             SQL += ",case when b.end_date<getdate() then '*' else '' end star ";
             SQL += ",case when b.end_date<getdate() then 'red' else '' end color ";
             SQL += "from ext a ";
-            SQL += "inner join sysctrl.dbo.scode b on a.scode=b.scode ";
+            SQL += "inner join sysctrl.dbo.scode b on a.scode=b.scode  ";
             SQL += "where (a.end_date is null or a.end_date = '') " + pwh;
-            SQL += "order by a.scode ";
-
+            SQL += "order by b.sscode,a.scode ";
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
 

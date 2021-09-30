@@ -46,12 +46,12 @@ public partial class Sys
     /// <summary>
     /// 區所請款單的虛擬路徑 ex./nbtbrt/brdb_file
     /// </summary>
-    public string gbrDbDir = "";
+    public string gbrDbDir = Sys.GetRootDir() + "/brdb_file";
 
     /// <summary>
     /// 區所對催帳客函的虛擬路徑 ex./nbtbrt/custdb_file
     /// </summary>
-    public string gcustDbDir = "";
+    public string gcustDbDir = Sys.GetRootDir() + "/custdb_file";
 
     /// <summary>
     /// 取得server name設定
@@ -66,7 +66,7 @@ public partial class Sys
     /// </summary>
     public static string scanpathT {
         get {
-            return "/nbtbrt/scandoc/" + GetSession("seBranch") + GetSession("dept").ToUpper();
+            return Sys.GetRootDir() + "/scandoc/" + GetSession("seBranch") + GetSession("dept").ToUpper();
         }
     }
     #endregion
@@ -77,7 +77,7 @@ public partial class Sys
     /// </summary>
     public static string scanpathTE {
         get {
-            return "/nbtbrt/scandoc/" + GetSession("seBranch") + GetSession("dept").ToUpper() + "E";
+            return Sys.GetRootDir() + "/scandoc/" + GetSession("seBranch") + GetSession("dept").ToUpper() + "E";
        }
     }
     #endregion
@@ -114,7 +114,7 @@ public partial class Sys
     /// </summary>
     public static string IPODir {
         get {
-            return "/nbtbrt/IPOSendT";//由iis虛擬目錄設定正式/測試路徑
+            return Sys.GetRootDir() + "/IPOSendT";//由iis虛擬目錄設定正式/測試路徑
 
             //if (Sys.Host.IndexOf("web") > -1 || Sys.Host.IndexOf("localhost") > -1) {
             //    return "/nbtbrt/IPOSendT/_商標電子送件區/web02";
@@ -133,8 +133,8 @@ public partial class Sys
         //path = path.Replace("/", @"\");
         //path = path.Replace(@"\btbrt\", @"\nbtbrt\");
         path = path.Replace(@"\", @"/");
-        path = path.Replace("/btbrt/", "/nbtbrt/");
-        path = Regex.Replace(path, "D:/Data/document/", "/nbtbrt/", RegexOptions.IgnoreCase);
+        path = path.Replace("/btbrt/", Sys.GetRootDir() + "/");
+        path = Regex.Replace(path, "D:/Data/document/", Sys.GetRootDir() + "/", RegexOptions.IgnoreCase);
         return path;
     }
     #endregion
@@ -144,9 +144,30 @@ public partial class Sys
     /// 檔案路徑轉換(寫入DB用)，nbtbrt→brbrt
     /// </summary>
     public static string Path2Btbrt(string path) {
-        path = path.Replace(@"\nbtbrt\", @"/btbrt/");
-        path = path.Replace(@"/nbtbrt/", @"/btbrt/");
         path = path.Replace(@"\", "/");
+        path = path.Replace(Sys.GetRootDir() + "/", "/btbrt/");
+        return path;
+    }
+    #endregion
+
+    #region Path2MG - 檔案路徑轉換(檢視總收發文檔案用)，/nbtbrt/ → /MG/
+    /// <summary>
+    /// 檔案路徑轉換(檢視總收發文檔案用)，/nbtbrt/ → /MG/
+    /// </summary>
+    public static string Path2MG(string path) {
+        //path = path.Replace(Sys.GetRootDir() + "/", "/MG/");
+        path = Regex.Replace(path, Sys.GetRootDir() + "/", "/MG/", RegexOptions.IgnoreCase);
+        return path;
+    }
+    #endregion
+
+    #region PathMG2Nbtbrt - 檔案路徑轉換(檢視總收發文檔案用,轉換為本機路徑)，/MG/ → /nbtbrt/
+    /// <summary>
+    /// 檔案路徑轉換(檢視總收發文檔案用,轉換為本機路徑)，/MG/ → /nbtbrt/
+    /// </summary>
+    public static string PathMG2Nbtbrt(string path) {
+        //path = path.Replace("/MG/", Sys.GetRootDir() + "/");
+        path = Regex.Replace(path, "/MG/", Sys.GetRootDir() + "/", RegexOptions.IgnoreCase);
         return path;
     }
     #endregion
@@ -174,42 +195,42 @@ public partial class Sys
     }
     #endregion
 
-    #region getFileServer - 取得server name設定
+    #region getFileServer - 取得檔案上傳相關設定
     /// <summary>
-    /// 取得server name設定
+    /// 取得檔案上傳相關設定
     /// </summary>
     public void getFileServer(string pbrBranch, string prgid) {
         switch (Host) {
             case "web08": case "localhost"://開發環境
-                gbrFileServerName = "web02";
-                gFileServerName = "web02";
+                gbrFileServerName = "web08";
+                gFileServerName = "web08";
                 break;
             case "web10"://測試環境
-                gbrFileServerName = "web01";
-                gFileServerName = "web01";
+                gbrFileServerName = "web10";
+                gFileServerName = "web10";
                 break;
             default: //正式環境
                 if (pbrBranch.ToUpper() == "N") gbrFileServerName = "sinn11";
                 if (pbrBranch.ToUpper() == "C") gbrFileServerName = "sic11";
                 if (pbrBranch.ToUpper() == "S") gbrFileServerName = "sis11";
                 if (pbrBranch.ToUpper() == "K") gbrFileServerName = "sik11";
-                gFileServerName = "web02";
+                gFileServerName = "sin31";
                 break;
         }
 
         gDir = @"\\" + gFileServerName + @"\FTE_file";
 
         if (prgid.Left(3).ToLower() == "brt") {
-            gbrWebDir = "/nbtbrt/" + pbrBranch + "T";
+            gbrWebDir = Sys.GetRootDir() + "/" + pbrBranch + "T";
             gbrDir = @"\\" + gbrFileServerName + @"\" + pbrBranch + "T";
             gWebDir = "";
         } else {
-            gbrWebDir = "/nbtbrt/" + pbrBranch + "TE";
+            gbrWebDir = Sys.GetRootDir() + "/" + pbrBranch + "TE";
             gbrDir = @"\\" + gbrFileServerName + @"\" + pbrBranch + "TE";
             gWebDir = "/Fext/FTE_File";//國外所改.net時要改project name
         }
-        gbrDbDir = "/nbtbrt/brdb_file";
-        gcustDbDir = "/nbtbrt/custdb_file";
+        gbrDbDir = Sys.GetRootDir() + "/brdb_file";
+        gcustDbDir = Sys.GetRootDir() + "/custdb_file";
     }
     #endregion
 

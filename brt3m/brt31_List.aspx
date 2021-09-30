@@ -76,7 +76,7 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx?qs_dept=" + qs_dept + "&prgid=" + prgid + ">[回上一頁]</a>";
+        StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx?qs_dept=" + qs_dept + "&prgid=" + prgid + ">[回查詢]</a>";
 
         if (qs_dept == "t") {
             FormName = "備註:<br>\n";
@@ -109,7 +109,11 @@
         //MasterList.ShowTable();
         
         //轉上級人員
-        if (job_grplevel == "0") {//專商經理
+        if (job_grplevel == "") {//執委
+            job_grplevel = "-1";
+            txtSMaster = "";
+            txtSMastercode = "";
+        } else if (job_grplevel == "0") {//專商經理
             txtSMaster = "";
             txtSMastercode = "";
         } else if (job_grplevel == "1") {//區所主管
@@ -204,7 +208,7 @@
             } else {
                 SQL += " order by step_date";
             }
-            //Sys.showLog(SQL);
+            Sys.showLog(SQL);
             conn.DataTable(SQL, dt);
 
             //處理分頁
@@ -370,15 +374,15 @@
     //    return urlasp;
     //}
 
-    protected string GetArMark(object oItem) {
+    protected string GetArMark(RepeaterItem Container) {
         string rtn = "";
-        if (DataBinder.Eval(oItem, "ar_mark").ToString() == "D") {
-            rtn += "<font class='txtlink' onclick=\"markdlist_from_onclick('" + DataBinder.Eval(oItem, "seq") + "','" + DataBinder.Eval(oItem, "seq1") + "','" + DataBinder.Eval(oItem, "country") + "','" + DataBinder.Eval(oItem, "case_no") + "')\" title='" + DataBinder.Eval(oItem, "Ar_marknm") + "明細查詢'>" + DataBinder.Eval(oItem, "Ar_mark") + "</font>\n";
+        if (Eval("ar_mark").ToString() == "D") {
+            rtn += "<font class='txtlink' onclick=\"markdlist_from_onclick('" + Eval("seq") + "','" + Eval("seq1") + "','" + Eval("country") + "','" + Eval("case_no") + "')\" title='" + Eval("Ar_marknm") + "明細查詢'>" + Eval("Ar_mark") + "</font>\n";
             if (qs_dept == "e") {
-                rtn += "<input type=button id='btnaccseq' value='個' class='c1button' style='cursor:pointer' title='個案明細查詢' onclick=\"accseq_from_onclick('" + DataBinder.Eval(oItem, "seq") + "','" + DataBinder.Eval(oItem, "seq1") + "','" + DataBinder.Eval(oItem, "country") + "')\">\n";
+                rtn += "<input type=button id='btnaccseq' value='個' class='c1button' style='cursor:pointer' title='個案明細查詢' onclick=\"accseq_from_onclick('" + Eval("seq") + "','" + Eval("seq1") + "','" + Eval("country") + "')\">\n";
             }
         } else {
-            rtn += "<span title=" + DataBinder.Eval(oItem, "Ar_marknm") + " style='cursor:pointer;color:red'>" + DataBinder.Eval(oItem, "Ar_mark") + "</span>";
+            rtn += "<span title=" + Eval("Ar_marknm") + " style='cursor:pointer;color:red'>" + Eval("Ar_mark") + "</span>";
         }
         return rtn;
     }
@@ -528,48 +532,46 @@
 		                <input type=hidden id="dis_flag_<%#(Container.ItemIndex+1)%>" name="dis_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("dis_flag")%>">
 		                <input type=hidden id="disT_flag_<%#(Container.ItemIndex+1)%>" name="disT_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("disT_flag")%>">
 		            </td>
-		            <td rowspan=<%#Eval("ctrl_rowspan")%> align="center">
+		            <td rowspan=<%#Eval("ctrl_rowspan")%> align="center"><!--接洽序號-->
                         <span id="backIcon" runat="server"><img src="<%=Page.ResolveUrl("~/images/back03.jpg")%>"></span>
                         <span id="accdIcon" runat="server"><img src="<%=Page.ResolveUrl("~/images/ok.gif")%>"style="cursor:pointer" onclick="accdchklist_from_onclick('<%#Eval("seq")%>','<%#Eval("seq1")%>','<%#Eval("country")%>','<%#Eval("case_no")%>')" title="會計檢核扣收入說明"></span>
 				        <A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("sc_name")%>-<%#Eval("in_no")%></A>
 		            </td>
-		            <td rowspan=<%#Eval("ctrl_rowspan")%> align="center">
+		            <td rowspan=<%#Eval("ctrl_rowspan")%> align="center"><!--交辦單號-->
                         <A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("case_no")%>
                             <%#Eval("contract_flag").ToString()=="Y" ? "<br><font color=red>(契約書後補："+Eval("contract_remark")+")</font>":""%>
                         </A>
 		            </td>
-		            <td align="center">
+		            <td align="center"><!--交辦日期-->
                         <A href="<%#Page.ResolveUrl("~/Brt4m/brt13_ListA.aspx?prgid=" + prgid+"&in_scode="+Eval("in_scode")+"&in_no="+Eval("in_no")+"&qs_dept="+qs_dept)%>" target="Eblank">
                             <%#Eval("step_date", "{0: yyyy/MM/dd}")%>
                             <%#Eval("ctrl_date").ToString()!="" ? "<br><font size='2' color=red>("+Eval("ctrl_date")+")</font>":""%>
                         </A>
 		            </td>
-		            <td align="center">
+		            <td align="center"><!--案件編號-->
                         <A href="<%#Eval("urlasp")%>" target="Eblank">
                             <%#Eval("back_flag").ToString()=="Y"||Eval("end_flag").ToString()=="Y" ? "<img src=\""+Page.ResolveUrl("~/images/todolist01.jpg")+"\" style=\"cursor:pinter\" align=\"absmiddle\"  border=\"0\">":""%>
                             <%#Eval("fseq")%>
 		                </A>
 		            </td>
-		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("country")%></A></td>
-		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("appl_name")%></A></td>
-		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank">
+		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("country")%></A></td><!--國別-->
+		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("appl_name")%></A></td><!--案件名稱-->
+		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><!--案性-->
                         <%#Eval("mark1").ToString()=="N" ? "<img src=\""+Page.ResolveUrl("~/images/todolist01.jpg")+"\" style=\"cursor:pinter\" align=\"absmiddle\"  border=\"0\">":""%>
                         <%#Eval("CArcase")%>
 		                </A>
 		            </td>
-		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("service")%></A></td>
-		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("fees")%></A></td>
-		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("oth_money")%></A></td>
-		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("allcost")%></TD>
-		            <td align="center">
+		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("service")%></A></td><!--服務費-->
+		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("fees")%></A></td><!--規費-->
+		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("oth_money")%></A></td><!--轉帳費用-->
+		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("allcost")%></TD><!--合計-->
+		            <td align="center"><!--折扣-->
 			            <A href="<%#Eval("urlasp")%>" target="Eblank">
                         <%#Convert.ToDecimal(Eval("discount"))>0 ? Eval("discount","{0:0.##}")+"%":""%>
 		                </A>
                     </TD>
-		            <td align="center">
-                        <%#GetArMark(Container.DataItem)%>
-		            </TD>
-		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("sign_levelnm")%></A></TD>
+		            <td align="center"><%#GetArMark(Container)%></TD><!--請款註記-->
+		            <td align="center"><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("sign_levelnm")%></A></TD><!--簽核-->
 				</tr>
  		        <tr class='<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>' id="armarkRow" runat="server">
                     <td colspan=12>&nbsp;&nbsp;交辦說明：<A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("tran_remark1")%></a></td>
@@ -659,19 +661,18 @@
     //查案件扣收入交辦記錄 
     function markdlist_from_onclick(pseq,pseq1,pcountry,pcase_no){
         //***todo
-        var url = "/btbrt/brt3m/extform/markdlist_qry.aspx?prgid=<%=HTProgCode%>&seq=" + pseq +"&seq1=" + pseq1 + "&country=" + pcountry +"&case_no="+ pcase_no + "&qs_dept=<%=qs_dept%>";
+        var url = getRootPath() + "/brt3m/extform/markdlist_qry.aspx?prgid=<%=HTProgCode%>&seq=" + pseq +"&seq1=" + pseq1 + "&country=" + pcountry +"&case_no="+ pcase_no + "&qs_dept=<%=qs_dept%>";
         window.open(url,"mymarkdlistwin", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
     }
     //查案件扣收入會計檢核記錄
     function accdchklist_from_onclick(pseq,pseq1,pcountry,pcase_no){
         //***todo
-        var url = "/btbrt/brt3m/extform/accdchklist_qry.aspx?prgid=<%=HTProgCode%>&seq="+ pseq +"&seq1=" + pseq1 +  "&country=" + pcountry +"&case_no="+pcase_no + "&qs_dept=<%=qs_dept%>";
+        var url = getRootPath() + "/brt3m/extform/accdchklist_qry.aspx?prgid=<%=HTProgCode%>&seq="+ pseq +"&seq1=" + pseq1 +  "&country=" + pcountry +"&case_no="+pcase_no + "&qs_dept=<%=qs_dept%>";
         window.open(url,"myaccdchklistwin", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
     }
     //個案明細表
     function accseq_from_onclick(pseq,pseq1,pcountry){
-        //***todo
-        var url = "/btbrt/brt4m/extform/accseqlist_qry.aspx?prgid=<%=HTProgCode%>&seq=" + pseq +"&seq1=" + pseq1 +  "&country=" + pcountry +"&closewin=Y";
+        var url = getRootPath() + "/brt4m/extform/accseqlist_qry.aspx?prgid=<%=HTProgCode%>&seq=" + pseq +"&seq1=" + pseq1 +  "&country=" + pcountry +"&closewin=Y";
         window.open(url,"myaccseqlistwin", "width=850px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
     }
 
@@ -864,7 +865,7 @@
                             if(status=="success"){
                                 //window.location.href="<%=HTProgPrefix%>.aspx?prgid=<%#prgid%>&qs_dept=<%=qs_dept%>"
                                 if(!$("#chkTest").prop("checked")){
-                                    goSearch();
+                                    goSearch();//重新整理
                                 }
                             }
                         }

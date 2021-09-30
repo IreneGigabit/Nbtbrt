@@ -228,7 +228,6 @@
     }
     //[詳細資料]
     function grconfClick(x1, x2, x3, x4) {
-        //**todo**
-        window.showModalDialog("brt15_Edit.asp?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&grconf_sqlno=" + x3 + "&step_grade=" + x4 + "&submittask=Q&closewin=Y", "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
+        window.showModalDialog("brt15_Edit.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&grconf_sqlno=" + x3 + "&step_grade=" + x4 + "&submittask=Q&closewin=Y", "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
     }
 </script>

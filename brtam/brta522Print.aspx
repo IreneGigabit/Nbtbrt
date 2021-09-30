@@ -181,9 +181,12 @@
 
                 //更新為已列印
                 if (updRsNo.Count > 0) {
-                    SQL = "update cs_dmt set print_date=getdate() where rs_no in('" + string.Join("','", updRsNo.ToArray()) + "')";
-                    conn.ExecuteNonQuery(SQL);
-                    conn.RollBack();
+                    if (Request["tfx_print"] == "N") {
+                        SQL = "update cs_dmt set print_date=getdate() where rs_no in('" + string.Join("','", updRsNo.ToArray()) + "')";
+                        conn.ExecuteNonQuery(SQL);
+                        conn.Commit();
+                        //conn.RollBack();
+                    }
                 }
             } else {
                 strOut.AppendLine("<script language=\"javascript\">");

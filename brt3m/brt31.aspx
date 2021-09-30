@@ -6,7 +6,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內交辦案主管簽核作業";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt31";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -20,7 +20,6 @@
     protected string tblname = "";
     protected string apcode = "";
     protected string td_jscode = "";
-    protected string td_tscode = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -84,7 +83,7 @@
                 SQL += "group by a.job_scode,b.grplevel,b.grpid,D.sc_name";
             }
             conn.DataTable(SQL, dt);
-            
+
             if (dt.Rows.Count > 0) {
                 if ((HTProgRight & 256) != 0) {
                     td_jscode += dt.Option("{job_scode}", "{sc_name}", false);
@@ -97,12 +96,12 @@
                         } else {
                             if ((HTProgRight & 128) != 0) {//權限B代理區所主管
                                 //if (dt.Rows[i].SafeRead("grpid", "") == "000") {
-                                if (Convert.ToInt32(dt.Rows[i].SafeRead("grplevel", "0")) >=1 ) {
+                                if (Convert.ToInt32(dt.Rows[i].SafeRead("grplevel", "0")) >= 1) {
                                     if (dt.Rows[i].SafeRead("job_scode", "") != Sys.GetSession("scode")) {
                                         td_jscode += "<option value='" + dt.Rows[i]["job_scode"] + "'>" + dt.Rows[i]["sc_name"] + "</option>";
                                     }
                                 }
-                            }else if ((HTProgRight & 64) != 0) {//權限A代理部門主管
+                            } else if ((HTProgRight & 64) != 0) {//權限A代理部門主管
                                 //if (dt.Rows[i].SafeRead("grpid", "") == "T000") {
                                 if (Convert.ToInt32(dt.Rows[i].SafeRead("grplevel", "0")) >= 2) {
                                     if (dt.Rows[i].SafeRead("job_scode", "") != Sys.GetSession("scode")) {
@@ -116,18 +115,6 @@
                         }
                     }
                 }
-
-                //營洽清單
-                SQL = "select A.IN_scode,d.sc_name from si" + Session["seBranch"] + "dbs.dbo." + tblname + " A ";
-                SQL += "inner join sysctrl.dbo.scode D on a.in_scode = d.scode ";
-                SQL += "where a.job_status='NN' and a.job_scode='" + Session["scode"] + "' and a.syscode='" + Session["syscode"] + "' and apcode in(" + apcode + ") ";
-                SQL += "group by a.in_scode,d.sc_name";
-                DataTable dtscode = new DataTable();
-                conn.DataTable(SQL, dtscode);
-                td_tscode = "<select id='scode' name='scode'>" + dtscode.Option("{IN_scode}", "{sc_name}") + "</select>";
-            } else {
-                //營洽清單
-                td_tscode = "<select id='scode' name='scode'><option value='*'>全部</option></select>";
             }
         }
     }
@@ -162,14 +149,16 @@
             <tr>
 		        <td class="lightbluetable" align="right">簽核主管:</td>
 		        <td class="whitetablebg" align="left">
-                    <select id='job_scode' name='job_scode' onchange="searchScode(this.value,'scode')" >
+                    <select id='job_scode' name='job_scode' onchange="searchScode(this.value,'scode',reg.dept.value)" >
                         <%#td_jscode%>
                     </select>
                 </td>
 	        </tr>
 	        <tr>
 		        <td class="lightbluetable" align="right">洽案營洽:</td>
-		        <td class="whitetablebg" align="left"><%#td_tscode%></td>
+		        <td class="whitetablebg" align="left">
+                    <select id='scode' name='scode'><option value='*'>全部</option></select>
+		        </td>
 	        </tr>
             <TR>
 		        <TD class=lightbluetable align=right>日期種類：</TD>
@@ -254,11 +243,10 @@
         }
     });
 
-    function searchScode(fld1, fld2) {
-        var fld3 = $("#dept").val();
+    function searchScode(fld1, fld2, fld3) {
         var chktest = ($("#chkTest:checked").val() || "");
 
-        var url = getRootPath() + "/brt3m/brt31_Scode.aspx?fld1=" + fld1 + "&fld2=" + fld2 + "&fld3=" + fld3 + "&chkTest=" + chktest;
+        var url = getRootPath() + "/brt3m/brt3_Scode.aspx?fld1=" + fld1 + "&fld2=" + fld2 + "&fld3=" + fld3 + "&chkTest=" + chktest;
         ajaxScriptByGet("營洽清單", url);
     }
 </script>

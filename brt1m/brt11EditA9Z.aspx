@@ -121,10 +121,10 @@
         }
 
         //簽核主管
-        DataRow[] drx = Sys.getGrpidUp("N", "T000").Select("grplevel=2");
+        DataRow[] drx = Sys.getGrpidUp(Sys.GetSession("SeBranch"), "T000").Select("grplevel=2");
         html_selectsign1 = drx.Option("{master_scode}", "{master_type}--{master_nm}", "selected", false);
         //特殊處理
-        DataRow[] drx1 = Sys.getGrpidUp("N", "000").Select("grplevel>=1");
+        DataRow[] drx1 = Sys.getGrpidUp(Sys.GetSession("SeBranch"), "000").Select("grplevel>=1");
         html_selectsign2 = drx1.Option("{master_scode}", "{master_type}--{master_nm}", false);
     }
 

@@ -17,9 +17,9 @@
     protected string StrFormBtn = "";
 
     protected string SQL = "";
-    protected string json = "";
     protected Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
+    protected Paging page = null;
 
     protected string submittask = "";
     protected string td_tscode = "";
@@ -46,7 +46,6 @@
         cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
-        json = (Request["json"] ?? "").Trim().ToUpper();
         submittask = (Request["submittask"] ?? "").Trim();
         homelist = (Request["homelist"] ?? "").Trim();
         qryuse_datee = (Request["qryuse_datee"] ?? "").Trim();
@@ -59,11 +58,8 @@
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
-            if (json == "Y") {
-                QueryData();
-            } else {
-                PageLayout();
-            }
+            PageLayout();
+            QueryData();
             this.DataBind();
         }
     }
@@ -85,31 +81,12 @@
         //權限A：組主管
         if ((HTProgRight & 128) != 0) {
             //權限B為全部
-            SQL = "SELECT distinct a.scode, b.sc_name,b.sscode ";
-            SQL += "FROM scode_group a ";
-            SQL += "JOIN scode b ON a.scode=b.scode ";
-            SQL += "JOIN grpid c ON a.grpclass=c.grpclass AND a.grpid=c.grpid ";
-            SQL += "WHERE c.work_type='sales' ";
-            SQL += "and c.grpclass='" + Session["SeBranch"] + "' and c.grpid not like '%x%' ";
-            SQL += "and (substring(c.grpid,1,1)='T' or c.grpid='000') ";
-            SQL += "and (b.end_date is null or b.end_date >=getdate()) ";//增加判斷未離職人員
-            SQL += "order by b.sscode,a.scode,b.sc_name";
-            cnn.DataTable(SQL, dt);
-            td_tscode = "<select id='qryscode1' name='qryscode1' ><option value=''>全部</option>" + dt.Option("{scode}", "{sc_name}") + "</select>";
+            td_tscode = "<select id='qryscode1' name='qryscode1' ><option value=''>全部</option>";
+            td_tscode += Sys.getLoginGrpSales("A", "").Option("{scode}", "{scode}_{sc_name}") + "</select>";
         } else if ((HTProgRight & 64) != 0) {
             //權限A為所屬營洽
-            SQL = "SELECT distinct a.scode, b.sc_name,b.sscode ";
-            SQL += "FROM scode_group a ";
-            SQL += "JOIN scode b ON a.scode=b.scode ";
-            SQL += "JOIN grpid c ON a.grpclass=c.grpclass AND a.grpid=c.grpid ";
-            SQL += "WHERE c.work_type='sales' ";
-            SQL += "and c.grpclass='" + Session["SeBranch"] + "' and c.grpid not like '%x%' ";
-            SQL += "and (substring(c.grpid,1,1)='T' or c.grpid='000') and a.scode=b.scode ";
-            SQL += "and a.scode in (" + sales_scode + ") ";
-            SQL += "and (b.end_date is null or b.end_date >=getdate() )";//增加判斷未離職人員
-            SQL += "order by b.sscode,a.scode,b.sc_name";
-            cnn.DataTable(SQL, dt);
-            td_tscode = "<select id='qryscode1' name='qryscode1' >" + dt.Option("{scode}", "{sc_name}") + "</select>";
+            td_tscode = "<select id='qryscode1' name='qryscode1' ><option value=''>全部</option>";
+            td_tscode += Sys.getLoginGrpSales("A", "and a.scode in (" + sales_scode + ")").Option("{scode}", "{scode}_{sc_name}") + "</select>";
         } else {
             td_tscode = "<input type='text' id='scode' name='scode' readonly class='SEdit' size=5 value='" + Session["se_scode"] + "'>-&nbsp;" + Session["sc_name"];
         }
@@ -184,8 +161,8 @@
 
         //處理分頁
         int nowPage = Convert.ToInt32(Request["GoPage"] ?? "1"); //第幾頁
-        int PerPageSize = Convert.ToInt32(Request["PerPage"] ?? "10"); //每頁筆數
-        Paging page = new Paging(nowPage, PerPageSize, SQL);
+        int PerPageSize = Convert.ToInt32(Request["PerPage"] ?? "20"); //每頁筆數
+        page = new Paging(nowPage, PerPageSize, SQL);
         page.GetPagedTable(dt);
 
         //分頁完再處理其他資料才不會虛耗資源
@@ -257,16 +234,8 @@
             dr["todo_link"] = todo_link;
         }
 
-        var settings = new JsonSerializerSettings()
-        {
-            Formatting = Formatting.None,
-            ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
-            Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
-        };
-
-        Response.Write(JsonConvert.SerializeObject(page, settings).ToUnicode());
-        Response.End();
-        //return JsonConvert.SerializeObject(dt, settings).ToUnicode().Replace("\\", "\\\\").Replace("\"", "\\\"");
+        dataRepeater.DataSource = page.pagedTable;
+        dataRepeater.DataBind();
     }
 
     protected string GetSum(DataRow row) {
@@ -303,7 +272,7 @@
     </tr>
 </table>
 
-<form id="regPage" name="regPage" method="post">
+<form style="margin:0;" id="regPage" name="regPage" method="post">
     <input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
     <input type="hidden" id="submittask" name="submittask" value="<%=submittask%>">
 
@@ -323,35 +292,39 @@
         </table>
     </div>
 
-    <div id="divPaging" style="display:none">
+    <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
 		    <td colspan=2 align=center>
 			    <font size="2" color="#3f8eba">
-				    第<font color="red"><span id="NowPage"></span>/<span id="TotPage"></span></font>頁
-				    | 資料共<font color="red"><span id="TotRec"></span></font>筆
-				    | 跳至第<select id="GoPage" name="GoPage" style="color:#FF0000"></select>頁
-				    <span id="PageUp">| <a href="javascript:void(0)" class="pgU" v1="">上一頁</a></span>
-				    <span id="PageDown">| <a href="javascript:void(0)" class="pgD" v1="">下一頁</a></span>
-				    | 每頁筆數:<select id="PerPage" name="PerPage" style="color:#FF0000">
-					    <option value="10" selected>10</option>
-					    <option value="20">20</option>
-					    <option value="30">30</option>
-					    <option value="50">50</option>
+				    第<font color="red"><span id="NowPage"><%#page.nowPage%></span>/<span id="TotPage"><%#page.totPage%></span></font>頁
+				    | 資料共<font color="red"><span id="TotRec"><%#page.totRow%></span></font>筆
+				    | 跳至第
+				    <select id="GoPage" name="GoPage" style="color:#FF0000"><%#page.GetPageList()%></select>
+				    頁
+				    <span id="PageUp" style="display:<%#page.nowPage>1?"":"none"%>">| <a href="javascript:void(0)" class="pgU" v1="<%#page.nowPage-1%>">上一頁</a></span>
+				    <span id="PageDown" style="display:<%#page.nowPage<page.totPage?"":"none"%>">| <a href="javascript:void(0)" class="pgD" v1="<%#page.nowPage+1%>">下一頁</a></span>
+				    | 每頁筆數:
+				    <select id="PerPage" name="PerPage" style="color:#FF0000">
+					    <option value="10" <%#page.perPage==10?"selected":""%>>10</option>
+					    <option value="20" <%#page.perPage==20?"selected":""%>>20</option>
+					    <option value="30" <%#page.perPage==30?"selected":""%>>30</option>
+					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
-                    <input type="hidden" name="SetOrder" id="SetOrder" />
-			    </font>
+                    <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>
     </div>
-    <%#DebugStr%>
 </form>
 
 <div align="center" class="noData" style="display:none">
 	<font color="red">=== 目前無資料 ===</font>
 </div>
 
+<asp:Repeater id="dataRepeater" runat="server">
+<HeaderTemplate>
 <table style="display:" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="98%" align="center" id="dataList">
 	<thead>
         <Tr>
@@ -371,46 +344,51 @@
 		    <td align="center" class="lightbluetable" nowrap>狀態</td>
 	    </tr>
 	</thead>
-	<tbody>
-	</tbody>
-    <script type="text/html" id="data_template"><!--清單樣板-->
-        <tr class='{{tclass}}' id='tr_data_{{nRow}}'>
+</HeaderTemplate>
+		<ItemTemplate>
+ 	    <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 		    <td align="center">
-		        <span style="color:red">{{sign}}</span>{{actbtn}}
-		        <input type="hidden" name="seq_{{nRow}}" value="{{seq}}">
-		        <input type="hidden" name="seq1_{{nRow}}" value="{{seq1}}">
+		        <span style="color:red"><%#Eval("sign")%></span><%#Eval("actbtn")%>
+		        <input type="hidden" name="seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq")%>">
+		        <input type="hidden" name="seq1_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq1")%>">
 		    </td>
-		    <td align="center" nowrap title="{{scode}}-{{in_no}}">{{scode1nm}}</td>
-		    <td align="center" nowrap>{{case_no}}</td>
-		    <td align="center" title="{{cust_area}}-{{cust_seq}}">{{ap_cname}}</td>
-		    <td align="center" nowrap>{{ctrl_date}}</td>
-		    <td align="center" nowrap onclick="Qseqdetail({{seq}},'{{seq1}}')" style="cursor:pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" nowrap>{{fseq}}</td>
-		    <td align="center">{{appl_name}}</td>
-            <td align="center" title="{{arcase_class}}-{{arcase}}-">{{rs_detail}}</td>
-            <td align="center">{{service}}</td>
-            <td align="center">{{fees}}</td>
-            <td align="center">{{oth_money}}</td>
-            <td align="center">{{totsum}}</td>
-            <td align="center">{{discount}}<font style="color:red">{{armark_txt}}</font></td>
-            <td align="center" title="流程狀態查詢"><a href="{{todo_link}}" target="Eblank"><img src="<%=Page.ResolveUrl("~/images/ok.gif")%>" border=0 ></a></td>
+		    <td align="center" nowrap title="<%#Eval("scode")%>-<%#Eval("in_no")%>"><%#Eval("scode1nm")%></td>
+		    <td align="center" nowrap><%#Eval("case_no")%></td>
+		    <td align="center" title="<%#Eval("cust_area")%>-<%#Eval("cust_seq")%>"><%#Eval("ap_cname")%></td>
+		    <td align="center" nowrap><%#Eval("ctrl_date","{0:d}")%></td>
+		    <td align="center" nowrap onclick="Qseqdetail(<%#Eval("seq")%>,'<%#Eval("seq1")%>')" style="cursor:pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" nowrap>
+                <%#Eval("fseq")%>
+		    </td>
+		    <td align="center"><%#Eval("appl_name")%></td>
+            <td align="center" title="<%#Eval("arcase_class")%>-<%#Eval("arcase")%>-"><%#Eval("rs_detail")%></td>
+            <td align="center"><%#Eval("service")%></td>
+            <td align="center"><%#Eval("fees")%></td>
+            <td align="center"><%#Eval("oth_money")%></td>
+            <td align="center"><%#Eval("totsum")%></td>
+            <td align="center"><%#Eval("discount")%><font style="color:red"><%#Eval("armark_txt")%></font></td>
+            <td align="center" title="流程狀態查詢"><a href="<%#Eval("todo_link")%>" target="Eblank"><img src="<%=Page.ResolveUrl("~/images/ok.gif")%>" border=0 ></a></td>
        </tr>
-    </script>
-</TABLE>
-<BR>
-<div align=left style="font-size:10pt;color:blue" class="haveData">
-<br />備註：
-<br />1.此作業提供需契約書後補交辦案件，可補入契約書號碼及將契約書或相關檔案上傳，若為總契約書則需對應總契約書檔，
-<br />  完成後系統將銷管契約書後補期限並將此筆交辦寫入「會計契約書檢核作業」，同時會EMAIL通知會計。
-<br />2.<font color=red>◎</font><font color=blue>表會計退回</font>
-<br />3.<font color=red  size="3">※</font><font color=blue>表已官發/聯發</font>
-<%if ((HTProgRight & 16)!=0 && (HTProgRight & 128)!=0){%>
-<br />※[取消(送會計)]：表取消後補送會計契約書檢核
-<br />※[不需後補]：契約書已上傳，不需後補
-<%}%>
-</div>
+		</ItemTemplate>
+    <FooterTemplate>
+        </table>
+        <BR>
+        <div align=left style="font-size:10pt;color:blue" class="haveData">
+        <br />備註：
+        <br />1.此作業提供需契約書後補交辦案件，可補入契約書號碼及將契約書或相關檔案上傳，若為總契約書則需對應總契約書檔，
+        <br />  完成後系統將銷管契約書後補期限並將此筆交辦寫入「會計契約書檢核作業」，同時會EMAIL通知會計。
+        <br />2.<font color=red>◎</font><font color=blue>表會計退回</font>
+        <br />3.<font color=red  size="3">※</font><font color=blue>表已官發/聯發</font>
+        <%if ((HTProgRight & 16)!=0 && (HTProgRight & 128)!=0){%>
+        <br />※[取消(送會計)]：表取消後補送會計契約書檢核
+        <br />※[不需後補]：契約書已上傳，不需後補
+        <%}%>
+        </div>
+    </FooterTemplate>
+    </asp:Repeater>
 
 <div id="dialog"></div>
 
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
 </body>
 </html>
 
@@ -418,7 +396,6 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         this_init();
-        goSearch();
     });
 
     function this_init() {
@@ -445,96 +422,7 @@
 
     //執行查詢
     function goSearch() {
-        window.parent.tt.rows = '100%,0%';
-        $("#divPaging,#dataList,.noData,.haveData").hide();
-        $("#dataList>tbody tr").remove();
-        nRow = 0;
-
-        $.ajax({
-            url: "<%#HTProgPrefix%>_List.aspx?json=Y",
-            type: "get",
-            async: false,
-            cache: false,
-            data: $("#regPage").serialize(),
-            success: function (json) {
-                if (!isJson(json) || $("#chkTest").prop("checked")) {
-                    $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + json);
-                    $("#dialog").dialog({ title: 'Debug！', modal: true, maxHeight: 500, width: "90%" });
-                    return false;
-                }
-                var JSONdata = $.parseJSON(json);
-                //////更新分頁變數
-                var totRow = parseInt(JSONdata.totrow, 10);
-                if (totRow > 0) {
-                    $("#divPaging,#dataList,.haveData").show();
-                } else {
-                    $(".noData").show();
-                }
-
-                var nowPage = parseInt(JSONdata.nowpage, 10);
-                var totPage = parseInt(JSONdata.totpage, 10);
-                $("#NowPage").html(nowPage);
-                $("#TotPage").html(totPage);
-                $("#TotRec").html(totRow);
-                var i = totPage + 1, option = new Array(i);
-                while (--i) {
-                    option[i] = ['<option value="' + i + '">' + i + '</option>'].join("");
-                }
-                $("#GoPage").replaceWith('<select id="GoPage" name="GoPage" style="color:#FF0000">' + option.join("") + '</select>');
-                $("#GoPage").val(nowPage);
-                nowPage > 1 ? $("#PageUp").show() : $("#PageUp").hide();
-                nowPage < totPage ? $("#PageDown").show() : $("#PageDown").hide();
-                $("a.pgU").attr("v1", nowPage - 1);
-                $("a.pgD").attr("v1", nowPage + 1);
-                //$("#id-div-slide").slideUp("fast");
-
-                $.each(JSONdata.pagedtable, function (i, item) {
-                    nRow++;
-                    //複製樣板
-                    var copyStr = $("#data_template").text() || "";
-                    copyStr = copyStr.replace(/##/g, nRow);
-                    var tclass = "";
-                    if (nRow % 2 == 1) tclass = "sfont9"; else tclass = "lightbluetable3";
-                    copyStr = copyStr.replace(/{{tclass}}/g, tclass);
-                    copyStr = copyStr.replace(/{{nRow}}/g, nRow);
-
-                    copyStr = copyStr.replace(/{{seq}}/gi, item.seq);
-                    copyStr = copyStr.replace(/{{seq1}}/gi, item.seq1);
-                    copyStr = copyStr.replace(/{{sign}}/gi, item.sign);
-                    copyStr = copyStr.replace(/{{actbtn}}/gi, item.actbtn);
-                    copyStr = copyStr.replace(/{{scode}}/gi, item.scode);
-                    copyStr = copyStr.replace(/{{in_no}}/gi, item.in_no);
-                    copyStr = copyStr.replace(/{{scode1nm}}/gi, item.scode1nm);
-                    copyStr = copyStr.replace(/{{case_no}}/gi, item.case_no);
-                    copyStr = copyStr.replace(/{{cust_area}}/gi, item.cust_area);
-                    copyStr = copyStr.replace(/{{cust_seq}}/gi, item.cust_seq);
-                    copyStr = copyStr.replace(/{{ap_cname}}/gi, item.ap_cname);
-                    copyStr = copyStr.replace(/{{ctrl_date}}/gi, dateReviver(item.ctrl_date, "yyyy/M/d"));
-                    copyStr = copyStr.replace(/{{fseq}}/gi, item.fseq);
-                    copyStr = copyStr.replace(/{{appl_name}}/gi, item.appl_name);
-                    copyStr = copyStr.replace(/{{arcase_class}}/g, item.arcase_class);
-                    copyStr = copyStr.replace(/{{arcase}}/g, item.arcase);
-                    copyStr = copyStr.replace(/{{rs_detail}}/g, item.rs_detail);
-                    copyStr = copyStr.replace(/{{service}}/gi, item.service);
-                    copyStr = copyStr.replace(/{{fees}}/gi, item.fees);
-                    copyStr = copyStr.replace(/{{oth_money}}/gi, item.oth_money);
-                    copyStr = copyStr.replace(/{{totsum}}/gi, item.totsum);
-                    copyStr = copyStr.replace(/{{discount}}/gi, item.discount);
-                    copyStr = copyStr.replace(/{{armark_txt}}/gi, item.armark_txt);
-                    copyStr = copyStr.replace(/{{todo_link}}/gi, item.todo_link);
-
-                    $("#dataList>tbody").append(copyStr);
-                });
-            },
-            beforeSend: function (jqXHR, settings) {
-                jqXHR.url = settings.url;
-            },
-            error: function (xhr) {
-                $("#dialog").html("<a href='" + this.url + "' target='_new'>資料擷取剖析錯誤！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '資料擷取剖析錯誤！', modal: true, maxHeight: 500, width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-            }
-        });
+        $("#regPage").submit();
     };
     //////////////////////
 
@@ -548,12 +436,13 @@
         ChkDate(this);
     });
 
-    //詳細案件資料//***todo
+    //詳細案件資料
     function Qseqdetail(pseq,pseq1){
         var urlasp=getRootPath();
         if(main.prgid.Left(3)=="brt"){
             urlasp += "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q";
         }else{
+            //***todo
             urlasp += "/brt5m/ext54_Edit.aspx?seq=" + pseq + "&seq1=" + pseq1 + "&submittask=DQ&winact=Y&prgid="+main.prgid;
         }
         window.open(urlasp,"myWindowOneN", "width=950 height=700 top=20 left=20 toolbar=no, menubar=no, location=no, directories=no resizable=yes status=yes scrollbars=yes");

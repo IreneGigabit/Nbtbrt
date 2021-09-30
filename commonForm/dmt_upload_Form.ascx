@@ -95,7 +95,7 @@
 <input type="hidden" id="<%#uploadfield%>_maxAttach_no" name="<%#uploadfield%>_maxAttach_no" value=""><!--目前table裡最大值-->
 <input type="hidden" id="<%#uploadfield%>_attach_cnt" name="<%#uploadfield%>_attach_cnt" value=""><!--目前table裡有效筆數-->
 <input type="hidden" id="<%#uploadfield%>_filenum" name="<%#uploadfield%>_filenum" value="0"><!--畫面顯示NO-->
-<input type="hidden" id="<%#uploadfield%>_path" name="<%#uploadfield%>_path" value="<%=epath%>">
+<input type="hidden" id="<%#uploadfield%>_path" name="<%#uploadfield%>_path" value="<%=epath%>"><!--存檔路徑-->
 <input type="hidden" id="uploadfield" name="uploadfield" value="<%#uploadfield%>">
 <input type="hidden" id="maxattach_no" name="maxattach_no" value="0"><!--table+畫面顯示NO-->
 <input type="hidden" id="attach_seq" name="attach_seq">
@@ -174,7 +174,7 @@
     }
 
     //附件資料append到畫面
-    upload_form.bind = function (jData) {
+    upload_form.bind = function (jData,showSourceName) {
         upload_form.emptyFile();//清空附件清單
         $.each(jData, function (i, item) {
             var fld = $("#uploadfield").val();
@@ -191,10 +191,10 @@
             $("#attach_flag_" + nRow).val("U");//維護時判斷是否要更名，即A表示新上傳的文件
             $("#btn" + fld + "_" + nRow).prop("disabled", true);
             $("input[name='" + fld + "_branch_" + nRow + "'][value='" + item.attach_branch + "']").prop("checked", true);//交辦專案室
-            if (item.source_name) {
-                $("#source_name_" + nRow).val(item.source_name);
-            } else {
+            if (showSourceName == false) {
                 $("#span_source_" + nRow).hide();
+            } else {
+                $("#source_name_" + nRow).val(item.source_name || "");
             }
             $("#attach_no_" + nRow).val(item.attach_no);
             $("#attach_flagtran_" + nRow).val(item.attach_flagtran);//異動作業上傳註記Y

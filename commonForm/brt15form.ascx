@@ -114,7 +114,7 @@
         $("#sales_remark").val(jData.sales_remark);
         $("#ocs_report").val(jData.cs_report);
         $("input[name='cs_report'][value='" + jData.cs_report + "']").prop("checked", true).triggerHandler("click");
-        upload_form.bind(jAttach);//顯示上傳文件
+        upload_form.bind(jAttach, true);//顯示上傳文件資料/是否顯示原始檔名
 
         if (jData.job_type == "case" && jData.job_no != "") {
             $("input[name='job_type']").lock();

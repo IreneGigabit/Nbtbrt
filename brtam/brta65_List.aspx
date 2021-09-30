@@ -310,7 +310,7 @@
 			        <td nowrap><%#Eval("issue_no")%></td>	
 			        <td nowrap><%#Eval("term2","{0:yyyy/M/d}")%></td>		
 			        <td nowrap><%#Eval("lscode")%></td>
-			        <td nowrap><a href="brta61_Edit.aspx?submitTask=Q&prgid=<%=prgid%>&aseq=<%#Eval("seq")%>&aseq1=<%#Eval("seq1")%>&FrameBlank=50" target="Eblank">[查詢]</a></td><!--***todo-->
+			        <td nowrap><a href="brta61_Edit.aspx?submitTask=Q&prgid=<%=prgid%>&aseq=<%#Eval("seq")%>&aseq1=<%#Eval("seq1")%>&FrameBlank=50" target="Eblank">[查詢]</a></td>
 				</tr>
 			</ItemTemplate>
 <FooterTemplate>

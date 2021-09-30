@@ -74,7 +74,7 @@
                     <input type=radio value=OO id="case_stat1b_1OO" name="case_stat1b_1" onclick="br_form.case_stat1_control('OO','b_1')">舊案
                     <input type=button class="cbutton" id="btnQueryb_1" name="btnQueryb_1" value ="查詢主案件編號" onclick="br_form.btnQueryclick('b_1',reg.F_cust_seq.value)">
                     <input type=button class="cbutton" id="btncaseb_1" name="btncaseb_1"  value ="案件主檔查詢" onclick="br_form.btncaseclick('b_1')">
-			　       <input type="text" id=keydseqb_1 name=keydseqb_1 value="N">
+			　       <input type="hidden" id=keydseqb_1 name=keydseqb_1 value="N">
 			    </td>
 			    <td class="lightbluetable" align="right"><font color="red">(主)</font>母案本所編號1:</td>
 			    <td class="whitetablebg" >
@@ -113,7 +113,7 @@
 			    <td class="lightbluetable" align="right">母案本所編號##:</td>
 			    <td class="whitetablebg" >
 					<input type=text id=dmseqb_## name=dmseqb_## size=<%=Sys.DmtSeq%> maxlength=<%=Sys.DmtSeq%> readonly >-<input type=text id=dmseq1b_## name=dmseq1b_## size=<%=Sys.DmtSeq1%>  maxlength=<%=Sys.DmtSeq1%> value='_' readonly >
-					<input type=button style='display:none' id='but_endb_##' name='but_endb_##' class='redbutton' style='cursor:pointer' value='母案結案' onclick="dmt_form.btnendA8click('dmseqb_##' ,reg.dmseqb_##.value,reg.dmseq1b_##.value)">
+					<input type=button style='display:none' id='but_endb_##' name='but_endb_##' class='redbutton' value='母案結案' onclick="dmt_form.btnendA8click('dmseqb_##' ,reg.dmseqb_##.value,reg.dmseq1b_##.value)">
 					<input type=hidden name='endflag51b_##' id='endflag51b_##' value='X'>
 					<input type=hidden name='end_code51b_##' id='end_code51b_##'>
 					<input type=hidden name='end_type51b_##' id='end_type51b_##'>

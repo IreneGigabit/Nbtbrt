@@ -49,7 +49,7 @@
 			_frame = null;
 		} else {
 			_ccExp = null;
-			_expType = "RunTime Error...";
+            _expType = HttpContext.Current.Request.ApplicationPath + "' 應用程式中發生伺服器錯誤。";
 			_ccError = null;
 			// Get the Stack Frame
             StackTrace stack = new StackTrace(_lastError.GetBaseException(), true);
@@ -241,7 +241,7 @@ legend
 <body>
 <form id="form1" runat="server">
 <div>
-<asp:Label id="lblType" CssClass="errType" runat="server" />
+<font color=red><asp:Label id="lblType" CssClass="errType" runat="server" /></font>
 <hr />
 <fieldset><legend>錯誤描述</legend>
 <asp:Label id="lblMessage" CssClass="errorMessage" runat="server" />

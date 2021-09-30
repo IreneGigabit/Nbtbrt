@@ -24,7 +24,7 @@
 		case_sqlno = (Request["case_sqlno"] ?? "").ToString();//16090001
         send_sel = (Request["send_sel"] ?? "").ToString();//4
 		try {
-			ipoRpt = new IPOReport(Session["btbrtdb"].ToString(), in_scode, in_no, case_sqlno)
+			ipoRpt = new IPOReport(Conn.btbrt, in_scode, in_no, case_sqlno)
 			{
 				ReportCode = "FOF",
 				RectitleFlag = (Request["rectitle_flag"] ?? "").ToString(),//Y

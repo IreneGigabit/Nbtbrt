@@ -5,16 +5,23 @@
 <%@ Import Namespace = "System.Linq"%>
 <%@ Import Namespace = "Newtonsoft.Json"%>
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
+<%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
 
 <script runat="server">
     protected string HTProgCap = "案件主檔維護";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgPrefix = "brt15";//程式檔名前綴
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
+    protected string DebugStr = "";
 
     protected string SQL = "";
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Paging page = null;
+    
+    protected string StrFormBtnTop = "";
+    protected string StrFormBtn = "";
+    protected string FormName = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -26,16 +33,22 @@
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         if (HTProgRight >= 0) {
+            PageLayout();
             QueryData();
             this.DataBind();
         }
     }
+
+    private void PageLayout() {
+        StrFormBtnTop += "<a href=brt15.aspx?prgid=" + prgid + ">[回查詢]</a>";
+    }
+
     private void QueryData() {
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             SQL = "select a.*,b.ap_cname1 as cust_name ";
             SQL += ",(select sc_name from sysctrl.dbo.scode where scode=a.scode) as scode1nm ";
-            SQL += ",''fseq,''url ";
+            SQL += ",''end_star,''fseq,''url ";
             SQL += "from dmt as a ";
             SQL += "left outer join apcust as b on a.cust_seq=b.cust_seq ";
             SQL += "where 1=1 ";
@@ -106,8 +119,12 @@
             //分頁完再處理其他資料才不會虛耗資源
             for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
                 DataRow dr = page.pagedTable.Rows[i];
-                
+
+                //案號
                 dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", "", "");
+                if (dr.SafeRead("end_date", "") != "") {
+                    dr["end_star"] = "<font color=red>*</font>";
+                }
                 dr["cust_area"] = dr.SafeRead("cust_area", "").Left(1);
                 dr["url"] = GetLink(dr);
             }
@@ -127,12 +144,29 @@
     }
 </script>
 
-<div align="center" id="noData" style="display:<%#page.totRow==0?"":"none"%>">
-	<font color="red">=== 目前無資料 ===</font>
-</div>
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><%=HTProgCap%></title>
+    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+</head>
 
-<asp:Repeater id="dataRepeater" runat="server">
-<HeaderTemplate>
+<body>
+<table cellspacing="1" cellpadding="0" width="98%" border="0" align="center">
+    <tr>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%> <%=HTProgCap%>】</td>
+        <td class="FormLink" valign="top" align="right" nowrap="nowrap">
+            <%#StrFormBtnTop%>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><hr class="style-one"/></td>
+    </tr>
+</table>
+
+<form style="margin:0;" id="regPage" name="regPage" method="post">
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
+    <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
     <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
 	    <tr>
 		    <td colspan=2 align=center>
@@ -152,11 +186,20 @@
 					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
 				    </select>
                     <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
-			    </font>
+			    </font><%#DebugStr%>
 		    </td>
 	    </tr>
     </TABLE>
-    <BR>
+    </div>
+</form>
+
+<div align="center" id="noData" style="display:<%#page.totRow==0?"":"none"%>">
+	<font color="red">=== 目前無資料 ===</font>
+</div>
+
+<form style="margin:0;" id="reg" name="reg" method="post">
+<asp:Repeater id="dataRepeater" runat="server">
+<HeaderTemplate>
     <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="90%" align="center" id="dataList">
 	    <thead>
             <Tr>
@@ -171,7 +214,7 @@
 </HeaderTemplate>
 			<ItemTemplate>
  		        <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
-                    <td class="whitetablebg"><p align="center"><a href="<%#Eval("url")%>" target="Eblank"><%#Eval("fseq")%></a></td>
+                    <td class="whitetablebg"><p align="center"><a href="<%#Eval("url")%>" target="Eblank"><%#Eval("end_star")%><%#Eval("fseq")%></a></td>
                     <td class="whitetablebg"><p align="left"><a href="<%#Eval("url")%>" target="Eblank"><%#Eval("appl_name")%></a></td>
                     <td class="whitetablebg"><p align="left"><a href="<%#Eval("url")%>" target="Eblank"><%#Eval("cust_area")%><%#Eval("cust_seq")%>&nbsp;<%#Eval("cust_name")%></a></td>
                     <td class="whitetablebg"><p align="center"><%#Eval("class")%></td>	
@@ -185,6 +228,7 @@
     <table style="display:<%#page.totRow==0?"none":""%>" border="0" width="100%" cellspacing="0" cellpadding="0">
 		<tr class="FormName"><td>
 			<div align="left">
+                ◎本所編號前有　<font color=red size=2>' * '</font>　符號者，表該案件已結案!!
 			</div>
 		</td>
         </tr>
@@ -192,3 +236,26 @@
 	<br>
 </FooterTemplate>
 </asp:Repeater>
+
+    <%#DebugStr%>
+</form>
+
+<div id="dialog"></div>
+
+</body>
+</html>
+
+<script language="javascript" type="text/javascript">
+    $(function () {
+        if (window.parent.tt !== undefined) {
+            window.parent.tt.rows = "100%,0%";
+        }
+
+        $(".Lock").lock();
+        $("input.dateField").datepick();
+    });
+    //執行查詢
+    function goSearch() {
+        $("#regPage").submit();
+    };
+</script>

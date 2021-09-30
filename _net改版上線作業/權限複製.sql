@@ -2,7 +2,7 @@ select * from SYScode where syscode='ntbrt'
 select * from SYScode where syscode='nnbrt'
 /*
 insert into SYScode 
-select 'NNBRT','台北所商標網路作業系統(新)',sysnameE,'web08','/nbtbrt',DataBranch,ClassCode,'07',corp_user,main_user,sys_user,online_date,beg_date,end_date,sysremark,mark,dbserver,dbname
+select 'NNBRT','台北所商標網路作業系統(新)',sysnameE,'web08','/nbtbrt',DataBranch,ClassCode,'07',corp_user,main_user,sys_user,online_date,beg_date,end_date,sysremark,mark
 from SYScode where syscode='ntbrt'
 */
 
@@ -38,6 +38,9 @@ select * from ap where syscode='ntbrt'
 select * from ap where syscode='nnbrt' 
 /*
 用複製貼上
+--insert into ap 
+--select 'NKBRT',apcode,apnamee,apnamec,apcat,apserver,appath,aporder,apgrpclass,end_level,remark,beg_date,end_date,tran_date,tran_scode,apremark
+--from ap where syscode='nnbrt'
 */
 
 select * from APcat where syscode='ntbrt'

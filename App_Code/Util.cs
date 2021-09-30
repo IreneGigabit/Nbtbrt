@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text;
 using System.Security.Cryptography;
 using System.Collections.Specialized;
+using System.Text.RegularExpressions;
 
 public static partial class Util
 {
@@ -155,8 +156,9 @@ public static partial class Util
     /// 擷取指定長度(byte數)
     /// </summary>
     public static string CutData(this string s, int n) {
+        s = s.TrimEnd(new char[] { ' ' });
         if (n <= 0) return "";
-        else if (n > System.Text.Encoding.Default.GetBytes(s).Length) return s;
+        else if (n >= System.Text.Encoding.Default.GetBytes(s).Length) return s;
         else {
             int len = 0;
             string tStr2 = "";
@@ -213,7 +215,7 @@ public static partial class Util
         foreach (System.Text.RegularExpressions.Match m
             in System.Text.RegularExpressions.Regex.Matches(str, "&#(?<ncr>\\d+?);"))
             str = str.Replace(m.Value, char.ConvertFromUtf32(int.Parse(m.Groups["ncr"].Value)).ToString());
-            str = HttpUtility.HtmlDecode(str);
+        str = HttpUtility.HtmlDecode(str);
         return str;
     }
     #endregion
@@ -549,6 +551,85 @@ public static partial class Util
         } else {
             return System.IO.Path.GetDirectoryName(s) + "/" + Uri.EscapeDataString(System.IO.Path.GetFileName(s));
         }
+    }
+    #endregion
+
+    #region 轉中文金額
+    /// <summary>
+    /// 轉中文金額
+    /// </summary>
+    public static string gfsTrnCurrencyNumToChineseText(string inputNum) {
+        string[] intArr = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", };
+        string[] strArr = { "零", "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖", };
+        string[] Chinese = { "", "拾", "佰", "仟", "萬", "拾萬", "佰萬", "仟萬", "億" };
+
+        //金额
+        char[] tmpArr = inputNum.ToCharArray();
+        string tmpVal = "";
+        for (int i = 0; i < tmpArr.Length; i++) {
+            tmpVal += strArr[tmpArr[i] - 48];//0的ASCII為48
+            tmpVal += Chinese[tmpArr.Length - 1 - i];//根據對應的位數插入對應的單位
+        }
+
+        tmpVal = tmpVal.Replace("零拾", "零");
+        tmpVal = tmpVal.Replace("零佰", "零");
+        tmpVal = tmpVal.Replace("零仟", "零");
+        tmpVal = tmpVal.Replace("零萬", "零");
+        tmpVal = tmpVal.Replace("零拾萬", "零");
+        tmpVal = tmpVal.Replace("零佰萬", "零");
+        tmpVal = tmpVal.Replace("零仟萬", "零");
+        tmpVal = tmpVal.Replace("零億", "零");
+
+        Regex regex = new Regex("零零*");
+        tmpVal = regex.Replace(tmpVal, "零");
+
+        tmpVal += "元整";
+
+        if (tmpVal.IndexOf("零元整") > -1 && tmpVal != "零元整") {
+            tmpVal = tmpVal.Replace("零元整", "元整");
+        }
+
+        return tmpVal;
+    }
+    #endregion
+
+    #region 數字轉大寫
+    /// <summary>
+    /// 數字轉大寫
+    /// </summary>
+    public static string NumberToCh(string inputNum) {
+        string[] intArr = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", };
+        string[] strArr = { "〇", "一", "二", "三", "四", "五", "六", "七", "八", "九", };
+        string[] Chinese = { "", "十", "百", "千", "萬", "十萬", "百萬", "千萬", "億" };
+
+        //金额
+        char[] tmpArr = inputNum.ToCharArray();
+        string tmpVal = "";
+        for (int i = 0; i < tmpArr.Length; i++) {
+            tmpVal += strArr[tmpArr[i] - 48];//0的ASCII為48
+            tmpVal += Chinese[tmpArr.Length - 1 - i];//根據對應的位數插入對應的單位
+        }
+
+        tmpVal = tmpVal.Replace("〇十", "〇");
+        tmpVal = tmpVal.Replace("〇百", "〇");
+        tmpVal = tmpVal.Replace("〇千", "〇");
+        tmpVal = tmpVal.Replace("〇萬", "〇");
+        tmpVal = tmpVal.Replace("〇十萬", "〇");
+        tmpVal = tmpVal.Replace("〇百萬", "〇");
+        tmpVal = tmpVal.Replace("〇千萬", "〇");
+        tmpVal = tmpVal.Replace("〇億", "〇");
+
+        Regex regex = new Regex("〇〇*");
+        tmpVal = regex.Replace(tmpVal, "〇");
+
+        tmpVal += "整";
+
+        if (tmpVal.IndexOf("〇整") > -1 && tmpVal != "〇整") {
+            tmpVal = tmpVal.Replace("〇整", "整");
+        }
+        tmpVal = tmpVal.Replace("整", "");
+
+        return tmpVal;
     }
     #endregion
 

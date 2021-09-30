@@ -54,7 +54,7 @@
 <input type="hidden" id="new_seq" name="new_seq">
 
 <TABLE id=tabbr style="display:" border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%">
-	<%if (prgid=="brta24"){%><!--官收確認****todo-->
+	<%if (prgid=="brta24"){%><!--官收確認-->
 	<TR id="new_seq_Y">
 		<TD class=lightbluetable align=right nowrap>作業選項：</td>
 		<td class=whitetablebg colspan=5>
@@ -65,12 +65,12 @@
 		    <input type=hidden id="hdomark" name="hdomark" value="X">
 		</TD>
 		<TD align=right  class=whitetablebg>
-			<input type=button name="getmgdmt" id="getmgdmt" class="cbutton" value="核對總收發主檔檢核資料" onclick="brta21form.btnmgdmt('')"><!--***todo brta21form.btnmgdmt('')-->
+			<input type=button name="getmgdmt" id="getmgdmt" class="cbutton" value="核對總收發主檔檢核資料" onclick="brta21form.btnmgdmt('nseq')">
 		</TD>
 	</TR>
     <TR id="new_seq_N">
 		<TD align=right  class=whitetablebg colspan=7>
-			<input type=button name="getmgdmt" id="getmgdmt" class="cbutton" value="核對總收發主檔檢核資料" onclick="brta21form.btnmgdmt('')"><!--***todo brta21form.btnmgdmt('')-->
+			<input type=button name="getmgdmt" id="getmgdmt" class="cbutton" value="核對總收發主檔檢核資料" onclick="brta21form.btnmgdmt('')">
 		</TD>
 	</TR>
 	<%}%>
@@ -234,11 +234,12 @@
         $("#new_seq").val(jData.new_seq||"");
         $("#oldseq,#grseq,#seq").val(jData.seq);
         $("#oldseq1,#grseq1,#seq1").val(jData.seq1);
+        $("#cust_area").val(jData.branch || "");
         brta21form.btnseq();//[確定]
         //作業選項
-        $("#new_seq_Y,new_seq_N").hide();
+        $("#new_seq_Y,#new_seq_N").hide();
         if ($("#new_seq").val() != "") {
-            new_seq_Y.show();
+            $("#new_seq_Y").show();
         }
     }
 
@@ -254,7 +255,7 @@
         var dmt_data = {};
         $.ajax({
             type: "get",
-            url: getRootPath() + "/ajax/json_dmt.aspx?seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val(),
+            url: getRootPath() + "/ajax/json_dmt.aspx?seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val()+"&cust_area="+$("#cust_area").val(),
             async: false,
             cache: false,
             success: function (json) {
@@ -401,16 +402,14 @@
     //相關案號
     brta21form.RefnoClick=function(){
         if($("#ref_no1").val()!=""&&$("#ref_no11").val()!=""){
-            //***todo
-            window.showModalDialog(getRootPath() +"/brtam/brta21Qdmt.aspx?seq=" +$("#ref_no1").val()+ "&seq1=" +$("#ref_no11").val() ,"","dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
+            window.showModalDialog(getRootPath() + "/brtam/brta21Qdmt.aspx?prgid=<%=prgid%>&seq=" + $("#ref_no1").val() + "&seq1=" + $("#ref_no11").val(), "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
         }
     }
 
     //母案案號
     brta21form.MSeqClick=function(){
         if($("#mseq").val()!=""&&$("#mseq1").val()!=""){
-            //***todo
-            window.showModalDialog(getRootPath() + "/brtam/brta21Qdmt.aspx?seq=" + $("#mseq").val() + "&seq1=" + $("#mseq1").val(), "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
+            window.showModalDialog(getRootPath() + "/brtam/brta21Qdmt.aspx?prgid=<%=prgid%>&seq=" + $("#mseq").val() + "&seq1=" + $("#mseq1").val(), "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
         }
     }
 
@@ -590,6 +589,7 @@
                 alert("若確定以子案收文且子案已立案，請輸入子案編號並點選確定後後再執行官收確認！");
                 $("#seq,#seq1").unlock();
                 $("#btnseq,#btnQuery").show();//[確定][查詢本所編號]
+                $("#btnseq").lock();//[確定]
                 $("#btnnewseq").hide();//[子案立案]
                 break;
             case 'X':
@@ -602,7 +602,7 @@
 
     //官收立案[子案立案]
     brta21form.btnnewseq = function () {
-        window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?submittask=A&seq=" + $("#grseq").val() + "&seq1=" + $("#grseq1").val() + "&cgrs=" + $("#cgrs").val() + "&rs_type=" + $("#rs_type").val() + "&rs_code=" + $("#rs_code").val() + "&prgid=<%=prgid%>&winact=Y", "DmtmyWindowOne", "width=1000 height=800 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?submittask=A&seq=" + $("#grseq").val() + "&seq1=" + $("#grseq1").val() + "&cgrs=" + $("#cgrs").val() + "&rs_type=" + $("#rs_type").val() + "&rs_code=" + $("#rs_code").val() + "&prgid=<%=prgid%>&winact=Y", "DmtmyWindowOneN", "width=1000 height=800 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
         $("#btnseq").unlock();
         $("#keyseq").val("N");
     }

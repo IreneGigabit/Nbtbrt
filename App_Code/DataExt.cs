@@ -689,6 +689,18 @@ public static class DataExt
         return strSet;
     }
 
+    /// <summary>  
+    /// 轉成QueryString參數
+    /// </summary>  
+    public static string ParseQueryString(this Dictionary<string, string> dic) {
+        string rtn = "";
+        foreach (var item in dic) {
+            rtn += string.Format("&{0}={1}", item.Key, item.Value);
+        }
+        if (rtn != "") rtn = rtn.Substring(1);
+
+        return rtn;
+    }
     #endregion
 }
 

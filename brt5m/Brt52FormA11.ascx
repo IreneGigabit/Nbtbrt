@@ -11,7 +11,7 @@
 <%=Sys.GetAscxPath(this.AppRelativeVirtualPath)%>
 <uc1:FA1Form runat="server" ID="FA1Form" />
 
-<INPUT TYPE="text" id=Update_dmt name=Update_dmt><!--是否要更新案件主檔-->
+<INPUT TYPE="hidden" id=Update_dmt name=Update_dmt><!--是否要更新案件主檔-->
 
 <script language="javascript" type="text/javascript">
     //依案性切換要顯示的欄位

@@ -249,7 +249,7 @@
     //[客戶總契約書查詢]
     $("#btncustcontract").click(function () {
         //***todo
-       var url = getRootPath() + "/sub/cust21.aspx?qs_dept=<%=Session["dept"]%>&prgid=cust21&from_flag=Query&close_flag=Y&noframe=Y";
+       var url = getRootPath() + "/cust/cust21.aspx?qs_dept=<%=Session["dept"]%>&prgid=cust21&from_flag=Query&close_flag=Y&noframe=Y";
 	   window.open(url,"myWindowTwoN", "width=880 height=680 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizable=yes status=no scrollbars=yes");
     });
 

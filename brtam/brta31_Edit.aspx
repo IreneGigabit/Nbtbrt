@@ -73,12 +73,13 @@
         if (submitTask == "Q") HTProgCap += "-<font color=blue>查詢</font>";
         if (submitTask == "D") HTProgCap += "-<font color=blue>刪除</font>";
 
+        if (submitTask == "Q" || submitTask == "D") {
+            Lock["QLock"] = "Lock";
+        }
+        
         if (prgid1 != "brta81") {
-            if (submitTask == "Q" || submitTask == "D") {
-                Lock["QLock"] = "Lock";
-            }
-            if (cgrs == "CR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta5m.aspx") + "?prgid=brta5m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";
-            if (cgrs == "GR") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta5m.aspx") + "?prgid=brta51m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";
+            if (cgrs == "CS") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta5m.aspx") + "?prgid=brta5m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";
+            if (cgrs == "GS") StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta5m.aspx") + "?prgid=brta51m&cgrs=" + cgrs + "\" target=\"Etop\">[列印]</a>";
         } else {
             StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brtam/brta81List.aspx") + "?prgid=brta81\" target=\"Etop\">[回官方發文回條確認清單]</a>";
         }
@@ -675,11 +676,11 @@
         }
         $("#arAdd_button,#arres_button").lock();
         
-        if($("#case_no_1").val()!=""){
+        if(jMain.step_data.case_no!=""){
             $("#btncase_no_1").hide();
             $("#case_no_1,#gs_fees_1").lock();
         }else{
-            if(CInt($("#fees")>0)){
+            if(CInt($("#fees").val())>0){
                 $("#arAdd_button,#arres_button").unlock();
             }
         }

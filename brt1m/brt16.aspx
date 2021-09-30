@@ -35,8 +35,8 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>\n";
-        StrFormBtnTop += "<a class=\"imgQry\" href=\"javascript:void(0);\" >[查詢條件]</a>\n";
+        //StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>\n";
+        //StrFormBtnTop += "<a class=\"imgQry\" href=\"javascript:void(0);\" >[查詢條件]</a>\n";
         if ((HTProgRight & 2) > 0) {
             StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"查　詢\" class=\"cbutton bsubmit\" />\n";
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
@@ -82,7 +82,7 @@
     </tr>
 </table>
 
-<form id="regPage" name="regPage" method="post">
+<form id="reg" name="reg" method="post">
     <input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
 
     <div id="id-div-slide">
@@ -144,76 +144,8 @@
 	        </td></tr>
         </table>
     </div>
-
-    <div id="divPaging" style="display:none">
-    <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
-	    <tr>
-		    <td colspan=2 align=center>
-			    <font size="2" color="#3f8eba">
-				    第<font color="red"><span id="NowPage"></span>/<span id="TotPage"></span></font>頁
-				    | 資料共<font color="red"><span id="TotRec"></span></font>筆
-				    | 跳至第<select id="GoPage" name="GoPage" style="color:#FF0000"></select>頁
-				    <span id="PageUp">| <a href="javascript:void(0)" class="pgU" v1="">上一頁</a></span>
-				    <span id="PageDown">| <a href="javascript:void(0)" class="pgD" v1="">下一頁</a></span>
-				    | 每頁筆數:<select id="PerPage" name="PerPage" style="color:#FF0000">
-					    <option value="10" selected>10</option>
-					    <option value="20">20</option>
-					    <option value="30">30</option>
-					    <option value="50">50</option>
-				    </select>
-                    <input type="hidden" name="SetOrder" id="SetOrder" />
-			    </font>
-		    </td>
-	    </tr>
-    </TABLE>
-    </div>
     <%#DebugStr%>
 </form>
-
-<div align="center" class="noData" style="display:none">
-	<font color="red">=== 目前無資料 ===</font>
-</div>
-
-<table style="display:none" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="98%" align="center" id="dataList">
-	<thead>
-        <Tr>
-            <td align="center" class="lightbluetable" style="cursor:pointer">作業</td>
-	        <td align="center" class="lightbluetable">營洽-接洽序號</td>
-	        <td align="center" class="lightbluetable">接洽日期</td>	
-	        <td align="center" class="lightbluetable">客戶名稱</td>
-	        <td align="center" class="lightbluetable">案件名稱</td>	
-	        <td align="center" class="lightbluetable">類別</td>
-	        <td align="center" class="lightbluetable">案性</td>
-	        <td align="center" class="lightbluetable">服務費</td>
-	        <td align="center" class="lightbluetable">規費</td>
-	        <td align="center" class="lightbluetable">轉帳<br>費用</td>
-	        <td align="center" class="lightbluetable">合計</td>
-        </tr>
-	</thead>
-	<tbody>
-	</tbody>
-    <script type="text/html" id="data_template"><!--清單樣板-->
-	    <tr class='{{tclass}}' id='tr_data_{{nRow}}'>
-	        <td class="whitetablebg" align="center">
-                <a href="{{rptasp}}" target="Eblank">列印</A>
-                <input type=hidden id="in_no_{{nRow}}" name="in_no_{{nRow}}" value="{{in_no}}">
-            </td>
-	        <td class="whitetablebg" align="center">
-                <a href="{{urlasp}}" target="Eblank">{{sc_name}}-{{in_no}}</A>
-            </td>
-	        <td class="whitetablebg" align="center"><a href="{{urlasp}}" target="Eblank">{{in_date}}</A></td> 
-	        <td class="whitetablebg" align="center"><a href="{{urlasp}}" target="Eblank">{{cust_name}}</A></td> 
-	        <td class="whitetablebg" align="center"><a href="{{urlasp}}" target="Eblank">{{appl_name}}</A></td>
-	        <td class="whitetablebg" align="center"><a href="{{urlasp}}" target="Eblank">{{class}}</A></td>
-	        <td class="whitetablebg" align="center"><a href="{{urlasp}}" target="Eblank">{{case_name}}</A></td>
-	        <td class="whitetablebg" align="center"><a href="{{urlasp}}" target="Eblank">{{service}}</A></td>
-	        <td class="whitetablebg" align="center"><a href="{{urlasp}}" target="Eblank">{{fees}}</A></td>
-	        <td class="whitetablebg" align="center"><a href="{{urlasp}}" target="Eblank">{{oth_money}}</A></td>
-	        <td class="whitetablebg" align="center"><a href="{{urlasp}}" target="Eblank">{{afee}}</td>
-	    </tr>
-    </script>
-</TABLE>
-<br />
 
 <div id="dialog"></div>
 
@@ -278,140 +210,17 @@
         $("#dataList>thead tr .setOdr span").remove();
         $("#SetOrder").val("");
 
-        goSearch();
+        reg.action = "<%=HTProgPrefix%>_List.aspx";
+        reg.submit();
     });
-
-    //執行查詢
-    function goSearch() {
-        window.parent.tt.rows = '100%,0%';
-        $("#divPaging,#dataList,.noData,.haveData").hide();
-        $("#dataList>tbody tr").remove();
-        nRow = 0;
-
-        $.ajax({
-            url: "<%#HTProgPrefix%>_List.aspx",
-            type: "get",
-            async: false,
-            cache: false,
-            data: $("#regPage").serialize(),
-            success: function (json) {
-                if (!isJson(json) || $("#chkTest").prop("checked")) {
-                    $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + json);
-                    $("#dialog").dialog({ title: 'Debug！', modal: true, maxHeight: 500, width: "90%" });
-                    return false;
-                }
-                var JSONdata = $.parseJSON(json);
-                //////更新分頁變數
-                var totRow = parseInt(JSONdata.totrow, 10);
-                if (totRow > 0) {
-                    $("#divPaging,#dataList,.haveData").show();
-                } else {
-                    $(".noData").show();
-                }
-
-                var nowPage = parseInt(JSONdata.nowpage, 10);
-                var totPage = parseInt(JSONdata.totpage, 10);
-                $("#NowPage").html(nowPage);
-                $("#TotPage").html(totPage);
-                $("#TotRec").html(totRow);
-                var i = totPage + 1, option = new Array(i);
-                while (--i) {
-                    option[i] = ['<option value="' + i + '">' + i + '</option>'].join("");
-                }
-                $("#GoPage").replaceWith('<select id="GoPage" name="GoPage" style="color:#FF0000">' + option.join("") + '</select>');
-                $("#GoPage").val(nowPage);
-                nowPage > 1 ? $("#PageUp").show() : $("#PageUp").hide();
-                nowPage < totPage ? $("#PageDown").show() : $("#PageDown").hide();
-                $("a.pgU").attr("v1", nowPage - 1);
-                $("a.pgD").attr("v1", nowPage + 1);
-                $("#id-div-slide").slideUp("fast");
-
-                $.each(JSONdata.pagedtable, function (i, item) {
-                    nRow++;
-                    //複製樣板
-                    var copyStr = $("#data_template").text() || "";
-                    copyStr = copyStr.replace(/##/g, nRow);
-                    var tclass = "";
-                    if (nRow % 2 == 1) tclass = "sfont9"; else tclass = "lightbluetable3";
-                    copyStr = copyStr.replace(/{{tclass}}/g, tclass);
-                    copyStr = copyStr.replace(/{{nRow}}/g, nRow);
-
-                    copyStr = copyStr.replace(/{{in_scode}}/g, item.in_scode);
-                    copyStr = copyStr.replace(/{{sc_name}}/g, item.sc_name);
-                    copyStr = copyStr.replace(/{{in_no}}/g, item.in_no);
-                    copyStr = copyStr.replace(/{{seq}}/g, item.seq);
-                    copyStr = copyStr.replace(/{{seq1}}/g, item.seq1);
-                    copyStr = copyStr.replace(/{{send_way}}/g, item.send_way);
-                    copyStr = copyStr.replace(/{{receipt_title}}/g, item.receipt_title);
-                    copyStr = copyStr.replace(/{{receipt_type}}/g, item.receipt_type);
-                    copyStr = copyStr.replace(/{{ar_mark}}/g, item.ar_mark);
-                    copyStr = copyStr.replace(/{{discount}}/g, item.discount);
-                    copyStr = copyStr.replace(/{{discount_chk}}/g, item.discount_chk);
-                    copyStr = copyStr.replace(/{{urlasp}}/g, item.urlasp);
-                    copyStr = copyStr.replace(/{{rptasp}}/g, item.rptasp);
-                    copyStr = copyStr.replace(/{{cust_name}}/g, item.cust_name.Left(5));
-                    copyStr = copyStr.replace(/{{fseq}}/g, item.fseq);
-                    copyStr = copyStr.replace(/{{appl_name}}/g, item.appl_name.Left(20));
-                    copyStr = copyStr.replace(/{{class}}/g, item.class);
-                    copyStr = copyStr.replace(/{{case_name}}/g, item.case_name);
-                    copyStr = copyStr.replace(/{{service}}/g, item.service);
-                    copyStr = copyStr.replace(/{{fees}}/g, item.fees);
-                    copyStr = copyStr.replace(/{{oth_money}}/g, item.oth_money);
-                    copyStr = copyStr.replace(/{{afee}}/g, item.afee);
-                    copyStr = copyStr.replace(/{{case_no}}/g, item.case_no);
-                    copyStr = copyStr.replace(/{{cust_area}}/g, item.cust_area);
-                    copyStr = copyStr.replace(/{{cust_seq}}/g, item.cust_seq);
-                    copyStr = copyStr.replace(/{{stat_code}}/g, item.stat_code);
-                    copyStr = copyStr.replace(/{{arcase}}/g, item.arcase);
-                    copyStr = copyStr.replace(/{{in_date}}/g, dateReviver(item.in_date, "yyyy/M/d"));
-
-                    $("#dataList>tbody").append(copyStr);
-                });
-            },
-            beforeSend: function (jqXHR, settings) {
-                jqXHR.url = settings.url;
-            },
-            error: function (xhr) {
-                $("#dialog").html("<a href='" + this.url + "' target='_new'>資料擷取剖析錯誤！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '資料擷取剖析錯誤！', modal: true, maxHeight: 500, width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-            }
-        });
-    };
-    //////////////////////
 
     //[重填]
     $("#btnRest").click(function (e) {
-        regPage.reset();
+        reg.reset();
         this_init();
     });
 
     $("#Sfx_in_date,#Efx_in_date").blur(function (e) {
         ChkDate(this);
     });
-
-    //[刪除]
-    function actDel(row) {
-        var pin_scode=$("#inscode_"+row).val();
-        var pin_no=$("#inno_"+row).val();
-        var pcase_no = $("#case_no_" + row).val();
-        var pcase_stat = $("#stat_code_" + row).val();
-        var pappl_name = $("#appl_name_" + row).val();
-        var pcust_name = "";//$("#cust_name_" + row).val();
-        var parcase = $("#arcase_"+row).val();
-        var pseq=$("#seq_"+row).val();
-        var pseq1=$("#seq1_"+row).val();
-        var pcust_areq=$("#cust_area_"+row).val();
-        var pcust_seq=$("#cust_seq_"+row).val();
-        var chktest=($("#chkTest:checked").val()||"");
-
-        var msg = "接洽序號:" + pin_scode + "-" + pin_no +"\n\n是否確定刪除?";
-        if (confirm(msg)){
-            var url = getRootPath() + "/brt1m/brt16_save.aspx?submitTask=D"+
-                    "&in_scode=" + pin_scode + "&in_no=" + pin_no + "&case_no=" + pcase_no +"&case_stat=" + pcase_stat +
-                    "&cappl_name=" + pappl_name + "&ap_cname1=" + pcust_name + "&arcase=" + parcase + "&seq=" + pseq +
-                    "&seq1=" + pseq1 + "&cust_area=" + pcust_areq + "&cust_seq=" + pcust_seq+"&chkTest="+chktest;
-            ajaxScriptByGet("刪除接洽記錄", url);
-        }
-    }
 </script>

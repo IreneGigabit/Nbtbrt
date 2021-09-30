@@ -37,23 +37,23 @@
     DataTable dtFees = new DataTable();//規費
 
     //應收帳款合計
-    protected int sum_ar_service=0;
-	protected int sum_ar_fees=0;
-	protected int sum_ar_tax_out=0;
-	protected int sum_cservice=0;
-	protected int sum_cfees=0;
-	protected int sum_ctax_out=0;
-	protected int sum_tot_service=0;
-	protected int sum_tot_fees=0;
-	protected int sum_tot_tax_out=0 ;
-	protected int sum_dfees=0;	//扣收入的規費
+    protected decimal sum_ar_service = 0;
+    protected decimal sum_ar_fees = 0;
+    protected decimal sum_ar_tax_out = 0;
+    protected decimal sum_cservice = 0;
+    protected decimal sum_cfees = 0;
+    protected decimal sum_ctax_out = 0;
+    protected decimal sum_tot_service = 0;
+    protected decimal sum_tot_fees = 0;
+    protected decimal sum_tot_tax_out = 0;
+    protected decimal sum_dfees = 0;	//扣收入的規費
     protected decimal sum_rservice = 0;	//總計沖轉服務費
     protected decimal sum_rfees = 0;
     protected decimal sum_rtax_out = 0;
     //收入合計
-    protected int sum_pin_service = 0;//服務費
-    protected int sum_pin_fees = 0;//規費
-    protected int sum_pin_tax_out = 0;//營業稅
+    protected decimal sum_pin_service = 0;//服務費
+    protected decimal sum_pin_fees = 0;//規費
+    protected decimal sum_pin_tax_out = 0;//營業稅
     protected decimal sum_plus_add = 0;//收入加項
     protected decimal sum_plus_del = 0;//收入減項
     //規費合計
@@ -86,10 +86,11 @@
         connacc = new DBHelper(Conn.account).Debug(Request["chkTest"] == "TEST");
 
         country = ReqVal.TryGet("country").ToUpper();
+        if (country == "") country = "T";
         seq = ReqVal.TryGet("seq");
         seq1 = ReqVal.TryGet("seq1");
-        
-        if (country=="T"){
+
+        if (country == "T") {
 	        HTProgCap="<font color=blue>國內</font>案<font color=red>商標</font>個案明細表";
         }else{
             HTProgCap = "<font color=blue>出口</font>案<font color=red>商標</font>個案明細表";
@@ -158,20 +159,25 @@
         artRepeater.DataSource = dtArt;
         artRepeater.DataBind();
         //合計
-        sum_ar_service = Convert.ToInt32(dtArt.Compute("Sum(service)", ""));//服務費
-        sum_ar_fees = Convert.ToInt32(dtArt.Compute("Sum(fees)", ""));//規費
-        sum_ar_tax_out = Convert.ToInt32(dtArt.Compute("Sum(tax_out)", ""));//營業稅
-        sum_cservice = Convert.ToInt32(dtArt.Compute("Sum(cservice)", ""));//更正服務費
-        sum_cfees = Convert.ToInt32(dtArt.Compute("Sum(cfees)", ""));//更正規費
-        sum_ctax_out = Convert.ToInt32(dtArt.Compute("Sum(ctax_out)", ""));//更正營業稅
-        sum_tot_service = Convert.ToInt32(dtArt.Compute("Sum(tot_service)", ""));//總計服務費
-        sum_tot_fees = Convert.ToInt32(dtArt.Compute("Sum(tot_fees)", ""));//總計規費
-        sum_tot_tax_out = Convert.ToInt32(dtArt.Compute("Sum(tot_tax_out)", ""));//總計營業稅
-        sum_dfees = dtArt.AsEnumerable().Sum(x => x["fees"] == DBNull.Value ? 0 : (int)x["fees"]);//扣收入的規費
-        sum_rservice = Convert.ToDecimal(dtArt.Compute("Sum(rservice)", ""));//沖轉已收服務費
-        sum_rfees = Convert.ToDecimal(dtArt.Compute("Sum(rfees)", ""));//沖轉已收規費
-        sum_rtax_out = Convert.ToDecimal(dtArt.Compute("Sum(rtax_out)", ""));//沖轉已收營業稅
-
+        if (dtArt.Rows.Count > 0) {
+            //dtArt.ShowTable();
+            //Response.End();
+            sum_ar_service = Convert.ToDecimal(dtArt.Compute("Sum(service)", ""));//服務費
+            sum_ar_fees = Convert.ToDecimal(dtArt.Compute("Sum(fees)", ""));//規費
+            sum_ar_tax_out = Convert.ToDecimal(dtArt.Compute("Sum(tax_out)", ""));//營業稅
+            sum_cservice = Convert.ToDecimal(dtArt.Compute("Sum(cservice)", ""));//更正服務費
+            sum_cfees = Convert.ToDecimal(dtArt.Compute("Sum(cfees)", ""));//更正規費
+            sum_ctax_out = Convert.ToDecimal(dtArt.Compute("Sum(ctax_out)", ""));//更正營業稅
+            sum_tot_service = Convert.ToDecimal(dtArt.Compute("Sum(tot_service)", ""));//總計服務費
+            sum_tot_fees = Convert.ToDecimal(dtArt.Compute("Sum(tot_fees)", ""));//總計規費
+            sum_tot_tax_out = Convert.ToDecimal(dtArt.Compute("Sum(tot_tax_out)", ""));//總計營業稅
+            //sum_dfees = dtArt.AsEnumerable().Sum(x => x["fees"] == DBNull.Value ? 0 : (int)x["fees"]);//扣收入的規費
+            sum_dfees = Convert.ToDecimal(dtArt.Compute("Sum(fees)", ""));//扣收入的規費
+            sum_rservice = Convert.ToDecimal(dtArt.Compute("Sum(rservice)", ""));//沖轉已收服務費
+            sum_rfees = Convert.ToDecimal(dtArt.Compute("Sum(rfees)", ""));//沖轉已收規費
+            sum_rtax_out = Convert.ToDecimal(dtArt.Compute("Sum(rtax_out)", ""));//沖轉已收營業稅
+        }
+        
         //抓取收入資料1-acct_pin
         int plusRow = 0;
         SQL = "select '**1**'dt_type,arcase,ar_no,in_date as ardate,service,fees,tax_out,acc_date,casegrp,isnull(in_curr,0)in_curr,db_no,''tclass";
@@ -217,12 +223,17 @@
             inRepeater.DataSource = dtIn;
             inRepeater.DataBind();
             //合計
-            sum_pin_service = Convert.ToInt32(dtIn.Compute("Sum(service)", ""));//服務費
-            sum_pin_fees = Convert.ToInt32(dtIn.Compute("Sum(fees)", ""));//規費
-            sum_pin_tax_out = Convert.ToInt32(dtIn.Compute("Sum(tax_out)", ""));//營業稅
-            
-            sum_plus_add = Convert.ToInt32(dtIn.Compute("Sum(plus_add)", ""));//收入加項
-            sum_plus_del = Convert.ToInt32(dtIn.Compute("Sum(plus_del)", ""));//收入減項
+            if (dtIn.Rows.Count > 0) {
+                sum_pin_service = dtIn.AsEnumerable().Sum(x => x["service"] == DBNull.Value ? 0 : (decimal)x["service"]);//服務費
+                sum_pin_fees = dtIn.AsEnumerable().Sum(x => x["fees"] == DBNull.Value ? 0 : (decimal)x["fees"]);//規費
+                sum_pin_tax_out = dtIn.AsEnumerable().Sum(x => x["tax_out"] == DBNull.Value ? 0 : (decimal)x["tax_out"]);//營業稅
+                //sum_pin_service = Convert.ToInt32(dtIn.Compute("Sum(service)", ""));//服務費
+                //sum_pin_fees = Convert.ToInt32(dtIn.Compute("Sum(fees)", ""));//規費
+                //sum_pin_tax_out = Convert.ToInt32(dtIn.Compute("Sum(tax_out)", ""));//營業稅
+
+                sum_plus_add = dtIn.AsEnumerable().Sum(x => x["plus_add"] == DBNull.Value ? 0 : (decimal)x["plus_add"]);//收入加項
+                sum_plus_del = dtIn.AsEnumerable().Sum(x => x["plus_del"] == DBNull.Value ? 0 : (decimal)x["plus_del"]);//收入加項
+            }
         }
 
         //抓取規費資料1-oacct_plus
@@ -260,9 +271,9 @@
             feesRepeater.DataSource = dtFees;
             feesRepeater.DataBind();
             //合計
-            sum_fees = Convert.ToInt32(dtFees.Compute("Sum(fees)", ""));//應付規費(D)
-            sum_fees_add = Convert.ToInt32(dtFees.Compute("Sum(fees_add)", ""));//應付規費(+)
-            sum_fees_del = Convert.ToInt32(dtFees.Compute("Sum(fees_del)", ""));//應付規費(-)
+            sum_fees = Convert.ToDecimal(dtFees.Compute("Sum(fees)", ""));//應付規費(D)
+            sum_fees_add = dtFees.AsEnumerable().Sum(x => x["fees_add"] == DBNull.Value ? 0 : (decimal)x["fees_add"]);//應付規費(+)
+            sum_fees_del = dtFees.AsEnumerable().Sum(x => x["fees_del"] == DBNull.Value ? 0 : (decimal)x["fees_del"]);//應付規費(-)
         }
 
         //計算各項應收金額及規費結餘
@@ -444,9 +455,9 @@
 		    <td align="center" rowspan=2><%#Eval("ar_no")%></td>
 		    <td align="center" rowspan=2><%#Eval("tran_no")%></td> 
 		    <td align="center" rowspan=2><%#Eval("ardate","{0:d}")%></td>
-		    <td align="right"><%#Eval("fees","{0:0.00}")%></td>
-		    <td align="right"><%#Eval("fees_add","{0:N2}")%></td>
-		    <td align="right"><%#Eval("fees_del","{0:N2}")%></td>
+		    <td align="right"><%#Eval("fees","{0:#.00}")%></td>
+		    <td align="right"><%#Eval("fees_add","{0:#.00}")%></td>
+		    <td align="right"><%#Eval("fees_del","{0:#.00}")%></td>
 		    <td align="center"><%#Eval("plus_no")%></td>
 		    <td align="center"><%#Eval("excase")%>&nbsp;<%#Eval("excase_name")%></td> 
 	    </tr>
@@ -459,9 +470,9 @@
     </asp:Repeater>
     <tr>	
 		<td align="right" colspan=5 style="BACKGROUND-COLOR: #ffff99">*小計</td>
-		<td align="right" style="BACKGROUND-COLOR: #ffff99"><%=sum_fees.ToString("N2")%></td>
-		<td align="right" style="BACKGROUND-COLOR: #ffff99"><%=sum_fees_add.ToString("N2")%></td>
-		<td align="right" style="BACKGROUND-COLOR: #ffff99"><%=sum_fees_del.ToString("N2")%></td> 
+		<td align="right" style="BACKGROUND-COLOR: #ffff99"><%=sum_fees.ToString("#.00")%></td>
+		<td align="right" style="BACKGROUND-COLOR: #ffff99"><%=sum_fees_add.ToString("#.00")%></td>
+		<td align="right" style="BACKGROUND-COLOR: #ffff99"><%=sum_fees_del.ToString("#.00")%></td> 
 		<td align="right" style="BACKGROUND-COLOR: #ffff99"></td>
 		<td align="right" style="BACKGROUND-COLOR: #ffff99"></td>
     </tr>
@@ -476,11 +487,11 @@
 		    <td align="center">規費結餘</td>
         </tr>
         <tr>
-		    <td align="center" class="whitetablebg"><%=ar_service%></td>
-		    <td align="center" class="whitetablebg"><%=ar_fees%></td>
-		    <td align="center" class="whitetablebg"><%=ar_tax_out%></td>
-		    <td align="center" class="whitetablebg"><%=ar_tot_money%></td>
-		    <td align="center" class="whitetablebg" style="BACKGROUND-COLOR: lightgreen"><%=fee_money%></td>
+		    <td align="center" class="whitetablebg"><%=ar_service.ToString("0")%></td>
+		    <td align="center" class="whitetablebg"><%=ar_fees.ToString("0")%></td>
+		    <td align="center" class="whitetablebg"><%=ar_tax_out.ToString("0")%></td>
+		    <td align="center" class="whitetablebg"><%=ar_tot_money.ToString("0")%></td>
+		    <td align="center" class="whitetablebg" style="BACKGROUND-COLOR: lightgreen"><%=fee_money.ToString("0")%></td>
         </tr>
     </table>
 
@@ -499,7 +510,7 @@
     //查代理人請款記錄
     function dnlist_from() {
         //***todo
-        var url = getRootPath() + "/btbrt/brtam/extform/dnlist_qry.aspx?prgid=<%=prgid%>&seq=<%=seq%>&seq1=<%=seq1%>&fromprg=accseq";
+        var url = getRootPath() + "/brtam/extform/dnlist_qry.aspx?prgid=<%=prgid%>&seq=<%=seq%>&seq1=<%=seq1%>&fromprg=accseq";
         window.open(url, "mydnlistwinN", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
     }
 </script>

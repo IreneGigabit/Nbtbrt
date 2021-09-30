@@ -40,7 +40,7 @@
         if (conn != null) conn.Dispose();
         if (cnn != null) cnn.Dispose();
     }
-    
+
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
@@ -49,7 +49,7 @@
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
 
-        ReqVal = Util.GetRequestParam(Context,Request["chkTest"] == "TEST");
+        ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
         submitTask = Request["submitTask"] ?? "";
 
         TokenN myToken = new TokenN(HTProgCode);
@@ -95,13 +95,13 @@
 
         //簽核用20201229修改邏輯,防自己交辦自己簽
         if ((HTProgRight & 256) != 0) nToText = "";//特殊簽核指定薪號
-        Sys.getScodeGrpid(Sys.GetSession("SeBranch"), Request["tscode"],ref se_Grpid,ref se_Grplevel);
+        Sys.getScodeGrpid(Sys.GetSession("SeBranch"), Request["tscode"], ref se_Grpid, ref se_Grplevel);
         mSC_code = Sys.getSignMaster(Sys.GetSession("SeBranch"), Request["tscode"]);
-        string mSC_code1 = Sys.getSignMaster(Sys.GetSession("SeBranch"), Request["tscode"],false);
+        string mSC_code1 = Sys.getSignMaster(Sys.GetSession("SeBranch"), Request["tscode"], false);
         if (Request["tscode"] == mSC_code1) {//營洽=直屬主管
             nToSelect = "Lock";
         }
-        
+
         SQL = "select sc_name from scode where scode='" + mSC_code + "'";
         object objResult = cnn.ExecuteScalar(SQL);
         mSC_name = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
@@ -148,8 +148,7 @@
         ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder"));
         if (ReqVal.TryGet("qryOrder") != "") {
             SQL += " order by " + ReqVal.TryGet("qryOrder");
-        }
-        else {
+        } else {
             SQL += " order by a.in_no";
         }
         conn.DataTable(SQL, dt);
@@ -163,7 +162,7 @@
         //分頁完再處理其他資料才不會虛耗資源
         for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
             DataRow dr = page.pagedTable.Rows[i];
-            
+
             SQL = "Select remark from cust_code where cust_code='__' and code_type='" + dr["arcase_type"] + "'";
             object objResult = conn.ExecuteScalar(SQL);
             string link_remark = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
@@ -197,10 +196,10 @@
                     P_Service += dr0.SafeRead("service", 0);
                 }
             }
-            dr["T_Service"]=T_Service;
-            dr["T_Fees"]=T_Fees;
-            dr["P_Service"]=P_Service;
-            dr["P_Fees"]=P_Fees;
+            dr["T_Service"] = T_Service;
+            dr["T_Fees"] = T_Fees;
+            dr["P_Service"] = P_Service;
+            dr["P_Fees"] = P_Fees;
 
             dr["cust_name"] = dr.SafeRead("cust_name", "").ToUnicode().Left(5);
             dr["fseq"] = Sys.formatSeq1(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
@@ -283,7 +282,7 @@
         dataRepeater.DataSource = page.pagedTable;
         dataRepeater.DataBind();
     }
-    
+
     protected string GetCaseNum(RepeaterItem Container) {
         string stat_code = DataBinder.Eval(Container.DataItem, "stat_code").ToString();
         if (stat_code == "NX")
@@ -305,7 +304,7 @@
         int Service = Convert.ToInt32(DataBinder.Eval(Container.DataItem, "Service"));
         int fees = Convert.ToInt32(DataBinder.Eval(Container.DataItem, "fees"));
         int oth_money = Convert.ToInt32(DataBinder.Eval(Container.DataItem, "oth_money"));
-            return (Service+fees+oth_money).ToString();
+        return (Service + fees + oth_money).ToString();
     }
 
     protected string GetDiscount(RepeaterItem Container) {
@@ -326,15 +325,16 @@
 
     protected string GetNXLink(RepeaterItem Container) {
         string stat_code = DataBinder.Eval(Container.DataItem, "stat_code").ToString();
-        if (stat_code == "NX")//**todo
+        if (stat_code == "NX") {
             return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13_ListA.aspx") +
                     "?prgid=" + prgid +
                     "&in_scode=" + DataBinder.Eval(Container.DataItem, "in_scode").ToString() +
-                    "&in_no="+DataBinder.Eval(Container.DataItem, "in_no").ToString()+
+                    "&in_no=" + DataBinder.Eval(Container.DataItem, "in_no").ToString() +
                     "&ar_form=" + DataBinder.Eval(Container.DataItem, "ar_form").ToString() +
-                    "&homelist="+Request["homelist"]+
+                    "&homelist=" + Request["homelist"] +
                     "&qs_dept=T' target='Eblank'><font color=red>說明</font></a>";
-          return "";
+        }
+        return "";
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -654,7 +654,7 @@
                 return false;
             }
         }
-        //***todo
+        
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
         var formData = new FormData($('#reg')[0]);
         ajaxByForm("<%=HTProgPrefix%>_Update.aspx?qs_proid=<%#prgid%>",formData)

@@ -49,7 +49,7 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx>[回上一頁]</a>";
+        StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx?prgid=" + prgid + ">[回查詢]</a>";
     }
 
     private void QueryData() {
@@ -166,19 +166,18 @@
     //    
     //    return urlasp;
     //}
-    
+
     protected string GetPrintLink(DataRow row) {
         string prtUrl = "";//列印的url
         //有電子申請書優先
-        if(row.SafeRead("classp", "")!=""){
-            prtUrl=Page.ResolveUrl("~/Report/Print_" + row["classp"] + ".aspx?in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&send_sel=" + row["send_sel"]);
-        }else if(row.SafeRead("reportp", "")!=""){//紙本申請書
-            //***todo
+        if (row.SafeRead("classp", "") != "") {
+            prtUrl = Page.ResolveUrl("~/Report/Print_" + row["classp"] + ".aspx?in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&send_sel=" + row["send_sel"]);
+        } else if (row.SafeRead("reportp", "") != "") {//紙本申請書
             /*select reportp,classp,* from code_br 
-            where reportp in('FD2','FC11','FC21','FL5','FT1','FP1','FP2','B5C1') --,'FOB'
+            where reportp in('FC11','FC21','FOB','FD2','B5C1','FT1','FP1','FP2','FL5') --
             order by rs_class
              */
-            if (row.SafeRead("prt_code", "")!="ZZ"&&row.SafeRead("prt_code", "")!="D9Z"&&row.SafeRead("ar_form", "")!="D3"){
+            if (row.SafeRead("prt_code", "") != "ZZ" && row.SafeRead("prt_code", "") != "D9Z" && row.SafeRead("ar_form", "") != "D3") {
                 prtUrl = Page.ResolveUrl("~/Report-word/Print_" + row["reportp"] + ".aspx?in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"]);
             }
         }
@@ -266,7 +265,7 @@
 		            <td class="whitetablebg" align="center">[<a href="<%#Eval("prturl")%>" target="Eblank">列印</a>]</td>
 		            <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("fseq")%></A></td>
 		            <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("in_scode")%>-<%#Eval("in_no")%></A></td>
-		            <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("in_date", "{0: yyyy/MM/dd}")%></A></td>
+		            <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("in_date", "{0:d}")%></A></td>
 		            <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("fcust_name")%></A></td>
 		            <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("fappl_name")%></A></td>
 		            <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("class")%></A></td>
@@ -275,7 +274,6 @@
 		            <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("fees")%></A></td>
 		            <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("oth_money")%></A></td>
 		            <td class="whitetablebg" align="center"><%#Convert.ToInt32(Eval("fees"))+Convert.ToInt32(Eval("service"))+Convert.ToInt32(Eval("oth_money"))%></TD>
-
 				</tr>
 			</ItemTemplate>
 <FooterTemplate>

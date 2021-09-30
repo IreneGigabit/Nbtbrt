@@ -102,7 +102,7 @@
 <input type="hidden" id="d_agt_no1" name="d_agt_no1"><!--預設出名代理人-->
 <input type="hidden" id="tfzd_agt_no" name="tfzd_agt_no"><!--代理人-->
 <INPUT TYPE="hidden" id=tfzd_remark3 name=tfzd_remark3><!--dmt_temp.remark3-->
-<INPUT TYPE="text" id=Update_dmt name=Update_dmt><!--是否要更新案件主檔-->
+<INPUT TYPE="hidden" id=Update_dmt name=Update_dmt><!--是否要更新案件主檔-->
 
 <script language="javascript" type="text/javascript">
     //**交辦畫面之代理人資料丟到案件主檔
@@ -189,6 +189,27 @@
         tar.value = strRemark1;
     }
     
+    //附件*****for FD1,FD2
+    br_form.AttachStr1 = function (selector, pfld, tar) {
+        var strRemark1 = "";
+        $(selector + " input:checkbox").each(function (index) {
+            var $this = $(this);
+            if ($this.prop("checked")) {
+                strRemark1 += $this.val();
+                //查有無份數欄位
+                if ($("#" + pfld + $this.val() + "C:text").length > 0) {
+                    strRemark1 += ";" + $("#" + pfld + $this.val() + "C").val();
+                }
+                else if ($("#" + pfld + $this.val() + "t").length > 0) {
+                    strRemark1 += ";" + $("#" + pfld + $this.val() + "t").val();
+                }
+                strRemark1 += "|";
+            }
+        });
+        tar.value = strRemark1;
+    }
+
+
     //*****for一案多件
     //新/舊案畫面控制
     br_form.case_stat1_control = function (stat, fld) {
@@ -381,8 +402,7 @@
             $("#dseq" + nRow).focus();
             return false;
         } else {
-            //***todo
-            var url = getRootPath() + "/brt5m/brt15ShowFP.asp?seq=" + value1 + "&seq1=" + value2 + "&submittask=Q";
+            var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + value1 + "&seq1=" + value2 + "&submittask=Q";
             window.showModalDialog(url, "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
         }
     }

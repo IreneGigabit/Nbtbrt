@@ -12,6 +12,8 @@
 <script runat="server">
     protected string SQL = "";
 
+    protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
+
     protected int right = 0;
     protected string prgid = "";
     protected string submitTask = "";
@@ -20,7 +22,9 @@
     protected string maxseq = "";
     protected string maxseq1 = "";
     protected string type = "";
-    protected string branch = "";
+    protected string branch = "";//原單位
+    protected string nbranch = "";//新單位
+    protected string delflag = "";
     
     Sys sfile = new Sys();
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
@@ -31,6 +35,8 @@
     }
 
     protected void Page_Load(object sender, EventArgs e) {
+        ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
+        
         sfile.getFileServer(Sys.GetSession("SeBranch"), "brt");//檔案上傳相關設定
 
         prgid = (Request["prgid"] ?? "").Trim().ToLower();//brt51客收確認,brta24官收確認,brta78轉案確認
@@ -40,39 +46,43 @@
         seq1 = (Request["seq1"] ?? "").Trim();
         type = (Request["type"] ?? "").Trim();
         branch = Sys.GetSession("sebranch");
-        if (type == "brtran") {
+        nbranch = Sys.GetSession("sebranch");
+        if (prgid == "brta78" || type == "brtran") {
             branch = (Request["branch"] ?? "").Trim();
         }
-            
+
         //2011/3/10因轉案增加連結轉出區所connection
-        if (prgid == "brta78") {
-            conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-            connbr = new DBHelper(Conn.brp(Request["branch"])).Debug(Request["chkTest"] == "TEST");
+        conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
+        connbr = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
+        if (prgid == "brta78" || prgid == "brt3h") {
+            connbr = new DBHelper(Conn.brp(branch)).Debug(Request["chkTest"] == "TEST");
         } else {
-            conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-            connbr = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
             if (type == "brtran") {
-                conn = new DBHelper(Conn.brp(Request["branch"])).Debug(Request["chkTest"] == "TEST");
-                connbr = new DBHelper(Conn.brp(Request["branch"])).Debug(Request["chkTest"] == "TEST");
+                connbr = new DBHelper(Conn.brp(branch)).Debug(Request["chkTest"] == "TEST");
             }
         }
-
         object objResult = null;
         if (submitTask == "A") {
             if (prgid == "brta24") {
-                SQL = "select isnull(max(seq1),0)+1 new_seq1 from ext where seq='" + seq + "' and seq1 not like '%[^0-9]%'";
+                SQL = "select isnull(max(seq1),'_') new_seq1 from ext where seq='" + seq + "' and seq1 not like '%[^0-9]%'";
                 objResult = conn.ExecuteScalar(SQL);
                 maxseq1 = (objResult == DBNull.Value || objResult == null) ? "_" : objResult.ToString();
             }
             if (prgid == "brta78") {
                 if (seq1 == "Z") {
                     SQL = "select isnull(sql,0)+1 from cust_code where code_type='Z' and cust_code='" + Session["sebranch"] + "TZ'";
-                }else{
+                } else {
                     SQL = "select isnull(sql,0)+1 from cust_code where code_type='Z' and cust_code='" + Session["sebranch"] + "T_'";
                 }
                 objResult = conn.ExecuteScalar(SQL);
                 maxseq = (objResult == DBNull.Value || objResult == null) ? "1" : objResult.ToString();
             }
+        }
+
+        if (submitTask == "U") {
+            //進度檔中進度超過一筆者不可刪除案件主檔
+            SQL = "select count(*) as dmt_count from step_dmt where seq = " + seq + " and seq1 = '" + seq1 + "'";
+            delflag = Convert.ToInt32(conn.getZero(SQL)) > 1 ? "N" : "Y";
         }
         
         var settings = new JsonSerializerSettings()
@@ -81,17 +91,21 @@
             ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
             Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
         };
-        
+
         Response.Write("{");
-        Response.Write("\"dmt\":" + JsonConvert.SerializeObject(GetDmt(), settings).ToUnicode() + "\n");
+        Response.Write("\"request\":" + JsonConvert.SerializeObject(ReqVal, settings).ToUnicode() + "\n");
+        Response.Write(",\"dmt\":" + JsonConvert.SerializeObject(GetDmt(), settings).ToUnicode() + "\n");
         Response.Write(",\"ndmt\":" + JsonConvert.SerializeObject(GetNdmt(), settings).ToUnicode() + "\n");//交辦費用.案性
         Response.Write(",\"dmt_good\":" + JsonConvert.SerializeObject(GetDmtGood(), settings).ToUnicode() + "\n");
         Response.Write(",\"dmt_show\":" + JsonConvert.SerializeObject(GetDmtShow(), settings).ToUnicode() + "\n");
         Response.Write(",\"dmt_ap\":" + JsonConvert.SerializeObject(GetDmtAp(), settings).ToUnicode() + "\n");
-        Response.Write(",\"branch\":" + JsonConvert.SerializeObject(branch, settings).ToUnicode() + "\n");
+        Response.Write(",\"branch\":" + JsonConvert.SerializeObject(nbranch, settings).ToUnicode() + "\n");
         Response.Write(",\"dept\":" + JsonConvert.SerializeObject(Sys.GetSession("dept").ToUpper(), settings).ToUnicode() + "\n");
+        Response.Write(",\"seq\":" + JsonConvert.SerializeObject(seq, settings).ToUnicode() + "\n");
+        Response.Write(",\"seq1\":" + JsonConvert.SerializeObject(seq1, settings).ToUnicode() + "\n");
         Response.Write(",\"maxseq\":" + JsonConvert.SerializeObject(maxseq, settings).ToUnicode() + "\n");
         Response.Write(",\"maxseq1\":" + JsonConvert.SerializeObject(maxseq1, settings).ToUnicode() + "\n");
+        Response.Write(",\"delflag\":" + JsonConvert.SerializeObject(delflag, settings).ToUnicode() + "\n");
         Response.Write("}");
 
         //Response.Write(JsonConvert.SerializeObject(dt, settings).ToUnicode());
@@ -115,6 +129,36 @@
                 dt.Rows[0]["arcasenm"] = getArcase(dt.Rows[0].SafeRead("arcase", ""), dt.Rows[0].SafeRead("arcase_type", ""));
                 //dt.Rows[0]["now_arcasenm"] = getArcase(dt.Rows[0].SafeRead("now_arcase", ""), dt.Rows[0].SafeRead("now_arcase_type", ""));
             }
+
+            //轉案確認(轉入)
+            if (prgid == "brta78") {
+                //案性預設"轉案"
+                //dt.Rows[0]["now_arcase_type"] = "";
+                dt.Rows[0]["now_arcase_class"] = "X2";
+                dt.Rows[0]["now_arcase"] = "XZ2";
+                dt.Rows[0]["now_stat"] = "XZ2";
+                //conn.dt.Rows[0]["arcase_type"] = "";
+                //dt.Rows[0]["arcase"] = "";
+                dt.Rows[0]["arcasenm"] = getArcase(dt.Rows[0].SafeRead("arcase", ""), dt.Rows[0].SafeRead("arcase_type", ""));
+                //dt.Rows[0]["now_arcasenm"] = getArcase(dt.Rows[0].SafeRead("now_arcase", ""), dt.Rows[0].SafeRead("now_arcase_type", ""));
+
+                //帶新單位的客戶檔名稱
+                //dt.Rows[0]["cust_area"] = branch;
+                dt.Rows[0]["cust_seq"] = ReqVal.TryGet("cust_seq");
+                SQL = "select b.ap_cname1,b.ap_cname2,a.con_term ";
+                SQL += "from custz a inner join apcust b on a.cust_seq=b.cust_seq and a.cust_area = b.cust_area ";
+                SQL += "where a.cust_area='" + nbranch + "' and a.cust_seq='" + dt.Rows[0]["cust_seq"] + "' ";
+                using (SqlDataReader sdr = conn.ExecuteReader(SQL)) {
+                    if (sdr.Read()) {
+                        dt.Rows[0]["cust_name"] = sdr.SafeRead("ap_cname1", "") + sdr.SafeRead("ap_cname2", "");
+                        if (sdr.SafeRead("con_term", "").Trim() != "") dt.Rows[0]["con_termnm"] = "是";
+                    } else {
+                        dt.Rows[0]["cust_name"] = "";
+                        dt.Rows[0]["con_termnm"] = "";
+                    }
+                }
+            }
+            
             //dt.Rows[0]["now_statnm"] = getStatus(dt.Rows[0].SafeRead("now_stat", ""));
 
             //SQL = "select b.ap_cname1,b.ap_cname2,a.con_term ";
@@ -128,11 +172,11 @@
             //}
             //dt.Rows[0]["end_codenm"] = getCodeName("ENDCODE", dt.Rows[0].SafeRead("end_code", ""));
             //brt51客收確認，移轉案傳入結案原因012_已另案移轉
-            if(prgid=="brt51"&&Request["end_type"]!=""){
-                dt.Rows[0]["end_type"] = (Request["end_type"]??"").ToString();
+            if (prgid == "brt51" && Request["end_type"] != "") {
+                dt.Rows[0]["end_type"] = (Request["end_type"] ?? "").ToString();
             }
         }
-        
+
         return dt;
     }
     #endregion
@@ -143,7 +187,7 @@
         SQL = "SELECT * FROM ndmt ";
         SQL += " WHERE seq='" + seq + "' and seq1='" + seq1 + "'";
         connbr.DataTable(SQL, dt);
-        
+
         if (dt.Rows.Count > 0) {
             dt.Rows[0]["draw_file"] = Sys.Path2Nbtbrt(dt.Rows[0].SafeRead("draw_file", ""));
 
@@ -152,7 +196,7 @@
                 dt.Rows[0]["in_scode"] = "";
             }
         }
-        
+
         return dt;
     }
     #endregion
@@ -166,7 +210,7 @@
         for (int i = 0; i < dt.Rows.Count; i++) {
             dt.Rows[i]["class"] = dt.Rows[i].SafeRead("class", "").PadLeft(2, '0');
         }
-        
+
         return dt;
     }
     #endregion
@@ -198,7 +242,7 @@
     #endregion
 
     #region getArcase 取得案性說明
-    private string getArcase(string pRsCode,string pRsType) {
+    private string getArcase(string pRsCode, string pRsType) {
         SQL = "select rs_detail from code_br ";
         SQL += "where cr = 'Y' ";
         SQL += " and dept = '" + Sys.GetSession("dept") + "' ";
@@ -220,7 +264,7 @@
     #endregion
 
     #region getCodeName 取得代碼名稱
-    private string getCodeName(string pCodeType,string pCustCode) {
+    private string getCodeName(string pCodeType, string pCustCode) {
         SQL = "select code_name from cust_code ";
         SQL += "where code_type = '" + pCodeType + "' ";
         SQL += " and cust_code = '" + pCustCode + "' ";

@@ -165,12 +165,11 @@
         Sys sfile = new Sys();
         sfile.getFileServer(Sys.GetSession("SeBranch"), Request["prgid"]);//檔案上傳相關設定
 
-        string fseq = seq.PadLeft(Sys.DmtSeq, '0');
         string aa = System.IO.Path.GetFileName(Request[uploadfield + "_name_" + nRow]);//上傳檔名
         string ar = System.IO.Path.GetExtension(aa);//副檔名
         string lname = string.Format("{0}-{1}-{2}-{3:0000}-{4}{5}"//新檔名
                                     , Sys.GetSession("SeBranch") + Sys.GetSession("dept").ToUpper()//0
-                                    , fseq//1
+                                    , seq.PadLeft(Sys.DmtSeq, '0')//1
                                     , seq1 != "_" ? seq1 : ""//2
                                     , Convert.ToInt32(step_grade)//3
                                     , Request["attach_no_" + nRow]//4mattach_no

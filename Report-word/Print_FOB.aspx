@@ -24,7 +24,7 @@
 		case_sqlno = (Request["case_sqlno"] ?? "").ToString();//16090001
         send_sel = (Request["send_sel"] ?? "").ToString();//4
 		try {
-			ipoRpt = new IPOReport(Session["btbrtdb"].ToString(), in_scode, in_no, case_sqlno)
+			ipoRpt = new IPOReport(Conn.btbrt, in_scode, in_no, case_sqlno)
 			{
 				ReportCode = "FOB",
 				RectitleFlag = (Request["rectitle_flag"] ?? "").ToString(),//Y
@@ -42,7 +42,7 @@
         string docFileName = "[影印]-" + ipoRpt.Seq + ".docx";
 		
 		Dictionary<string, string> _tplFile = new Dictionary<string, string>(){
-			{"apply", Server.MapPath("~/Report-word/25影印申請書(FOB).docx")},
+			{"apply", Server.MapPath("~/ReportTemplate/申請書/紙本/FOB_影印申請書.docx")},
 		};
 		ipoRpt.CloneFromFile(_tplFile, true);
 
@@ -105,7 +105,13 @@
                     if (dtAp.Rows[i]["server_flag"].ToString() == "Y") {
                         ipoRpt.ReplaceBookmark("server_flag", "V");
                     }
-				}
+
+                    //把沒填到的bookmark清空
+                    string[] arrAP = { "server_flag"};
+                    foreach (string r in arrAP) {
+                        ipoRpt.ReplaceBookmark(r, "");
+                    }
+                }
                 if (dtAp.Rows.Count > 0) {
                     ipoRpt.ReplaceBookmark("apcust_num", dtAp.Rows.Count.ToString());
                 }

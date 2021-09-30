@@ -1,18 +1,20 @@
 ﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
-
+<%@ Register Src="~/commonForm/Brta212form.ascx" TagPrefix="uc1" TagName="Brta212form" %>
+<%@ Register Src="~/commonForm/dmt_upload_Form.ascx" TagPrefix="uc1" TagName="dmt_upload_Form" %>
 
 <script runat="server">
     protected string HTProgCap = "案件主檔維護";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "Brt15ShowFP";//程式檔名前綴
-    protected string HTProgCode =  HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode =  "brt15";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼//brt51客收確認,brta24官收確認,brta78轉案確認
     protected int HTProgRight = 0;
     protected string DebugStr = "";
     protected string StrFormBtnTop = "";
     protected string StrFormBtn = "";
     protected string QueryString = "";
+    protected string Title = "";
 
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -83,6 +85,7 @@
         
         if ((HTProgRight & 4) > 0 && submitTask=="A" && prgid.IN("brta24,brta78")) {
             StrFormBtn += "<input type=button value='新　增' class='cbutton bsubmit' onclick=\"formSearchSubmit('Add')\">\n";
+            StrFormBtn += "<input type=button value='重　填' class='cbutton' onclick='this_init()'>\n";
         }
         if ((HTProgRight & 8) > 0 && submitTask == "U") {
             StrFormBtn += "<input type=button value='修　改' class='cbutton bsubmit' onclick=\"formSearchSubmit('Update')\">\n";
@@ -91,6 +94,8 @@
         if ((HTProgRight & 8) > 0 && submitTask == "Q" && prgid.IN("brt51")) {
             StrFormBtn += "<input type=button value='確認送結案處理' class='cbutton bsubmit' onclick=\"formSearchSubmit1('Update')\">\n";
             StrFormBtn += "<input type=button value='案號有誤退回' class='redbutton bsubmit' onclick=\"formSearchSubmit1('close')\">\n";
+        } else if (submitTask == "Q") {
+            StrFormBtn += "<input type=button value='重新整理' class='cbutton' onclick='this_init()'>\n";
         }
         
         Lock["Qclass"] = "";
@@ -98,10 +103,14 @@
         Lock["QclassRC"] = "Lock";//特定權限C才能修改
     
         //特定權限C才能修改結案資料
-        if ((HTProgRight & 256) > 0 && submitTask=="U") {
-            Lock["Qclass"] = "";
-            Lock["Qclass51"] = "";
-            Lock["QclassRC"] = "";
+        if ((HTProgRight & 256) > 0) {
+            if (submitTask == "U") {
+                Lock["Qclass"] = "";
+                Lock["Qclass51"] = "";
+                Lock["QclassRC"] = "";
+            } else if (submitTask != "Q") {
+                Lock["QclassRC"] = "";
+            }
         }
 
         if (submitTask == "Q") {
@@ -110,7 +119,7 @@
                 Lock["Qclass51"] = "";//prgid=brt51客收確認
             }
         }
-
+        
         if (prgid == "brta78") {
             emg_scodelist = Sys.getRoleScode("M", Sys.GetSession("syscode"), "T", "mg_prorm1");//總管處程序組主管
             emg_scodelist1 = Sys.getRoleScode("M", Sys.GetSession("syscode"), "T", "mg_pror");//總管處程序組主管
@@ -123,7 +132,7 @@
         //註冊費繳納
         html_pay_times = Sys.getCustCode(Sys.GetSession("dept") + "PAY_TIMES", "", "sortfld").Option("{cust_code}", "{code_name}");
         //結案代碼
-        html_end_code = Sys.getEndCode().Option("{chrelno}", "{chrelname}", "v1='{end_codenm}'", true);
+        html_end_code = Sys.getEndCode().Option("{cust_code}", "{code_name}", "v1='{code_name}'", true);
         //結案原因
         html_end_type = Sys.getEndType().Option("{cust_code}", "{code_name}");
         //國別
@@ -132,6 +141,8 @@
         html_tran_seq_branch = Sys.getBranchCode().Option("{branch}", "{branchname}");
         //申請人種類
         html_apclass = Sys.getCustCode("apclass", "", "sortfld").Option("{cust_code}", "{code_name}");
+
+        dmt_upload_Form.uploadsource = "tranB";//文件上傳source
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -158,6 +169,7 @@
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
         <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】
+            <span id="span_maxseq"></span>
         </td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <%#StrFormBtnTop%>
@@ -169,7 +181,6 @@
 </table>
 <br>
 <form id="reg" name="reg" method="post">
-	<input type="hidden" id="submittask" name="submittask" value="<%=submitTask%>">
 	<input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
     <input type="hidden" id="brtran_sqlno" name="brtran_sqlno" value="<%=brtran_sqlno%>"><!--轉案流水號-->
     <input type="hidden" id="old_brtran_sqlno" name="old_brtran_sqlno" value="<%=old_brtran_sqlno%>"><!--原始單位轉案流水號-->
@@ -202,12 +213,13 @@
 		            <tr>
 			            <td class="lightbluetable" width="15%" align="right">本所編號：</td>
 			            <td class="whitetablebg" >
-				            <input type="hidden" id="sendprgid" name="sendprgid" value="<%#prgid%>">
+			                <input type="hidden" id="submittask" name="submittask" value="<%=submitTask%>">
+		                    <input type="hidden" id="sendprgid" name="sendprgid" value="<%#prgid%>">
+				            <input type="hidden" id="delflag" name="delflag">
 				            <input type="hidden" id="keyseq1" name="keyseq1" value="N">
-                            <span id="spanbranch"><%#branch%><%#dept%></span>-
-				            <input type="text" id="tfx_seq" name="tfx_seq" size="<%#Sys.DmtSeq%>" readonly class="SEdit">-
-				            <input type="text" value="" id="tfx_seq1" name="tfx_seq1" size="<%#Sys.DmtSeq1%>" readonly class="SEdit" >
-				            <input type=button class="c1button" id="btnseq1" name="btnseq1" value="確定">
+                            <span id="spanbranch"><%#branch%><%#dept%></span>
+                            <input type="text" id="tfx_seq" name="tfx_seq" size="<%#Sys.DmtSeq%>" readonly class="SEdit">-<input type="text" id="tfx_seq1" name="tfx_seq1" size="<%#Sys.DmtSeq1%>" readonly class="SEdit" >
+				            <input type=button class="c1button" id="btnseq1" name="btnseq1" onclick="tfx_seq1_onclick1()" value="確定">
 				            <input type=button class="c1button" id="btngetseq" name="btngetseq" onclick="get_maxseq()" value="抓取案號">
 			            </td>
 			            <td class="lightbluetable" width="15%" align="right">立案案性：</td>
@@ -231,8 +243,7 @@
 			            </td>
 			            <td class="lightbluetable" align="right">母案編號：</td>
 			            <td class="whitetablebg" >
-				            <input type="text" id="tfx_Mseq" name="tfx_Mseq" size="5" class="<%=Lock["QClass"]%>">-
-				            <input type="text" id="tfx_Mseq1" name="tfx_Mseq1" size="1" class="<%=Lock["QClass"]%>">
+				            <input type="text" id="tfx_Mseq" name="tfx_Mseq" size="5" class="<%=Lock["QClass"]%>">-<input type="text" id="tfx_Mseq1" name="tfx_Mseq1" size="1" class="<%=Lock["QClass"]%>">
 			            </td>
 		            </tr>
 		            <tr>		
@@ -374,9 +385,9 @@
 		            </tr>
 		            <tr>
 			            <td class="lightbluetable"  align="right">結案說明：</td>
-			            <td class="whitetablebg" colspan=3><input type=hidden id="old_end_date" name="old_end_date" >
-				            結案日期：<input type="hidden" id="tfx_end_date" name="tfx_end_date" size="10" class="dateField <%=Lock["QclassRC"]%>">
-			                <input type="text" id="tfx_end_name" name="tfx_end_name" size="20" readonly class="SEdit">
+			            <td class="whitetablebg" colspan=3><input type=text id="old_end_date" name="old_end_date" >
+				            結案日期：<input type="text" id="tfx_end_date" name="tfx_end_date" size="10" class="dateField <%=Lock["QclassRC"]%>">
+			                <input type="hidden" id="tfx_end_name" name="tfx_end_name" size="20" readonly class="SEdit">
                             結案代碼：
 				            <Select NAME="tfx_end_code" id="tfx_end_code" class="<%=Lock["Qclass51"]%>" onchange="getEndCode()">
 				                <%#html_end_code%>
@@ -434,12 +445,14 @@
 		            </tr>
 		            <tr id="tr_datectrl" style="display:none">
 	                   <td class="whitetablebg" colspan=6>
-	                   <!--include file="../brtam/brtaform/brta212form.inc"--><!--管制欄位畫面-->
+                           <uc1:Brta212form runat="server" ID="Brta212form" />
+                           <!--include file="../brtam/brtaform/brta212form.inc"--><!--管制欄位畫面-->
                        </td>
                     </tr>
                     <tr id="tr_upload" style="display:none">
 	                   <td class="whitetablebg" colspan=6>
-			            <!--include file="../brtam/brtaform/dmt_upload_form.asp"--><!--文件上傳畫面-->
+                           <uc1:dmt_upload_Form runat="server" ID="dmt_upload_Form" />
+                           <!--include file="../brtam/brtaform/dmt_upload_form.asp"--><!--文件上傳畫面-->
 		             </td>
                     </tr>	
 	            </table>
@@ -450,9 +463,8 @@
 	                <table border="0" class="bluetable" cellspacing="1" cellpadding="2" style="font-size: 9pt" width="100%">
 	                  <tr>
      	                <td class="lightbluetable" align="right">本所編號：</td>
-		                <td class="whitetablebg"  colspan=3><%#branch%><%#dept%>-
-		                    <input type="text" id="Ifx_seq" name="Ifx_seq" size="<%#Sys.DmtSeq%>" readonly class="SEdit">-
-		                    <input type="text" id="seq1" name="seq1" size="<%#Sys.DmtSeq1%>" readonly class="SEdit">
+		                <td class="whitetablebg"  colspan=3><%#branch%><%#dept%>
+		                    <input type="text" id="Ifx_seq" name="Ifx_seq" size="<%#Sys.DmtSeq%>" readonly class="SEdit">-<input type="text" id="seq1" name="seq1" size="<%#Sys.DmtSeq1%>" readonly class="SEdit">
 		                    <input type="hidden" id="tfx_branch" name="tfx_branch">
 		                </td>
 	                  </tr>
@@ -485,7 +497,7 @@
 	                    <td class="lightbluetable" align="right">圖檔實際路徑：</td>
 	                    <td class="whitetablebg" colspan=3>
                             <input TYPE="hidden" id="file" name="file">
-                            <input TYPE="text" id="tfx_draw_file" NAME="tfx_draw_file" SIZE="50" maxlength="50" readonly>
+                            <input TYPE="text" id="tfx_draw_file" NAME="tfx_draw_file" class="Lock" SIZE="50" maxlength="50" readonly>
 			                <input type="button" class="cbutton <%=Lock["QClass"]%>" id="butUpload" name="butUpload" value="上傳" onclick="UploadAttach_photo()" >
                             <input type="button" class="cbutton" id="btnDisplay" name="btnDisplay" value="檢視" onclick="PreviewAttach_photo()" >
 	                    </td>
@@ -529,7 +541,7 @@
 	                            <tr id=tr_show_##>
 		                            <td class=whitetablebg align=center>
                                         <input type=text id='shownum_##' name='shownum_##' class=SEdit readonly size=2 value='##.'>
-                                        <input type=hidden id='show_sqlno_##' name='show_sqlno_##'>
+                                        <input type=text id='show_sqlno_##' name='show_sqlno_##'>
 		                            </td>
 		                            <td class=whitetablebg align=center>
 		                                <input type=text size=10 maxlength=10 id='show_date_##' name='show_date_##' onblur="chk_showdate('##')" class="dateField <%=Lock["QClass"]%>" />
@@ -629,8 +641,8 @@
 		                    <TD class=sfont9 colspan=3>
                                 <input type=text id="ap_cname_##" name="ap_cname_##" SIZE=120 class="Lock" style="width:95%">
 		                        <input type=hidden id="apsqlno_##" name="apsqlno_##">
-		                        <INPUT TYPE=text id="ap_cname1_##" name="ap_cname1_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)" class="Lock"><br>
-		                        <INPUT TYPE=text id="ap_cname2_##" name="ap_cname2_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)" class="Lock">
+		                        <INPUT TYPE=hidden id="ap_cname1_##" name="ap_cname1_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)" class="Lock"><br>
+		                        <INPUT TYPE=hidden id="ap_cname2_##" name="ap_cname2_##" SIZE=40 MAXLENGTH=60 alt="申請人名稱(中)" onblur="fDataLen(this)" class="Lock">
 		                    </TD>
 	                    </TR>
 	                    <TR>
@@ -652,8 +664,8 @@
 		                    </TD>
 		                    <TD class=sfont9 colspan=3>
                                 <input type=text id="ap_ename_##" name="ap_ename_##" size=120 class="Lock" style="width:95%">
-		                        <INPUT TYPE=text id="ap_ename1_##" name="ap_ename1_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)" class="Lock"><br>
-		                        <INPUT TYPE=text id="ap_ename2_##" name="ap_ename2_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)" class="Lock">
+		                        <INPUT TYPE=hidden id="ap_ename1_##" name="ap_ename1_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)" class="Lock"><br>
+		                        <INPUT TYPE=hidden id="ap_ename2_##" name="ap_ename2_##" SIZE=60 MAXLENGTH=100 alt="申請人名稱(英)" onblur="fDataLen(this)" class="Lock">
 	                        </TD>
 	                    </TR>
 	                    <TR>
@@ -767,6 +779,20 @@
         if(main.prgid=="brta24") $("#btnseq1").show();//[確定]
         if(main.prgid=="brta78") $("#btngetseq").show();//[抓取案號]
 
+        if (main.submittask == "A") {
+            Title = "目前最大編號：" + jMain.branch + jMain.dept;
+            if (main.prgid == "brta24") {
+                Title += jMain.seq + "-" + jMain.maxseq1;
+            } else {
+                Title += jMain.maxseq + "-" + jMain.seq1;
+            }
+            $("#span_maxseq").html(Title);
+        }
+
+        //畫面準備
+        if (typeof brta212form !== "undefined") brta212form.init();//管制欄位
+        if (typeof upload_form !== "undefined") upload_form.init();//文件上傳欄位
+
         //-----------------
         main.bind();//資料綁定
         $("input.dateField").datepick();
@@ -778,15 +804,64 @@
     main.bind = function () {
         if (jMain.dmt.length != 0) {
             if(main.prgid=="brta24"){
-                $("#tfx_seq").val(jMain.dmt[0].seq);
-                $("#Ifx_seq").val(jMain.dmt[0].seq);
+                $("#tfx_seq,#Ifx_seq,#tfx_Mseq").val(jMain.dmt[0].seq);
+                $("#tfx_Mseq1").val(jMain.dmt[0].seq1);
                 $("#seq1").val("");
                 $("#tfx_seq1").val("").unlock();
                 $("#arcase_type").val("<%=Request["rs_type"]%>");
                 $("#arcase_class").val("<%=Request["rs_class"]%>");
                 $("#tfx_arcase").val("<%=Request["rs_code"]%>");
                 $("#tfx_arcasenm").val(jMain.dmt[0].arcasenm);
-            }else if(main.prgid=="brta78"){
+                $("#tfx_in_date").val(Today().format("yyyy/M/d"));
+                $("#tfx_step_grade").val("0");
+                $("#tfx_cust_area").val(jMain.dmt[0].cust_area);
+                $("#tfx_cust_seq").val(jMain.dmt[0].cust_seq);
+                $("#ocust_seq").val(jMain.dmt[0].cust_seq);
+                $("#tfx_att_sql").val(jMain.dmt[0].att_sql);
+                getAtt();
+                $("#tfx_Scode").val(jMain.dmt[0].scode);
+                $("input[name='tran_flag'][value='" + jMain.dmt[0].tran_flag + "']").prop("checked", true);
+            }else if(main.prgid=="brta78"){//轉案確認(轉入)
+                //$("#tfx_seq,#Ifx_seq").val(jMain.maxseq);
+                get_maxseq();//重抓目前案件最大號
+                if(jMain.dmt[0].seq1!="_")$("#seq1,#tfx_seq1").val(jMain.dmt[0].seq1);
+                tfx_seq1_onclick1();//[確定]檢查有無此案件主檔
+                $("#arcase_type").val(jMain.dmt[0].arcase_type);
+                $("#arcase_class").val(jMain.dmt[0].arcase_class);
+                $("#tfx_arcase").val(jMain.dmt[0].arcase);
+                $("#tfx_arcasenm").val(jMain.dmt[0].arcasenm);
+                $("#tfx_in_date").val(dateReviver(jMain.dmt[0].in_date, "yyyy/M/d"));
+                if($("#tfx_in_date").val()=="")$("#tfx_in_date").val(Today().format("yyyy/M/d"));
+                $("#tfx_Mseq").val(jMain.dmt[0].mseq);
+                $("#tfx_Mseq1").val(jMain.dmt[0].mseq1);
+                $("#tfx_step_grade").val("1");
+                $("#tfx_now_grade").val("1");
+                $("#now_arcase_type").val(jMain.dmt[0].now_arcase_type);
+                $("#now_arcase_class").val("X2");
+                $("#now_arcase_classnm").val(jMain.dmt[0].now_arcasenm);
+                //$("#tfx_now_arcase").val("XZ2");
+                //$("#tfx_now_arcasenm").val(jMain.dmt[0].now_arcasenm);
+                $("#tfx_now_arcase").val(jMain.dmt[0].now_arcase);
+                $("#tfx_now_arcasenm").val(jMain.dmt[0].now_arcasenm);
+                $("#now_act_code").val("_");
+                $("#now_act_codenm").val("_");
+                $("#now_rs_detail").val($("#tfx_now_arcasenm").val());
+                $("#tfx_now_stat").val(jMain.dmt[0].now_stat);
+                $("#tfx_now_statnm").val(jMain.dmt[0].now_statnm);
+                $("#tfx_cust_area").val(jMain.branch);
+                $("#tfx_cust_seq").val(jMain.dmt[0].cust_seq);
+                $("#ocust_seq").val("");
+                $("#tfx_att_sql").val("1");
+                getAtt();
+                $("#tfx_Scode").val(jMain.request.tran_scode1);
+                $("input[name='tran_flag'][value='B']").prop("checked", true);//轉入
+                $("#tran_seq_branch option[value='" + jMain.request.branch + "']").prop("selected", true);
+                $("#tran_seq").val(jMain.dmt[0].seq);
+                $("#tran_seq1").val(jMain.dmt[0].seq1);
+                $("#tran_remark").val(jMain.dmt[0].tran_remark);
+                //顯示期限管制、文件上傳畫面
+                $("#tr_datectrl").show();
+                $("#tr_upload").show();
             }else{
                 $("#tfx_seq").val(jMain.dmt[0].seq);
                 $("#Ifx_seq").val(jMain.dmt[0].seq);
@@ -808,8 +883,6 @@
                 $("#tfx_cust_area").val(jMain.dmt[0].cust_area);
                 $("#tfx_cust_seq").val(jMain.dmt[0].cust_seq);
                 $("#ocust_seq").val(jMain.dmt[0].cust_seq);
-                $("#tfx_cust_name").val(jMain.dmt[0].cust_name);
-                $("#tfx_con_term").val(jMain.dmt[0].con_termnm);
                 $("#tfx_att_sql").val(jMain.dmt[0].att_sql);
                 getAtt();
                 $("#tfx_Scode").val(jMain.dmt[0].scode);
@@ -819,7 +892,11 @@
                 $("#tran_seq1").val(jMain.dmt[0].tran_seq1);
                 $("#tran_remark").val(jMain.dmt[0].tran_remark);
             }
+            $("#delflag").val(jMain.delflag);
             $("#tfx_cust_prod").val(jMain.dmt[0].cust_prod);
+            $("#tfx_cust_name").val(jMain.dmt[0].cust_name);
+            $("#tfx_con_term").val(jMain.dmt[0].con_termnm);
+
             $("#tfx_tcn_ref").val(jMain.dmt[0].tcn_ref);
             $("#tfx_ref_no1").val(jMain.dmt[0].ref_no1);
             $("#tfx_ref_no2").val(jMain.dmt[0].ref_no2);
@@ -1040,9 +1117,9 @@
         var searchSql ="";
         //抓取案件流水號
         if($("#tfx_seq1").val()=="Z"){
-            searchSql = "select sql from cust_code where code_type='Z' and cust_code='"+main.branch+"TZ'";
+            searchSql = "select isnull(sql,0)+1 sql from cust_code where code_type='Z' and cust_code='"+main.branch+"TZ'";
         }else{
-            searchSql = "select sql from cust_code where code_type='Z' and cust_code='"+main.branch+"T_'";
+            searchSql = "select isnull(sql,0)+1 sql from cust_code where code_type='Z' and cust_code='"+main.branch+"T_'";
         }
         $.ajax({
             type: "get",
@@ -1054,7 +1131,12 @@
                 var JSONdata = $.parseJSON(json);
                 if (JSONdata.length > 0) {
                     if(CInt(JSONdata[0].sql)>0){
-                        $("#tfx_seq").val(JSONdata[0].sql);
+                        $("#tfx_seq,#Ifx_seq").val(JSONdata[0].sql);
+                        //修改存檔路徑
+                        var efseq=padLeft($("#tfx_seq").val(),5,"0");
+                        var seq1=$("#tfx_seq1").val()==""?"_":$("#tfx_seq1").val();
+                        var epath="doc/"+seq1+"/"+efseq.Left(3)+"/"+efseq
+                        $("#" + $("#uploadfield").val() + "_path").val(epath);
                     }
                 }
             },
@@ -1069,7 +1151,7 @@
     function chkseqdata(){
         var rtnFlag=false;
         //檢查案件主檔
-        var searchSql = "count(*) as cnt from dmt where seq= " +$("#tran_seq").val()+ " and seq1='" +$("#tran_seq1").val()+ "' and cg='G' and rs='S'";
+        var searchSql = "select count(*) as cnt from dmt where seq= " +$("#tfx_seq").val()+ " and seq1='" +$("#tfx_seq1").val()+ "'";
         $.ajax({
             type: "get",
             url: getRootPath() + "/ajax/JsonGetSqlData.aspx",
@@ -1077,6 +1159,11 @@
             async: false,
             cache: false,
             success: function (json) {
+                if (!isJson(json)) {
+                    $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + json);
+                    $("#dialog").dialog({ title: '檢查案件主檔有誤！', modal: true, maxHeight: 500, width: "90%" });
+                    return false;
+                }
                 var JSONdata = $.parseJSON(json);
                 if (JSONdata.length > 0) {
                     if(CInt(JSONdata[0].cnt)>0){
@@ -1096,7 +1183,7 @@
     function chkstepdata(){
         var searchSql ="";
         //檢查轉入案件是否有官發，有官發要通知總管處
-        searchSql = "count(*) as cnt from step_dmt where seq= " +$("#tran_seq").val()+ " and seq1='" +$("#tran_seq1").val()+ "' and cg='G' and rs='S'";
+        searchSql = "select count(*) as cnt from step_dmt where seq= " +$("#tran_seq").val()+ " and seq1='" +$("#tran_seq1").val()+ "' and cg='G' and rs='S'";
         $.ajax({
             type: "get",
             url: getRootPath() + "/ajax/JsonGetSqlData.aspx?connbr="+$("#tran_seq_branch").val(),
@@ -1104,6 +1191,11 @@
             async: false,
             cache: false,
             success: function (json) {
+                if (!isJson(json)) {
+                    $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + json);
+                    $("#dialog").dialog({ title: '檢查轉入案件官發有誤！', modal: true, maxHeight: 500, width: "90%" });
+                    return false;
+                }
                 var JSONdata = $.parseJSON(json);
                 if (JSONdata.length > 0) {
                     if(CInt(JSONdata[0].cnt)>0){
@@ -1154,33 +1246,32 @@
         }
     });
 
-    //[確定]
-    $("#btnseq1").click(function (e) {
-        var purl = getRootPath() + "/ajax/json_dmt.aspx?seq=" + $("#tfx_seq").val() + "&seq1=" + $("#tfx_seq1").val();
-        $.ajax({
-            type: "get",
-            url: purl,
-            async: false,
-            cache: false,
-            success: function (json) {
-                var dmt_list = $.parseJSON(json);
-                if (dmt_list.length > 0) {
-                    alert($("#tfx_seq").val() + "-" +("#tfx_seq1").val()+ "已存在於案件主檔內，請重新輸入!!!");
-                    $("#keyseq1").val("N");
-                    $("#tfx_seq1").val("").focus();
-                } else {
-                    $("#seq1").val($("#tfx_seq1").val());
-                    $("#keyseq1").val("Y");
-                    if(main.prgid=="brta24") $("#btnseq1").lock();
-                }
-            },
-            error: function (xhr) {
-                $("#dialog").html("<a href='" + this.url + "' target='_new'>check案件主檔失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: 'check案件主檔失敗！', modal: true, maxHeight: 500, width: "90%" });
-            }
-        });
-    });
-
+    //[確定]檢查有無此案件主檔
+     function tfx_seq1_onclick1() {
+         var purl = getRootPath() + "/ajax/json_dmt.aspx?seq=" + $("#tfx_seq").val() + "&seq1=" + $("#tfx_seq1").val();
+         $.ajax({
+             type: "get",
+             url: purl,
+             async: false,
+             cache: false,
+             success: function (json) {
+                 var dmt_list = $.parseJSON(json);
+                 if (dmt_list.length > 0) {
+                     alert($("#tfx_seq").val() + "-" +$("#tfx_seq1").val()+ "已存在於案件主檔內，請重新輸入!!!");
+                     $("#keyseq1").val("N");
+                     $("#tfx_seq1").val("").focus();
+                 } else {
+                     $("#seq1").val($("#tfx_seq1").val());
+                     $("#keyseq1").val("Y");
+                     if(main.prgid=="brta24") $("#btnseq1").lock();
+                 }
+             },
+             error: function (xhr) {
+                 $("#dialog").html("<a href='" + this.url + "' target='_new'>check案件主檔失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                 $("#dialog").dialog({ title: 'check案件主檔失敗！', modal: true, maxHeight: 500, width: "90%" });
+             }
+         });
+     }
 
     //展覽優先權增加一筆
     function add_show() {
@@ -1450,15 +1541,16 @@
         var url = getRootPath() + "/cust/cust13_2Qlist.aspx?prgid=Si04W01&apsqlno=" + apsqlno + "&pnum=" + nRow + "&trid=" + pTrId + "&fld=" + pFld;
         window.open(url, 'myWindowOneN',"width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
-////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    //[新增][修改]
     function formSearchSubmit(a){
         if (a=="Add"){//新增
             //2008/10/7官收立子案
             if(main.prgid=="brta24"){
                 if($("#keyseq1").val()=="N"){
-			       alert("本所編號變動過，請按[確定]按鈕，重新確定案件編號資料!!!");
-			       return false;
-			    }
+                    alert("本所編號變動過，請按[確定]按鈕，重新確定案件編號資料!!!");
+                    return false;
+                }
             }
             //2010/9/3轉案新增判斷
             if(main.prgid=="brta78"){
@@ -1484,14 +1576,14 @@
                 }
                 //檢查案件主檔有無此案件編號
                 if(chkseqdata()==true){
-                   alert("案件主檔已有此案件編號，請按[抓取案號]重新抓取案件編號！");
-                   return false;
+                    alert("案件主檔已有此案件編號，請按[抓取案號]重新抓取案件編號！");
+                    return false;
                 }
                 //檢查是否需通知總管處及通知人員
                 if(chkstepdata()==true){
                     if($("#emg_scodelist").val()==""||$("#emg_scodelist1").val()==""){
-                       alert("系統找不到Email通知總管處人員，無法發信，請通知系統維護人員！");
-                       return false;
+                        alert("系統找不到Email通知總管處人員，無法發信，請通知系統維護人員！");
+                        return false;
                     }
                 }
             }
@@ -1503,7 +1595,7 @@
                 $("#tfx_appl_name").focus();
                 return false;
             }
-
+        
             for (var pno = 1; pno <= CInt($("#apnum").val()) ; pno++) {
                 //2014/4/22增加檢查是否為雙邊代理查照對象,客戶名稱
                 if (cust_name_chk($("#ap_cname_"+pno).val(), $("#ap_ename_"+pno).val())) {
@@ -1517,7 +1609,7 @@
                 }
             }
         }
-	    //2008/9/17新增類別種類
+        //2008/9/17新增類別種類
         if($("#tfx_class_type").val()==""&&$("#tfx_s_mark").val()!="L"&&$("#tfx_s_mark").val()!="M"){
             alert("商標類別不為證明標章或團體標章時,類別種類必須輸入或請更正商標類別⑴!!");
             settab("#dmt");
@@ -1528,7 +1620,7 @@
             alert("商標類別不為證明標章或團體標章時,類別必須輸入或請更正商標類別⑵!!");
             return false;
         }
-    
+        
         for (var i = 1; i <= CInt($("#classnum").val()) ; i++) {
             if($("#good_delchk_"+i).prop("checked")==false){
                 if($("#tfx_class_" + i).val() == "" && $("#tfx_s_mark").val()!="L"&&$("#tfx_s_mark").val()!="M"){
@@ -1548,7 +1640,7 @@
                 }
             }
         }
-
+        
         switch (a) {
             case 'Add':
                 $("#submittask").val("A");
@@ -1560,7 +1652,7 @@
                 $("#submittask").val("D");
                 break;
         }
-
+        
         if($("#submittask").val()=="D"){
             if (confirm("是否確定刪除!!!")==true){
                 formPost("Brt15ShowFP_Update.aspx");
@@ -1570,10 +1662,9 @@
             $(".bsubmit").lock(!$("#chkTest").prop("checked"));
             formPost("Brt15ShowFP_Update.aspx");
         }
-
     }
 
-    //確認結案
+    //[確認送結案處理][案號有誤退回]
     function formSearchSubmit1(a){
         if (a=="Update"){//確認送結案處理
             if($("#end_type").val()==""){
@@ -1626,8 +1717,26 @@
                     }
                     ,close:function(event, ui){
                         if(status=="success"){
-                            if(!$("#chkTest").prop("checked")){
-                                window.parent.tt.rows="100%,0%";
+                            if(main.submittask=="A"){
+                                if(main.prgid=="brta24"){//官收立子案,帶回新案號
+                                    $("#seq", window.opener.document).val($("#tfx_seq").val());
+                                    $("#seq1", window.opener.document).val($("#tfx_seq1").val());
+                                    window.close();
+                                }else if(main.prgid=="brta78"){//轉案確認
+                                    window.parent.tt.rows="100%,0%";
+                                    window.parent.Etop.goSearch();//重新整理
+                                }
+                            }else{
+                                if(main.prgid=="brt51"){//客收確認
+                                    $("#keyseq", window.opener.document).val("N");
+                                    $("#btnseq_ok", window.opener.document).unlock();
+                                    alert("請點選[主案件編號]右邊按鈕[確定]，重新抓取案件主檔資料！");
+                                    window.close();
+                                }else{
+                                    if(!$("#chkTest").prop("checked")){
+                                        window.parent.tt.rows="100%,0%";
+                                    }
+                                }
                             }
                         }
                     }

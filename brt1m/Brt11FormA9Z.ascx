@@ -379,8 +379,7 @@
             $("#dseq" + nRow).focus();
             return false;
         } else {
-            //***todo
-            var url = getRootPath() + "/brt5m/brt15ShowFP.asp?seq=" + value1 + "&seq1=" + value2 + "&submittask=Q";
+            var url = getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + value1 + "&seq1=" + value2 + "&submittask=Q";
             window.showModalDialog(url, "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
         }
     }

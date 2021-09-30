@@ -295,11 +295,10 @@
         }
     }
 
-    //異動
+    //異動明細
     protected string GetTranLink(RepeaterItem Container) {
         string trancase_sqlno = Eval("trancase_sqlno").ToString();
         if (Eval("trancase_sqlno").ToString() != "") {
-            //***todo
             return "<a href='" + Page.ResolveUrl("~/Brt4m/Brt13_List1.aspx") + "?prgid=" + prgid + "&case_no=" + Eval("case_no") + "&seq=" + Eval("seq") + "&seq1=" + Eval("seq1") + "' target='Eblank'>明細</a>";
         }
         return "";

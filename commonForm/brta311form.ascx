@@ -756,8 +756,7 @@
     //查詢交辦單號
     brta311form.btncase_no = function (nRow) {
         if ($("#seq").val() != "" && $("#seq1").val() != "") {
-            //***todo
-            var url = getRootPath() + "/brtam/brta31list_1.aspx?prgid1=<%=Request["prgid1"]%>&submitTask=<%=submitTask%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&cust_area=" + $("#cust_area").val() + "&cust_seq=" + $("#cust_seq").val() + "&casenum=" + nRow + "&rs_agt_no=" + $("#rs_agt_no").val() + "&rs_agt_nonm=" + $("#rs_agt_nonm").val();
+            var url = getRootPath() + "/brtam/brta31_List_case.aspx?prgid=<%=prgid%>&submitTask=<%=submitTask%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&cust_area=" + $("#cust_area").val() + "&cust_seq=" + $("#cust_seq").val() + "&casenum=" + nRow + "&rs_agt_no=" + $("#rs_agt_no").val() + "&rs_agt_nonm=" + $("#rs_agt_nonm").val();
             window.open(url, "myWindowOneN", "width=780 height=500 top=10 left=10 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
             var tot_fees = 0;
             for (var n = 1; n <= CInt($("#arnum").val()) ; n++) {

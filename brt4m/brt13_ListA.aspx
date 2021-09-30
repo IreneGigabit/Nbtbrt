@@ -119,25 +119,26 @@
             conn.DataTable(SQL, dt);
             //Sys.showLog(SQL);
             for (int i = 0; i < dt.Rows.Count; i++) {
-                name1 = dt.Rows[i].SafeRead("name1", "");
-                in_no = dt.Rows[i].SafeRead("in_no", "");
-                case_no = dt.Rows[i].SafeRead("case_no", "");
+                DataRow dr = dt.Rows[i];
+                name1 = dr.SafeRead("name1", "");
+                in_no = dr.SafeRead("in_no", "");
+                case_no = dr.SafeRead("case_no", "");
 
-                if (dt.Rows[i].SafeRead("todo_name", "") != "") {
-                    dt.Rows[i]["dowhat_name"] = dt.Rows[i].SafeRead("todo_name", "");
+                if (dr.SafeRead("todo_name", "") != "") {
+                    dr["dowhat_name"] = dr.SafeRead("todo_name", "");
                 } else {
-                    if (dt.Rows[i].SafeRead("dowhat", "") == "DI") {
-                        dt.Rows[i]["dowhat_name"] = "智產交辦帳款異動";
-                    } else if (dt.Rows[i].SafeRead("dowhat", "") == "DI") {
-                        dt.Rows[i]["dowhat_name"] = "代收代付交辦帳款異動";
+                    if (dr.SafeRead("dowhat", "") == "DI") {
+                        dr["dowhat_name"] = "智產交辦帳款異動";
+                    } else if (dr.SafeRead("dowhat", "") == "DI") {
+                        dr["dowhat_name"] = "代收代付交辦帳款異動";
                     } else {
-                        dt.Rows[i]["dowhat_name"] = "交辦";
+                        dr["dowhat_name"] = "交辦";
                     }
                 }
 
-                SQL = "select approve_desc as job_remark from " + tblname + " where sqlno=" + dt.Rows[i]["sqlno"];
+                SQL = "select approve_desc as job_remark from " + tblname + " where sqlno=" + dr["sqlno"];
                 object objResult = conn.ExecuteScalar(SQL);
-                dt.Rows[i]["job_remark"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+                dr["job_remark"] = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
             }
 
             dataRepeater.DataSource = dt;

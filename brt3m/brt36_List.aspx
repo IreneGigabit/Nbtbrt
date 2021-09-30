@@ -77,7 +77,7 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx?qs_dept=" + qs_dept + "&prgid=" + prgid + ">[回上一頁]</a>";
+        StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx?qs_dept=" + qs_dept + "&prgid=" + prgid + ">[回查詢]</a>";
 
         FormName = "備註:<br>\n";
         FormName += "1.案件編號前的「<img src=\"" + Page.ResolveUrl("~/images/todolist01.jpg") + "\" style=\"cursor:pointer\" align=\"absmiddle\"  border=\"0\">」表示結案/復案。<br>\n";
@@ -90,7 +90,12 @@
         //MasterList.ShowTable();
 
         //轉上級人員
-        if (job_grplevel == "0") {//專商經理
+        if (job_grplevel == "") {//執委
+            job_grplevel = "-1";
+            txtSMaster = "";
+            txtSMasternm = "";
+            txtSMastercode = "";
+        } else if (job_grplevel == "0") {//專商經理
             txtSMaster = "執委:";
             txtSMasternm = MasterList.Select("grplevel=-1")[0]["master_nm"].ToString();
             txtSMastercode = MasterList.Select("grplevel=-1")[0]["Master_scode"].ToString();
@@ -114,6 +119,9 @@
         if (Convert.ToInt32(job_grplevel) <= 1) {//區所主管以上預設簽准
             rdoSY = "checked";
             rodST = "";
+            if (Convert.ToInt32(job_grplevel) <= -1) {//執委不可再轉上級
+                rodST = "disabled";
+            }
         } else {
             rdoSY = "disabled";
             rodST = "checked";
@@ -174,7 +182,7 @@
             } else {
                 SQL += " order by step_date";
             }
-            //Sys.showLog(SQL);
+            Sys.showLog(SQL);
             conn.DataTable(SQL, dt);
 
             //處理分頁
@@ -207,7 +215,7 @@
                     dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), dr.SafeRead("country", ""), Sys.GetSession("SeBranch"), Sys.GetSession("dept") + "E");
                 }
 
-                //計算簽核層級,並檢查簽准層級=交辦營洽則再往上一級
+                //計算簽核層級
                 string sign_level = "", sign_levelnm = "";
                 if (dr["ncontract_flag"] == "Y") {
                     sign_level = "-1";//執委
@@ -587,7 +595,7 @@
                         }
                         ,close:function(event, ui){
                             if(status=="success"){
-                                window.location.href="<%=HTProgPrefix%>.aspx?prgid=<%#prgid%>&qs_dept=<%=qs_dept%>"
+                                goSearch();//重新整理
                             }
                         }
                     });

@@ -613,7 +613,7 @@
     //查代理人請款記錄
     function dnlist_from() {
         //***todo
-        var url = getRootPath() + "/btbrt/brtam/extform/dnlist_qry.aspx?prgid=<%=prgid%>&seq=<%=seq%>&seq1=<%=seq1%>&fromprg=accseq";
+        var url = getRootPath() + "/brtam/extform/dnlist_qry.aspx?prgid=<%=prgid%>&seq=<%=seq%>&seq1=<%=seq1%>&fromprg=accseq";
         window.open(url, "mydnlistwinN", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
     }
 </script>

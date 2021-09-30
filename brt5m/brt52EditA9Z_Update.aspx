@@ -488,7 +488,7 @@
             ColMap["Mseq1"] = Util.dbnull(Request["tfzb_seq1"]);
         }
         SQL += ColMap.GetUpdateSQL();
-        SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "'";
+        SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "' and case_sqlno=0";
         conn.ExecuteNonQuery(SQL);
 
         //子案
@@ -497,6 +497,7 @@
                 string sqlWhere = " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + Request["In_no"] + "'";
 
                 SQL = "UPDATE dmt_temp SET ";
+                ColMap.Clear();
                 ColMap["in_scode"] = Util.dbnull(Request["F_tscode"]);
                 ColMap["s_mark"] = Util.dbnull(Request["tfzd_S_mark"]);
                 ColMap["pul"] = Util.dbnull(Request["tfzd_pul"]);
@@ -561,6 +562,7 @@
             if ((Request["tfy_arcase"] ?? "").IN("FC11,FC5,FC7,FCH,FC21,FC6,FC8,FCI")) {
                 for (int x = subX; x <= Convert.ToInt32("0" + Request["nfy_tot_num"]); x++) {
                     SQL = "UPDATE dmt_temp SET ";
+                    ColMap.Clear();
                     ColMap["in_scode"] = Util.dbnull(Request["F_tscode"]);
                     ColMap["ap_cname"] = Util.dbnull(Request["tfzp_ap_cname"]);
                     ColMap["ap_cname1"] = Util.dbnull(Request["tfzp_ap_cname1"]);
@@ -1180,6 +1182,7 @@
                     string sqlWhere = "";
 
                     SQL = "UPDATE dmt SET ";
+                    ColMap.Clear();
                     switch ((Request["tfy_arcase"] ?? "").Left(3)) {
                         case "FD1":
                             ColMap["class_count"] = Util.dbnull(Request["FD1_class_count_" + x]);

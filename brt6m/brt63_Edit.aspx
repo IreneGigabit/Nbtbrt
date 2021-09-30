@@ -130,9 +130,9 @@
         }
         
         //正常簽核
-        Sys.getGrpidMaster(Sys.GetSession("SeBranch"), ref se_grpid, ref mSC_code, ref mSC_name);
+        Sys.getGrpidMaster(Sys.GetSession("SeBranch"), se_grpid, ref mSC_code, ref mSC_name);
         //特殊簽核
-        DataRow[] drx = Sys.getGrpidUp("N", "000").Select("grplevel=1");
+        DataRow[] drx = Sys.getGrpidUp(Sys.GetSession("SeBranch"), "000").Select("grplevel=1");
         html_selectsign = drx.Option("{master_scode}", "{master_type}---{master_nm}", false);
     }
 
@@ -459,7 +459,7 @@
     <%}%>
     <br />
     <%if (prgid=="brt63"&&Request["task"]=="cancel"){%>
-	    <input type="text" name="rsqlno" id="rsqlno">
+	    <input type="hidden" name="rsqlno" id="rsqlno">
 	<%}%>
     <table id=tabpr border=0 class="bluetable"  cellspacing=1 cellpadding=2 width="100%" >
 	    <TR>
@@ -594,7 +594,7 @@
         brta21form.bind(jMain.add_gs);//主檔資料
         brta311form.bind(jMain.add_gs,null);//發文資料
         if (typeof brta212form !== "undefined") brta212form.bind(jMain.add_gs,null);//管制資料
-        if (typeof upload_form !== "undefined") upload_form.bind(jMain.case_attach);//顯示上傳文件資料
+        if (typeof upload_form !== "undefined") upload_form.bind(jMain.case_attach,true);//顯示上傳文件資料/是否顯示原始檔名
 
         openread();	//控制特定欄位不能修改
 
@@ -1128,7 +1128,7 @@
             $("#btncase_no_1").hide();
             $("#case_no_1,#gs_fees_1").lock();
         }else{
-            if(CInt($("#fees")>0)){
+            if(CInt($("#fees").val())>0){
                 $("#arAdd_button,#arres_button").unlock();
             }
         }

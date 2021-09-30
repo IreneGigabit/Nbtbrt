@@ -67,7 +67,7 @@ public partial class Sys
                 if (Sys.CheckFile(attach_path) == false) {
                     dr["file_flag"] = "N";//檔案不存在
                     viewserver = "http://" + Sys.MG_IIS;
-                    attach_path = attach_path.Replace("/nbtbrt/", "/MG/");
+                    attach_path = Sys.Path2MG(attach_path);
                 }
             } else if (dr.SafeRead("source", "").ToUpper()=="OPT") {//爭救案上傳
                 viewserver = "http://" + Sys.Opt_IIS;

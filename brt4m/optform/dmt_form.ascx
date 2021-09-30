@@ -14,7 +14,7 @@
 
         tfzy_country = Sys.getCountry().Option("{coun_code}", "{coun_code}-{coun_c}");
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
-            tfzy_end_code = Util.Option(conn, "SELECT chrelno, chrelname FROM relation where ChRelType = 'ENDCODE' ORDER BY sortfld", "{chrelno}", "{chrelname}");
+            tfzy_end_code = Sys.getEndCode().Option("{cust_code}", "{code_name}");
         }
 
         this.DataBind();

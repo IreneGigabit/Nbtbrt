@@ -546,9 +546,12 @@
                 var v = jMain.case_main[0].other_item1.split(";");
                 if (v[0] != "") {
                     var I_item1 = v[0].split("|");
-                    for (var i in I_item1) {
+                    //for (var i in I_item1) {
+                    //    $("input[name='I_item1'][value='" + I_item1[i] + "']").prop("checked", true);
+                    //}
+                    $.each(I_item1, function (i, m) {
                         $("input[name='I_item1'][value='" + I_item1[i] + "']").prop("checked", true);
-                    }
+                    });
                 }
                 if (v[1] && v[1] != "") {
                     if (v[1].indexOf("|") > -1) {

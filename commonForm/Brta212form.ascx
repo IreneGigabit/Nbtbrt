@@ -56,7 +56,7 @@
 			        <%if (prgid != "brt51" && prgid != "brta22" && prgid != "brta78") {%><!--國內案客戶收文確認//國內案客戶收文作業//國內案確認轉案作業-->
 			            <input type=button class="c1button <%=Lock.TryGet("Qdisabled")%>" id="btndis" name="btndis" value="進度查詢及銷管制" onclick="brta212form.btndis()" />
 			        <%}%>
-			        <input type="button" class="c1button" value="查官收未銷法定期限" onclick="brta212form.queryjob()" style="display:none" id="btnqrygrlastdate">
+			        <input type="button" class="c1button" value="查官收未銷法定期限" onclick="brta212form.queryjob()" style="display:none" id="btnqrygrlastdate"><!--客收爭救案時顯示-->
 			        <input type="hidden" name="rsqlno" id="rsqlno">
 		        </TD>
 	        </TR>
@@ -269,7 +269,6 @@
             }
         }
 
-        //***todo
         var tlink = getRootPath() + "/brt6m/brt62_steplist.aspx?prgid=<%=prgid%>&seq=" + $("#seq").val() + "&seq1=" + $("#seq1").val() + "&step_grade=" + $("#nstep_grade").val() + "&ctrl_type=A1&seqnum=" + pseqnum;
         window.open(tlink, "mywindowN", "width=700,height=480,toolbar=yes,menubar=yes,resizable=yes,scrollbars=yes,status=0,top=50,left=80");
     }

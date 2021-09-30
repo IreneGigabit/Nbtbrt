@@ -112,13 +112,12 @@
                 string seq1 = ReqVal.TryGet("seq1_" + i);
                 string country = ReqVal.TryGet("country_" + i);
                 string tdept = "";
-                string fseq = "";
                 if (country == "")
                     tdept = "T";
                 else
                     tdept = "TE";
 
-                fseq = Sys.formatSeq(seq, seq1, country, Sys.GetSession("seBranch"), tdept);
+                string fseq = Sys.formatSeq(seq, seq1, country, Sys.GetSession("seBranch"), tdept);
 
                 //判斷狀態是否已異動,防止開雙視窗
                 //SQL = "select count(*) from " + tblname + " where in_no='20200203001' and Job_status<>'NN'";
@@ -127,7 +126,7 @@
                 int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
 
                 if (cnt == 0) {
-                    msg = "該筆交辦資料(" + case_no + ")已簽核，請通知資訊部！";
+                    msg = "該筆交辦資料(" + case_no + ")簽核失敗！<BR>(流程狀態已異動，請重新整理畫面)";
                     return false;
                 } else {
                     //更新todo
@@ -247,7 +246,6 @@
                         List<string> acc_scode = acc.Split(';').Where(p => p != "").Select(o => o + "@saint-island.com.tw").ToList();
                         strTo.AddRange(acc_scode);
                     }
-                    strTo = strTo.Distinct().ToList();
                     break;
             }
 

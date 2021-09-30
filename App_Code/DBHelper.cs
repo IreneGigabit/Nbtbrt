@@ -143,6 +143,26 @@ public class DBHelper : IDisposable
     }
     #endregion
 
+    #region +string getString(string commandText) - 執行查詢，抓取第一欄第一列(若null則為空字串)
+    /// <summary>  
+    /// 抓取第一欄第一列(若null則為空字串)
+    /// </summary>  
+    public string getString(string commandText) {
+        object objResult = this.ExecuteScalar(commandText);
+        return (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
+    }
+    #endregion
+
+    #region  +string getZero(string commandText) - 執行查詢，抓取第一欄第一列(若null則為"0")
+    /// <summary>  
+    /// 抓取第一欄第一列(若null則為"0")
+    /// </summary>  
+    public string getZero(string commandText) {
+        object objResult = this.ExecuteScalar(commandText);
+        return (objResult == DBNull.Value || objResult == null) ? "0" : objResult.ToString();
+    }
+    #endregion
+
     #region +void DataTable(string commandText, DataTable dt) - 執行查詢，並傳回DataTable 
     /// <summary>
     /// 執行查詢，並傳回DataTable。

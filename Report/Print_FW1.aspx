@@ -23,8 +23,8 @@
 		in_no = (Request["in_no"] ?? "").ToString();//20160902001
 		case_sqlno = (Request["case_sqlno"] ?? "").ToString();//16090001
 		try {
-			conn = new DBHelper(Session["btbrtdb"].ToString(), false).Debug(false);
-			ipoRpt = new IPOReport(Session["btbrtdb"].ToString(), in_scode, in_no, case_sqlno)
+			conn = new DBHelper(Conn.btbrt, false).Debug(false);
+			ipoRpt = new IPOReport(Conn.btbrt, in_scode, in_no, case_sqlno)
 			{
 				ReportCode = "FW1",
 				RectitleFlag = (Request["rectitle_flag"] ?? "").ToString(),//Y

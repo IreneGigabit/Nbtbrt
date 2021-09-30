@@ -19,7 +19,6 @@
     protected string qs_dept = "";
     protected string apcode = "brt1a";
     protected string td_jscode = "";
-    protected string td_tscode = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -94,19 +93,6 @@
                         }
                     }
                 }
-
-                //營洽清單
-                SQL = "select A.IN_scode,d.sc_name from todo_opt A ";
-                SQL += "inner join sysctrl.dbo.scode D on a.in_scode = d.scode ";
-                SQL += "where a.dowhat='DT' and a.job_scode='" + Session["scode"] + "' and a.syscode='" + Session["syscode"] + "' and (apcode='" + apcode + "') and a.job_status='NN' ";
-                SQL += "group by a.in_scode,d.sc_name";
-
-                DataTable dtscode = new DataTable();
-                connopt.DataTable(SQL, dtscode);
-                td_tscode = "<select id='form_scode' name='form_scode'>" + dtscode.Option("{IN_scode}", "{sc_name}") + "</select>";
-            } else {
-                //營洽清單
-                td_tscode = "<select id='form_scode' name='form_scode'><option value='*'>全部</option></select>";
             }
         }
     }
@@ -140,14 +126,16 @@
             <tr>
 		        <td class="lightbluetable" align="right">簽核主管:</td>
 		        <td class="whitetablebg" align="left">
-                    <select id='job_scode' name='job_scode' onchange="searchScode(this.value,'form_scode')" >
+                    <select id='job_scode' name='job_scode' onchange="searchScode(this.value,'form_scode','brt1a')" >
                         <%#td_jscode%>
                     </select>
                 </td>
 	        </tr>
 	        <tr>
-		        <td class="lightbluetable" align="right">洽案營洽:</td>
-		        <td class="whitetablebg" align="left"><%#td_tscode%></td>
+		        <td class="lightbluetable" align="right">送簽人員:</td>
+		        <td class="whitetablebg" align="left">
+                    <select id='form_scode' name='form_scode'><option value='*'>全部</option></select>
+		        </td>
 	        </tr>
 	        <TR>
 		        <TD class=lightbluetable align=right>指定送簽日期：</TD>
@@ -218,11 +206,10 @@
         }
     }
 
-    function searchScode(fld1, fld2) {
-        var fld3 = "<%=apcode%>";
+    function searchScode(fld1, fld2, fld3) {
         var chktest = ($("#chkTest:checked").val() || "");
 
-        var url = getRootPath() + "/brt3m/brt34_Scode.aspx?fld1=" + fld1 + "&fld2=" + fld2 + "&fld3=" + fld3 + "&chkTest=" + chktest;
+        var url = getRootPath() + "/brt3m/brt3_Scode.aspx?fld1=" + fld1 + "&fld2=" + fld2 + "&fld3=" + fld3 + "&chkTest=" + chktest;
         ajaxScriptByGet("營洽清單", url);
     }
 </script>

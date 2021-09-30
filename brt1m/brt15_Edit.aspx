@@ -109,7 +109,7 @@
         mSC_name = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
 
         //特殊簽核
-        DataRow[] drx = Sys.getGrpidUp("N", "000").Select("grplevel<=1 and grplevel>-1");
+        DataRow[] drx = Sys.getGrpidUp(Sys.GetSession("SeBranch"), "000").Select("grplevel<=1 and grplevel>-1");
         html_selectsign = drx.Option("{master_scode}", "{master_type}---{master_nm}", false);
     }
 
@@ -268,7 +268,7 @@
                 if (Sys.CheckFile(attach_path) == false) {
                     viewserver = "http://" + Sys.MG_IIS;
                     if (add_gr["pdfsource"] == "EGR") {
-                        attach_path = attach_path.Replace("/nbtbrt/", "/MG/");
+                        attach_path = Sys.Path2MG(attach_path);
                     }
                 }
                 dr["attach_path"] = attach_path;
@@ -289,7 +289,7 @@
             if (Sys.CheckFile(attach_path) == false) {
                 if (add_gr["pdfsource"] == "EGR") {
                     viewserver = "http://" + Sys.MG_IIS;
-                    attach_path = attach_path.Replace("/nbtbrt/", "/MG/");
+                    attach_path = Sys.Path2MG(attach_path);
                 }
             }
             dr["attach_path"] = attach_path;

@@ -102,7 +102,7 @@
         if (pFile.IndexOf("\\") > -1) {//絕對路徑
             string a = pFile.Replace("\\", "/").ToLower();//斜線改方向
             //擷取『/XT/』後(含)的字串
-            rtnStr = "http://" + uploadserver_name + "/btbrt" + a.Substring(a.IndexOf("/" + branch + "t/", StringComparison.OrdinalIgnoreCase));
+            rtnStr = "http://" + uploadserver_name + Sys.GetRootDir() + a.Substring(a.IndexOf("/" + branch + "t/", StringComparison.OrdinalIgnoreCase));
         } else {
             rtnStr = "http://" + uploadserver_name + pFile;
         }

@@ -29,7 +29,7 @@
 	protected object oCount=1;
 
 	private void Page_Load(System.Object sender, System.EventArgs e) {
-		using (DBHelper conn = new DBHelper(Session["btbrtdb"].ToString())) {
+		using (DBHelper conn = new DBHelper(Conn.btbrt)) {
 			string SQL = "select * from dmt_attach ";
 			SQL += "where seq = '" + Request["seq"] + "' ";
 			SQL += "and seq1 = '" + Request["seq1"] + "' ";

@@ -126,10 +126,9 @@
                 int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
 
                 if (cnt == 0) {
-                    msg = "該筆交辦資料(" + Min_no + ")已簽核，請通知資訊部！";
+                    msg = "該筆交辦資料(" + Min_no + ")簽核失敗！<BR>(流程狀態已異動，請重新整理畫面)";
                     return false;
                 } else {
-                    //判斷狀態是否已異動,防止開雙視窗
                     //更新todo
                     SQL = "UPDATE " + tblname + " SET";
                     SQL += " Job_status = 'NX' ";
@@ -198,9 +197,6 @@
                     if (master_scode1 != "" && !strCC.Contains(master_scode1)) {
                         strCC.Add(master_scode1 + "@saint-island.com.tw");
                     }
-
-                    strTo = strTo.Distinct().ToList();
-                    strCC = strCC.Distinct().ToList();
                     break;
             }
 

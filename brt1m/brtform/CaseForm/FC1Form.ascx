@@ -172,16 +172,26 @@
             $("#new_no11").val(jMain.case_main[0].apply_no);//申請案號
             $("#ncname111").val(jMain.case_main[0].appl_name);//商標名稱
             //變更事項
-            var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"];
-            for (var m in arr_mod) {
+            //var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"];
+            //for (var m in arr_mod) {
+            //    if (jMain.case_main[0][arr_mod[m]] == "Y") {
+            //        $("#tfzr_" + arr_mod[m]).prop("checked", true);
+            //        $("#tfg1_" + arr_mod[m]).val("Y");
+            //    } else {
+            //        $("#tfzr_" + arr_mod[m]).prop("checked", false);
+            //        $("#tfg1_" + arr_mod[m]).val("N");
+            //    }
+            //}
+            $.each(["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"], function (i, m) {
                 if (jMain.case_main[0][arr_mod[m]] == "Y") {
-                    $("#tfzr_" + arr_mod[m]).prop("checked", true);
-                    $("#tfg1_" + arr_mod[m]).val("Y");
+                    $("#tfzr_" + m).prop("checked", true);
+                    $("#tfg1_" + m).val("Y");
                 } else {
-                    $("#tfzr_" + arr_mod[m]).prop("checked", false);
-                    $("#tfg1_" + arr_mod[m]).val("N");
+                    $("#tfzr1_" + m).prop("checked", false);
+                    $("#tfg1_" + m).val("N");
                 }
-            }
+            });
+
             //附件
             $("#tfzd_remark1").val(jMain.case_main[0].remark1);
             if (jMain.case_main[0].remark1 != "") {

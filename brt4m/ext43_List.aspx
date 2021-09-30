@@ -99,7 +99,7 @@
             td_tscode += "</select>";
         } else {
             pwhescode = "'" + Session["scode"] + "'";
-            td_tscode = "<input type='hidden' id='qryscode' name='qryscode' readonly class='SEdit' value='" + Session["se_scode"] + "'>" + Session["sc_name"];
+            td_tscode = "<input type='text' id='qryscode' name='qryscode' readonly class='SEdit' value='" + Session["se_scode"] + "'>" + Session["sc_name"];
         }
     }
 

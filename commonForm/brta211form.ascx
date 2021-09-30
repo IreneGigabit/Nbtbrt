@@ -229,15 +229,15 @@
             }
         }
         $("#rs_type").val(jData.rs_type).triggerHandler("change");
-        $("#rs_class_name").val(jData.rs_class_name);
-        $("#rs_code_name").val(jData.rs_code_name);
-        $("#act_code_name").val(jData.act_code_name);
         $("#rs_class option[value='" + jData.rs_class + "']").prop("selected", true);
         $("#rs_class").triggerHandler("change");
+        if (jData.rs_class_name) $("#rs_class_name").val(jData.rs_class_name);
         $("#rs_code option[value='" + jData.rs_code + "']").prop("selected", true);
         $("#rs_code").triggerHandler("change");
+        if (jData.rs_code_name) $("#rs_code_name").val(jData.rs_code_name);
         $("#act_code option[value='"+jData.act_code+"']").prop("selected", true);
         $("#act_code").triggerHandler("change");
+        if (jData.act_code_name) $("#act_code_name").val(jData.act_code_name);
         $("#act_sqlno").val(jData.act_sqlno);
         $("#ocase_stat").val(jData.ocase_stat);
         $("#ncase_stat").val(jData.ncase_stat);
@@ -298,6 +298,7 @@
 
     //依結構分類帶案性代碼
     $("#rs_class").change(function () {
+        $("#rs_class_name").val($("#rs_class option:selected").text());
         $("#rs_code").getOption({//案性代碼
             url: getRootPath() + "/ajax/json_rs_code.aspx",
             data: { cgrs: $("#cgrs").val(), rs_class: $("#rs_class").val(), rs_type: $("#rs_type").val() },
@@ -309,6 +310,7 @@
 
     //依案性帶處理事項
     $("#rs_code").change(function () {
+        $("#rs_code_name").val($("#rs_code option:selected").text());
         $("#act_code").getOption({//處理事項
             url: getRootPath() + "/ajax/json_act_code.aspx",
             data: { cgrs: $("#cgrs").val(), rs_class: $("#rs_class").val(), rs_code: $("#rs_code").val() },
@@ -699,7 +701,7 @@
             alert("尚未產生客戶函!!!");
             return false;
         }
-        window.open("/nbtbrt/brtam/brta522Print.aspx?prgid=<%=prgid%>&closewin=Y&srs_no="+$("#cs_rs_no").val()+"&ers_no="+$("#cs_rs_no").val()+"&sseq="+$("#seq").val()+"&eseq="+$("#seq").val(),"myWindowOneN", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no, scrollbars=yes,titlebar=no");
+        window.open(getRootPath() + "/brtam/brta522Print.aspx?prgid=<%=prgid%>&closewin=Y&srs_no=" + $("#cs_rs_no").val() + "&ers_no=" + $("#cs_rs_no").val() + "&sseq=" + $("#seq").val() + "&eseq=" + $("#seq").val(), "myWindowOneN", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no, scrollbars=yes,titlebar=no");
     }
 
     //客函不需寄發或延期寄發原因代碼

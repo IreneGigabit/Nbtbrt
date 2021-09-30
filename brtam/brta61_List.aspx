@@ -62,7 +62,7 @@
     private void QueryData() {
         SQL = "select a.seq,a.seq1,a.in_date,appl_name,a.cust_area,a.cust_seq,apply_no,b.ap_cname1,a.step_grade,a.end_date,a.class";
         SQL += ",c.code_name,a.scode,min(d.ctrl_date) as ctrl_date,a.cust_prod ";
-        SQL += ",''fseq,''a_last_date,''scode1_name ";
+        SQL += ",''end_star,''fseq,''a_last_date,''scode1_name ";
         SQL += " from dmt a ";
         SQL += " inner join apcust b on a.cust_seq=b.cust_seq ";
         SQL += " left outer join cust_code c on c.code_type='Tcase_stat' and a.now_stat=c.cust_code ";
@@ -186,7 +186,7 @@
             //案號
             dr["fseq"] = Sys.formatSeq1(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
             if (dr.SafeRead("end_date", "") != "") {
-                dr["fseq"] += "<font color=red>*</font>";
+                dr["end_star"] = "<font color=red>*</font>";
             }
             //尚未銷管法定期限
             dr["a_last_date"] = GetLastDate(dr);
@@ -315,7 +315,7 @@
 			<ItemTemplate>
 		        <tr align="center" class="sfont9">
 			        <td nowrap style="cursor: pointer;"onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" onclick="CapplClick('<%#Eval("seq")%>', '<%#Eval("seq1")%>')">
-                        <%#Eval("fseq")%>
+                        <%#Eval("end_star")%><%#Eval("fseq")%>
 			        </td>
 			        <td nowrap><%#Eval("step_grade")%></td>
 			        <td><%#Eval("code_name")%></td>
@@ -330,8 +330,8 @@
 	                <td><%#Eval("scode1_name")%></td>
 			        <td>
 				        <input type="hidden" name="sort">
-				        <a href="brta61_Edit.aspx?prgid=<%=prgid%>&submitTask=Q&aseq=<%#Eval("seq")%>&aseq1=<%#Eval("seq1")%>&QType=A&FrameBlank=50" target="Eblank">[查詢]</a>
-			            <a href="brta61_list2.aspx?prgid=<%=prgid%>&seq=<%#Eval("seq")%>&seq1=<%#Eval("seq1")%>" target="Eblank"><img src="<%=Page.ResolveUrl("~/images/ok.gif")%>" border=0 title="案件流程狀態查詢"></a>
+                        <a href="brta61_Edit.aspx?prgid=<%=prgid%>&submitTask=Q&aseq=<%#Eval("seq")%>&aseq1=<%#Eval("seq1")%>&QType=A&FrameBlank=50" target="Eblank">[查詢]</a>
+                        <a href="brta61_list2.aspx?prgid=<%=prgid%>&seq=<%#Eval("seq")%>&seq1=<%#Eval("seq1")%>" target="Eblank"><img src="<%=Page.ResolveUrl("~/images/ok.gif")%>" border=0 title="案件流程狀態查詢"></a>
 			        </td>
 		        </tr>
 

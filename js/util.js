@@ -122,10 +122,28 @@ function ajaxByPost(url, param) {
 //#endregion
 
 //#region ajaxScriptByGet - ajax function(get)
-function ajaxScriptByGet(titleName, url) {
+function ajaxScriptByGet(titleName, url, data) {
     $.ajax({
         url: url,
         type: "get",
+        data: data,
+        dataType: "script",
+        async: false,
+        cache: false,
+        error: function (xhr) {
+            $("#dialog").html("<a href='" + this.url + "' target='_new'>" + titleName + "<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+            $("#dialog").dialog({ title: titleName + '失敗！', modal: true, maxHeight: 500, width: "90%" });
+        }
+    });
+}
+//#endregion
+
+//#region ajaxScriptByPost - ajax function(post)
+function ajaxScriptByPost(titleName, url, data) {
+    $.ajax({
+        url: url,
+        data: data,
+        type: "post",
         dataType: "script",
         async: false,
         cache: false,

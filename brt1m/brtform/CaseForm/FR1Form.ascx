@@ -440,7 +440,7 @@
                 }
                 //**備註
                 var arrItem = jMain.case_tran[0].other_item.split("|");
-                for (var ix in arrItem) {
+                $.each(arrItem, function (ix, m) {
                     if (arrItem[ix].indexOf(";") > -1) {
                         var oitem = arrItem[ix].split(";");
                         if (oitem[0].indexOf(",") > -1) {
@@ -466,7 +466,7 @@
                             }
                         }
                     }
-                }
+                });
             }
            
             //延展商標權範圍及內容

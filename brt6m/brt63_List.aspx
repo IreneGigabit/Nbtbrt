@@ -286,7 +286,9 @@
 
         if (row.SafeRead("opt_stat", "") == "" || row.SafeRead("opt_stat", "") == "X") {
             todo_name = "自行發文";
+            //[自行發文]
             todo_link = Page.ResolveUrl("~/brt6m/brt63_edit.aspx") + "?prgid=" + prgid+"&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&erpt_code=" + row["erpt_code"] + "&att_sqlno=" + row["att_sqlno"];
+            //[發文維護]
             todo_link1 = todo_link;
         }
 
@@ -305,17 +307,18 @@
             //todo_link += "&homelist=" + Request["homelist"];
             //todo_link += "&uploadtype=case";
             //todo_link += "&submittask=Show";
+            //[專案室發文]
             todo_link = Sys.getCase11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Show");
             todo_link += "&todo_sqlno=" + row["todo_sqlno"];
             todo_link += "&rs_no=" + row["rs_no"];
-            todo_link += "&seq=" + row["seq"];
-            todo_link += "&seq1=" + row["seq1"];
-            todo_link += "&case_no=" + row["case_no"];
+            //todo_link += "&seq=" + row["seq"];
+            //todo_link += "&seq1=" + row["seq1"];
+            //todo_link += "&case_no=" + row["case_no"];
             todo_link += "&ctrl_date=" + row.GetDateTimeString("ctrl_date", "yyyy/M/d");
-            todo_link += "&step_grade=" + row["step_grade"];
+            //todo_link += "&step_grade=" + row["step_grade"];
             todo_link += "&step_date=" + row.GetDateTimeString("step_date","yyyy/M/d");
             todo_link += "&contract_flag=" + row["contract_flag"];
-
+            //[發文維護]
             todo_link1 = "brt63_edit.aspx?prgid=" + prgid + "&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&erpt_code=" + row["erpt_code"] + "&att_sqlno=" + row["att_sqlno"];
         }
         //950928為有關爭救案理由後補之收費情形,避免造成收費重覆新加入程式做控制,2010/8/6規費已支出不能發文	
@@ -323,7 +326,7 @@
             todo_name = "<font color=red>規費已支出</font>";
             todo_link = "";
         }
-        //不需發文link
+        //[不需發文]
         untodo_link = Page.ResolveUrl("~/brt6m/brt63_edit.aspx") + "?prgid=" + prgid + "&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&task=cancel";
 
         string seq = row.SafeRead("seq", "");
@@ -392,9 +395,8 @@
 
             //有電子申請書優先
             if (erpt_code == "" & reportp != "") {//沒有電子申請書才顯示紙本申請書
-                //***todo
                 /*select reportp,classp,* from code_br 
-                where reportp in('FD2','FC11','FC21','FL5','FT1','FP1','FP2','B5C1') --,'FOB'
+                where reportp in('FC11','FC21','FOB','FD2','B5C1','FT1','FP1','FP2','FL5') --
                 order by rs_class
                  */
                 if (Eval("prt_code") != "ZZ" && Eval("prt_code") != "D9Z" && Eval("ar_form") != "D3") {
@@ -516,9 +518,9 @@
         if (gs_contract_flag == "Y") {
             //正常簽核
             string se_grpid = "000", mSC_code = "", mSC_name = "";
-            Sys.getGrpidMaster(Sys.GetSession("SeBranch"), ref se_grpid, ref mSC_code, ref mSC_name);
+            Sys.getGrpidMaster(Sys.GetSession("SeBranch"), se_grpid, ref mSC_code, ref mSC_name);
             //特殊簽核
-            DataRow[] drx = Sys.getGrpidUp("N", "000").Select("grplevel=1");
+            DataRow[] drx = Sys.getGrpidUp(Sys.GetSession("SeBranch"), "000").Select("grplevel=1");
             //SQL = "select '3'id,'區所主管'tname,Master_scode,s.sc_name from Grpid g inner join scode s on g.Master_scode = s.scode where Grpid like '000' and grpclass='" + Session["seBranch"] + "' ";
             //SQL += "union all ";
             //SQL += "select '31'id,'區所主管代理'tname,agent_scode,s.sc_name from grpid g inner join scode s on g.agent_scode = s.scode where grpid like '000' and grpclass='" + Session["seBranch"] + "' and agent_scode not in ('" + mSC_code + "') ";
@@ -895,7 +897,6 @@
 
     //顯示收發進度
     function showStep(seq,seq1){
-        //***todo
         window.open(getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" +seq+ "&aseq1=" +seq1,"myWindowOne", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 

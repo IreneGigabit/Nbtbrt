@@ -42,6 +42,7 @@
         ReqVal["step_grade"] = (Request["step_grade"] ?? "").Trim();
         if (ReqVal["step_grade"] == "") ReqVal["step_grade"] = "0";
         ReqVal["source"] = (Request["source"] ?? "").Trim();
+        if (ReqVal["source"] == "tran") ReqVal["step_grade"] = "";//轉案沒有setep_grade
         ReqVal["in_no"] = (Request["in_no"] ?? "").Trim();//接洽序號
         ReqVal["attach_sqlno"] = (Request["attach_sqlno"] ?? "").Trim();//dmt_attach.attach_sqlno
         ReqVal["att_sqlno"] = (Request["att_sqlno"] ?? "").Trim();//dmt_attach.att_sqlno相關流水號

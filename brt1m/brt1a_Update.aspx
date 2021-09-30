@@ -145,7 +145,7 @@
         body += "【案件名稱】 : <B>" + appl_name + "</B><br>";
         body += "【案性】 : <B>" + arcase_name + "</B><br>";
         body += "【法定期限】 : <font color=red><B>" + last_date + "</font></B><br>";
-        body += "◎請連至下列網址簽核: <br><a href=\"http://" + Sys.Host + "/nbtbrt/maillogin.aspx?prgid=brt34&mail=mail&scode=" + Job_Scode + "&syscode=" + Session["seBranch"] + "tbrt\">【請登錄】</a>";
+        body += "◎請連至下列網址簽核: <br><a href=\"http://" + Sys.Host + Sys.GetRootDir() + "/maillogin.aspx?prgid=brt34&mail=mail&scode=" + Job_Scode + "&syscode=" + Session["seBranch"] + "tbrt\">【請登錄】</a>";
 
         Sys.DoSendMail(Subject, body, strFrom, strTo, strCC, strBCC);
     }

@@ -138,51 +138,52 @@
     }
     
     //[作業]
-    protected string GetButton(DataRow row,int nRow) {
-        string rtn="";
-        string prvPath="",href_update="",href_del="";
-        
-        string seq=row.SafeRead("seq", "");
-        string seq1=row.SafeRead("seq1", "");
-        string step_grade=row.SafeRead("step_grade", "");
-        string source=row.SafeRead("source", "");
+    protected string GetButton(DataRow row, int nRow) {
+        string rtn = "";
+        string prvPath = "", href_update = "", href_del = "";
+
+        string seq = row.SafeRead("seq", "");
+        string seq1 = row.SafeRead("seq1", "");
+        string step_grade = row.SafeRead("step_grade", "");
+        string source = row.SafeRead("source", "");
         string attach_path = row.SafeRead("attach_path", "");
-        string attach_sqlno=row.SafeRead("attach_sqlno", "");
-        
+        string attach_sqlno = row.SafeRead("attach_sqlno", "");
+
         //檢視
-		if (source=="OPT"){
+        if (source == "OPT") {
             //\opt\opt_file\attach/2009/000087/NT57596附件.pdf
-            prvPath="http://"+Sys.Opt_IIS+Sys.Path2Nopt(attach_path);
-        }else{
+            prvPath = "http://" + Sys.Opt_IIS + Sys.Path2Nopt(attach_path);
+        } else {
+            attach_path = Sys.Path2Nbtbrt(attach_path);
             ///btbrt/IPOGR/TTGR/N/20140609/103008678_10390502830_1/103008678_正本_1_10390502830.pdf
-			if (source=="EGR" ||source=="EGS"){
-				//先檢查本機檔案
-				if (Sys.CheckFile(Sys.Path2Nbtbrt(attach_path)) ==false){
-					prvPath="http://"+Sys.MG_IIS+ Regex.Replace(attach_path, "/btbrt", "/MG", RegexOptions.IgnoreCase);
-            }else{
-                    prvPath="http://"+Sys.Host+Sys.Path2Nbtbrt(attach_path);
-            }
-            }else{
-                prvPath="http://"+Sys.Host+Sys.Path2Nbtbrt(attach_path);
+            if (source == "EGR" || source == "EGS") {
+                //先檢查本機檔案
+                if (Sys.CheckFile(attach_path) == false) {
+                    prvPath = "http://" + Sys.MG_IIS + Sys.Path2MG(attach_path);
+                } else {
+                    prvPath = "http://" + Sys.Host + attach_path;
+                }
+            } else {
+                prvPath = "http://" + Sys.Host + attach_path;
             }
         }
-		
-		//修改
+
+        //修改
         href_update = HTProgPrefix + "_Edit.aspx?prgid=" + prgid + "&attach_sqlno=" + attach_sqlno + "&seq=" + seq + "&seq1=" + seq1 + "&step_grade=" + step_grade + "&source=" + source + "&submittask=U";
-		//刪除
+        //刪除
         href_del = HTProgPrefix + "_Edit.aspx?prgid=" + prgid + "&attach_sqlno=" + attach_sqlno + "&seq=" + seq + "&seq1=" + seq1 + "&step_grade=" + step_grade + "&source=" + source + "&submittask=D";
 
         if ((HTProgRight & 2) > 0) {
             rtn += "<a href=\"javascript:void(0)\" class=\"preview\" v1=\"" + prvPath.GetUrlStr() + "\" id=\"preview" + nRow + "\" title=\"" + prvPath + "\">[檢視]</a>\n";
         }
-		if (source!="OPT" && source!="EGS"){//爭救案系統上傳/電子收據不能維護
-            if (((HTProgRight & 8) > 0&&source!="scan")||((HTProgRight & 256) > 0&&source=="EGR")) {
-                rtn+="<br><a href=\""+href_update+"\" target=\"Eblank\">[修改]</a>";
+        if (source != "OPT" && source != "EGS") {//爭救案系統上傳/電子收據不能維護
+            if (((HTProgRight & 8) > 0 && source != "scan") || ((HTProgRight & 256) > 0 && source == "EGR")) {
+                rtn += "<br><a href=\"" + href_update + "\" target=\"Eblank\">[修改]</a>";
             }
-            if (((HTProgRight & 16) > 0&&source!="scan")||((HTProgRight & 256) > 0&&source=="EGR")) {
-                rtn+="<br><a href=\""+href_del+"\" target=\"Eblank\">[刪除]</a>";
+            if (((HTProgRight & 16) > 0 && source != "scan") || ((HTProgRight & 256) > 0 && source == "EGR")) {
+                rtn += "<br><a href=\"" + href_del + "\" target=\"Eblank\">[刪除]</a>";
             }
-		}
+        }
 
         return rtn;
     }

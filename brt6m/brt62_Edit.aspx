@@ -293,7 +293,7 @@
 
         //文件清單
         $("#tabfile" + fld + ">tbody").empty();
-        upload_form.bind(jMain.dmt_attach);
+        upload_form.bind(jMain.dmt_attach,true);//顯示上傳文件資料/是否顯示原始檔名
         /*
         $.each(jMain.dmt_attach, function (i, item) {
             upload_form.appendFile();//增加一筆

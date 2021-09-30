@@ -381,7 +381,7 @@
         brta21form.bind(jMain.add_zs);//主檔資料
         brta34form.bind(jMain.add_zs,jMain.cr_case);//發文資料/對應客收交辦
         brta212form.bind(jMain.add_zs,jMain.zs_ctrl);//管制資料
-        upload_form.bind(jMain.case_attach);//顯示上傳文件資料
+        upload_form.bind(jMain.case_attach,false);//顯示上傳文件資料/是否顯示原始檔名
 
         if($("#submittask").val()=="A"){
             //主檔資料

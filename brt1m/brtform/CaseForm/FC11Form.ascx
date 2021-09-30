@@ -240,16 +240,26 @@
             //商標種類
             $("input[name=fr11_S_Mark][value='" + jMain.case_main[0].s_mark + "']").prop("checked", true);
             //變更事項
-            var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_claim1", "mod_oth", "mod_oth1", "mod_oth2"];
-            for (var m in arr_mod) {
+            //var arr_mod = ["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_claim1", "mod_oth", "mod_oth1", "mod_oth2"];
+            //for (var m in arr_mod) {
+            //    if (jMain.case_main[0][arr_mod[m]] == "Y") {
+            //        $("#tfzr1_" + arr_mod[m]).prop("checked", true);
+            //        $("#ttfg1_" + arr_mod[m]).val("Y");
+            //    } else {
+            //        $("#tfzr1_" + arr_mod[m]).prop("checked", false);
+            //        $("#ttfg1_" + arr_mod[m]).val("N");
+            //    }
+            //}
+            $.each(["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_claim1", "mod_oth", "mod_oth1", "mod_oth2"], function (i, m) {
                 if (jMain.case_main[0][arr_mod[m]] == "Y") {
-                    $("#tfzr1_" + arr_mod[m]).prop("checked", true);
-                    $("#ttfg1_" + arr_mod[m]).val("Y");
+                    $("#tfzr1_" + m).prop("checked", true);
+                    $("#ttfg1_" + m).val("Y");
                 } else {
-                    $("#tfzr1_" + arr_mod[m]).prop("checked", false);
-                    $("#ttfg1_" + arr_mod[m]).val("N");
+                    $("#tfzr1_" + m).prop("checked", false);
+                    $("#ttfg1_" + m).val("N");
                 }
-            }
+            });
+
             //變更一案多件
             if (main.prgid == "brt52") {
                 $("#tot_num11").lock();

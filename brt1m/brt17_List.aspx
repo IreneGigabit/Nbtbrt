@@ -4,16 +4,23 @@
 <%@ Import Namespace = "System.Collections.Generic"%>
 <%@ Import Namespace = "Newtonsoft.Json"%>
 <%@ Import Namespace = "Newtonsoft.Json.Linq"%>
+<%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
 
 <script runat="server">
     protected string HTProgCap = "國內案洽案記錄刪除作業";// HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgPrefix = "brt17";//程式檔名前綴
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
 
     protected string SQL = "";
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
+    protected Paging page = null;
+
+    protected string StrFormBtnTop = "";
+    protected string StrFormBtn = "";
+    protected string FormName = "";
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
         Response.CacheControl = "no-cache";
@@ -26,7 +33,18 @@
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
+        if (HTProgRight >= 0) {
+            PageLayout();
+            QueryData();
+            this.DataBind();
+        }
+    }
 
+    private void PageLayout() {
+        StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx?prgid=" + prgid + ">[回查詢]</a>";
+    }
+
+    private void QueryData() {
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             SQL = "SELECT a.In_scode,a.In_no,a.case_no,a.Seq,a.Seq1,a.Service, a.Fees,a.oth_money, b.appl_name, b.class ";
@@ -74,7 +92,7 @@
             //處理分頁
             int nowPage = Convert.ToInt32(Request["GoPage"] ?? "1"); //第幾頁
             int PerPageSize = Convert.ToInt32(Request["PerPage"] ?? "10"); //每頁筆數
-            Paging page = new Paging(nowPage, PerPageSize, SQL);
+            page = new Paging(nowPage, PerPageSize, SQL);
             page.GetPagedTable(dt);
 
             //分頁完再處理其他資料才不會虛耗資源
@@ -188,14 +206,9 @@
                 dr["urlasp"] = urlasp;
                 dr["nx_link"] = GetNXLink(dr, new_form);
             }
-            var settings = new JsonSerializerSettings()
-            {
-                Formatting = Formatting.Indented,
-                ContractResolver = new LowercaseContractResolver(),//key統一轉小寫
-                Converters = new List<JsonConverter> { new DBNullCreationConverter(), new TrimCreationConverter() }//dbnull轉空字串且trim掉
-            };
-            Response.Write(JsonConvert.SerializeObject(page, settings).ToUnicode());
-            Response.End();
+
+            dataRepeater.DataSource = page.pagedTable;
+            dataRepeater.DataBind();
         }
     }
 
@@ -246,3 +259,168 @@
     }
 </script>
 
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><%#HTProgCap%></title>
+    <uc1:head_inc_form runat="server" ID="head_inc_form" />
+</head>
+
+<body>
+<table cellspacing="1" cellpadding="0" width="98%" border="0" align="center">
+    <tr>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%#prgid%> <%#HTProgCap%>】</td>
+        <td class="FormLink" valign="top" align="right" nowrap="nowrap">
+            <%#StrFormBtnTop%>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><hr class="style-one"/></td>
+    </tr>
+</table>
+
+<form id="regPage" name="regPage" method="post">
+    <%#page.GetHiddenText("GoPage,PerPage,SetOrder,chktest")%>
+    <div id="divPaging" style="display:<%#page.totRow==0?"none":""%>">
+    <TABLE border=0 cellspacing=1 cellpadding=0 width="98%" align="center">
+	    <tr>
+		    <td colspan=2 align=center>
+			    <font size="2" color="#3f8eba">
+				    第<font color="red"><span id="NowPage"><%#page.nowPage%></span>/<span id="TotPage"><%#page.totPage%></span></font>頁
+				    | 資料共<font color="red"><span id="TotRec"><%#page.totRow%></span></font>筆
+				    | 跳至第
+				    <select id="GoPage" name="GoPage" style="color:#FF0000"><%#page.GetPageList()%></select>
+				    頁
+				    <span id="PageUp" style="display:<%#page.nowPage>1?"":"none"%>">| <a href="javascript:void(0)" class="pgU" v1="<%#page.nowPage-1%>">上一頁</a></span>
+				    <span id="PageDown" style="display:<%#page.nowPage<page.totPage?"":"none"%>">| <a href="javascript:void(0)" class="pgD" v1="<%#page.nowPage+1%>">下一頁</a></span>
+				    | 每頁筆數:
+				    <select id="PerPage" name="PerPage" style="color:#FF0000">
+					    <option value="10" <%#page.perPage==10?"selected":""%>>10</option>
+					    <option value="20" <%#page.perPage==20?"selected":""%>>20</option>
+					    <option value="30" <%#page.perPage==30?"selected":""%>>30</option>
+					    <option value="50" <%#page.perPage==50?"selected":""%>>50</option>
+				    </select>
+                    <input type="hidden" name="SetOrder" id="SetOrder" value="<%#ReqVal.TryGet("qryOrder")%>" />
+			    </font><%#DebugStr%>
+		    </td>
+	    </tr>
+    </TABLE>
+    </div>
+</form>
+
+<div align="center" id="noData" style="display:<%#page.totRow==0?"":"none"%>">
+	<font color="red">=== 目前無資料 ===</font>
+</div>
+
+<form style="margin:0;" id="reg" name="reg" method="post">
+<asp:Repeater id="dataRepeater" runat="server">
+<HeaderTemplate>
+    <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%" align="center" id="dataList">
+	<thead>
+        <Tr>
+	        <td align="center" class="lightbluetable" width="5%">接洽序號</td>
+	        <td align="center" class="lightbluetable" width="10%">客戶名稱</td>
+	        <td align="center" class="lightbluetable" width="20%">案件名稱</td>	
+	        <td align="center" class="lightbluetable">類別</td>
+	        <td align="center" class="lightbluetable" width="15%">案性</td>
+	        <td align="center" class="lightbluetable">服務費</td>
+	        <td align="center" class="lightbluetable">規費</td>
+	        <td align="center" class="lightbluetable">轉帳<br>費用</td>
+	        <td align="center" class="lightbluetable">合計</td>
+	        <td align="center" class="lightbluetable">折扣</td>
+	        <td align="center" class="lightbluetable">註記</td>
+	        <td align="center" class="lightbluetable">作業</td>
+        </tr>
+	</thead>
+	<tbody>
+</HeaderTemplate>
+<ItemTemplate>
+ 		<tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
+	        <td class="whitetablebg" align="center">
+                <a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("in_scode")%>-<%#Eval("in_no")%><%#Eval("case_num_txt")%></A>
+                <input type=hidden id="inscode_<%#(Container.ItemIndex+1)%>" name="inscode_<%#(Container.ItemIndex+1)%>" value="<%#Eval("in_scode")%>">
+                <input type=hidden id="inno_<%#(Container.ItemIndex+1)%>" name="inno_<%#(Container.ItemIndex+1)%>" value="<%#Eval("in_no")%>">
+                <input type=hidden id="case_no_<%#(Container.ItemIndex+1)%>" name="case_no_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_no")%>">
+                <input type=hidden id="seq_<%#(Container.ItemIndex+1)%>" name="seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq")%>">
+                <input type=hidden id="seq1_<%#(Container.ItemIndex+1)%>" name="seq1_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq1")%>">
+                <input type=hidden id="cust_area_<%#(Container.ItemIndex+1)%>" name="cust_area_<%#(Container.ItemIndex+1)%>" value="<%#Eval("cust_area")%>">
+                <input type=hidden id="cust_seq_<%#(Container.ItemIndex+1)%>" name="cust_seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("cust_seq")%>">
+                <input type=hidden id="arcase_<%#(Container.ItemIndex+1)%>" name="arcase_<%#(Container.ItemIndex+1)%>" value="<%#Eval("arcase")%>">
+                <input type=hidden id="stat_code_<%#(Container.ItemIndex+1)%>" name="stat_code_<%#(Container.ItemIndex+1)%>" value="<%#Eval("stat_code")%>">
+                <input type=hidden id="appl_name_<%#(Container.ItemIndex+1)%>" name="appl_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("appl_name")%>">
+                <input type=hidden id="cust_name_<%#(Container.ItemIndex+1)%>" name="cust_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("cust_name")%>">
+                <input type=hidden id="case_num_<%#(Container.ItemIndex+1)%>" name="case_num_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_num")%>">
+            </td>
+	        <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("cust_name")%></A></td> 
+	        <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("appl_name")%></A></td>
+	        <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("class")%></A></td>
+	        <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("case_name")%></A></td>
+	        <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("service")%></A></td>
+	        <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("fees")%></A></td>
+	        <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("oth_money")%></A></td>
+	        <td class="whitetablebg" align="center"><%#Eval("sum_txt")%></td>
+	        <td class="whitetablebg" align="center"><%#Eval("dis_txt")%></td>
+            <td class="whitetablebg" align="center" title="主管簽退說明" ><span style="color:red"><%#Eval("nx_link")%></span></td>
+	        <td class="whitetablebg" align="center"><a href="javascript:void(0)" onclick="actDel('<%#(Container.ItemIndex+1)%>')">[刪除]</a></td>
+	    </tr>
+</ItemTemplate>
+<FooterTemplate>
+	</tbody>
+    </table>
+</FooterTemplate>
+</asp:Repeater>
+
+    <%#DebugStr%>
+</form>
+
+<div id="dialog"></div>
+
+</body>
+</html>
+
+<script language="javascript" type="text/javascript">
+    $(function () {
+        if (window.parent.tt !== undefined) {
+            window.parent.tt.rows = "100%,0%";
+        }
+
+        $(".Lock").lock();
+        $("input.dateField").datepick();
+    });
+
+    //執行查詢
+    function goSearch() {
+        $("#regPage").submit();
+    };
+
+    //[刪除]
+    function actDel(row) {
+        var pin_scode = $("#inscode_" + row).val();
+        var pin_no = $("#inno_" + row).val();
+        var pcase_no = $("#case_no_" + row).val();
+        var pcase_stat = $("#stat_code_" + row).val();
+        var pappl_name = $("#appl_name_" + row).val();
+        var pcust_name = "";//$("#cust_name_" + row).val();
+        var parcase = $("#arcase_" + row).val();
+        var pseq = $("#seq_" + row).val();
+        var pseq1 = $("#seq1_" + row).val();
+        var pcust_areq = $("#cust_area_" + row).val();
+        var pcust_seq = $("#cust_seq_" + row).val();
+        var chktest = ($("#chkTest:checked").val() || "");
+
+        var msg = "接洽序號:" + pin_scode + "-" + pin_no + "\n\n是否確定刪除?";
+        if (confirm(msg)) {
+            //var url = getRootPath() + "/brt1m/brt17_save.aspx?submitTask=D" +
+            //        "&in_scode=" + pin_scode + "&in_no=" + pin_no + "&case_no=" + pcase_no + "&case_stat=" + pcase_stat +
+            //        "&cappl_name=" + pappl_name + "&ap_cname1=" + pcust_name + "&arcase=" + parcase + "&seq=" + pseq +
+            //        "&seq1=" + pseq1 + "&cust_area=" + pcust_areq + "&cust_seq=" + pcust_seq;
+            var url = getRootPath() + "/brt1m/brt17_save.aspx?submitTask=D";
+            var data = {
+                "in_scode": pin_scode, "in_no": pin_no, "case_no": pcase_no, "case_stat": pcase_stat
+                , "cappl_name": pappl_name, "ap_cname1": pcust_name, "arcase": parcase, "seq": pseq
+                , "seq1": pseq1, "cust_area": pcust_areq, "cust_seq": pcust_seq
+            }
+            ajaxScriptByGet("刪除接洽記錄", url, data);
+        }
+    }
+</script>

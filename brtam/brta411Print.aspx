@@ -276,9 +276,11 @@
 
                 //更新為已列印
                 if (updRsNo.Count > 0) {
-                    SQL = "update step_dmt set new='Y' where rs_no in('" + string.Join("','", updRsNo.ToArray()) + "')";
-                    conn.ExecuteNonQuery(SQL);
-                    conn.Commit();
+                    if (Request["rprint"] == "N") {
+                        SQL = "update step_dmt set new='Y' where rs_no in('" + string.Join("','", updRsNo.ToArray()) + "')";
+                        conn.ExecuteNonQuery(SQL);
+                        conn.Commit();
+                    }
                 }
             } else {
                 strOut.AppendLine("<script language=\"javascript\">");

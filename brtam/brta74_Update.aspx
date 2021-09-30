@@ -68,7 +68,7 @@
                         object objResult = conn.ExecuteScalar(SQL);
                         int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
                         if (cnt == 0) {
-                            throw new Exception("修改" + Session["seBranch"] + "T" + tmp_seq + "-" + tmp_seq1 + "程序結案處理狀態失敗");
+                            throw new Exception(Session["seBranch"] + "T" + tmp_seq + "-" + tmp_seq1 + "程序結案處理失敗(狀態已異動，請重新整理畫面)");
                         } else {
                             Update_dmt(i);
                             update_ctrl_dmt(i);

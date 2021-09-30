@@ -191,7 +191,7 @@ main.bind = function () {
         var fld = $("#uploadfield").val();
         $("#tabfile" + fld + ">tbody").empty();
         $("#" + fld + "_filenum").val("0");
-        upload_form.bind(jMain.case_attach);//顯示上傳文件資料
+        upload_form.bind(jMain.case_attach, true);//顯示上傳文件資料/是否顯示原始檔名
         /*$.each(jMain.case_attach, function (i, item) {
             var fld = $("#uploadfield").val();
             upload_form.appendFile();//增加一筆

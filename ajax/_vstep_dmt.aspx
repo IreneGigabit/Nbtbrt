@@ -191,7 +191,7 @@
                 if (Sys.CheckFile(attach_path) == false) {
                     viewserver = "http://" + Sys.MG_IIS;
                     if (step_data["pdfsource"] == "EGR") {
-                        attach_path = attach_path.Replace("/nbtbrt/", "/MG/");
+                        attach_path = Sys.Path2MG(attach_path);
                     }
                 }
                 dr0["attach_path"] = attach_path;
@@ -236,6 +236,12 @@
                 if (dr0.Read()) {
                     step_data["in_scode"] = dr0.SafeRead("in_scode", "");
                     step_data["in_no"] = dr0.SafeRead("in_no", "");
+                    
+                    //因客收進度不會有收據種類,要反抓交辦檔
+                    if (step_data["cgrs"] == "CR") {
+                        step_data["receipt_type"] = dr0.SafeRead("receipt_type", "");
+                        step_data["receipt_title"] = dr0.SafeRead("receipt_title", "");
+                    }
                 }
             }
 

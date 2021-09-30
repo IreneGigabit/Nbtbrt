@@ -659,7 +659,7 @@
                     for (int c = 0; c < dtEdoc.Rows.Count; c++) {
                         DataRow dr0 = dtEdoc.Rows[c];
                         attach_no++;
-                        string attach_path = dr0.SafeRead("attach_path", "").Replace("/MG", "/btbrt");
+                        string attach_path = Sys.PathMG2Nbtbrt(dr0.SafeRead("attach_path", ""));
                         SQL = "insert into dmt_attach ";
                         ColMap.Clear();
                         ColMap["Seq"] = Util.dbchar(tseq);
@@ -669,7 +669,7 @@
                         ColMap["in_date"] = "getdate()";
                         ColMap["in_scode"] = "'" + Session["scode"] + "'";
                         ColMap["Attach_no"] = Util.dbchar(attach_no.ToString());
-                        ColMap["attach_path"] = Util.dbchar(attach_path);
+                        ColMap["attach_path"] = Util.dbchar(Sys.Path2Btbrt(attach_path));
                         ColMap["doc_type"] = Util.dbchar(dr0.SafeRead("br_doc_type", ""));
                         ColMap["attach_desc"] = Util.dbnull(dr0.SafeRead("attach_desc", ""));
                         ColMap["Attach_name"] = Util.dbnull(dr0.SafeRead("attach_name", ""));

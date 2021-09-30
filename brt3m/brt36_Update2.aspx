@@ -140,7 +140,6 @@
                     msg = "案件 " + fseq + " 簽核失敗<BR>(流程狀態已異動，請重新整理畫面)";
                     return false;
                 } else {
-                    //判斷狀態是否已異動,防止開雙視窗
                     //更新todo
                     SQL = "UPDATE " + tblname + " SET";
                     SQL += " Job_status = 'XS' ";
@@ -240,9 +239,6 @@
                     if (master_scode2 != "" && !strCC.Contains(master_scode2)) {
                         strCC.Add(master_scode2 + "@saint-island.com.tw");
                     }
-
-                    strTo = strTo.Distinct().ToList();
-                    strCC = strCC.Distinct().ToList();
                     break;
             }
 

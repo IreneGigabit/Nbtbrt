@@ -255,7 +255,7 @@
             if (Sys.CheckFile(attach_path) == false) {
                 viewserver = "http://" + Sys.MG_IIS;
                 if (step_data["pdfsource"] == "EGR") {
-                    attach_path = attach_path.Replace("/nbtbrt/", "/MG/");
+                    attach_path = Sys.Path2MG(attach_path);
                 }
             }
             dr["attach_path"] = attach_path;

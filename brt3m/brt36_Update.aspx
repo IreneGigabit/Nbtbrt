@@ -114,14 +114,12 @@
                 string seq1 = ReqVal.TryGet("seq1_" + i);
                 string country = ReqVal.TryGet("country_" + i);
                 string tdept = "";
-                string fseq = "";
                 if (dept == "t")
                     tdept = "T";
                 else
                     tdept = "TE";
 
-                fseq = Sys.formatSeq(seq, seq1, country, Sys.GetSession("seBranch"), tdept);
-
+                string fseq = Sys.formatSeq(seq, seq1, country, Sys.GetSession("seBranch"), tdept);
 
                 //判斷狀態是否已異動,防止開雙視窗
                 //SQL = "select count(*) from " + tblname + " where in_no='20200203001' and Job_status<>'NN'";
@@ -269,7 +267,6 @@
                     break;
                 default:
                     strTo.Add(Request["signidnext"] + "@saint-island.com.tw");
-                    strTo = strTo.Distinct().ToList();
                     break;
             }
 

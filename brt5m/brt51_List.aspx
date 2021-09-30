@@ -65,7 +65,7 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a href='" + HTProgPrefix + ".aspx?prgid=" + prgid + "'>[回上一頁]</a>";
+        StrFormBtnTop += "<a href='" + HTProgPrefix + ".aspx?prgid=" + prgid + "'>[回查詢]</a>";
     }
 
     private void QueryData() {

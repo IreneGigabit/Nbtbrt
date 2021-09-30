@@ -35,8 +35,8 @@ Sub Session_OnStart()
 		Session("sysctrl")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sysctrl;Data Source=sik10;"
 	else
         session("se_branch")="N"
-		Session("btbrtdb")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sindbs;Data Source=web08;"
-		Session("sysctrl")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sysctrl;Data Source=web08;"
+		Session("btbrtdb")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sindbs;Data Source=web12;"
+		Session("sysctrl")  = "Provider=SQLOLEDB.1;Persist Security Info=False;User ID=web_usr;password=web1823;Initial Catalog=sysctrl;Data Source=web12;"
 	end if	
     session.Timeout = 120
 End Sub

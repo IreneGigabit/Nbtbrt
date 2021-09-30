@@ -59,7 +59,7 @@
 
     private void PageLayout() {
         StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>";
-        StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx?qs_dept=" + qs_dept + "&prgid=" + prgid + ">[回上一頁]</a>";
+        StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx?qs_dept=" + qs_dept + "&prgid=" + prgid + ">[回查詢]</a>";
     }
     
     private void QueryData() {
@@ -376,7 +376,7 @@
                         }
                         ,close:function(event, ui){
                             if(status=="success"){
-                                goSearch();
+                                goSearch();//重新整理
                             }
                         }
                     });

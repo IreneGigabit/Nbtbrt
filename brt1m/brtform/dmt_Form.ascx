@@ -16,7 +16,7 @@
         //語文別/國家
         tfz_country = Sys.getCountry().Option("{coun_code}", "{coun_code}-{coun_c}");
         //結案代碼
-        tfzy_end_code = Sys.getEndCode().Option("{chrelno}", "{chrelname}");
+        tfzy_end_code = Sys.getEndCode().Option("{cust_code}", "{code_name}");
 
         Hide["brt51"] = "Hide";
         if (prgid.ToLower() == "brt51") {//程序客收確認
@@ -813,14 +813,12 @@
             }else{
                 from_fld="";
             }
-            //***todo
             window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + value1 + "&seq1=" + value2 + "&from_fld=" + from_fld + "&submittask=Q&end_type=012", "", "width=900px, height=650px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
         }
     }
     //案件進度查詢
     dmt_form.Qstepclick = function(pseq,pseq1) {
         if (pseq!=""&&pseq1!=""){
-            //***todo
             window.open(getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=" + main.prgid + "&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
         }else{
             alert("請先輸入本所編號再執行維護功能!!!");
@@ -830,7 +828,6 @@
     //案件主檔維護
     dmt_form.Updseqclick = function(pseq,pseq1) {
         if (pseq!=""&&pseq1!=""){
-            //***todo
             window.open(getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=U&closewin=Y", "myWindowOneuN", "width=900 height=700 top=10 left=10 toolbar=no menubar=no, location=no, directories=no, status=no,resizable=no, scrollbars=yes");
         }else{
             alert("請先輸入本所編號再執行維護功能!!!");

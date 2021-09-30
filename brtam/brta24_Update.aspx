@@ -348,7 +348,7 @@
                 attach_no++;
                 string newattach_path = dr0.SafeRead("attach_path", "");//Email公文連結到總管處檢視，所以不用換路徑
                 if (ReqVal.TryGet("pdfsource") == "EGR") {//電子公文會同步至區所，所以要換路徑
-                    newattach_path = newattach_path.Replace("/MG", "/btbrt");
+                    newattach_path = Sys.PathMG2Nbtbrt(newattach_path);
                 }
 
                 SQL = "insert into dmt_attach ";

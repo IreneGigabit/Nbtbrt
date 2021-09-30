@@ -4,7 +4,7 @@
 <%@ Import Namespace = "System.Data"%>
 
 <script runat="server">
-    //期限管制明細欄位畫面
+    //進度查詢明細欄位畫面
     //父控制項傳入的參數
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     public Dictionary<string, string> Lock = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -17,8 +17,8 @@
     protected object objResult = null;
     protected Paging page = null;
 
-    protected string seq = "", seq1 = "", qtype = "";
-
+    protected string seq = "", seq1 = "", qtype = "", type = "", branch = "";
+        
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     private void Page_Unload(System.Object sender, System.EventArgs e) {
         if (conn != null) conn.Dispose();
@@ -28,15 +28,21 @@
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
-
-        conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
+        
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
         
         submitTask = (Request["submittask"] ?? "").Trim().ToUpper();
         seq = (Request["aseq"] ?? Request["seq"]);
         seq1 = (Request["aseq1"] ?? Request["seq1"]);
         qtype = (Request["qtype"] ?? "A").ToUpper();
+        type = (Request["type"] ?? "");
+        branch = (Request["branch"] ?? "");
         
+        conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
+        if (type == "brtran") {
+            conn = new DBHelper(Conn.brp(branch)).Debug(Request["chkTest"] == "TEST");
+        }
+
         PageLayout();
         QueryData();
         this.DataBind();
@@ -429,7 +435,6 @@
     //進度內容
     brta61form.StepGradeClick = function (seq, seq1, rs_no, cgrs) {
         var url = getRootPath() + "/brtam/brta61_QStep.aspx?prgid=<%=prgid%>&submitTask=Q&seq=" + seq + "&seq1=" + seq1 + "&rs_no=" + rs_no + "&cgrs=" + cgrs;
-        //***todo
         //window.showModalDialog(url, "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
         $('#dialog').html('<iframe style="border: 0px;" src="' + url + '" width="100%" height="100%"></iframe>')
         .dialog({ autoOpen: true, modal: true, height: 540, width: "80%", title: "進度內容" });

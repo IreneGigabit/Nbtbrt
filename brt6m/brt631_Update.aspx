@@ -81,7 +81,7 @@
                 object objResult = conn.ExecuteScalar(SQL);
                 int cnt = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
                 if (cnt == 0) {
-                    throw new Exception("新增接洽序號" + tmp_in_no + "承辦交辦發文狀態失敗");
+                    throw new Exception("接洽序號" + tmp_in_no + "承辦交辦發文失敗(狀態已異動，請重新整理畫面)");
                 } else {
                     //修改交辦發文註記
                     SQL = "update attcase_dmt set sign_stat='XX' where att_sqlno=" + tmp_att_sqlno;

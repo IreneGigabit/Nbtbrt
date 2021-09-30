@@ -165,7 +165,7 @@
         </td>
 	</tr>
     <tr class="br_attchstrFD2">
-		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z1" NAME="ttz2_Z1" value="Z1"  onclick="br_form.AttachStr1('.br_attchstrFD2', 'ttz2_', reg.tfzd_remark1)"></td>
+		<td class="lightbluetable" align="right"><input TYPE="checkbox" id="ttz2_Z1" NAME="ttz2_Z1" value="Z1" onclick="br_form.AttachStr1('.br_attchstrFD2', 'ttz2_', reg.tfzd_remark1)"></td>
 		<td class="whitetablebg" colspan="7">委任書(<input TYPE="checkbox" id="ttz2_Z1C" NAME="ttz2_Z1C" value="Z1C" onclick="br_form.AttachStr1('.br_attchstrFD2', 'ttz2_', reg.tfzd_remark1)">附中文譯本)。)</td>
 	</tr>
 	<tr class="br_attchstrFD2">
@@ -365,8 +365,8 @@
                     //var str="Z2;2|Z3;3|Z4|Z9;333xxxxx|";
                     var Rem_detail = arr_remark1[i].split(";");
                     $("#ttz2_" + Rem_detail[0]).prop("checked", true);
-                    $("#ttz2_" + Rem_detail[0] + "C").val(Rem_detail[1]);//副本數
-                    $("#ttz2_" + Rem_detail[0] + "t").val(Rem_detail[1]);//其他證明文件說明
+                    $("#ttz2_" + Rem_detail[0] + "C:text").val(Rem_detail[1]);//副本數
+                    $("#ttz2_" + Rem_detail[0] + "t:text").val(Rem_detail[1]);//其他證明文件說明
                 }
             }
             //主檔商標種類控制

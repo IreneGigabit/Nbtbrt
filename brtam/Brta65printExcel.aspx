@@ -170,7 +170,7 @@
 
     private void getData(DataTable dt) {
         //取得報表資料
-        conn = new DBHelper(Session["btbrtdb"].ToString(), false).Debug(false);
+        conn = new DBHelper(Conn.btbrt, false).Debug(false);
 
         string SQL = "";
         SQL += "select a.seq,a.seq1,a.class,a.in_date,a.appl_name,a.cust_area,a.cust_seq,a.apply_no,a.apply_date ";

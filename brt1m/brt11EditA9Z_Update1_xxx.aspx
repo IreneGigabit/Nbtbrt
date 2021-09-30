@@ -123,11 +123,12 @@
         }
         if (ReqVal.TryGet("grconf_sqlno").Trim() != "") ColMap["grconf_sqlno"] = Util.dbnull(Request["grconf_sqlno"]);
         //****會計檢核2013/9/16增加，不需請款或大陸進口案不在線上請款，不需會計檢核
-        if (ReqVal.TryGet("tfy_ar_code").Trim() == "X" || ReqVal.TryGet("tfy_ar_code").Trim() == "M") {
-            ColMap["acc_chk"] = Util.dbchar("X");
-        }else{
-            ColMap["acc_chk"] = Util.dbchar("N");
-        }
+        //20210831編修時不寫入
+        //if (ReqVal.TryGet("tfy_ar_code").Trim() == "X" || ReqVal.TryGet("tfy_ar_code").Trim() == "M") {
+        //    ColMap["acc_chk"] = Util.dbchar("X");
+        //}else{
+        //    ColMap["acc_chk"] = Util.dbchar("N");
+        //}
         SQL += ColMap.GetUpdateSQL();
         SQL += " where in_scode = '" + Request["in_scode"] + "' and in_no = '" + ReqVal.TryGet("In_no").Trim() + "'";
         conn.ExecuteNonQuery(SQL);

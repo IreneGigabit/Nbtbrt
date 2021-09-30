@@ -167,11 +167,12 @@
         ColMap["grconf_sqlno"] = Util.dbnull(Request["grconf_sqlno"]);
         
         //****會計檢核2013/9/16增加，不需請款或大陸進口案不在線上請款，不需會計檢核
-        if (Request["tfy_ar_code"] == "X" || Request["tfy_ar_code"] == "M") {
-            ColMap["acc_chk"] = "'X'";
-        } else {
-            ColMap["acc_chk"] = "'N'";
-        }
+        //20210831編修時不寫入
+        //if (Request["tfy_ar_code"] == "X" || Request["tfy_ar_code"] == "M") {
+        //    ColMap["acc_chk"] = "'X'";
+        //} else {
+        //    ColMap["acc_chk"] = "'N'";
+        //}
         //****契約書後補註記
         if (Request["tfy_contract_flag"] == null) {
             ColMap["contract_flag"] = "'N'";

@@ -332,7 +332,6 @@
     //進度內容
     brta23form.StepGradeClick = function (seq, seq1, rs_no, cgrs) {
         var url = getRootPath() + "/brtam/brta61_QStep.aspx?prgid=<%=prgid%>&submitTask=Q&seq=" + seq + "&seq1=" + seq1 + "&rs_no=" + rs_no + "&cgrs=" + cgrs;
-        //***todo
         window.showModalDialog(url, "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
     }
 

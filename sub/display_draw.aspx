@@ -16,8 +16,6 @@
         Response.Expires = -1;
 
         draw_file = Request["draw_file"] ?? "";
-        //draw_file = draw_file.Replace("\\", "/");
-        //draw_file = draw_file.Replace("/btbrt/", "/nbtbrt/");
         draw_file = Sys.Path2Nbtbrt(draw_file);
         file_name = draw_file.Substring((draw_file.LastIndexOf(@"\") + 1));
         file_ext = draw_file.Substring((draw_file.LastIndexOf(".") + 1)).ToLower();

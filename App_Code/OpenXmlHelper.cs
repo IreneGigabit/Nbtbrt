@@ -543,12 +543,27 @@ public class OpenXmlHelper
                             if (bookmarkStart.NextSibling() != null && bookmarkStart.NextSibling().GetType() == typeof(BookmarkEnd) && ((BookmarkEnd)bookmarkStart.NextSibling()).Id == id) {
                                 Run LastRun = bookmarkStart.PreviousSibling<Run>();
                                 if (LastRun == null) {
-                                    LastRun = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().AppendChild(new Run());
+                                    /*LastRun = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().AppendChild(new Run());
 
                                     RunProperties NewRunProp = new RunProperties();
                                     RunFonts f = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().Descendants<RunFonts>().FirstOrDefault();
                                     FontSize s = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().Descendants<FontSize>().FirstOrDefault();
                                     Color c = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().Descendants<Color>().FirstOrDefault();
+                                    if (f != null) NewRunProp.AppendChild(f.CloneNode(true));
+                                    if (s != null) NewRunProp.AppendChild(s.CloneNode(true));
+                                    if (c != null) NewRunProp.AppendChild(c.CloneNode(true));
+                                    LastRun.AppendChild(NewRunProp);*/
+                                    Paragraph ParentParagraph = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault();
+                                    if (ParentParagraph == null) {
+                                        ParentParagraph = bookmarkStart.PreviousSibling<Paragraph>();
+                                    }
+                                    //LastRun = bookmarkStart.Ancestors<Paragraph>().FirstOrDefault().AppendChild(new Run());
+                                    LastRun = ParentParagraph.AppendChild(new Run());
+
+                                    RunProperties NewRunProp = new RunProperties();
+                                    RunFonts f = ParentParagraph.Descendants<RunFonts>().FirstOrDefault();
+                                    FontSize s = ParentParagraph.Descendants<FontSize>().FirstOrDefault();
+                                    Color c = ParentParagraph.Descendants<Color>().FirstOrDefault();
                                     if (f != null) NewRunProp.AppendChild(f.CloneNode(true));
                                     if (s != null) NewRunProp.AppendChild(s.CloneNode(true));
                                     if (c != null) NewRunProp.AppendChild(c.CloneNode(true));
@@ -573,7 +588,7 @@ public class OpenXmlHelper
                                 bool canRemove = false;
                                 int bIndex = 0;
                                 foreach (OpenXmlElement item in bookmarkItems) {
-                                    if (item.GetType() == typeof(BookmarkEnd) && bookmarkEnd != null && bookmarkEnd.Id == id) {
+                                    if (item.GetType() == typeof(BookmarkEnd) && bookmarkEnd != null && ((BookmarkEnd)item).Id.Value == id) {
                                         break;
                                     }
                                     if (canRemove && item.GetType() == typeof(Run)) {
@@ -673,7 +688,7 @@ public class OpenXmlHelper
 				//outBody.Append(new Paragraph(new ParagraphProperties(footer[index].Parent.CloneNode(true))));//頁尾+分節符號
 				outBody.Append(new Paragraph(new ParagraphProperties(sp)));//頁尾+分節符號
 			} else {
-				if (outSp.GetType() == typeof(SectionProperties))
+                if (outSp != null && outSp.GetType() == typeof(SectionProperties))
 					foreach (OpenXmlElement item in sp.ChildElements) {
 						if (item.GetType() == typeof(FooterReference)) {
 							outSp.AppendChild(item.CloneNode(true));

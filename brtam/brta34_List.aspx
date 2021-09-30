@@ -66,7 +66,7 @@
         //營洽清單
         if ((HTProgRight & 64) != 0) {
             td_tscode += "<select id='qryscode1' name='qryscode1'>";
-            td_tscode += Sys.getLoginGrpSales().Option("{scode}", "{scode}_{sc_name}");
+            td_tscode += Sys.getLoginGrpSales("A","").Option("{scode}", "{scode}_{sc_name}");
             td_tscode += "</select>";
         } else {
             td_tscode = "<input id=qryscode1 name=qryscode1 readonly class=SEdit size=5 value='" + Session["scode"] + "'>" + Session["sc_name"];

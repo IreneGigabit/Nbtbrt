@@ -28,6 +28,7 @@ public class IPOReport : OpenXmlHelper {
 	private DataTable _dtTran = null;
 	private DataTable _dtTranList = null;
 	private DataTable _dtTranListClass = null;
+	private DataTable _dtDmt1 = null;
 
 	/// <summary>
 	/// 報表代碼
@@ -166,6 +167,14 @@ public class IPOReport : OpenXmlHelper {
 	public EnumerableRowCollection<DataRow> TranListE { get; set; }
 
 	/// <summary>
+	/// 子案
+	/// </summary>
+	public DataTable Dmt1 {
+		get { return _dtDmt1; }
+        protected set { _dtDmt1 = value; }
+	}
+
+	/// <summary>
 	/// 申請人身分類別對應
 	/// </summary>
 	public Dictionary<string, string> AP_marknm { get; set; }
@@ -231,7 +240,7 @@ public class IPOReport : OpenXmlHelper {
 		SetAttach();//抓附送書件
 		SetTran();//抓異動資料
 		SetModAP();//抓關係人
-
+		SetDmt1();//抓子案
 		_dtDmt.ShowTable();
 		_dtTran.ShowTable();
 	}
@@ -429,7 +438,9 @@ public class IPOReport : OpenXmlHelper {
 			dt.Rows[0]["s_agatt_fax"] = s_agatt_fax;
 
 			dt.Rows[0]["agt_name1"] = dt.Rows[0]["agt_name1"].ToString().Trim().Left(1) + "," + dt.Rows[0]["agt_name1"].ToString().Trim().Substring(1);
-			dt.Rows[0]["agt_name2"] = dt.Rows[0]["agt_name2"].ToString().Trim().Left(1) + "," + dt.Rows[0]["agt_name2"].ToString().Trim().Substring(1);
+            if (dt.Rows[0].SafeRead("agt_name2", "") != "") {
+                dt.Rows[0]["agt_name2"] = dt.Rows[0]["agt_name2"].ToString().Trim().Left(1) + "," + dt.Rows[0]["agt_name2"].ToString().Trim().Substring(1);
+            }
 		}
 		this.Agent = dt;
 	}
@@ -555,6 +566,7 @@ public class IPOReport : OpenXmlHelper {
 		SQL += "and in_no ='" + _in_no + "' and in_scode='" + _in_scode + "' ";
 		DataTable dt = new DataTable();
 		_conn.DataTable(SQL, dt);
+        dt.ShowTable();
 
 		for (int i = 0; i < dt.Rows.Count; i++) {
 			string PersonCname = (dt.Rows[i]["ocname1"].ToString().Trim() + "," + dt.Rows[i]["ocname2"].ToString().Trim()).Replace("’", "'");
@@ -630,16 +642,82 @@ public class IPOReport : OpenXmlHelper {
 	}
 	#endregion
 
-	#region 產生繳費資訊區塊 +void CreateFees()
-	/// <summary>
+    #region 抓子案 -void SetDmt1()
+    /// <summary>
+	/// 抓子案
+	/// </summary>
+    private void SetDmt1() {
+        string SQL = "Select *,''apply_no,''issue_no,''appl_name from case_dmt1 where in_no='" + _in_no + "'";
+        DataTable dt = new DataTable();
+        _conn.DataTable(SQL, dt);
+
+        for (int i = 0; i < dt.Rows.Count; i++) {
+            DataRow dr = dt.Rows[i];
+
+            if (dr.SafeRead("case_stat1", "").ToUpper() == "OO") {
+                SQL = "Select b.s_mark,b.appl_name,b.apply_no,b.issue_no ";
+                SQL += "from dmt b where b.seq='" + dr.SafeRead("seq", "") + "' and b.seq1='" + dr.SafeRead("seq1", "") + "' ";
+            } else if (dr.SafeRead("case_stat1", "").ToUpper() == "NN") {
+                SQL = "Select b.s_mark,b.appl_name,b.apply_no,b.issue_no ";
+                SQL += "from dmt_temp b where  b.case_sqlno='" + dr.SafeRead("case_sqlno", "") + "'";
+            }
+            using (SqlDataReader dr0 = _conn.ExecuteReader(SQL)) {
+                while (dr0.Read()) {
+                    dr["apply_no"] = dr0.SafeRead("apply_no", "");
+                    dr["issue_no"] = dr0.SafeRead("issue_no", "");
+                    dr["appl_name"] = dr0.SafeRead("appl_name", "");
+                }
+            }
+        }
+        this.Dmt1 = dt;
+    }
+	#endregion
+
+    #region 抓收據抬頭 +void SetRectitle()
+    /// <summary>
+    /// 抓收據抬頭
+	/// </summary>
+    public void SetRectitle() {
+        //20191230因申請書列印無相關request參數,直接抓case_dmt的值
+        if (this.RectitleFlag == "" || this.RectitleFlag == null) {
+            this.RectitleTitle = _dtDmt.Rows[0].SafeRead("receipt_title", "B");//若db無值則為空白
+            if (this.RectitleTitle != "B" && this.RectitleTitle != "") {
+                this.RectitleFlag = "Y";
+            } else {
+                this.RectitleFlag = "N";
+            }
+        }
+        //串申請人
+        string RectitleNameStr = "";
+        string SQL = "Select a.ap_cname from dmt_temp_ap a where a.in_no='" + _in_no + "' and a.case_sqlno=0 order by a.server_flag desc,a.temp_ap_sqlno";
+        using (SqlDataReader dr = _conn.ExecuteReader(SQL)) {
+            while (dr.Read()) {
+                if (RectitleNameStr != "") RectitleNameStr += "、";
+                RectitleNameStr += dr.GetString("ap_cname");
+            }
+        }
+
+        if (this.RectitleTitle == "A") {//專利權人
+            this.RectitleName = RectitleNameStr;
+        } else if (this.RectitleTitle == "C") {//專利權人(代繳人)
+            this.RectitleName = RectitleNameStr + "(代繳人：聖島國際專利商標聯合事務所)";
+        } else {//空白
+            this.RectitleName = "";
+        }
+    }
+    #endregion
+
+    #region 產生繳費資訊區塊 +void CreateFees()
+    /// <summary>
 	/// 產生繳費資訊區塊
 	/// </summary>
 	public void CreateFees() {
 		CopyBlock("b_fees");
-
+        SetRectitle();
+        /*
 		//20191230因申請書列印無相關request參數,直接抓case_dmt的值
-		if (this.RectitleFlag == "") {
-			this.RectitleTitle = Dmt.Rows[0].SafeRead("receipt_title", "B");//若db無值則為空白
+        if (this.RectitleFlag == "" || this.RectitleFlag == null) {
+            this.RectitleTitle = Dmt.Rows[0].SafeRead("receipt_title", "B");//若db無值則為空白
 			if (this.RectitleTitle != "B" && this.RectitleTitle != "") {
 				this.RectitleFlag = "Y";
 			} else {
@@ -655,14 +733,14 @@ public class IPOReport : OpenXmlHelper {
 				RectitleNameStr += dr.GetString("ap_cname");
 			}
 		}
-
+        
 		if (this.RectitleTitle == "A") {//專利權人
 			this.RectitleName = RectitleNameStr;
 		} else if (this.RectitleTitle == "C") {//專利權人(代繳人)
 			this.RectitleName = RectitleNameStr + "(代繳人：聖島國際專利商標聯合事務所)";
 		} else {//空白
 			this.RectitleName = "";
-		}
+		}*/
 		ReplaceBookmark("fees", Dmt.Rows[0]["fees"].ToString().Trim(), "0");
         ReplaceBookmark("receipt_name", this.RectitleName.ToXmlUnicode(), true);
 	}
@@ -1089,6 +1167,7 @@ public class IPOReport : OpenXmlHelper {
 	/// 更新列印狀態
 	/// </summary>
 	public void SetPrint() {
+        SetRectitle();//因紙本申請書不會執行繳費區塊.需要重抓一次
 		string SQL = "update case_dmt set new='P' " +
 					",rectitle_flag='" + this.RectitleFlag + "' " +
 					",receipt_title='" + this.RectitleTitle + "' " +

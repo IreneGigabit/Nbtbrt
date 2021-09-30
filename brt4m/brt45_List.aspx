@@ -114,8 +114,7 @@
 
         //單位
         if ((HTProgRight & 64) != 0) {
-            SQL = "select branch,branchname from branch_code where mark='Y' and branch<>'J' order by sort";
-            html_branch = Util.Option(conn, SQL, "{branch}", "{branchname}", false, qrybranch);
+            html_branch = Sys.getBranchCode().Option("{branch}", "{branchname}", false, qrybranch);
             if (qrytodo == "qry") {
                 html_branch += "<option value='A'>全所</option>";
             }
@@ -130,15 +129,17 @@
         objResult = conn.ExecuteScalar(SQL);
         fund_money = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
            
-        if (qrybranch != "A") {
-            SQL = "select branch,branchname from branch_code ";
-            SQL += "where mark='Y' and branch<>'J' and branch='" + qrybranch + "'";
-            SQL += "order by sort";
-        } else {
-            SQL = "select branch,branchname from branch_code where mark='Y' and branch<>'J' order by sort";
-        }
         DataTable dt = new DataTable();
-        cnn.DataTable(SQL, dt);
+        if (qrybranch != "A") {
+            //SQL = "select branch,branchname from branch_code ";
+            //SQL += "where mark='Y' and branch<>'J' and branch='" + qrybranch + "'";
+            //SQL += "order by sort";
+            dt = Sys.getBranchCode().Select("branch = '" + qrybranch + "'").CopyToDataTable();
+        } else {
+            //SQL = "select branch,branchname from branch_code where mark='Y' and branch<>'J' order by sort";
+            dt = Sys.getBranchCode();
+        }
+        //cnn.DataTable(SQL, dt);
 
         if (ctrlquery) {
             dataRepeater.DataSource = dt;

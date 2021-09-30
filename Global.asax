@@ -18,44 +18,44 @@
             int hcode = ((HttpUnhandledException)exp).GetHttpCode();
             if (hcode == 500) Server.Transfer("~/500-error.aspx");
         }
-        //Server.Transfer("~/500-error.aspx");
     }
 
 	void Session_Start(object sender, EventArgs e) {
 		// 啟動新工作階段時執行的程式碼
-		//案件系統
-		switch (Request.ServerVariables["HTTP_HOST"].ToString().ToUpper()) {
-			case "WEB10":
-				Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["test_N_btbrtdb"].ToString();//使用者測試環境
-                Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["test_sysctrl"].ToString();
-                Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["test_account"].ToString();
-				break;
-			case "SINN05":
-				Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_N_btbrtdb"].ToString();//正式環境
-                Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_sysctrl"].ToString();//台北所連到sin33
-                Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_N_account"].ToString();
-				break;
-			case "SIC10":
-				Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_C_btbrtdb"].ToString();//正式環境
-                Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_C_sysctrl"].ToString();
-                Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_C_account"].ToString();
-				break;
-			case "SIS10":
-				Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_S_btbrtdb"].ToString();//正式環境
-                Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_S_sysctrl"].ToString();
-                Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_S_account"].ToString();
-				break;
-			case "SIK10":
-				Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_K_btbrtdb"].ToString();//正式環境
-                Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_K_sysctrl"].ToString();
-                Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_K_account"].ToString();
-				break;
-			default:
-				Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["dev_btbrtdb"].ToString();//開發環境
-                Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["dev_sysctrl"].ToString();
-                Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["dev_account"].ToString();
-				break;
-		}
+        //案件系統
+        //改用App_Code\Conn.cs控制
+		//switch (Request.ServerVariables["HTTP_HOST"].ToString().ToUpper()) {
+		//	case "WEB10":
+		//		Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["test_N_btbrtdb"].ToString();//使用者測試環境
+        //        Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["test_sysctrl"].ToString();
+        //        Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["test_account"].ToString();
+		//		break;
+		//	case "SINN05":
+		//		Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_N_btbrtdb"].ToString();//正式環境
+        //        Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_sysctrl"].ToString();//台北所連到sin33
+        //        Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_N_account"].ToString();
+		//		break;
+		//	case "SIC10":
+		//		Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_C_btbrtdb"].ToString();//正式環境
+        //        Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_C_sysctrl"].ToString();
+        //        Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_C_account"].ToString();
+		//		break;
+		//	case "SIS10":
+		//		Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_S_btbrtdb"].ToString();//正式環境
+        //        Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_S_sysctrl"].ToString();
+        //        Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_S_account"].ToString();
+		//		break;
+		//	case "SIK10":
+		//		Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_K_btbrtdb"].ToString();//正式環境
+        //        Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_K_sysctrl"].ToString();
+        //        Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["prod_K_account"].ToString();
+		//		break;
+		//	default:
+		//		Session["btbrtdb"] = System.Configuration.ConfigurationManager.ConnectionStrings["dev_btbrtdb"].ToString();//開發環境
+        //        Session["sysctrl"] = System.Configuration.ConfigurationManager.ConnectionStrings["dev_sysctrl"].ToString();
+        //        Session["account"] = System.Configuration.ConfigurationManager.ConnectionStrings["dev_account"].ToString();
+		//		break;
+		//}
 
 		Session["UserID"] = Session.SessionID.ToString();
 	}

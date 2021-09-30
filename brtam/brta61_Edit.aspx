@@ -42,6 +42,7 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
+        ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         if (ReqVal.TryGet("type") == "brtran") {
             conn = new DBHelper(Conn.brp(Request["branch"])).Debug(Request["chkTest"] == "TEST");
@@ -84,7 +85,6 @@
         dmt_data["seq1"] = "";
 
         SQL = "Select * From dmt Where seq = '" + seq+ "' and seq1 = '" + seq1 + "'";
-        
         DataTable dtDmt = new DataTable();
         conn.DataTable(SQL, dtDmt);
 

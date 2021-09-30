@@ -42,8 +42,8 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>\n";
-        StrFormBtnTop += "<a class=\"imgQry\" href=\"javascript:void(0);\" >[查詢條件]</a>\n";
+        //StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>\n";
+        //StrFormBtnTop += "<a class=\"imgQry\" href=\"javascript:void(0);\" >[查詢條件]</a>\n";
         if ((HTProgRight & 2) > 0) {
             StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"查　詢\" class=\"cbutton bsubmit\" />\n";
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
@@ -81,7 +81,7 @@
     </tr>
 </table>
 
-<form id="regPage" name="regPage" method="post">
+<form id="reg" name="reg" method="post">
     <input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
 
     <div id="id-div-slide">
@@ -152,6 +152,13 @@
 
         $("#tfx_cust_area").val("<%#Session["sebranch"]%>");
     }
+    //////////////////////
+
+    //[重填]
+    $("#btnRest").click(function (e) {
+        reg.reset();
+        this_init();
+    });
 
     //[查詢]
     $("#btnSrch").click(function (e) {
@@ -177,46 +184,7 @@
         $("#dataList>thead tr .setOdr span").remove();
         $("#SetOrder").val("");
 
-        goSearch();
-    });
-
-    //執行查詢
-    function goSearch() {
-        window.parent.tt.rows = '100%,0%';
-        $("#divPaging,#dataList,.noData,.haveData").hide();
-        nRow = 0;
-        $.ajax({
-            url: "<%#HTProgPrefix%>_List.aspx",
-            type: "get",
-            async: false,
-            cache: false,
-            data: $("#regPage").serialize(),
-            success: function (html) {
-                if ($("#chkTest").prop("checked")) {
-                    $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + html);
-                    $("#dialog").dialog({ title: 'Debug！', modal: true, maxHeight: 500, width: "90%" });
-                    return false;
-                }
-                $("#id-div-slide").slideUp("fast");
-
-                $("#divList").html(html);
-            },
-            beforeSend: function (jqXHR, settings) {
-                $("#divList").empty();
-                jqXHR.url = settings.url;
-            },
-            error: function (xhr) {
-                $("#dialog").html("<a href='" + this.url + "' target='_new'>資料擷取剖析錯誤！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '資料擷取剖析錯誤！', modal: true, maxHeight: 500, width: 800 });
-                //toastr.error("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-            }
-        });
-    };
-    //////////////////////
-
-    //[重填]
-    $("#btnRest").click(function (e) {
-        regPage.reset();
-        this_init();
+        reg.action = "<%=HTProgPrefix%>_List.aspx";
+        reg.submit();
     });
 </script>
