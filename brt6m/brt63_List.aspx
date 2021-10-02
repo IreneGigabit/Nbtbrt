@@ -308,7 +308,7 @@
             //todo_link += "&uploadtype=case";
             //todo_link += "&submittask=Show";
             //[專案室發文]
-            todo_link = Sys.getCase11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Show");
+            todo_link = Sys.getCaseDmt11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Show");
             todo_link += "&todo_sqlno=" + row["todo_sqlno"];
             todo_link += "&rs_no=" + row["rs_no"];
             //todo_link += "&seq=" + row["seq"];
@@ -380,7 +380,7 @@
         //urlasp += "&uploadtype=case";
         //urlasp += "&submittask=Edit";
 
-        urlasp = Sys.getCase11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Edit");
+        urlasp = Sys.getCaseDmt11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Edit");
   
         return urlasp;
     }

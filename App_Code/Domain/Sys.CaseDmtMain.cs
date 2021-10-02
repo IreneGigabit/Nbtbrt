@@ -71,8 +71,8 @@ public partial class Sys
             } else {
                 dr["s_marknm"] = "商標";
             }
-            dr["case11aspx"] = Sys.getCase11Aspx("", dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "");
-            dr["case52aspx"] = Sys.getCase52Aspx("", dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "");
+            dr["case11aspx"] = Sys.getCaseDmt11Aspx("", dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "");
+            dr["case52aspx"] = Sys.getCaseDmt52Aspx("", dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "");
         }
 
         return dt;

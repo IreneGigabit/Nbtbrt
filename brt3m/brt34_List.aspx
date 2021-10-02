@@ -138,7 +138,7 @@
     protected string GetLink(DataRow row) {
         string urlasp = "";//連結的url
 
-        urlasp = Sys.getCase11Aspx(prgid, row.SafeRead("in_no",""), row.SafeRead("in_scode",""), "Show");
+        urlasp = Sys.getCaseDmt11Aspx(prgid, row.SafeRead("in_no",""), row.SafeRead("in_scode",""), "Show");
         urlasp+= "&opt_sqlno=" + row.SafeRead("opt_sqlno","");
         urlasp += "&homelist=" + Request["homelist"];
         urlasp+= "&ctrl_date=" + row.GetDateTimeString("ctrl_date", "yyyy/M/d");

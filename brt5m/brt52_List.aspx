@@ -192,10 +192,10 @@
 
         if (row.SafeRead("stat_code", "") == "YY") {//已簽准.未客收確認
             //urlasp = Page.ResolveUrl("~/brt1m" + link_remark + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
-            urlasp = Sys.getCase11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Edit");
+            urlasp = Sys.getCaseDmt11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Edit");
         } else {
             //urlasp = Page.ResolveUrl("~/brt5m" + link_remark + "/Brt52EDIT" + new_form + ".aspx?prgid=" + prgid);
-            urlasp = Sys.getCase52Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Edit");
+            urlasp = Sys.getCaseDmt52Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Edit");
         }
 
         //urlasp += "&in_scode=" + row["in_scode"];

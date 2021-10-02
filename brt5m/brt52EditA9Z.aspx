@@ -12,7 +12,7 @@
 
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內案交辦維護作業(後續案)";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt52";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -74,10 +74,8 @@
 
     private void PageLayout() {
         if ((HTProgRight & 8) > 0 || (HTProgRight & 16) > 0) {
-            //***todo
-            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Eblank\">[聯絡人新增]</a>\n";
-            //***todo
-            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Eblank\">[申請人新增]</a>\n";
+            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_edit.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&submitTask=A&gs_dept=T&cust_att=A&Type=ap_nameaddr\" target=\"Brt11blankN\">[聯絡人新增]</a>\n";
+            StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Brt11blankN\">[申請人新增]</a>\n";
             if ((Request["cust_seq"] ?? "") != "") {
                 //StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt1mFrame.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"Eblank\">[案件查詢]</a>\n";
                 StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/brt1m/brt11_1.aspx") + "?prgid=" + prgid + "&cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "\" target=\"_blank\">[案件查詢]</a>\n";

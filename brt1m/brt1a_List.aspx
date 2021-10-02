@@ -161,7 +161,7 @@
             if (Tran_status == "DT" || Tran_status == "DY") {
                 return "抽件中";
             } else {
-                string urlasp = Sys.getCase11Aspx(prgid, Eval("in_no").ToString(), Eval("in_scode").ToString(), "Show")
+                string urlasp = Sys.getCaseDmt11Aspx(prgid, Eval("in_no").ToString(), Eval("in_scode").ToString(), "Show")
                     + "&opt_sqlno=" + Eval("opt_sqlno")
                     + "&homelist=" + Request["homelist"]
                     + "&ctrl_date=" + Eval("ctrl_date", "{0:yyyy/M/d}");

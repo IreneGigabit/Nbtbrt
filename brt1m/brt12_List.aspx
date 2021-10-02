@@ -270,10 +270,10 @@
 
             if (Sys.GetSession("scode") == dr.SafeRead("in_scode", "") || (HTProgRight & 128) != 0) {
                 //urlasp += "&submittask=Edit";
-                urlasp = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Edit");
+                urlasp = Sys.getCaseDmt11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Edit");
             } else {
                 //urlasp += "&submittask=Show";
-                urlasp = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
+                urlasp = Sys.getCaseDmt11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
             }
 
             dr["urlasp"] = urlasp;

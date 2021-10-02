@@ -20,7 +20,7 @@
     protected string cgrs = "";
     protected string menu = "";
 
-    protected string rs_type="",html_rs_class = "", html_rs_code = "", html_act_code = "";
+    protected string rs_type = "", html_rs_class = "";
     protected string td_tscode = "", html_pr_scode="";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
@@ -70,19 +70,6 @@
         rs_type = Sys.getRsType();
         SQL="select cust_code,code_name from cust_code where code_type='" +rs_type+ "' and mark is null";
         html_rs_class = Util.Option(conn, SQL, "{cust_code}", "{cust_code}_{code_name}");
-
-        //案性代碼
-        //SQL = "select rs_code,rs_detail from code_br where dept='T' and cr='Y' order by rs_code";
-        //html_rs_code = Util.Option(conn, SQL, "{rs_code}", "{rs_code}_{rs_detail}");
-        //
-        ////處理事項
-        //SQL= "select distinct b.act_code, c.code_name, c.sql ";
-        //SQL+="from  code_br  a ";
-        //SQL+="inner join code_act b on a.sqlno = b.code_sqlno ";
-        //SQL+="inner join cust_code c on b.act_code = c.cust_code ";
-		//SQL+=" where a.dept = 'T' and a.cr = 'Y' and c.code_type = 'TACT_Code'";
-        //SQL += " order by c.sql";
-        //html_act_code = Util.Option(conn, SQL, "{act_code}", "{act_code}_{code_name}");
         
         //營洽清單
         if ((HTProgRight & 64) != 0) {
@@ -178,11 +165,11 @@
 			        </span>
 			        <br>案性代碼：
 			        <span id=span_rs_code>
-				        <select id="rs_code" name="rs_code"><%#html_rs_code%></select>
+				        <select id="rs_code" name="rs_code"></select>
 			        </span>
                     <br>處理事項：
 			        <span id=span_act_code>
-				        <select id="act_code" name="act_code"><%#html_act_code%></select>
+				        <select id="act_code" name="act_code"></select>
 			        </span>
 		        </td>
 	        </TR>
@@ -274,7 +261,7 @@
         ChkDate(this);
     });
 
-    //依結構分類帶案性代碼
+    //依收發文種類帶案性代碼
     $("#cgrs").change(function () {
         $("#rs_class").triggerHandler("change");
     });
@@ -295,10 +282,9 @@
     $("#rs_code").change(function () {
         $("#act_code").getOption({//處理事項
             url: getRootPath() + "/ajax/json_act_code.aspx",
-            data: { cgrs: $("#cgrs").val(), rs_class: $("#rs_class").val(), rs_code: $("#rs_code").val() },
+            data: { cgrs: $("#cgrs").val(), rs_class: $("#rs_class").val(), rs_code: $("#rs_code").val(), column: "act_code,act_code_name,act_sort" },
             valueFormat: "{act_code}",
-            textFormat: "{act_code}_{act_code_name}",
-            attrFormat: "spe_ctrl='{spe_ctrl}'"
+            textFormat: "{act_code}_{act_code_name}"
         });
         $("#act_code").triggerHandler("change");
     });

@@ -85,6 +85,7 @@
                 ColMap["ar_chk1"] = "'N'";
             }
             //****會計檢核2013/9/16增加，不需請款或大陸進口案不在線上請款，不需會計檢核
+            //M→大陸進口案,X→沒有費用且請款註記=一般
             if (Request["tfy_ar_code"] == "X" || Request["tfy_ar_code"] == "M") {
                 ColMap["acc_chk"] = "'X'";
             }

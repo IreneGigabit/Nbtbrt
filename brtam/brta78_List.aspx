@@ -103,7 +103,7 @@
         }
 
         if (qs_dept == "t") {
-            SQL = "select a.*,c.sqlno as todo_sqlno ";
+            SQL = "select a.*,c.sqlno as todo_sqlno,'' as country ";
             SQL += ",(select sc_name from sysctrl.dbo.scode where scode = a.tran_scode1) as tran_scode_name ";
             SQL += ",(select branchname from sysctrl.dbo.branch_code where branch=a.branch) as branchname ";
             SQL += ",''fseq,''appl_name,''scode,''scode_name,''term1,''term2,''cust_name,''step_grade,''ap_cname,''id_no,''old_brtran_sqlno ";
@@ -143,12 +143,8 @@
             dr["seq"] = dr.SafeRead("seq", "");//trim掉
             dr["seq1"] = dr.SafeRead("seq1", "");//trim掉
             //案號
-            if (dr.SafeRead("country", "") == "") {
-                dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", dr.SafeRead("branch", ""), Sys.GetSession("dept"));
-            } else {
-                dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), dr.SafeRead("country", ""), dr.SafeRead("branch", ""), Sys.GetSession("dept") + "E");
-            }
-
+            dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), dr.SafeRead("country", ""), dr.SafeRead("branch", ""), dept_nm);
+            
             SQL = "select a.appl_name,a.scode,a.term1,a.term2,a.step_grade,b.cust_name,b.ap_cname2,b.id_no,c.brtran_sqlno ";
             SQL += ",(SELECT sc_name FROM sysctrl.dbo.scode WHERE scode = a.scode) AS scode_name";
             SQL += " from " + seq_tblname + " a ";
@@ -251,12 +247,12 @@
         }
 
         //連結客戶//***todo
-        string urlasp1 = "/cust/cust11_mod.aspx?prgid=" + prgid + "&submitTask=A&tran_flag=B&modify=" + urlasp1_Task + "&attmodify=" + urlasp1_Task;
+        string urlasp1 = "/cust/cust11_edit.aspx?prgid=" + prgid + "&tran_flag=B&modify=" + urlasp1_Task + "&submittask=" + urlasp1_Task;
         urlasp1 += "&databr_branch=" + dr["branch"] + "&old_branch=" + Request["qbranch"];
-        urlasp1 += "&scode1=" + dr["tran_scode1"] + "&scode1nm=" + dr["tran_scode_name"];
+        urlasp1 += "&scode1=" + dr["tran_scode1"] + "&scode1nm=" + Server.UrlEncode(dr.SafeRead("tran_scode_name",""));
         urlasp1 += "&cust_area=" + dr["tran_cust_area"] + "&cust_seq=" + tran_cust_seq; //新單位
         urlasp1 += "&old_cust_area=" + dr["cust_area"] + "&old_cust_seq=" + dr["cust_seq"]; //原單位
-
+            
         dr["urlasp1"] = Page.ResolveUrl("~" + urlasp1);
         dr["custz_flag"] = custz_flag;
         dr["custz_flag1"] = custz_flag1;
@@ -553,7 +549,7 @@
         if ($("#qs_dept").val()=="t"){
             tlink=getRootPath() + "/brt5m/Brt15ShowFP.aspx?submittask=A&prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&brtran_sqlno=" + pbrtran_sqlno + "&todo_sqlno=" + ptodo_sqlno + "&branch=" + pbranch+ "&tran_scode1=" + ptran_scode1 + "&old_brtran_sqlno=" + pold_brtran_sqlno + "&cust_seq=" +pcust_seq + "&tran_seq_date=" + escape(ptran_seq_date);
         }else{
-            //***todo
+            //***todo出口案
             tlink=getRootPath() + "/brt5m/ext54Edit.aspx?submittask=A&prgid=<%=prgid%>&branch=" + pbranch + "&seq=" + pseq + "&seq1=" + pseq1+ "&brtran_sqlno=" + pbrtran_sqlno + "&todo_sqlno=" + ptodo_sqlno + "&tran_scode1="+ ptran_scode1 + "&old_brtran_sqlno=" + pold_brtran_sqlno + "&cust_seq=" + pcust_seq + "&uploadtype=brtran&winact=1";
         }
 
@@ -566,7 +562,7 @@
         if ($("#qs_dept").val()=="t") {
             url=getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + x1 + "&seq1=" + x2 + "&submittask=Q&type=brtran&branch=" +x3;
         }else{
-            //***todo
+            //***todo出口案
             url=getRootPath() + "/brt5m/ext54Edit.aspx?seq=" + x1 + "&seq1=" + x2 + "&submittask=DQ&type=brtran&branch=" +x3;
         }
         //window.showModalDialog(url, "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
@@ -580,7 +576,7 @@
         if ($("#qs_dept").val()=="t") {
             url=getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1+"&type=brtran&branch=" +x3;
         }else{
-            //***todo
+            //***todo出口案
             url=getRootPath() + "/brtam/exta61Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1+"&type=brtran&branch=" +x3;
         }
 

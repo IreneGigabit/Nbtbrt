@@ -986,7 +986,7 @@
     //通知總管處立案
     private void SendmailMG() {
         string Subject = "國內商標網路作業系統－轉案完成通知";
-        string strFrom = Session["scode"] + "@saint-island.com.tw";
+        string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
         List<string> strTo = new List<string>();
         List<string> strCC = new List<string>();
         List<string> strBCC = new List<string>();
@@ -1022,7 +1022,7 @@
     //通知原單位轉案完成
     private void SendmailBr(string job_scode) {
         string Subject = "國內商標網路作業系統－轉案完成通知";
-        string strFrom = Session["scode"] + "@saint-island.com.tw";
+        string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
         List<string> strTo = new List<string>();
         List<string> strCC = new List<string>();
         List<string> strBCC = new List<string>();

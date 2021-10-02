@@ -125,7 +125,7 @@
             dr["fcust_name"] = dr.SafeRead("cust_name", "").ToUnicode().Left(5);
             dr["fappl_name"] = dr.SafeRead("appl_name", "").ToUnicode().Left(20);
             //dr["urlasp"] = GetLink(dr);
-            dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Edit") + "&code=" + dr["sqlno"];//todo.sqlno
+            dr["urlasp"] = Sys.getCaseDmt11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Edit") + "&code=" + dr["sqlno"];//todo.sqlno
         }
 
         dataRepeater.DataSource = page.pagedTable;

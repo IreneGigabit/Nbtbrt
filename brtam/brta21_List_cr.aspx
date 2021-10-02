@@ -175,7 +175,7 @@
             //案號
             dr["fseq"] = Sys.formatSeq1(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
             //交辦畫面
-            dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
+            dr["urlasp"] = Sys.getCaseDmt11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
             //服務費內含轉帳費用
             if (dr.SafeRead("oth_money", "0") != "0") {
                 dr["loth_money"] = "<font color=red>*</font>";

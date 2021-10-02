@@ -107,7 +107,7 @@
         string fseq = Sys.formatSeq(Request["Bseq"], Request["Bseq1"], "", Sys.GetSession("seBranch"), Sys.GetSession("dept"));
 
         string Subject = "國內所商標爭救案件管理系統－爭救案件法定期限修改通知（區所編號：" + fseq + "）";
-        string strFrom = Session["scode"] + "@saint-island.com.tw";
+        string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
         List<string> strTo = new List<string>();
         List<string> strCC = new List<string>();
         List<string> strBCC = new List<string>();

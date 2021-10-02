@@ -331,7 +331,6 @@
     }
 
     function CustClick(pcust_area, pcust_seq) {
-        //***todo
-        window.showModalDialog(getRootPath() + "/cust/cust11_mod.asp?prgid=<%=prgid%>&modify=Q&hright=3&gs_dept=<%=Session["dept"]%>&cust_area=" + pcust_area + "&cust_seq=" + pcust_seq, "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
+        window.showModalDialog(getRootPath() + "/cust/cust11_edit.aspx?prgid=<%=prgid%>&submitTask=Q&hright=3&gs_dept=<%=Session["dept"]%>&cust_area=" + pcust_area + "&cust_seq=" + pcust_seq, "", "dialogHeight: 520px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars=yes");
     }
 </script>

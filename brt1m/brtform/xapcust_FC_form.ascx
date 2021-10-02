@@ -333,8 +333,7 @@
             alert("請輸入統一編號或申請人(關係人)名稱");
             return false;
         }
-        //***todo
-        var url = getRootPath() + "/cust/cust13_list.aspx?ap_cname1=" + $("#ap_cname1_" + nRow).val() + "&ap_cname2=" + $("#ap_cname2_" + nRow).val() + "&hRight=2";
+        var url = getRootPath() + "/cust/cust13_list.aspx?ap_cname1=" + $("#ap_cname1_" + nRow).val() + "&ap_cname2=" + $("#ap_cname2_" + nRow).val() + "&submitTask=U";
         window.open(url, 'cust13Blank');
     }
 
@@ -368,8 +367,8 @@
             alert("請先輸入統編或再點選統編後「確定」重新抓取申請人資料！");
             return false;
         }
-        //***todo
-        var url = getRootPath() + "/cust/cust13_2Qlist.aspx?prgid=Si04W01&apsqlno=" + apsqlno + "&pnum=" + nRow + "&trid=" + pTrId + "&fld=" + pFld;
+        
+        var url = getRootPath() + "/cust/cust13_2Qlist.aspx?prgid=brt54&apsqlno=" + apsqlno + "&pnum=" + nRow + "&trid=" + pTrId + "&fld=" + pFld;
         window.open(url, 'myWindowOneN', "width=650 height=420 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     }
 

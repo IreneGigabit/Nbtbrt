@@ -270,7 +270,7 @@
                 Rpt.CopyPageFoot("rpt");//複製頁尾/邊界
                 Rpt.Flush(docFileName);
 
-                //更新為已列印
+                //更新為已列印,不需要更新
                 //if (updRsNo.Count > 0) {
                 //    SQL = "update step_dmt set new='Y' where rs_no in('" + string.Join("','", updRsNo.ToArray()) + "')";
                 //    conn.ExecuteNonQuery(SQL);

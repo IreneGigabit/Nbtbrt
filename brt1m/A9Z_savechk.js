@@ -931,10 +931,12 @@ main.chkContract = function () {
         var cont_type = $("input[name='Contract_no_Type']:checked").val();
         if (cont_type == "N") {//一般契約書
             if ($("#tfy_Contract_no").val() == "") {
-                alert("請輸入契約號碼!!");
-                settab("#case");
-                $("#tfy_Contract_no").focus();
-                return false;
+                if ($("#tfy_contract_flag").prop("checked") == false) {//無勾選契約書後補
+                    alert("請輸入契約號碼!!");
+                    settab("#case");
+                    $("#tfy_Contract_no").focus();
+                    return false;
+                }
             } else if (!IsNumeric($("#tfy_Contract_no").val())) {
                 alert("契約號碼請輸入數值!!");
                 settab("#case");
@@ -943,7 +945,7 @@ main.chkContract = function () {
             }
         }
         if (cont_type == "M" && $("#tfy_Contract_no").val() == "") {//總契約書但無契約書號
-            if ($("#tfy_contract_flag").pdop("checked") == false) {//無勾選契約書後補
+            if ($("#tfy_contract_flag").prop("checked") == false) {//無勾選契約書後補
                 alert("無總契約書號，請檢查！");
                 settab("#case");
                 $("input[name='Contract_no_Type'][value='M']").focus();

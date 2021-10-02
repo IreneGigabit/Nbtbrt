@@ -117,7 +117,8 @@
         string urlasp_Task = "A";
         string apcust_no = dr.SafeRead("apcust_no", "");
         string apsqlno = dr.SafeRead("apsqlno", "");
-
+        string databr_branch=Request["databr_branch"];
+        
         SQL = "select * from apcust ";
         SQL += " where (isnull(rtrim(ap_cname1),'')+isnull(rtrim(ap_cname2),'')='" + dr.SafeRead("ap_cname", "") + "'";
         SQL += " or apcust_no='" + dr.SafeRead("apcust_no", "") + "')";
@@ -127,13 +128,15 @@
                 urlasp_Task = "Q";
                 apcust_no = dr0.SafeRead("apcust_no", "");
                 apsqlno = dr0.SafeRead("apsqlno", "");
+				//有找到客戶表示要抓本所apcust,不帶區所別
+				databr_branch="";
             }
         }
 
         //***todo
-        string urlasp = "/cust/cust13_mod.aspx?prgid=" + prgid;
+        string urlasp = "/cust/cust13_edit.aspx?prgid=" + prgid;
         urlasp += "&submitTask=" + urlasp_Task + "&tran_flag=B&modify=" + urlasp_Task;
-        urlasp += "&databr_branch=" + Request["databr_branch"] + "&old_branch=" + Request["old_branch"];
+        urlasp += "&databr_branch=" + databr_branch + "&old_branch=" + Request["old_branch"];
         urlasp += "&old_seq=" + dr.SafeRead("seq", "") + "&old_seq1=" + dr.SafeRead("seq1", "") + "&qs_dept=" + Request["qs_dept"];
         urlasp += "&apcust_no=" + apcust_no + "&apsqlno=" + apsqlno;
 

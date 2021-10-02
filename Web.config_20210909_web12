@@ -15,7 +15,7 @@
   </configSections>
   <connectionStrings>
     <!--=================================開發環境=================================-->
-    <!--案件-->
+    <!--案件'**跨區所修改-->
     <add name="dev_btbrtdb" connectionString="Server=web12;Database=sindbs;User ID=web_usr;Password=web1823"/>
     <!--爭救案件管理系統用-->
     <add name="dev_opt" connectionString="Server=web12;Database=sikopt;User ID=web_usr;Password=web1823"/>
@@ -27,7 +27,7 @@
     <add name="dev_account" connectionString="Server=web12;Database=account;User ID=web_usr;Password=web1823"/>
     <!--sysctrl-->
     <add name="dev_sysctrl" connectionString="Server=web12;Database=sysctrl;User ID=web_usr;Password=web1823"/>
-    <!--總所sysctrl-->
+    <!--總所sysctrl,for北所權限設定-->
     <add name="dev_mg_sysctrl" connectionString="Server=web12;Database=sysctrl;User ID=web_usr;Password=web1823"/>
     <!--雙邊代理查照-->
     <add name="dev_sidbs" connectionString="Server=web12;Database=sidbs;User ID=web_usr;Password=web1823"/>
@@ -49,8 +49,8 @@
     <add name="test_account" connectionString="Server=web12;Database=account;User ID=web_usr;Password=web1823"/>
     <!--sysctrl-->
     <add name="test_sysctrl" connectionString="Server=web12;Database=sysctrl;User ID=web_usr;Password=web1823"/>
-    <!--總所sysctrl-->
-    <add name="test_mg_sysctrl" connectionString="Server=web12;Database=sysctrl;User ID=web_usr;Password=web1823"/>
+    <!--總所sysctrl,for北所權限設定-->
+    <add name="test_mg_sysctrl" connectionString="Server=web10;Database=sysctrl;User ID=web_usr;Password=web1823"/>
     <!--雙邊代理查照-->
     <add name="test_sidbs" connectionString="Server=web12;Database=sidbs;User ID=web_usr;Password=web1823"/>
     <!--案件(分案/轉案用)-->
@@ -80,7 +80,7 @@
     <add name="prod_C_sysctrl" connectionString="Server=sic10;Database=sysctrl;User ID=web_usr;Password=web1823"/>
     <add name="prod_S_sysctrl" connectionString="Server=sis10;Database=sysctrl;User ID=web_usr;Password=web1823"/>
     <add name="prod_K_sysctrl" connectionString="Server=sik10;Database=sysctrl;User ID=web_usr;Password=web1823"/>
-    <!--總所sysctrl-->
+    <!--總所sysctrl,for北所權限設定-->
     <add name="prod_mg_sysctrl" connectionString="Server=sin33;Database=sysctrl;User ID=web_usr;Password=web1823"/>
     <!--雙邊代理查照-->
     <add name="prod_sidbs" connectionString="Server=sin33;Database=sidbs;User ID=web_usr;Password=web1823"/>

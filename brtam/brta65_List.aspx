@@ -166,12 +166,22 @@
             }
         }
 
-        if (ReqVal.TryGet("qryend") == "Y") {
-            SQL += "  and a.end_date is null";
-        } else if (ReqVal.TryGet("qryend") == "N") {
+        if (ReqVal.TryGet("qryend") == "Y") {//尚未結案
+            SQL += " and a.end_date is null";
+        } else if (ReqVal.TryGet("qryend") == "N") {//已結案
             SQL += " and a.end_date is not null";
             if (ReqVal.TryGet("end_code") != "") {
                 SQL += " and a.end_code = '" + ReqVal.TryGet("end_code") + "'";
+            }
+            if (ReqVal.TryGet("end_type") != "") {
+                SQL += " and a.end_type = '" + ReqVal.TryGet("end_type") + "'";
+            }
+        }
+
+        if (ReqVal.TryGet("tran_flag") != "") {
+            SQL += " and a.tran_flag = '" + ReqVal.TryGet("tran_flag") + "'";
+            if (ReqVal.TryGet("tran_seq_branch") != "") {
+                SQL += " and a.tran_seq_branch = '" + ReqVal.TryGet("tran_seq_branch") + "'";
             }
         }
 

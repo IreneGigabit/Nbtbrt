@@ -317,8 +317,8 @@
         //---銷管契約書後補期限
         insert_resp(conn);
     }
-    
-    //[取消(送會計)]：表取消後至會計契約書檢核
+
+    //[取消(送會計)]：表取消後至會計契約書檢核,(誤點契約書後補時取消)
     private void doCancel(DBHelper conn) {
         //---------------[取消(送會計)]：表取消後至會計契約書檢核
         if (prgid.Left(3) == "brt") {
@@ -433,7 +433,7 @@
 
     private void CreateMail(DBHelper conn) {
         string Subject = "契約書/委辦書已後補通知(" + fseq + ")";
-        string strFrom = Session["scode"] + "@saint-island.com.tw";
+        string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
         List<string> strTo = new List<string>();
         List<string> strCC = new List<string>();
         List<string> strBCC = new List<string>();

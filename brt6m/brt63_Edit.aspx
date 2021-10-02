@@ -104,7 +104,7 @@
             Lock["QLock"] = "Lock";
         }
 
-        StrFormBtnTop += "<a href=\"" + Sys.getCase52Aspx("brt52", in_no, in_scode, "Edit") + "\" target=\"Eblank\">[交辦維護作業]</a>\n";
+        StrFormBtnTop += "<a href=\"" + Sys.getCaseDmt52Aspx("brt52", in_no, in_scode, "Edit") + "\" target=\"Eblank\">[交辦維護作業]</a>\n";
         StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>";
 
         if ((HTProgRight & 4) > 0 || (HTProgRight & 8) > 0 || (HTProgRight & 16) > 0 || (HTProgRight & 64) > 0 || (HTProgRight & 128) > 0) {

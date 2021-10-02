@@ -105,7 +105,7 @@
             FormName += "「01」表組主管→部門主管→區所會計檢核→區所主管→商標經理→程序收文； <br>\n";
         }
 
-        DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), Request["job_scode"]);
+        DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), Request["job_scode"], false);
         //MasterList.ShowTable();
         
         //轉上級人員
@@ -279,7 +279,7 @@
                 }
 
                 //dr["urlasp"] = GetLink(dr);
-                dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
+                dr["urlasp"] = Sys.getCaseDmt11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
                 dr["ctrl_rowspan"] = ctrl_rowspan;
 
                 //簽准層級grplevel=2部門主管→11會計→1區所主管→0商標經理
@@ -318,7 +318,7 @@
 
                 //計算簽核層級,並檢查簽准層級=交辦營洽則再往上一級
                 string sign_level = "", sign_levelnm="";
-                DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), dr.SafeRead("in_scode", ""));
+                DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), dr.SafeRead("in_scode", ""), false);
                 if (upload_flag == "Y" || disT_flag == "Y" || armarkT_flag == "Y") {
                     sign_level = "0";//商標經理
                 } else if (armarkT_flag == "Y") {
@@ -660,13 +660,13 @@
     ///////////////////////////////////////////////////////////////
     //查案件扣收入交辦記錄 
     function markdlist_from_onclick(pseq,pseq1,pcountry,pcase_no){
-        //***todo
+        //***todo帳款
         var url = getRootPath() + "/brt3m/extform/markdlist_qry.aspx?prgid=<%=HTProgCode%>&seq=" + pseq +"&seq1=" + pseq1 + "&country=" + pcountry +"&case_no="+ pcase_no + "&qs_dept=<%=qs_dept%>";
         window.open(url,"mymarkdlistwin", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
     }
     //查案件扣收入會計檢核記錄
     function accdchklist_from_onclick(pseq,pseq1,pcountry,pcase_no){
-        //***todo
+        //***todo帳款
         var url = getRootPath() + "/brt3m/extform/accdchklist_qry.aspx?prgid=<%=HTProgCode%>&seq="+ pseq +"&seq1=" + pseq1 +  "&country=" + pcountry +"&case_no="+pcase_no + "&qs_dept=<%=qs_dept%>";
         window.open(url,"myaccdchklistwin", "width=750px, height=550px, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, status=no,resizable=yes, scrollbars=yes");
     }

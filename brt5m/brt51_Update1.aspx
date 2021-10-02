@@ -184,7 +184,7 @@
             Insert_Step(seq, seq1, Mscode, Min_no, "1", "N");
         } else {
             if (case_stat == "SN") {//新案指定編號
-                                    //更新 case_dmt 狀態
+                //更新 case_dmt 狀態
                 SQL = "update case_dmt set stat_code = 'YZ',case_stat = 'SU' where " + wheresqlA;
                 conn.ExecuteNonQuery(SQL);
                 //2008/11/27增加更新dmt_attach進度,2011/2/22因客收確認新增上傳不會寫入，增加交辦單號case_no
@@ -199,7 +199,7 @@
                 //客收 & 管制 入檔
                 Insert_Step(seq, seq1, Mscode, Min_no, "1", "N");
             } else {//後續案
-                    //更新 case_dmt 狀態
+                //更新 case_dmt 狀態
                 SQL = "update case_dmt set stat_code = 'YZ',case_stat = 'OU' where " + wheresqlA;
                 conn.ExecuteNonQuery(SQL);
                 //2008/11/27增加更新dmt_attach進度,2011/2/22因客收確認新增上傳不會寫入，增加交辦單號case_no
@@ -258,7 +258,7 @@
             ColMap["from_flag"] = Util.dbchar("CGRS");
             ColMap["in_scode"] = "'" + Session["scode"] + "'";
             ColMap["in_date"] = "getdate()";
-            ColMap["dowhat"] = Util.dbchar("DP_GS");
+            ColMap["dowhat"] = Util.dbchar("DP_GS");//承辦交辦發文
             ColMap["job_scode"] = Util.dbchar(Request["pr_scode"]);
             ColMap["job_team"] = Util.dbchar(job_team);
             ColMap["job_status"] = Util.dbchar("NN");
@@ -267,8 +267,9 @@
         } else {
             string nGrpID = Sys.getCodeName(conn, "sysctrl.dbo.scode_group", "grpid", "where grpclass='" + Session["seBranch"] + "' and scode='" + Mscode + "'");
             //2016/1/14因總契約書，增加契約書後補todo及管制期限或會計契約書檢核
-            if (contract_flag == "Y") {//需契約書後補
-                                       //新增管制期限
+            if (contract_flag == "Y") {
+                //需契約書後補
+                //新增管制期限B9契約書後補期限
                 string ctrl_date = DateTime.Today.AddMonths(1).ToShortDateString();
                 SQL = "insert into ctrl_dmt(rs_no,branch,seq,seq1,step_grade,ctrl_type,ctrl_remark,ctrl_date,tran_date,tran_scode)";
                 SQL += " values('" + main_rs_no + "','" + Session["sebranch"] + "'," + seq + ",'" + seq1 + "'";
@@ -293,7 +294,7 @@
                 ColMap["from_flag"] = Util.dbchar("CASE");
                 ColMap["in_scode"] = "'" + Session["scode"] + "'";
                 ColMap["in_date"] = "getdate()";
-                ColMap["dowhat"] = Util.dbchar("contractL");
+                ColMap["dowhat"] = Util.dbchar("contractL");//契約書後補
                 ColMap["job_scode"] = Util.dbchar(Mscode);
                 ColMap["job_team"] = Util.dbchar(nGrpID);
                 ColMap["job_status"] = Util.dbchar("NN");
@@ -301,7 +302,7 @@
                 conn.ExecuteNonQuery(SQL);
             } else {
                 if (acc_chk == "N") {//需會計檢核
-                                     //抓取會計
+                    //抓取會計
                     string acc_scode = Sys.getCodeName(conn, "sysctrl.dbo.scode_roles", "scode", "where branch='" + Session["seBranch"] + "' and dept='T' and syscode='" + Session["syscode"] + "' and sort='01' and roles='account'");
 
                     SQL = "insert into todo_dmt ";
@@ -320,7 +321,7 @@
                     ColMap["from_flag"] = Util.dbchar("CASE");
                     ColMap["in_scode"] = "'" + Session["scode"] + "'";
                     ColMap["in_date"] = "getdate()";
-                    ColMap["dowhat"] = Util.dbchar("contractA");
+                    ColMap["dowhat"] = Util.dbchar("contractA");//會計契約書檢核
                     ColMap["job_scode"] = Util.dbchar(acc_scode);
                     ColMap["job_team"] = Util.dbchar("");
                     ColMap["job_status"] = Util.dbchar("NN");
@@ -347,7 +348,7 @@
             ColMap["from_flag"] = Util.dbchar("CGRS");
             ColMap["in_scode"] = "'" + Session["scode"] + "'";
             ColMap["in_date"] = "getdate()";
-            ColMap["dowhat"] = Util.dbchar("DP_GS");
+            ColMap["dowhat"] = Util.dbchar("DP_GS");//承辦交辦發文
             ColMap["job_scode"] = Util.dbchar(Request["pr_scode"]);
             ColMap["job_team"] = Util.dbchar(job_team);
             ColMap["job_status"] = Util.dbchar("NN");
@@ -362,7 +363,7 @@
             cseq1 = seq1;
         }
 
-        Sys.showLog("***子案(" + (dt.Rows.Count-1) + ")***");
+        Sys.showLog("***子案(" + (dt.Rows.Count - 1) + ")***");
         //從1開始,0是母案
         for (int n = 1; n < dt.Rows.Count; n++) {
             Sys.showLog("*-----**" + n + "**-----*");
@@ -1203,7 +1204,7 @@
                     SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("eappl_name2", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("jappl_name", ""));
                     SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("jappl_name1", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("jappl_name2", ""));
                     SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("zappl_name1", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("zappl_name2", ""));
-                    SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("zname_type", "")) +"," + Util.dbnull(RTreg.Rows[0].SafeRead("oappl_name", ""));
+                    SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("zname_type", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("oappl_name", ""));
                     SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("draw", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("draw_file", ""));
                     SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("symbol", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("color", ""));
                     SQL += ",null,null," + Util.dbnull(RTreg.Rows[0].SafeRead("in_scode", ""));
@@ -1236,7 +1237,7 @@
             }
 
             //2011/2/14復案註記，結案進行中取消結案流程並銷管結案期限
-            if (RTreg.Rows[0].SafeRead("back_flag","").Trim() == "Y") {
+            if (RTreg.Rows[0].SafeRead("back_flag", "").Trim() == "Y") {
                 update_tododmt_end(seq, seq1);
             }
         }
@@ -1296,7 +1297,7 @@
                     SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("eappl_name2", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("jappl_name", ""));
                     SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("jappl_name1", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("jappl_name2", ""));
                     SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("zappl_name1", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("zappl_name2", ""));
-                    SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("zname_type", "")) + "," +Util.dbnull(RTreg.Rows[0].SafeRead("oappl_name", ""));
+                    SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("zname_type", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("oappl_name", ""));
                     SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("draw", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("draw_file", ""));
                     SQL += "," + Util.dbnull(RTreg.Rows[0].SafeRead("symbol", "")) + "," + Util.dbnull(RTreg.Rows[0].SafeRead("color", ""));
                     SQL += ",null,null," + Util.dbnull(RTreg.Rows[0].SafeRead("in_scode", ""));
@@ -1314,7 +1315,7 @@
             }
 
             //2011/2/14復案註記，結案進行中取消結案流程並銷管結案期限
-            if (RTreg.Rows[0].SafeRead("back_flag","").Trim() == "Y") {
+            if (RTreg.Rows[0].SafeRead("back_flag", "").Trim() == "Y") {
                 update_tododmt_end(seq, seq1);
             }
         }
@@ -1439,7 +1440,7 @@
             conn.ExecuteNonQuery(SQL);
 
             //2011/2/14復案註記，結案進行中取消結案流程並銷管結案期限
-            if (RTreg.Rows[0].SafeRead("back_flag","").Trim() == "Y") {
+            if (RTreg.Rows[0].SafeRead("back_flag", "").Trim() == "Y") {
                 update_tododmt_end(seq, seq1);
             }
         }
@@ -1462,7 +1463,7 @@
             SQL += "select sqlno from ctrl_dmt where seq=" + pseq + " and seq1='" + pseq1 + "' and step_grade='" + dr.Rows[n]["step_grade"] + "' and ctrl_type in ('B6','B61') ";
             SQL += ")";
             conn.ExecuteNonQuery(SQL);
-            
+
             SQL = "delete from ctrl_dmt where sqlno in(";
             SQL += "select sqlno from ctrl_dmt where seq=" + pseq + " and seq1='" + pseq1 + "' and step_grade='" + dr.Rows[n]["step_grade"] + "' and ctrl_type in ('B6','B61') ";
             SQL += ")";
@@ -1682,7 +1683,7 @@
 
             //Email通知會計
             string Subject = "國內商標網路作業系統－扣收入案件確認通知";
-            string strFrom = Session["scode"] + "@saint-island.com.tw";
+            string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
             List<string> strTo = new List<string>();
             List<string> strCC = new List<string>();
             List<string> strBCC = new List<string>();

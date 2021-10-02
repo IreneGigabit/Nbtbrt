@@ -234,7 +234,7 @@
 		<td class="lightbluetable" STYLE="cursor:pointer;COLOR:BLUE" align=right ID="nAppend" onclick="PMARK(p1Appl_name)">一、<u><span class="txtMark1"></span>名稱：</u></td>
 		<td class="whitetablebg" colspan=7>
             <input TYPE="text" id="tfz1_Appl_name" NAME="tfz1_Appl_name" alt="『商標(標章)名稱』" SIZE="60" MAXLENGTH="100" onblur="appl_name_watch(this)">
-			<input TYPE="text" id="file1" name="file1" value="">
+			<input TYPE="hidden" id="file1" name="file1" value="">
 	        <input TYPE="text" id="Draw_file1" name="Draw_file1" SIZE="50" maxlength="50" readonly>	    
 			<input type="button" class="cbutton" id="butUpload1" name="butUpload1"  value="商標圖檔上傳" onclick="br_form.UploadAttach_photo()" >
 		    <input type="button" class="redbutton" id="btnDelAtt" name="btnDelAtt"  value="商標圖檔刪除" onclick="br_form.DelAttach_photo()" >
@@ -279,7 +279,7 @@
 	<tr>
 		<td class=lightbluetable align=right STYLE="cursor:pointer;COLOR:BLUE" ONCLICK="PMARK(a3Draw)">二、<u><span class="txtMark1"></span>圖樣：</u></td>
 		<TD class=whitetablebg colspan=7>
-			<input TYPE="text" id="file1" name="file1" value="">
+			<input TYPE="hidden" id="file1" name="file1" value="">
 	        <input TYPE="text" id="Draw_file1" name="Draw_file1" SIZE="50" maxlength="50" readonly>	    
 			<input type="button" class="cbutton" id="butUpload1" name="butUpload1"  value="商標圖檔上傳" onclick="br_form.UploadAttach_photo()" >
 		    <input type="button" class="redbutton" id="btnDelAtt" name="btnDelAtt"  value="商標圖檔刪除" onclick="br_form.DelAttach_photo()" >
@@ -311,7 +311,7 @@
 		<td class="lightbluetable" STYLE="cursor:pointer;COLOR:BLUE" align=right ID="nAppend" onclick="PMARK(p1Appl_name)">一、<u><span class="txtMark1"></span>名稱：</u></td>
 		<td class="whitetablebg" colspan=7>
             <input TYPE="text" id="tfz1_Appl_name" NAME="tfz1_Appl_name" alt="『商標(標章)名稱』" SIZE="60" MAXLENGTH="100" onblur="appl_name_watch(this)">
-			<input TYPE="text" id="file1" name="file1" value="">
+			<input TYPE="hidden" id="file1" name="file1" value="">
 	        <input TYPE="text" id="Draw_file1" name="Draw_file1" SIZE="50" maxlength="50" readonly>	    
 			<input type="button" class="cbutton" id="butUpload1" name="butUpload1"  value="商標圖檔上傳" onclick="br_form.UploadAttach_photo()" >
 		    <input type="button" class="redbutton" id="btnDelAtt" name="btnDelAtt"  value="商標圖檔刪除" onclick="br_form.DelAttach_photo()" >
@@ -355,7 +355,7 @@
 	<tr>
 		<td class=lightbluetable align=right></td>
 		<td class=whitetablebg colspan=7>			
-		<TEXTAREA id=tfz1_Remark4 NAME=tfz1_Remark4 ROWS=1 COLS=60></TEXTAREA></TD>
+		<TEXTAREA id=tfz1_Remark4 NAME=tfz1_Remark4 ROWS=2 COLS=60></TEXTAREA></TD>
 	</TR>	
     </TABLE>
 </script>

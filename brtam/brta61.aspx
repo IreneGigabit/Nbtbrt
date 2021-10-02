@@ -16,6 +16,7 @@
     protected string StrFormBtn = "";
     protected string SQL = "";
 
+    protected string rs_type = "", html_rs_class = "";
     protected string td_tscode = "", html_ctrl_type = "";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
@@ -48,6 +49,11 @@
             StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"查　詢\" class=\"cbutton bsubmit\" />\n";
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
         }
+
+        //結構分類
+        rs_type = Sys.getRsType();
+        SQL = "select cust_code,code_name from cust_code where code_type='" + rs_type + "' and mark is null";
+        html_rs_class = Util.Option(conn, SQL, "{cust_code}", "{cust_code}_{code_name}");
 
         //營洽清單
         if ((HTProgRight & 64) != 0) {
@@ -85,6 +91,7 @@
 
 <form id="reg" name="reg" method="post">
     <input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
+    <input type="hidden" id=rs_type name=rs_type value=<%=rs_type%>>
 
     <div id="id-div-slide">
         <table border="0" class="bluetable" cellspacing="1" cellpadding="2" width="80%" align="center">
@@ -120,6 +127,36 @@
 		        <TD class=whitetablebg>
 			        <input type="text" id="ap_cname1" name="ap_cname1" size=45 maxlength=40>
 		        </TD>
+	        </TR>
+	        <TR>
+		        <TD class=lightbluetable align=right><span class="rsnotitle">收/發文</span>種類：</TD>
+		        <TD class=whitetablebg align=left colspan=3>
+			    <select id=cgrs name=cgrs>
+			        <option value="">不指定</option><!--brta22-->
+			        <option value="CR">客收</option><!--brta22-->
+			        <option value="GR">官收</option><!--brta21-->
+			        <option value="GS">官發</option><!--brta31-->
+			        <option value="CS">客發</option><!--brta22-->
+			        <!--<option value="ZS">本發</option>brta34已有維護-->
+			    </select>
+		        </TD>
+	        </TR>
+	        <TR>
+		        <TD class=lightbluetable align=right><span class="rsnotitle">收/發文</span>代碼：</TD>
+		        <TD class=whitetablebg align=left colspan=3>
+                    結構分類：
+			        <span id=span_rs_class>
+				        <select id="rs_class" name="rs_class"><%#html_rs_class%></select>
+			        </span>
+			        <br>案性代碼：
+			        <span id=span_rs_code>
+				        <select id="rs_code" name="rs_code"></select>
+			        </span>
+                    <br>處理事項：
+			        <span id=span_act_code>
+				        <select id="act_code" name="act_code"></select>
+			        </span>
+		        </td>
 	        </TR>
 	        <TR>
                 <TD class=lightbluetable align=right rowspan=2>商標種類：</TD>
@@ -259,6 +296,37 @@
     });
     $(".dateField").blur(function (e) {
         ChkDate(this);
+    });
+
+    //依收發文種類帶案性代碼
+    $("#cgrs").change(function () {
+        if ($(this).val() == "") {//不指定
+            $("#rs_class").val("");
+        }
+        $("#rs_class").triggerHandler("change");
+    });
+
+    //依結構分類帶案性代碼
+    $("#rs_class").change(function () {
+        $("#rs_code").getOption({//案性代碼
+            url: getRootPath() + "/ajax/json_rs_code.aspx",
+            data: { cgrs: $("#cgrs").val(), rs_type: $("#rs_type").val(), rs_class: $("#rs_class").val() },
+            valueFormat: "{rs_code}",
+            textFormat: "{rs_code}_{rs_detail}",
+            attrFormat: "vrs_class='{rs_class}'"
+        });
+        $("#rs_code").triggerHandler("change");
+    });
+
+    //依案性帶處理事項
+    $("#rs_code").change(function () {
+        $("#act_code").getOption({//處理事項
+            url: getRootPath() + "/ajax/json_act_code.aspx",
+            data: { cgrs: $("#cgrs").val(), rs_class: $("#rs_class").val(), rs_code: $("#rs_code").val(), column: "act_code,act_code_name,act_sort" },
+            valueFormat: "{act_code}",
+            textFormat: "{act_code}_{act_code_name}"
+        });
+        $("#act_code").triggerHandler("change");
     });
 
     //點選進度狀況

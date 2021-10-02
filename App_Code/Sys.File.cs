@@ -275,11 +275,11 @@ public partial class Sys
         if (HttpContext.Current.Request["chkTest"] != "TEST") {
             //來源跟目的不同時才要搬,否則會出錯
             if (sFi.FullName.ToLower() != dFi.FullName.ToLower()) {
-                if (dFi.Exists && backupFlag) {
+                if (dFi.Exists && backupFlag) {//檔案有衝突,備份原檔
                     dFi.CopyTo(dFi.DirectoryName + "\\" + backup_name,true);
                     sFi.CopyTo(dFi.FullName,true);
                     sFi.Delete();
-                } else if (dFi.Exists && !backupFlag) {
+                } else if (dFi.Exists && !backupFlag) {//檔案有衝突,直接覆蓋
                     dFi.Delete();
                     sFi.MoveTo(dFi.FullName);
                 } else {

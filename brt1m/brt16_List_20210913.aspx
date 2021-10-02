@@ -144,7 +144,7 @@
                 //urlasp += "&homelist=" + Request["homelist"];
                 //urlasp += "&uploadtype=case";
                 //urlasp += "&submittask=Show";
-                urlasp = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Edit");
+                urlasp = Sys.getCaseDmt11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Edit");
                 dr["urlasp"] = urlasp;
 
                 string rptasp = "";//列印的url

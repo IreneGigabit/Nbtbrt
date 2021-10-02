@@ -231,7 +231,7 @@
             dr["strcontract_flag"] = strcontract_flag;
             
             //連結的url
-            dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no",""), dr.SafeRead("in_scode",""), "Show");
+            dr["urlasp"] = Sys.getCaseDmt11Aspx(prgid, dr.SafeRead("in_no",""), dr.SafeRead("in_scode",""), "Show");
         }
 
         dataRepeater.DataSource = page.pagedTable;
@@ -324,7 +324,7 @@
 <body>
 <table cellspacing="1" cellpadding="0" width="98%" border="0" align="center">
     <tr>
-        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%><%=HTProgCap%>】<span style="color:blue"><%=Title%></span></td>
+        <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%><%=Title%>】<span style="color:blue"><%=HTProgCap%></span></td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <%#StrFormBtnTop%>
         </td>
@@ -417,7 +417,7 @@
 	                <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("a_service")%></a></td>
 	                <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("a_fees")%></a></td>
 	                <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("oth_money")%></a></td>
-	                <td align="center"><%#Eval("stat_code")%><%#GetNXLink(Container)%></td>
+	                <td align="center"><%#GetNXLink(Container)%></td>
 		            <td align="center"><%#GetTranLink(Container)%></td>
                     <%if(prgid=="brt12"){%>
                         <td align="center"><%#GetCopyLink(Container)%>

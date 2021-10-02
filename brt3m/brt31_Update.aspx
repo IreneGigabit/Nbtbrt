@@ -5,7 +5,7 @@
 <%@ Import Namespace = "System.Linq"%>
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內交辦案主管簽核作業-入檔(簽准、轉上級)";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt31";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -226,7 +226,7 @@
     private void CreateMail() {
         if (Request["upload_flag"] == "Y" || Request["armark_flag"] == "Y" || Request["armarkT_flag"] == "Y" || Request["contract_flag"] == "Y") {
             string Subject = "";
-            string strFrom = Session["scode"] + "@saint-island.com.tw";
+            string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
             List<string> strTo = new List<string>();
             List<string> strCC = new List<string>();
             List<string> strBCC = new List<string>();
@@ -251,9 +251,9 @@
 
             string qs_deptnm = "";
             if (qs_dept == "t") {
-                qs_deptnm = "國內案";
+                qs_deptnm = "國內";
             } else if (qs_dept == "e") {
-                qs_deptnm = "出口案";
+                qs_deptnm = "出口";
             }
 
             string body = dobody();
@@ -261,16 +261,16 @@
                 body += "<font color=blue>◎請至：商標網路作業系統－＞";
                 string tsub = "簽核";
                 if (Request["upload_flag"] == "Y") {
-                    body += "主管簽核－＞" + qs_deptnm + "主管簽核作業，進行簽核</font>";
+                    body += "主管簽核－＞" + qs_deptnm + "交辦案主管簽核作業，進行簽核</font>";
                     Subject += "商標網路作業系統~專案指定代理人之主管" + tsub + "通知";
                 } else if (Request["armark_flag"] == "Y") {
-                    body += "智產請款－＞" + qs_deptnm + "扣收入會計檢核作業，進行檢核</font>";
+                    body += "智產請款－＞" + qs_deptnm + "案扣收入會計檢核作業，進行檢核</font>";
                     Subject += "商標網路作業系統~扣收入交辦之會計檢核通知";
                 } else if (Request["armarkT_flag"] == "Y") {
-                    body += "主管簽核－＞" + qs_deptnm + "主管簽核作業，進行簽核</font>";
+                    body += "主管簽核－＞" + qs_deptnm + "交辦案主管簽核作業，進行簽核</font>";
                     Subject = "商標網路作業系統~扣收入交辦之主管" + tsub + "通知";
                 } else if (Request["contract_flag"] == "Y") {
-                    body += "主管簽核－＞" + qs_deptnm + "主管簽核作業，進行簽核</font>";
+                    body += "主管簽核－＞" + qs_deptnm + "交辦案主管簽核作業，進行簽核</font>";
                     Subject += "商標網路作業系統~契約書後補先行客收之主管" + tsub + "通知";
                 }
 

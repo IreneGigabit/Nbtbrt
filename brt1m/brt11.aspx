@@ -6,7 +6,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <script runat="server">
-    protected string HTProgCap = "";//"國內案接洽暨交辦作業";//HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內案接洽暨交辦作業";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt11";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼

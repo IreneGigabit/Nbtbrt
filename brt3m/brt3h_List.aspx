@@ -410,7 +410,7 @@
         if (pdept=="T"){
             url=getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=Q&type=brtran&branch=" + pbranch;
         }else{
-            //***todo
+            //***todo出口案
             url=getRootPath() + "/brt5m/ext54Edit.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=Q&type=brtran&branch=" + pbranch;
         }
         $('#dialog').html('<iframe style="border: 0px;" src="' + url + '" width="100%" height="100%"></iframe>')

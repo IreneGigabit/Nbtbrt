@@ -87,6 +87,14 @@ public partial class Sys
     /// </summary>
     /// <param name="grpId">空白=執委,zzz=專案室,其他=依行政組織</param>
     public static DataTable getGrpidUp(string grpClass, string grpId) {
+        return getGrpidUp(grpClass, grpId, false);
+    }
+    /// <summary>
+    /// 依grpid向上抓取組織
+    /// <param>回傳datatable.grplevel,3=組主管,2=部門主管,1=區所主管,0=專商經理,-1=執委</param>
+    /// </summary>
+    /// <param name="grpId">空白=執委,zzz=專案室,其他=依行政組織</param>
+    public static DataTable getGrpidUp(string grpClass, string grpId, bool debugFlag) {
         using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
             string SQL = "";
             //專商經理&執委無法用upgrpid串
@@ -120,6 +128,7 @@ public partial class Sys
                 SQL += "WHERE GrpClass='" + grpClass + "' and GrpID = '" + grpId + "' ";
             }
             DataTable dt = new DataTable();
+            if (debugFlag) Sys.showLog(SQL);
             cnn.DataTable(SQL, dt);
 
             bool process = true;
@@ -169,6 +178,7 @@ public partial class Sys
                             SQL += "AND e.UpgrpID<>'" + dt.Rows[i]["GrpID"] + "' ";
                         }
                         cnn.DataTable(SQL, dtCte);
+                        if (debugFlag) Sys.showLog(SQL);
                         dt.Merge(dtCte);
                     }
                 }
@@ -337,7 +347,21 @@ public partial class Sys
             string se_Grpid = "", se_Grplevel = "";
             getScodeGrpid(grpClass, scode, ref se_Grpid, ref se_Grplevel);
 
-            return getGrpidUp(grpClass, se_Grpid);
+            return getGrpidUp(grpClass, se_Grpid, false);
+        }
+    }
+
+    /// <summary>
+    /// 向上抓取所有階層
+    /// <param>回傳datatable.grplevel,3=組主管,2=部門主管,1=區所主管,0=專商經理,-1=執委</param>
+    /// </summary>
+    public static DataTable getMasterList(string grpClass, string scode, bool debugFlag) {
+        using (DBHelper cnn = new DBHelper(Conn.Sysctrl, false)) {
+            string se_Grpid = "", se_Grplevel = "";
+            getScodeGrpid(grpClass, scode, ref se_Grpid, ref se_Grplevel);
+
+            if (debugFlag) Sys.showLog(string.Format("基準人員:{0},grpid:{1},grplevel:{2}", scode, se_Grpid, se_Grplevel));
+            return getGrpidUp(grpClass, se_Grpid, debugFlag);
         }
     }
     #endregion
@@ -552,7 +576,7 @@ public partial class Sys
     }
     #endregion
 
-    #region getCaseAspx - 國內案性對應的交辦畫面aspx
+    #region getCaseDmtAspx - 國內案性對應的交辦畫面aspx
     /// <summary>  
     /// 國內案性對應的交辦畫面aspx
     /// </summary>  
@@ -646,7 +670,7 @@ public partial class Sys
     }
     #endregion
 
-    #region getCase11Aspx - 國內案營洽交辦畫面aspx
+    #region getCaseDmt11Aspx - 國內案營洽交辦畫面aspx
     /// <summary>  
     /// 國內案營洽交辦畫面aspx,內建參數如下
     /// <para>in_scode</para> 
@@ -668,7 +692,7 @@ public partial class Sys
     /// <para>step_grade</para> 
     /// <para>uploadtype=case</para> 
         /// </summary>  
-    public static string getCase11Aspx(string prgid, string in_no, string in_scode, string submittask) {
+    public static string getCaseDmt11Aspx(string prgid, string in_no, string in_scode, string submittask) {
         object objResult = null;
         string urlasp = "";//連結的url
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
@@ -730,11 +754,11 @@ public partial class Sys
     }
     #endregion
 
-    #region getCase52Aspx - 國內案營洽交辦維護畫面aspx
+    #region getCaseDmt52Aspx - 國內案營洽交辦維護畫面aspx
     /// <summary>  
     /// 國內案營洽交辦維護畫面aspx
     /// </summary>  
-    public static string getCase52Aspx(string prgid, string in_no, string in_scode, string submittask) {
+    public static string getCaseDmt52Aspx(string prgid, string in_no, string in_scode, string submittask) {
         object objResult = null;
         string urlasp = "";//連結的url
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
@@ -780,6 +804,67 @@ public partial class Sys
                 urlasp += "&ar_fees=" + dr["ar_fees"];
                 urlasp += "&ar_curr=" + dr["ar_curr"];
                 urlasp += "&step_grade=" + case_step_grade;
+                urlasp += "&uploadtype=case";
+                if (prgid != "") {
+                    urlasp += "&prgid=" + prgid;
+                }
+                if (submittask != "") {
+                    urlasp += "&submittask=" + submittask;
+                }
+            }
+
+            return urlasp;
+        }
+    }
+    #endregion
+
+    #region getCaseExt11Aspx - 出口案營洽交辦畫面aspx
+    /// <summary>  
+    /// 出口案營洽交辦畫面aspx,內建參數如下
+    /// <para>in_scode</para> 
+    /// <para>in_no</para> 
+    /// <para>case_no</para> 
+    /// <para>seq</para> 
+    /// <para>seq1</para> 
+    /// <para>add_arcase</para> 
+    /// <para>cust_area</para> 
+    /// <para>cust_seq</para> 
+    /// <para>ar_form</para> 
+    /// <para>country</para> 
+    /// <para>code_type</para> 
+    /// <para>uploadtype=case</para> 
+    /// </summary>  
+    public static string getCaseExt11Aspx(string prgid, string in_no, string in_scode, string submittask) {
+        object objResult = null;
+        string urlasp = "";//連結的url
+        using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
+            string SQL = "SELECT a.seq,a.seq1,a.in_scode, a.in_no,a.arcase_type,a.arcase_class, a.arcase ";
+            SQL += ", a.cust_area, a.cust_seq,a.case_no,a.ar_service,a.ar_fees,a.ar_code,a.ar_curr,a.mark ";
+            SQL += ",(SELECT rs_class FROM code_ext WHERE rs_code = a.arcase AND cr_flag = 'Y' AND rs_type=a.arcase_type) AS Ar_form ";
+            SQL += ",C.country,B.arcase_class as prt_code ";
+            SQL += " FROM case_ext a ";
+            SQL += " INNER JOIN ext_temp C ON a.In_scode = C.in_scode and a.In_no = C.in_no AND c.case_sqlno=0 ";
+            SQL += "where a.in_no='" + in_no + "' ";
+            if (in_scode != "") SQL += "and in_scode='" + in_scode + "' ";
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
+            if (dt.Rows.Count > 0) {
+                DataRow dr = dt.Rows[0];
+                string link_remark = "";
+
+                urlasp = Sys.GetRootDir() + "/brt1m" + link_remark + "/Ext11Edit" + dr["prt_code"] + ".aspx";
+
+                urlasp += "?in_scode=" + dr["in_scode"];
+                urlasp += "&in_no=" + dr["in_no"];
+                urlasp += "&case_no=" + dr["case_no"];
+                urlasp += "&seq=" + dr["seq"];
+                urlasp += "&seq1=" + dr["seq1"];
+                urlasp += "&add_arcase=" + dr["arcase"];
+                urlasp += "&cust_area=" + dr["cust_area"];
+                urlasp += "&cust_seq=" + dr["cust_seq"];
+                urlasp += "&ar_form=" + dr["ar_form"];
+                urlasp += "&country=" + dr["country"];
+                urlasp += "&code_type=" + Sys.getRsTypeExt();//dr["arcase_type"];
                 urlasp += "&uploadtype=case";
                 if (prgid != "") {
                     urlasp += "&prgid=" + prgid;
@@ -1024,7 +1109,6 @@ public partial class Sys
                 SQL += " order by " + sortField;
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
-
             return dt;
         }
     }
@@ -1222,6 +1306,45 @@ public partial class Sys
             DataTable dt = new DataTable();
             conn.DataTable(SQL, dt);
 
+            return dt;
+        }
+    }
+    #endregion
+
+    #region getCustScode - 抓取客戶管理內的營洽
+    /// <summary>  
+    /// 抓取客戶管理內的營洽(國內案)
+    /// </summary>  
+    public static DataTable getCustScode(string type, string dept, int HTProgRight, string pwh) {
+        string strConn = Conn.btbrt;
+        //if (branch == "") Conn.brp(branch);
+        string SQL = "";
+        using (DBHelper conn = new DBHelper(strConn, false)) {
+            if (type == "A")//Add
+            {
+                SQL = "select * from sysctrl.dbo.vscode_roles ";
+                SQL += "where branch = '" + Sys.GetSession("SeBranch") + "' ";//單位別
+                SQL += "and dept = '" + dept + "' ";//部門別
+                SQL += "and roles='sales' ";//職務/角色人員，營洽=sales
+                SQL += "and (end_date is null or end_date>=getdate()) ";//薪號檔的結束日期
+                SQL += "and (beg_date is not null)";//薪號檔的起始日期
+                SQL += " order by beg_date";
+            } else//Query
+            {
+                if (dept == "P") {
+                    SQL = "select distinct  a.pscode,s.sc_name,s.sscode ";
+                    SQL += "from custz a left outer join sysctrl.dbo.scode s on a.pscode=s.scode ";
+                    SQL += "where a.pscode is not null and a.pscode <> '' and a.pscode <> 'np'";
+                } else {
+                    SQL = "select distinct  a.tscode,s.sc_name,s.sscode ";
+                    SQL += "from custz a left outer join sysctrl.dbo.scode s on a.tscode=s.scode ";
+                    SQL += "where a.tscode is not null and a.tscode <> ''";
+                }
+                SQL += " order by s.sscode";
+            }
+
+            DataTable dt = new DataTable();
+            conn.DataTable(SQL, dt);
             return dt;
         }
     }
@@ -1462,6 +1585,97 @@ public partial class Sys
                 break;
         }
         conn.ExecuteNonQuery(usql);
+    }
+    #endregion
+
+    #region insert_apcust_log
+    //<summary>
+    //寫入 Log 檔，適用apcust、custz、custz_att table
+    //</summary>
+    public static void insert_apcust_log(string Table, Dictionary<string, string> pKey, string prgid) {
+        using (DBHelper conn = new DBHelper(Conn.btbrt, true)) {
+            string msg = "";
+            int grp_sql = 0;
+            using (SqlDataReader dr = conn.ExecuteReader("select isnull(max(grp_sql)+1,1) as grp_sql from apcust_log")) {
+                dr.Read();
+                grp_sql = int.Parse(dr["grp_sql"].ToString());
+            }
+
+            //Table 'apcust'
+            string apcustStr = "ap_ename1,ap_ename2,ap_fename,ap_lename,";
+            apcustStr += "ap_crep,ap_erep,ap_title,ap_zip,ap_addr1,ap_addr2,";
+            apcustStr += "ap_eaddr1,ap_eaddr2,ap_eaddr3,ap_eaddr4,apatt_zip,apatt_addr1,apatt_addr2,";
+            apcustStr += "apatt_tel0,apatt_tel,apatt_tel1,apatt_fax,apatt_email,";
+            //Table 'custz'
+            string custzStr = "www,email,";
+            custzStr += "tacc_attention,tacc_title,tacc_email,tacc_mobile,tacc_zip,tacc_addr1,tacc_addr2,tacc_tel0,tacc_tel,tacc_tel1,tacc_fax,";
+            custzStr += "pacc_attention,pacc_title,pacc_email,acc_mobile,acc_zip,acc_addr1,acc_addr2,acc_tel0,acc_tel,acc_tel1,acc_fax,";
+            custzStr += "tax_attention,tax_email,tax_mobile,tax_zip,tax_addr1,tax_addr2,tax_tel0,tax_tel,tax_tel1,tax_fax,";
+            custzStr += "taxacc_attention,taxacc_email,taxacc_mobile,taxacc_zip,taxacc_addr1,taxacc_addr2,taxacc_tel0,taxacc_tel,taxacc_tel1,taxacc_fax, acc_remark,";
+            custzStr += "mag,rmark_code,con_code,con_term,ref_seq,cust_remark,";
+            custzStr += "tscode,tlevel,tdis_type,tpay_type,tpay_typem,pscode,plevel,pdis_type,ppay_type,ppay_typem,";
+            //Table 'custz_att'
+            string custz_attStr = "attention,att_title,att_dept,att_company,att_tel0,att_tel,att_tel1,";
+            custz_attStr += "att_mobile,att_fax,att_zip,att_addr1,att_addr2,att_email,att_code,att_mag,dept,";
+
+            string DBColumns = "";
+            switch (Table) {
+                case "apcust":
+                    DBColumns = apcustStr;
+                    break;
+
+                case "custz":
+                    DBColumns = custzStr;
+                    break;
+
+                case "custz_att":
+                    DBColumns = custz_attStr;
+                    break;
+
+                default:
+                    break;
+            }
+
+            string SQLStr = "";
+            string[] s = DBColumns.TrimEnd(',').Split(',');
+            string ovalue = "";
+            string nvalue = "";
+            for (int i = 0; i < s.Length; i++) {
+                ovalue = pKey.TryGet("o" + s[i]).Trim();
+                if (Table == "custz_att") //因為cust12Form畫面設計-Name##
+                {
+                    nvalue = pKey.TryGet(s[i] + "_1").Trim();
+                } else {
+                    nvalue = pKey.TryGet(s[i]).Trim();
+                }
+
+                //cust_att聯絡人狀態代碼特別處理
+                if (Table == "custz_att" & ovalue == "NU" & nvalue == "NN") continue;
+
+                if (ovalue != nvalue) {
+                    try {
+                        string cust_area = Util.dbnull(pKey.TryGet("cust_area"));
+                        string cust_seq = Util.dbnull(pKey.TryGet("cust_seq"));
+
+                        SQLStr = "INSERT INTO apcust_log(grp_sql, cust_area, cust_seq, apsqlno, in_prgid, chg_dept, chg_kind";
+                        SQLStr += ",fidname, fidcname, ovalue, nvalue, upd_main, tran_date, tran_scode)";
+                        SQLStr += " VALUES(" + grp_sql + ", " + cust_area + ", " + cust_seq + ",";
+                        SQLStr += "'" + pKey.TryGet("apsqlno") + "','" + prgid + "','" + Sys.GetSession("dept") + "','" + Table + "',";
+                        SQLStr += "'" + s[i] + "'," + Util.dbnull(pKey.TryGet(s[i] + "_name")) + ",";
+                        SQLStr += Util.dbnull(ovalue) + "," + Util.dbnull(nvalue) + ",";
+                        SQLStr += "'N'," + "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','" + Sys.GetSession("scode") + "')";//2021/9/6 Upd_main-Update主檔應該皆為N(不需)
+                        //Sys.showLog(SQLStr);
+                        conn.ExecuteNonQuery(SQLStr);
+                    }
+                    catch (Exception ex) {
+                        conn.RollBack();
+                        throw new Exception(msg, ex);
+                    }
+                }
+            }
+            conn.Commit();
+            conn.Dispose();
+        }
     }
     #endregion
 }

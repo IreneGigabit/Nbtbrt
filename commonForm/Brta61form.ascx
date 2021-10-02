@@ -119,7 +119,7 @@
                 SQL = "select a.* from case_dmt as a where a.case_no = '" + dr["case_no"] + "' ";
                 using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
                     if (dr0.Read()) {
-                        case_asp = "brta61form.CaseNoClick('" + Sys.getCase11Aspx(prgid, dr0.SafeRead("in_no", ""), dr0.SafeRead("in_scode", ""), "Show") + "')";
+                        case_asp = "brta61form.CaseNoClick('" + Sys.getCaseDmt11Aspx(prgid, dr0.SafeRead("in_no", ""), dr0.SafeRead("in_scode", ""), "Show") + "')";
                     }
                 }
             } else {

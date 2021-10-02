@@ -543,7 +543,7 @@
             string oend_flag = (Request["oend_flag"] ?? "N").Trim();
             if ((nback_flag != oback_flag) || (nend_flag != oend_flag)) {
                 string Subject = "國內所國內商標管理系統－程序修改交辦案件結案/復案註記通知";
-                string strFrom = Session["scode"] + "@saint-island.com.tw";
+                string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
                 List<string> strTo = new List<string>();
                 List<string> strCC = new List<string>();
                 List<string> strBCC = new List<string>();

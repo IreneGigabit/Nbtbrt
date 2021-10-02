@@ -73,7 +73,7 @@
         FormName += "※「<img src=\"" + Page.ResolveUrl("~/images/star_r.gif") + "\" style=\"cursor:pointer\" align=\"absmiddle\"  border=\"0\">」表會計曾退回，滑鼠移至本圖案，即會顯示會計最近一次退回原因。<br>\n";
         FormName += "※「<img src=\"" + Page.ResolveUrl("~/images/star_pl.gif") + "\" style=\"cursor:pointer\" align=\"absmiddle\"  border=\"0\">」表主管曾退回，滑鼠移至本圖案，即會顯示主管最近一次退回原因。<br>\n";
 
-        DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), Request["job_scode"]);
+        DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), Request["job_scode"], false);
         //Sys.showLog(job_grplevel);
         //MasterList.ShowTable();
         //轉上級人員
@@ -165,7 +165,7 @@
 
             //計算簽核層級,並檢查簽准層級=交辦營洽則再往上一級
             string sign_level = "", sign_levelnm = "";
-            DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), dr.SafeRead("dmt_scode", ""));
+            DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), dr.SafeRead("dmt_scode", ""), false);
             sign_level = "1";//區所主管
             sign_levelnm = "1";
             if (dr.SafeRead("dmt_scode", "") == MasterList.Select("grplevel=1")[0]["master_scode"]) {

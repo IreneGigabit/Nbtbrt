@@ -122,7 +122,7 @@
         }
 
         string Subject = "商標網路作業系統－國內爭救案交辦專案室抽件通知（區所編號：" + fseq + "）";
-        string strFrom = Session["scode"] + "@saint-island.com.tw";
+        string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
         List<string> strTo = new List<string>();
         List<string> strCC = new List<string>();
         List<string> strBCC = new List<string>();

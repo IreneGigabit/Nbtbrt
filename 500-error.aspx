@@ -14,6 +14,8 @@
     private string _fileName;
 
     private void Page_Load(System.Object sender, System.EventArgs e) {
+        Response.StatusCode = 500;
+
         // Display Error
         GetError();
         lblType.Text = _expType;

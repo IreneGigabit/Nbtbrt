@@ -111,7 +111,7 @@
         string appl_name = Eval("appl_name").ToString().Left(20);
 
         if (arcase_type != "") {
-            return "<a href=\"" + Sys.getCase11Aspx(prgid, in_no, in_scode, "Show") + "\">" + appl_name + "</a>";
+            return "<a href=\"" + Sys.getCaseDmt11Aspx(prgid, in_no, in_scode, "Show") + "\">" + appl_name + "</a>";
         } else {
             return appl_name;
         }
@@ -124,7 +124,7 @@
 <uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
-<body>
+<body onload="window.focus();">
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
         <td class="text9" nowrap="nowrap">&nbsp;【<%=HTProgCode%><%=HTProgCap%>】</td>

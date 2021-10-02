@@ -86,7 +86,7 @@
         FormName += "「0」表區所主管→程序官發/聯發； <br>\n";
         FormName += "「執」表區所主管→商標經理→執委→程序官發/聯發； <br>\n";
 
-        DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), Request["job_scode"]);
+        DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), Request["job_scode"], false);
         //MasterList.ShowTable();
 
         //轉上級人員
@@ -210,7 +210,7 @@
 
                 if (qs_dept == "t") {
                     dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), dr.SafeRead("country", ""), Sys.GetSession("SeBranch"), Sys.GetSession("dept"));
-                    dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
+                    dr["urlasp"] = Sys.getCaseDmt11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
                 } else {
                     dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), dr.SafeRead("country", ""), Sys.GetSession("SeBranch"), Sys.GetSession("dept") + "E");
                 }

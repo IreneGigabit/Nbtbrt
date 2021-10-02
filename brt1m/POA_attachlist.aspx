@@ -164,7 +164,7 @@
 <uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 
-<body>
+<body onload="window.focus();">
 <table cellspacing="1" cellpadding="0" width="98%" border="0">
     <tr>
         <td class="text9" nowrap="nowrap">&nbsp;【<%=prgid%><%=HTProgCap%>】<span style="color:blue"><%=Title%></span></td>

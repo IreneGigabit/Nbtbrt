@@ -304,7 +304,7 @@ public static partial class Util
     public static string Option(this DataRow[] dr, string valueFormat, string textFormat, string attrFormat, bool showEmpty, string setValue, string selectedCondition) {
         Regex rgx = new Regex("{([^{}]+)}", RegexOptions.IgnoreCase);
         string rtnStr = "";
-
+        
         //處理空白選項
         if (showEmpty)
             rtnStr += "<option value='' style='color:blue' selected>請選擇</option>\n";

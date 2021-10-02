@@ -1,6 +1,8 @@
 ﻿<%@ Page Language="C#" CodePage="65001" %>
 <%@ Import Namespace = "System.Data.SqlClient"%>
 <%@ Import Namespace = "System.Collections.Generic"%>
+<%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
+
 
 <script runat="server">
     protected string StrProjectName = Sys.Project;
@@ -24,7 +26,7 @@
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         cnn = new DBHelper(Conn.ODBCDSN).Debug(Request["chkTest"] == "TEST");
 
-        //kind=homelist_job(?).inc
+        //kind: homelist_job(?).inc
         SQL = "select c.dept,c.kind,a.logingrp,c.Rights from logingrp a,sysctrl b,homeright c";
         SQL += " where a.syscode='" + Sys.Syscode + "' and b.scode='" + Session["scode"] + "'";
         SQL += " and a.syscode=b.syscode and a.logingrp=b.logingrp and a.syscode=c.syscode and a.logingrp=c.logingrp";
@@ -58,7 +60,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title></title>
+    <title></title>
+    <uc1:head_inc_form runat="server" ID="head_inc_form" />
 </head>
 <BODY background="./images/back01.gif" style="margin-left:2em;margin-right:2em;background-repeat: repeat-y;">
     <%if (rights.TryGet("1")!=""||rightsE.TryGet("1")!=""){%>
@@ -78,3 +81,72 @@
 	<%}%>
 </body>
 </html>
+
+<script language="javascript" type="text/javascript">
+    $(function () {
+        //個人件數
+        $('.loadnum').each(function () {
+            var $this = $(this);
+            var right = $this.attr("attr-right");//權限
+            var sql = $this.attr("attr-sql");//執行的sql
+            var href = $this.attr("attr-href");//連結的網頁
+
+            if (right != "") {
+                doajax($this, "", sql, href);
+            }
+        });
+
+        //主管件數
+        $('.loadnumA').each(function () {
+            var $this = $(this);
+            var right = $this.attr("attr-right");//權限
+            var sql = $this.attr("attr-sql");//執行的sql
+            var href = $this.attr("attr-href");//連結的網頁
+
+            if (right == "A") {
+                doajax($this, "A", sql, href);
+            }
+        });
+    });
+
+    function doajax(obj, type, sql, href) {
+        $.ajax({
+            type: "get",
+            url: getRootPath() + "/ajax/JsonGetSqlData.aspx",
+            data: { sql: sql },
+            cache: false,
+            beforeSend: function () {
+                if (type == "A") {
+                    obj.html('(<img src="images/Pulse-1s-20px_r.gif" style="vertical-align: middle;" />)');
+                } else {
+                    obj.html('<img src="images/Pulse-1s-20px_r.gif" style="vertical-align: middle;" />');
+                }
+            },
+            success: function (json) {
+                var JSONdata = $.parseJSON(json);
+                if (JSONdata.length > 0) {
+                    if (JSONdata[0].num == "0") {//沒件數不可link
+                        if (type == "A") {
+                            obj.html("(" + JSONdata[0].num + ")");
+                        } else {
+                            obj.html(JSONdata[0].num);
+                        }
+                    } else {
+                        if (type == "A") {
+                            obj.html("(<a href='" + href + "'>" + JSONdata[0].num + "</a>)");
+                        } else {
+                            obj.html(JSONdata[0].num);
+                        }
+                    }
+                }
+            },
+            error: function (json) {
+                if (type == "A") {
+                    obj.html('(<img src="images/fail-1.1s-20px.png" style="vertical-align: middle;" />)');
+                } else {
+                    obj.html('<img src="images/fail-1.1s-20px.png" style="vertical-align: middle;" />')
+                }
+            }
+        });
+    }
+</script>

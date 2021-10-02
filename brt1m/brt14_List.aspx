@@ -139,7 +139,7 @@
                 dr["fappl_name"] = dr.SafeRead("appl_name", "").ToUnicode().Left(20);
 
                 //dr["urlasp"] = GetLink(dr);
-                dr["urlasp"] = Sys.getCase11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
+                dr["urlasp"] = Sys.getCaseDmt11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
                 dr["prturl"] = GetPrintLink(dr);
             }
 

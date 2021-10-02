@@ -1,20 +1,25 @@
 ﻿<%@ Page Language="C#" CodePage="65001"%>
 <%@ Import Namespace = "System.Data" %>
+<%@ Import Namespace = "System.Web" %>
+<%@ Import Namespace = "System.Web.UI" %>
+<%@ Import Namespace = "System.Web.UI.WebControls" %>
+<%@ Import Namespace = "Newtonsoft.Json"%>
+<%@ Import Namespace = "Newtonsoft.Json.Linq"%>
 <%@ Register Src="~/commonForm/head_inc_form.ascx" TagPrefix="uc1" TagName="head_inc_form" %>
-
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <script runat="server">
-    protected string HTProgCap = "雙邊代理查詢作業";//HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "雙邊代理查詢";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "cust46";//HttpContext.Current.Request["prgid"] ?? "";//程式檔名前綴
-    protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode = "cust46";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
     protected int HTProgRight = 0;
     protected string DebugStr = "";
     protected string StrFormBtnTop = "";
     protected string StrFormBtn = "";
-    protected string SQL = "";
+    protected string submitTask = "";
+    protected string cust_area = "";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
@@ -27,29 +32,31 @@
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
-        
-        conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
-        cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
 
+        cust_area = Sys.GetSession("seBranch");
+
+        
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
-        HTProgCap = myToken.Title;
+        //HTProgCap = myToken.Title;
         DebugStr = myToken.DebugStr;
         if (HTProgRight >= 0) {
+
             PageLayout();
             this.DataBind();
         }
     }
 
-    private void PageLayout() {
-        StrFormBtnTop += "<font style=\"cursor: pointer;color:darkblue\" onmouseover=\"this.style.color='red'\" onmouseout=\"this.style.color='darkblue'\" onclick=\"Help_Click()\">[輔助說明]</font>";
-        
-        if ((HTProgRight & 2) > 0) {
-            StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"查　詢\" class=\"cbutton bsubmit\" />\n";
-            StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
+    private void PageLayout()
+    {
+        if ((HTProgRight & 2) > 0)
+        {
+            StrFormBtnTop += "<a href=http://web02/BRP/cust/雙邊代理查詢操作手冊.files/frame.htm target=_blank>[補助說明]</a>";
         }
     }
+    
 </script>
+
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -70,66 +77,57 @@
     </tr>
 </table>
 
-<form id="reg" name="reg" method="post">
-    <input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
-    <input type="hidden" id="FromQuery" name="FromQuery" value="1">
+<form name="reg" method="post" id="formData" action>
+<input type=hidden name=prgid value="<%=prgid%>">
+<center>
+<TABLE border=0 class=bluetable cellspacing=1 cellpadding=2 width="60%">		
+	<TR>
+		<TD class=lightbluetable align=right width="35%">客戶名稱(中)：</TD>
+		<TD class=whitetablebg align=left width="65%">
+		<INPUT type=text name="ap_cname" id="ap_cname" size="33" maxlength=30 value=""></TD>
+	</TR>
+	<TR>
+		<TD class=lightbluetable align=right>客戶名稱(英)：</TD>
+		<TD class=whitetablebg align=left >
+		<INPUT type=text name="ap_ename" id="ap_ename"  size="33" maxlength=30 value=""></TD>
+	</TR>
+	<TR>
+		<TD class=lightbluetable align=right>代表人(中)：</TD>
+		<TD class=whitetablebg align=left >
+		<INPUT type=text name="ap_crep" id="ap_crep" size="33" maxlength=30 value=""></TD>
+	</TR>
+	<TR>
+		<TD class=lightbluetable align=right>代表人(英)：</TD>
+		<TD class=whitetablebg align=left >
+		<INPUT type=text name="ap_erep" id="ap_erep" size="33" maxlength=30 value=""></TD>
+	</TR>
+	<TR>
+		<TD class=lightbluetable align=right>客戶統編：</TD>
+		<TD class=whitetablebg align=left >
+		<INPUT type=text name="id_no" id="id_no" size="11" maxlength=10 value=""></TD>
+	</TR>
+</TABLE>
+</center>
 
-    <div id="id-div-slide">
-        <table border="0" class="bluetable" cellspacing="1" cellpadding="2" width="70%" align="center">
-	        <TR>
-		        <TD class=lightbluetable align=right>客戶名稱(中)：</TD>
-		        <TD class=whitetablebg >
-			        <input type="text" id="ap_cname" name="ap_cname" size=45 maxlength=40>
-		        </TD>
-	        </TR>
-	        <TR>
-		        <TD class=lightbluetable align=right>客戶名稱(英)：</TD>
-		        <TD class=whitetablebg>
-			        <input type="text" id="ap_ename" name="ap_ename" size=45 maxlength=40>
-		        </TD>
-	        </TR>
-	        <TR>
-		        <TD class=lightbluetable align=right>代表人(中)：</TD>
-		        <TD class=whitetablebg>
-			        <input type="text" id="ap_crep" name="ap_crep" size=45 maxlength=40>
-		        </TD>
-	        </TR>
-	        <TR>
-		        <TD class=lightbluetable align=right>代表人(英)：</TD>
-		        <TD class=whitetablebg>
-			        <input type="text" id="ap_erep" name="ap_erep" size=45 maxlength=40>
-		        </TD>
-	        </TR>
-	        <TR>
-		        <TD class=lightbluetable align=right>客戶統編：</TD>
-		        <TD class=whitetablebg>
-			        <input type="text" id="id_no" name="id_no" size=11 maxlength=10>
-		        </TD>
-	        </TR>
-        </table>
-        <br>
-        <%#DebugStr%>
-        <table id="tabBtn" border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
-	        <tr><td width="100%" align="center">
-			    <%#StrFormBtn%>
-	        </td></tr>
-        </table>
-    </div>
 </form>
-
-<div align="left">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+	<tr><td width="100%">     
+		<p align="center">
+		<input type="button" value="查詢" class="cbutton" style="cursor:hand" id="btnSrch" name="btnSrch">
+		<input type="button" value="重填" class="cbutton" style="cursor:hand" id="btnRest" name="btnRest">
+	</td></tr>
+</table>
+<br>
 <font color="red">[說明]</font><br>
-<br>備註：<br>
 1. 此作業提供同時檢索[北、中、南、雄]四區所之資料庫功能，<font color="blue">只要符合上述任一輸入條件之客戶或申請人皆會顯示</font><br>
 2. <font color="blue">除了「客戶統編」查詢條件<font color="red">不</font>提供關鍵字查詢之外</font>，其餘查詢條件皆提供關鍵字查詢<br>
-</div>
+3. 若統編為7碼，務必在前面加"0"，否則將查詢不到。如統一編號為1234567，則輸入<font color="red">0</font>1234567。
 
 <div id="dialog"></div>
 
-<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>
+<iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="500" style="display:none"></iframe>
 </body>
 </html>
-
 
 <script language="javascript" type="text/javascript">
     $(function () {
@@ -140,10 +138,6 @@
         if (window.parent.tt !== undefined) {
             window.parent.tt.rows = "100%,0%";
         }
-
-        $("input.dateField").datepick();
-
-        $("#ap_cname").focus();
     }
 
     //[重填]
@@ -152,21 +146,18 @@
         this_init();
     });
 
-    //////////////////////////////////////////////////////
     //[查詢]
     $("#btnSrch").click(function (e) {
-        if ($("#ap_cname").val() == "" && $("#ap_ename").val() == "" && $("#ap_crep").val() == ""
-            && $("#ap_erep").val() == "" && $("#id_no").val() == "") {
-            alert("請至少輸入一項查詢條件!!!");
-            $("#ap_cname").focus();
+
+        if ($.trim($("#id_no").val()) == "" && $.trim($("#ap_cname").val()) == "" && $.trim($("#ap_ename").val()) == "" && $.trim($("#ap_crep").val()) == "" && $.trim($("#ap_erep").val()) == "")
+        {
+            alert("請輸入任一條件!");
             return false;
         }
 
-        reg.action = "cust46_list.aspx";
+        reg.action = "cust46_List.aspx?prgid=<%=prgid%>";
         reg.submit();
     });
 
-    function Help_Click() {
-        window.open(getRootPath() + "/cust/雙邊代理查詢操作手冊.htm", "", "width=700, height=500, top=50, left=50, toolbar=no, menubar=no, location=no, directories=no, resizeable=no, status=no, scrollbars=yes");
-    }
+
 </script>

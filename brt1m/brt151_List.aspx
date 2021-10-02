@@ -173,7 +173,7 @@
             rtn += "[後續交辦]";
         } else {
             //rtn += " onClick=\"Formshow('" + Session["seBranch"] + "','" + Eval("cust_seq") + "','<%=toadd%>','" + Eval("job_no") + "')\" >";
-            string urlasp =  Sys.getCase11Aspx(prgid, job_no, "", "Show");
+            string urlasp =  Sys.getCaseDmt11Aspx(prgid, job_no, "", "Show");
             rtn += " onClick=\"Formshow('" + urlasp + "')\" >";
             rtn += "[查詢]";
         }

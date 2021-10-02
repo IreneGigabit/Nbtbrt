@@ -616,7 +616,6 @@
             alert("無轉案單位資料，無法查詢進度！");
             return false;
         }
-        //***todo
         window.open(getRootPath() + "/brtam/brta61_Edit.aspx?aseq=" + x1 + "&aseq1=" + x2 + "&branch=" + x3 + "&submittask=Q&FrameBlank=50&prgid=<%=prgid%>&closewin=Y&winact=1&type=brtran", "", "dialogHeight: 520px; dialogWidth: 960px; center: Yes;resizable: No; status: No;scrollbars=yes");
     }
 </script>

@@ -157,7 +157,7 @@
             SQL += " inner join dmt_brtran c on a.seq=c.seq and a.seq1=c.seq1 ";
             SQL += " inner join todo_dmt d on d.seq=c.seq and d.seq1=c.seq1 and d.temp_rs_sqlno=c.brtran_sqlno and d.dowhat='TRAN_NSB' and d.job_status='NN' ";
             SQL += " where (a.tran_flag='A') " + wsql;
-            //***todo
+            //***todo出口案
             //SQL += " union ";
             //SQL += " select '2' as sort,a.seq,a.seq1,a.country,a.ext_seq,a.ext_seq1,a.cust_area,a.cust_seq,a.appl_name,a.class,a.scode,a.end_date,a.step_grade,a.term1,a.term2";
             //SQL += ",b.cust_name,b.tscode,c.brtran_sqlno,d.sqlno as todo_sqlno,d.pre_sqlno as todo_presqlno ";
@@ -181,7 +181,7 @@
             SQL += " inner join view_cust b on a.cust_area=b.cust_area and a.cust_seq=b.cust_seq ";
             SQL += " where (a.tran_flag='' or a.tran_flag is null) " + wsql;
             SQL += " and a.seq1<>'M' ";//大陸進口案只於台北所立案處理不能轉案
-            //***todo
+            //***todo出口案
             //SQL += " union ";
             //SQL += " select '2' as sort,a.seq,a.seq1,a.country,a.ext_seq,a.ext_seq1,a.cust_area,a.cust_seq,a.appl_name,a.class,a.scode,a.end_date,a.step_grade,a.term1,a.term2";
             //SQL += ",b.cust_name,b.tscode ";
@@ -519,7 +519,7 @@
         if (x3=="") {
             url=getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=Q";
         }else{
-            //***todo
+            //***todo出口案
             url=getRootPath() + "/brt5m/ext54Edit.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=DQ";
         }
         //window.showModalDialog(url, "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
@@ -533,7 +533,7 @@
         if (pcountry=="") {
             url=getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1;
         }else{
-            //***todo
+            //***todo出口案
             url=getRootPath() + "/brtam/exta61Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1;
         }
 

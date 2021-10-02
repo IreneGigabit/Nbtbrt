@@ -83,7 +83,7 @@
             todo_tblnm = "todo_ext";
         }
 
-        DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), Request["job_scode"]);
+        DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), Request["job_scode"], false);
         //MasterList.ShowTable();
         //Response.End();
         
@@ -199,7 +199,7 @@
 
             //計算簽核層級
             string sign_level = "", sign_levelnm = "";
-            DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), dr.SafeRead("scode", ""));
+            DataTable MasterList = Sys.getMasterList(Sys.GetSession("seBranch"), dr.SafeRead("scode", ""), false);
             sign_level = "1";//區所主管
             sign_levelnm = "1";
             dr["sign_level"] = sign_level;
@@ -217,7 +217,6 @@
         //抓取主管退回記錄
         SQL = "select approve_desc from " + todo_tblnm + " where seq=" + Eval("seq") + " and seq1='" + Eval("seq1") + "' and from_flag='TRAN' and dowhat='TRAN_NM' and job_status='NX' order by sqlno desc";
         string br_ap_desc = conn.getString(SQL);
-        objResult = conn.ExecuteScalar(SQL);
 
         if (br_ap_desc != "") {
             rtn = "<img border=\"0\" src=\"" + Page.ResolveUrl("~/images/star_pl.gif") + "\" title=\"主管退回原因：" + br_ap_desc + "\">";
@@ -411,7 +410,7 @@
         if (x3=="") {
             url=getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=Q";
         }else{
-            //***todo
+            //***todo出口案
             url=getRootPath() + "/brt5m/ext54Edit.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=DQ";
         }
         //window.showModalDialog(url, "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
@@ -425,7 +424,7 @@
         if (pcountry=="") {
             url=getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1;
         }else{
-            //***todo
+            //***todo出口案
             url=getRootPath() + "/brtam/exta61Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1;
         }
 

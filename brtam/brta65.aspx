@@ -16,7 +16,7 @@
     protected string StrFormBtn = "";
     protected string SQL = "";
 
-    protected string td_tscode = "", html_end_code="";
+    protected string td_tscode = "", html_end_code = "", html_end_type = "", html_tran_seq_branch = "";
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
@@ -29,7 +29,7 @@
         Response.CacheControl = "no-cache";
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
-        
+
         conn = new DBHelper(Conn.btbrt).Debug(Request["chkTest"] == "TEST");
         cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
 
@@ -61,6 +61,10 @@
 
         //結案代碼
         html_end_code = Sys.getCustCode("EndCode", "", "sortfld").Option("{cust_code}", "{code_name}");
+        //結案原因
+        html_end_type = Sys.getEndType().Option("{cust_code}", "{code_name}");
+        //轉案單位
+        html_tran_seq_branch = Sys.getBranchCode().Option("{branch}", "{branchname}");
     }
 </script>
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -204,13 +208,33 @@
 		            <label><input type="radio" name="qryend" value="" checked>不指定</label>
 			        <label><input type="radio" name="qryend" value="Y">尚未結案</label>
 			        <label><input type="radio" name="qryend" value="N">已結案</label>
-			        <span id='sp_endcode' style="display:none" >
-			        ,結案代碼
-	   		        <Select NAME="end_code" id="end_code">
-				        <%#html_end_code%>
+			        <span id='sp_endcode' style="display:none">
+			            ,結案代碼
+	   		            <Select NAME="end_code" id="end_code">
+				            <%#html_end_code%>
+			            </SELECT>
+                        ,結案原因
+                        <Select NAME="end_type" id="end_type" onchange="showend_remark()">
+                            <%#html_end_type%>
+			            </SELECT>
+			            <span id="span_end_remark" style="display:none">
+			                <input type=text name="end_remark" id="end_remark" size=40 maxlength=100>
+			            </span>
+			        </span>
+		        </TD>
+	        </TR>
+	        <TR>
+		        <TD class=lightbluetable align=right>轉案註記：</TD>
+		        <TD class=whitetablebg colspan=7>
+		            <label><input type="radio" name="tran_flag" value="" checked>不指定</label>
+			        <label><input type="radio" name="tran_flag" value="A">轉出</label>
+			        <label><input type="radio" name="tran_flag" value="B">轉入</label>
+			        <span id='sp_branch' style="display:none">
+			        ,轉案單位
+	   		        <Select NAME="tran_seq_branch" id="tran_seq_branch">
+				        <%#html_tran_seq_branch%>
 			        </SELECT>	
 			        </span>		
-			
 		        </TD>
 	        </TR>
         </table>
@@ -288,6 +312,28 @@
         $("#sp_endcode").hide();
         if ($(this).val() == "N") {//已結案
             $("#sp_endcode").show();
+        }
+        $("#end_type").triggerHandler("change");
+    });
+
+    //結案原因
+    function showend_remark() {
+        if ($("#end_type").val() == "016") {
+            $("#end_remark").val("");
+            $("#span_end_remark").show();
+        } else {
+            if ($("#end_type").val() != "") {
+                $("#end_remark").val($('#end_type :selected').text());
+            }
+            $("#span_end_remark").hide();
+        }
+    }
+
+    //點選轉案註記
+    $("input[name='tran_flag']").click(function () {
+        $("#sp_branch").hide();
+        if ($(this).val() != "") {
+            $("#sp_branch").show();
         }
     });
 

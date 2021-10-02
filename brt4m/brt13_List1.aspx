@@ -123,7 +123,7 @@
     protected string Get81Link(RepeaterItem Container) {
         string source_ap = Eval("source_ap").ToString();
         if (source_ap == "") {
-            //***todo
+            //***todo異動
             return "<a href='" + Page.ResolveUrl("~/brt8m/brt81show.aspx") +
                     "?prgid=" + prgid + "submit=Q&qs_dept=" + gs_dept + "&sqlno=" + Eval("sqlno") + "&case_no=" + Eval("case_no") + "&in_no=" + Eval("in_no") + "' target='_blank'>[異動單]</a>";
         }

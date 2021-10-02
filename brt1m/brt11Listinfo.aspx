@@ -173,8 +173,7 @@
 			<ItemTemplate>
  		        <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 		            <td align="center">
-                        <!--//***todo-->
-                        <a href="../cust/cust11_mod.asp?modify=Q&gs_dept=t&cust_area=<%#Eval("cust_area")%>&cust_seq=<%#Eval("cust_seq")%>&apsqlno=<%#Eval("id_no")%>&hRight=2&att_sql=1">
+                        <a href="<%=Page.ResolveUrl("~/cust/cust11_edit.aspx")%>?submitTask=Q&gs_dept=t&cust_area=<%#Eval("cust_area")%>&cust_seq=<%#Eval("cust_seq")%>&apsqlno=<%#Eval("id_no")%>&hRight=2&att_sql=1" target="Eblank">
                             <%#Eval("cust_area")%>-<%#Eval("cust_seq")%>
                         </a>
                     </td>

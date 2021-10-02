@@ -366,7 +366,7 @@
     }
     //查詢出口案主檔
     function CapplClick_ext(pseq, pseq1) {
-        //****todo
+        //****todo出口案
         window.showModalDialog(getRootPath() + "/brt5m/ext54Edit.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=DQ", "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
     }
 </script>

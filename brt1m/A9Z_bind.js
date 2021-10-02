@@ -434,7 +434,11 @@ main.bind = function () {
             $("#tran_sqlno_" + nRow).val(item.tran_sqlno);//異動作業流水號
             $("#maxattach_no").val(Math.max(CInt(item.attach_no), CInt($("#maxattach_no").val())));
         });*/
-        settab("#tran");//交辦內容
+        if (main.prgid == "brt7d") {//2013/9/9因應國內案契約書檢核作業，預設文件上傳畫面
+            settab("#upload");//文件上傳
+        } else {
+            settab("#tran");//交辦內容
+        }
     }
     //*****交辦內容綁定(function在各自的form.ascx)
     if (main.ar_form == "A3") {

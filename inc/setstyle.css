@@ -485,10 +485,19 @@ td.seltab1
 }
 .data11
 {
-    FONT-SIZE: 7pt;
+    FONT-SIZE: 8pt;
     COLOR: #6666cc;
     BACKGROUND-COLOR: aliceblue;
     TEXT-ALIGN: right
+}
+.data10
+{
+    FONT-SIZE: 10pt;
+    COLOR: dodgerblue;
+    TEXT-INDENT: 8pt;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: aliceblue;
+    TEXT-ALIGN: left
 }
 .bluetable1
 {

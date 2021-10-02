@@ -11,7 +11,7 @@
 
 
 <script runat="server">
-    protected string HTProgCap = HttpContext.Current.Request["prgname"];//功能名稱
+    protected string HTProgCap = "國內案接洽暨交辦作業(新申案)";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "brt11";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -74,10 +74,8 @@
     }
 
     private void PageLayout() {
-        //***todo
-        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_mod.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&hRight=4&attmodify=A&gs_dept=T\" target=\"Eblank\">[聯絡人新增]</a>\n";
-        //***todo
-        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Eblank\">[申請人新增]</a>\n";
+        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust11_Edit.aspx") + "?cust_area=" + Request["cust_area"] + "&cust_seq=" + Request["cust_seq"] + "&submitTask=A&gs_dept=T&cust_att=A&Type=ap_nameaddr\" target=\"Brt11blankN\">[聯絡人新增]</a>\n";
+        StrFormBtnTop += "<a href=\"" + Page.ResolveUrl("~/cust/cust13.aspx") + "\" target=\"Brt11blankN\">[申請人新增]</a>\n";
         if (Request["closeframe"] == "Y") {
             StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
         }

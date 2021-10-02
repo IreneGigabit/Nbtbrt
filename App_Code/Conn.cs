@@ -120,11 +120,11 @@ public static class Conn
         get {
             switch (Host) {
                 case "SINN05": return Sys.getConnString("prod_mg_sysctrl");//正式環境北
-                case "SIC10": return Sys.getConnString("prod_Csysctrl");//正式環境中
-                case "SIS10": return Sys.getConnString("prod_Ssysctrl");//正式環境南
-                case "SIK10": return Sys.getConnString("prod_Ksysctrl");//正式環境雄
-                case "WEB10": return Sys.getConnString("test_sysctrl");//使用者測試環境
-                default: return Sys.getConnString("dev_sysctrl");//開發環境
+                case "SIC10": return Sys.getConnString("prod_C_sysctrl");//正式環境中
+                case "SIS10": return Sys.getConnString("prod_S_sysctrl");//正式環境南
+                case "SIK10": return Sys.getConnString("prod_K_sysctrl");//正式環境雄
+                case "WEB10": return Sys.getConnString("test_mg_sysctrl");//使用者測試環境
+                default: return Sys.getConnString("dev_mg_sysctrl");//開發環境
             }
         }
     }

@@ -125,9 +125,19 @@
                 SQL += " or a.Rej_No like '%" + ReqVal["ref_no"] + "%')";
             }
         }
+
         if (ReqVal.TryGet("cgrs") != "") {
-            SQL += "AND cg='" + ReqVal.TryGet("cgrs").Left(1) + "' ";
-            SQL += "AND rs='" + ReqVal.TryGet("cgrs").Right(1) + "' ";
+            SQL += " and e.cg = '" + ReqVal["cgrs"].Left(1) + "'";
+            SQL += " and e.rs = '" + ReqVal["cgrs"].Right(1) + "'";
+        }
+        if (ReqVal.TryGet("rs_class") != "") {
+            SQL += " and e.rs_class = '" + ReqVal["rs_class"] + "'";
+        }
+        if (ReqVal.TryGet("rs_code") != "") {
+            SQL += " and e.rs_code = '" + ReqVal["rs_code"] + "'";
+        }
+        if (ReqVal.TryGet("act_code") != "") {
+            SQL += " and e.act_code = '" + ReqVal["act_code"] + "'";
         }
 
         if (ReqVal.TryGet("kind_date") != "") {
@@ -163,6 +173,7 @@
                 SQL += "  or e.step_date <='" + ReqVal["edate"] + "')";
             }
         }
+    
         SQL += " group by a.seq,a.seq1,a.in_date,appl_name,a.cust_area,a.cust_seq,apply_no,b.ap_cname1,a.step_grade,c.code_name,a.scode,a.end_date,a.class,a.cust_prod ";
 
         ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder", "a.seq,a.seq1"));

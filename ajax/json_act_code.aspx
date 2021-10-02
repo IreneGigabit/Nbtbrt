@@ -12,6 +12,7 @@
 <script runat="server">
     protected string SQL = "";
 
+    protected string column = "";
     protected string cgrs = "";
     protected string cg = "";
     protected string rs = "";
@@ -20,6 +21,7 @@
     protected string submittask = "";
 
     protected void Page_Load(object sender, EventArgs e) {
+        column = Request["column"] ?? "";
         cgrs = Request["cgrs"] ?? "";
         rs_class = Request["rs_class"] ?? "";
         rs_code = Request["rs_code"] ?? "";
@@ -29,7 +31,11 @@
 
         DataTable dt = new DataTable();
         using (DBHelper conn = new DBHelper(Conn.btbrt, false)) {
-            SQL = "select distinct act_code,act_code_name,rs_class,act_sort,spe_ctrl ";
+            if (column != "") {
+                SQL = "select distinct " + column + " ";
+            } else {
+                SQL = "select distinct act_code,act_code_name,rs_class,act_sort,spe_ctrl ";
+            }
             SQL += "from vcode_act ";
             SQL += " where dept='" + Sys.GetSession("dept") + "' ";
             if (cgrs != "") {

@@ -252,7 +252,8 @@
             if (prgid.ToLower().Left(3) == "brt") {
                 todo_link = "../brtam/brta61_list2.aspx?prgid=" + prgid + "&seq=" + dr["seq"] + "&seq1=" + dr["seq1"];
             } else if (prgid.ToLower().Left(3) == "ext") {
-                todo_link = "../brtam/exta61list2.aspx?prgid=" + prgid + "&seq=" + dr["seq"] + "&seq1=" + dr["seq1"];
+                //****todo出口案
+                todo_link = "../brtam/exta61_list2.aspx?prgid=" + prgid + "&seq=" + dr["seq"] + "&seq1=" + dr["seq1"];
             }
             dr["todo_link"] = todo_link;
         }
@@ -554,7 +555,7 @@
         if(main.prgid.Left(3)=="brt"){
             urlasp += "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q";
         }else{
-            //***todo
+            //***todo出口案
             urlasp += "/brt5m/ext54_Edit.aspx?seq=" + pseq + "&seq1=" + pseq1 + "&submittask=DQ&winact=Y&prgid="+main.prgid;
         }
         window.open(urlasp,"myWindowOneN", "width=950 height=700 top=20 left=20 toolbar=no, menubar=no, location=no, directories=no resizable=yes status=yes scrollbars=yes");

@@ -211,7 +211,7 @@
     //簽准mail
     private void CreateMail() {
         string Subject = "";
-        string strFrom = Session["scode"] + "@saint-island.com.tw";
+        string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
         List<string> strTo = new List<string>();
         List<string> strCC = new List<string>();
         List<string> strBCC = new List<string>();
@@ -243,7 +243,7 @@
     //退回mail
     private void CreateMail1(List<string> strTo) {
         string Subject = "";
-        string strFrom = Session["scode"] + "@saint-island.com.tw";
+        string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
         List<string> strCC = new List<string>();
         List<string> strBCC = new List<string>();
         SQL = "select scode from sysctrl.dbo.scode_roles where branch='" + Session["SeBranch"] + "' and dept='T' and roles='opt'";

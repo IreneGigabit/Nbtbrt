@@ -154,7 +154,7 @@
         }
 
         if (drs_no == "") {
-            throw new Exception("取得發文序號, 請通知系統人員！");
+            throw new Exception("取得發文序號發生錯誤, 請通知系統人員！");
         }
 
         //取得案件進度
@@ -321,7 +321,7 @@
     //通知新單位轉案
     private void SendmailBr(string job_scode, string pro_scode, int pno) {
         string Subject = "國內" + (tdept == "TE" ? "出口" : "") + "商標網路作業系統－轉案通知";
-        string strFrom = Session["scode"] + "@saint-island.com.tw";
+        string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
         List<string> strTo = new List<string>();
         List<string> strCC = new List<string>();
         List<string> strBCC = new List<string>();

@@ -155,7 +155,7 @@
         } else {
             SQL += " order by a.seq,a.seq1";
         }
-
+        Sys.showLog(SQL);
         DataTable dt = new DataTable();
         conn.DataTable(SQL, dt);
 
@@ -229,7 +229,8 @@
             if (prgid.ToLower().Left(3) == "brt") {
                 todo_link = "../brtam/brta61_list2.aspx?prgid=" + prgid + "&seq=" + dr["seq"] + "&seq1=" + dr["seq1"];
             } else if (prgid.ToLower().Left(3) == "ext") {
-                todo_link = "../brtam/exta61list2.aspx?prgid=" + prgid + "&seq=" + dr["seq"] + "&seq1=" + dr["seq1"];
+                //****todo出口案
+                todo_link = "../brtam/exta61_list2.aspx?prgid=" + prgid + "&seq=" + dr["seq"] + "&seq1=" + dr["seq1"];
             }
             dr["todo_link"] = todo_link;
         }
@@ -319,13 +320,13 @@
     </div>
 </form>
 
-<div align="center" class="noData" style="display:none">
+<div align="center" id="noData" style="display:<%#page.totRow==0?"":"none"%>">
 	<font color="red">=== 目前無資料 ===</font>
 </div>
 
 <asp:Repeater id="dataRepeater" runat="server">
 <HeaderTemplate>
-<table style="display:" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="98%" align="center" id="dataList">
+<table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="98%" align="center" id="dataList">
 	<thead>
         <Tr>
 		    <td align="center" class="lightbluetable" nowrap>作業</td>
@@ -371,18 +372,22 @@
 		</ItemTemplate>
     <FooterTemplate>
         </table>
-        <BR>
-        <div align=left style="font-size:10pt;color:blue" class="haveData">
-        <br />備註：
-        <br />1.此作業提供需契約書後補交辦案件，可補入契約書號碼及將契約書或相關檔案上傳，若為總契約書則需對應總契約書檔，
-        <br />  完成後系統將銷管契約書後補期限並將此筆交辦寫入「會計契約書檢核作業」，同時會EMAIL通知會計。
-        <br />2.<font color=red>◎</font><font color=blue>表會計退回</font>
-        <br />3.<font color=red  size="3">※</font><font color=blue>表已官發/聯發</font>
-        <%if ((HTProgRight & 16)!=0 && (HTProgRight & 128)!=0){%>
-        <br />※[取消(送會計)]：表取消後補送會計契約書檢核
-        <br />※[不需後補]：契約書已上傳，不需後補
-        <%}%>
-        </div>
+        <table style="display:<%#page.totRow==0?"none":""%>" border="0" width="100%" cellspacing="0" cellpadding="0">
+		    <tr class="FormName">
+                <td><div align="left" style="color:blue">
+                    <br />備註：
+                    <br />1.此作業提供需契約書後補交辦案件，可補入契約書號碼及將契約書或相關檔案上傳，若為總契約書則需對應總契約書檔，
+                    <br />  完成後系統將銷管契約書後補期限並將此筆交辦寫入「會計契約書檢核作業」，同時會EMAIL通知會計。
+                    <br />2.<font color=red>◎</font><font color=blue>表會計退回</font>
+                    <br />3.<font color=red  size="3">※</font><font color=blue>表已官發/聯發</font>
+                    <%if ((HTProgRight & 16)!=0 && (HTProgRight & 128)!=0){%>
+                    <br />※[取消(送會計)]：表取消後補送會計契約書檢核
+                    <br />※[不需後補]：契約書已上傳，不需後補
+                    <%}%>
+		        </div></td>
+            </tr>
+	    </table>
+
     </FooterTemplate>
     </asp:Repeater>
 
@@ -442,7 +447,7 @@
         if(main.prgid.Left(3)=="brt"){
             urlasp += "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + pseq + "&seq1=" + pseq1 + "&submittask=Q";
         }else{
-            //***todo
+            //***todo出口案
             urlasp += "/brt5m/ext54_Edit.aspx?seq=" + pseq + "&seq1=" + pseq1 + "&submittask=DQ&winact=Y&prgid="+main.prgid;
         }
         window.open(urlasp,"myWindowOneN", "width=950 height=700 top=20 left=20 toolbar=no, menubar=no, location=no, directories=no resizable=yes status=yes scrollbars=yes");

@@ -175,7 +175,6 @@
         //抓取主管退回記錄
         SQL = "select approve_desc from " + Eval("todo_tblnm") + " where seq=" + Eval("seq") + " and seq1='" + Eval("seq1") + "' and from_flag='TRAN' and dowhat='TRAN_NM' and job_status='NX' order by sqlno desc";
         string br_ap_desc = conn.getString(SQL);
-        objResult = conn.ExecuteScalar(SQL);
 
         if (br_ap_desc != "") {
             rtn = "<img border=\"0\" src=\"" + Page.ResolveUrl("~/images/star_pl.gif") + "\" title=\"主管退回原因：" + br_ap_desc + "\">";
@@ -313,7 +312,7 @@
     </HeaderTemplate>
 		<ItemTemplate>
  	        <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
-	            <td  align="center">
+	            <td align="center">
 			        <input type="checkbox" id=chkflag_<%#(Container.ItemIndex+1)%> value="Y" onclick="chkflagClick('<%#(Container.ItemIndex+1)%>')">
 			        <input type="hidden" id=brtran_sqlno_<%#(Container.ItemIndex+1)%> value="<%#Eval("brtran_sqlno")%>">
 			        <input type="hidden" id=todo_sqlno_<%#(Container.ItemIndex+1)%> value="<%#Eval("todo_sqlno")%>">
@@ -401,7 +400,7 @@
         if (x3=="") {
             url=getRootPath() + "/brt5m/brt15ShowFP.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=Q";
         }else{
-            //***todo
+            //***todo出口案
             url=getRootPath() + "/brt5m/ext54Edit.aspx?prgid=<%=prgid%>&seq=" + x1 + "&seq1=" + x2 + "&submittask=DQ";
         }
         //window.showModalDialog(url, "", "dialogHeight: 540px; dialogWidth: 800px; center: Yes;resizable: No; status: No;scrollbars:yes");
@@ -415,7 +414,7 @@
         if (pcountry=="") {
             url=getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1;
         }else{
-            //***todo
+            //***todo出口案
             url=getRootPath() + "/brtam/exta61Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" + pseq + "&aseq1=" + pseq1;
         }
 

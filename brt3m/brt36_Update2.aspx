@@ -201,7 +201,7 @@
     private void CreateMail() {
         if (contract_flag_mail == true) {
             string Subject = "";
-            string strFrom = Session["scode"] + "@saint-island.com.tw";
+            string strFrom = Session["sc_name"] + "<" + Session["scode"] + "@saint-island.com.tw>";
             List<string> strTo = new List<string>();
             List<string> strCC = new List<string>();
             List<string> strBCC = new List<string>();
