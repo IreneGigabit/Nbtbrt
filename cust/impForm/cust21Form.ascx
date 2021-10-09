@@ -26,6 +26,7 @@
     protected string html_dept = "";
     public string uploadfield = "attach";
     public string uploadsource = "";
+    public string tempfilepath = "";
     
     private void Page_Load(System.Object sender, System.EventArgs e)
     {
@@ -96,7 +97,7 @@
 			<input type="radio" name="attach_flag" value="E" >停用
 			<span id="span_stop_remark" style="display:none">
 			    <br>
-			    原因：<input type="text" name="stop_remark" size=30 maxlength=100>
+			    原因：<input type="text" name="stop_remark" id="stop_remark" size=30 maxlength=100>
 			</span>
 		</TD>
 	</TR>
@@ -177,7 +178,11 @@
 	</TR>
 </table>
 
-
+<div align="left">
+    <font size=2>
+※注意！已上傳檔案，如需修改客戶編號，則請先刪除檔案。
+</font>
+</div>
 
 
 <script language="javascript" type="text/javascript">
@@ -203,6 +208,53 @@
         }
     }
 
+    cust21form.CanDelAttach = function () {
+        //2017/2/3增加判斷可否執行檔案刪除，若上傳檔案中已有apattach_sqlno，則不能刪除
+        var sql = "";
+        switch ($("#dept").val()) {
+
+            case "P":
+                sql = "Select count(*) as cnt from dmp_attach ";
+                sql += " where apattach_sqlno = '" + $("#apattach_sqlno").val() + "' and attach_flag <>'D' ";
+                break;
+            case "PE":
+                sql = "Select count(*) as cnt from exp_attach ";
+                sql += " where apattach_sqlno = '" + $("#apattach_sqlno").val() + "' and attach_flag <>'D' ";
+                break;
+            case "T":
+                sql = "Select count(*) as cnt from dmt_attach ";
+                sql += " where apattach_sqlno = '" + $("#apattach_sqlno").val() + "' and attach_flag <>'D' ";
+                break;
+            case "TE":
+                sql = "Select count(*) as cnt from caseattach_ext ";
+                sql += " where apattach_sqlno = '" + $("#apattach_sqlno").val() + "'";
+                break;
+            default:
+                break;
+        }
+
+        $.ajax({
+            url: "../AJAX/JsonGetSqlData.aspx?SQL=" + sql,
+            type: "POST",
+            async: false,
+            cache: false,
+            data: $("#reg").serialize(),
+            success: function (json) {
+                var JSONdata = $.parseJSON(json);
+                if (JSONdata.length > 0) {
+                    if (CInt(JSONdata[0].cnt) > 0) {
+                        $("#btn<%#uploadfield%>_D").lock();
+                    }
+                }
+            },
+            beforeSend: function (jqXHR, settings) {
+                jqXHR.url = settings.url;
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("\n資料擷取剖析錯誤 !\n" + jqXHR.url);
+            }
+        });
+    }
 
     cust21form.SetReadOnly = function () {
         $("input:radio[name=sign_flag]").lock();
@@ -239,8 +291,11 @@
             if (way == "U" && jData.attach_flag == "A") {
                 $(this).prop('checked', true);
             }
-
         })
+        if ($("input[name=attach_flag][value='E']").prop('checked') == true) {
+            $("#span_stop_remark").show();
+            $("#stop_remark").val(jData.stop_remark);
+        }
 
         $("#use_sdate").val(dateReviver(jData.use_dates, "yyyy/M/d"));
         $("#use_edate").val(dateReviver(jData.use_datee, "yyyy/M/d"));
@@ -318,7 +373,7 @@
             "&prgid=<%=prgid%>" +
             "&btnname=btn" + $("#uploadfield").val() +
             "&filename_flag=source_name2";
-        window.open(url, "dmtupload", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        window.open(url, "", "width=700 height=600 top=50 left=50 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
     
 
     }//[上傳]
@@ -378,22 +433,13 @@
 
                     document.getElementById("attach_flag").value = "D";
                     $("#btn<%=uploadfield%>").unlock();
+                    $("#scust_seq_1").unlock();
                 },
                 error: function (xhr) {
                     $("#dialog").html("<a href='" + this.url + "' target='_new'>刪除檔案失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
                     $("#dialog").dialog({ title: '刪除檔案失敗！', modal: true, maxHeight: 500, width: "90%" });
                 }
             });
-
-            //window.open(getRootPath() + "/sub/del_draw_file_new.aspx?type=doc&draw_file=" + file, "myWindowOneN", "width=10 height=10 top=1000 left=1000 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbar=no");
-            //document.getElementById(fld + "_name_" + nRow).value = "";
-            //document.getElementById("source_name_" + nRow).value = "";
-            //document.getElementById(fld + "_desc_" + nRow).value = "";
-            //document.getElementById(fld + "_" + nRow).value = "";
-            //document.getElementById(fld + "_size_" + nRow).value = "";
-            //document.getElementById("doc_type_" + nRow).value = "";
-            //document.getElementById("btn" + fld + "_" + nRow).disabled = false;
-            //document.getElementById("attach_flag_" + nRow).value = "D";
 
         } else {
             document.getElementById(fld + "_desc").focus();
@@ -418,8 +464,8 @@
         } else {
             file += "\\" + tname;
         }
-
-        window.open(file);
+        
+        window.open(Path2Nbrp(file));
     }//檢視
 
     cust21form.Loadcust211FormData = function (jData) {

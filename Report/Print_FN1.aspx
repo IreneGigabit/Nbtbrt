@@ -44,6 +44,7 @@
 		DataTable tran = ipoRpt.Tran;
         if (tran.Rows.Count > 0) {
             if (tran.Rows[0]["tran_mark"].ToString().Trim() == "E") {
+                ipoRpt.ReportCode = "FN1E";
                 applyFile = "612[商簡B]英文證明書申請書FN1.docx";
             }
         }

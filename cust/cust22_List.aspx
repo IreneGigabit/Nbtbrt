@@ -61,6 +61,12 @@
 
     private void PageLayout()
     {
+        string f = Request["from_flag"] ?? "";
+        if (f == "cust13_1")
+        {
+            StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>\n";
+        }
+        
         if ((HTProgRight & 2) > 0)
         {
             StrFormBtnTop += "<a href=javascript:GoToSearch()>[查詢畫面]</a>";
@@ -93,29 +99,18 @@
         else return "";
     }
     
-    //protected string SetStatus(RepeaterItem Container)
-    //{
-    //    string s = "";
-    //    if (Eval("attach_flag").ToString() == "U")
-    //    {
-    //        if (DateTime.Parse(Eval("use_datee").ToString()) < DateTime.Now) s = "逾期";
-    //        else s = "使用中";
-    //    }
-    //    else s = "已停用";
-    //    return s;
-    //}
-
     private string ShowEdit(string status)
     {
         string url = "";
         url = "<a href=\"cust22_Edit.aspx?prgid=" + prgid + "&submitTask=Q&apattach_sqlno=" + Eval("apattach_sqlno").ToString() + "\" target=\"Eblank\" >[詳細]<a/>";
-        url += "<a class=\"hidAdd\" href=\"cust22_Edit.aspx?prgid=" + prgid + "&submitTask=U&apattach_sqlno=" + Eval("apattach_sqlno").ToString() + "\" target=\"Eblank\" >[維護]<a/>";
-        url += "<a class=\"hidAdd\" href=\"cust22_Edit.aspx?prgid=" + prgid + "&submitTask=D&apattach_sqlno=" + Eval("apattach_sqlno").ToString() + "\" target=\"Eblank\" >[停用]<a/>";
-        //if (status == "使用中")
-        //{
-        //    url += "<a class=\"hidAdd\" href=\"cust21_Edit.aspx?prgid=" + prgid + "&submitTask=U&apattach_sqlno=" + Eval("apattach_sqlno").ToString() + "\" target=\"Eblank\" >[維護]<a/>";
-        //    url += "<a class=\"hidAdd\" href=\"cust21_Edit.aspx?prgid=" + prgid + "&submitTask=D&apattach_sqlno=" + Eval("apattach_sqlno").ToString() + "\" target=\"Eblank\" >[停用]<a/>";
-        //}
+        if (status == "U")
+        {
+            url += "<a class=\"hidAdd\" href=\"cust22_Edit.aspx?prgid=" + prgid + "&submitTask=U&apattach_sqlno=" + Eval("apattach_sqlno").ToString() + "\" target=\"Eblank\" >[維護]<a/>";
+            if ((HTProgRight & 16) > 0)//有刪除的權限才能顯示及執行by柳月
+            {
+                url += "<a class=\"hidAdd\" href=\"cust22_Edit.aspx?prgid=" + prgid + "&submitTask=D&apattach_sqlno=" + Eval("apattach_sqlno").ToString() + "\" target=\"Eblank\" >[停用]<a/>";    
+            }
+        }
         return url;
     }
     
@@ -198,7 +193,7 @@
 
 
         SQL += " order by a.cust_area,a.apsqlno,a.apattach_sqlno";
-        Sys.showLog(SQL);
+        //Sys.showLog(SQL);
         conn.DataTable(SQL, dt);
 
         string s = "";
@@ -317,7 +312,7 @@
 			        <td nowrap><%#(Eval("attach_flag").ToString() == "U")?"使用中":"已停用"%></td>
                     <td nowrap><%#Eval("remark")%></td>
                     <td nowrap>
-                        <%#ShowEdit("")%>
+                        <%#ShowEdit(Eval("attach_flag").ToString())%>
                     </td>
 				</tr>
 			</ItemTemplate>
@@ -345,6 +340,12 @@
                     trs[i].style.display = "none"; //這裡獲取的trs[i]是DOM物件而不是jQuery物件，因此不能直接使用hide()方法 
                 }
             }
+
+            var f = '<%=Request["from_flag"] ?? ""%>';//cust13_List用
+            if (f == "cust13_1") {
+                window.parent.tt.rows = "50%,50%";
+            }
+
         }
 
         $(".Lock").lock();

@@ -52,6 +52,11 @@
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
         submitTask = Request["submitTask"] ?? "";
 
+        if (prgid == "") {
+            prgid = "brt12";
+            HTProgCode = "brt12";
+        }
+
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;

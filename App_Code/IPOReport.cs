@@ -1059,7 +1059,11 @@ public class IPOReport : OpenXmlHelper {
 			ReplaceBookmark("ap_zip", Apcust.Rows[i]["c_zip"].ToString(), true);
 			if (Apcust.Rows[i]["ap_country"].ToString().Trim() == "T" || Apcust.Rows[i]["ap_country"].ToString().Trim() == "CM" || Apcust.Rows[i]["ap_country"].ToString().Trim() == "HO" || Apcust.Rows[i]["ap_country"].ToString().Trim() == "MC") {
 				ReplaceBookmark("ap_addr", Apcust.Rows[i]["c_addr"].ToString());
-				ReplaceBookmark("ap_eddr", "", true);
+                if (this.ReportCode == "FN1E") {//英文證明書申請書
+                    ReplaceBookmark("ap_eddr", Apcust.Rows[i]["e_addr"].ToString().ToXmlUnicode(true), true);
+                } else {
+                    ReplaceBookmark("ap_eddr", "", true);
+                }
 			} else {
 				ReplaceBookmark("ap_addr", Apcust.Rows[i]["c_addr"].ToString(), true);
 				ReplaceBookmark("ap_eddr", Apcust.Rows[i]["e_addr"].ToString().ToXmlUnicode(true));

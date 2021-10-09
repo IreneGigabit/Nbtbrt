@@ -52,9 +52,9 @@
 		<input type="hidden" name="pwhescode">
 		<Select NAME="qryscode" id="qryscode" size=1>
 		<%--<%if (HTProgRight AND 128) <> 0 or (HTProgRight AND 64) <> 0 then%>--%>
-			<option value="all">全部</option>
 			<%--<option value="<%=ucase(session("se_Branch"))%><%=ucase(session("Dept"))%>">部門(開放客戶)</option>--%>
 		<%=html_scode%>
+            <option value="all">全部</option>
 		</SELECT>
 	</TD>
 </tr>

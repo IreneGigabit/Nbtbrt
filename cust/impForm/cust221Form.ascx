@@ -44,7 +44,7 @@
 	    </TD>
 	</TR>
 	<TR align=center class=lightbluetable>
-		<TD>序號</TD><TD>申請人</TD><TD>代表人</TD><TD>申請人種類</TD>
+		<TD>序號</TD><TD>申請人統編/名稱</TD><TD>代表人</TD><TD>申請人種類</TD>
        
 	</TR>
         <script type="text/html" id="cust_template"><!--契約書簽署之客戶設定樣板-->
@@ -59,7 +59,7 @@
                 <input type="text" name="scust_area_##" id="scust_area_##" size=1 maxlength=1 class=SEdit readonly>-
                 <input type="text" name="sapcust_no_##" id="sapcust_no_##" size="10" maxlength="10" onblur="cust221form.sapcust_no_onblur('##')" />
                 <input type="button" name="btnquery_apcust_no_##" id="btnquery_apcust_no_##" class="cbutton" value="查詢" onclick="cust221form.QueryApcust_no('##')" >
-			    <input type="button" name="btn_cust_seqDetail_##" id="btn_cust_seqDetail_##" class="cbutton" value="詳細" onclick="cust221form.GetCustzData('##')">
+			    <input type="button" name="btn_cust_seqDetail_##" id="btn_cust_seqDetail_##" class="cbutton" value="詳細" onclick="cust221form.GetApcustData('##')">
                 <input type="text" name="sap_cname_##" id="sap_cname_##" size=30 class=SEdit readonly>
                 <input type="hidden" name="sapsqlno_##" id="sapsqlno_##" />
                 <%--<input TYPE="text" NAME="att_sql_##" id="att_sql_##" SIZE="5" MAXLENGTH="5" readonly class="sedit" value="">
@@ -216,10 +216,10 @@
         });
     }//sapcust_no_onblur
 
-    cust221form.GetCustzData = function (nRow) {
-        var SQLStr = "select apsqlno, cust_seq from apcust where apsqlno <> ''";
-        SQLStr += " AND cust_seq is not null and cust_seq <> 0";
-        SQLStr += " AND cust_seq = '" + $.trim($("#scust_seq_" + nRow).val()) + "'";
+    cust221form.GetApcustData = function (nRow) {
+        var SQLStr = "select apsqlno, apcust_no from apcust where apsqlno <> ''";
+        SQLStr += " AND apsqlno = '" + $.trim($("#sapsqlno_" + nRow).val()) + "'";
+        SQLStr += " AND apcust_no = '" + $.trim($("#sapcust_no_" + nRow).val()) + "'";
 
         $.ajax({
             url: "../AJAX/JsonGetSqlData.aspx",
@@ -230,12 +230,12 @@
             success: function (json) {
                 var JSONdata = $.parseJSON(json);
                 if (JSONdata.length != 0) {
-                    var url = "cust11_Edit.aspx?prgid=cust11_2&submitTask=Q&cust_area=<%=Sys.GetSession("seBranch")%>&cust_seq=" + $.trim($("#scust_seq_" + nRow).val());
+                    var url = "cust13_Edit.aspx?prgid=cust13&submitTask=Q&apsqlno=" + $.trim($("#sapsqlno_" + nRow).val()) + "&apcust_no=" + $.trim($("#sapcust_no_" + nRow).val());
                     window.open(url, "_blank");
 
                 }
                 else {
-                    alert("此客戶編號不存在!");
+                    alert("此申請人編號不存在!");
                     return;
                 }
             },

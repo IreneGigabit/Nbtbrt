@@ -19,7 +19,7 @@
     protected string SQL = "";
     protected Dictionary<string, string> ReqVal = new Dictionary<string, string>();
     protected Paging page = null;
-    protected string Cust_Area = "N";
+    protected string Cust_Area = "";
 
     protected string StrFormBtnTop = "";
     protected string StrFormBtn = "";
@@ -46,6 +46,7 @@
         //cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
 
         submitTask = Request["submitTask"];
+        Cust_Area = Sys.GetSession("seBranch");
 
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();

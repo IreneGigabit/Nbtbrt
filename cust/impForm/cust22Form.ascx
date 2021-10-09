@@ -70,7 +70,7 @@
 	<TR id="tr_contract_no">
 		<TD class="lightbluetable" align=right>委任書編號：</TD>
 		<TD class=whitetablebg colspan=3>
-            <INPUT TYPE="hidden" name=apattach_sqlno id="apattach_sqlno">
+            <%--<INPUT TYPE="hidden" name=apattach_sqlno id="apattach_sqlno">--%>
 			<input type="text" name="contract_no" id="contract_no" size=11 maxlength=10 class=SEdit readonly>
 		</TD>
 	</TR>
@@ -105,7 +105,7 @@
 			<input type="radio" name="attach_flag" value="E" >停用
 			<span id="span_stop_remark" style="display:none">
 			    <br>
-			    原因：<input type="text" name="stop_remark" size=30 maxlength=100>
+			    原因：<input type="text" name="stop_remark" id="stop_remark" size=30 maxlength=100>
 			</span>
 		</TD>
 	</TR>
@@ -120,8 +120,8 @@
 	<TR>
 		<td class=lightbluetable align=right nowrap>出口案代理人：</td>
 		<td class=whitetablebg colspan=3>
-			<INPUT TYPE=text NAME="agent_no" id="agent_no" SIZE=4 MAXLENGTH=4 value="" onblur="cust22form.agent_onblur()" >-
-			<INPUT TYPE=text NAME="agent_no1" id="agent_no1" SIZE=1 MAXLENGTH=1 value="" onblur="cust22form.agent_onblur()" >-
+			<INPUT TYPE="text" NAME="agent_no" id="agent_no" SIZE="4" MAXLENGTH="4" class="InputNumOnly" value="" onblur="cust22form.agent_onblur()" >-
+			<INPUT TYPE="text" NAME="agent_no1" id="agent_no1" SIZE="1" MAXLENGTH="1" value="_" onblur="cust22form.agent_onblur()" >-
 			<INPUT TYPE=text NAME="agent_coun" id="agent_coun" SIZE=2 value="" class=SEdit readonly >
 			<INPUT TYPE=text NAME="agent_na" id="agent_na" SIZE=60 value="" class=SEdit readonly >
 		</td>
@@ -169,7 +169,7 @@
             <input type='hidden' id='<%#uploadfield%>_apattach_sqlno' name='<%#uploadfield%>_apattach_sqlno'><!--2015/12/25柳月for總契約書/委任書作業增加-->
             <input type='hidden' id='attach_old_branch' name='attach_old_branch'>
 		    <br>檔案說明：
-		    <select name="attach_doc_type" id="attach_doc_type" onchange="cust21form.DocTypeChange()"><%=html_doctype%></select>
+		    <select name="attach_doc_type" id="attach_doc_type" onchange="cust22form.DocTypeChange()"><%=html_doctype%></select>
 		    <INPUT type="text" name="attach_desc" id="attach_desc" size="50" maxlength="80" >
 		</TD>
 	</TR>
@@ -182,11 +182,11 @@
 		    </select>
             -
             <input name="main_seq" id="main_seq" onblur="cust22form.main_seq_onblur()" size="6" maxlength="6" style="margin-bottom:4px;" >
-            <input name="main_seq1" id="main_seq1" onblur="cust22form.main_seq_onblur()" size="1" maxlength=1 >
+            <input name="main_seq1" id="main_seq1" onblur="cust22form.main_seq_onblur()" size="1" maxlength=1 value="_">
             <%--<font onclick="VBScript:Qseq_onclick" style="cursor: hand;color:blue" onmouseover="vbs:me.style.color='red'" onmouseout="vbs:me.style.color='blue'" nowrap>[查詢]</font>
             <font onclick="VBScript:Qseqdetail_onclick reg.main_dept.value,reg.main_seq.value,reg.main_seq1.value" style="cursor: hand;color:blue" onmouseover="vbs:me.style.color='red'" onmouseout="vbs:me.style.color='blue'" nowrap>[詳細]</font>--%>
             <input type="button" name="btnquery_seq" id="btnquery_seq" class="cbutton" value="查詢" onclick="cust22form.Queryseq()" >
-			<input type="button" name="btnseqDetail" id="btnseqDetail" class="cbutton" value="詳細" onclick="">
+			<input type="button" name="btnseqDetail" id="btnseqDetail" class="cbutton" value="詳細" onclick="cust22form.Qseqdetail()">
             &nbsp;&nbsp;申請號：<INPUT type="text" name="apply_no" id="apply_no" size="30" maxlength=30 class=SEdit readonly="readonly" style="margin-bottom:4px;">
             <br>正本存放：<INPUT type="text" name="mremark" id="mremark" size="50" maxlength="100" style="margin-bottom:4px;" >
             <br>委任書號：<INPUT type="text" name="mcontract_no" id="mcontract_no" size="50" maxlength="100">
@@ -211,7 +211,11 @@
 		</TD>
 	</TR>
 </table>
-
+<div align="left">
+    <font size=2>
+※注意！已上傳檔案，如需修改申請人統編，則請先刪除檔案。
+</font>
+</div>
 
 
 
@@ -264,7 +268,7 @@
 
     cust22form.SetReadOnly = function () {
         $("input:radio[name=sign_flag]").lock();
-        $("#dept, #company, #agt_no, #agent_no, #agent_no1, #use_sdate, #use_edate, #sign_scode, #attach_doc_type, #attach_desc, #main_dept, #main_seq, #main_seq1, #mremark, #mcontract_no, #remark").lock();
+        $("#dept, #country, #company, #agt_no, #agent_no, #agent_no1, #use_sdate, #use_edate, #sign_scode, #attach_doc_type, #attach_desc, #main_dept, #main_seq, #main_seq1, #mremark, #mcontract_no, #remark").lock();
         $("#btnquery_seq").hide();
     }
 
@@ -278,6 +282,82 @@
         //window.open(url, "_blank");
         window.open(url, "myWindowQ", "width=1024 height=768 top=20 left=20 toolbar=no, menubar=no, location=no, directories=no resizable=yes status=yes scrollbars=yes");
     }
+
+    cust22form.Qseqdetail = function () {
+        var url = "";
+        switch ($("#dept").val()) {
+            case "P":
+                url = getRootPath() + "/brp3m/brp33edit.aspx?prgid=<%=prgid%>&winact=1&seq="+$("#main_seq").val()+"&seq1="+$("#main_seq1").val()+"&submittask=Q";
+                break;
+            case "PE":
+                url = getRootPath() + "/brp3m/exp33Edit.aspx?prgid=<%=prgid%>&winshow=Y&winact=1&seq="+$("#main_seq").val()+"&seq1="+$("#main_seq1").val()+"&submittask=Q";
+                break;
+            case "T":
+                url = getRootPath() + "/brt5m/brt15ShowFP.aspx?seq=" + $("#main_seq").val() + "&seq1=" + $("#main_seq1").val() + "&submittask=Q";
+                break;
+            case "TE":
+                url = getRootPath() + "/brt5m/ext54Edit.aspx?seq=" + $("#main_seq").val() + "&seq1=" + $("#main_seq1").val() + "&submittask=DQ&winact=Y&prgid=<%=prgid%>";
+                break;
+            default:
+                break;
+        }
+
+        if ($("#dept").val() != "T") {
+            alert("目前僅開放商標國內案件資料明細查詢");
+            return;
+        }
+
+        window.open(url, "myWindowQ", "width=1024 height=768 top=20 left=20 toolbar=no, menubar=no, location=no, directories=no resizable=yes status=yes scrollbars=yes");
+    }
+
+    cust22form.CanDelAttach = function () {
+        //2017/2/3增加判斷可否執行檔案刪除，若上傳檔案中已有apattach_sqlno，則不能刪除
+        var sql = "";
+        switch ($("#dept").val()) {
+
+            case "P":
+                sql = "Select count(*) as cnt from dmp_attach ";
+                sql += " where apattach_sqlno = '" + $("#apattach_sqlno").val() + "' and attach_flag <>'D' ";
+                break;
+            case "PE":
+                sql = "Select count(*) as cnt from exp_attach ";
+                sql += " where apattach_sqlno = '" + $("#apattach_sqlno").val() + "' and attach_flag <>'D' ";
+                break;
+            case "T":
+                sql = "Select count(*) as cnt from dmt_attach ";
+                sql += " where apattach_sqlno = '" + $("#apattach_sqlno").val() + "' and attach_flag <>'D' ";
+                break;
+            case "TE":
+                sql = "Select count(*) as cnt from caseattach_ext ";
+                sql += " where apattach_sqlno = '" + $("#apattach_sqlno").val() + "'";
+                break;
+            default:
+                break;
+        }
+
+        $.ajax({
+            url: "../AJAX/JsonGetSqlData.aspx?SQL=" + sql,
+            type: "POST",
+            async: false,
+            cache: false,
+            data: $("#reg").serialize(),
+            success: function (json) {
+                var JSONdata = $.parseJSON(json);
+                if (JSONdata.length > 0) {
+                    if (CInt(JSONdata[0].cnt) > 0) {
+                        $("#btn<%#uploadfield%>_D").lock();
+                    }
+                }
+            },
+            beforeSend: function (jqXHR, settings) {
+                jqXHR.url = settings.url;
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("\n資料擷取剖析錯誤 !\n" + jqXHR.url);
+            }
+        });
+    }
+
 
     cust22form.main_seq_onblur = function () {
         var maintable = "";
@@ -310,7 +390,12 @@
                 data: $("#reg").serialize(),
                 success: function (json) {
                     var JSONdata = $.parseJSON(json);
-                    $("#apply_no").val(JSONdata[0].apply_no);
+                    if (JSONdata.length >0) {
+                        $("#apply_no").val(JSONdata[0].apply_no);
+                    }
+                    else {
+                        $("#apply_no").val('');
+                    }
                 },
                 beforeSend: function (jqXHR, settings) {
                     jqXHR.url = settings.url;
@@ -326,7 +411,7 @@
 
         if ($("#agent_no").val().trim() != "") {
             chkNum($("#agent_no").val(), "出口案代理人");
-            chkgno($("#agent_no").val(), 4);
+            $("#agent_no").val(padLeft($("#agent_no").val(), 4, "0"));
 
             var psql = "select *, isnull(agent_na1,'')+isnull(agent_na2,'') as agent_na, ";
             psql += "ar_statnm=case ar_stat when 'Y' then '正常' when 'N' then '異常' end, ";
@@ -378,6 +463,9 @@
                 }
             });
         }
+        else {
+            $("#agent_no, #agent_no1, #agent_na, #agent_coun").val('');
+        }
     }
 
 
@@ -396,7 +484,15 @@
         $("#dept").val(jData.dept);
         //$("#company").val(jData.company);
         $("#country").val(jData.country);
-        cust22form.DeptChange();
+        if ($("#dept").val() == "P" || $("#dept").val() == "T") {
+            $("#agt_no").unlock();
+            $("#agent_no, #agent_no1, #country").lock();
+        }
+        else {
+            $("#agt_no").lock();
+            $("#agent_no, #agent_no1, #country").unlock();
+        }
+
         $("#agt_no").val(jData.agt_no);
         $("#contract_no").val(jData.contract_no);
 
@@ -409,8 +505,13 @@
             if (way == "U" && jData.attach_flag == "A") {
                 $(this).prop('checked', true);
             }
-
         })
+        if ($("input[name=attach_flag][value='E']").prop('checked') == true) {
+            $("#span_stop_remark").show();
+            $("#stop_remark").val(jData.stop_remark);
+        }
+
+
 
         $("#agent_no").val(jData.agent_no);
         $("#agent_no1").val(jData.agent_no1);
@@ -473,8 +574,8 @@
 
     //[上傳]
     function UploadAttach() {
-        if ($.trim($("#scust_seq_1").val()) == "") {
-            alert("請輸入客戶編號1，才可上傳附件 !!!");
+        if ($.trim($("#sapcust_no_1").val()) == "") {
+            alert("請輸入申請人編號1，才可上傳附件 !!!");
             return false;
         }
         //nfilename = reg.cust_area.value & "AP-" & apsqlno & "-" & max_attach_no
@@ -535,6 +636,7 @@
 
                 document.getElementById("attach_flag").value = "D";
                 $("#btn<%=uploadfield%>").unlock();
+                $("#sapcust_no_1").unlock();
             }
             return false;
         }
@@ -558,6 +660,7 @@
 
                     document.getElementById("attach_flag").value = "D";
                     $("#btn<%=uploadfield%>").unlock();
+                    $("#sapcust_no_1").unlock();
                 },
                 error: function (xhr) {
                     $("#dialog").html("<a href='" + this.url + "' target='_new'>刪除檔案失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);

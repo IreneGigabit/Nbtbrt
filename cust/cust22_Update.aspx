@@ -10,7 +10,7 @@
 
 
 <script runat="server">
-    protected string HTProgCap = "客戶契約書資料-入檔";
+    protected string HTProgCap = "申請人委任書資料-入檔";
     private string HTProgCode = HttpContext.Current.Request["prgid"];
     protected string HTProgPrefix = HttpContext.Current.Request["prgid"];
     private int HTProgAcs = 1;
@@ -34,7 +34,7 @@
 
         submitTask = Request["submitTask"] ?? "";
         prgid = Request["prgid"] ?? "";
-        msg = "客戶契約書資料";
+        msg = "申請人委任書資料";
         uploadfield = Request["uploadfield"] ?? "";
         
         TokenN myToken = new TokenN(HTProgCode);
@@ -124,14 +124,14 @@
             dr.Close(); dr.Dispose();
             
             SQLStr = "INSERT INTO apcust_attach (apattach_sqlno,apsqlno,cust_area,cust_seq,source, in_date,in_scode,in_prgid,";
-            SQLStr += "contract_no, sign_flag,company,dept, sign_scode, attach_no, attach_path,doc_type,attach_desc,attach_name,source_name,";
-            SQLStr += "attach_size,attach_flag, mremark,use_dates,use_datee,remark,tran_date,tran_scode,tran_prgid) VALUES(";
+            SQLStr += "contract_no, sign_flag,company,dept, country, sign_scode, agt_no,agent_no,agent_no1, attach_no, attach_path,doc_type,attach_desc,attach_name,source_name,";
+            SQLStr += "attach_size,attach_flag, main_dept, main_seq, main_seq1, mremark, mcontract_no, use_dates,use_datee,remark,tran_date,tran_scode,tran_prgid) VALUES(";
 
             SQLStr += "'" + apattach_sqlno + "',";
             SQLStr += Util.dbnull(ReqVal.TryGet("sapsqlno_1")) + ",";
             SQLStr += Util.dbchar(ReqVal.TryGet("scust_area_1")) + ",";
-            SQLStr += Util.dbchar(ReqVal.TryGet("scust_seq_1")) + ",";
-            SQLStr += "'contract',";
+            SQLStr += Util.dbnull(ReqVal.TryGet("scust_seq_1")) + ",";
+            SQLStr += "'POA',";
             SQLStr += "GETDATE(),";
             SQLStr += "'" + Sys.GetSession("scode") + "'," + "'" + prgid + "',";
             
@@ -139,9 +139,21 @@
             SQLStr += Util.dbnull(ReqVal.TryGet("sign_flag")) + ",";
             SQLStr += Util.dbchar(ReqVal.TryGet("company")) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet("dept")) + ",";
+            SQLStr += Util.dbnull(ReqVal.TryGet("country")) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet("sign_scode")) + ",";
+            SQLStr += Util.dbchar(ReqVal.TryGet("agt_no")) + ",";
+            SQLStr += Util.dbchar(ReqVal.TryGet("agent_no")) + ",";
+            if (ReqVal.TryGet("agent_no1").Trim() == "")
+            {
+                SQLStr += "'_',";
+            }
+            else
+            {
+                SQLStr += Util.dbchar(ReqVal.TryGet("agent_no1")) + ",";
+            }
+            
             SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield+"_max_attach_no")) + ",";
-            SQLStr += Util.dbnull(Sys.Path2Brp(ReqVal.TryGet(uploadfield))) + ",";
+            SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield)) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield + "_doc_type")) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield + "_desc")) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield + "_name")) + ",";
@@ -158,8 +170,16 @@
             {
                 SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield + "_flag_name")) + ",";//attach_flag狀態，A新增、U修改、E停用
             }
-            
+
+            SQLStr += Util.dbnull(ReqVal.TryGet("main_dept")) + ",";
+            SQLStr += Util.dbnull(ReqVal.TryGet("main_seq")) + ",";
+            if (Util.dbchar(ReqVal.TryGet("main_seq1")) == "")
+            {
+                SQLStr +=  "'_',";
+            }
+            else SQLStr += Util.dbchar(ReqVal.TryGet("main_seq1")) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet("mremark")) + ",";//正本存放
+            SQLStr += Util.dbnull(ReqVal.TryGet("mcontract_no")) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet("use_sdate")) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet("use_edate")) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet("remark")) + ",";
@@ -169,13 +189,13 @@
             //Sys.showLog(SQLStr);
             
             string SQLStr2 = ""; 
-            string s = ""; string cust_seq = "";
+            string s = ""; string apcustno = "";
             int custsqlno = int.Parse(ReqVal.TryGet("hatt_sql"));
             for (int i = 1; i <= custsqlno; i++)
             {
                 s = ReqVal.TryGet("chkInsert_" + i);
-                cust_seq = ReqVal.TryGet("scust_seq_"+i);
-                if (s == "N" || cust_seq == "")
+                apcustno = ReqVal.TryGet("sapcust_no_" + i);
+                if (s == "N" || apcustno == "")
                 {
                     continue;
                 }
@@ -218,10 +238,10 @@
             SQLStr = "UPDATE apcust_attach SET ";
             SQLStr += "sign_flag = " + Util.dbnull(ReqVal.TryGet("sign_flag")) + ", ";
             SQLStr += "cust_area = '" + ReqVal.TryGet("cust_area") + "', ";
-            SQLStr += "cust_seq = " + Util.dbnull(ReqVal.TryGet("scust_seq_1")) + ", ";
+            //SQLStr += "cust_seq = " + Util.dbnull(ReqVal.TryGet("scust_seq_1")) + ", ";
             SQLStr += "apsqlno = " + Util.dbnull(ReqVal.TryGet("sapsqlno_1")) + ", ";
             SQLStr += "dept = " + Util.dbnull(ReqVal.TryGet("dept")) + ", ";
-            SQLStr += "company = " + Util.dbnull(ReqVal.TryGet("company")) + ", ";
+            SQLStr += "company = " + Util.dbchar(ReqVal.TryGet("company")) + ", ";
             SQLStr += "use_dates = " + Util.dbnull(ReqVal.TryGet("use_sdate")) + ", ";
             SQLStr += "use_datee = " + Util.dbnull(ReqVal.TryGet("use_edate")) + ", ";
             SQLStr += "attach_no = " + Util.dbnull(ReqVal.TryGet("attach_no")) + ", ";
@@ -234,6 +254,25 @@
             SQLStr += "sign_scode = " + Util.dbnull(ReqVal.TryGet("sign_scode")) + ", ";
             SQLStr += "mremark = " + Util.dbnull(ReqVal.TryGet("mremark")) + ", ";
             SQLStr += "remark = " + Util.dbnull(ReqVal.TryGet("remark")) + ", ";
+
+            SQLStr += "country = " + Util.dbnull(ReqVal.TryGet("country")) + ", ";
+            SQLStr += "agt_no = " + Util.dbchar(ReqVal.TryGet("agt_no")) + ", ";
+            SQLStr += "agent_no = " + Util.dbchar(ReqVal.TryGet("agent_no")) + ", ";
+            if (Util.dbchar(ReqVal.TryGet("agent_no1")) == "")
+            {
+                SQLStr += "agent_no1 = '_', ";
+            }
+            else SQLStr += "agent_no1 = " + Util.dbnull(ReqVal.TryGet("agent_no1")) + ", ";
+            
+            SQLStr += "main_dept = " + Util.dbnull(ReqVal.TryGet("main_dept")) + ", ";
+            SQLStr += "main_seq = " + Util.dbnull(ReqVal.TryGet("main_seq")) + ", ";
+            if (Util.dbchar(ReqVal.TryGet("main_seq1")) == "")
+            {
+                SQLStr += "main_seq1 = '_', ";
+            }
+            else SQLStr += "main_seq1 = " + Util.dbnull(ReqVal.TryGet("main_seq1")) + ", ";
+            
+            SQLStr += "mcontract_no = " + Util.dbnull(ReqVal.TryGet("mcontract_no")) + ", ";
             SQLStr += "tran_date = GETDATE(), ";
             SQLStr += "tran_scode = '" + Sys.GetSession("scode") + "', ";
             SQLStr += "tran_prgid = '" + prgid + "'";
@@ -247,13 +286,13 @@
             //Sys.showLog(SQLDel);
 
             string SQLStr2 = "";
-            string s = ""; string cust_seq = "";
+            string s = ""; string apcustno = "";
             int custsqlno = int.Parse(ReqVal.TryGet("hatt_sql"));
             for (int i = 1; i <= custsqlno; i++)
             {
                 s = ReqVal.TryGet("chkInsert_" + i);
-                cust_seq = ReqVal.TryGet("scust_seq_" + i);
-                if (s == "N" || cust_seq == "")
+                apcustno = ReqVal.TryGet("sapcust_no_" + i);
+                if (s == "N" || apcustno == "")
                 {
                     continue;
                 }
@@ -295,7 +334,6 @@
         {
             Sys.insert_log_table(conn, "U", prgid, "apcust_attach", "apattach_sqlno", ReqVal.TryGet("apattach_sqlno"), "");
             SQLStr = "UPDATE apcust_attach SET ";
-            //SQLStr += "attach_flag = " + Util.dbnull(ReqVal.TryGet("attach_flag")) + ", ";
             SQLStr += "attach_flag = 'E', ";
             SQLStr += "stop_remark = " + Util.dbnull(ReqVal.TryGet("stop_remark"));
             SQLStr += " WHERE apattach_sqlno = '" + ReqVal.TryGet("apattach_sqlno") + "'";

@@ -61,7 +61,7 @@
         string SQLStr = "select apsqlno from apcust_attach a where a.source='POA'";
         SQLStr += " and exists (select * From apcust_attach_ref r inner join apcust ap on r.apsqlno=ap.apsqlno";
         SQLStr += " where r.apattach_sqlno=a.apattach_sqlno)";
-        SQLStr += " and a.attach_flag <> 'E' and a.use_datee >= '" + DateTime.Now.ToShortDateString() + "'";
+        SQLStr += " and a.attach_flag <> 'E' and (a.use_datee >= '" + DateTime.Now.ToShortDateString() + "' or a.use_datee is null)";
         conn.DataTable(SQLStr, dtAttach);
 
         TokenN myToken = new TokenN(HTProgCode);
@@ -103,15 +103,22 @@
             return Eval("ap_cname1").ToString() + Eval("ap_cname2").ToString() + "/" + Eval("ap_ename1").ToString() + Eval("ap_ename2");
         }
     }
-    protected int GetAttachQty(RepeaterItem Container)
+    protected string GetAttachQty(RepeaterItem Container)
     {
         int Qty = 0;
+        string url = "";
         DataRow[] row = dtAttach.Select("apsqlno = '" + Eval("apsqlno").ToString() + "'");
         if (row.Length > 0)
         {
             Qty = row.Length;
         }
-        return Qty;
+
+        if (Qty > 0)
+        {
+            url = "<a href=\"javascript:void(0)\" onclick=\"GoToAttachList('"+Eval("apcust_no").ToString()+"')\">" + Qty + "</a>";
+        }
+        else url = Qty.ToString();
+        return url;
     }
     
     private void QueryData() {
@@ -403,14 +410,6 @@
         reg.submit();
     }
 
-<%--    function GoToEdit(apcust_no, apsqlno, cust_area, cust_seq) {
-        if (window.parent.tt !== undefined) {
-            reg.target = "Eblank";
-        }
-        reg.action = "cust13_Edit.aspx?prgid=<%=prgid%>&apcust_no="+apcust_no+"&apsqlno="+apsqlno+"&cust_area="+cust_area+"&cust_seq="+cust_seq+"&submitTask=<%=submitTask%>";
-        reg.submit();
-    }--%>
-
     function GoToEdit(e) {
         if (window.parent.tt === undefined) {//沒有找到頁框
             e.target = "_self";
@@ -425,6 +424,14 @@
         }else{
             e.target="Eblank";
         }
+    }
+
+    function GoToAttachList(qapcust_no) {
+        if (window.parent.tt !== undefined) {
+            reg.target = "Eblank";
+        }
+        reg.action = "cust22_List.aspx?prgid=cust22&from_flag=<%=prgid%>&FrameBlank=50&submitTask=Q&qryapcust_no=" + qapcust_no;
+        reg.submit();
     }
    
 

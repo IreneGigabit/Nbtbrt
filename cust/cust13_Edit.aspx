@@ -158,7 +158,7 @@
     <table cellspacing="1" cellpadding="0" width="98%" border="0" align="center">
     <tr>
         <td class="text9" nowrap="nowrap">&nbsp;【cust13_Edit <%#HTProgCap%>】&nbsp;&nbsp;
-            <span style="color:blue"><%= (cust_seq != "" && cust_seq != "0") ? "客戶編號 : " + cust_area + "-" + cust_seq : "" %> </span>
+            <span id="span_custNo" style="color:blue"><%= (cust_seq != "" && cust_seq != "0") ? "客戶編號 : " + cust_area + "-" + cust_seq : "" %> </span>
         </td>
         <td class="FormLink" valign="top" align="right" nowrap="nowrap">
             <%#StrFormBtnTop%>
@@ -207,6 +207,7 @@
             else {
                 $("#ap_cname1").val(<%= "'" + Request["ap_cname1"] + "'"%>);
                 $("#ap_country").val("T");
+                $("#span_custNo").hide();
             }
         }
 

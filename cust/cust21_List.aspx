@@ -104,7 +104,10 @@
         if (status == "使用中")
         {
             url += "<a class=\"hidAdd\" href=\"cust21_Edit.aspx?prgid=" + prgid + "&submitTask=U&apattach_sqlno=" + Eval("apattach_sqlno").ToString() + "\" target=\"Eblank\" >[維護]<a/>";
-            url += "<a class=\"hidAdd\" href=\"cust21_Edit.aspx?prgid=" + prgid + "&submitTask=D&apattach_sqlno=" + Eval("apattach_sqlno").ToString() + "\" target=\"Eblank\" >[停用]<a/>";
+            if ((HTProgRight & 16) > 0)//有刪除的權限才能顯示及執行by柳月
+            {
+                url += "<a class=\"hidAdd\" href=\"cust21_Edit.aspx?prgid=" + prgid + "&submitTask=D&apattach_sqlno=" + Eval("apattach_sqlno").ToString() + "\" target=\"Eblank\" >[停用]<a/>";    
+            }
         }
         return url;
     }

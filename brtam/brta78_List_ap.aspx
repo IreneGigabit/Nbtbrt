@@ -132,7 +132,7 @@
 				databr_branch="";
             }
         }
-
+        
         //***todo
         string urlasp = "/cust/cust13_edit.aspx?prgid=" + prgid;
         urlasp += "&submitTask=" + urlasp_Task + "&tran_flag=B&modify=" + urlasp_Task;
@@ -140,6 +140,7 @@
         urlasp += "&old_seq=" + dr.SafeRead("seq", "") + "&old_seq1=" + dr.SafeRead("seq1", "") + "&qs_dept=" + Request["qs_dept"];
         urlasp += "&apcust_no=" + apcust_no + "&apsqlno=" + apsqlno;
 
+        dr["apcust_no"] = apcust_no;
         dr["urlasp_str"] = urlasp_str;
         dr["urlasp"] = Page.ResolveUrl("~" + urlasp);
     }

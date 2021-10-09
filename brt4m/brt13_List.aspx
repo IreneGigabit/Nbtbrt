@@ -49,6 +49,11 @@
 
         homelist = ReqVal.TryGet("homelist").ToLower();
 
+        if (prgid == "") {
+            prgid = "brt13";
+            HTProgCode = "brt13";
+        }
+        
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         Title = myToken.Title;
@@ -180,6 +185,7 @@
         if (ReqVal.TryGet("qryOrder") != "") {
             SQL += " order by " + ReqVal.TryGet("qryOrder");
         }
+        Sys.showLog(SQL);
         conn.DataTable(SQL, dt);
 
         //處理分頁

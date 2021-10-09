@@ -165,16 +165,12 @@
         cust21form.init();
         if ($("#submitTask").val() != "A") {
             loadData();
+            cust21form.CanDelAttach();
         }
 
 
         if ($("#submitTask").val() == "A") {
-            $("input[name=sign_flag][value='S']").prop('checked', true);
-            $("input[name=attach_flag][value='U']").prop('checked', true);
-            $("#attach_doc_type").val("A001");
-            $("#attach_desc").val("總契約書");
             $("#ref_Add_button").click();
-
         }
 
         if ($("#submitTask").val() == "Q") {
@@ -189,6 +185,7 @@
         if ($("#submitTask").val() == "U") {
             if ($("#attach_name").val() != "" && $("#source_name").val() != "") {
                 $("#btnattach").lock();
+                $("#scust_seq_1").lock();
             }
         }
         $("input:radio[name=attach_flag]").lock();//狀態(使用中/停用)for A、U
@@ -208,6 +205,10 @@
         if (window.parent.tt !== undefined) {
             if ($("#submitTask").val() == "A") {
                 window.parent.tt.rows = "0%,100%";
+                $("input[name=sign_flag][value='S']").prop('checked', true);
+                $("input[name=attach_flag][value='U']").prop('checked', true);
+                $("#attach_doc_type").val("A001");
+                $("#attach_desc").val("總契約書");
             }
             else {
                 window.parent.tt.rows = "30%,70%";
@@ -312,10 +313,16 @@
             }
         }
 
+        if ($("#scust_seq_1").val() == "") {
+            alert("契約書簽署之客戶請最少輸入一筆 ");
+            return false;
+        }
+
     }
 
 
     function loadData() {
+        //var psql = "Select replace(a.attach_path,'/brp/','/nbrp/') attach_path,a.*,";
         var psql = "Select a.*,";
         psql += "(select agent_na1 from agent where agent_no=a.agent_no and agent_no1=a.agent_no1) as agent_na, ";
         psql += "(select agcountry from agent where agent_no=a.agent_no and agent_no1=a.agent_no1) as agent_coun, ";

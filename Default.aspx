@@ -155,7 +155,7 @@
                 <%#Eblank%>
                 <span style="font-size:12px;color:red" title="<%#LoginGrp%>"><%#StrUser%></span>
                 <img src="images/top/go-1.gif" alt="" width="22" height="10" />
-				<select id="goweb" name="goweb">
+				<select id="goweb" name="goweb" onchange="javascript:gosite(this.value)">
 	                <option value="" style="color:#000088">請選擇其他網路作業系統...</option>
                     <%#StrSYSs%>
                     <option value="">----------</option>	
@@ -348,19 +348,19 @@
                 window.top.location.href = "http://<%#SiServer%>";
                 break;
             default:
-                var syspath = $("#goweb").val();
-                if (syspath == "logout") {//登出
+                //var syspath = $("#goweb").val();
+                if (pType == "logout") {//登出
                     window.open("logout.aspx", "_top");
-                }else if (syspath != "") {
+                } else if (pType != "") {
                     var syscode = $("#goweb option:selected").attr("value1");
-                    window.top.location.href = "http://" + syspath + "/checklogin.asp?tfx_scode=<%#Session["scode"]%>&sys_pwd=<%#Session["SeSysPwd"]%>&syscode=" + syscode;
+                    window.top.location.href = "http://" + pType + "/checklogin.asp?tfx_scode=<%#Session["scode"]%>&sys_pwd=<%#Session["SeSysPwd"]%>&syscode=" + syscode;
                 }
                 break;
         }
     }
 
     //Eblank frame
-$("#btnEblank").click(function () {
+    $("#btnEblank").click(function () {
         var ifrm = $("#workfram").contents();
 
         if ($(this).attr("v1") != null) {

@@ -378,7 +378,7 @@
         if ($("#apcust_no").val() == "") {
             return;
         }
-        if ($("#submitTask").val() == "Q") {
+        if ($("#submitTask").val() != "A") {
             return;
         }
 

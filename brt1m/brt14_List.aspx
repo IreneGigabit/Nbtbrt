@@ -37,6 +37,11 @@
         cnn = new DBHelper(Conn.Sysctrl).Debug(Request["chkTest"] == "TEST");
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
 
+        if (prgid == "") {
+            prgid = "brt14";
+            HTProgCode = "brt14";
+        }
+
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight=myToken.CheckMe(false);
         HTProgCap = myToken.Title;

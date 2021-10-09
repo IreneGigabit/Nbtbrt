@@ -82,6 +82,13 @@
     
 </script>
 
+<style>
+    input[type=checkbox] {
+    vertical-align:middle;
+    }
+</style>
+
+
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -156,7 +163,7 @@
 	</tr>
 	<TR id="tr_level">
 		<td class="lightbluetable" align="right" name=lab1><%=deptName%>客戶等級：</td>
-		<TD class=whitetablebg align=left>
+		<TD class=whitetablebg align=left style="vertical-align:middle">
             <%=LevelList%>
 		<input type="checkbox" name="level_allcheck" id="level_allcheck" value="Y" onclick="level_AllCheck()">全部&nbsp;
 		<input type="hidden" name="hidLevel" value="">

@@ -160,19 +160,10 @@
         cust22form.init();
         if ($("#submitTask").val() != "A") {
             loadData();
+            cust22form.CanDelAttach();
         }
-
-
         if ($("#submitTask").val() == "A") {
-            $("input[name=sign_flag][value='S']").prop('checked', true);
-            $("input[name=attach_flag][value='U']").prop('checked', true);
-            $("#agt_no").lock();
-            $("#agent_no").lock();
-            $("#agent_no1").lock();
-            $("#attach_doc_type").val("B001");
-            $("#attach_desc").val("委任書");
             $("#ref_Add_button").click();
-
         }
 
         if ($("#submitTask").val() == "Q") {
@@ -187,13 +178,14 @@
         if ($("#submitTask").val() == "U") {
             if ($("#attach_name").val() != "" && $("#source_name").val() != "") {
                 $("#btnattach").lock();
+                $("#sapcust_no_1").lock();
             }
         }
         $("input:radio[name=attach_flag]").lock();//狀態(使用中/停用)for A、U
 
         if ($("#submitTask").val() == "D") {
             //$("#ref_Add_button").hide();
-            cust22form.Setcust211formReadOnly();
+            cust22form.Setcust221formReadOnly();
             cust22form.SetReadOnly();
             $("#btnattach, #btnattach_D").hide();
             $("input[name=attach_flag][value='E']").prop("checked", true);
@@ -206,6 +198,15 @@
         if (window.parent.tt !== undefined) {
             if ($("#submitTask").val() == "A") {
                 window.parent.tt.rows = "0%,100%";
+                cust22form.init();
+                $("input[name=sign_flag][value='S']").prop('checked', true);
+                $("input[name=attach_flag][value='U']").prop('checked', true);
+                $("#agt_no").lock();
+                $("#agent_no").lock();
+                $("#agent_no1").lock();
+                $("#attach_doc_type").val("B001");
+                $("#attach_desc").val("委任書");
+                
             }
             else {
                 window.parent.tt.rows = "30%,70%";
@@ -269,30 +270,38 @@
     });//btnSave End
 
     function ChkSave() {
-        if (chkNull("有效起間起日", $("#use_sdate"))) return false;
-        if (chkNull("有效起間訖日", $("#use_edate"))) return false;
-        if ($("#use_sdate").val() != "" && $.isDate($("#use_sdate").val()) == false) {
-            alert("日期期間起始資料必須為日期型態!!");
-            return false;
-        }
-        if ($("#use_edate").val() != "" && $.isDate($("#use_edate").val()) == false) {
-            alert("日期期間終止資料必須為日期型態!!");
-            return false;
-        }
-        if (chkSEDate($("#use_sdate").val(), $("#use_edate").val(), "日期範圍") == false) {
-            return false;
-        }
 
-        //「有效期間」請管制迄日「起日+3年-1日」。若超過三年(1095天)，請提示：依據101年6月經營會報決議，總契約書簽約年限不宜超過三年。系統管制不予以存檔。
-        var t = CDate($("#use_edate").val()).getTime() - CDate($("#use_sdate").val()).getTime();
-        var days = parseInt(t / (1000 * 60 * 60 * 24));
-        if (days > 1095) {
-            alert("依據101年6月經營會報決議，總契約書簽約年限不宜超過三年");
-            return false;
+        if ($("#use_sdate").val() == "") {
+            if (confirm("是否確定不輸入「有效期間起日」")) {
+            }
+            else {
+                return false;
+            }
+        }
+        if ($("#use_edate").val() == "") {
+            if (confirm("是否確定不輸入「有效期間迄日」")) {
+            }
+            else {
+                return false;
+            }
+        }
+        if ($("#use_sdate").val() != "" && $("#use_edate").val() != "") {
+            if (chkNull("有效起間起日", $("#use_sdate"))) return false;
+            if (chkNull("有效起間訖日", $("#use_edate"))) return false;
+            if ($("#use_sdate").val() != "" && $.isDate($("#use_sdate").val()) == false) {
+                alert("日期期間起始資料必須為日期型態!!");
+                return false;
+            }
+            if ($("#use_edate").val() != "" && $.isDate($("#use_edate").val()) == false) {
+                alert("日期期間終止資料必須為日期型態!!");
+                return false;
+            }
+            if (chkSEDate($("#use_sdate").val(), $("#use_edate").val(), "日期範圍") == false) {
+                return false;
+            }
         }
 
         if (chkNull("單位部門", $("#dept"))) return false;
-        if (chkNull("契約書編號", $("#company"))) return false;
         if (chkNull("接洽人員", $("#sign_scode"))) return false;
         if (chkNull("檔案說明類型", $("#attach_doc_type"))) return false;
         if ($("#attach_name").val() == "") {
@@ -302,13 +311,19 @@
 
         var custsqlno = CInt($("#hatt_sql"));
         for (var i = 2; i <= custsqlno; i++) {
-            if ($("scust_seq_" + i).val() != "" && $("refdel_flag_" + i).prop("checked") == false) {
+            if ($("sapcust_no_" + i).val() != "" && $("refdel_flag_" + i).prop("checked") == false) {
                 if ($("input[name=sign_flag][value='S']").prop("checked") == true) {
                     alert("若有多個客戶，契約書種類請勾選「多個客戶合併簽署」");
                     return false;
                 }
             }
         }
+
+        if ($("#sapcust_no_1").val() == "") {
+            alert("契約書簽署之申請人請最少輸入一筆 ");
+            return false;
+        }
+
 
     }
 

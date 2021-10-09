@@ -222,11 +222,17 @@
                 SQL += " AND a.rmark_code IN (" + rcodeStr.Trim(',') + ")";
             }
         }
+        string wsql = " order by a.cust_seq desc";
         
         //cust22_Edit申請人委任書條件
+        if (ReqVal.TryGet("apcust_no") != "" || ReqVal.TryGet("ap_cname") != "")
+        {
+            SQL = "select *, (select code_name From cust_code where Code_type='apclass' and cust_code=a.apclass) as apclassnm from apcust a where 1=1 ";
+            wsql = " order by apsqlno desc";
+        }
         if (ReqVal.TryGet("apcust_no") != "")
         {
-            SQL += " AND b.apcust_no = '" + ReqVal.TryGet("apcust_no") + "'";
+            SQL += " AND apcust_no = '" + ReqVal.TryGet("apcust_no") + "'";
         }
         if (ReqVal.TryGet("ap_cname") != "")
         {
@@ -234,7 +240,7 @@
             SQL += " OR ap_cname2 LIKE '%" + ReqVal.TryGet("ap_cname") + "%')";
         }
 
-        SQL += " order by a.cust_seq desc";
+        SQL += wsql;
         //Sys.showLog(SQL);
         conn.DataTable(SQL, dt);
 

@@ -125,7 +125,7 @@
         SQL += "FROM vcust_apcust WHERE 1=1" + SQLwhere;
         //Get customer data from 4 branches(N,C,S,K) 
         //string [] Branches = {"N", "C", "S", "K"};
-        string[] Branches = { "N" };
+        string[] Branches = { "N", "K" };
         for (int i = 0; i < Branches.Length; i++)
         {
             connSel = new DBHelper(Conn.brp(Branches[i])).Debug(Request["chkTest"] == "TEST");
