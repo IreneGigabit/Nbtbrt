@@ -141,7 +141,6 @@
 	                    },
 	                    beforeSend: function (jqXHR, settings) {
 	                        jqXHR.url = settings.url;
-	                        //toastr.info("<a href='" + jqXHR.url + "' target='_new'>debug！\n" + jqXHR.url + "</a>");
 	                    },
 	                    error: function (xhr) { 
 	                        $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getOption)！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
@@ -249,7 +248,6 @@
 	                    },
 	                    beforeSend: function (jqXHR, settings) {
 	                        jqXHR.url = settings.url;
-	                        //toastr.info("<a href='" + jqXHR.url + "' target='_new'>debug！\n" + jqXHR.url + "</a>");
 	                    },
 	                    error: function (xhr) {
 	                        $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getRadio)！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
@@ -353,7 +351,6 @@
 	                    },
 	                    beforeSend: function (jqXHR, settings) {
 	                        jqXHR.url = settings.url;
-	                        //toastr.info("<a href='" + jqXHR.url + "' target='_new'>debug！\n" + jqXHR.url + "</a>");
 	                    },
 	                    error: function (xhr) {
 	                        $("#dialog").html("<a href='" + this.url + "' target='_new'>載入查詢清單發生錯誤(getCheckbox)！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);

@@ -34,6 +34,7 @@
         SQL = "select c.dept,c.kind,a.logingrp,c.Rights from logingrp a,sysctrl b,homeright c";
         SQL += " where a.syscode='" + Sys.Syscode + "' and b.scode='" + Session["scode"] + "'";
         SQL += " and a.syscode=b.syscode and a.logingrp=b.logingrp and a.syscode=c.syscode and a.logingrp=c.logingrp";
+        Sys.showLog(SQL);
         using (SqlDataReader dr = cnn.ExecuteReader(SQL)) {
             while (dr.Read()) {
                 switch (dr.SafeRead("dept", "").ToUpper()) {

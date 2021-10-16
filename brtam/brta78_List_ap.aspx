@@ -87,6 +87,7 @@
         SQL += " where seq=" + Request["old_seq"] + " and seq1='" + Request["old_seq1"] + "'";
         SQL += " order by " + sort;
         DataTable dt = new DataTable();
+        Sys.showLog(SQL);
         connbr.DataTable(SQL, dt);
         
         //處理分頁

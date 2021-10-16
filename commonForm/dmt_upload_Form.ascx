@@ -164,6 +164,8 @@
     upload_form.init = function () {
         var fld = $("#uploadfield").val();
 
+        upload_form.emptyFile();//清空附件清單
+
         if (main.prgid == "brt81") {
             $("#uploadTitle").html("交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;辦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;相&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;關&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件");
         } else {
@@ -174,10 +176,10 @@
     }
 
     //附件資料append到畫面
-    upload_form.bind = function (jData,showSourceName) {
-        upload_form.emptyFile();//清空附件清單
+    upload_form.bind = function (jData, showSourceName) {
+        var fld = $("#uploadfield").val();
+
         $.each(jData, function (i, item) {
-            var fld = $("#uploadfield").val();
             upload_form.appendFile();//增加一筆
             var nRow = $("#" + fld + "_filenum").val();
             $("#" + fld + "_name_" + nRow).val(item.attach_name);
@@ -280,7 +282,7 @@
     //清空附件清單
     upload_form.emptyFile = function () {
         var fld = $("#uploadfield").val();
-        $("#tabfile" + fld + ">thead>tr:gt(1)").remove();
+        $("#tabfile" + fld + ">thead tr:gt(0)").remove();//清空按鈕
         $("#tabfile" + fld + ">tbody").empty();
         $("#" + fld + "_filenum").val("0");
     }
@@ -289,19 +291,20 @@
     upload_form.appendFile = function () {
         var fld = $("#uploadfield").val();
 
-        if (main.prgid == "brt62" && main.submittask == "A") {//文件上傳作業
-            if ($("#seq").val() == "" || $("#seq1").val() == "") {
-                alert("請輸入案件編號!!");
-                return false;
-            }
-            if ($("#step_grade").val() == "0" && $("#" + fld + "_filenum").val() == "0") {
-                var ans = confirm("對應進度0，是否確定將文件上傳至進度0？若不是進度0，請先點選「否」再點選「查詢」以重新選取對應進度後再上傳");
-                if (ans == false) {
-                    $("#btnquery").focus();
-                    return false;
-                }
-            }
-        }
+        //多檔上傳已觸發過
+        //if (main.prgid == "brt62" && main.submittask == "A") {//文件上傳作業
+        //    if ($("#seq").val() == "" || $("#seq1").val() == "") {
+        //        alert("請輸入案件編號!!");
+        //        return false;
+        //    }
+        //    if ($("#step_grade").val() == "0" && $("#" + fld + "_filenum").val() == "0") {
+        //        var ans = confirm("對應進度0，是否確定將文件上傳至進度0？若不是進度0，請先點選「否」再點選「查詢」以重新選取對應進度後再上傳");
+        //        if (ans == false) {
+        //            $("#btnquery").focus();
+        //            return false;
+        //        }
+        //    }
+        //}
 
         var nRow = CInt($("#" + fld + "_filenum").val()) + 1;//畫面顯示NO
         $("#maxattach_no").val(CInt($("#maxattach_no").val()) + 1);//table+畫面顯示 NO

@@ -297,8 +297,8 @@
 	        <%}%>
 		    <td align="left"><%#Eval("appl_name")%></td>
 		    <td align="center"><%#Eval("cust_area")%><%#Eval("cust_seq")%>_<%#Eval("cust_name")%></td>
-		    <td align="center"><%#Eval("in_date","{0:yyyy/M/d}")%></td>
-		    <td align="center"><%#Eval("end_date","{0:yyyy/M/d}")%></td>
+		    <td align="center"><%#Eval("in_date","{0:d}")%></td>
+		    <td align="center"><%#Eval("end_date","{0:d}")%></td>
 		    <td align="center"><%#Eval("sc_name")%></td>
 	    </tr>
 	</ItemTemplate>

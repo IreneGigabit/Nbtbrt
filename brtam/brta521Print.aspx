@@ -125,7 +125,7 @@
 	<ItemTemplate>
 		    <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 			    <td nowrap align="center"><%#(Eval("rank").ToString()=="1"?Eval("rs_no"):"&nbsp;")%></td>
-			    <td nowrap align="center"><%#(Eval("rank").ToString()=="1"?Eval("step_date","{0:yyyy/M/d}"):"&nbsp;")%></td>
+			    <td nowrap align="center"><%#(Eval("rank").ToString()=="1"?Eval("step_date","{0:d}"):"&nbsp;")%></td>
 			    <td><%#(Eval("rank").ToString()=="1"?Eval("rs_detail"):"&nbsp;")%></td>
 			    <td nowrap align="center"><%#Eval("fseq")%></td>
 			    <td>&nbsp;<%#Eval("cappl_name")%></td>

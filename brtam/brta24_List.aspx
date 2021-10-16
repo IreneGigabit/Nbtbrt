@@ -307,21 +307,21 @@
                 <%#GetButton(Container)%><!--作業-->
                 <input type="hidden" id="seq_<%#(Container.ItemIndex+1)%>" name="seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq")%>">
                 <input type="hidden" id="seq1_<%#(Container.ItemIndex+1)%>" name="seq1_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq1")%>">
-                <input type="hidden" id="end_date_<%#(Container.ItemIndex+1)%>" name="end_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("end_date", "{0:yyyy/M/d}")%>">
-                <input type="hidden" id="mg_end_date_<%#(Container.ItemIndex+1)%>" name="mg_end_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mg_end_date", "{0:yyyy/M/d}")%>">
+                <input type="hidden" id="end_date_<%#(Container.ItemIndex+1)%>" name="end_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("end_date", "{0:d}")%>">
+                <input type="hidden" id="mg_end_date_<%#(Container.ItemIndex+1)%>" name="mg_end_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mg_end_date", "{0:d}")%>">
                 <input type="hidden" id="step_grade_<%#(Container.ItemIndex + 1)%>" name="step_grade_<%#(Container.ItemIndex + 1)%>" value="<%#Eval("step_grade")%>">
 		    </td>
 		    <td align="center"><%#Eval("fseq")%>
-                <img src="<%=Page.ResolveUrl("~/images/email01.gif")%>" style="cursor:pointer" title="Email通知總收發" align="absmiddle" border="0" onClick="tomgbutton_email('<%#Eval("fseq")%>','<%#Eval("mg_step_grade")%>','<%#Eval("mg_step_date", "{0:yyyy/M/d}")%>','<%#Eval("rs_detail")%>','<%#Eval("ctrl_datetxt")%>','<%#Eval("lend_date")%>','<%#Eval("lmg_end_date")%>')">
+                <img src="<%=Page.ResolveUrl("~/images/email01.gif")%>" style="cursor:pointer" title="Email通知總收發" align="absmiddle" border="0" onClick="tomgbutton_email('<%#Eval("fseq")%>','<%#Eval("mg_step_grade")%>','<%#Eval("mg_step_date", "{0:d}")%>','<%#Eval("rs_detail")%>','<%#Eval("ctrl_datetxt")%>','<%#Eval("lend_date")%>','<%#Eval("lmg_end_date")%>')">
 		    </td>
 		    <td ><%#Eval("appl_name").ToString().Left(20)%></td>
 		    <td nowrap align="center"><%#Eval("sc_name")%></td>
-		    <td align="center"><%#Eval("mg_step_date", "{0:yyyy/M/d}")%></td>
+		    <td align="center"><%#Eval("mg_step_date", "{0:d}")%></td>
 		    <td align="left"><%#Eval("receive_no")%></td>
 		    <td align="left"><%#Eval("rs_detail")%></td>
 		    <td align="center"><%#Eval("ctrl_datetxt")%><%#disButton(Container)%><!--期限管制查詢--></td>
-		    <td align="center"><%#Eval("end_date", "{0:yyyy/M/d}")%></td>
-		    <td align="center"><%#Eval("mg_end_date", "{0:yyyy/M/d}")%></td>
+		    <td align="center"><%#Eval("end_date", "{0:d}")%></td>
+		    <td align="center"><%#Eval("mg_end_date", "{0:d}")%></td>
 	    </tr>
 	</ItemTemplate>
     <FooterTemplate>

@@ -37,7 +37,7 @@
     <add name="dev_S_brp" connectionString="Server=web08;Database=sisdbs;User ID=web_usr;Password=web1823"/>
     <add name="dev_K_brp" connectionString="Server=web08;Database=sikdbs;User ID=web_usr;Password=web1823"/>
     <!--=================================測試環境=================================-->
-    <!--案件-->
+    <!--案件'**跨區所修改-->
     <add name="test_btbrtdb" connectionString="Server=web10;Database=sindbs;User ID=web_usr;Password=web1823"/>
     <!--爭救案件管理系統用-->
     <add name="test_opt" connectionString="Server=web01;Database=sikopt;User ID=web_usr;Password=web1823"/>
@@ -95,7 +95,7 @@
     <add key="aspnet:MaxHttpCollectionKeys" value="2000" />
   </appSettings>
   <system.web>
-    <compilation defaultLanguage="c#" debug="true" batch="true" maxBatchGeneratedFileSize="10000" maxBatchSize="10000">
+    <compilation defaultLanguage="c#" debug="false" batch="true" maxBatchGeneratedFileSize="20000" maxBatchSize="20000">
       <assemblies>
         <add assembly="Microsoft.Office.Interop.Word, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71E9BCE111E9429C"/>
         <add assembly="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>

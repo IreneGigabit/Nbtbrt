@@ -33,7 +33,7 @@ function delayNO(low_no, low_no1) {
         async: false,
         cache: false,
         success: function (json) {
-            if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(jsonDelaySQL)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(jsonDelaySQL)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
             oMain = $.parseJSON(json);
         },
         error: function (xhr) {
@@ -303,8 +303,7 @@ function delayNO1(low_no, low_no1) {
         async: false,
         cache: false,
         success: function (json) {
-            //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(delayNO1)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
-            toastr.info("<a href='" + this.url + "' target='_new'>Debug(delayNO1)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(delayNO1)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
             oMain = $.parseJSON(json);
         },
         error: function (xhr) {
@@ -459,7 +458,7 @@ function chkdmtandtemp_ap(pseq, pseq1) {
         async: false,
         cache: false,
         success: function (json) {
-            //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(chkdmtandtemp_ap)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
             apcust_list = $.parseJSON(json);
             if (apcust_list.length == 0) {
                 alert("無該申請人編號!!!");
@@ -597,7 +596,7 @@ function getdmtap(pseq, pseq1){
         async: false,
         cache: false,
         success: function (json) {
-            //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(getdmtap)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
             var apcust_list = $.parseJSON(json);
             if (apcust_list.length == 0) {
                 alert("案件無申請人!!!");
@@ -669,7 +668,7 @@ function getdmtap_FC(pseq, pseq1){
         async: false,
         cache: false,
         success: function (json) {
-            //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(getdmtap_FC)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
             var apcust_list = $.parseJSON(json);
             if (apcust_list.length == 0) {
                 alert("案件無申請人!!!");
@@ -741,7 +740,7 @@ function getdmtap_FC0(pseq, pseq1){
         async: false,
         cache: false,
         success: function (json) {
-            //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(getdmtap_FC0)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
             var apcust_list = $.parseJSON(json);
             if (apcust_list.length == 0) {
                 alert("案件無申請人!!!");
@@ -798,7 +797,7 @@ function getdmtap_FC1(pseq, pseq1) {
         async: false,
         cache: false,
         success: function (json) {
-            //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+            if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(getdmtap_FC1)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
             var apcust_list = $.parseJSON(json);
             if (apcust_list.length == 0) {
                 alert("案件無申請人!!!");

@@ -269,8 +269,8 @@
 		    <td nowrap style="cursor:pointer;color:darkblue" onmouseover="this.style.color='red'" onmouseout="this.style.color='darkblue'" onclick="CapplClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')"><%#Eval("fseq")%></td>
 		    <td><%#Eval("appl_name")%></td>
 		    <td align="center"><%#Eval("sc_name")%></td>
-		    <td nowrap align=center ><%#Eval("step_date","{0:yyyy/M/d}")%></td>
-		    <td nowrap align=center ><%#Eval("mp_date","{0:yyyy/M/d}")%></td>
+		    <td nowrap align=center ><%#Eval("step_date","{0:d}")%></td>
+		    <td nowrap align=center ><%#Eval("mp_date","{0:d}")%></td>
 		    <td><%#Eval("rs_detail")%></td>
 		    <td align="center"><%#Eval("from_flagnm")%></td>
 	    </tr>

@@ -219,7 +219,7 @@
                     <td><%#Eval("step_grade")%></td>
 		            <td align=left><%#Eval("cappl_name")%></td>
 		            <td align=left><%#Eval("ap_cname1")%></td>
-		            <td><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+		            <td><%#Eval("step_date","{0:d}")%></td>
 		            <td align=left>(<%#Eval("rs_no")%>)<%#Eval("rs_detail")%></td>
 		            <td><%#Eval("scode1_name")%></td>
 		            <td><%#Eval("pr_name")%></td>

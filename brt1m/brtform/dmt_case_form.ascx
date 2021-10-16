@@ -162,12 +162,12 @@
 		            <td class=lightbluetable align=right width=4%>服務費：</td>
 		            <td class=whitetablebg align=left width=5%>
 		                <INPUT TYPE=text id=nfyi_Service_## name=nfyi_Service_## SIZE=8 maxlength=8 style="text-align:right;" value="0" onblur="case_form.summary()" class="<%=Lock.TryGet("brt51")%>">
-		                <input type=text id=nfzi_Service_## name=nfzi_Service_##>
+		                <input type=hidden id=nfzi_Service_## name=nfzi_Service_##>
 		            </td>
 		            <td class=lightbluetable align=right width=4%>規費：</td>
 		            <td class=whitetablebg align=left width=5%>
 		                <INPUT TYPE=text id=nfyi_fees_## name=nfyi_fees_## SIZE=8 maxlength=8 style="text-align:right;" value="0" onblur="case_form.item_nfyi_fees('##')" class="<%=Lock.TryGet("brt51")%>">
-		                <input type=text id=nfzi_fees_## name=nfzi_fees_##>
+		                <input type=hidden id=nfzi_fees_## name=nfzi_fees_##>
 		            </td>
 	            </tr>
             </script>
@@ -482,7 +482,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(抓取案性特殊控制)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(抓取案性特殊控制)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jFee = $.parseJSON(json);
                 $.each(jFee, function (i, item) {
                     if (item.rs_code != "") {
@@ -522,7 +522,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(轉帳費用)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(轉帳費用)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jFee = $.parseJSON(json);
                 $.each(jFee, function (i, item) {
                     if (item.rs_code != "") {
@@ -585,10 +585,10 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(收費標準)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(收費標準)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jFee = $.parseJSON(json);
                 //if (jFee.length != 0) {
-                    if (x4 != 10) {//轉帳費用
+                    if (x4 != 10) {//不是轉帳費用
                         $.each(jFee, function (i, item) {
                             if (x4 >= 1) {//其他費用
                                 $("#nfyi_Service_" + x4).val(item.service * CInt($("#nfyi_item_count_" + x4).val()));

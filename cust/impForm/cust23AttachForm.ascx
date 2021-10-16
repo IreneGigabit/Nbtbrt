@@ -53,8 +53,8 @@
         <tr class="whitetablebg" id="tr_attach_##">
 		    <td class="whitetablebg" align="center" nowrap>
                 <span id="attachno_##"></span>
-                <input type="checkbox" id="attach_del_##" value="Y">
-				<INPUT type="hidden" size=1 id="attach_upd_flag_##">
+                <input type="checkbox" id="attach_del_##" name="attach_del_##" value="Y">
+				<INPUT type="hidden" size=1 id="attach_upd_flag_##" name="attach_upd_flag_##">
 		    </td>
 		    <td class="whitetablebg">
                 檔案名稱：<br />
@@ -70,6 +70,7 @@
                 <span id="span_source"><BR>
                 原始檔名：<br />
                 <input type='text' id='<%#uploadfield%>_source_name_##' name='<%#uploadfield%>_source_name_##' class=SEdit readonly size=50></span>
+                <INPUT type="hidden" id=o_attach_source_name_##>
                 <input type='hidden' id='old_<%#uploadfield%>_name_##' name='old_<%#uploadfield%>_name_##'>
                 <input type='hidden' id='doc_type_mark' name='doc_type_mark'>
                 <INPUT type="hidden" id="attach_doc_type_##" name="attach_doc_type_##"><!--doc_type-->
@@ -86,7 +87,7 @@
                 <input type=button id='btn<%#uploadfield%>_S_##' name='btn<%#uploadfield%>_S_##' class='cbutton' value='檢視' onclick="PreviewAttach('##')">
 		    </td>
 		    <td class="whitetablebg" align=left>
-				<input type="hidden" id="attach_mremark_value_##">
+				<input type="hidden" id="attach_mremark_value_##" name="attach_mremark_value_##">
 				<INPUT type="hidden" id=o_attach_mremark_##>
                 <span id="spanclass_##"></span>
 				<hr style="border:1px; " />
@@ -97,7 +98,6 @@
 				<INPUT id="attach_in_date_##" class=SEdit readOnly size=10><BR>
 				<INPUT id="attach_in_scode_##" class=SEdit readOnly size=10>
 				<INPUT id="attach_in_scodenm_##" class=SEdit readOnly size=10>
-				<%--<INPUT type="hidden" id="attach_apattach_sqlno_##">--%>
 			</td>
 	    </tr>
         </script>
@@ -148,6 +148,7 @@
                 $(this).prop('checked', false);
                 if (rMremark.indexOf("|" + $(this).val() + "|") > -1) $(this).prop('checked', true);
             })
+            $("#attach_mremark_value_" + nRow).val(rMremark);
             $("#o_attach_mremark_" + nRow).val(rMremark);
             $("#attach_in_scode_" + nRow).val(item.in_scode);
             $("#attach_in_scodenm_" + nRow).val(item.in_scodenm);
@@ -255,6 +256,17 @@
         var apsqlno = padLeft($("#apsqlno").val(), 6, '0');
         var tfolder = $("#cust_area").val() + "/" + apsqlno.substring(0, 3) + "/" + apsqlno;
         var max_attach_no = getmax_attach_no();
+        var subpno = CInt(pno) - 1;
+        if (CInt(pno) > 1) {
+            if ($("#attach_name_" + subpno).val() != "") {
+                if (max_attach_no == $("#attach_no_"+subpno).val()) {
+                    max_attach_no++;
+                }
+            }
+        }
+        
+
+
         var nfilename = $("#cust_area").val() + "APR-" + apsqlno + "-" + max_attach_no;
 
         var url = getRootPath() + "/sub/upload_win_file_new.aspx?type=custdb_file" +
@@ -304,13 +316,13 @@
         }
 
         //2015/12/25for總契約書/委任書增加檢查(只取消連結不刪實體檔)
-        if (document.getElementById(fld + "_apattach_sqlno").value != "") {
-            if (confirm("確定取消" + document.getElementById(fld + "_desc_"+pno).value + "連結？")) {
+        if (document.getElementById(fld + "_apattach_sqlno_"+pno).value != "") {
+           <%-- if (confirm("確定取消" + document.getElementById(fld + "_desc_"+pno).value + "連結？")) {
                 document.getElementById(fld + "_apattach_sqlno_"+pno).value = "";
                 $("#attach_path_" + pno).val('');
                 $("#btn<%=uploadfield%>_"+pno).unlock();
             }
-            return false;
+            return false;--%>
         }
 
         if (confirm("確定刪除上傳檔案？")) {

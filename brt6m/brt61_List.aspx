@@ -303,7 +303,7 @@
                 </label>
 		    </td>
 		    <td><input type=text id="attach_desc_<%#(Container.ItemIndex+1)%>" value="<%#Eval("attach_desc")%>" size=30 maxlength=40 alt="『掃描說明』" onblur="fDataLen(this)"></td>
-		    <td align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+		    <td align="center"><%#Eval("step_date","{0:d}")%></td>
 		    <td align="left"><%#Eval("rs_detail")%></td>
 		    <td ><%#Eval("appl_name").ToString().ToUnicode().Left(10)%></td>
 	    </tr>

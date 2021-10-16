@@ -183,7 +183,7 @@
             //    }
             //}
             $.each(["mod_ap", "mod_aprep", "mod_agt", "mod_apaddr", "mod_agtaddr", "mod_oth", "mod_oth1", "mod_oth2", "mod_claim1"], function (i, m) {
-                if (jMain.case_main[0][arr_mod[m]] == "Y") {
+                if (jMain.case_main[0][m] == "Y") {
                     $("#tfzr_" + m).prop("checked", true);
                     $("#tfg1_" + m).val("Y");
                 } else {

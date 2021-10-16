@@ -44,6 +44,7 @@
     private void GetApCust(ref DataTable dt) {
         using (DBHelper conn = new DBHelper(Conn.btbrt).Debug(false)) {
             SQL = "select *,'N'Server_flag,0 Ap_sql ";
+            SQL += ",rtrim(isnull(ap_cname1,''))+ rtrim(isnull(ap_cname2,''))ap_name ";
             SQL += "from apcust ";
             SQL += "where 1=1 ";
             if (apcust_no != "") SQL += "and apcust_no='" + apcust_no + "' ";
@@ -65,6 +66,7 @@
             SQL += ",a.Ap_eaddr1,a.Ap_eaddr2,a.Ap_eaddr3,a.Ap_eaddr4";
             SQL += ",a.Apatt_zip,a.Apatt_addr1,a.Apatt_addr2,a.Apatt_tel0";
             SQL += ",a.Apatt_tel,a.Apatt_tel1,a.Apatt_fax,a.Ap_zip,d.ap_sort";
+            SQL += ",rtrim(isnull(d.ap_cname1,''))+ rtrim(isnull(d.ap_cname2,''))ap_name ";
             SQL += " From dmt_temp_ap as d  ";
             SQL += " inner join apcust as a on d.apsqlno=a.apsqlno ";
             SQL += " Where d.in_no = '" + in_no + "' and d.case_sqlno=0 ";

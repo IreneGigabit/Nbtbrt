@@ -129,8 +129,8 @@
                 }
 
                 strOut.AppendLine("<div align='center'><h1>" + msgdept + "收據會計契約書" + msgtodo + "成功</h1></div>");
-                //conn.Commit();
-                conn.RollBack();
+                conn.Commit();
+                //conn.RollBack();
             }
             catch (Exception ex) {
                 conn.RollBack();

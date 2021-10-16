@@ -248,7 +248,7 @@
 <form style="margin:0;" id="reg" name="reg" method="post">
 <asp:Repeater id="dataRepeater" runat="server">
 <HeaderTemplate>
-    <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%" align="center" id="dataList">
+    <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="80%" align="center" id="dataList">
 	    <thead>
             <tr>
 		        <td class=lightbluetable align=center>客戶編號</td>

@@ -330,7 +330,7 @@
 			        </td>
 			        <td nowrap><%#Eval("step_grade")%></td>
 			        <td><%#Eval("code_name")%></td>
-			        <td nowrap><%#Eval("in_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap><%#Eval("in_date","{0:d}")%></td>
 			        <td nowrap style="cursor: pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" onclick="CapplClick('<%#Eval("seq")%>', '<%#Eval("seq1")%>')">
                         <%#Eval("appl_name")%>
 			        </td>
@@ -340,7 +340,6 @@
 	                <td align="left"><%#Eval("a_last_date")%></td>
 	                <td><%#Eval("scode1_name")%></td>
 			        <td>
-				        <input type="hidden" name="sort">
                         <a href="brta61_Edit.aspx?prgid=<%=prgid%>&submitTask=Q&aseq=<%#Eval("seq")%>&aseq1=<%#Eval("seq1")%>&QType=A&FrameBlank=50" target="Eblank">[查詢]</a>
                         <a href="brta61_list2.aspx?prgid=<%=prgid%>&seq=<%#Eval("seq")%>&seq1=<%#Eval("seq1")%>" target="Eblank"><img src="<%=Page.ResolveUrl("~/images/ok.gif")%>" border=0 title="案件流程狀態查詢"></a>
 			        </td>

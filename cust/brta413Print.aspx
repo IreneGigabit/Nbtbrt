@@ -127,13 +127,13 @@
                 <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 			        <td nowrap align="center" rowSpan=6>本所編號<br><%#Eval("fseq")%></td>
 			        <td align="right" nowrap>立案日期：</td>
-			        <td nowrap><%#Eval("in_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap><%#Eval("in_date","{0:d}")%></td>
 			        <td align="right" nowrap>申請日期：</td>
-			        <td nowrap><%#Eval("apply_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap><%#Eval("apply_date","{0:d}")%></td>
 			        <td align="right" nowrap>申 請 號：</td>
 			        <td nowrap><%#Eval("apply_no")%></td>
 			        <td align="right" nowrap>註冊日期：</td>
-			        <td nowrap><%#Eval("issue_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap><%#Eval("issue_date","{0:d}")%></td>
 		        </tr>
                 <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 			        <td align="right" nowrap>註 冊 號：</td>
@@ -173,7 +173,7 @@
 			        <td align="right" nowrap>商標期限：</td>
 			        <td nowrap colspan="3"><%#Eval("term")%></td>
 			        <td align="right" nowrap>結案日期：</td>
-			        <td nowrap><%#Eval("end_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap><%#Eval("end_date","{0:d}")%></td>
 			        <td align="right" nowrap>結案代碼：</td>
 			        <td nowrap><%#Eval("end_code")%></td>
 		        </tr>

@@ -153,6 +153,24 @@ public class DBHelper : IDisposable
     }
     #endregion
 
+    #region +string getDateTime(string commandText, string format) - 執行查詢，抓取第一欄第一列(若null則為空字串)，可指定日期格式
+    /// <summary>  
+    /// 抓取第一欄第一列(若null則為空字串)，可指定日期格式
+    /// </summary>  
+    public string getDateTime(string commandText, string format) {
+        object objResult = this.ExecuteScalar(commandText);
+        if (objResult != DBNull.Value && objResult != null) {
+            DateTime time = DateTime.Now;
+            if (!DateTime.TryParse(objResult.ToString(), out time)) {
+                throw new Exception("日期格式轉換失敗");
+            } else {
+                return time.ToString(format);
+            }
+        }
+        return "";
+    }
+    #endregion
+
     #region  +string getZero(string commandText) - 執行查詢，抓取第一欄第一列(若null則為"0")
     /// <summary>  
     /// 抓取第一欄第一列(若null則為"0")

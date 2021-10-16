@@ -551,7 +551,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust關係人重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(br_form.getapp1_fl關係人重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var apcust_list = $.parseJSON(json);
                 if (apcust_list.length == 0) {
                     alert("無該關係人編號!!!");
@@ -621,7 +621,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust再授權關係人重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(br_form.getapp1_fl2再授權關係人重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var apcust_list = $.parseJSON(json);
                 if (apcust_list.length == 0) {
                     alert("無該關係人編號!!!");

@@ -366,3 +366,18 @@ function chkID(pUserID, pType) {
     }
 }
 //#endregion
+
+
+function Path2Nbrp(path) {
+    path = path.replace("@'\', @'/'");
+    path = path.replace("/brp/", "/nbrp/");
+    //path = Regex.replace(path, "D:/Data/document/", "/nbrp/", RegexOptions.IgnoreCase);
+    return path;
+}
+
+function Path2Nbtbrt(path) {
+    path = path.replace("@'\', @'/'");
+    path = path.replace("/btbrt/", "/nbtbrt/");
+    //path = Regex.replace(path, "D:/Data/document/", "/nbtbrt/", RegexOptions.IgnoreCase);
+    return path;
+}

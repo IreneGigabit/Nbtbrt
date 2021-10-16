@@ -53,7 +53,7 @@
         if ((HTProgRight & 2) > 0) {
             StrFormBtn += "<input type=\"button\" id=\"btnSrch\" value=\"查　詢\" class=\"cbutton bsubmit\" />\n";
             StrFormBtn += "<input type=\"button\" id=\"btnRest\" value=\"重　填\" class=\"cbutton\" />\n";
-            StrFormBtn += "<input type=\"button\" id=\"btnPre\" value=\"預計請款記錄\" class=\"cbutton bsubmit\" />\n";
+            StrFormBtn += "<input type=\"button\" id=\"btnPreAr\" value=\"預計請款記錄\" class=\"c1button bsubmit\" />\n";
         }
 
         //營洽清單
@@ -103,7 +103,7 @@
     <input type="hidden" name="qs_dept" value="<%=Request["qs_dept"]%>">
 
     <div id="id-div-slide">
-        <table id="qryForm" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="90%" align="center">	
+        <table border="0" class="bluetable" cellspacing="1" cellpadding="2" width="90%" align="center">	
 	        <tr>
 		        <TD class=lightbluetable align=right>查詢種類：</TD>
 		        <TD class=whitetablebg align=left colspan="3">
@@ -272,16 +272,12 @@
             $("#eseq").val($("#bseq").val());
         }
 
-        //if ($("input[name=todo][value='X']").prop("checked") == true) {
-            reg.action = "<%=HTProgPrefix%>_List.aspx";//未開立請款單案件查詢
-        //} else {
-        //    reg.action = "<%=HTProgPrefix%>_List1.aspx";//已開立請款單案件查詢
-        //}
+        reg.action = "<%=HTProgPrefix%>_List.aspx";//未開立請款單案件查詢
         reg.submit();
     });
 
     //[預計請款記錄]
-    $("#btnPre").click(function (e) {
+    $("#btnPreAr").click(function (e) {
         if ($("input[name=todo][value='X']").prop("checked") == true) {//交辦尚未請款完畢
             if ($("#Scode").val() == "") {
                 alert("請選擇營洽人員！");
@@ -293,7 +289,7 @@
             $("#eseq").val($("#bseq").val());
         }
 
-        reg.action = "<%=HTProgPrefix%>_List2.aspx?qryform=Y";
+        reg.action = "<%=HTProgPrefix%>2_List.aspx?qryform=Y";
         reg.submit();
     });
 

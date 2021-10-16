@@ -305,7 +305,6 @@
                 $("#table_query,#table_btn").hide();
                 $("#imgQuery,#imgRefresh").show();
                 var JSONdata = $.parseJSON(data);
-                //toastr.info("<a href='" + this.url + "?" + $("#reg").serialize() + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 //////更新分頁變數
                 var totRow = parseInt(JSONdata.totRow, 10);
                 if (totRow > 0) {

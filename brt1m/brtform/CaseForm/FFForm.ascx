@@ -100,7 +100,7 @@
         } else {
             $("#tfg1_agt_no1").val(jMain.case_main[0].agt_no);//*出名代理人代碼
             $("#tfzd_agt_no").val(jMain.case_main[0].agt_no);//*出名代理人代碼
-            $("#fr_Fees").val(jMain.case_main[0].fees);//**繳費金額
+            $("#fr_fees").val(jMain.case_main[0].fees);//**繳費金額
             $("#fr_apply_no").val(jMain.case_main[0].apply_no);//申請號數
             $("#fr_issue_no").val(jMain.case_main[0].issue_no);//註冊號
             $("#fr_appl_name").val(jMain.case_main[0].appl_name);//商標名稱

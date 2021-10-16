@@ -214,14 +214,14 @@
 				            <input type="hidden" id="cgrs_nm_<%#(Container.ItemIndex+1)%>" name="cgrs_nm_<%#(Container.ItemIndex+1)%>" value="<%#Eval("cgrs_nm")%>">
 				            <input type="hidden" id="rs_detail_<%#(Container.ItemIndex+1)%>" name="rs_detail_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_detail")%>">
 				            <input type="hidden" id="send_way_<%#(Container.ItemIndex+1)%>" name="send_way_<%#(Container.ItemIndex+1)%>" value="<%#Eval("send_way")%>">
-				            <input type="hidden" id="step_date_<%#(Container.ItemIndex+1)%>" name="step_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("step_date","{0:yyyy/M/d}")%>">
+				            <input type="hidden" id="step_date_<%#(Container.ItemIndex+1)%>" name="step_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("step_date","{0:d}")%>">
 				            <input type="hidden" id="rs_code_name_<%#(Container.ItemIndex+1)%>" name="rs_code_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_code_name")%>">
 				        </td>
-				        <td nowrap><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+				        <td nowrap><%#Eval("step_date","{0:d}")%></td>
 				        <td align=left ><%#Eval("rs_detail")%></td>
 			            <%if (prgid=="brt51" || prgid=="brt19"){%>
-				            <td align=left ><%#Eval("ctrl_date","{0:yyyy/M/d}")%>
-				                <input type="hidden" id="ctrl_date_<%#(Container.ItemIndex+1)%>" name="ctrl_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("ctrl_date","{0:yyyy/M/d}")%>">
+				            <td align=left ><%#Eval("ctrl_date","{0:d}")%>
+				                <input type="hidden" id="ctrl_date_<%#(Container.ItemIndex+1)%>" name="ctrl_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("ctrl_date","{0:d}")%>">
                             </td>
 			            <%}%>
 				        <td nowrap align="center">

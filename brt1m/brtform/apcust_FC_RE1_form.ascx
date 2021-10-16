@@ -260,7 +260,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(apcust_form.getappy1交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var apcust_list = $.parseJSON(json);
                 if (apcust_list.length == 0) {
                     alert("無該申請人編號!!!");
@@ -324,7 +324,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust申請人資料重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(apcust_form.getAPy1申請人資料重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var apcust_list = $.parseJSON(json);
                 if (apcust_list.length == 0) {
                     alert("無該申請人編號!!!");
@@ -374,7 +374,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust申請人資料重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(apcust_form.getappx1申請人資料重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var apcust_list = $.parseJSON(json);
                 if (apcust_list.length == 0) {
                     alert("無該申請人編號!!!");

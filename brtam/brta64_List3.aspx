@@ -278,7 +278,7 @@
 			                <tr class="<%#DataBinder.Eval(((RepeaterItem)Container.Parent.Parent).DataItem, "tclass")%>"><td></td><td></td><td></td><td></td><td></td><td></td>
                         </asp:Panel>
                         <td nowrap>
-                            <font color="<%#Eval("tcolor")%>"><%#Eval("code_name").ToString().Left(2)%>&nbsp;<%#Eval("ctrl_date","{0:yyyy/M/d}")%>
+                            <font color="<%#Eval("tcolor")%>"><%#Eval("code_name").ToString().Left(2)%>&nbsp;<%#Eval("ctrl_date","{0:d}")%>
                         </td>
                         </ItemTemplate>
 			        </asp:Repeater>

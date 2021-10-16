@@ -321,7 +321,7 @@
                             <%#Eval("lcg")%><%#Eval("lrs")%><%#Eval("string_ges")%>
 		                </td>
 		                <td align="center" nowrap style="cursor: pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" onclick="brta61form.StepGradeClick(<%=seq%>, '<%=seq1%>', '<%#Eval("rs_no")%>','<%#Eval("cgrs")%>')">
-                            <%#Eval("step_date","{0:yyyy/M/d}")%>
+                            <%#Eval("step_date","{0:d}")%>
 		                </td>
 			            <td align="center" style="cursor: pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'"  onclick="brta61form.StepGradeClick(<%=seq%>, '<%=seq1%>', '<%#Eval("rs_no")%>','<%#Eval("cgrs")%>')" align="left">
                             <%#Eval("case_stat_nm")%>
@@ -351,7 +351,7 @@
 			                    <tr class="<%#DataBinder.Eval(((RepeaterItem)Container.Parent.Parent).DataItem, "tclass")%>"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                             </asp:Panel>
                             <td nowrap>
-                                <font color="<%#Eval("tcolor")%>"><%#Eval("code_name").ToString().Left(2)%>&nbsp;<%#Eval("ctrl_date","{0:yyyy/M/d}")%>
+                                <font color="<%#Eval("tcolor")%>"><%#Eval("code_name").ToString().Left(2)%>&nbsp;<%#Eval("ctrl_date","{0:d}")%>
                                 <%#(Eval("ctrl_remark").ToString()!=""?"<br>":"")%><%#Eval("ctrl_remark")%></font>
                             </td>
                             <td nowrap><%#Eval("resp_date_txt")%></td><!--銷管日期-->

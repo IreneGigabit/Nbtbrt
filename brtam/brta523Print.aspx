@@ -125,7 +125,7 @@
 			    <td nowrap align="center"><%#Eval("fseq")%></td>
 			    <td nowrap align="center">&nbsp;<%#Eval("sc_name")%></td>
 			    <td nowrap align="center">&nbsp;<%#Eval("issue_no")%></td>
-			    <td nowrap align="center">&nbsp;<%#Eval("term1","{0:yyyy/M/d}")%>~<%#Eval("term2","{0:yyyy/M/d}")%></td>
+			    <td nowrap align="center">&nbsp;<%#Eval("term1","{0:d}")%>~<%#Eval("term2","{0:d}")%></td>
 			    <td nowrap align="center">&nbsp;<%#Eval("tcn_ref")%></td>
 			    <td>&nbsp;<%#Eval("appl_name")%></td>
 			    <td>&nbsp;<%#Eval("cust_name")%></td>

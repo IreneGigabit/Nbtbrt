@@ -182,18 +182,18 @@
 	        <ItemTemplate>
 		        <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 				    <td nowrap align="center" rowspan=4><%#Eval("fseq")%></td>
-				    <td nowrap align="center">&nbsp;<%#Eval("in_date","{0:yyyy/M/d}")%></td>
+				    <td nowrap align="center">&nbsp;<%#Eval("in_date","{0:d}")%></td>
 				    <td nowrap align="center">&nbsp;<%#Eval("apply_no")%></td>
-				    <td nowrap align="center">&nbsp;<%#Eval("apply_date","{0:yyyy/M/d}")%></td>
+				    <td nowrap align="center">&nbsp;<%#Eval("apply_date","{0:d}")%></td>
 				    <td nowrap align="center">&nbsp;<%#Eval("issue_no")%></td>
-				    <td nowrap align="center">&nbsp;<%#Eval("issue_date","{0:yyyy/M/d}")%></td>
-				    <td nowrap align="center">&nbsp;<%#Eval("term1","{0:yyyy/M/d}")%>~<%#Eval("term2","{0:yyyy/M/d}")%></td>
+				    <td nowrap align="center">&nbsp;<%#Eval("issue_date","{0:d}")%></td>
+				    <td nowrap align="center">&nbsp;<%#Eval("term1","{0:d}")%>~<%#Eval("term2","{0:d}")%></td>
 			    </tr>
 		        <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 				    <td align="right">營洽：</td>
 				    <td nowrap align="center">&nbsp;<%#Eval("scode_nm")%></td>
 				    <td nowrap align="right">結案日期：</td>
-				    <td nowrap align="center">&nbsp;<%#Eval("end_date","{0:yyyy/M/d}")%><br><%#Eval("end_name")%></td>
+				    <td nowrap align="center">&nbsp;<%#Eval("end_date","{0:d}")%><br><%#Eval("end_name")%></td>
 				    <td align="right">最後進度：</td>
 				    <td align="left">&nbsp;<%#Eval("lrs_detail")%></td>
 			    </tr>
@@ -238,18 +238,18 @@
 	<ItemTemplate>
 		    <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 				<td nowrap align="center" rowspan=4><%#Eval("fseq")%></td>
-				<td nowrap align="center">&nbsp;<%#Eval("in_date","{0:yyyy/M/d}")%></td>
+				<td nowrap align="center">&nbsp;<%#Eval("in_date","{0:d}")%></td>
 				<td nowrap align="center">&nbsp;<%#Eval("apply_no")%></td>
-				<td nowrap align="center">&nbsp;<%#Eval("apply_date","{0:yyyy/M/d}")%></td>
+				<td nowrap align="center">&nbsp;<%#Eval("apply_date","{0:d}")%></td>
 				<td nowrap align="center">&nbsp;<%#Eval("issue_no")%></td>
-				<td nowrap align="center">&nbsp;<%#Eval("issue_date","{0:yyyy/M/d}")%></td>
-				<td nowrap align="center">&nbsp;<%#Eval("term1","{0:yyyy/M/d}")%>~<%#Eval("term2","{0:yyyy/M/d}")%></td>
+				<td nowrap align="center">&nbsp;<%#Eval("issue_date","{0:d}")%></td>
+				<td nowrap align="center">&nbsp;<%#Eval("term1","{0:d}")%>~<%#Eval("term2","{0:d}")%></td>
 			</tr>
 		    <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 				<td align="right">營洽：</td>
 				<td nowrap align="center">&nbsp;<%#Eval("scode_nm")%></td>
 				<td nowrap align="right">結案日期：</td>
-				<td nowrap align="center">&nbsp;<%#Eval("end_date","{0:yyyy/M/d}")%><br><%#Eval("end_name")%></td>
+				<td nowrap align="center">&nbsp;<%#Eval("end_date","{0:d}")%><br><%#Eval("end_name")%></td>
 				<td align="right">最後進度：</td>
 				<td align="left">&nbsp;<%#Eval("lrs_detail")%></td>
 			</tr>

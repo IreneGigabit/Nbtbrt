@@ -243,7 +243,7 @@
 	                <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("arcase_name")%></A></td>
 	                <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("pr_scode_name")%></A></td>
 	                <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("opt_in_date")%></A></td>
-	                <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("ctrl_date","{0:yyyy/M/d}")%></A></td>
+	                <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("ctrl_date","{0:d}")%></A></td>
 	                <td class="whitetablebg" align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("dowhat_name")%></A></td>
                 </tr>
                 <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">

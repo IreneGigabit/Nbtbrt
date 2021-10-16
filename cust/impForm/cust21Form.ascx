@@ -177,10 +177,10 @@
 		</TD>
 	</TR>
 </table>
-
+<br />
 <div align="left">
-    <font size=2>
-※注意！已上傳檔案，如需修改客戶編號，則請先刪除檔案。
+<font color="blue" size="2">
+※注意！已上傳檔案，如需修改客戶編號，則請先刪除檔案。(若無法刪除檔案，表示已使用到個案無法維護)
 </font>
 </div>
 
@@ -434,6 +434,7 @@
                     document.getElementById("attach_flag").value = "D";
                     $("#btn<%=uploadfield%>").unlock();
                     $("#scust_seq_1").unlock();
+                    $("#btnquery_cust_seq_1").unlock();
                 },
                 error: function (xhr) {
                     $("#dialog").html("<a href='" + this.url + "' target='_new'>刪除檔案失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);

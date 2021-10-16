@@ -136,9 +136,9 @@
 	    <ItemTemplate>
                 <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 			    <td nowrap align="center" rowspan="2"><%#Eval("fseq")%></td>
-			    <td nowrap align="center">&nbsp;<%#Eval("in_date","{0:yyyy/M/d}")%></td>
+			    <td nowrap align="center">&nbsp;<%#Eval("in_date","{0:d}")%></td>
 			    <td nowrap align="center">&nbsp;<%#Eval("cust_area")%><%#Eval("cust_seq")%></td>
-			    <td nowrap align="center">&nbsp;<%#Eval("apply_date","{0:yyyy/M/d}")%></td>
+			    <td nowrap align="center">&nbsp;<%#Eval("apply_date","{0:d}")%></td>
 			    <td nowrap align="center">&nbsp;<%#Eval("apply_no")%></td>
 			    <td nowrap align="center">&nbsp;<%#Eval("issue_no")%></td>
 			    <td nowrap align="center">&nbsp;<%#Eval("rej_no")%></td>

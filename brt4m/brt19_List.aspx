@@ -276,13 +276,13 @@
 		                <td rowSpan=2 align="center" style="color:blue" title="<%#Eval("opt_sqlno")%>"><%#Eval("dowhat_name")%></td>
 		                <td rowSpan=2 align="center">
 			                <span id="span_Slast_date_<%#(Container.ItemIndex+1)%>" style="display:">
-				                <input type="text" name="oldLast_date_<%#(Container.ItemIndex+1)%>" size="10" value="<%#Eval("Last_date","{0:yyyy/M/d}")%>" class="sedit" readonly>
+				                <input type="text" name="oldLast_date_<%#(Container.ItemIndex+1)%>" size="10" value="<%#Eval("Last_date","{0:d}")%>" class="sedit" readonly>
 				                <%#GetButton(Container)%>
 			                </span>
 			
 			                <span id="span_last_date_<%#(Container.ItemIndex+1)%>" style="display:none">
 				                <br>
-				                <input type="text" name="Last_date_<%#(Container.ItemIndex+1)%>" size="10" value="<%#Eval("Last_date","{0:yyyy/M/d}")%>" onblur="Last_dateChange(<%#(Container.ItemIndex+1)%>)" class="dateField">
+				                <input type="text" name="Last_date_<%#(Container.ItemIndex+1)%>" size="10" value="<%#Eval("Last_date","{0:d}")%>" onblur="Last_dateChange(<%#(Container.ItemIndex+1)%>)" class="dateField">
 				                <br>
 				                <span style="cursor: pointer;color:darkblue" onmouseover="this.style.color='red'" onmouseout="this.style.color='darkblue'" onclick="Last_dateSave(<%#(Container.ItemIndex+1)%>)">[存檔]</span>
 				                <span style="cursor: pointer;color:darkblue" onmouseover="this.style.color='red'" onmouseout="this.style.color='darkblue'" onclick="Last_dateResp(<%#(Container.ItemIndex+1)%>)">[取消]</span>
@@ -291,9 +291,9 @@
 				    </tr>
  		            <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 	                    <td align="center">&nbsp;<%#Eval("pr_scode_name")%>&nbsp;</td>
-	                    <td align="center">&nbsp;<%#Eval("Bcase_date","{0:yyyy/M/d}")%>&nbsp;</td>
-	                    <td align="center">&nbsp;<%#Eval("ctrl_date","{0:yyyy/M/d}")%>&nbsp;</td>
-	                    <td align="center">&nbsp;<%#Eval("GS_date","{0:yyyy/M/d}")%>&nbsp;</td>
+	                    <td align="center">&nbsp;<%#Eval("Bcase_date","{0:d}")%>&nbsp;</td>
+	                    <td align="center">&nbsp;<%#Eval("ctrl_date","{0:d}")%>&nbsp;</td>
+	                    <td align="center">&nbsp;<%#Eval("GS_date","{0:d}")%>&nbsp;</td>
                     </tr>	 
 			    </ItemTemplate>
     <FooterTemplate>

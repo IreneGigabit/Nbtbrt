@@ -188,11 +188,11 @@
         {
             if (ReqVal.TryGet("scode") == "_")
             {
-                SQLw += " and (a." + dept.ToLower() + "scode = '' or a." + dept.ToLower() + "scode is null) ";
+                SQLw += " and (c." + dept.ToLower() + "scode = '' or c." + dept.ToLower() + "scode is null) ";
             }
             else
             {
-                SQLw += " and a." + dept.ToLower() + "scode = '" + ReqVal.TryGet("scode") + "' ";
+                SQLw += " and c." + dept.ToLower() + "scode = '" + ReqVal.TryGet("scode") + "' ";
             }
         }
 

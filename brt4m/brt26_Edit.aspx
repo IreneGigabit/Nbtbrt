@@ -104,7 +104,7 @@
 <form id="reg" name="reg" method="post">
     <INPUT TYPE="hidden" id=prgid name=prgid value="<%=prgid%>">
 
-    <table class=bluetable border=0 cellspacing=1 cellpadding=2 width="75%" align="center">
+    <table class=bluetable border=0 cellspacing=1 cellpadding=2 width="100%" align="center">
         <tr class=lightbluetable>
             <td>國家：</td>
             <td class=whitetablebg><%=coun_c%></td>

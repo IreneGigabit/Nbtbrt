@@ -323,7 +323,7 @@
 			        <td nowrap><%#Eval("sign_scodenm")%></td>
                     <td nowrap><%#SetApname(Container)%></td>
 			        <td nowrap>
-                        <a  href="<%#Eval("attach_path")%>" target="_blank"><img src="../images/annex.gif"/></a>
+                        <a  href="<%#(dept == "P") ?Sys.Path2Nbrp(Eval("attach_path").ToString()) : Sys.Path2Nbtbrt(Eval("attach_path").ToString())%>" target="_blank"><img src="../images/annex.gif"/></a>
 			        </td>
 			        <td nowrap><%#SetStatus(Container)%></td>
                     <td nowrap><%#Eval("remark")%></td>

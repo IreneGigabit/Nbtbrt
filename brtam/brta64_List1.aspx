@@ -59,7 +59,7 @@
 
         string scode1nm = "全部";
         if (ReqVal.TryGet("scode1") != "") {
-            SQL = "select sc_name from scode where scode='" + Request["scode1"] + "'";
+            SQL = "select sc_name from sysctrl.dbo.scode where scode='" + Request["scode1"] + "'";
             object objResult = conn.ExecuteScalar(SQL);
             scode1nm = (objResult == DBNull.Value || objResult == null) ? "" : objResult.ToString();
         }
@@ -277,7 +277,7 @@
 			                <tr class="<%#DataBinder.Eval(((RepeaterItem)Container.Parent.Parent).DataItem, "tclass")%>"><td></td><td></td><td></td><td></td><td></td><td></td>
                         </asp:Panel>
                         <td nowrap>
-                            <font color="<%#Eval("tcolor")%>"><%#Eval("code_name").ToString().Left(2)%>&nbsp;<%#Eval("ctrl_date","{0:yyyy/M/d}")%>
+                            <font color="<%#Eval("tcolor")%>"><%#Eval("code_name").ToString().Left(2)%>&nbsp;<%#Eval("ctrl_date","{0:d}")%>
                         </td>
                         </ItemTemplate>
 			        </asp:Repeater>

@@ -98,10 +98,6 @@
 			        <input type="text" id="seq" name="seq" size=<%#Sys.DmtSeq%> maxlength=<%#Sys.DmtSeq%>>-
 			        <input type="text" id="seq1" name="seq1" size=<%#Sys.DmtSeq1%> maxlength=<%#Sys.DmtSeq1%> style="text-transform:uppercase;">
 		        </TD>
-		        <TD class=lightbluetable align=right>類別：</TD>
-		        <TD class=whitetablebg >
-			        <input type="text" id="class" name="class" size=3 maxlength=3>
-		        </TD>
 		        <TD class=lightbluetable align=right>母案編號：</TD>
 		        <TD class=whitetablebg >
 			        <input type="text" id="mseq" name="mseq" size=<%#Sys.DmtSeq%> maxlength=<%#Sys.DmtSeq%>>-
@@ -117,7 +113,7 @@
 			        <INPUT type="text" id="cust_seq" name="cust_seq" size="6" maxlength="6">
 		        </TD>
 		        <TD class=lightbluetable align=right>客戶名稱：</TD>
-		        <TD class=whitetablebg colspan="5">
+		        <TD class=whitetablebg colspan="4">
 			        <input type="text" id="ap_cname1" name="ap_cname1" size=45 maxlength=40>
 		        </TD>
 	        </TR>
@@ -127,13 +123,13 @@
 			        <input type="text" id="apcust_no" name="apcust_no" size=10 maxlength=10>
 		        </TD>
 		        <TD class=lightbluetable align=right>申請人名稱：</TD>
-		        <TD class=whitetablebg colspan="5">
+		        <TD class=whitetablebg colspan="4">
 			        <input type="text" id="ap_cname" name="ap_cname" size=45 maxlength=40>
 		        </TD>
 	        </TR>
 	        <TR>
                 <TD class=lightbluetable align=right rowspan=2>商標種類：</TD>
-		        <TD class=whitetablebg colspan=7>
+		        <TD class=whitetablebg colspan=5>
 			        <input type="hidden" id="hs_mark" name="hs_mark" value="">
 			        <label><input type="radio" name="s_mark" value="T" onclick="reg.hs_mark.value = this.value">商標</label>
 			        <label><input type="radio" name="s_mark" value="S" onclick="reg.hs_mark.value = this.value">92年修正前服務標章</label>
@@ -144,7 +140,7 @@
 		        </TD>
 	        </TR>
 	        <TR>
-		        <TD class=whitetablebg colspan=7>
+		        <TD class=whitetablebg colspan=5>
 			        <label><input type="radio" name="s_mark2" value="A">平面</label>
 			        <label><input type="radio" name="s_mark2" value="B">立體</label>
 			        <label><input type="radio" name="s_mark2" value="C">聲音</label>
@@ -157,7 +153,7 @@
 	        </TR>
 	        <TR>
 		        <TD class=lightbluetable align=right>正聯防：</TD>
-		        <TD class=whitetablebg colspan=7>
+		        <TD class=whitetablebg colspan=5>
 			        <input type="hidden" id="hpul" name="hpul" value="" >
 			        <label><input type="radio" name="pul" value="0" onclick="reg.hpul.value = this.value">正商標</label>
 			        <label><input type="radio" name="pul" value="1" onclick="reg.hpul.value = this.value">聯合</label>
@@ -165,15 +161,27 @@
 			        <label><input type="radio" name="pul" value="" checked onclick="reg.hpul.value = this.value">不指定</label>
 		        </TD>
 	        </TR>
+	        <TR>
+		        <TD class=lightbluetable align=right>類別種類：</TD>
+		        <TD class=whitetablebg colspan=3>
+			        <label><input type="radio" name="class_type" value="int">國際分類</label>
+			        <label><input type="radio" name="class_type" value="old">舊類</label>
+			        <label><input type="radio" name="class_type" value="" checked>不指定</label>
+                </TD>
+		        <TD class=lightbluetable align=right>類別：</TD>
+		        <TD class=whitetablebg >
+			        <input type="text" id="class" name="class" size=3 maxlength=3>
+		        </TD>
+	        </TR>
 	        <TR>	
 		        <TD class=lightbluetable align=right>商標名稱：</TD>
-		        <TD class=whitetablebg colspan=7>
+		        <TD class=whitetablebg colspan=5>
 			        <input type="text" id="appl_name" name="appl_name" size=40 maxlength=30>
 		        </TD>
 	        </TR>
 	        <TR>	
 		        <TD class=lightbluetable align=right>文號種類：</TD>
-		        <TD class=whitetablebg colspan=5>
+		        <TD class=whitetablebg colspan=3>
 			        <label><input type="radio" name="kind_no" value="Apply_No">申請號碼</label>
 			        <label><input type="radio" name="kind_no" value="Issue_No">註冊號碼</label>
 			        <label><input type="radio" name="kind_no" value="Rej_No">核駁號碼</label>
@@ -186,7 +194,7 @@
 	        </TR>
 	        <TR>
 		        <TD class=lightbluetable align=right>日期種類：</TD>
-		        <TD class=whitetablebg colspan=7>
+		        <TD class=whitetablebg colspan=5>
 			        <label><input type="radio" name="kind_date" value="In_Date">立案日期</label>
 			        <label><input type="radio" name="kind_date" value="Apply_Date">申請日期</label>
 			        <label><input type="radio" name="kind_date" value="Issue_Date">註冊日期</label>
@@ -197,14 +205,14 @@
 	        </TR>
 	        <TR>
 		        <TD class=lightbluetable align=right>日期期間：</TD>
-		        <TD class=whitetablebg colspan=7>
+		        <TD class=whitetablebg colspan=5>
 			        <input type="text" id="sdate" name="sdate" size="10" class="dateField">～
 			        <input type="text" id="edate" name="edate" size="10" class="dateField">&nbsp;&nbsp;(YYYY/MM/DD)
 		        </TD>
 	        </TR>
 	        <TR>
 		        <TD class=lightbluetable align=right>結案代碼：</TD>
-		        <TD class=whitetablebg colspan=7>
+		        <TD class=whitetablebg colspan=5>
 		            <label><input type="radio" name="qryend" value="" checked>不指定</label>
 			        <label><input type="radio" name="qryend" value="Y">尚未結案</label>
 			        <label><input type="radio" name="qryend" value="N">已結案</label>
@@ -225,7 +233,7 @@
 	        </TR>
 	        <TR>
 		        <TD class=lightbluetable align=right>轉案註記：</TD>
-		        <TD class=whitetablebg colspan=7>
+		        <TD class=whitetablebg colspan=5>
 		            <label><input type="radio" name="tran_flag" value="" checked>不指定</label>
 			        <label><input type="radio" name="tran_flag" value="A">轉出</label>
 			        <label><input type="radio" name="tran_flag" value="B">轉入</label>

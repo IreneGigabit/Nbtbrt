@@ -196,8 +196,9 @@ public class UpLoaded : IHttpHandler, IRequiresSessionState
                  new JProperty("attach_no", attach_no),//attach_no
                  new JProperty("in_scode", context.Session["scode"]),//存檔人
                  new JProperty("in_scodenm", context.Session["sc_name"]),//存檔人
-                 new JProperty("attach_flag", attach_flag_value)//回傳畫面的attach_flag值
-                );
+                 new JProperty("attach_flag", attach_flag_value),//回傳畫面的attach_flag值
+                 new JProperty("mappath", context.Server.MapPath(file_path + "/" + ee + sExt))//真實路徑
+               );
         context.Response.Write(JsonConvert.SerializeObject(obj, Formatting.None));//回傳值
     }
 

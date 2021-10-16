@@ -102,7 +102,7 @@
 	<tr>
 		<td class="lightbluetable" align="right">客戶名稱：</td>
 		<td class="whitetablebg" align="left" colspan="3">
-		<input type="Text" name="ap_cname" id="ap_cname" size="40" maxlength="40" value=""></td>
+		<input type="Text" name="ap_cname" id="ap_cname" size="30" maxlength="40" value=""></td>
 	</tr>
         <tr><TD class=lightbluetable align=right>營　　洽：</TD>
 	<TD class=whitetablebg align=left>

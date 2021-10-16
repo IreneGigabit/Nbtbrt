@@ -185,7 +185,7 @@
         }
 
         //[列印]
-        string step_date = Eval("step_date", "{0:yyyy/M/d}");
+        string step_date = Eval("step_date", "{0:d}");
         link += "<a href=\"brta5m.aspx?prgid=brta5m&cgrs=cs&step_date=" + step_date + "&rs_no=" + Eval("rs_no") + "&FrameBlank=50\" target=\"Eblank\">[列印]</a>";
 
         return link;
@@ -276,8 +276,8 @@
 		            <td align=center><%#(Eval("rank").ToString()=="1"?Eval("lcg").ToString()+Eval("lrs").ToString():"")%></td>
 		            <td nowrap align=center><%#(Eval("rank").ToString()=="1"?Eval("rs_no"):"")%></td>
 		            <td><%#(Eval("rank").ToString()=="1"?Eval("rs_detail"):"")%></td>
-		            <td nowrap align=center><%#(Eval("rank").ToString()=="1"?Eval("step_date","{0:yyyy/M/d}"):"")%></td>
-		            <td nowrap align=center><%#(Eval("rank").ToString()=="1"?Eval("last_date","{0:yyyy/M/d}"):"")%></td>
+		            <td nowrap align=center><%#(Eval("rank").ToString()=="1"?Eval("step_date","{0:d}"):"")%></td>
+		            <td nowrap align=center><%#(Eval("rank").ToString()=="1"?Eval("last_date","{0:d}"):"")%></td>
 		            <td nowrap align=center style="cursor:pointer;color:darkblue" onmouseover="this.style.color='red'" onmouseout="this.style.color='darkblue'" onclick="CapplClick('<%#Eval("seq")%>', '<%#Eval("seq1")%>')">
                         <%#Eval("fseq")%>
 		            </td>

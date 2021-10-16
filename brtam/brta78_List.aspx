@@ -504,7 +504,7 @@
         ChkDate(this);
     });
 
-    //檢查客戶及申請人已新增完成再連結到案件主檔立案
+    //[確認]檢查客戶及申請人已新增完成再連結到案件主檔立案
     function linkedit(pno,pseq,pseq1,pbrtran_sqlno,ptodo_sqlno,pbranch,ptran_scode1,pold_brtran_sqlno,pcustz_flag,papcust_flag,pcust_seq,ptran_seq_date){
         if (pcustz_flag=="N" || papcust_flag=="N"){
             alert("欲轉入原單位案件編號："+pseq+"-"+pseq1+"之客戶或申請人尚未建檔，無法確認！請先新增客戶主檔或申請人主檔，再執行轉案確認！");

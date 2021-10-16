@@ -63,7 +63,7 @@
             HTProgCode = "Ext76";
             chk_progcode = "Ext71";//檢查請款單開立作業權限
         }
-    
+
         TokenN myToken = new TokenN(HTProgCode);
         HTProgRight = myToken.CheckMe();
         HTProgCap = myToken.Title;
@@ -79,7 +79,7 @@
         StrFormBtnTop += "<a href=" + HTProgPrefix + ".aspx?prgid=" + prgid + "&qs_dept=" + qs_dept + ">[回請款單查詢]</a>";
         StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>";
 
-        if (todo == "X") {
+        if (todo == "X") {//未開立請款單案件查詢
             HTProgCap += "查詢種類：尚未開立 ";
             if (ar_mark == "A") {
                 HTProgCap += "請款單種類：一般+實報實銷 ";
@@ -144,19 +144,20 @@
                 //規費支出日期之欄位名稱
                 gs_titlenm = "官發日期";
                 //2008/1/9業務出名代理人，修改收據別依交辦出名代理人對應抓取
-                SQL = "SELECT b.seq,b.seq1,b.in_no,B.In_scode, B.case_no,F.cust_name,C.appl_name, B.Service, B.Fees,B.add_service";
+                SQL = "SELECT b.seq,b.seq1,b.in_no,B.In_scode, B.case_no,F.cust_name,''country,C.appl_name, B.Service, B.Fees,B.add_service";
                 SQL += ",B.add_fees,isnull(b.oth_money,0) as tr_money,B.arcase_type,B.arcase_class,B.arcase";
-                SQL += ",B.ar_service,B.ar_fees,B.Service + B.Fees+isnull(b.add_service,0)+isnull(b.add_fees,0)+isnull(b.oth_money,0) AS allcost,B.ar_mark,B.case_date,b.change";
+                SQL += ",B.ar_service,B.ar_fees,B.ar_mark,B.case_date,b.change";
                 SQL += ",(select Rs_detail from code_br where rs_code=b.arcase and cr='Y' and dept='T' and rs_type=b.arcase_type) as CArcase";
                 SQL += ",(SELECT rs_class FROM code_br WHERE rs_code = b.arcase AND dept = 'T' AND cr = 'Y' and rs_type=b.arcase_type) AS Ar_form";
                 SQL += ",(select treceipt from agt where agt_no=c.agt_no) as receipt";
-                SQL += ",D.remark  as progpath,B.Cust_area, B.Cust_seq,c.apsqlno,e.sc_name";
+                SQL += ",D.remark as progpath,B.Cust_area, B.Cust_seq,c.apsqlno,e.sc_name";
                 SQL += ",(select code_name from cust_code where code_type='ar_mark' and cust_code=b.ar_mark) as ar_marknm";
                 SQL += ",(select min(x.step_date) from step_dmt x,fees_dmt y where x.rs_no=y.rs_no and y.case_no=b.case_no) as gs_step_date";
                 SQL += ",(select count(*) from account.dbo.artitem E where E.case_no = B.case_no and E.country = 'T') as cnt ";
+                SQL += ",isnull(b.service,0)+isnull(b.fees,0)+isnull(b.oth_money,0)+isnull(b.add_service,0)+isnull(b.add_fees,0) as allcost ";
                 SQL += ",isnull(b.service,0)+isnull(b.fees,0)+isnull(b.oth_money,0)+isnull(b.add_service,0)+isnull(b.add_fees,0) as total ";
                 SQL += ",isnull(b.ar_service,0)+isnull(b.ar_fees,0) as ar_money ";
-                SQL += ",''urlasp ";
+                SQL += ",''fseq,''gs_step_date_txt,''strar_mark,''urlasp,''urlar,''urlext71 ";
                 SQL += "FROM Case_dmt B ";
                 SQL += "INNER JOIN dmt_temp C ON B.In_no = C.in_no AND B.In_scode = C.in_scode and c.case_sqlno=0 ";
                 SQL += "INNER JOIN cust_code D on d.code_type=b.arcase_type and d.cust_code='__' ";
@@ -169,7 +170,7 @@
                 gs_titlenm = "確認日期";
                 SQL = "SELECT b.seq,b.seq1,b.in_no,B.In_scode, B.case_no,F.cust_name,C.country,C.appl_name, B.tot_Service as service";
                 SQL += ",B.tot_Fees as fees ,B.add_service,B.add_fees, isnull(B.oth_money,0) as tr_money,B.arcase,B.arcase_type";
-                SQL += ",B.ar_service,B.ar_fees,B.tot_Service + B.tot_Fees+isnull(b.oth_money,0) AS allcost,B.ar_mark,B.case_date,b.change";
+                SQL += ",B.ar_service,B.ar_fees,B.ar_mark,B.case_date,b.change";
                 SQL += ",(select Rs_detail from code_ext where rs_code=b.arcase and cr_flag='Y' and rs_type=b.arcase_type) as CArcase";
                 SQL += ",(select rs_class  from code_ext where rs_code=b.arcase and cr_flag='Y' and rs_type=b.arcase_type) as ar_form";
                 SQL += ",B.arcase_class as prt_code";
@@ -177,9 +178,10 @@
                 SQL += ",(select code_name from cust_code where code_type='ar_mark' and cust_code=b.ar_mark) as ar_marknm";
                 SQL += ",(select max(tran_date) from fees_ext where case_no=b.case_no and fees>0) as gs_step_date";
                 SQL += ",(select count(*) from account.dbo.artitem E where E.case_no = B.case_no and E.country = C.country) as cnt ";
+                SQL += ",isnull(b.tot_service,0)+isnull(b.tot_fees,0)+isnull(b.oth_money,0) as allcost ";
                 SQL += ",isnull(b.tot_service,0)+isnull(b.tot_fees,0)+isnull(b.oth_money,0)+isnull(b.add_service,0)+isnull(b.add_fees,0) as total ";
                 SQL += ",isnull(b.ar_service,0)+isnull(b.ar_fees,0) as ar_money ";
-                SQL += ",''urlasp ";
+                SQL += ",''fseq,''gs_step_date_txt,''strar_mark,''urlasp,''urlar,''urlext71 ";
                 SQL += "FROM Case_ext B ";
                 SQL += "INNER JOIN ext_temp C ON B.In_no = C.in_no AND B.In_scode = C.in_scode and c.case_sqlno=0 ";
                 SQL += "INNER JOIN view_cust F on F.cust_area = B.cust_area and F.cust_seq=B.cust_seq ";
@@ -228,7 +230,7 @@
             SQL += ",ar.branch,ar.ar_type,ar.mark,ar.ar_date,ar.ar_id,ap.ap_cname1";
             SQL += ",(select ap_cname1 from si" + Session["seBranch"] + "dbs.dbo.apcust b where b.apcust_no=ar.ar_id) as apcust_name";
             SQL += ",(select code_name from cust_code where code_type='dbsend_way' and cust_code=ar.Dbsend_way) as sendway_name ";
-            SQL += ",''urlasp ";
+            SQL += ",''fseq,''strrecno,''strmail,''strstatus,''urlasp  ";
             SQL += "from artmain ar ";
             SQL += "inner join artitem b on ar.ar_no=b.ar_no ";
             SQL += "left outer join si" + Session["seBranch"] + "dbs.dbo.apcust ap on ar.branch = ap.cust_area and ar.acust_seq = ap.cust_seq ";
@@ -295,6 +297,7 @@
             connacc.DataTable(SQL, dt);
         }
         Sys.showLog(SQL);
+
         //處理分頁
         int nowPage = Convert.ToInt32(Request["GoPage"] ?? "1"); //第幾頁
         int PerPageSize = Convert.ToInt32(Request["PerPage"] ?? "50"); //每頁筆數
@@ -305,131 +308,172 @@
         for (int i = 0; i < page.pagedTable.Rows.Count; i++) {
             DataRow dr = page.pagedTable.Rows[i];
 
-            //聯結
-            GetLink(dr);
+            //案號
+            dr["fseq"] = Sys.formatSeq(dr.SafeRead("seq", ""), dr.SafeRead("seq1", ""), dr.SafeRead("country", ""), "", "");
 
+            //規費支出日期
+            if (ReqVal.TryGet("spkind") == "gs_fees" && dr.SafeRead("gs_step_date", "") != "") {
+                dr["gs_step_date_txt"] = "<font color=red>(" + dr.GetDateTimeString("formatdatetime", "yyyy/M/d") + ")</font>";
+            }
+
+            if (todo == "X") {//未開立請款單案件查詢
+                //請款註記
+                if (dr.SafeRead("ar_mark", "") != "N") {
+                    dr["strar_mark"] = "<font color=red>" + dr.SafeRead("ar_marknm", "");
+                }
+                //交辦畫面連結
+                if (qs_dept == "t") {
+                    dr["urlasp"] = Sys.getCaseDmt11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
+                }
+                if (qs_dept == "e") {
+                    dr["urlasp"] = Sys.getCaseExt11Aspx(prgid, dr.SafeRead("in_no", ""), dr.SafeRead("in_scode", ""), "Show");
+                }
+                //已請款連結
+                GetArLink(dr);
+                //請款單開立連結
+                GetArExt71(dr);
+            } else {//已開立請款單案件查詢
+                //***todo
+                //請款單畫面連結
+                dr["urlasp"] = "Ext73_Detail.aspx?modify=A&ar_no=" + dr.SafeRead("ar_no", "") + "&branch=" + dr.SafeRead("branch", "") + "&homelist=" + Request["homelist"] + "&ar_mark=" + ar_mark + "&ar_type=" + dr.SafeRead("ar_type", "") + "&prgid=Brt76";
+
+                //2010/11/22增加顯示收據號碼
+                string strrecno = "";
+                if (dr.SafeRead("rec_no", "") != "") {
+                    strrecno = "<br>(收據號碼：" + dr.SafeRead("rec_no", "");
+                    if (dr.SafeRead("rec_no1", "") != "") {
+                        strrecno += "、" + dr.SafeRead("rec_no1", "");
+                    }
+                    strrecno += ")";
+                } else {
+                    if (dr.SafeRead("rec_no1", "") != "") {
+                        strrecno = "<br>(收據：" + dr.SafeRead("rec_no1", "") + ")";
+                    }
+                }
+                dr["strrecno"] = strrecno;
+
+                //寄出日期
+                dr["strmail"] = dr.GetDateTimeString("mail_date", "yyyy/M/d");
+                if (dr["strmail"] == "1900/1/1") {
+                    dr["strmail"] = "<font color=red>無需寄發</font>";
+                }
+
+                //狀態
+                string strstatus = "";
+                switch (dr.SafeRead("ar_status", "")) {
+                    case "NN":
+                    case "NX": strstatus = "未送確認"; break;
+                    case "YY": strstatus = "會計未確認"; break;
+                    case "YZ": strstatus = "會計已確認"; break;
+                }
+                SQL = "select count(*) as curr from casetran_brt as a ";
+                SQL += " inner join casetrand_brt as b on a.sqlno=b.tran_sqlno and b.ar_no='" + dr["ar_no"] + "' and b.cor_table='artmain'";
+                SQL += " where a.tran_status not like '%Z%'";
+                int curr = Convert.ToInt32(conn.getZero(SQL));
+                if (curr > 0) {
+                    strstatus = "異動請核中";
+                } else {
+                    strstatus = "<a href=\"" + dr["urlasp"] + "\" target=\"Eblank\">" + strstatus + "</a>";
+                }
+                dr["strstatus"] = strstatus;
+            }
         }
-        //表頭合計
-        if (dt.Rows.Count > 0) {
-            if (todo == "X") {
-                service = Convert.ToDecimal(dt.Compute("Sum(service)", ""));//服務費
-                fees = Convert.ToDecimal(dt.Compute("Sum(fees)", ""));//規費
+
+        if (todo == "X") {//未開立請款單案件查詢
+            //表頭合計
+            if (dt.Rows.Count > 0) {
+                service = Convert.ToDecimal(dt.Compute("Sum(service)", ""));//交辦服務費
+                add_service = Convert.ToDecimal(dt.Compute("Sum(add_service)", ""));//追加服務費
+                fees = Convert.ToDecimal(dt.Compute("Sum(fees)", ""));//交辦規費
+                add_fees = Convert.ToDecimal(dt.Compute("Sum(add_fees)", ""));//追加規費
                 oth_money = Convert.ToDecimal(dt.Compute("Sum(tr_money)", ""));//轉帳費用
-                add_service = Convert.ToDecimal(dt.Compute("Sum(add_service)", ""));//未請款金額
-                add_fees = Convert.ToDecimal(dt.Compute("Sum(add_fees)", ""));//未請款金額
+                total = Convert.ToDecimal(dt.Compute("Sum(total)", ""));//交辦合計
                 uar_money = Convert.ToDecimal(dt.Compute("Sum(total)-Sum(ar_money)", ""));//未請款金額
-                total = Convert.ToDecimal(dt.Compute("Sum(total)", ""));//合計
-            } else {
+            }
+            //每頁小計
+            if (page.pagedTable.Rows.Count > 0) {
+                case_service = Convert.ToDecimal(page.pagedTable.Compute("Sum(service)", ""));//服務費
+                case_fees = Convert.ToDecimal(page.pagedTable.Compute("Sum(fees)", ""));//規費
+                case_othmoney = Convert.ToDecimal(page.pagedTable.Compute("Sum(tr_money)", ""));//轉帳費用
+                case_money = Convert.ToDecimal(page.pagedTable.Compute("Sum(allcost)", ""));//合計
+                case_armoney = Convert.ToDecimal(page.pagedTable.Compute("Sum(ar_money)", ""));//已請款
+            }
+            //資料綁定
+            XRepeater.DataSource = page.pagedTable;
+            XRepeater.DataBind();
+            NRepeater.Visible = false;//已開立隱藏
+        } else {//已開立請款單案件查詢
+            //表頭合計
+            if (dt.Rows.Count > 0) {
                 service = Convert.ToDecimal(dt.Compute("Sum(tot_service)", ""));//服務費
                 fees = Convert.ToDecimal(dt.Compute("Sum(tot_fees)", ""));//規費
                 cservice = Convert.ToDecimal(dt.Compute("Sum(ctot_service)", ""));//入帳服務費
                 cfees = Convert.ToDecimal(dt.Compute("Sum(ctot_fees)", ""));//入帳規費
                 total = Convert.ToDecimal(dt.Compute("Sum(tot_money)", ""));//合計
             }
-        }
-
-        //每頁小計
-        if (page.pagedTable.Rows.Count > 0) {
-            if (todo == "X") {
-                case_service = Convert.ToDecimal(page.pagedTable.Compute("Sum(service)", ""));//服務費
-                case_fees = Convert.ToDecimal(page.pagedTable.Compute("Sum(fees)", ""));//規費
-                case_othmoney = Convert.ToDecimal(page.pagedTable.Compute("Sum(tr_money)", ""));//轉帳費用
-                case_money = Convert.ToDecimal(page.pagedTable.Compute("Sum(allcost)", ""));//合計
-                case_armoney = Convert.ToDecimal(page.pagedTable.Compute("Sum(ar_service)+Sum(ar_fees)", ""));//已請款
-            } else {
+            //每頁小計
+            if (page.pagedTable.Rows.Count > 0) {
                 sum_service = Convert.ToDecimal(page.pagedTable.Compute("Sum(tot_service)", ""));//服務費
                 sum_fees = Convert.ToDecimal(page.pagedTable.Compute("Sum(tot_fees)", ""));//規費
                 sum_cservice = Convert.ToDecimal(page.pagedTable.Compute("Sum(ctot_service)", ""));//入帳服務費
                 sum_cfees = Convert.ToDecimal(page.pagedTable.Compute("Sum(ctot_fees)", ""));//入帳規費
                 sum_money = Convert.ToDecimal(page.pagedTable.Compute("Sum(tot_money)", ""));//合計
             }
+            //資料綁定
+            NRepeater.DataSource = page.pagedTable;
+            NRepeater.DataBind();
+            XRepeater.Visible = false;//未開立隱藏
         }
-
-        dataRepeater.DataSource = page.pagedTable;
-        dataRepeater.DataBind();
     }
 
-    //[作業]
-    protected string GetButton(DataRow row, int nRow) {
-        string rtn = "";
-        string todo_name = "";
-        string todo_link = "";//自行發文/專案室發文
-        string todo_link1 = "";//發文維護
-        string untodo_link = "";//不需發文
-
-        if (row.SafeRead("opt_stat", "") == "" || row.SafeRead("opt_stat", "") == "X") {
-            todo_name = "自行發文";
-            //[自行發文]
-            todo_link = Page.ResolveUrl("~/brt6m/brt63_edit.aspx") + "?prgid=" + prgid+"&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&erpt_code=" + row["erpt_code"] + "&att_sqlno=" + row["att_sqlno"];
-            //[發文維護]
-            todo_link1 = todo_link;
-        }
-
-        if (row.SafeRead("opt_stat", "") == "N") {
-            todo_name = "專案室發文";
-            string new_form = Sys.getCaseDmtAspx(row.SafeRead("arcase_type", ""), row.SafeRead("arcase", ""));//連結的aspx
-            //todo_link = Page.ResolveUrl("~/brt1m" + row.SafeRead("link_remark", "") + "/Brt11Edit" + new_form + ".aspx?prgid=" + prgid);
-            //todo_link += "&in_scode=" + row["in_scode"];
-            //todo_link += "&in_no=" + row["in_no"];
-            //todo_link += "&add_arcase=" + row["arcase"];
-            //todo_link += "&cust_area=" + row["cust_area"];
-            //todo_link += "&cust_seq=" + row["cust_seq"];
-            //todo_link += "&ar_form=" + row["ar_form"];
-            //todo_link += "&new_form=" + new_form;
-            //todo_link += "&code_type=" + row["arcase_type"];
-            //todo_link += "&homelist=" + Request["homelist"];
-            //todo_link += "&uploadtype=case";
-            //todo_link += "&submittask=Show";
-            //[專案室發文]
-            todo_link = Sys.getCaseDmt11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Show");
-            todo_link += "&todo_sqlno=" + row["todo_sqlno"];
-            todo_link += "&rs_no=" + row["rs_no"];
-            //todo_link += "&seq=" + row["seq"];
-            //todo_link += "&seq1=" + row["seq1"];
-            //todo_link += "&case_no=" + row["case_no"];
-            todo_link += "&ctrl_date=" + row.GetDateTimeString("ctrl_date", "yyyy/M/d");
-            //todo_link += "&step_grade=" + row["step_grade"];
-            todo_link += "&step_date=" + row.GetDateTimeString("step_date","yyyy/M/d");
-            todo_link += "&contract_flag=" + row["contract_flag"];
-            //[發文維護]
-            todo_link1 = "brt63_edit.aspx?prgid=" + prgid + "&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&erpt_code=" + row["erpt_code"] + "&att_sqlno=" + row["att_sqlno"];
-        }
-        //950928為有關爭救案理由後補之收費情形,避免造成收費重覆新加入程式做控制,2010/8/6規費已支出不能發文	
-        if (Convert.ToDecimal(row.SafeRead("gs_fees", "0")) > 0) {
-            todo_name = "<font color=red>規費已支出</font>";
-            todo_link = "";
-        }
-        //[不需發文]
-        untodo_link = Page.ResolveUrl("~/brt6m/brt63_edit.aspx") + "?prgid=" + prgid + "&menu=N&submittask=A&cgrs=GS&todo_sqlno=" + row["todo_sqlno"] + "&seq=" + row["seq"] + "&seq1=" + row["seq1"] + "&in_scode=" + row["in_scode"] + "&in_no=" + row["in_no"] + "&case_no=" + row["case_no"] + "&rs_class=" + row["ar_form"] + "&rs_code=" + row["arcase"] + "&task=cancel";
-
-        string seq = row.SafeRead("seq", "");
-        string seq1 = row.SafeRead("seq1", "");
-        string step_grade = row.SafeRead("step_grade", "");
-        string source = row.SafeRead("source", "");
-        string attach_path = row.SafeRead("attach_path", "");
-        string attach_sqlno = row.SafeRead("attach_sqlno", "");
-
-        //抓確認當天有無其他進度
-        SQL = "select count(*)cc from step_dmt where seq='" + row["seq"] + "' and seq1='" + row["seq1"] + "' and step_date='" + DateTime.Today.ToShortDateString() + "' and cg+rs in('CR','GS')";
-        objResult = conn.ExecuteScalar(SQL);
-        int same_count = (objResult == DBNull.Value || objResult == null) ? 0 : Convert.ToInt32(objResult);
-
-        if (ReqVal.TryGet("qrysend_way") != "EA") {
-            if (todo_name != "") {
-                rtn = "[<a href=\"" + todo_link1 + "&task=prsave\" target=\"Eblank\">發文維護</a>]<BR>";
-                rtn += "[<a href=\"" + todo_link + "&task=pr\" target=\"Eblank\">" + todo_name + "</a>]<BR>";
-            }
-            rtn += "[<a href=\"" + untodo_link + "\" target=\"Eblank\">不需發文</a>]<BR>";
+    //已請款連結
+    protected void GetArLink(DataRow row) {
+        //***todo
+        if (Convert.ToDecimal(row.SafeRead("cnt", "0")) > 0 && Convert.ToDecimal(row.SafeRead("ar_money", "0")) > 0) {
+            string strcoun = (qs_dept == "t" ? "T" : row.SafeRead("country", ""));
+            row["urlar"] = "<a href=\"Ext71Show.aspx?qs_dept=" + qs_dept + "&case_no=" + row.SafeRead("case_no", "") + "&country=" + strcoun + "\" target=\"Eblank\">" + row.SafeRead("ar_money", "0") + "(" + row.SafeRead("cnt", "0") + ")";
         } else {
-            rtn = "<input type=checkbox name=chk_" + nRow + " id=chk_" + nRow + " value='Y'>";
-            if (same_count > 1) rtn += "<font color=red>*</font>";
+            row["urlar"] = row.SafeRead("ar_money", "0");
         }
-
-        return rtn;
     }
 
-    protected void GetLink(DataRow row) {
-        row["urlasp"] = Sys.getCaseDmt11Aspx(prgid, row.SafeRead("in_no", ""), row.SafeRead("in_scode", ""), "Show");
+    //請款單開立連結
+    protected void GetArExt71(DataRow row) {
+        string urlext71 = "";
+
+        string receipt_end_date = "", apsqlno = "", receipt = "", tar_mark = "";
+        //檢查此收據種類可否開立收據
+        if (qs_dept == "t") {
+            SQL = "select ar_company,end_date from account.dbo.ar_code where code_type='ar_code' and ar_code='" + row.SafeRead("receipt", "") + "'";
+            using (SqlDataReader dr0 = conn.ExecuteReader(SQL)) {
+                if (dr0.Read()) {
+                    receipt_end_date = dr0.GetDateTimeString("end_date", "yyyy/M/d");
+                }
+            }
+
+            SQL = "select apsqlno from dmt_temp_ap where in_no='" + row.SafeRead("in_no", "") + "' and case_sqlno=0 ";
+            apsqlno = conn.getString(SQL);
+            receipt = row.SafeRead("receipt", "");
+            tar_mark = "";
+        } else {
+            apsqlno = conn.getString(SQL);
+            receipt = "";
+            tar_mark = row.SafeRead("ar_mark", "");
+        }
+
+        if (row.SafeRead("change", "") == "Y") {
+            urlext71 = "異動請核中";
+        } else {
+            urlext71 = "[<a href=\"Ext71.aspx?cust_seq=" + row.SafeRead("cust_seq", "") + "&ar_scode=" + row.SafeRead("in_scode", "") + "&Type=" + ar_mark + "&case_date=" + row.SafeRead("case_date", "") + "&qs_dept=" + qs_dept + "&in_scode=" + row.SafeRead("in_scode", "") + "&in_no=" + row.SafeRead("in_no", "") + "&apsqlno=" + apsqlno + "&receipt=" + receipt + "&tar_mark=" + tar_mark + "\" >請款</a>]";
+            if (receipt_end_date != "") {
+                if (DateTime.Today > DateTime.Parse(receipt_end_date)) {
+                    urlext71 = "收據停用";
+                }
+            }
+        }
+
+        //***todo
+        row["urlext71"] = urlext71;
     }
 </script>
 
@@ -530,16 +574,16 @@
 </div>
 
 <form style="margin:0;" id="reg" name="reg" method="post">
-    <asp:Repeater id="dataRepeater" runat="server">
+    <!--未開立請款單案件查詢-->
+    <asp:Repeater id="XRepeater" runat="server">
     <HeaderTemplate>
         <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%" align="center" id="dataList">
 	        <thead>
                 <Tr class="lightbluetable">
-                <%if(todo=="X"){%>
                     <td align="center" width="6%"><u class="setOdr" v1="sc_name">營洽</u></td>
                     <td align="center" width="10%"><u class="setOdr" v1="F.cust_name">客戶名稱</u></td>
                     <td align="center" width="7%">
-                        <u class="setOdr" v1="gs_step_date">交辦日期</u><%=((ReqVal.TryGet("spkind") == "gs_fees") ?"<br><font color=red>("+gs_titlenm+")</font><":"")%>
+                        <u class="setOdr" v1="gs_step_date">交辦日期</u><%=((ReqVal.TryGet("spkind") == "gs_fees") ?"<br><font color=red>("+gs_titlenm+")</font>":"")%>
                     </td>
                     <td align="center" width="6%"><u class="setOdr" v1="b.seq">案件<br>編號</u></td>
                     <td align="center" width="12%">案件名稱</td>
@@ -550,77 +594,45 @@
                     <td align="center" width="8%">轉帳<br>費用</td>
                     <td align="center" width="8%">合計</td>
                     <td align="center" width="10%">已請款<BR><font size=1>金額(次數)</td>
-                    <%if (ReqVal.TryGet("getdo") != "N" && (HTProgRight & 2) > 0) {//看板顯示，N:主管不顯示作業，其他：顯示作業%>
+                    <%if (ReqVal.TryGet("getdo") != "N" && (chk_progright & 4) > 0) {//看板顯示，N:主管不顯示[作業]，其他：顯示[作業]%>
 		                <td align="center" class="lightbluetable" width="6%">作業</td>
                     <%}%>
-                <%}else{%>
-                    <td align="center" nowrap><u class="setOdr" v1="ar.ar_no">請款單號</u></td>  
-                    <td align="center" nowrap><u class="setOdr" v1="ar.ar_date">請款日期</u></td>
-                    <td align="center" nowrap>寄出日期</td>
-                    <td align="center" nowrap>收據抬頭</td>
-                    <td align="center" nowrap>請款客戶</td>
-                    <td align="center" nowrap>請款服務費</td>
-                    <td align="center" nowrap>請款規費</td>
-                    <td align="center" nowrap>入帳服務費</td>
-                    <td align="center" nowrap>入帳規費</td>
-                    <td align="center" nowrap>請款金額</td>
-                    <td align="center" nowrap>狀態</td>
-                <%}%>
                 </Tr>
 	        </thead>
 	        <tbody>
     </HeaderTemplate>
 			<ItemTemplate>
  		        <tr align="center" class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
-	                <%if(todo=="X"){%>
                         <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("sc_name")%></a></td>	
 	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("cust_name")%></a></td>
-	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("case_date")%><%if request("spkind") = "gs_fees" and RSreg("gs_step_date")<>"" then%><font color=red>(<%=formatdatetime(RSreg("gs_step_date"),2)%>)</font><%end if%></a></td>
-	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("seq")%><%=t1%><%=country%></a></td>	
-	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%=endname%></a></td>
-	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%=strar_mark%></a></td>
+	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("case_date","{0:d}")%><%#Eval("gs_step_date_txt")%></a></td>
+	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("fseq")%></a></td>	
+	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("appl_name").ToString().Left(20)%></a></td>
+	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("strar_mark")%></a></td>
 	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("CArcase")%></a></td>
-	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("service")%><%if RSreg("add_service") > 0 then Response.Write "<font color=red>*"%></a></td>
-	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("fees")%><%if RSreg("add_fees") > 0 then Response.Write "<font color=red>*"%></a></td>
+	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("service")%><%#(Convert.ToDecimal(Eval("add_service"))>0?"<font color=red>*</font>":"")%></a></td>
+	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("fees")%><%#(Convert.ToDecimal(Eval("add_fees"))>0?"<font color=red>*</font>":"")%></a></td>
 	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("tr_money")%></a></td>
-	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("allcost")%></td>
-	                    <td align="center">
-		                    <%if urlar="" then
-			                    Response.Write ar_money
-		                    else%>
-			                    <a href="<%=urlar%>" target="Eblank"><%=ar_money%>(<%#Eval("cnt")%>)
-		                    <%end if%>
-	                    </td>
-                <%}else{%>
-                <%}%>
+	                    <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("allcost")%></a></td>
+	                    <td align="center"><%#Eval("urlar")%></td>
+                        <%if (ReqVal.TryGet("getdo") != "N" && (chk_progright & 4) > 0) {//看板顯示，N:主管不顯示[作業]，其他：顯示[作業]%>
+	                        <td align="center"><%#Eval("urlext71")%></td>
+                        <%}%>
 		        </tr>
 			</ItemTemplate>
     <FooterTemplate>
 	        </tbody>
             <tfoot>
-            <%if(todo=="X"){%>
- 	            <tr class="sfont9"><td colspan=12><hr class="style-one"/></td></tr>
+ 	            <tr class="sfont9"><td colspan=13></td></tr>
 		        <tr>
-			        <td align="center" class="lightbluetable" colspan=5 width="52%">每頁小計</td>
-			        <td align="center" class="lightbluetable" width="9%"><%=case_service.ToString("N0")  %></td>
-			        <td align="center" class="lightbluetable" width="8%"><%=case_fees.ToString("N0")  %></td>
-			        <td align="center" class="lightbluetable" width="8%"><%=case_othmoney.ToString("N0")  %></td>
-			        <td align="center" class="lightbluetable" width="8%"><%=case_money.ToString("N0")  %></td>
-			        <td align="center" class="lightbluetable" width="8%"><%=case_armoney.ToString("N0")  %></td>
-			        <td align="center" class="lightbluetable" width="6%"></td>
+			        <td align="center" class="lightbluetable" colspan=7>每頁小計</td>
+			        <td align="center" class="lightbluetable"><%=case_service.ToString("N0")  %></td>
+			        <td align="center" class="lightbluetable"><%=case_fees.ToString("N0")  %></td>
+			        <td align="center" class="lightbluetable"><%=case_othmoney.ToString("N0")  %></td>
+			        <td align="center" class="lightbluetable"><%=case_money.ToString("N0")  %></td>
+			        <td align="center" class="lightbluetable"><%=case_armoney.ToString("N0")  %></td>
+			        <td align="center" class="lightbluetable" colspan="2"></td>
 		        </tr>
-            <%}else{%>
- 	            <tr class="sfont9"><td colspan=11><hr class="style-one"/></td></tr>
-		        <tr>
-			        <td align="center" class="lightbluetable" colspan=5 width=52%>每頁小計</td>
-			        <td align="right" class="lightbluetable" width="8%"><%=sum_service.ToString("N0")  %></td>
-			        <td align="right" class="lightbluetable" width="8%"><%=sum_fees.ToString("N0")  %></td>
-			        <td align="right" class="lightbluetable" width="8%"><%=sum_cservice.ToString("N0")  %></td>
-			        <td align="right" class="lightbluetable" width="8%"><%=sum_cfees.ToString("N0")  %></td>
-			        <td align="right" class="lightbluetable" width="8%"><%=sum_money.ToString("N0")  %></td>
-			        <td align="center" class="lightbluetable" width="8%"></td>
-		        </tr>
-            <%}%>
             </tfoot>
         </table>
 	    <BR>
@@ -636,6 +648,75 @@
     </FooterTemplate>
     </asp:Repeater>
 
+    <!--已開立請款單案件查詢-->
+    <asp:Repeater id="NRepeater" runat="server">
+    <HeaderTemplate>
+        <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%" align="center" id="dataList">
+	        <thead>
+                <Tr class="lightbluetable">
+                    <td align="center" nowrap><u class="setOdr" v1="ar.ar_no">請款單號</u></td>  
+                    <td align="center" nowrap><u class="setOdr" v1="ar.ar_date">請款日期</u></td>
+                    <td align="center" nowrap>寄出日期</td>
+                    <td align="center" nowrap>收據抬頭</td>
+                    <td align="center" nowrap>請款客戶</td>
+                    <td align="center" nowrap>請款服務費</td>
+                    <td align="center" nowrap>請款規費</td>
+                    <td align="center" nowrap>入帳服務費</td>
+                    <td align="center" nowrap>入帳規費</td>
+                    <td align="center" nowrap>請款金額</td>
+                    <td align="center" nowrap>狀態</td>
+                </Tr>
+	        </thead>
+	        <tbody>
+    </HeaderTemplate>
+			<ItemTemplate>
+ 		        <tr align="center" class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
+	                <td align="center">
+	                    <a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("ar_no")%></a>
+                        <%#Sys.show_edb_file(connacc,Eval("ar_no").ToString())%>
+	                    <a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("strrecno")%></a>
+	                </td>
+	                <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("ar_date","{0:d}")%></a></td>
+	                <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("strmail")%>
+                        <%#(Eval("sendway_name").ToString()!=""?"<br>("+Eval("sendway_name")+")":"")%></a>
+	                </td>
+	                <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("ar_id")%><br><%#Eval("apcust_name").ToString().Trim().Left(8)%></a></td>
+	                <td align="center"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("ap_cname1").ToString().Trim().Left(8)%></a></td>
+	                <td align="right" ><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("tot_service","{0:N0}")%></a></td>
+	                <td align="right" ><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("tot_fees","{0:N0}")%></a></td>
+	                <td align="right" style="BACKGROUND-COLOR:#b0e0e6"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("ctot_service","{0:N0}")%></a></td>
+	                <td align="right" style="BACKGROUND-COLOR:#b0e0e6"><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("ctot_fees","{0:N0}")%></a></td>
+	                <td align="right" ><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("tot_money","{0:N0}")%></a></td>
+	                <td align="center"><%#Eval("strstatus")%></td>
+		        </tr>
+			</ItemTemplate>
+    <FooterTemplate>
+	        </tbody>
+            <tfoot>
+ 	            <tr class="sfont9"><td colspan=11></td></tr>
+		        <tr>
+			        <td align="center" class="lightbluetable" colspan=5 width=52%>每頁小計</td>
+			        <td align="right" class="lightbluetable" width="8%"><%=sum_service.ToString("N0")  %></td>
+			        <td align="right" class="lightbluetable" width="8%"><%=sum_fees.ToString("N0")  %></td>
+			        <td align="right" class="lightbluetable" width="8%"><%=sum_cservice.ToString("N0")  %></td>
+			        <td align="right" class="lightbluetable" width="8%"><%=sum_cfees.ToString("N0")  %></td>
+			        <td align="right" class="lightbluetable" width="8%"><%=sum_money.ToString("N0")  %></td>
+			        <td align="center" class="lightbluetable" width="8%"></td>
+		        </tr>
+            </tfoot>
+        </table>
+	    <BR>
+
+        <table style="display:<%#page.totRow==0?"none":""%>" border="0" width="100%" cellspacing="0" cellpadding="0">
+		    <tr class="FormName"><td>
+			    <div style="color:blue">
+			    </div>
+		    </td>
+            </tr>
+	    </table>
+	    <br>
+    </FooterTemplate>
+    </asp:Repeater>
     <%#DebugStr%>
 </form>
 
@@ -659,278 +740,8 @@
     };
 
     function this_init() {
-        if ((main.right & 64) == 0) {
-            $("#qryjob_scode").lock();
-        }
-
-        if ($("#submittask").val() == "U" || $("#submittask").val() == "D" || $("#submittask").val() == "Q") {
-            $("#seq,#seq1").lock();
-        }
         $(".Lock").lock();
         $("input.dateField").datepick();
     }
     //////////////////////
-    //全選
-    function selectall(){
-        for (var j = 1; j <= CInt($("#row").val()) ; j++) {
-            //沒有勾的觸發勾選
-            if($("#chk_"+j).prop("checked")==false){
-                $("#chk_"+j).click();
-            }
-        }
-    }
-
-    //顯示圖檔
-    function ViewAttach_dmt(x){
-        //window.open(x);
-        $("#dialog").html('<img border="0" src="'+x+'"/><br/>');
-        $("#dialog").dialog({
-            title: '圖檔檢視',modal: true,maxHeight: 500,width: 800,closeOnEscape: true
-        });
-    }
-
-    //顯示及抓取收據抬頭
-    function rectitle_chk(pno,pin_no){
-        $("#sp_rectitle_"+pno).show();
-	
-        if($("#receipt_title_" + pno).val()=="A"){
-            //案件申請人
-            $("#rectitle_name_" + pno).val($("#tmprectitle_name_" + pno).val());
-        }else if($("#receipt_title_" + pno).val()=="C"){
-            //案件申請人(代繳人)
-            var tstr=$("#tmprectitle_name_" + pno).val()+"(代繳人：聖島國際專利商標聯合事務所)";
-            $("#rectitle_name_" + pno).val(tstr.substring(0,50));
-        }else{
-            $("#rectitle_name_" + pno).val("");
-            $("#sp_rectitle_"+pno).hide();
-        }
-    }
-
-    //顯示收發進度
-    function showStep(seq,seq1){
-        window.open(getRootPath() + "/brtam/brta61_Edit.aspx?submitTask=Q&qtype=A&prgid=<%=prgid%>&closewin=Y&winact=1&aseq=" +seq+ "&aseq1=" +seq1,"myWindowOne", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
-    }
-
-    //20180323 改用.net產生電子申請書
-    function formPrintDNet_erpt(pno,pin_scode,pin_no,link_remark,seq,seq1,prpt_code){
-        //2014/6/23增加檢查，若要顯示外文，則內容為必填，不能只輸入語文別或中文字義，否則E-set驗證會有問題(案例ST39683)
-        var peappl_name=document.getElementById("eappl_name_"+ pno).value;
-        var peappl_name1=document.getElementById("eappl_name1_"+ pno).value;
-        var pzname_type=document.getElementById("zname_type_"+ pno).value;
-        var send_sel=document.getElementById("send_sel_"+ pno).value;
-        if (peappl_name=="" && (peappl_name1!="" || pzname_type!="") ){
-            alert("本案件若需顯示外文資料，則「外文」必須輸入資料，不能只輸入「語文別」或「中文字義」，以便正確產生電子申請書！");
-            return false;
-        }
-	
-        //2015/9/24增加收據抬頭註記及收據抬頭(因共同申請，先預設抓取第一個申請人，若不是由承辦修改)
-        var preceipt_title=document.getElementById("receipt_title_"+ pno ).value;
-        var prectitle_flag="N";
-        if(preceipt_title=="A"){//案件申請人
-            prectitle_flag="Y";
-        }else if(preceipt_title=="C"){//案件申請人(代繳人)
-            prectitle_flag="Y";
-        }
-
-        var urlasp =getRootPath() +"/Report" + link_remark + "/print_" + prpt_code + ".aspx";
-        $('<form action="'+urlasp+'" target="Eblank">'+
-            '<input type="text" name="in_scode" value="'+pin_scode+'"/>'+
-            '<input type="text" name="in_no" value="'+pin_no+'"/>'+
-            '<input type="text" name="seq" value="'+seq+'"/>'+
-            '<input type="text" name="seq1" value="'+seq1+'"/>'+
-            '<input type="text" name="rectitle_flag" value="'+prectitle_flag+'"/>'+
-            '<input type="text" name="receipt_title" value="'+preceipt_title+'"/>'+
-            '<input type="text" name="send_sel" value="'+send_sel+'"/>'+
-        '</form>').appendTo('body').submit().remove();
-    }
-
-    //整批確認檢核
-    function formAddSubmit(task){
-        //檢查是否有勾選
-        var totnum=$("input[id^='chk_']:checked").length;
-        if (totnum == 0){
-            alert("請勾選您要確認的案件!!");
-            return false;
-        }
-        var isSubmit=true;
-        var msg="";
-
-        for (var pno = 1; pno <= CInt($("#row").val()) ; pno++) {
-            if($("#chk_"+pno).prop("checked")==true){
-                if( chkNull("第"+pno+"筆 本所編號 ",$('#seq_'+pno)[0]) ) {isSubmit=false;}
-                if( chkNull("第"+pno+"筆 本所編號副碼 ",$('#seq1_'+pno)[0]) ) {isSubmit=false;}
-                if( chkNull("第"+pno+"筆 發文日期 ",$('#step_date_'+pno)[0]) ) {isSubmit=false;}
-                if( chkNull("第"+pno+"筆 總發文日期 ",$('#mp_date_'+pno)[0]) ) {isSubmit=false;}
-                if( chkNull("第"+pno+"筆 案性代碼 ",$('#rs_code_'+pno)[0]) ) {isSubmit=false;}
-                if( chkNull("第"+pno+"筆 處理事項 ",$('#act_code_'+pno)[0]) ) {isSubmit=false;}
-                if( chkNull("第"+pno+"筆 發文方式 ",$('#send_way_'+pno)[0]) ) {isSubmit=false;}
-			
-                $("#signid_"+pno).val("");
-                //若契約書尚未後補完成，則需轉區所主管簽核
-                if ($("#contract_flag_"+pno).val()=="Y"){
-                    if ($("input[name='usesign_"+pno+"']:eq(0)").prop("checked")){
-                        $("#signid_"+pno).val($("#Msign_"+pno).val());
-                    }else{
-                        if($("#selectsign_"+pno+" option:selected").val()!=""){
-                            $("#signid_"+pno).val($("#selectsign_"+pno+" option:selected").val());
-                        }
-                    }
-                    if ($("#signid_"+pno).val()==""){
-                        cancelChk(pno);
-                        msg+="第"+pno+"筆 為契約書後補，需經主管簽核，請選擇主管！\n";
-                    }
-                }
-			
-                if ($('#send_sel_'+pno).val()=="") {
-                    cancelChk(pno);
-                    msg+="第"+pno+"筆 官方號碼必須輸入!!!\n";
-                }
-                if ($('#apply_no_'+pno).val()=="") {
-                    cancelChk(pno);
-                    msg+="第"+pno+"筆 申請號必須輸入!!!\n";
-                }
-                if ($('#dmt_pay_times_'+pno).val()!="") {
-                    cancelChk(pno);
-                    msg+="第"+pno+"筆 註冊費已繳不可重覆交辦!!!\n";
-                }
-                if ($('#pr_scode_'+pno).val()=="") {
-                    cancelChk(pno);
-                    msg+="第"+pno+"筆 承辦必須輸入!!!\n";
-                }
-			
-                if($('#spe_ctrl_4_'+pno).val() != ""){
-                    if (($('#spe_ctrl_4_'+pno).val()).indexOf("|"+$('#send_way_'+pno).val()+"|")==-1){
-                        cancelChk(pno);
-                        msg+="第"+pno+"筆 此案性發文方式不可批次確認！\n";
-                    }
-                }
-			
-                //20180525增加檢查發文日期/總發文日期不可小於系統日
-                var sdate = CDate($('#step_date_'+pno).val());
-                var mdate = CDate($('#mp_date_'+pno).val());
-                if(sdate.getTime()< Today().getTime() || mdate.getTime()<Today().getTime()){
-                    cancelChk(pno);
-                    msg+="第"+pno+"筆 發文日期或總發文日期不可小於系統日！\n";
-                }
-			
-                //若無交辦單號，本次支出大於0，不可存檔
-                var tgs_fees=$('#fees_'+pno).val();
-                if (tgs_fees!=""){
-                    if (CInt(tgs_fees)>0 && $('#case_no_'+pno).val()==""){
-                        cancelChk(pno);
-                        msg+="第"+pno+"筆 若無交辦單號，本次支出不可大於零！\n";
-                    }
-                }
-			
-                //檢查交辦與發文出名代理人不一樣，顯示提示訊息
-                if ($("#agt_no_"+pno).val() != ""){
-                    if ($("#agt_no_"+pno).val()!=$.trim($("#rs_agt_no_"+pno).val())){
-                        var answer=confirm("第"+pno+"筆 交辦案件之出名代理人與發文出名代理人不同，是否確定要發文？(如需修改出名代理人請至交辦維護作業)");
-                        if (!answer){
-                            isSubmit=false;
-                        }
-                    }
-                }
-			
-                if (CDbl($("#fees_"+pno).val())!=CDbl($("#case_fees_"+pno).val())){
-                    cancelChk(pno);
-                    msg+="第"+pno+"筆 本次官發規費支出("+$("#fees_"+pno).val()+")需等於規費支出("+$("#case_fees_"+pno).val()+")!!!\n";
-                }
-			
-                if ($("#rs_code_"+pno).val()=="FF1" || $("#rs_code_"+pno).val()=="FF2" 
-                || $("#rs_code_"+pno).val()=="FF3" || $("#rs_code_"+pno).val()=="FF0"){
-                    $("#pay_date_"+pno).val($("#step_date_"+pno).val());
-                }
-            }
-        }
-	
-        if(msg!=""){
-            alert(msg);
-            return false;
-        }
-	
-        if(!isSubmit){
-            return false;
-        }
-	
-        if (task=="conf"){
-            //串接資料
-            $("#rows_chk").val(getJoinValue("#dataList>tbody input[id^='chk_']"));
-            $("#rows_seq").val(getJoinValue("#dataList>tbody input[id^='seq_']"));
-            $("#rows_seq1").val(getJoinValue("#dataList>tbody input[id^='seq1_']"));
-            $("#rows_todo_sqlno").val(getJoinValue("#dataList>tbody input[id^='todo_sqlno_']"));
-            $("#rows_eappl_name").val(getJoinValue("#dataList>tbody input[id^='eappl_name_']"));
-            $("#rows_eappl_name1").val(getJoinValue("#dataList>tbody input[id^='eappl_name1_']"));
-            $("#rows_zname_type").val(getJoinValue("#dataList>tbody input[id^='zname_type_']"));
-            $("#rows_dmt_pay_times").val(getJoinValue("#dataList>tbody input[id^='dmt_pay_times_']"));
-            $("#rows_spe_ctrl_4").val(getJoinValue("#dataList>tbody input[id^='spe_ctrl_4_']"));
-            $("#rows_fees").val(getJoinValue("#dataList>tbody input[id^='fees_']:not([id^='fees_stat_'])"));
-            $("#rows_case_fees").val(getJoinValue("#dataList>tbody input[id^='case_fees_']"));
-            $("#rows_step_date").val(getJoinValue("#dataList>tbody input[id^='step_date_']"));
-            $("#rows_mp_date").val(getJoinValue("#dataList>tbody input[id^='mp_date_']"));
-            $("#rows_send_sel").val(getJoinValue("#dataList>tbody select[id^='send_sel_']"));
-            $("#rows_apply_no").val(getJoinValue("#dataList>tbody input[id^='apply_no_']"));
-            $("#rows_pay_times").val(getJoinValue("#dataList>tbody select[id^='pay_times_']"));
-            $("#rows_pay_date").val(getJoinValue("#dataList>tbody input[id^='pay_date_']"));
-            $("#rows_pr_scode").val(getJoinValue("#dataList>tbody select[id^='pr_scode_']"));
-
-            $("#rows_send_way").val(getJoinValue("#dataList>tbody input[id^='send_way_']"));
-            $("#rows_case_no").val(getJoinValue("#dataList>tbody input[id^='case_no_']"));
-            $("#rows_send_cl").val(getJoinValue("#dataList>tbody input[id^='send_cl_']"));
-            $("#rows_send_cl1").val(getJoinValue("#dataList>tbody input[id^='send_cl1_']"));
-            $("#rows_in_scode").val(getJoinValue("#dataList>tbody input[id^='in_scode_']"));
-            $("#rows_in_no").val(getJoinValue("#dataList>tbody input[id^='in_no_']"));
-            $("#rows_rs_type").val(getJoinValue("#dataList>tbody input[id^='rs_type_']"));
-            $("#rows_rs_class").val(getJoinValue("#dataList>tbody input[id^='rs_class_']"));
-            $("#rows_rs_code").val(getJoinValue("#dataList>tbody input[id^='rs_code_']"));
-            $("#rows_act_code").val(getJoinValue("#dataList>tbody input[id^='act_code_']"));
-            $("#rows_rs_detail").val(getJoinValue("#dataList>tbody input[id^='rs_detail_']"));
-            $("#rows_agt_no").val(getJoinValue("#dataList>tbody input[id^='agt_no_']"));
-            $("#rows_fees_stat").val(getJoinValue("#dataList>tbody input[id^='fees_stat_']"));
-            $("#rows_opt_branch").val(getJoinValue("#dataList>tbody input[id^='opt_branch_']"));
-            $("#rows_contract_flag").val(getJoinValue("#dataList>tbody input[id^='contract_flag_']"));
-            $("#rows_rs_agt_no").val(getJoinValue("#dataList>tbody input[id^='rs_agt_no_']"));
-            $("#rows_rs_agt_nonm").val(getJoinValue("#dataList>tbody input[id^='rs_agt_nonm_']"));
-
-            $("#rows_receipt_type").val(getJoinValue("#dataList>tbody select[id^='receipt_type_']"));
-            $("#rows_receipt_title").val(getJoinValue("#dataList>tbody select[id^='receipt_title_']"));
-            $("#rows_rectitle_name").val(getJoinValue("#dataList>tbody input[id^='rectitle_name_']"));
-            $("#rows_tmprectitle_name").val(getJoinValue("#dataList>tbody input[id^='tmprectitle_name_']"));
-
-            $("#rows_signid").val(getJoinValue("#dataList>tbody input[id^='signid_']"));
-
-            //$("select,textarea,input,span").unlock();
-            $("input:disabled, select:disabled").unlock();
-            $(".bsubmit").lock(!$("#chkTest").prop("checked"));
-
-            var formData = new FormData($('#reg')[0]);
-            ajaxByForm("Brt63_UpdateBatch.aspx?task="+task,formData)
-            .complete(function( xhr, status ) {
-                $("#dialog").html(xhr.responseText);
-                $("#dialog").dialog({
-                    title: '存檔訊息',modal: true,maxHeight: 500,width: 800,closeOnEscape: false
-                    ,buttons: {
-                        確定: function() {
-                            $(this).dialog("close");
-                        }
-                    }
-                    ,close:function(event, ui){
-                        if(status=="success"){
-                            if(!$("#chkTest").prop("checked")){
-                                window.parent.tt.rows="100%,0%";
-                                window.parent.Etop.goSearch();//重新整理
-                            }
-                        }
-                    }
-                });
-            });
-        }
-    }
-
-    //取消選擇某一筆
-    function cancelChk(pno){
-        //$("#chk"+pno).attr("checked",false);
-        //$("#hchk_flag"+pno).val("N");
-    }
-
 </script>

@@ -475,7 +475,7 @@
     //預設預定寄發日期
     protected string GetPMailDate(RepeaterItem Container) {
 	    //預設預定寄發日期為官收總收發文+7天
-        return Util.str2Dateime(Eval("mg_in_date", "{0:yyyy/M/d}")).AddDays(7).ToShortDateString();
+        return Util.str2Dateime(Eval("mg_in_date", "{0:d}")).AddDays(7).ToShortDateString();
     }
 
     //延期寄發原因
@@ -687,7 +687,7 @@
                 <%#GetButton(Container)%>
 		        <input type=hidden id="seq_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq")%>">
 		        <input type=hidden id="seq1_<%#(Container.ItemIndex+1)%>" value="<%#Eval("seq1")%>">
-		        <input type=hidden id="gr_mp_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mg_in_date","{0:yyyy/M/d}")%>">
+		        <input type=hidden id="gr_mp_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mg_in_date","{0:d}")%>">
 		        <input type=hidden id="rs_type_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_type")%>">
 		        <input type=hidden id="rs_class_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_class")%>">
 		        <input type=hidden id="rs_code_<%#(Container.ItemIndex+1)%>" value="<%#Eval("rs_code")%>">
@@ -702,7 +702,7 @@
 		        <input type=hidden id="mg_step_grade_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mg_send_grade")%>">
 		        <input type=hidden id="mg_rs_sqlno_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mg_send_rs_sqlno")%>">
 		        <input type=hidden id="child_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("child_flag")%>">
-		        <input type=hidden id="step_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("step_date","{0:yyyy/M/d}")%>">
+		        <input type=hidden id="step_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("step_date","{0:d}")%>">
 		        <input type=hidden id="opt_attach_flag_<%#(Container.ItemIndex+1)%>" value="<%#Eval("opt_attach_flag")%>">
 		        <input type=hidden id="todo_sqlno_<%#(Container.ItemIndex+1)%>" value="<%#Eval("todo_sqlno")%>"><!--官發對應承辦交辦發文的todo_dmt.sqlno-->
 		        <input type=hidden id="appl_name_<%#(Container.ItemIndex+1)%>" value="<%#Eval("appl_name")%>">
@@ -719,7 +719,7 @@
 		    </td>
 		    <td class="whitetablebg" align="center" style="cursor: pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'"  onclick="QstepClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')" title="案件進度查詢"><%#Eval("step_grade")%></td>
 		    <td class="whitetablebg" rowspan=<%=tcolspan%>><%#Eval("appl_name").ToString().Left(10)%></td>
-		    <td class="whitetablebg" align="center" rowspan=<%=tcolspan%>><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+		    <td class="whitetablebg" align="center" rowspan=<%=tcolspan%>><%#Eval("step_date","{0:d}")%></td>
 		    <td class="whitetablebg" nowrap align="center" rowspan=<%=tcolspan%>>
                 <%#(Eval("main_flag").ToString()=="N"?"<font color=red>*</font>":"")%>
                 <%#Eval("rs_no")%>
@@ -727,9 +727,9 @@
 		    </td>
 		    <td class="whitetablebg" align="left" rowspan=<%=tcolspan%>><%#Eval("rs_detail")%></td>
 		    <td class="whitetablebg" nowrap align="left" rowspan=<%=tcolspan%>>
-			    <input type=hidden id=mg_apply_date_<%#(Container.ItemIndex+1)%> value="<%#Eval("mg_apply_date","{0:yyyy/M/d}")%>">
-			    <input type=text size=10 id=apply_date_<%#(Container.ItemIndex+1)%> <%=Qclass%> value="<%#Eval("apply_date","{0:yyyy/M/d}")%>"><br>
-			    <span style="<%#Eval("mgdate_style")%>">總：<%#Eval("mg_apply_date","{0:yyyy/M/d}")%></span>
+			    <input type=hidden id=mg_apply_date_<%#(Container.ItemIndex+1)%> value="<%#Eval("mg_apply_date","{0:d}")%>">
+			    <input type=text size=10 id=apply_date_<%#(Container.ItemIndex+1)%> <%=Qclass%> value="<%#Eval("apply_date","{0:d}")%>"><br>
+			    <span style="<%#Eval("mgdate_style")%>">總：<%#Eval("mg_apply_date","{0:d}")%></span>
 		    </td>
 		    <td class="whitetablebg" nowrap align="left" rowspan=<%=tcolspan%>>
 			    <input type=hidden id=mg_apply_no_<%#(Container.ItemIndex+1)%> value="<%#Eval("mg_apply_no")%>">
@@ -765,7 +765,7 @@
         <asp:Panel runat="server" Visible='<%#qrydowhat== "mg_gs"%>'><!--發文確認才顯示-->
   	    <tr class="main_tr" rec="<%#(Container.ItemIndex+1)%>">
 		    <td class="whitetablebg" nowrap align="center">
-                <img src="<%=Page.ResolveUrl("~/images/email01.gif")%>" style="cursor:pointer" title="Email通知總收發" align="absmiddle" border="0" onClick="tomgbutton_email('<%#Eval("fseq")%>','<%#Eval("rs_no")%>','<%#Eval("step_date","{0:yyyy/M/d}")%>','<%#Eval("mp_date","{0:yyyy/M/d}")%>','<%#Eval("rs_detail")%>')">
+                <img src="<%=Page.ResolveUrl("~/images/email01.gif")%>" style="cursor:pointer" title="Email通知總收發" align="absmiddle" border="0" onClick="tomgbutton_email('<%#Eval("fseq")%>','<%#Eval("rs_no")%>','<%#Eval("step_date","{0:d}")%>','<%#Eval("mp_date","{0:d}")%>','<%#Eval("rs_detail")%>')">
 		    </td>
 		    <td class="whitetablebg" nowrap align="left">
 			    <input type=radio name="radscan_<%#(Container.ItemIndex+1)%>" value="Y" <%#(ReqVal.TryGet("radscan")!="N"?"checked":"")%>>需要
@@ -781,7 +781,7 @@
                         <%#GetButtonC(Container)%>
 						<input type=hidden name="seq_<%#GetSubIdx(Container)%>" id="seq_<%#GetSubIdx(Container)%>" value="<%#Eval("seq")%>">
 						<input type=hidden name="seq1_<%#GetSubIdx(Container)%>" id="seq1_<%#GetSubIdx(Container)%>" value="<%#Eval("seq1")%>">
-						<input type=hidden name="gr_mp_date_<%#GetSubIdx(Container)%>" id="gr_mp_date_<%#GetSubIdx(Container)%>" value="<%#Eval("mg_in_date","{0:yyyy/M/d}")%>">
+						<input type=hidden name="gr_mp_date_<%#GetSubIdx(Container)%>" id="gr_mp_date_<%#GetSubIdx(Container)%>" value="<%#Eval("mg_in_date","{0:d}")%>">
 						<input type=hidden name="rs_type_<%#GetSubIdx(Container)%>" id="rs_type_<%#GetSubIdx(Container)%>" value="<%#Eval("rs_type")%>">
 						<input type=hidden name="rs_class_<%#GetSubIdx(Container)%>" id="rs_class_<%#GetSubIdx(Container)%>" value="<%#Eval("rs_class")%>">
 						<input type=hidden name="rs_code_<%#GetSubIdx(Container)%>" id="rs_code_<%#GetSubIdx(Container)%>" value="<%#Eval("rs_code")%>">
@@ -800,11 +800,11 @@
 					<td class="lightbluetable3" align="center">
                         <%#Eval("step_grade")%><br>
                         <asp:Panel runat="server" Visible='<%#qrydowhat== "mg_gs"%>'>
-                            <img src="<%=Page.ResolveUrl("~/images/email01.gif")%>" style="cursor:pointer" title="Email通知總收發" align="absmiddle" border="0" onClick="tomgbutton_email('<%#Eval("fseq")%>','<%#Eval("rs_no")%>','<%#Eval("step_date","{0:yyyy/M/d}")%>','<%#Eval("mp_date","{0:yyyy/M/d}")%>','<%#Eval("rs_detail")%>')">
+                            <img src="<%=Page.ResolveUrl("~/images/email01.gif")%>" style="cursor:pointer" title="Email通知總收發" align="absmiddle" border="0" onClick="tomgbutton_email('<%#Eval("fseq")%>','<%#Eval("rs_no")%>','<%#Eval("step_date","{0:d}")%>','<%#Eval("mp_date","{0:d}")%>','<%#Eval("rs_detail")%>')">
                         </asp:Panel>
                     </td>
 					<td class="lightbluetable3" ><%#Eval("appl_name").ToString().Left(10)%></td>
-					<td class="lightbluetable3" align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+					<td class="lightbluetable3" align="center"><%#Eval("step_date","{0:d}")%></td>
 					<td class="lightbluetable3" nowrap align="center">
                         <%#(Eval("main_flag").ToString()=="N"?"<font color=red>*</font>":"")%>
                         <%#Eval("rs_no")%>
@@ -812,9 +812,9 @@
 					</td>
 					<td class="lightbluetable3" align="left"><%#Eval("rs_detail")%></td>
 					<td class="lightbluetable3" nowrap align="left">
-						<input type=hidden name="mg_apply_date_<%#GetSubIdx(Container)%>" id="mg_apply_date_<%#GetSubIdx(Container)%>" value="<%#Eval("mg_apply_date","{0:yyyy/M/d}")%>">
-						<input type=text size=10 name="apply_date_<%#GetSubIdx(Container)%>" id="apply_date_<%#GetSubIdx(Container)%>" <%=Qclass%> value="<%#Eval("apply_date","{0:yyyy/M/d}")%>"><br>
-			            <span style="<%#Eval("mgdate_style")%>">總：<%#Eval("mg_apply_date","{0:yyyy/M/d}")%></span>
+						<input type=hidden name="mg_apply_date_<%#GetSubIdx(Container)%>" id="mg_apply_date_<%#GetSubIdx(Container)%>" value="<%#Eval("mg_apply_date","{0:d}")%>">
+						<input type=text size=10 name="apply_date_<%#GetSubIdx(Container)%>" id="apply_date_<%#GetSubIdx(Container)%>" <%=Qclass%> value="<%#Eval("apply_date","{0:d}")%>"><br>
+			            <span style="<%#Eval("mgdate_style")%>">總：<%#Eval("mg_apply_date","{0:d}")%></span>
 					</td>
 					<td class="lightbluetable3" nowrap align="left">
 						<input type=hidden name="mg_apply_no_<%#GetSubIdx(Container)%>" id="mg_apply_no_<%#GetSubIdx(Container)%>" value="<%#Eval("mg_apply_no")%>">

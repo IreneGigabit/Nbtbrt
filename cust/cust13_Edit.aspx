@@ -15,9 +15,9 @@
 
 <script runat="server">
 
-    protected string HTProgCap = "申請人資料";
-    private string HTProgCode = "cust13";
-    protected string HTProgPrefix = "cust13";
+    protected string HTProgCap = "申請人資料";//功能名稱
+    private string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgPrefix = "cust13";//程式檔名前綴
     private int HTProgAcs = 1;
     private int HTProgRight = 0;
 

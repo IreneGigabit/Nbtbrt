@@ -156,14 +156,6 @@
 <INPUT TYPE="hidden" id="prgid" name="prgid" value="<%=prgid%>">
 <INPUT TYPE="hidden" id="submitTask" name=submitTask value="<%=submitTask%>">
 <input type="hidden" id="dept" name="dept" value="<%=dept%>" />
-<INPUT TYPE="hidden" name=databr_branch id="databr_branch" value="<%=Request["databr_branch"]%>">
-<INPUT TYPE="hidden" name=old_branch id="old_branch" value="<%=Request["old_branch"]%>"> <!--查詢條件-->
-<INPUT TYPE="hidden" name=old_cust_area id="old_cust_area" value="<%=Request["old_cust_area"]%>">
-<INPUT TYPE="hidden" name=old_cust_seq id="old_cust_seq" value="<%=Request["old_cust_seq"]%>">
-<INPUT TYPE="hidden" name=tran_flag id="tran_flag" value="<%=Request["tran_flag"]%>">
-<INPUT TYPE="hidden" name=brtran_sqlno value="<%=Request["brtran_sqlno"]%>">
-<INPUT TYPE="hidden" name=tran_cust_area value="<%=Request["tran_cust_area"]%>">
-<INPUT TYPE="hidden" name=tran_cust_seq value="<%=Request["tran_cust_seq"]%>">
    <%-- <INPUT TYPE="hidden" id="cust_area" name="cust_area" value="<%=cust_area%>">
     <INPUT TYPE="text" id="cust_seq" name="cust_seq" value="<%=cust_seq%>">--%>
 
@@ -418,48 +410,13 @@
     
                 if ('<%=Request["apattach_sqlno"]%>' != "") {
                     settab("#mark_attach");
+                    $("#btnattach_1").lock();
                 }
             }
-
-           <%-- loadData();
-            //cust12Form控制
-            loadAttData();
-            if (CInt($("#hatt_sql").val()) < 1 ) {
-                $("#noData").show();
-            } 
-            cust12form.LockAll();
-            if ($("#submitTask").val() == "Q")
-            {
-                cust11form.LockAll();
-            }
-            else
-            {
-                var d = <%="'"+dept+"'"%>;
-                for (var i = 1; i <= CInt($("#hatt_sql").val()); i++) {
-                    if ($("#dept_"+i).val() == d) {
-                        $("#btnattedit_"+i).show();
-                        $("#btnattedit_"+i).attr("onclick", "cust12form.GoToEditAtt("+<%=cust_seq%> +","+i+");")
-                    }
-                }
-            }--%>
-                
         }
         else//如果是新增
         {
-           
-           <%-- 
-            if (CInt($("#hatt_sql").val()) < 1)
-            {
-                cust12form.addAtt();
-            }
-            var DeptStr = <%= "'" + Sys.GetSession("dept") + "'"%>;
-            cust12form.addReadOnly($("#submitTask").val(), DeptStr);
-
-            var a = <%="'"+cust_att+"'"%>;
-            if (a == "A") {
-                loadData();
-                cust11form.LockAll();
-            }--%>
+          
         }
     }
 
@@ -516,7 +473,7 @@
         $("#rpt_mark_type2_"+nReport).val('_');
 
         //帶對應的聯絡人清單
-        cust23textform.searchCustAtt(nReport, "rpt_att_sql_");
+        cust23textform.searchCustAtt(nReport, "rpt_att_sql_", "");
         //getAtt("#rpt_att_sql_"+nReport,"<%=syscode%>");
         $("input.dateField").datepick();
     }
@@ -725,6 +682,30 @@
 
     function custzSave() {
 
+
+        //說明備註==============================
+        //部門
+        for (var xx=1;xx<=CInt($("#htext_sql").val());xx++){
+            $("#txt_dept_value_"+xx).val(getCheckedValue("#tabText>tbody input[name='txt_dept_"+xx+"']:checked"));
+            //var v = "|";
+            //$("input[type=checkbox][name='txt_dept_"+xx+"']:checked").each(function () {
+            //    v += $(this).val() + "|";
+            //})
+            //$("#txt_dept_value_"+xx).val(v);
+        }
+
+        //相關檔案==============================
+        //種類
+        for (var xx=1;xx<=CInt($("#hattach_sql").val());xx++){
+            $("#attach_mremark_value_"+xx).val(getCheckedValue("#tabAttach>tbody input[name='attach_mremark_"+xx+"']:checked"));
+            //var v = "|";
+            //$("input[type=checkbox][name='attach_mremark_"+xx+"']:checked").each(function () {
+            //    v += $(this).val() + "|";
+            //})
+            //$("#attach_mremark_value_"+xx).val(v);
+        }
+
+
         //標記update flag//////////////////////////////////////////////////////////////////////
         //報表備註==============================
         for (var r=1;r<=nReport;r++){
@@ -735,77 +716,94 @@
                     ||$("#rpt_att_sql_"+r).val()!=$("#o_rpt_att_sql_"+r).val()
                     ||$("input[name=rpt_spe_mark1_"+r+"]:checked").val()!=$("#o_rpt_spe_mark1_"+r).val()
                     ||$("#rpt_end_date_"+r).val()!=$("#o_rpt_end_date_"+r).val()
-                    ){
+                    )
+                {
                     $("#rpt_upd_flag_"+r).val("Y");
                 }
             }
         }
-        //更新註記
-        //$("#rows_rpt_upd").val(getJoinValue("#reportlist>tbody input[id^='rpt_upd_flag_']"));
 
         //說明備註==============================
-        //for (var r=1;r<=nText;r++){
-        //    $("#txt_upd_flag_"+r).val("");
-        //    if($("#txt_mark_sqlno_"+r).val()!=""){//有流水號表示DB有資料
-        //        if($("#txt_dept_value_"+r).val()!=$("#o_txt_dept_"+r).val()
-        //            ||$("#txt_mark_type2_"+r).val()!=$("#o_txt_mark_type2_"+r).val()
-        //            ||$("#txt_att_sql_"+r).val()!=$("#o_txt_att_sql_"+r).val()
-        //            ||$("#txt_type_content1_"+r).val()!=$("#o_txt_type_content1_"+r).val()
-        //            ||$("#txt_end_date_"+r).val()!=$("#o_txt_end_date_"+r).val()
-        //            ){
-        //            $("#txt_upd_flag_"+r).val("Y");
-        //        }
-        //    }
-        //}
-        //更新註記
-        //$("#rows_txt_upd").val(getJoinValue("#remarklist>tbody input[id^='txt_upd_flag_']"));
+        for (var r=1;r<=CInt($("#htext_sql").val());r++){
+            $("#txt_upd_flag_"+r).val("");
+            if($("#txt_mark_sqlno_"+r).val()!=""){//有流水號表示DB有資料
+                if($("#txt_dept_value_"+r).val()!=$("#o_txt_dept_"+r).val()
+                    ||$("#txt_mark_type2_"+r).val()!=$("#o_txt_mark_type2_"+r).val()
+                    ||$("#txt_att_sql_"+r).val()!=$("#o_txt_att_sql_"+r).val()
+                    ||$("#txt_type_content1_"+r).val()!=$("#o_txt_type_content1_"+r).val()
+                    ||$("#txt_end_date_"+r).val()!=$("#o_txt_end_date_"+r).val()
+                    )
+                {
+                    $("#txt_upd_flag_"+r).val("Y");
+                }
+            }
+        }
 
-
-
-
+        //相關檔案==============================
+        for (var r=1;r<=CInt($("#hattach_sql").val());r++){
+            $("#attach_upd_flag_"+r).val("");
+            if($("#attach_apattach_sqlno_"+r).val()!=""){//有流水號表示DB有資料
+                if($("#attach_name_"+r).val()!=$("#o_attach_name_"+r).val()
+                    ||$("#attach_source_name_"+r).val()!=$("#o_attach_source_name_"+r).val()
+                    ||$("#attach_mremark_value_"+r).val()!=$("#o_attach_mremark_"+r).val()
+                    ||$("#attach_desc_"+r).val()!=$("#o_attach_desc_"+r).val()
+                    ){
+                    $("#attach_upd_flag_"+r).val("Y");
+                }
+            }
+        }
 
       
         //資料檢查//////////////////////////////////////////////////////////////////////
-        //var errMsg="";
-        //var objRpt = {},objTxt = {},objAttach = {};
+        var errMsg="";
+        var objRpt = {},objTxt = {},objAttach = {};
 	
         ////報表備註==============================
-        //for (var r=1;r<=nReport;r++){
-        //    if(!$("#rpt_del_"+r).prop('checked')){
-        //        var lineOpt=getJoinValue("#reportlist>tbody input[name='rpt_syscode_"+r+"']:checked,#rpt_mark_type2_"+r+",#rpt_att_sql_"+r);
-        //        if(objRpt[lineOpt]) {
-        //            errMsg+="[報表備註] "+r+". 與 "+objRpt[lineOpt].idx+". 選項重覆\n";
-        //        }else{
-        //            objRpt[lineOpt]={flag : true, idx:r};
-        //        }
-        //    }
-        //}
+        for (var r=1;r<=nReport;r++){
+            if(!$("#rpt_del_"+r).prop('checked')){
+                var lineOpt=getJoinValue("#reportlist>tbody input[name='rpt_syscode_"+r+"']:checked,#rpt_mark_type2_"+r+",#rpt_att_sql_"+r);
+                if(objRpt[lineOpt]) {
+                    errMsg+="[報表備註] "+r+". 與 "+objRpt[lineOpt].idx+". 選項重覆\n";
+                }else{
+                    objRpt[lineOpt]={flag : true, idx:r};
+                }
+            }
+        }
         ////說明備註==============================
-        //for (var r=1;r<=nText;r++){
-        //    if(!$("#txt_del_"+r).prop('checked')){
-        //        if($("#txt_type_content1_"+r).val()=="")errMsg+="[說明備註] "+r+". 須輸入說明\n";
-        //        if($("#txt_dept_value_"+r).val()=="||")errMsg+="[說明備註] "+r+". 須選擇部門\n";
+        for (var r=1;r<=CInt($("#htext_sql").val());r++){
+            if(!$("#txt_del_"+r).prop('checked')){
+                if($("#txt_type_content1_"+r).val()=="")errMsg+="[說明備註] "+r+". 須輸入說明\n";
+                if($("#txt_dept_value_"+r).val()=="||")errMsg+="[說明備註] "+r+". 須選擇部門\n";
 			
-        //        var lineOpt=getJoinValue("#txt_dept_value_"+r+",#txt_mark_type2_"+r+",#txt_att_sql_"+r);
-        //        if(objTxt[lineOpt]) {
-        //            errMsg+="[說明備註] "+r+". 與 "+objTxt[lineOpt].idx+". 選項重覆\n";
-        //        }else{
-        //            objTxt[lineOpt]={flag : true, idx:r};
-        //        }
-        //    }
-        //}
-        ////相關檔案==============================
-        //for (var r=1;r<=CInt($("#hattach_sql").val());r++){
-        //    if(!$("#attach_del_"+r).prop('checked')){
-        //        if($("#attach_mremark_value_"+r).val()=="||")errMsg+="[相關檔案] "+r+". 須選擇種類\n";
-			
-        //        if($("#attach_name_"+r).val()==""||$("#attach_source_name_"+r).val()==""){
-        //            errMsg+="[相關檔案] 附件"+r+". 須上傳檔案\n";
-        //        }else if($("#attach_desc_"+r).val()==""){
-        //            errMsg+="[相關檔案] 附件"+r+". 須輸入說明\n";
-        //        }
-        //    }
-        //}
+                var lineOpt=getJoinValue("#txt_dept_value_"+r+",#txt_mark_type2_"+r+",#txt_att_sql_"+r);
+                if(objTxt[lineOpt]) {
+                    errMsg+="[說明備註] "+r+". 與 "+objTxt[lineOpt].idx+". 選項重覆\n";
+                }else{
+                    objTxt[lineOpt]={flag : true, idx:r};
+                }
+            }
+        }
+        //相關檔案==============================
+        for (var r=1;r<=CInt($("#hattach_sql").val());r++){
+            if(!$("#attach_del_"+r).prop('checked')){
+                if($("#attach_mremark_value_"+r).val()=="||")errMsg+="[相關檔案] "+r+". 須選擇種類\n";
+                if($("#attach_name_"+r).val()==""||$("#attach_source_name_"+r).val()==""){
+                    errMsg+="[相關檔案] 附件"+r+". 須上傳檔案\n";
+                }else if($("#attach_desc_"+r).val()==""){
+                    errMsg+="[相關檔案] 附件"+r+". 須輸入說明\n";
+                }
+            }
+        }
+
+        //計算異動筆數//////////////////////////////////////////////////////////////////////
+        if(CInt($("#htext_sql").val()) + CInt($("#hattach_sql").val()) + nReport == 0){
+            errMsg+="無資料可存檔\n";
+        }
+	
+        if (errMsg!=""){
+            alert(errMsg);
+            return false;
+        }
 
 
         //****改用ajax,才不用處理update後導頁面
@@ -838,17 +836,7 @@
 
 
     $("#btnSave").click(function (e) {
-
         custzSave();
-<%--        var SwitchType = <%="'" + ReqVal.TryGet("Type") + "'"%>;
-        if (SwitchType == "ap_nameaddr")
-        {//聯絡人資料
-            cust_attSave();
-        }
-        else//客戶資料
-        {
-            custzSave();
-        }--%>
     });
 
 
@@ -856,41 +844,23 @@
     $("#btnReset").click(function (e) {
         reg.reset();
         this_init();
-      
 
     });
 
+    //取得勾選的值
+    function getCheckedValue(selector){
+        return "|"+$(selector).map(function (){
+            return $(this).val();
+        }).get().join('|')+"|";//前後都包起來
+    }
 
     function SetReportmarkReadOnly() {
-        
         $("input[type=checkbox][id^='rpt_del_']").hide();
         $("#AddReport_button").hide();
         $("select[id^='rpt_mark_type2_']").lock();
         $("select[id^='rpt_att_sql_']").lock();
         $("input[type=radio][name^='rpt_spe_mark1']").lock();
         $("input[type=text][name^='rpt_end_date']").lock();
-    }
-
-    function SetReadOnly() {
-
-        if ('<%=submitTask%>' == "A") {
-    
-        }
-
-
-        //分兩個Tab處理
-     <%--   var a = <%="'"+cust_att+"'"%>;
-        var d = <%="'"+dept+"'"%>;--%>
-    }//SetReadOnly
-
-    function GoToSearch() {
-        var s = <%="'"+submitTask+"'"%>;
-        if (s == "A") {
-            s = "U";
-        }
-        reg.action = "cust11_1.aspx?cust_area=<%=Sys.GetSession("seBranch")%>&submitTask="+s;
-        reg.submit();
-    
     }
 
 

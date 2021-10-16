@@ -251,7 +251,7 @@
                     var jrowDtl = new JObject {
                     { "id", drDtl.SafeRead("country","") }, 
                     { "parent", dr.SafeRead("cl","") }, 
-                    { "text", drDtl.SafeRead("coun_c","") },
+                    { "text", drDtl.SafeRead("country","")+drDtl.SafeRead("coun_c","") },
                     { "icon", "jstree-file" }
                     };
                     jarr.Add(jrowDtl);
@@ -283,6 +283,7 @@
         .no-checkbox > a > i.jstree-checkbox {
             display:none;
         }
+        .jstree li > a > .jstree-file {  display:none !important; }<!--取消子項的icon-->
     </style>
 </head>
 
@@ -429,6 +430,7 @@
         }
 
         reg.action = "<%=HTProgPrefix%>_List.aspx";
+        reg.target = "Eblank";
         reg.submit();
     });
 

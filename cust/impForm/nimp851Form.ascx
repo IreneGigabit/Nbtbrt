@@ -423,7 +423,6 @@
                 data: $("#reg").serialize(),
                 success: function (json) {                    
                     var JSONdata = $.parseJSON(json);
-                    //toastr.info("<a href='" + this.url + "?" + $("#reg").serialize() + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                     
                     var totRow = parseInt(JSONdata.totRow, 10);
                     if (totRow > 0) {

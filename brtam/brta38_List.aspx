@@ -532,7 +532,7 @@
 		                <td ><%#Eval("class")%></td>
 		                <td ><%#Eval("appl_name").ToString().Left(20)%></td>
 		                <td nowrap align="center"><%#Eval("sc_name")%></td>
-		                <td align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+		                <td align="center"><%#Eval("step_date","{0:d}")%></td>
 		                <td align="left"><%#Eval("rs_detail")%></td>
 		                <td align="center"><%#Eval("last_date")%></td>
 		                <td nowrap align="center"><%#Eval("in_no")%></td>
@@ -619,7 +619,7 @@
 		    <td ><%#Eval("class")%></td>
 		    <td ><%#Eval("appl_name").ToString().Left(20)%></td>
 		    <td nowrap align="center"><%#Eval("sc_name")%></td>
-		    <td align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+		    <td align="center"><%#Eval("step_date","{0:d}")%></td>
 		    <td align="left"><%#Eval("rs_detail")%></td>
 		    <td align="center"><%#Eval("last_date")%></td>
 		    <td nowrap align="center"><%#Eval("in_no")%></td>
@@ -643,8 +643,8 @@
 			    <input type=hidden id="case_gs_curr_<%#(Container.ItemIndex+1)%>" value="<%#Eval("case_gs_curr")%>" size=5><!--官發次數-->
 		    </td>
 		    <td align="left" colspan=7>
-			    發文日期:<input type=text id="step_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("step_date","{0:yyyy/M/d}")%>" size="10" class="dateField">
-			    總發文日期:<input type=text id="mp_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mp_date","{0:yyyy/M/d}")%>" size="10" class="dateField">
+			    發文日期:<input type=text id="step_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("step_date","{0:d}")%>" size="10" class="dateField">
+			    總發文日期:<input type=text id="mp_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("mp_date","{0:d}")%>" size="10" class="dateField">
 			    發文對象:<Select id="send_cl_<%#(Container.ItemIndex+1)%>">
 			    <!--發文對象--><%#GetSendCL(Container)%>
 			    </SELECT>
@@ -695,7 +695,7 @@
 			    註冊費已繳:<Select id="pay_times_<%#(Container.ItemIndex+1)%>" disabled>
 			        <!--註冊費已繳--><%#GetOptPayTimes(Container)%>
 			    </SELECT>
-			    <input type=text id="pay_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("pay_date","{0:yyyy/M/d}")%>" size="10" readonly class="SEdit">
+			    <input type=text id="pay_date_<%#(Container.ItemIndex+1)%>" value="<%#Eval("pay_date","{0:d}")%>" size="10" readonly class="SEdit">
 		    </td>
 	    </tr>
 	</ItemTemplate>

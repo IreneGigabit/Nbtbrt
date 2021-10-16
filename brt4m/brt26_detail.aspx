@@ -182,8 +182,8 @@
 			            <td align="right"><%#Eval("others")%></td><!--公簽證費-->
 		            <%}%>
                     <td align="center" bgcolor="#80FF80"><%#Eval("total","NT${0:N0}")%></td><!--含稅合計-->
-		            <td align="center"><%#Eval("beg_date","{0:yyyy/M/d}")%><%#Eval("tend_date")%></td>
-			        <td align="center"><%#Eval("IPO_date","{0:yyyy/M/d}")%></td>
+		            <td align="center"><%#Eval("beg_date","{0:d}")%><%#Eval("tend_date","{0:d}")%></td>
+			        <td align="center"><%#Eval("IPO_date","{0:d}")%></td>
                 </tr>
 			</ItemTemplate>
     <FooterTemplate>

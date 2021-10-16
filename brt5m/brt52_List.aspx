@@ -319,7 +319,7 @@
 	                <td class="whitetablebg" align="center"><%#Eval("service")%></A></td>
 	                <td class="whitetablebg" align="center"><%#Eval("fees")%></A></td>
 	                <td class="whitetablebg" align="center"><%#Eval("oth_money")%></A></td>
-	                <td class="whitetablebg" align="center"><%#Eval("case_date","{0:yyyy/M/d}")%></td>
+	                <td class="whitetablebg" align="center"><%#Eval("case_date","{0:d}")%></td>
 	                <td class="whitetablebg" align="center"><%#GetNXLink(Container)%></td>
 				</tr>
 			</ItemTemplate>

@@ -237,13 +237,13 @@
 	        <tr class="sfont9" >
 		        <td align="center" nowrap rowspan="6"><font size="2">本所編號<br><%#Eval("fseq")%></font></td>
 		        <td width="12%" nowrap align="right"><font size="2">立案日期：</font></td>
-		        <td width="12%" align="center"><font size="2">&nbsp;<%#Eval("in_date","{0:yyyy/M/d}")%></font></td>
+		        <td width="12%" align="center"><font size="2">&nbsp;<%#Eval("in_date","{0:d}")%></font></td>
 		        <td width="12%" nowrap align="right"><font size="2">申請日期：</font></td>
-		        <td width="12%" align="center"><font size="2">&nbsp;<%#Eval("apply_date","{0:yyyy/M/d}")%></font></td>
+		        <td width="12%" align="center"><font size="2">&nbsp;<%#Eval("apply_date","{0:d}")%></font></td>
 		        <td width="12%" nowrap align="right"><font size="2">申請號：</font></td>
 		        <td width="12%" align="center"><font size="2">&nbsp;<%#Eval("apply_no")%></font></td>
 		        <td width="12%" nowrap align="right"><font size="2">註冊日期：</font></td>
-		        <td width="12%" align="center"><font size="2">&nbsp;<%#Eval("issue_date","{0:yyyy/M/d}")%></font></td>
+		        <td width="12%" align="center"><font size="2">&nbsp;<%#Eval("issue_date","{0:d}")%></font></td>
 	        </tr>
 	        <tr class="sfont9" >
 		        <td nowrap align="right"><font size="2">註冊號：</font></td>
@@ -252,7 +252,7 @@
 		        <td align="center"><font size="2">&nbsp;<%#Eval("rej_no")%></font></td>
 		        <td nowrap align="right"><font size="2">專用期限：</font></td>
 		        <td align="center" colspan="3">
-                    <font size="2">&nbsp;<%#Eval("term1","{0:yyyy/M/d}")%><%#(Eval("term1").ToString()!=""||Eval("term2").ToString()!="")?"~":""%><%#Eval("term2","{0:yyyy/M/d}")%></font>
+                    <font size="2">&nbsp;<%#Eval("term1","{0:d}")%><%#(Eval("term1").ToString()!=""||Eval("term2").ToString()!="")?"~":""%><%#Eval("term2","{0:d}")%></font>
 		        </td>
 	        </tr>
 	        <tr class="sfont9" >

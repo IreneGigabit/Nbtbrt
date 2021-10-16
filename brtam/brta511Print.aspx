@@ -235,7 +235,7 @@
 			        <td nowrap align="center"><%#Eval("fseq")%></td>
 			        <td>&nbsp;<%#Eval("rs_detail")%></td>
 			        <td nowrap align="center"><%#Eval("sendmark")%></td>
-			        <td nowrap align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap align="center"><%#Eval("step_date","{0:d}")%></td>
 			        <td nowrap align="center">
                         <%#(Eval("rs_no").ToString()!=Eval("main_rs_no").ToString()?"*":"")%><%#Eval("rs_no")%>
                         <%if(Request["send_way"]=="E" || Request["send_way"]=="EA") Response.Write("(&nbsp;"+Eval("step_grade")+")");%>

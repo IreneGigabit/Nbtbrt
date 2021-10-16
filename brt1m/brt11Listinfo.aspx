@@ -180,8 +180,8 @@
 		            <td align="center"><%#Eval("ap_cname1")%></td>
 		            <td align="center"><%#Eval("ap_crep")%></td>
 		            <td align="center"><%#Eval("id_no")%></td>
-		            <td align="center"><%#Eval("in_date","{0:yyyy/M/d}")%></td>
-		            <td align="center"><%#Eval("dmt_date","{0:yyyy/M/d}")%></td>
+		            <td align="center"><%#Eval("in_date","{0:d}")%></td>
+		            <td align="center"><%#Eval("dmt_date","{0:d}")%></td>
 		            <td align="center">
                         <asp:Repeater id="rsRepeater" runat="server">
                             <HeaderTemplate>

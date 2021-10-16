@@ -277,8 +277,8 @@
 		            <td style="cursor:pointer;color:darkblue" onmouseover="this.style.color='red'" onmouseout="this.style.color='darkblue'" onclick="CapplClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')"><%#Eval("fseq")%></td>
 		            <td><%#Eval("appl_name")%></td>
 		            <td><%#Eval("sc_name")%></td>
-		            <td nowrap align=left ><%#Eval("step_date","{0:yyyy/M/d}")%></td>
-		            <td nowrap align=left ><%#Eval("mp_date","{0:yyyy/M/d}")%></td>
+		            <td nowrap align=left ><%#Eval("step_date","{0:d}")%></td>
+		            <td nowrap align=left ><%#Eval("mp_date","{0:d}")%></td>
 		            <td><A href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("rs_detail").ToString().CutData(40)%></A></td>
 		            <td align="center"><%#Eval("job_casenm")%></td>
 		            <td nowrap><%#Eval("job_nonm")%></td>

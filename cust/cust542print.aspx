@@ -168,11 +168,16 @@
 
     protected void dataRepeater_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
-        string pscode = "";
+        //string pscode = "";
+        string scode = "";
+        string scodeStr = "";
         string cust_seq = "";
         if ((e.Item.ItemType == ListItemType.Item) || (e.Item.ItemType == ListItemType.AlternatingItem))
         {
-            pscode = DataBinder.Eval(e.Item.DataItem, "pscode").ToString();
+            //pscode = DataBinder.Eval(e.Item.DataItem, "pscode").ToString();
+            scode = (dept == "P") ? "pscode" : "tscode";
+            scodeStr = DataBinder.Eval(e.Item.DataItem, scode).ToString();
+            
             Repeater Rpt = (Repeater)e.Item.FindControl("rptRepeater");
             if (Rpt != null)
             {
@@ -202,7 +207,8 @@
 
                 if (OrderType == "2")
                 {
-                    dtRpt = dtData.Select("pscode = '" + pscode + "'").CopyToDataTable();
+                    //dtRpt = dtData.Select("pscode = '" + scodeStr + "'").CopyToDataTable();
+                    dtRpt = dtData.Select(scode + " = '" + scodeStr + "'").CopyToDataTable();
                 }
                 else
                 {
@@ -470,7 +476,7 @@
                                         <%# (dept == "P")? Eval("plevel") : Eval("tlevel")%>
                                     </td>
                                     <td nowrap align=center><%#Eval("mag")%></td>
-                                    <td nowrap align=center><%#Eval("in_date","{0:yyyy/M/d}")%></td>
+                                    <td nowrap align=center><%#Eval("in_date","{0:d}")%></td>
 		                        </tr>
                                 <tr>
 			                        <td nowrap align=center style="font-size:14px">

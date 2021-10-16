@@ -227,7 +227,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>DmtData Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(br_formA.loadDmt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var JSONdata = $.parseJSON(json);
                 if (JSONdata.dmt.length == 0) {
                     alert($("#Bseq").val()+"-"+$("#Bseq1").val()+"不存在於案件主檔內，請重新輸入!!!");

@@ -150,6 +150,32 @@ public partial class Sys
     }
     #endregion
 
+    #region Path2Nbrp - 檔案路徑轉換(檢視＆複製檔案用)，brp→nbrp
+    /// <summary>
+    /// 檔案路徑轉換(檢視＆複製檔案用)，brp→nbrp
+    /// </summary>
+    public static string Path2Nbrp(string path) {
+        //path = path.Replace("/", @"\");
+        //path = path.Replace(@"\brp\", @"\nbrp\");
+        path = path.Replace(@"\", @"/");
+        path = path.Replace("/brp/", "/nbrp/");
+        path = Regex.Replace(path, "D:/Data/document/", "/nbrp/", RegexOptions.IgnoreCase);
+        return path;
+    }
+    #endregion
+
+    #region Path2Brp - 檔案路徑轉換(寫入DB用)，nbrp→brp
+    /// <summary>
+    /// 檔案路徑轉換(寫入DB用)，nbrp→brp
+    /// </summary>
+    public static string Path2Brp(string path) {
+        path = path.Replace(@"\nbrp\", @"/brp/");
+        path = path.Replace(@"/nbrp/", @"/brp/");
+        path = path.Replace(@"\", "/");
+        return path;
+    }
+    #endregion
+
     #region Path2MG - 檔案路徑轉換(檢視總收發文檔案用)，/nbtbrt/ → /MG/
     /// <summary>
     /// 檔案路徑轉換(檢視總收發文檔案用)，/nbtbrt/ → /MG/

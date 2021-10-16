@@ -293,7 +293,7 @@
                             <a href="javascript:void(0)" onclick="CapplClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')"><%#Eval("fseq")%></a>
 		                </td>
 		                <td align="center" ><a href="<%#Eval("urlasp")%>" target="Eblank"><%#Eval("in_no")%></a></td>		
-		                <td align="left"><%#Eval("case_date","{0:yyyy/M/d}")%></td>
+		                <td align="left"><%#Eval("case_date","{0:d}")%></td>
 		                <td align="left" title="<%#Eval("appl_name")%>">&nbsp;<%#Eval("appl_name").ToString().CutData(20)%></td>
 		                <td align="left" title="<%#Eval("cust_name")%>">&nbsp;<%#Eval("cust_name").ToString().CutData(20)%></td>
 		                <td align="left" >&nbsp;<%#Eval("arcase_name")%></td>

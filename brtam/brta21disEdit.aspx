@@ -258,11 +258,11 @@
 		        </td>		
 		        <td><%#(Eval("rownum").ToString()=="*"?Eval("step_grade"):"")%></td>
 		        <td><%#(Eval("rownum").ToString()=="*"?Eval("lcgrs"):"")%></td>
-		        <td><%#(Eval("rownum").ToString()=="*"?Eval("step_date","{0:yyyy/M/d}"):"")%></td>
+		        <td><%#(Eval("rownum").ToString()=="*"?Eval("step_date","{0:d}"):"")%></td>
 		        <td><%#(Eval("rownum").ToString()=="*"?Eval("rs_detail"):"")%></td>
 		        <td><%#(Eval("rownum").ToString()=="*"?Eval("cs_flag"):"")%></td>
-		        <td align="left"><%#Eval("nctrl_type")%>&nbsp;<%#Eval("ctrl_date","{0:yyyy/M/d}")%></td>
-		        <td><%#(Eval("resp_date","{0:yyyy/M/d}")!="1900/1/1"?Eval("resp_date","{0:yyyy/M/d}"):"")%></td>
+		        <td align="left"><%#Eval("nctrl_type")%>&nbsp;<%#Eval("ctrl_date","{0:d}")%></td>
+		        <td><%#(Eval("resp_date","{0:d}")!="1900/1/1"?Eval("resp_date","{0:d}"):"")%></td>
 		        <td><%#(Eval("resp_grade").ToString()!="0"?Eval("resp_grade"):"")%></td>
 		        <td><%#Eval("ctrl_remark")%></td>
 		    </tr>

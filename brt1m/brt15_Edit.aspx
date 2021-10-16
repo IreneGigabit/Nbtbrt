@@ -460,12 +460,12 @@
             async: false,
             cache: false,
             success: function (json) {
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if($("#chkTest").length>0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(this_init)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 jMain = $.parseJSON(json);
             },
             error: function (xhr) {
-                $("#dialog").html("<a href='" + this.url + "' target='_new'>案件資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '案件資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>取得收文資料失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '取得收文資料失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
 

@@ -128,7 +128,7 @@
 	    <ItemTemplate>
                 <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 			        <td nowrap align="center"><%#Eval("fseq")%></td>
-			        <td nowrap align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap align="center"><%#Eval("step_date","{0:d}")%></td>
 			        <td><%#Eval("rs_code")%><%#Eval("rs_detail")%></td><!--2015/4/13專案室要求，增加顯示收文代碼-->
 			        <td align="left">&nbsp;<%#Eval("cappl_name")%></td>
 			        <td nowrap align="center"><%#Eval("service")%>&nbsp;</td>

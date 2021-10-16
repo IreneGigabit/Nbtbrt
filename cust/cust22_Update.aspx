@@ -153,7 +153,17 @@
             }
             
             SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield+"_max_attach_no")) + ",";
-            SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield)) + ",";
+
+            if (Sys.GetSession("dept") == "P")
+            {
+                SQLStr += Util.dbnull(Sys.Path2Brp(ReqVal.TryGet(uploadfield))) + ",";
+            }
+            else
+            {
+                SQLStr += Util.dbnull(Sys.Path2Btbrt(ReqVal.TryGet(uploadfield))) + ",";
+            }
+            
+            
             SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield + "_doc_type")) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield + "_desc")) + ",";
             SQLStr += Util.dbnull(ReqVal.TryGet(uploadfield + "_name")) + ",";
@@ -245,7 +255,17 @@
             SQLStr += "use_dates = " + Util.dbnull(ReqVal.TryGet("use_sdate")) + ", ";
             SQLStr += "use_datee = " + Util.dbnull(ReqVal.TryGet("use_edate")) + ", ";
             SQLStr += "attach_no = " + Util.dbnull(ReqVal.TryGet("attach_no")) + ", ";
-            SQLStr += "attach_path = " + Util.dbnull(ReqVal.TryGet(uploadfield)) + ", ";
+
+            if (Sys.GetSession("dept") == "P")
+            {
+                SQLStr += "attach_path = " + Util.dbnull(Sys.Path2Brp(ReqVal.TryGet(uploadfield))) + ", ";    
+            }
+            else
+            {
+                SQLStr += "attach_path = " + Util.dbnull(Sys.Path2Btbrt(ReqVal.TryGet(uploadfield))) + ", ";
+            }
+            
+            
             SQLStr += "doc_type = " + Util.dbnull(ReqVal.TryGet(uploadfield + "_doc_type")) + ", ";
             SQLStr += "attach_desc = " + Util.dbnull(ReqVal.TryGet(uploadfield + "_desc")) + ", ";
             SQLStr += "attach_name = " + Util.dbnull(ReqVal.TryGet(uploadfield + "_name")) + ", ";

@@ -149,11 +149,19 @@ public partial class Sys
                 if (pBranch.ToUpper() == "S") rtnStr = "sis10.sisdbs.dbo";
                 if (pBranch.ToUpper() == "K") rtnStr = "sik10.sikdbs.dbo";
                 break;
-            case "web10":
-                rtnStr = "web10.sindbs.dbo";//測試環境
+            case "web10"://測試環境
+                if (pBranch.ToUpper() == "K") {
+                    rtnStr = "sikdbs.dbo";
+                } else {
+                    rtnStr = "sindbs.dbo";
+                }
                 break;
-            default:
-                rtnStr = "sindbs.dbo";//開發環境
+            default://開發環境
+                  if (pBranch.ToUpper() == "K") {
+                    rtnStr = "sikdbs.dbo";
+                } else {
+                    rtnStr = "sindbs.dbo";
+                }
                 break;
         }
         return rtnStr;

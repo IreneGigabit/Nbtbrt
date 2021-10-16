@@ -277,7 +277,7 @@
 		            </td>
 			        <td nowrap><%#Eval("step_grade")%></td>
 			        <td><%#Eval("code_name")%></td>
-			        <td nowrap><%#Eval("in_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap><%#Eval("in_date","{0:d}")%></td>
 			        <td nowrap style="cursor: pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" onclick="CapplClick('<%#Eval("seq")%>', '<%#Eval("seq1")%>')">
                         <%#Eval("appl_name")%>
 			        </td>

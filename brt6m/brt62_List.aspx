@@ -264,7 +264,7 @@
                         <td class="whitetablebg" align="center"><%#Eval("fseq")%></td>
                         <td class="whitetablebg" align="center"><%#Eval("step_grade")%></td>
                         <td class="whitetablebg" align="center"><%#Eval("in_scodenm")%></td>
-                        <td class="whitetablebg" align="center"><%#Eval("in_date","{0:yyyy/M/d}")%></td>
+                        <td class="whitetablebg" align="center"><%#Eval("in_date","{0:d}")%></td>
                         <td class="whitetablebg"><%#Eval("attach_desc")%></td>
                         <td class="whitetablebg" title="檔案名稱:<%#Eval("attach_path")%>"><%#Eval("source_name")%></td>
                         <td class="whitetablebg" align="center">

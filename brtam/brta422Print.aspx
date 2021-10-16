@@ -186,7 +186,7 @@
     </HeaderTemplate>
 	<ItemTemplate>
 			<tr class="lightbluetable3">
-				<td colspan=9 style="font-size:12pt">&nbsp;<b>收文日期：<%#Eval("step_date","{0:yyyy/M/d}")%></b>&nbsp;</td>
+				<td colspan=9 style="font-size:12pt">&nbsp;<b>收文日期：<%#Eval("step_date","{0:d}")%></b>&nbsp;</td>
 			</tr>
 	        <asp:Repeater id="rwayRepeater" runat="server" OnItemDataBound="rwayRepeater_ItemDataBound">
 	        <ItemTemplate>

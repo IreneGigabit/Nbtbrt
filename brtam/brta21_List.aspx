@@ -320,7 +320,7 @@
         }
         
         //[列印]
-        string step_date = Eval("step_date", "{0:yyyy/M/d}");
+        string step_date = Eval("step_date", "{0:d}");
         if (cgrs == "GS") {
             link += "<a href=\"brta5m.aspx?prgid=brta5m&cgrs=gs&step_date=" + step_date + "&rs_no=" + Eval("rs_no") + "&FrameBlank=50\" target=\"Eblank\">[列印]</a>";
         } else if (cgrs == "GR") {
@@ -420,7 +420,7 @@
 		            <td><%#Eval("step_grade")%></td>
 		            <td><%#Eval("cappl_name")%></td>
 			        <td><%#Eval("ap_cname1")%></td>
-			        <td><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+			        <td><%#Eval("step_date","{0:d}")%></td>
 	                <td><%#Eval("main_rs_no")%></td>
 	                <td align="left"><%#Eval("rs_detail")%></td>
 	                <td><%#Eval("a_last_date")%></td>

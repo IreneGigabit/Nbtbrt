@@ -422,6 +422,17 @@ public static partial class Util
     }
     #endregion
 
+    #region NullConvert - NULL轉空字串
+    /// <summary>
+    /// NULL轉空字串 (判斷用)
+    /// </summary>
+    public static string NullConvert(object o)
+    {
+        if (o == null) return "";
+        else return o.ToString();
+    }
+    #endregion
+
     #region IsNumeric - 判斷是否為數值
     /// <summary>
     /// 判斷是否為數值

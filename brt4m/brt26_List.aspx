@@ -66,7 +66,8 @@
     }
 
     private void PageLayout() {
-        StrFormBtnTop += "<a href='" + HTProgPrefix + ".aspx?prgid=" + prgid + "'>[查詢畫面]</a>";
+        //StrFormBtnTop += "<a href='" + HTProgPrefix + ".aspx?prgid=" + prgid + "'>[查詢畫面]</a>";
+        StrFormBtnTop += "<a class=\"imgCls\" href=\"javascript:void(0);\" >[關閉視窗]</a>";
         StrFormBtnTop += "<a class=\"imgRefresh\" href=\"javascript:void(0);\" >[重新整理]</a>";
     }
 
@@ -135,7 +136,7 @@
         string link = "";
 
         if (Eval("remark").ToString().Trim() != "") {
-            link = "<a href=\"brt26_Edit.aspx?prgid=" + prgid + "&sqlno=" + Eval("sqlno") + "&dept=" + Eval("dept") + "&arcase=" + Eval("arcase") + "&coun_c=" + Eval("coun_c") + "&country=" + Eval("country") + "\" target=\"Eblank\">[說明]</a>";
+            link = "<a href=\"javascript:void(0)\" onclick=\"openwin(this)\" v1=\"brt26_Edit.aspx?prgid=" + prgid + "&sqlno=" + Eval("sqlno") + "&dept=" + Eval("dept") + "&arcase=" + Eval("arcase") + "&coun_c=" + Eval("coun_c") + "&country=" + Eval("country") + "\" target=\"Eblank\">[說明]</a>";
         }
 
         return link;
@@ -148,9 +149,9 @@
         }
 
         if ((e.Item.ItemType == ListItemType.Item) || (e.Item.ItemType == ListItemType.AlternatingItem)) {
-            string country = DataBinder.Eval(e.Item.DataItem, "country").ToString();
-            string tclass = DataBinder.Eval(e.Item.DataItem, "class").ToString();
-            string arcase = DataBinder.Eval(e.Item.DataItem, "arcase").ToString();
+            string country = DataBinder.Eval(e.Item.DataItem, "country").ToString().Trim();
+            string tclass = DataBinder.Eval(e.Item.DataItem, "class").ToString().Trim();
+            string arcase = DataBinder.Eval(e.Item.DataItem, "arcase").ToString().Trim();
 
             Repeater childRpt = (Repeater)e.Item.FindControl("childRepeater");
             DataTable dtChild = new DataTable();
@@ -296,9 +297,9 @@
 			        <%}%>
 		        <%}%>
 		        <td bgcolor="#80FF80" align="center"><%#Eval("total","NT${0:N0}")%></td><!--含稅合計-->
-		        <td align="center"><%#Eval("beg_date","{0:yyyy/M/d}")%><%#Eval("tend_date")%></td>
+		        <td align="center"><%#Eval("beg_date","{0:d}")%><%#Eval("tend_date")%></td>
 		        <%if (strbranch != "E" ){%>
-			        <td align="center"><%#Eval("IPO_date","{0:yyyy/M/d}")%></td>
+			        <td align="center"><%#Eval("IPO_date","{0:d}")%></td>
 		        <%}%>
 		        <td align="center">
                     <%#GetLink(Container)%>
@@ -318,9 +319,9 @@
 			            <%#(Convert.ToInt32(Eval("oth_fee"))>0?"<br>(" +Eval("oth_code")+":"+Eval("oth_fee")+")":"")%>
 		            </td>
 		            <td bgcolor="#80FF80" align="center"><%#Eval("total","NT${0:N0}")%></td>
-		            <td align="center"><%#Eval("beg_date","{0:yyyy/M/d}")%><%#Eval("tend_date")%></td>
+		            <td align="center"><%#Eval("beg_date","{0:d}")%><%#Eval("tend_date")%></td>
 		            <%if (strbranch != "E" ){%>
-			            <td align="center"><%#Eval("IPO_date","{0:yyyy/M/d}")%></td>
+			            <td align="center"><%#Eval("IPO_date","{0:d}")%></td>
 		            <%}%>
 		            <td align="center">
                         <%#GetLink(Container)%>
@@ -337,7 +338,10 @@
         <table style="display:<%#dt.Rows.Count==0?"none":""%>" border="0" width="100%" cellspacing="0" cellpadding="0">
 		    <tr class="FormName"><td>
 			    <div style="color:blue">
-                    [註]:<br>◎智財局實施日為智慧局公佈生效日期<br>◎本所啟用日為本所收費標準之有效期限
+                    [註]:<br>
+                    ◎智財局實施日為智慧局公佈生效日期<br>
+                    ◎本所啟用日為本所收費標準之有效期限<br>
+                    ◎作業:有設定收費說明才會顯示[說明]<br>
 			    </div>
                 
                 <center>
@@ -363,7 +367,7 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
+            window.parent.tt.rows = "20%,*";
         }
 
         this_init();
@@ -389,5 +393,11 @@
         regPage.target = "ActFrame";
         regPage.action = "<%=HTProgPrefix%>_word.aspx";
         regPage.submit();
+    }
+
+    function openwin(linkObj) {
+        $('#dialog')
+            .html('<iframe style="border: 0px;" src="' + $(linkObj).attr("v1") + '" width="100%" height="100%"></iframe>')
+            .dialog({autoOpen: true,modal: true,height: 420,width: 700,title: "收費說明"});
     }
 </script>

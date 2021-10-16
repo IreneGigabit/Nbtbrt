@@ -163,7 +163,7 @@
 		        <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 			        <td nowrap align="center"><%#(Eval("rs_no").ToString()!=Eval("main_rs_no").ToString()?"*":"")%><%#Eval("fseq")%></td>
 			        <td>&nbsp;<%#Eval("cappl_name").ToString().CutData(20)%></td>
-			        <td nowrap align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap align="center"><%#Eval("step_date","{0:d}")%></td>
 			        <td nowrap align="center"><%#Eval("rs_no")%></td>
 			        <td>&nbsp;<%#Eval("rs_detail")%></td>
 			        <td nowrap align="center">&nbsp;<%#Eval("apply_no")%></td>

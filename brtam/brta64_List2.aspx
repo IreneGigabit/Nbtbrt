@@ -299,7 +299,7 @@
 		            <%if( qtype == "3"){%>
 				        <td nowrap><%#Eval("pay_times")%></td>
 			        <%}%>
-			        <td nowrap align="center"><%#Eval("term1","{0:yyyy/M/d}")%>~<%#Eval("term2","{0:yyyy/M/d}")%></td>
+			        <td nowrap align="center"><%#Eval("term1","{0:d}")%>~<%#Eval("term2","{0:d}")%></td>
                     <%if( qtype == "3"||qtype=="4"){%>
 				        <td nowrap><%#Eval("ldate")%></td>
 			        <%}%>

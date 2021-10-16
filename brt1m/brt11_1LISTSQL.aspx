@@ -270,7 +270,7 @@
 	                <td><%#Eval("appl_name").ToString().Left(20)%></td>
 	                <td><%#Eval("apcust_no")%></td>
 	                <td><%#Eval("ap_cname").ToString().Left(20)%></td>	
-	                <td><%#Eval("in_date","{0:yyyy/M/d}")%></td>
+	                <td><%#Eval("in_date","{0:d}")%></td>
 	                <td><%#Eval("apply_no")%></td>
 	                <td><%#Eval("issue_no")%></td>
 	                <td class="tdext">

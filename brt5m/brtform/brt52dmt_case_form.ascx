@@ -473,7 +473,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(抓取案性特殊控制)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(抓取案性特殊控制)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jFee = $.parseJSON(json);
                 $.each(jFee, function (i, item) {
                     if (item.rs_code != "") {
@@ -505,7 +505,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(轉帳費用)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(轉帳費用)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jFee = $.parseJSON(json);
                 $.each(jFee, function (i, item) {
                     if (item.rs_code != "") {
@@ -568,7 +568,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(收費標準)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(收費標準)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jFee = $.parseJSON(json);
                 //if (jFee.length != 0) {
                     if (x4 != 10) {//轉帳費用

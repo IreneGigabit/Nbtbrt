@@ -164,7 +164,7 @@
                 string urlasp = Sys.getCaseDmt11Aspx(prgid, Eval("in_no").ToString(), Eval("in_scode").ToString(), "Show")
                     + "&opt_sqlno=" + Eval("opt_sqlno")
                     + "&homelist=" + Request["homelist"]
-                    + "&ctrl_date=" + Eval("ctrl_date", "{0:yyyy/M/d}");
+                    + "&ctrl_date=" + Eval("ctrl_date", "{0:d}");
                 return "<span style='cursor: pointer;color:darkblue' onmouseover='this.style.color=\"red\"' onmouseout='this.style.color=\"darkblue\"' title=" + Eval("opt_sqlno") + ">" +
                 "<a href='" + urlasp + "' target='Eblank'>[抽件]</a></span>";
             }
@@ -271,10 +271,10 @@
 		            <td class="whitetablebg" rowSpan=2 align="center"><%#GetButtonLink(Container)%></td>
                   </tr>
                   <tr>
-	                <td class="whitetablebg" align="center"><%#Eval("pr_scode_name","{0:yyyy/M/d}")%>&nbsp;</td>
-	                <td class="whitetablebg" align="center"><%#Eval("opt_in_date","{0:yyyy/M/d}")%></td>
-	                <td class="whitetablebg" align="center"><%#Eval("ctrl_date","{0:yyyy/M/d}")%></td>
-	                <td class="whitetablebg" align="center"><%#Eval("gs_date","{0:yyyy/M/d}")%></td>
+	                <td class="whitetablebg" align="center"><%#Eval("pr_scode_name","{0:d}")%>&nbsp;</td>
+	                <td class="whitetablebg" align="center"><%#Eval("opt_in_date","{0:d}")%></td>
+	                <td class="whitetablebg" align="center"><%#Eval("ctrl_date","{0:d}")%></td>
+	                <td class="whitetablebg" align="center"><%#Eval("gs_date","{0:d}")%></td>
                   </tr>
 			</ItemTemplate>
 <FooterTemplate>

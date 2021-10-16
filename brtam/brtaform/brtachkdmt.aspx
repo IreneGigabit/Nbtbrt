@@ -171,7 +171,7 @@
 	    <tr>
 		    <td align="right" class="lightbluetable3" nowrap>申請日期：</td>
 		    <td align="left" class="sfont9" <%#Eval("apply_date_color")%>><%=ReqVal.TryGet("apply_date")%></td>
-		    <td align="left" class="sfont9" <%#Eval("apply_date_color")%>><%#Eval("mg_apply_date", "{0:yyyy/M/d}")%></td>
+		    <td align="left" class="sfont9" <%#Eval("apply_date_color")%>><%#Eval("mg_apply_date", "{0:d}")%></td>
 	    </tr>
 	    <tr>
 		    <td align="right" class="lightbluetable3" nowrap>申請號碼：</td>
@@ -191,7 +191,7 @@
 	    <tr>
 		    <td align="right" class="lightbluetable3" nowrap>結案日期：</td>
 		    <td align="left" class="sfont9" <%#Eval("end_date_color")%>><%=ReqVal.TryGet("end_date")%></td>
-		    <td align="left" class="sfont9" <%#Eval("end_date_color")%>><%#Eval("mg_end_date", "{0:yyyy/M/d}")%></td>
+		    <td align="left" class="sfont9" <%#Eval("end_date_color")%>><%#Eval("mg_end_date", "{0:d}")%></td>
 	    </tr>
     </table>
 </ItemTemplate>
@@ -216,9 +216,9 @@
 	        <tr class="whitetablebg">
 	            <td align="center"><%#Eval("mg_step_grade")%></td>
 		        <td align="center"><%#Eval("ctrl_type_name")%></td>
-		        <td align="center"><%#Eval("ctrl_date", "{0:yyyy/M/d}")%></td>
+		        <td align="center"><%#Eval("ctrl_date", "{0:d}")%></td>
 		        <td align="center"><%#Eval("ctrl_remark")%></td>
-		        <td align="center"><%#Eval("resp_date", "{0:yyyy/M/d}")%></td>
+		        <td align="center"><%#Eval("resp_date", "{0:d}")%></td>
 		        <td align="center"><%#Eval("mg_resp_step_grade")%></td>
 	        </tr>    
 	</ItemTemplate>

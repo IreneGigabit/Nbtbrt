@@ -93,7 +93,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_custz_att)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(attent_form.getatt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 attent_form.att_list = $.parseJSON(json);
                 if (attent_form.att_list == 0) {
                     toastr.warning("無該客戶聯絡人資料!!!");

@@ -186,6 +186,7 @@
             if ($("#attach_name").val() != "" && $("#source_name").val() != "") {
                 $("#btnattach").lock();
                 $("#scust_seq_1").lock();
+                $("#btnquery_cust_seq_1").lock();
             }
         }
         $("input:radio[name=attach_flag]").lock();//狀態(使用中/停用)for A、U

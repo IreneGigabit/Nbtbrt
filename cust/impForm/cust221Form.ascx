@@ -230,7 +230,7 @@
             success: function (json) {
                 var JSONdata = $.parseJSON(json);
                 if (JSONdata.length != 0) {
-                    var url = "cust13_Edit.aspx?prgid=cust13&submitTask=Q&apsqlno=" + $.trim($("#sapsqlno_" + nRow).val()) + "&apcust_no=" + $.trim($("#sapcust_no_" + nRow).val());
+                    var url = "cust13_Edit.aspx?prgid=cust13_2&submitTask=Q&apsqlno=" + $.trim($("#sapsqlno_" + nRow).val()) + "&apcust_no=" + $.trim($("#sapcust_no_" + nRow).val());
                     window.open(url, "_blank");
 
                 }

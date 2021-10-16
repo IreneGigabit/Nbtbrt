@@ -241,10 +241,10 @@
 			</td>
 		    <td ><%#Eval("cappl_name").ToString().ToUnicode().Left(20)%></td>
 		    <td nowrap align="center"><%#Eval("sc_name")%></td>
-		    <td align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
-		    <td align="center"><%#Eval("pmail_date","{0:yyyy/M/d}")%></td>
+		    <td align="center"><%#Eval("step_date","{0:d}")%></td>
+		    <td align="center"><%#Eval("pmail_date","{0:d}")%></td>
 		    <td align="left"><%#Eval("rs_detail")%></td>
-		    <td align="center"><%#Eval("last_date","{0:yyyy/M/d}")%></td>
+		    <td align="center"><%#Eval("last_date","{0:d}")%></td>
 		    <td align="center"><%#Eval("send_waynm")%></td>
 		    <td align="left"><%#Eval("ap_cname1").ToString().ToUnicode().Left(10)%></td>
 	    </tr>

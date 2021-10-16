@@ -370,7 +370,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(取得一案多件)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(取得一案多件)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var jDmt1 = $.parseJSON(json);
                 $.each(jDmt1, function (i, item) {
                     //產生一案多件
@@ -418,7 +418,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(取得分割子案)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(取得分割子案)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 jSub = $.parseJSON(json);
             },
             error: function (xhr) {
@@ -550,12 +550,13 @@
             }
         } else {//待結案處理
             alert("修改管制種類為結案期限，請檢查！");
+            for (var k = 1; k <= CInt($("#ctrlnum").val()) ; k++) {
             if ($("#ctrl_type_" + k).val() == "B61") {
                 $("#ctrl_type_" + k).val("B6");
                 $("#ctrl_date_" + k).val(Today().addMonths(1).format("yyyy/M/d"));
                 $("#ctrl_remark_" + k).val("結案處理期限");
             }
-
+}
         }
     }
 </script>

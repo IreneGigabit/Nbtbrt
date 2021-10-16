@@ -232,7 +232,7 @@
         }
 
         //[列印]
-        string step_date = Eval("step_date", "{0:yyyy/M/d}");
+        string step_date = Eval("step_date", "{0:d}");
         link += "<a href=\"brta4m.aspx?prgid=brta4m&cgrs=cr&step_date=" + step_date + "&rs_no=" + Eval("rs_no") + "&FrameBlank=50\" target=\"Eblank\">[列印]</a>";
 
         return link;

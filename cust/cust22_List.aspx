@@ -307,7 +307,9 @@
                     <td nowrap title="<%#Eval("agt_no")%>"><%#Eval("agt_namefull")%></td>
                     <td nowrap><%#SetApcust_no(Container)%></td>
 			        <td nowrap>
-                        <a  href="<%#Eval("attach_path")%>" target="_blank"><img src="../images/annex.gif"/></a>
+                        <a  href="<%#(dept == "P")?Sys.Path2Nbrp(Eval("attach_path").ToString()) : Sys.Path2Nbtbrt(Eval("attach_path").ToString())%>" target="_blank">
+                            <img src="../images/annex.gif"/>
+                        </a>
 			        </td>
 			        <td nowrap><%#(Eval("attach_flag").ToString() == "U")?"使用中":"已停用"%></td>
                     <td nowrap><%#Eval("remark")%></td>

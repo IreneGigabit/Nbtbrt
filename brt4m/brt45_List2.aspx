@@ -244,7 +244,7 @@
 				    <td nowrap><%#Eval("appl_name")%></td>
 				    <td nowrap><%#Eval("step_grade")%></td>
 				    <td nowrap><%#Eval("class")%></td>
-				    <td nowrap><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+				    <td nowrap><%#Eval("step_date","{0:d}")%></td>
 				    <td nowrap><%#Eval("rs_detail")%></td>
 				    <td nowrap><%#Eval("cust_seq")%><%#Eval("apcustnm")%></td>
 				    <td nowrap><%#Eval("scode1nm")%></td>

@@ -545,6 +545,7 @@
         string lname = string.Format("{0}{1}{2}", seq, seq1 != "_" && seq1 != "" ? "-" + seq1 : "", ar);//新檔名
 
         string strpath = sfile.gbrWebDir + "/" + fseq.Left(1) + "/" + fseq.Substring(1, 2);
+        Sys.CreateFolder(strpath);//新檔案路徑
         Sys.RenameFile(Sys.Path2Nbtbrt(draw_file), strpath + "/" + lname, true);
         string draw = Sys.Path2Btbrt(strpath + "/" + lname);//存到資料庫的路徑
 

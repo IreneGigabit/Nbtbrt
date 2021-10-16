@@ -7,7 +7,7 @@
 <script runat="server">
     protected string HTProgCap = "案件主檔維護";//HttpContext.Current.Request["prgname"];//功能名稱
     protected string HTProgPrefix = "Brt15ShowFP";//程式檔名前綴
-    protected string HTProgCode =  "brt15";//HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
+    protected string HTProgCode =  HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼//brt51客收確認,brta24官收確認,brta78轉案確認
     protected int HTProgRight = 0;
     protected string DebugStr = "";
@@ -41,6 +41,11 @@
         Response.AddHeader("Pragma", "no-cache");
         Response.Expires = -1;
 
+        if (prgid == "") {
+            prgid = "brt15";
+            HTProgCode = "brt15";
+        }
+   
         QueryString = Request.ServerVariables["QUERY_STRING"];
         ReqVal = Util.GetRequestParam(Context, Request["chkTest"] == "TEST");
         submitTask = (Request["submittask"] ?? "").Trim();
@@ -756,6 +761,13 @@
     function this_init() {
         settab("#dmt");
         //-----------------
+        //清空類別
+        $("#tabclass>tbody").empty();
+        $("#classnum").val("0");
+        //清空申請人
+        $("#tabap>tbody").empty();
+        $("#apnum").val("0");
+
         //取得案件資料
         $.ajax({
             type: "get",
@@ -763,6 +775,7 @@
             async: false,
             cache: false,
             success: function (json) {
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(this_init)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 if (!isJson(json) || $("#chkTest").prop("checked")) {
                     $("#dialog").html("<a href='" + this.url + "' target='_new'>Debug！<u>(點此顯示詳細訊息)</u></a><hr>" + json);
                     $("#dialog").dialog({ title: 'Debug！', modal: true, maxHeight: 500, width: "90%" });
@@ -983,13 +996,15 @@
                     $("#tfx_ap_ename").val(it.ap_ename);
                 }
                 $("#AP_Add_button").click();//增加一筆申請人
-                if(main.prgid=="brta78"){
+                if(main.prgid=="brta78"){//轉案確認
+                    //因轉案不知新申請人編號,所以清空
                     $("#apsqlno_" + (ix + 1)).val("");
+                    $("#apcust_no_" + (ix + 1)).val("");//申請人編號
                 }else{
                     $("#apsqlno_" + (ix + 1)).val(it.apsqlno);
+                    $("#apcust_no_" + (ix + 1)).val(it.apcust_no);//申請人編號
                 }
 
-                $("#apcust_no_" + (ix + 1)).val(it.apcust_no);//申請人編號
                 $("#ap_country_" + (ix + 1)).val(it.ap_country);//申請人國籍
                 $("#ap_sort_" + (ix + 1)).val(it.ap_sort);//申請人排序
                 $("#apclass_" + (ix + 1)).val(it.apclass);//申請人種類
@@ -1044,7 +1059,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                //toastr.info("<a href='" + this.url + "' target='_new'>Debug(getAtt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(getAtt)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var att_list = $.parseJSON(json);
                 if (att_list.length == 0) {
                     $("#tfx_att_sql").val("");
@@ -1093,7 +1108,7 @@
                 async: false,
                 cache: false,
                 success: function (json) {
-                    //if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                    if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust交辦申請人)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                     var apcust_list = $.parseJSON(json);
                     if (apcust_list.length == 0) {
                         alert("無該客戶，請重新輸入或至[客戶新增]新增該客戶!!!");
@@ -1454,7 +1469,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                if ($("#chkTest").prop("checked")) toastr.info("<a href='" + this.url + "' target='_new'>Debug(_apcust申請人資料重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(getAP申請人資料重抓)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 var apcust_list = $.parseJSON(json);
                 if (apcust_list.length == 0) {
                     alert("無該申請人編號!!!");

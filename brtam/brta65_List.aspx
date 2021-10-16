@@ -95,6 +95,9 @@
         if (ReqVal.TryGet("class") != "") {
             SQL += " and a.class like '%" + ReqVal.TryGet("class") + "%'";
         }
+        if (ReqVal.TryGet("class_type") != "") {
+            SQL += " and a.class_type = '" + ReqVal.TryGet("class_type") + "'";
+        }
         if (ReqVal.TryGet("mseq") != "") {
             SQL += " and a.mseq = '" + ReqVal.TryGet("mseq") + "'";
         }
@@ -185,10 +188,9 @@
             }
         }
 
+        ReqVal["qryOrder"] = ReqVal.TryGet("SetOrder", ReqVal.TryGet("qryOrder", "a.seq,a.seq1"));
         if (ReqVal.TryGet("qryOrder") != "") {
             SQL += " order by " + ReqVal.TryGet("qryOrder");
-        } else {
-            SQL += " order by a.seq,a.seq1";
         }
         Sys.showLog(SQL);
         conn.DataTable(SQL, dt);
@@ -285,8 +287,8 @@
     <table style="display:<%#page.totRow==0?"none":""%>" border="0" class="bluetable" cellspacing="1" cellpadding="2" width="100%" align="center" id="dataList">
 	    <thead>
             <Tr>
-		        <TD class=lightbluetable align=center>本所編號</TD>
-		        <TD class=lightbluetable align=center>類別</TD>
+		        <TD class=lightbluetable align=center><u class="setOdr" v1="a.seq,a.seq1">本所編號</u></TD>
+		        <TD class=lightbluetable align=center><u class="setOdr" v1="a.class">類別</u></TD>
 		        <TD class=lightbluetable align=center>案件狀態</TD>
 		        <TD class=lightbluetable align=center>圖樣</TD>
 		        <TD class=lightbluetable align=center>案件名稱</TD>
@@ -314,11 +316,11 @@
 			        <td nowrap style="cursor: pointer;" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'" onclick="CapplClick('<%#Eval("seq")%>','<%#Eval("seq1")%>')">
                         <%#Eval("ap_cname1").ToString().CutData(10)%>
 			        </td>
-			        <td nowrap><%#Eval("apply_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap><%#Eval("apply_date","{0:d}")%></td>
 			        <td nowrap><%#Eval("apply_no")%></td>
-			        <td nowrap><%#Eval("issue_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap><%#Eval("issue_date","{0:d}")%></td>
 			        <td nowrap><%#Eval("issue_no")%></td>	
-			        <td nowrap><%#Eval("term2","{0:yyyy/M/d}")%></td>		
+			        <td nowrap><%#Eval("term2","{0:d}")%></td>		
 			        <td nowrap><%#Eval("lscode")%></td>
 			        <td nowrap><a href="brta61_Edit.aspx?submitTask=Q&prgid=<%=prgid%>&aseq=<%#Eval("seq")%>&aseq1=<%#Eval("seq1")%>&FrameBlank=50" target="Eblank">[查詢]</a></td>
 				</tr>

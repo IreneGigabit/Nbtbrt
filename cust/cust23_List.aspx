@@ -100,7 +100,7 @@
         {
             if (ReqVal.TryGet("ap_cname") != "")
             {
-                SQL += " and (c.ap_cname1 LIKE '%" + ReqVal.TryGet("ap_cname") + "%' OR c.ap_cname2 LIKE '%" + ReqVal.TryGet("ap_cname") + "%') ";
+                SQL += " and (ap.ap_cname1 LIKE '%" + ReqVal.TryGet("ap_cname") + "%' OR ap.ap_cname2 LIKE '%" + ReqVal.TryGet("ap_cname") + "%') ";
             }
             if (ReqVal.TryGet("scode") != "")
             {
@@ -377,7 +377,9 @@
 			                                    <td nowrap class="whitetablebg" align=center><%#Eval("Attention")%></td>
                                                 <td nowrap class="whitetablebg" align=center><%#Eval("spe_mark1nm")%></td>
                                                 <td class="whitetablebg" align=center><%#Eval("end_date","{0:yyyy/M/d}")%></td>
-                                                <td class="whitetablebg" align=center><a href="#">[修改]</a></td>
+                                                <td class="whitetablebg" align=center>
+                                                    <a href="cust23_Edit.aspx?prgid=cust23&cust_area=<%#Eval("cust_area")%>&cust_seq=<%#Eval("cust_seq")%>&mark_sqlno=<%#Eval("mark_sqlno")%>&submittask=U" target="Eblank">[修改]</a>
+                                                </td>
 		                                    </tr>
                                     </ItemTemplate>
                                     <FooterTemplate>
@@ -435,7 +437,9 @@
 			                                    <td nowrap><%#Eval("attach_name")%></td>
 			                                    <td nowrap><%#SetmremarkName(Container)%></td>
                                                 <td nowrap align="left"><%#Eval("attach_desc")%></td>
-                                                <td nowrap><a href="#">[修改]</a></td>
+                                                <td nowrap>
+                                                    <a href="cust23_Edit.aspx?prgid=cust23&cust_area=<%#Eval("cust_area")%>&cust_seq=<%#Eval("cust_seq")%>&apattach_sqlno=<%#Eval("apattach_sqlno")%>&submittask=U" target="Eblank">[修改]</a>
+                                                </td>
 		                                    </tr>
                                     </ItemTemplate>
                                     <FooterTemplate>

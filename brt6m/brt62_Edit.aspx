@@ -214,7 +214,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(_dmt_step_attach)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(this_init)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 //window.open(this.url);
                 jMain = $.parseJSON(json);
             },
@@ -365,7 +365,7 @@
             async: false,
             cache: false,
             success: function (json) {
-                toastr.info("<a href='" + this.url + "' target='_new'>Debug(_dmt_step_attach1)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
+                if ($("#chkTest").length > 0) toastr.info("<a href='" + this.url + "' target='_new'>Debug(getSeq)！<BR><b><u>(點此顯示詳細訊息)</u></b></a>");
                 jMain = $.parseJSON(json);
             },
             error: function (xhr) {

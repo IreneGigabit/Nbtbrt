@@ -733,10 +733,10 @@
                             <!--商標圖檔--><%#GetDrawFile(Container)%>
                             <!--收據抬頭--><BR /><%#GetReceiptTitle(Container,"E")%>
 		                </td>
-		                <td align="center"><%#Eval("case_date","{0:yyyy/M/d}")%></td>
-		                <td align="center"><%#Eval("step_date","{0:yyyy/M/d}")%></td>
+		                <td align="center"><%#Eval("case_date","{0:d}")%></td>
+		                <td align="center"><%#Eval("step_date","{0:d}")%></td>
 		                <td align="center"><%#Eval("cust_name").ToString().Left(5)%></td>
-		                <td align="center"><%#Eval("last_date","{0:yyyy/M/d}")%></td>
+		                <td align="center"><%#Eval("last_date","{0:d}")%></td>
 		                <td><%#Eval("appl_name").ToString().Left(20)%></td>
 		                <td><%#Eval("class")%></td>
 		                <td align="center"><%#Eval("case_name")%></td>

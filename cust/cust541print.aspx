@@ -373,7 +373,7 @@
 			        <td align="right" nowrap>群組客戶：</td>
 			        <td nowrap><%#Eval("ref_seq")%></td>
 			        <td align="right" nowrap>建檔日期：</td>
-			        <td nowrap><%#Eval("in_date","{0:yyyy/M/d}")%></td>
+			        <td nowrap><%#Eval("in_date","{0:d}")%></td>
 		        </tr>
                 <tr class="<%#(Container.ItemIndex+1)%2== 1 ?"sfont9":"lightbluetable3"%>">
 			        <td align="right" nowrap>客戶名稱(中)：</td>

@@ -53,7 +53,7 @@
             SQL += "left outer join apcust as b on a.cust_seq=b.cust_seq ";
             SQL += "where 1=1 ";
             if (ReqVal.TryGet("tfx_Scode") != "") {
-                SQL += "AND a.tfx_Scode ='" + Request["tfx_Scode"] + "' ";
+                SQL += "AND a.Scode ='" + Request["tfx_Scode"] + "' ";
             }
             if (ReqVal.TryGet("ifx_seq") != "") {
                 SQL += "AND a.seq ='" + Request["ifx_seq"] + "' ";
