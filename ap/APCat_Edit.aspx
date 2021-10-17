@@ -168,6 +168,8 @@
         } else {
             $("#pfx_SYScode").val("<%#syscode%>");
         }
+
+        $(".bsubmit").unlock();
     }
 
     //新增/修改

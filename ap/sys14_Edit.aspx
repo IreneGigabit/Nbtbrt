@@ -295,10 +295,13 @@
     $('#tfx_scode').autocomplete({
         width: 150,
         noCache:true,
-        serviceUrl: getRootPath() + "/ajax/json_get_scode.aspx",
+        serviceUrl: getRootPath() + "/ap/sys14_get_scode.aspx",
+        formatResult: function (item) {
+            return item.value+"_"+item.data;
+        },
         onSelect: function (suggestion) {
-            $(this).val(suggestion.scode);
-            $("#xxx_scname").html(suggestion.sc_name);
+            $(this).val(suggestion.value);
+            $("#xxx_scname").html(suggestion.data);
         },
         onSearchStart: function (suggestion) {
             $("#xxx_scname").html("");

@@ -1,5 +1,5 @@
 /**
-*  Ajax Autocomplete for jQuery, version 1.4.11
+*  Ajax Autocomplete for jQuery, version %version%
 *  (c) 2017 Tomas Kirda
 *
 *  Ajax Autocomplete for jQuery is freely distributable under the terms of an MIT-style license.
@@ -95,7 +95,6 @@
             serviceUrl: null,
             lookup: null,
             onSelect: null,
-            onHint: null,
             width: 'auto',
             minChars: 1,
             maxHeight: 300,
@@ -141,14 +140,21 @@
         }
 
         var pattern = '(' + utils.escapeRegExChars(currentValue) + ')';
-
+        /*
         return suggestion.value
             .replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>')
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
-            .replace(/&lt;(\/?strong)&gt;/g, '<$1>');
+            .replace(/&lt;(\/?strong)&gt;/g, '<$1>');*/
+        return suggestion.value
+            .replace(new RegExp(pattern, 'gi'), '$1')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+
     };
 
     function _formatGroup(suggestion, category) {
@@ -633,7 +639,7 @@
             that.selectedIndex = -1;
             clearTimeout(that.onChangeTimeout);
             $(that.suggestionsContainer).hide();
-            that.onHint(null);
+            that.signalHint(null);
         },
 
         suggest: function () {
@@ -769,24 +775,20 @@
                 return !foundMatch;
             });
 
-            that.onHint(bestMatch);
+            that.signalHint(bestMatch);
         },
 
-        onHint: function (suggestion) {
-            var that = this,
-                onHintCallback = that.options.onHint,
-                hintValue = '';
-            
+        signalHint: function (suggestion) {
+            var hintValue = '',
+                that = this;
             if (suggestion) {
                 hintValue = that.currentValue + suggestion.value.substr(that.currentValue.length);
             }
             if (that.hintValue !== hintValue) {
                 that.hintValue = hintValue;
                 that.hint = suggestion;
-                if ($.isFunction(onHintCallback)) {
-                    onHintCallback.call(that.element, hintValue);
-                }
-            }  
+                (this.options.onHint || $.noop)(hintValue);
+            }
         },
 
         verifySuggestionsFormat: function (suggestions) {
@@ -927,7 +929,7 @@
                 that.el.val(that.getValue(that.suggestions[index].value));
             }
 
-            that.onHint(null);
+            that.signalHint(null);
         },
 
         onSelect: function (index) {
@@ -941,7 +943,7 @@
                 that.el.val(that.currentValue);
             }
 
-            that.onHint(null);
+            that.signalHint(null);
             that.suggestions = [];
             that.selection = suggestion;
 

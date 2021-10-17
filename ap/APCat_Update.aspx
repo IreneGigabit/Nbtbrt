@@ -48,14 +48,6 @@
 
                 cnn.Commit();
                 //cnn.RollBack();
-
-                if (Request["chkTest"] != "TEST") {
-                    strOut.AppendLine("if (window.parent.parent.Etop.goSearch !== undefined) { ");
-                    strOut.AppendLine(" window.parent.parent.Etop.goSearch();");
-                    strOut.AppendLine("}else{");
-                    strOut.AppendLine(" window.parent.document.getElementsByClassName('imgCls')[0].click();");
-                    strOut.AppendLine("}");
-                }
             }
             catch (Exception ex) {
                 cnn.RollBack();
@@ -95,7 +87,8 @@
         
         msg = "新增完成！";
         strOut.AppendLine("alert('"+msg+"');");
-        if (Request["chkTest"] != "TEST") strOut.AppendLine("window.parent.location.reload();");
+        //if (Request["chkTest"] != "TEST") strOut.AppendLine("window.parent.location.reload();");
+        if (Request["chkTest"] != "TEST") strOut.AppendLine("window.parent.btnReset.click();");
     }
 
     private void doUpdate(DBHelper cnn) {
@@ -108,7 +101,8 @@
         
         msg = "資料更新成功!!!";
         strOut.AppendLine("alert('" + msg + "');");
-        if (Request["chkTest"] != "TEST") strOut.AppendLine("window.parent.location.reload();");
+        //if (Request["chkTest"] != "TEST") strOut.AppendLine("window.parent.location.reload();");
+        if (Request["chkTest"] != "TEST") strOut.AppendLine("window.parent.btnReset.click();");
     }
 
     private void doDel(DBHelper cnn) {
@@ -117,6 +111,13 @@
         
         msg = "資料刪除成功!!!";
         strOut.AppendLine("alert('" + msg + "');");
+        if (Request["chkTest"] != "TEST") {
+            strOut.AppendLine("if (window.parent.parent.Etop.goSearch !== undefined) { ");
+            strOut.AppendLine(" window.parent.parent.Etop.goSearch();");
+            strOut.AppendLine("}else{");
+            strOut.AppendLine(" window.parent.document.getElementsByClassName('imgCls')[0].click();");
+            strOut.AppendLine("}");
+        }
     }
 </script>
 

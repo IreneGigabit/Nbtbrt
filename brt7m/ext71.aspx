@@ -128,8 +128,8 @@
     <input type="text" id="id_no" name="id_no">
     <input type="text" id="Type" name="Type" value=<%=Request["Type"]%>>
     <input type="text" id="qs_dept" name="qs_dept" value=<%=Request["qs_dept"]%>>
-    <input type="text" id=cust_seq  name=cust_seq value=>
-    <input type="text" id=rec_scode name=rec_scode value=>
+    <input type="text" id=cust_seq  name=cust_seq>
+    <input type="text" id=rec_scode name=rec_scode>
     <input type="text" id=inscode1  name=inscode1 value=<%=Request["in_scode"]%>>
     <input type="text" id=inno1 name=inno1 value=<%=Request["in_no"]%>>
     <input type="text" id=T1 name=T1 value="Y">
@@ -247,21 +247,21 @@
     //tobject:A=查apcust_no,C/S=查cust_seq
     //tca:C=客戶,其他=申請人
     function search(tno, tobject, tca) {
-        if (tno == ""){
-            if (tca == "C"){
+        if (tno == "") {
+            if (tca == "C") {
                 alert("輸入請款客戶錯誤，請重新輸入");
-            }else{
+            } else {
                 alert("輸入開立對象錯誤，請重新輸入");
             }
-           return false;
+            return false;
         }
-		
+
         //*******抓取開立對象名稱，證照號碼
-        var url="";
-        if (tobject=="C"||tobject=="S"){
-            url=getRootPath() + "/ajax/_apcust.aspx?cust_seq=" + tno ;
-        }else{
-            url=getRootPath() + "/ajax/_apcust.aspx?apcust_no=" + tno;
+        var url = "";
+        if (tobject == "C" || tobject == "S") {
+            url = getRootPath() + "/ajax/_apcust.aspx?cust_seq=" + tno;
+        } else {
+            url = getRootPath() + "/ajax/_apcust.aspx?apcust_no=" + tno;
         }
 
         $.ajax({
@@ -279,15 +279,15 @@
                     $("#apsqlno").val(JSONdata[0].apsqlno);
                     $("#tfx_apcust_no").val(JSONdata[0].apcust_no);
                     $("#ap_cname").val(JSONdata[0].ap_name);
-                    if (tca == "C"){
+                    if (tca == "C") {
                         $("#cust_cname").val($("#ap_cname").val());//申請人名稱
                         $("#id_no").val($("#tfx_apcust_no").val());//申請人統編或身分證字號
                     }
                 }
             },
-            error: function (xhr) { 
-                $("#dialog").html("<a href='" + this.url + "' target='_new'>客戶/申請人資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>"+xhr.responseText);
-                $("#dialog").dialog({ title: '客戶/申請人資料載入失敗！', modal: true, maxHeight: 500,width: "90%" });
+            error: function (xhr) {
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>客戶/申請人資料載入失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '客戶/申請人資料載入失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
     }
@@ -353,13 +353,14 @@
     }
 	
     //請款單種類
-    function armark_chk71(v){
+    function armark_chk71(v) {
         $("#tar_mark").val(v);
     }
     
     //當從請款查詢進入時，檢查輸入證照號碼是否為該案件申請人
-    function apcust_chk71(){
-        var searchSql = "select count(*) as apnum from <%=tblname%> where in_no='" + $("#inno1").val() + "'";
+    function apcust_chk71() {
+        var searchSql = "select b.apcust_no,a.apsqlno from <%=tblname%> a inner join apcust b on a.apsqlno=b.apsqlno where a.in_no='<%=Request["in_no"]%>'";
+        var rtn = false;
         $.ajax({
             type: "get",
             url: getRootPath() + "/ajax/JsonGetSqlData.aspx",
@@ -368,57 +369,91 @@
             cache: false,
             success: function (json) {
                 var JSONdata = $.parseJSON(json);
-                if (JSONdata.length == 0) {
-                    alert("無該交辦案件申請人資料!!");
-                    return false;
-                } else {
-                    if (CInt(JSONdata[0].apnum) > 1) {
-                        $("#btngetap").val("共同申請人(" + JSONdata[0].apnum + ")");
-                        $("#btngetap").show();
+                $.each(JSONdata, function (i, item) {
+                    if ($("#tfx_apcust_no").val() == item.apcust_no) {
+                        rtn = true;
                     }
-                }
+                });
             },
             error: function (xhr) {
-                $("#dialog").html("<a href='" + this.url + "' target='_new'>抓取交辦申請人數失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
-                $("#dialog").dialog({ title: '抓取交辦申請人數失敗！', modal: true, maxHeight: 500, width: "90%" });
+                $("#dialog").html("<a href='" + this.url + "' target='_new'>檢查輸入證照是否為該案件申請人失敗！<u>(點此顯示詳細訊息)</u></a><hr>" + xhr.responseText);
+                $("#dialog").dialog({ title: '檢查輸入證照是否為該案件申請人失敗！', modal: true, maxHeight: 500, width: "90%" });
             }
         });
 
-        var searchSql = "select b.apcust_no,a.apsqlno from <%=tblname%> a inner join apcust b on a.apsqlno=b.apsqlno where a.in_no='<%=Request["in_no"]%>'";
-
-        <%	sqlfind = "select b.apcust_no,a.apsqlno from <%=tblname%> a inner join apcust b on a.apsqlno=b.apsqlno where a.in_no='" & request("in_no") & "'"
-		RTreg.open sqlfind,conn,1,1
-		int_flag=false
-		while not RTreg.eof			
-			tapcust_no=trim(RTreg("apcust_no"))
-	        %>			
-            if trim(reg.tfx_apcust_no.value) = "<%=tapcust_no%>" then
-                apcust_chk71=true
-                exit function
-            end if
-	<%      RTreg.movenext
-		wend
-		if int_flag=false then 
-	%>	
-			apcust_chk71=false
-	<%	end if%>
+        return rtn;
     }
 
+    //[共同申請人]交辦案件申請人清單
+    $("#btngetap").click(function (e) {
+        if ($("input[name='tobject'][value='1']").prop("checked") == true) {//該客戶
+            alert("收據抬頭依客戶開立，無法點選共同申請人選擇另一申請人開立，如需選擇，則請改點選依申請人開立！");
+            return false;
+        }
 
-        //[下一步]
-        $("#btnSrch").click(function (e) {
-            if ($("input[name=todo][value='X']").prop("checked") == true) {//交辦尚未請款完畢
-                if ($("#Scode").val() == "") {
-                    alert("請選擇營洽人員！");
+        if ($("#qs_dept").val() == "" || $("#inscode1").val() || $("#inno1").val()) {
+            alert("系統找不到欲請款的接洽序號，無法顯示交辦案件申請人資料，請重新進入請款作業！");
+            return false;
+        }
+
+        //***todo
+        var urlasp = "brt_apcustlist.aspx?prgid=<%=HTProgCode%>&qs_dept=" + $("#qs_dept").val() + "&in_scode=" + $("#inscode1").val() + "&in_no=" + $("#inno1").val();
+        window.open(urlasp, 'myWindowOneN', "width=900 height=380 top=340 left=120 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+    });
+
+    //[下一步]
+    $("#btnSrch").click(function (e) {
+        if ($("#myobject").val() == "C") {//該客戶
+            if ($("#tfx_Cust_seq").val() == "") {//案件所屬客戶
+                alert("請輸入請款客戶！");
+                $("#tfx_Cust_seq").focus();
+                return false;
+            }
+            //檢附間接委辦單
+            if ($("#tfx_rec_chk1").prop("checked") == true) {
+                alert("收據對象為委辦客戶，應檢附「間接委辦單」！");
+                $("#tfx_rec_chk1").focus();
+                return false;
+            }
+        }
+
+        if ($("#myobject").val() == "A" || $("#myobject").val() == "S") {//案件申請人
+            if ($("#tfx_apcust_no").val() == "") {//統編或身分證字號
+                alert("請輸入證照號碼！");
+                $("#tfx_apcust_no").focus();
+                return false;
+            }
+            //當從請款查詢進入時，檢查輸入證照號碼是否為該案件申請人
+            if ("<%=ReqVal.TryGet("case_date")%>" != "") {
+                var task = apcust_chk71();
+                if (task == false) {
+                    alert("輸入ID不是該案件申請人，請重新輸入！");
                     return false;
                 }
             }
+        }
 
-            if ($("#eseq").val() == "" && $("#bseq").val() != "") {
-                $("#eseq").val($("#bseq").val());
+        if ($("#Scode").val() == "") {
+            alert("請選擇營洽人員！");
+            $("#Scode").focus();
+            return false;
+        }
+
+        $("#cust_seq").val($("#tfx_Cust_seq").val());
+        $("#rec_scode").val($("#Scode").val());
+
+        //當從請款查詢進入
+        if ("<%=ReqVal.TryGet("case_date")%>" != "") {
+            if ($("#qs_dept").val() == "t") {
+                reg.action = "Brt71_Detail.aspx?modify=A";
             }
 
-            reg.action = "<%=HTProgPrefix%>_List.aspx";//未開立請款單案件查詢
-            reg.submit();
-        });
+            if ($("#qs_dept").val() == "e") {
+                reg.action = "Ext71_Detail.aspx?modify=A";
+            }
+        } else {
+            reg.action = "<%=HTProgPrefix%>_List.aspx";
+        }
+        reg.submit();
+    });
 </script>
