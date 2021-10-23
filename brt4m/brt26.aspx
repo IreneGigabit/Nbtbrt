@@ -430,7 +430,7 @@
         }
 
         reg.action = "<%=HTProgPrefix%>_List.aspx";
-        reg.target = "Eblank";
+        //reg.target = "Eblank";
         reg.submit();
     });
 

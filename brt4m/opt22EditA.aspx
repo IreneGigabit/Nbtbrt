@@ -277,15 +277,6 @@
         $("div.tabCont[id='" + k + "']").show();
     }
 
-    //關閉視窗
-    $(".imgCls").click(function (e) {
-        if (window.parent.tt !== undefined) {
-            window.parent.tt.rows = "100%,0%";
-        } else {
-            window.close();
-        }
-    })
-
     //判行
     function formSaveSubmit(dowhat){
         if (dowhat == "U" && $("#send_way").val() == "E") {

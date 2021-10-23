@@ -815,6 +815,9 @@
 
         $("#ap_country").val(jData.ap_country);
         $("#apclass").val(jData.apclass);
+        if ($("#apclass").val() == null) {
+            $("#apclass").get(0).selectedIndex = 0;
+        }
         $("#id_no").val(jData.id_no);
         $("#apsqlno").val(jData.apsqlno);
 		

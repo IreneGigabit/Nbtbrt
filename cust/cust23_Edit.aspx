@@ -62,7 +62,7 @@
         }
         else if (dept == "T")
         {
-            syscode = "BTBRT"; txt_dept = "|PI|PE|";
+            syscode = "BTBRT"; txt_dept = "|TI|TE|";
         }
         else
         {
@@ -471,9 +471,7 @@
         $("input[name='rpt_spe_mark1_"+nReport+"'][value='pdf']").prop('checked', true).trigger("click");
         //種類預設通用
         $("#rpt_mark_type2_"+nReport).val('_');
-
-        //帶對應的聯絡人清單
-        cust23textform.searchCustAtt(nReport, "rpt_att_sql_", "");
+        cust23textform.searchCustAtt(nReport, "rpt_att_sql_", '<%=dept%>');
         //getAtt("#rpt_att_sql_"+nReport,"<%=syscode%>");
         $("input.dateField").datepick();
     }
@@ -588,7 +586,17 @@
                         }else{
                             $("input[name='rpt_syscode_"+nReport+"']").prop('disabled', true);
                         }
-                        $("#o_rpt_syscode_"+nReport).val(rSyscode);
+                        $("#o_rpt_syscode_" + nReport).val(rSyscode);
+                        //帶對應的聯絡人清單-清空重放
+                        $("#rpt_att_sql_" + nReport).empty();
+                        var d = "";
+                        if (item.syscode == "BRP") {
+                            d = "P"
+                        } else if (item.syscode == "BTBRT") {
+                            d = "T"
+                        }
+                        cust23textform.searchCustAtt(nReport, "rpt_att_sql_", d);
+
                         $("#rpt_mark_type2_"+nReport).val(item.mark_type2).trigger("change");
                         $("#o_rpt_mark_type2_"+nReport).val(item.mark_type2);
                         //getAtt("#rpt_att_sql_"+nReport,rSyscode);
@@ -603,7 +611,9 @@
                         $("#rpt_mark_sqlno_"+nReport).val(item.mark_sqlno);
                         <%--if(rSyscode!="<%=syscode%>")lockTr("rpt_",nReport);--%>
                         //新增模式要鎖定
-                        if("<%=submitTask%>"=="A")lockTr("rpt_",nReport);
+                        if ("<%=submitTask%>" == "A") lockTr("rpt_", nReport);
+                        //不同單位要鎖定
+                        if (item.syscode != '<%=syscode%>') lockTr("rpt_", nReport);
                 
                     })
 

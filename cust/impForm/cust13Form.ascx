@@ -47,10 +47,11 @@
 				<select name="apclass" id="apclass" onchange="cust13form.apclassChange()" onblur="cust13form.ChkApclass()">
                     <%#html_apclass%>
 				</select>
+            <input TYPE="text" id="txtapclass" NAME="txtapclass" readonly class="SEdit" size="30" value="">
 		</td>
 		<td class="lightbluetable" align="right" width="12%">申請人國籍：</td>
 		<td class="whitetablebg" align="left">
-			<select name="ap_country" id="ap_country">
+			<select name="ap_country" id="ap_country" onblur="cust13form.chkCountry()">
                 <%#html_country %>
 			</select> 
 		</td>
@@ -253,6 +254,7 @@
     //資料綁定
     cust13form.bind = function (jData) {
         $("#apclass").val(jData.apclass);
+        $("#txtapclass").val(jData.apclass + "-" + jData.apclassnm);
         //$("#hapclass").val(jData.apclass);
         $("#ap_country").val(jData.ap_country);
         $("#ap_cname1").val(jData.ap_cname1);
@@ -349,23 +351,23 @@
                 case "AC":
                 case "AD":
                 case "AE":
-                    if (fChkDataLen2($("#apcust_no")[0], 8, "申請人編號") == "") { $("#apcust_no").focus(); return false; }
+                    //if (fChkDataLen2($("#apcust_no")[0], 8, "申請人編號") == "") { $("#apcust_no").focus(); return false; }
                     if (chkID($("#apcust_no").val(), "TaxID") == true) { $("#apcust_no").focus(); return false; }
-
                     break;
 
                 case "B":
+                    if (chkID($("#apcust_no").val(), "ID") == true) { $("#apcust_no").focus(); return false; }
+                    break;
+
                 case "CB":
                     if (fChkDataLen2($("#apcust_no")[0], 10, "申請人編號") == "") { $("#apcust_no").focus(); return false; }
-                    if (chkID($("#apcust_no").val(), "ID") == true) { $("#apcust_no").focus(); return false; }
-
                     break;
 
                 case "CT":
                     if (fChkDataLen2($("#apcust_no")[0], 6, "申請人編號") == "") {
                         $("#apcust_no").focus();
                         return false;
-                    };
+                    }
                     break;
                 default:
                     break;
@@ -395,7 +397,7 @@
                 var JSONdata = $.parseJSON(json);
                 if (JSONdata.length == 0) { }
                 else {
-                    alert("申請人號碼重複，請重新輸入!");
+                    alert("申請人編號重複，請重新輸入!");
                     b = true;
                     $("#apcust_no").focus();
                 }
@@ -459,14 +461,20 @@
             return false;
         }
         else {
-            if ($("#apclass").val() == "B" && $("#ap_country").val() != "T") {
-                alert("本國人不可選擇外國國籍!");
+            if (($("#apclass").val() == "AA" || $("#apclass").val() == "AB" || $("#apclass").val() == "AC"
+                || $("#apclass").val() == "AD" || $("#apclass").val() == "AE" || $("#apclass").val() == "B")
+                && $("#ap_country").val() != "T") {
+                alert("本國公司行號及個人，不可為外國國籍!");
+                $("#ap_country").val("T");
+                $("#ap_country").focus();
                 return false;
             }
 
             if (($("#apclass").val() == "CA" || $("#apclass").val() == "CB" || $("#apclass").val() == "CT") &&
                 $("#ap_country").val() == "T") {
-                alert("外國人不可選擇中華民國國籍!");
+                alert("外國人或外國公司，不可選擇中華民國國籍!");
+                $("#ap_country").val("");
+                $("#ap_country").focus();
                 return false;
             }
         }

@@ -10,7 +10,7 @@
 
 
 <script runat="server">
-    protected string HTProgCap = "專利客戶資料";//功能名稱
+    protected string HTProgCap = "客戶資料";//功能名稱
     protected string HTProgPrefix = "cust11";//程式檔名前綴
     protected string HTProgCode = HttpContext.Current.Request["prgid"] ?? "";//功能權限代碼
     protected string prgid = (HttpContext.Current.Request["prgid"] ?? "").ToLower();//程式代碼
@@ -29,6 +29,7 @@
     protected string cust_area = "";
     protected string cust_seq = "";
     protected string dept = "";
+    protected string deptName = "";
     protected string cust_att = "";
     protected string ctrl_open = "";
 
@@ -61,11 +62,13 @@
         cust_seq = Request["cust_seq"];
         submitTask = ReqVal.TryGet("submitTask").ToUpper();
         dept = Sys.GetSession("dept");
+        deptName = (dept == "P") ? "專利" : "商標";
         ctrl_open = Request["ctrl_open"];
         //connbr = Request["databr_branch"] ?? "";
         //Sys.showLog("cust_area = " + cust_area + " , cust_seq = " + cust_seq);
-        
-        if (cust_att == "A") { HTProgCap = "專利聯絡人"; }
+
+        HTProgCap = deptName + HTProgCap;
+        if (cust_att == "A") { HTProgCap = deptName + "聯絡人"; }
         if (submitTask == "A") HTProgCap = HTProgCap + "-<font color=blue>新增</font>";
         if (submitTask == "U") HTProgCap = HTProgCap + "-<font color=blue>維護</font>";
         if (submitTask == "Q") HTProgCap = HTProgCap + "-<font color=blue>查詢</font>";
@@ -274,7 +277,7 @@
         }
         else {
             if ('<%=ctrl_open%>' == "Y") {
-                //cust45_List 客戶/申請人綜合查詢清單用
+                //cust45_List、cust14_List 客戶/申請人綜合查詢清單用
                 window.parent.tt.rows = "40%, 60%";
             }
             else {

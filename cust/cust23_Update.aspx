@@ -314,7 +314,16 @@
                     SQLAttach += "GETDATE(),";
                     SQLAttach += "'" + scode + "'," + "'" + prgid + "',";
                     SQLAttach += Util.dbnull(attach_no) + ",";
-                    SQLAttach += Util.dbnull(attach_path) + ",";//10
+
+                    if (Sys.GetSession("dept") == "P")
+                    {
+                        SQLAttach += Util.dbnull(Sys.Path2Brp(attach_path)) + ",";//10
+                    }
+                    else
+                    {
+                        SQLAttach += Util.dbnull(Sys.Path2Btbrt(attach_path)) + ",";//10
+                    }
+                    
                     SQLAttach += Util.dbchar(attach_doc_type) + ",";
                     SQLAttach += Util.dbnull(attach_desc) + ",";
                     SQLAttach += Util.dbnull(attach_name) + ",";
@@ -603,7 +612,16 @@
                         {
                             SQLAttach = "update apcust_attach set ";
                             SQLAttach += "attach_no = " + Util.dbnull(attach_no) + ",";
-                            SQLAttach += "attach_path = " + Util.dbnull(attach_path) + ",";
+
+                            if (Sys.GetSession("dept") == "P")
+                            {
+                                SQLAttach += "attach_path = " + Util.dbnull(Sys.Path2Brp(attach_path)) + ",";
+                            }
+                            else
+                            {
+                                SQLAttach += "attach_path = " + Util.dbnull(Sys.Path2Btbrt(attach_path)) + ",";
+                            }
+                            
                             SQLAttach += "doc_type = " + Util.dbchar(attach_doc_type) + ",";
                             SQLAttach += "attach_desc = " + Util.dbnull(attach_desc) + ",";
                             SQLAttach += "attach_name = " + Util.dbnull(attach_name) + ",";
@@ -667,7 +685,16 @@
                         SQLAttach += "GETDATE(),";
                         SQLAttach += "'" + scode + "'," + "'" + prgid + "',";
                         SQLAttach += Util.dbnull(attach_no) + ",";
-                        SQLAttach += Util.dbnull(attach_path) + ",";//10
+
+                        if (Sys.GetSession("dept") == "P")
+                        {
+                            SQLAttach += Util.dbnull(Sys.Path2Brp(attach_path)) + ",";//10
+                        }
+                        else
+                        {
+                            SQLAttach += Util.dbnull(Sys.Path2Btbrt(attach_path)) + ",";//10
+                        }
+                    
                         SQLAttach += Util.dbchar(attach_doc_type) + ",";
                         SQLAttach += Util.dbnull(attach_desc) + ",";
                         SQLAttach += Util.dbnull(attach_name) + ",";

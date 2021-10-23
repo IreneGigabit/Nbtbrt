@@ -91,7 +91,12 @@
                 scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Code = \"" + dt.Rows[i]["APcode"].ToString() + "\";\n";
                 scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Cat = \"" + dt.Rows[i]["APcatID"].ToString() + "\";\n";
                 scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Name = \"" + dt.Rows[i]["APNameC"].ToString() + "\";\n";
-
+                
+                if(dt.Rows[i]["ReMark"].ToString().ToLower().IndexOf("&openwin=y")>-1){
+                    scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Win = true;\n";
+                }else{
+                    scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Win = false;\n";
+                }
                 //scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"" + dt.Rows[i]["APpath"].ToString() + "?prgid=" + dt.Rows[i]["APcode"].ToString() + "\";\n";
                 if (Sys.Host == "localhost") {
                     scriptString += "\t\tzmenu[" + xmIdx.ToString() + "].Link = \"http://" + Sys.Host + "/" + dt.Rows[i]["APpath"].ToString() +
@@ -314,12 +319,17 @@
 
     function PopMenuClick(ii) {
         var lnk = zmenu[ii].Link;
+        var win = zmenu[ii].Win;
 
-        var ifrm = $("#workfram").contents();
-        //$(ifrm).find("[name='mainFrame']").attr("src", lnk);
-        $("#Etop", ifrm).attr("src", lnk);
-        //$(ifrm).find("[name='mainFrame']")[0].location.href = lnk;
-        //workfram.mainFrame.location.href = lnk;
+        if (win) {//開新視窗
+            window.open(lnk, "myWindowOneN", "width=900 height=700 top=40 left=80 toolbar=no, menubar=no, location=no, directories=no resizeable=no status=no scrollbars=yes");
+        } else {
+            var ifrm = $("#workfram").contents();
+            //$(ifrm).find("[name='mainFrame']").attr("src", lnk);
+            $("#Etop", ifrm).attr("src", lnk);
+            //$(ifrm).find("[name='mainFrame']")[0].location.href = lnk;
+            //workfram.mainFrame.location.href = lnk;
+        }
         $("#oPopBody").hide();
     }
 

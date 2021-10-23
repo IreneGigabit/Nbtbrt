@@ -367,7 +367,6 @@ function chkID(pUserID, pType) {
 }
 //#endregion
 
-
 function Path2Nbrp(path) {
     path = path.replace("@'\', @'/'");
     path = path.replace("/brp/", "/nbrp/");
@@ -380,4 +379,10 @@ function Path2Nbtbrt(path) {
     path = path.replace("/btbrt/", "/nbtbrt/");
     //path = Regex.replace(path, "D:/Data/document/", "/nbtbrt/", RegexOptions.IgnoreCase);
     return path;
+}
+
+//20191007增加檢視客戶備註視窗
+function OpenRemarkWin(cust_area, cust_seq) {
+    var url = getRootPath() + "/cust/cust23_Edit.asp?prgid=" + $("#prgid").val() + "&cust_area=" + cust_area + "&cust_seq=" + cust_seq + "&submittask=Q&closewin=Y";
+    window.open(url, "myWindowOneN", "width=900, height=600, top=10, left=10, toolbar=no, menubar=no, location=no, directories=no, resizable=yes, status=yes, scrollbars=yes");
 }

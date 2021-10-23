@@ -373,7 +373,14 @@
         //} else {
         //    file += "\\" + tname;
         //}
-        var file = $("#attach_path_" + pno).val();
+        var file = "";
+        if ('<%=Sys.GetSession("dept")%>' == "P") {
+            file = Path2Nbrp($("#attach_path_" + pno).val());
+        }
+        else {
+            file = Path2Nbtbrt($("#attach_path_" + pno).val());
+        }
+
         window.open(file);
     }//檢視
 

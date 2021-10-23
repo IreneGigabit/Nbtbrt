@@ -134,7 +134,7 @@
         }
 
         SQL += " order by v.cust_area,v.cust_seq";
-        Sys.showLog(SQL);
+        //Sys.showLog(SQL);
         conn.DataTable(SQL, dt);
 
         //處理分頁

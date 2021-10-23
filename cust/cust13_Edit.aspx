@@ -197,6 +197,7 @@
     $(function () {
         this_init();
 
+        $("#apclass, #txtapclass").hide();
         if ($("#submitTask").val() == "A")
         {
             if ($("#databr_branch").val() != "" && $("#tran_flag").val() == "B")//brta78確認轉案作業
@@ -209,9 +210,11 @@
                 $("#ap_country").val("T");
                 $("#span_custNo").hide();
             }
+            $("#apclass").show();
         }
 
         if ($("#submitTask").val() == "U" || $("#submitTask").val() == "Q") {
+            $("#txtapclass").show();
             loadData();
             SetReadOnly();
         }
@@ -392,7 +395,13 @@
             con = '<%=Sys.GetSession("seBranch")%>';
         }
 
-        var psql = "select a.*, (select sc_name from sysctrl.dbo.scode where scode = a.in_scode) as scodename from apcust a where apsqlno = '<%=Request["apsqlno"]%>' and apcust_no= '<%=Request["apcust_no"]%>'";
+        var psql = "select a.*, (select code_name from cust_code where code_type='apclass' and cust_code=a.apclass) as apclassnm, ";
+        if ('<%=Request["apcust_no"]%>' == "") {
+            psql += "(select sc_name from sysctrl.dbo.scode where scode = a.in_scode) as scodename from apcust a where apsqlno = '<%=Request["apsqlno"]%>'";
+        }
+        else {
+            psql += "(select sc_name from sysctrl.dbo.scode where scode = a.in_scode) as scodename from apcust a where apsqlno = '<%=Request["apsqlno"]%>' and apcust_no= '<%=Request["apcust_no"]%>'";
+        }
 
         $.ajax({
             url: "../AJAX/JsonGetSqlData.aspx?SQL=" + psql + "&connbr=" + con,

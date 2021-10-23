@@ -701,6 +701,19 @@ public static class DataExt
 
         return rtn;
     }
+
+    /// <summary>  
+    /// 轉成json參數
+    /// </summary>  
+    public static string ParseJson(this Dictionary<string, string> dic) {
+        string rtn = "";
+        foreach (var item in dic) {
+            rtn += (rtn!=""?",":"");
+            rtn += string.Format("{0}:\"{1}\"", item.Key, item.Value);
+        }
+
+        return rtn;
+    }
     #endregion
 }
 

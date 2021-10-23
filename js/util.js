@@ -240,19 +240,22 @@ function dateReviver(value, pstr) {
 
 //#region CInt - vbscript CInt Convertion
 function CInt(n) {
-    return parseInt(n || 0, 10);
+    //return parseInt(n || 0, 10);
+    return parseInt(n.replace(/[^\d|.]/g, '') || 0, 10);
 }
 //#endregion
 
 //#region CDbl - vbscript CDbl Convertion
 function CDbl(n) {
-    return parseFloat(n || 0, 10);
+    //return parseFloat(n || 0, 10);
+    return parseFloat(n.replace(/[^\d|.]/g, '') || 0, 10);
 }
 //#endregion
 
 //#region CLng - vbscript CLng Convertion
 function CLng(n) {
-    return parseInt(n || 0, 10);
+    //return parseInt(n || 0, 10);
+    return parseFloat(n.replace(/[^\d|.]/g, '') || 0, 10);
 }
 //#endregion
 

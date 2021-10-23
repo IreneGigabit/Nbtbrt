@@ -44,8 +44,9 @@
                     doDel(cnn);
                 }
 
-                //cnn.Commit();
-                cnn.RollBack();
+                cnn.Commit();
+                //cnn.RollBack();
+
             }
             catch (Exception ex) {
                 cnn.RollBack();

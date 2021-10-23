@@ -454,17 +454,17 @@
             SQL = "select apsqlno from dmt_temp_ap where in_no='" + row.SafeRead("in_no", "") + "' and case_sqlno=0 ";
             apsqlno = conn.getString(SQL);
             receipt = row.SafeRead("receipt", "");
-            tar_mark = "";
         } else {
             apsqlno = conn.getString(SQL);
             receipt = "";
-            tar_mark = row.SafeRead("ar_mark", "");
         }
+        
+        tar_mark = row.SafeRead("ar_mark", "");
 
         if (row.SafeRead("change", "") == "Y") {
             urlext71 = "異動請核中";
         } else {
-            urlext71 = "[<a href=\"Ext71.aspx?cust_seq=" + row.SafeRead("cust_seq", "") + "&ar_scode=" + row.SafeRead("in_scode", "") + "&Type=" + ar_mark + "&case_date=" + row.SafeRead("case_date", "") + "&qs_dept=" + qs_dept + "&in_scode=" + row.SafeRead("in_scode", "") + "&in_no=" + row.SafeRead("in_no", "") + "&apsqlno=" + apsqlno + "&receipt=" + receipt + "&tar_mark=" + tar_mark + "\" >請款</a>]";
+            urlext71 = "[<a href=\"Ext71.aspx?cust_seq=" + row.SafeRead("cust_seq", "") + "&ar_scode=" + row.SafeRead("in_scode", "") + "&Type=" + ar_mark + "&case_date=" + row.GetDateTimeString("case_date", "yyyy/M/d") + "&qs_dept=" + qs_dept + "&in_scode=" + row.SafeRead("in_scode", "") + "&in_no=" + row.SafeRead("in_no", "") + "&apsqlno=" + apsqlno + "&receipt=" + receipt + "&tar_mark=" + tar_mark + "\" >請款</a>]";
             if (receipt_end_date != "") {
                 if (DateTime.Today > DateTime.Parse(receipt_end_date)) {
                     urlext71 = "收據停用";

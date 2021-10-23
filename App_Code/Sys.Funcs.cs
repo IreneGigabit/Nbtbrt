@@ -1189,6 +1189,57 @@ public partial class Sys
     }
     #endregion
 
+    #region getCustRemark - 客戶備註圖示
+    /// <summary>  
+    /// 客戶備註圖示
+    /// </summary>  
+    public static string getCustRemark(DBHelper conn, string cust_area, string cust_seq) {
+        Sys sfile = new Sys();
+
+        string rtn = "";
+
+        string SQL = "SELECT v.cust_area,v.cust_seq ";
+        SQL += "FROM custz v ";
+        SQL += "INNER JOIN apcust ap ON v.cust_area = ap.cust_area AND v.cust_seq = ap.cust_seq ";
+        SQL += "where ((select count(*) from apcust_mark m where m.cust_area = v.cust_area AND m.cust_seq = v.cust_seq and m.mark_type in('cmark_report','cmark_text'))>0 ";
+        SQL += "or (select count(*) from apcust_attach t where t.cust_area = v.cust_area AND t.cust_seq = v.cust_seq and t.source='custz')>0) ";
+        SQL += "and v.cust_area = '" + cust_area + "' AND v.cust_seq = '" + cust_seq + "' ";
+
+        using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+            if (dr.Read()) {
+                rtn = "<IMG border=0 src=\"" + System.Web.VirtualPathUtility.ToAbsolute("~/images/remark.gif") + "\" onclick=\"OpenRemarkWin('" + dr.SafeRead("cust_area", "") + "','" + dr.SafeRead("cust_seq", "") + "')\" style='cursor:pointer'>";
+            }
+        }
+
+        return rtn;
+    }
+    #endregion
+
+    #region getEmailRemark - 客戶職代信箱圖示
+    /// <summary>  
+    /// 客戶職代信箱圖示
+    /// </summary>  
+    public static string getEmailRemark(DBHelper conn, string cust_area, string cust_seq) {
+        Sys sfile = new Sys();
+
+        string rtn = "";
+
+        string SQL = "SELECT v.cust_area,v.cust_seq ";
+        SQL += "FROM custz v ";
+        SQL += "INNER JOIN apcust ap ON v.cust_area = ap.cust_area AND v.cust_seq = ap.cust_seq ";
+        SQL += "where ((select count(*) from apcust_mark m where m.cust_area = v.cust_area AND m.cust_seq = v.cust_seq and m.mark_type in('cmark_mail'))>0) ";
+        SQL += "and v.cust_area = '" + cust_area + "' AND v.cust_seq = '" + cust_seq + "' ";
+
+        using (SqlDataReader dr = conn.ExecuteReader(SQL)) {
+            if (dr.Read()) {
+                rtn = "<IMG border=0 src=\"" + System.Web.VirtualPathUtility.ToAbsolute("~/images/remark.gif") + "\" onclick=\"OpenMailRemarkWin('" + dr.SafeRead("cust_area", "") + "','" + dr.SafeRead("cust_seq", "") + "')\" style='cursor:pointer'>";
+            }
+        }
+
+        return rtn;
+    }
+    #endregion
+
     //各種人員清單///////////////////////////////////////////////////////////
     #region getLoginGrpSales - 抓取LoginGrp內的營洽(LoginGrp.worktype='sales')
     /// <summary>  

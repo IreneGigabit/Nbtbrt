@@ -311,7 +311,9 @@
         if($("#submittask").val()!="Edit"){//不是編輯模式全部鎖定
             $("select,textarea,input,button").lock();
             //例外開啟的物件
-            $("#Qry_step1").unlock();
+            $("#Qry_step1").unlock();//[查詢案件進度]
+            $("#btnDisplay").unlock();//[商標圖檔檢視]
+            $("input[id^=btnattach_S]").unlock();//[檢視]
         }
     }
     

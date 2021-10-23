@@ -28,9 +28,6 @@
     protected string cust_seq = "";
     protected string dept = "";
     protected string syscode = "";
-    //備註種類
-    protected string html_ReportType = Sys.getCustCode("cmark_report", "", "sortfld").Option("{cust_code}", "{code_name}", "attr1={mark}", false);
-    protected string html_ReportFileType = Sys.getCustCode("cmark_attach", "", "sortfld").Radio("rpt_spe_mark1_##","{cust_code}","{code_name}");
 
     DBHelper conn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
     DBHelper cnn = null;//開完要在Page_Unload釋放,否則sql server連線會一直佔用
@@ -84,7 +81,6 @@
 
         if (HTProgRight >= 0) {
             PageLayout();
-            //QueryData();
             this.DataBind();
         }
     }
@@ -198,7 +194,7 @@
 					<TFOOT>
 						<TR class=whitetablebg>
 							<TD colspan=9>
-								<INPUT type="button" id="AddReport_button" class=cbutton  value=增加信箱設定 onclick="AddMailSetting()">
+								<INPUT type="button" id="AddMail_button" class=cbutton  value=增加信箱設定 onclick="AddMailSetting()">
 							</TD>
 						</TR>
 					</TFOOT>
@@ -212,8 +208,8 @@
                         <script type="text/html" id="mail_template"><!--設定樣板-->
 						<TR class=sfont9  id="tr_rpt_##">
 							<TD class=whitetablebg align=center>##.
-								<input type="checkbox" id="mail_del_##" value="Y">
-								<INPUT type="hidden" size=1 id=mail_upd_flag_##>
+								<input type="checkbox" id="mail_del_##" name="mail_del_##" value="Y">
+								<INPUT type="hidden" id="mail_upd_flag_##" name="mail_upd_flag_##">
 							</TD>
 							<TD class=whitetablebg align=center>
 								<input TYPE="radio" NAME="mail_syscode_##" id="mail_syscode_##_BRP" value="BRP"><label for="mail_syscode_##_BRP">專利</label>
@@ -221,11 +217,11 @@
 								<input TYPE="radio" NAME="mail_syscode_##" id="mail_syscode_##_ACC" value="ACC"><label for="mail_syscode_##_ACC">會計</label>
 								<HR style="border:1px;">
 
-                                <SELECT id="mail_mark_type2_##" size=1>
+                                <SELECT id="mail_mark_type2_##" name="mail_mark_type2_##" size=1>
 								<option value="TO">正本</option>
 								<option value="CC">副本</option>
 								</SELECT>
-								<SELECT id="mail_att_sql_##" size=1>
+								<SELECT id="mail_att_sql_##" name="mail_att_sql_##" size=1>
 								</SELECT>
 								<BR><br />
 								<input type="checkbox" NAME="mail_spe_mark_##" id="mail_spe_mark_##_Y" value="Y"><label for="mail_spe_mark_##_Y">不寄</label>
@@ -240,22 +236,22 @@
 									<TR>
 										<TD class=lightbluetable align=right width="130">代理Email(正本)：</TD>
 										<TD class="whitetablebg">
-											<INPUT size=10 id=mail_type_content1_## style="width:100%">
-											<INPUT type="hidden" id=o_mail_type_content1_##>
+											<INPUT type="text" size=10 id="mail_type_content1_##" name="mail_type_content1_##" style="width:100%" onblur="ChkEmail(this)">
+											<INPUT type="hidden" id="o_mail_type_content1_##" name="o_mail_type_content1_##">
 										</TD>
 									</TR>
 									<TR>
 										<TD class=lightbluetable align=right width="130">代理Email(副本)：</TD>
 										<TD class="whitetablebg">
-											<INPUT size=10 id=mail_type_content2_## style="width:100%">
-											<INPUT type="hidden" id=o_mail_type_content2_##>
+											<INPUT type="text" size=10 id="mail_type_content2_##" name="mail_type_content2_##" style="width:100%" onblur="ChkEmail(this)">
+											<INPUT type="hidden" id="o_mail_type_content2_##" name="o_mail_type_content2_##">
 										</TD>
 									</TR>
 									<TR>
 										<TD class=lightbluetable align=right>備註說明：</TD>
 										<TD class="whitetablebg">
-											<textarea rows="3" id="mail_type_content3_##" style="width:100%"></textarea>
-											<textarea id=o_mail_type_content3_## style="display:none"></textarea>
+											<textarea rows="3" id="mail_type_content3_##" name="mail_type_content3_##" style="width:100%"></textarea>
+											<textarea id="o_mail_type_content3_##" name="o_mail_type_content3_##" style="display:none"></textarea>
 										</TD>
 									</TR>
 									<TR>
@@ -273,7 +269,7 @@
 							<td align=center>
 								<span id="mail_tran_date_##"></span><BR>
 							    <span id="mail_tran_scodenm_##"></span>
-							    <INPUT type="hidden" id=mail_mark_sqlno_##>
+							    <INPUT type="hidden" id="mail_mark_sqlno_##" name="mail_mark_sqlno_##">
 							</td>
 						</TR>
                         </script>
@@ -316,16 +312,10 @@
 <script type="text/javascript">
 
     var bMailData = true;
-
-    var nMail=0;//報表備註設定計數
+    var nMail=0;//設定計數
     $(function () {
         if (window.parent.tt !== undefined) {
-            if ('<%=submitTask%>' == "U") {
-                window.parent.tt.rows = "30%,70%";
-            }
-            else {
-                window.parent.tt.rows = "0%,100%";
-            }
+            window.parent.tt.rows = "0%,100%";
         }
 
         if($("#submitTask").val() == "A") {
@@ -350,39 +340,26 @@
         $("#pscodenm").val("");
         $("#tscode").val("");
         $("#tscodenm").val("");
-	    
+
         nMail = 0;
         $("#hmail_sql").val("0");
-        $("#htext_sql").val("0");
-        $("#hattach_sql").val("0");
-
         $("#maillist>tbody tr").remove();
     }
 
     function loadData() {
 
         loadCustData();
-        //loadMailSettingData();
-
-        if($("#submitTask").val() != "A")
-        {
+        loadMailSettingData();
+        if ($("#submitTask").val() != "A") {
             $("#cust_seq").lock();
-            
+
             if ($("#submitTask").val() == "Q") {
-                SetReportmarkReadOnly();
+                SetMailReadOnly();
             }
 
-            if ($("#submitTask").val() == "U") {
-    
-            }
         }
-        else//如果是新增
-        {
-           
-        }
+        else { }//如果是新增
     }
-
-
 
 
     //檢查有改過客編則要重新載入
@@ -397,7 +374,6 @@
     })
 
 
-
     //新增一筆
     function AddMailSetting() {
         if ($.trim($("#cust_seq").val())==""){
@@ -410,55 +386,55 @@
         //var strLine1 = "<tr class=sfont9 id='tr_rpt_"+nMail+"'>" + $("#maillist>thead tr").eq(1).html().replace(/##/g, nMail) + "</tr>";
         var strLine1 = $("#mail_template").text() || "";
         strLine1 = strLine1.replace(/##/g, nMail);
-
-        
         $("#maillist>tbody").append(strLine1);
 	
         //預設單位部門可選項目
         $("input[name='mail_syscode_"+nMail+"'][value='<%=syscode%>']").prop('checked', true).trigger("click");
         $("input[name='mail_syscode_"+nMail+"'][value!='<%=syscode%>']").prop('disabled', true);
-        //選項預設pdf
-        $("input[name='rpt_spe_mark1_"+nMail+"'][value='pdf']").prop('checked', true).trigger("click");
-        //種類預設通用
-        $("#rpt_mark_type2_"+nMail).val('_');
 
         //帶對應的聯絡人清單
         //getAtt("#rpt_att_sql_"+nMail,"<%=syscode%>");
-        GetCustatt(nMail, "mail_att_sql_")
+        GetCustatt(nMail, "mail_att_sql_", '<%=syscode%>', '<%=dept%>');
         $("input.dateField").datepick();
     }
 
-    function GetCustatt(nRow, objID) {
+    function GetCustatt(nRow, objID, syscode, dept) {
         var psql = "select att_sql, attention from custz_att where cust_area = '" + $("#cust_area").val() + "' and cust_seq = '" + $("#cust_seq").val() + "'";
+        if (syscode != "ACC") {
+            psql += " and dept = '" + dept + "'";
+        }
         if ('<%=submitTask%>' == 'A') {
-            psql += " and dept = '" + '<%=dept%>' + "'";
             psql += " and (att_code like 'N%' or att_code='' or att_code is null)";
         }
 
-        //#txt_att_sql_, 
+        //#mail_att_sql_, 
         $("#" + objID + nRow).getOption({//種類
             url: getRootPath() + "/ajax/JsonGetSqlData.aspx",
             data: { sql: psql },
             showEmpty: false,//顯示"請選擇"
             valueFormat: "{att_sql}",//option的value格式,用{}包住欄位,ex:{scode}
             textFormat: "{att_sql}---{attention}",//option的文字格式,用{}包住欄位,ex:{scode}_{sc_name}
-            firstOpt: "<option value='0'>不指定</option>",//要在最上面額外增加option,ex:<option value='*'>全部<option>
-            setValue: "0"//預設值
+            //firstOpt: "<option value='0'>不指定</option>",//要在最上面額外增加option,ex:<option value='*'>全部<option>
+            //setValue: "0"//預設值
         });
+        if ($("#" + objID + nRow)[0] != undefined) {
+            $("#" + objID + nRow).get(0).selectedIndex = 0;
+        }
+        
     }
 
     
-    //報表備註
     function loadMailSettingData() {
-        var psql = "select convert(varchar,m.tran_date,120)trandate,convert(varchar,m.end_date,111)enddate, *,  ";
+        var psql = "select *, convert(varchar,m.tran_date,120)trandate, ";
+        psql += "convert(varchar,m.end_date,111)enddate, convert(varchar,m.open_date,111)opendate, ";
         psql += "(select sc_name from sysctrl.dbo.scode s where m.tran_scode=s.scode) tran_scodenm ";
-        psql += "from apcust_mark m where mark_type='cmark_report' ";
-        psql += "and cust_area ='" + $("#cust_area").val() + "' and cust_seq = '" + $("#cust_seq").val() + "'";
-        
-        if ($("#submitTask").val() == "U") {//編輯模式只顯示單筆
+        psql += "from apcust_mark m where mark_type='cmark_mail' ";
+        psql += "and cust_area='" + $("#cust_area").val() + "' and cust_seq='" + $("#cust_seq").val() + "' ";
+        psql += "order by mark_sqlno";
+
+        <%--if ($("#submitTask").val() == "U") {//編輯模式只顯示單筆
             psql += " and mark_sqlno='<%=Request["mark_sqlno"]%>'";
-        }
-        psql += " order by mark_sqlno";
+        }--%>
 
         $.ajax({
             url: "../AJAX/JsonGetSqlData.aspx?SQL=" + psql,
@@ -470,33 +446,55 @@
                 var JSONdata = $.parseJSON(json);
                 if (JSONdata.length > 0) {
                     $.each(JSONdata, function (i, item) {
-                        AddRptRemark();//新增一行
+                        AddMailSetting();//新增一行
                         //$row=$(this);
                         var rSyscode=item.syscode;
-                        var rSpe_mark1=item.spe_mark1;
-                        $("input[name='rpt_syscode_"+nMail+"'][value='"+rSyscode+"']").prop('checked', true).trigger("click");
-                        if("<%=syscode%>"==rSyscode){
-                            $("input[name='rpt_syscode_"+nMail+"'][value='"+rSyscode+"']").prop('disabled', false);
-                        }else{
-                            $("input[name='rpt_syscode_"+nMail+"']").prop('disabled', true);
+                        var rSpe_mark=item.spe_mark;
+                        $("input[name='mail_syscode_" + nMail + "'][value='" + rSyscode + "']").prop('checked', true).trigger("click");
+                        if ("<%=syscode%>" == rSyscode) {
+                            $("input[name='mail_syscode_" + nMail + "'][value='" + rSyscode + "']").prop('disabled', false);
+                        } else {
+                            $("input[name='mail_syscode_" + nMail + "']").prop('disabled', true);
                         }
-                        $("#o_rpt_syscode_"+nMail).val(rSyscode);
-                        $("#rpt_mark_type2_"+nMail).val(item.mark_type2).trigger("change");
-                        $("#o_rpt_mark_type2_"+nMail).val(item.mark_type2);
-                        //getAtt("#rpt_att_sql_"+nMail,rSyscode);
-                        $("#rpt_att_sql_"+nMail).val(item.att_sql);
-                        $("#o_rpt_att_sql_"+nMail).val(item.att_sql);
-                        $("input[name='rpt_spe_mark1_"+nMail+"'][value='"+rSpe_mark1+"']").prop('checked', true).trigger("click");
-                        $("#o_rpt_spe_mark1_"+nMail).val(rSpe_mark1);
-                        $("#rpt_end_date_"+nMail).val(dateReviver(item.end_date, "yyyy/M/d"));
-                        $("#o_rpt_end_date_"+nMail).val(dateReviver(item.end_date, "yyyy/M/d"));
-                        $("#rpt_tran_date_"+nMail).html(dateReviver(item.tran_date, "yyyy/M/d hh:mm:ss"));
-                        $("#rpt_tran_scodenm_"+nMail).html(item.tran_scodenm);
-                        $("#rpt_mark_sqlno_"+nMail).val(item.mark_sqlno);
-                        <%--if(rSyscode!="<%=syscode%>")lockTr("rpt_",nMail);--%>
-                        //新增模式要鎖定
-                        if("<%=submitTask%>"=="A")lockTr("rpt_",nMail);
-                
+                        $("#o_mail_syscode_" + nMail).val(rSyscode);
+                        if (rSpe_mark == "Y") {
+                            $("input[name='mail_spe_mark_" + nMail + "'][value='Y']").prop('checked', true);
+                        } else {
+                            $("input[name='mail_spe_mark_" + nMail + "'][value='Y']").prop('checked', false);
+                        }
+                        $("#o_mail_spe_mark_" + nMail).val(rSpe_mark);
+
+                        //帶對應的聯絡人清單-清空重放
+                        $("#mail_att_sql_" + nMail).empty();
+                        var d = "";
+                        if (item.syscode == "BRP") {
+                            d = "P"
+                        } else if (item.syscode == "BTBRT") {
+                            d = "T"
+                        }
+                        GetCustatt(nMail, "mail_att_sql_", item.syscode, d);
+                        //getAtt("#mail_att_sql_" + nMail, rSyscode);
+                        $("#mail_att_sql_" + nMail).val(item.att_sql);
+
+                        
+                        $("#mail_mark_type2_" + nMail).val(item.mark_type2);
+                        $("#o_mail_mark_type2_" + nMail).val(item.mark_type2);
+                        $("#o_mail_att_sql_" + nMail).val(item.att_sql);
+                        $("#mail_type_content1_" + nMail).val(item.type_content1);
+                        $("#o_mail_type_content1_" + nMail).val(item.type_content1);
+                        $("#mail_type_content2_" + nMail).val(item.type_content2);
+                        $("#o_mail_type_content2_" + nMail).val(item.type_content2);
+                        $("#mail_type_content3_" + nMail).val(item.type_content3);
+                        $("#o_mail_type_content3_" + nMail).val(item.type_content3);
+                        $("#mail_open_date_" + nMail).val(dateReviver(item.open_date, "yyyy/M/d"));
+                        $("#o_mail_open_date_" + nMail).val(dateReviver(item.open_date, "yyyy/M/d"));
+                        $("#mail_end_date_" + nMail).val(dateReviver(item.end_date, "yyyy/M/d"));
+                        $("#o_mail_end_date_" + nMail).val(dateReviver(item.end_date, "yyyy/M/d"));
+                        $("#mail_tran_date_" + nMail).html(item.trandate);
+                        $("#mail_tran_scodenm_" + nMail).html(item.tran_scodenm);
+                        $("#mail_mark_sqlno_" + nMail).val(item.mark_sqlno);
+                        //不同單位鎖定
+                        if(rSyscode!="<%=syscode%>")lockTr("mail_",nMail);
                     })
 
                     bMailData = true;
@@ -558,9 +556,6 @@
                     $("#tscodenm").val(item.tscodenm);
                     $("#apsqlno").val(item.apsqlno);
                 }
-                else {
-                    //window.parent.tt.rows = "100%, 0%";//cust45list & cust46list用
-                }
             },
             beforeSend: function (jqXHR, settings) {
                 jqXHR.url = settings.url;
@@ -574,44 +569,45 @@
 
     function Save() {
 
-        //說明備註==============================
-        //部門
-        //for (var xx=1;xx<=CInt($("#htext_sql").val());xx++){
-        //    $("#txt_dept_value_"+xx).val(getCheckedValue("#tabText>tbody input[name='txt_dept_"+xx+"']:checked"));
-        //}
-
         //標記update flag//////////////////////////////////////////////////////////////////////
-        //報表備註==============================
-        for (var r=1;r<=nMail;r++){
-            $("#rpt_upd_flag_"+r).val("");
-            if($("#rpt_mark_sqlno_"+r).val()!=""){//有流水號表示DB有資料
-                if($("input[name=rpt_syscode_"+r+"]:checked").val()!=$("#o_rpt_syscode_"+r).val()
-                    ||$("#rpt_mark_type2_"+r).val()!=$("#o_rpt_mark_type2_"+r).val()
-                    ||$("#rpt_att_sql_"+r).val()!=$("#o_rpt_att_sql_"+r).val()
-                    ||$("input[name=rpt_spe_mark1_"+r+"]:checked").val()!=$("#o_rpt_spe_mark1_"+r).val()
-                    ||$("#rpt_end_date_"+r).val()!=$("#o_rpt_end_date_"+r).val()
-                    )
-                {
-                    $("#rpt_upd_flag_"+r).val("Y");
+        for (var r = 1; r <= nMail; r++) {
+            $("#mail_upd_flag_" + r).val("");
+            if ($("#mail_mark_sqlno_" + r).val() != "") {//有流水號表示DB有資料
+                if ($("input[name=mail_syscode_" + r + "]:checked").val() != $("#o_mail_syscode_" + r).val()
+                    || $("#mail_mark_type2_" + r).val() != $("#o_mail_mark_type2_" + r).val()
+                    || $("#mail_att_sql_" + r).val() != $("#o_mail_att_sql_" + r).val()
+                    //|| $("#mail_spe_mark_value_" + r).val() != $("#o_mail_spe_mark_" + r).val()//不寄
+                    || NulltoEmpty($("input[name=mail_spe_mark_" + r + "]:checked").val()) != $("#o_mail_spe_mark_" + r).val()//不寄
+                    || $("#mail_type_content1_" + r).val() != $("#o_mail_type_content1_" + r).val()
+                    || $("#mail_type_content2_" + r).val() != $("#o_mail_type_content2_" + r).val()
+                    || $("#mail_type_content3_" + r).val() != $("#o_mail_type_content3_" + r).val()
+                    || $("#mail_open_date_" + r).val() != $("#o_mail_open_date_" + r).val()
+                    || $("#mail_end_date_" + r).val() != $("#o_mail_end_date_" + r).val()
+                    ) {
+                    $("#mail_upd_flag_" + r).val("Y");
                 }
             }
         }
 
-      
         //資料檢查//////////////////////////////////////////////////////////////////////
         var errMsg="";
-        var objRpt = {},objTxt = {},objAttach = {};
+        var objMail = {},objTxt = {},objAttach = {};
 	
-        ////報表備註==============================
         for (var r=1;r<=nMail;r++){
-            if(!$("#rpt_del_"+r).prop('checked')){
-                var lineOpt=getJoinValue("#maillist>tbody input[name='rpt_syscode_"+r+"']:checked,#rpt_mark_type2_"+r+",#rpt_att_sql_"+r);
-                if(objRpt[lineOpt]) {
-                    errMsg+="[報表備註] "+r+". 與 "+objRpt[lineOpt].idx+". 選項重覆\n";
-                }else{
-                    objRpt[lineOpt]={flag : true, idx:r};
+
+            if (!$("#mail_del_" + r).prop('checked')) {
+                if ($("#mail_type_content1_" + r).val() == "" && $("#mail_type_content2_" + r).val() == "") {
+                    errMsg += "行" + r + ". 須輸入代理Email\n";
+                }
+
+                var lineOpt = getJoinValue("#maillist>tbody input[name='mail_syscode_" + r + "']:checked,#mail_mark_type2_" + r + ",#mail_att_sql_" + r);
+                if (objMail[lineOpt]) {
+                    errMsg += "行" + r + ". 與 行" + objMail[lineOpt].idx + ". 選項重覆\n";
+                } else {
+                    objMail[lineOpt] = { flag: true, idx: r };
                 }
             }
+
         }
         
         //計算異動筆數//////////////////////////////////////////////////////////////////////
@@ -630,7 +626,7 @@
         $(".bsubmit").lock(!$("#chkTest").prop("checked"));
 
         var formData = new FormData($('#reg')[0]);
-        ajaxByForm("cust23_Update.aspx",formData)
+        ajaxByForm("cust24_Update.aspx",formData)
         .complete(function( xhr, status ) {
             $("#dialog").html(xhr.responseText);
             $("#dialog").dialog({
@@ -655,7 +651,7 @@
 
 
     $("#btnSave").click(function (e) {
-        //Save();
+        Save();
     });
 
 
@@ -663,24 +659,35 @@
     $("#btnReset").click(function (e) {
         reg.reset();
         this_init();
-
+        loadData();
     });
 
-    //取得勾選的值
-    function getCheckedValue(selector){
-        return "|"+$(selector).map(function (){
-            return $(this).val();
-        }).get().join('|')+"|";//前後都包起來
+    function SetMailReadOnly() {
+        $("input[type=checkbox][id^='mail_del_']").hide();
+        $("#AddMail_button").hide();
+        $("input[type=radio]").lock();
+        $("select[id^='mail_mark_type2_']").lock();
+        $("select[id^='mail_att_sql_']").lock();
+        $("input[type=checkbox][id^='mail_spe_mark_']").lock();
+        $(":text").lock();
+        $("textarea").lock();
     }
 
-    function SetReportmarkReadOnly() {
-        $("input[type=checkbox][id^='rpt_del_']").hide();
-        $("#AddReport_button").hide();
-        $("select[id^='rpt_mark_type2_']").lock();
-        $("select[id^='rpt_att_sql_']").lock();
-        $("input[type=radio][name^='rpt_spe_mark1']").lock();
-        $("input[type=text][name^='rpt_end_date']").lock();
+
+    function ChkEmail(email) {
+        if (email.value == undefined || email.value == "") { }
+        else {
+            if (IsEmail(email.value) == false) {
+                alert("請填寫正確的E-MAIL格式");
+                email.focus();
+                return false;
+            }
+        }
     }
+
+
+    
+
 
 
 </script>

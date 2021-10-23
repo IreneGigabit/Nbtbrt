@@ -133,7 +133,8 @@
 		</TR>
 		<TR>
 		  <TD class=lightbluetable align=right>參數：</TD>
-		  <TD class=whitetablebg colspan=3><INPUT TYPE=text id=tfx_ReMark NAME=tfx_ReMark SIZE=40 MAXLENGTH=40></TD>
+		  <TD class=whitetablebg colspan=3>
+              <INPUT TYPE=text id=tfx_ReMark NAME=tfx_ReMark SIZE=40 MAXLENGTH=40></TD>
 		</TR>
 		<TR>  
 		  <TD class=lightbluetable align=right>Menu次序：</TD>
@@ -161,6 +162,10 @@
         <%#StrFormBtn%>
     </td>
 </tr>
+</table>
+<br />
+<table border="0" width="98%" cellspacing="0" cellpadding="0">
+<tr class="FormName"><td><div align="left" style="color:blue">若此作業要開新視窗,參數可增加&openWin=Y</div></td></tr>
 </table>
 
 <iframe id="ActFrame" name="ActFrame" src="about:blank" width="100%" height="300" style="display:none"></iframe>

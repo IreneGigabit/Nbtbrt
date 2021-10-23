@@ -138,7 +138,13 @@
             $("#o_txt_dept_" + nRow).val(rDept);
 
             //抓部門值
-            cust23textform.searchCustAtt(nRow, "txt_att_sql_");
+            var d = "";
+            if (("|PI|PE|").indexOf(item.dept) >= 0) {
+                d = "P";
+            } else if (("|TI|TE|").indexOf(item.dept) >= 0) {
+                d = "T";
+            }
+            cust23textform.searchCustAtt(nRow, "txt_att_sql_", d);
 
             $("#txt_mark_type2_" + nRow).val(item.mark_type2);
             $("#o_txt_mark_type2_" + nRow).val(item.mark_type2);
@@ -155,8 +161,9 @@
 
 
             ////新增模式要鎖定
-            //if ("<%=submitTask%>" == "A") cust23textform.lockTr("txt_", nRow);
             if ("<%=submitTask%>" == "A") lockTr("txt_", nRow);
+            //不同部門要鎖定
+            if (d != '<%=dept%>') lockTr("txt_", nRow);
 
 
         })
@@ -214,20 +221,21 @@
             $("#txt_mark_type2_" + nRow).val('T_');
         }
         
-        //cust23textform.searchCustAtt(nRow, "txt_att_sql_");
         $("input.dateField").datepick();
     }
 
 
     $("#ref_AddText_button").click(function (e) {
-        cust23textform.addAtt("");
-        cust23textform.searchCustAtt(nRow, "txt_att_sql_", '<%=dept%>');
+        cust23textform.addAtt();
+        cust23textform.searchCustAtt(CInt($("#htext_sql").val()), "txt_att_sql_", '<%=dept%>');
     });
 
     cust23textform.searchCustAtt = function (nRow, objID, dept) {
 
         var psql = "select att_sql, attention from custz_att where cust_area = '" + $("#cust_area").val() + "' and cust_seq = '" + $("#cust_seq").val() + "'";
-        psql += " and dept = '" + dept + "'";
+        if (dept != "") {
+            psql += " and dept = '" + dept + "'";
+        }
         if ('<%=submitTask%>' == 'A') {
             psql += " and (att_code like 'N%' or att_code='' or att_code is null)";
         }

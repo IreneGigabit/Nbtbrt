@@ -60,6 +60,7 @@
     }
 
     private void PageLayout() {
+        //***todo
         StrFormBtnTop += "<a href=\"Ext71_Query.aspx?prgid=" + prgid + "&gs_dept=" + qs_dept + "\" target=\"Eblank\">[客戶查詢]</a>\n";
         StrFormBtnTop += "<a href=\"Ext71_Query.aspx?prgid=" + prgid + "&gs_dept=" + qs_dept + "\" target=\"Eblank\">[申請人查詢]</a>\n";
         if ((HTProgRight & 2) > 0) {
@@ -94,7 +95,7 @@
         if ((HTProgRight & 64) != 0) {
             SQL = "select scode,sc_name from sysctrl.dbo.vscode_type where branch='" + Session["seBranch"] + "' and grpid like '" + Session["Dept"] + "%' and work_type='sales' order by scode";
             conn.DataTable(SQL, dt);
-            td_tscode = "<select id='Scode' name='Scode'>" + dt.Option("{scode}", "{scode}_{sc_name}", false, Sys.GetSession("scode")) + "</select>";
+            td_tscode = "<select id='Scode' name='Scode' class='" + tclass + "'>" + dt.Option("{scode}", "{scode}_{sc_name}", true, ReqVal.TryGet("ar_scode")) + "</select>";
         } else {
             td_tscode = "<input type='text' id='Scode' name='Scode' readonly class='SEdit' value='" + Session["se_scode"] + "'>";
             td_tscode += "<input type='text' id='ScodeName' name='ScodeName' readonly class='SEdit' value='" + Session["sc_name"] + "'>";
@@ -123,18 +124,18 @@
 
 <form id="reg" name="reg" method="post">
     <input type="hidden" id="prgid" name="prgid" value="<%=prgid%>">
-    <input type="text" id="myobject" name="myobject">
-    <input type="text" id="apsqlno" name="apsqlno">
-    <input type="text" id="id_no" name="id_no">
-    <input type="text" id="Type" name="Type" value=<%=Request["Type"]%>>
-    <input type="text" id="qs_dept" name="qs_dept" value=<%=Request["qs_dept"]%>>
-    <input type="text" id=cust_seq  name=cust_seq>
-    <input type="text" id=rec_scode name=rec_scode>
-    <input type="text" id=inscode1  name=inscode1 value=<%=Request["in_scode"]%>>
-    <input type="text" id=inno1 name=inno1 value=<%=Request["in_no"]%>>
-    <input type="text" id=T1 name=T1 value="Y">
-    <input type="text" id=rec_chk1 name=rec_chk1 value="N"><!--檢附間接委辦單-->
-    <input type="text" id=receipt name=receipt value=<%=Request["receipt"]%>>
+    <input type="hidden" id="myobject" name="myobject">
+    <input type="hidden" id="apsqlno" name="apsqlno">
+    <input type="hidden" id="id_no" name="id_no">
+    <input type="hidden" id="Type" name="Type" value=<%=Request["Type"]%>>
+    <input type="hidden" id="qs_dept" name="qs_dept" value=<%=Request["qs_dept"]%>>
+    <input type="hidden" id=cust_seq  name=cust_seq>
+    <input type="hidden" id=rec_scode name=rec_scode>
+    <input type="hidden" id=inscode1  name=inscode1 value=<%=Request["in_scode"]%>>
+    <input type="hidden" id=inno1 name=inno1 value=<%=Request["in_no"]%>>
+    <input type="hidden" id=T1 name=T1 value="Y">
+    <input type="hidden" id=rec_chk1 name=rec_chk1 value="N"><!--檢附間接委辦單-->
+    <input type="hidden" id=receipt name=receipt value=<%=Request["receipt"]%>>
 
     <div id="id-div-slide">
         <table border="0" class="bluetable" cellspacing="1" cellpadding="2" width="90%" align="center">
@@ -144,8 +145,9 @@
 	        </tr>
 	        <TR id=showcust>
 		        <TD class=lightbluetable align=right >案件所屬客戶：</TD>
-		        <TD class=whitetablebg align=left ><INPUT type=text id="tfx_Cust_area" name="tfx_Cust_area" readonly value="<%=Session["seBranch"]%>" class="sedit" size="1">-<INPUT type="text" id="tfx_Cust_seq" name="tfx_Cust_seq" size="10%" value="<%=Request["cust_seq"]%>" <%=tclass1%> onblur="search(this.value,'C','C')"></td>
-		        <td class=whitetablebg1 align=left ><INPUT type=text id="cust_cname" name="cust_cname" size=60 readonly class="sedit" ></TD>	
+		        <TD class=whitetablebg align=left ><INPUT type=text id="tfx_Cust_area" name="tfx_Cust_area" readonly value="<%=Session["seBranch"]%>" class="SEdit" size="1">-
+                    <INPUT type="text" id="tfx_Cust_seq" name="tfx_Cust_seq" size="10%" value="<%=Request["cust_seq"]%>" class="<%=tclass1%>" onblur="search(this.value,'C','C')"></td>
+		        <td class=whitetablebg align=left ><INPUT type=text id="cust_cname" name="cust_cname" size=60 readonly class="SEdit" ></TD>	
 	        </TR>
 	        <tr>
 	            <td class=lightbluetable align=right>收據抬頭：</td>
@@ -160,7 +162,7 @@
 	        <TR id=showap>
 		        <TD class=lightbluetable align=right >ID：</TD>
 		        <TD class=whitetablebg align=left ><INPUT type=text id="tfx_apcust_no" name="tfx_apcust_no" size="10" onblur="search(this.value,'A','A')" value=<%=apcust_no%>>(統編或身分證字號)</td>
-		        <TD class=whitetablebg align=left><INPUT type=text id="ap_cname" name="ap_cname" size=60 readonly class="sedit" value=<%=ap_cname%>>
+		        <TD class=whitetablebg align=left><INPUT type=text id="ap_cname" name="ap_cname" size=60 readonly class="SEdit" value=<%=ap_cname%>>
                      <input type="button" name="btngetap" id="btngetap" class="c1button" style="display:none" value="共同申請人">
                 </TD>	
 	        </tr>
@@ -175,9 +177,9 @@
 	        <tr>
 		        <td class="lightbluetable" align="right">請款單種類：</td>
 		        <td class="whitetablebg" align="left" colspan=3>
-		            <label><input type="radio" name="tfx_ar_mark" <%=tclass%> value="A" title="一般請款單" <%=(strtar_mark=="A"?"checked":"")%> onclick="armark_chk71(this.value)">一般+實報實銷案件</label>
-		            <label><input type="radio" name="tfx_ar_mark" <%=tclass%> value="D" title="此請款單為扣收入，不寄給客戶" <%=(strtar_mark=="D"?"checked":"")%> onclick="armark_chk71(this.value)">扣收入案件(不開收據)</label>
-		            <input type="text" id="tar_mark" name="tar_mark" value=<%=Request["tar_mark"]%>>
+		            <label><input type="radio" name="tfx_ar_mark" class="<%=tclass%>" value="A" title="一般請款單" <%=(strtar_mark=="A"?"checked":"")%> onclick="armark_chk71(this.value)">一般+實報實銷案件</label>
+		            <label><input type="radio" name="tfx_ar_mark" class="<%=tclass%>" value="D" title="此請款單為扣收入，不寄給客戶" <%=(strtar_mark=="D"?"checked":"")%> onclick="armark_chk71(this.value)">扣收入案件(不開收據)</label>
+		            <input type="hidden" id="tar_mark" name="tar_mark" value=<%=Request["tar_mark"]%>>
 		        </td>	
 	        </tr>
         </table>
@@ -221,7 +223,7 @@
         $("input[name='tobject'][value='2']").prop("checked",true).triggerHandler("click");
 
         if("<%=ReqVal.TryGet("apsqlno")%>"!=""){
-            search("<%=ReqVal.TryGet("cust_seq")%>","A","A");
+            search("<%=apcust_no%>","A","A");
         }
 
         if($("#inno1").val()!=""&&$("#inscode1").val()!=""){
@@ -391,7 +393,7 @@
             return false;
         }
 
-        if ($("#qs_dept").val() == "" || $("#inscode1").val() || $("#inno1").val()) {
+        if ($("#qs_dept").val() == "" || $("#inscode1").val() == "" || $("#inno1").val() == "") {
             alert("系統找不到欲請款的接洽序號，無法顯示交辦案件申請人資料，請重新進入請款作業！");
             return false;
         }
@@ -454,6 +456,7 @@
         } else {
             reg.action = "<%=HTProgPrefix%>_List.aspx";
         }
+        //reg.target = "Eblank";
         reg.submit();
     });
 </script>
